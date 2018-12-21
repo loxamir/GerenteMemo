@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{ 'CONTACT'| translate }}-{{advanceForm.value.code}}</ion-title>
+    <ion-buttons end [hidden]="!advanceForm.dirty">
+      <button ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="advance-content">
+  <form class="sample-form validations-form" [formGroup]="advanceForm"  (ngSubmit)="onSubmit(advanceForm.value)">
+    <ion-row>
+      <ion-item
+       no-padding
+       style="border-left: 3px solid green;width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;height: 50px;">
+        <ion-label floating style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
+        <ion-input type="number"
+        #amount
+        formControlName="amount"></ion-input>
+      </ion-item>
+      <ion-item no-padding class="item-content" style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;height: 50px;">
+        <ion-label floating class="sumary-label">{{'DATE' | translate }}</ion-label>
+        <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="date">
+        </ion-datetime>
+      </ion-item>
+      <ion-item style="background-color: #fff;border: 1px solid #ddd;">
+        <ion-label floating style="font-size:14px">{{'DESCRIPTION' | translate}}</ion-label>
+        <ion-input #name type="text" formControlName="name"></ion-input>
+      </ion-item>
+      <div class="validation-errors" style="width: 100%">
+        <ng-container *ngFor="let validation of validation_messages.name">
+          <div class="error-message" *ngIf="advanceForm.get('name').hasError(validation.type) && (advanceForm.get('name').dirty || advanceForm.get('name').touched)">
+            {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
+      <ion-item no-padding (click)="selectContact()" style="width: calc(100% - 0px);;background-color: #fff;border: 1px solid #ddd;height: 50px;">
+        <h4 class="sumary-label">{{'EMPLOYEE' | translate }}</h4>
+        <h4 class="client-name">{{advanceForm.value.contact && advanceForm.value.contact.name || 'Selecionar'}}</h4>
+      </ion-item>
+      <ion-item no-padding style="width: calc(100% - 0px);;background-color: #fff;border: 1px solid #ddd;height: 50px;">
+        <h4 class="sumary-label">{{'CashMove' | translate }}</h4>
+        <h4 class="client-name">{{advanceForm.value.cash_move || 'Selecionar'}}</h4>
+      </ion-item>
+      <ion-col width-100 class="item-content">
+        <button ion-button class="print-invoice" (click)="addPayment()">Registrar Pago</button>
+      </ion-col>
+      <ion-col width-100>
+        <button ion-button class="print-confirm" (click)="printAndroid()">Imprimir</button>
+      </ion-col>
+      <ion-card *ngIf="advanceForm.value.payments.length">
+        <ion-item>
+          <ion-row (click)="openPayment(item)" *ngFor="let item of advanceForm.value.payments" no-padding>
+            <ion-col no-padding>
+              <h4 class="sumary-label">{{'RECEIPT' | translate}}</h4>
+              <h4 class="client-name">{{item._id}}</h4>
+            </ion-col>
+            <ion-col no-padding>
+              <h4 class="sumary-label">{{'RECEIVED' | translate}}</h4>
+              <h4 class="client-name">$ {{item.paid|number:'1.0'}}</h4>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+      </ion-card>
+    </ion-row>
+  </form>
+
+  <ion-fab bottom center>
+    <button ion-fab (click)="goNextStep()" color="green">
+      <ion-icon name="play" style="margin-left: 5px;">
+      </ion-icon>
+    </button>
+  </ion-fab>
+
+</ion-content>

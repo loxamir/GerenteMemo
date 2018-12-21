@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{ 'CURRENCY_INFORMATION' | translate }}</ion-title>
+    <ion-buttons end [hidden]="!currencyForm.dirty">
+      <button ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="currency-content">
+  <!-- <div class="user-image-content">
+    <ion-row no-padding class="user-image-row">
+      <ion-col no-padding width-40>
+        <preload-image class="user-image" [ratio]="{w:1, h:1}" (click)="openImagePicker()" [src]="currencyForm.value.image" alt="this is the image" title="IMAGE!"></preload-image>
+      </ion-col>
+    </ion-row>
+    <ion-row no-padding class="user-image-row">
+      <ion-col no-padding width-60>
+        <button class="image-action-button" ion-button outline block small (click)="openImagePicker()">{{ 'CHANGE_CURRENCY_PICTURE' | translate}}</button>
+      </ion-col>
+    </ion-row>
+  </div> -->
+
+  <form class="sample-form validations-form" [formGroup]="currencyForm"  (ngSubmit)="onSubmit(currencyForm.value)">
+    <section class="form-section">
+      <ion-item>
+        <ion-label floating>{{'NAME' | translate}}</ion-label>
+        <ion-input type="text" formControlName="name" autocomplete='name'></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validation_messages.name">
+          <div class="error-message" *ngIf="currencyForm.get('name').hasError(validation.type) && (currencyForm.get('name').dirty || currencyForm.get('name').touched)">
+            {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label floating>{{'SALE' | translate}}</ion-label>
+        <ion-input type="text" formControlName="sale_rate" autocomplete='name'></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>{{'PURCHASE' | translate}}</ion-label>
+        <ion-input type="text" formControlName="purchase_rate" autocomplete='name'></ion-input>
+      </ion-item>
+
+    </section>
+
+    <!--button ion-button full type="submit" [disabled]="!currencyForm.valid">{{'SUBMIT' | translate}}</button-->
+  </form>
+
+</ion-content>

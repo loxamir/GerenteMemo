@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{ 'CATEGORY' | translate }}</ion-title>
+    <ion-buttons end [hidden]="!categoryForm.dirty">
+      <button ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="category-content">
+  <!-- <div class="user-image-content">
+    <ion-row no-padding class="user-image-row">
+      <ion-col no-padding width-40>
+        <preload-image class="user-image" [ratio]="{w:1, h:1}" (click)="openImagePicker()" [src]="categoryForm.value.image" alt="this is the image" title="IMAGE!"></preload-image>
+      </ion-col>
+    </ion-row>
+    <ion-row no-padding class="user-image-row">
+      <ion-col no-padding width-60>
+        <button class="image-action-button" ion-button outline block small (click)="openImagePicker()">{{ 'CHANGE_PLACE_PICTURE' | translate}}</button>
+      </ion-col>
+    </ion-row>
+  </div> -->
+
+  <form class="sample-form validations-form" [formGroup]="categoryForm"  (ngSubmit)="onSubmit(categoryForm.value)">
+    <section class="form-section">
+
+      <ion-item>
+        <ion-label floating>{{'NAME' | translate}}</ion-label>
+        <ion-input type="text" formControlName="name"></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validation_messages.name">
+          <div class="error-message" *ngIf="categoryForm.get('name').hasError(validation.type) && (categoryForm.get('name').dirty || categoryForm.get('name').touched)">
+            {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
+
+
+      <!-- <ion-item>
+
+            <h4 class="sumary-label">Sinal</h4>
+            <ion-select class="payment-term" formControlName="dre"
+              cancelText="{{ 'CANCEL' | translate }}"
+              okText="{{ 'OK' | translate }}">
+              <ion-option value="sale">Ventas</ion-option>
+              <ion-option value="egress">Despesas</ion-option>
+            </ion-select>
+
+      </ion-item> -->
+      <!-- <ion-item>
+        <ion-label floating>{{'ADDRESS' | translate}}</ion-label>
+        <ion-input type="text" formControlName="address"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>{{'PHONE' | translate}}</ion-label>
+        <ion-input type="text" formControlName="phone"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>{{'EMAIL' | translate}}</ion-label>
+        <ion-input type="text" formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>{{'DOCUMENT' | translate}}</ion-label>
+        <ion-input type="text" formControlName="document"></ion-input>
+      </ion-item> -->
+
+      <ion-item>
+        <ion-label floating>{{'NOTE' | translate}}</ion-label>
+        <ion-textarea rows="7" formControlName="note"></ion-textarea>
+      </ion-item>
+
+    </section>
+
+    <!--button ion-button full type="submit" [disabled]="!categoryForm.valid">{{'SUBMIT' | translate}}</button-->
+  </form>
+
+</ion-content>

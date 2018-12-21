@@ -1,5 +1,7 @@
 {
   "name": "GerenteMemo",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

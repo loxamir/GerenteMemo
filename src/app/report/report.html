@@ -1,0 +1,415 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      <ion-row>
+        {{ 'REPORT' | translate }}: {{reportForm.value.code}}
+      </ion-row>
+    </ion-title>
+    <ion-buttons end >
+      <!-- <button ion-button icon-only color="royal"
+              (tap)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </button> -->
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="report-content" style="background-color: #ddd">
+  <form class="sample-form validations-form" [formGroup]="reportForm" (ngSubmit)="onSubmit(reportForm.value)">
+    <ion-row justify-content-center>
+      <ion-card
+      class="sumary-label"
+      no-padding
+      (click)="selectContact()"
+      style="width: calc(50% - 20px);margin-bottom: 2%;margin-top: 1%;">
+      <ion-col no-padding width-50>
+        <ion-label>{{'Desde' | translate }}</ion-label>
+        <ion-datetime class="sale-date"
+          displayFormat="DD/MM/YYYY"
+          pickerFormat="DD/MM/YYYY"
+          (ionChange)="goNextStep()"
+          formControlName="dateStart">
+        </ion-datetime>
+      </ion-col>
+      </ion-card>
+      <ion-card
+       class="sumary-label"
+       no-padding
+       style="width: calc(50% - 20px);margin-bottom: 2%;margin-top: 1%;">
+       <ion-col no-padding>
+         <ion-label>{{'Hasta' | translate }}</ion-label>
+         <ion-datetime class="sale-date"
+           displayFormat="DD/MM/YYYY"
+           pickerFormat="DD/MM/YYYY"
+           (ionChange)="goNextStep()"
+           formControlName="dateEnd">
+         </ion-datetime>
+       </ion-col>
+      </ion-card>
+      <ion-card no-padding class="item-content"
+      style="width: calc(100% - 20px);">
+      <ion-col no-padding *ngIf="reportForm.value.reportType == 'sale'">
+        <ion-label>{{'Agrupado Por' | translate }}</ion-label>
+        <ion-select class="paymentCondition"
+          formControlName="groupBy"
+          cancelText="{{ 'CANCEL' | translate }}"
+          (ionChange)="goNextStep()"
+          okText="{{ 'OK' | translate }}">
+          <ion-option value="date">Fecha</ion-option>
+          <ion-option value="product">Producto</ion-option>
+          <ion-option value="contact">Contato</ion-option>
+          <ion-option value="category">Categoria</ion-option>
+          <ion-option value="payment">Condición de Pago</ion-option>
+          <ion-option value="seller">Vendedor</ion-option>
+        </ion-select>
+      </ion-col>
+      <ion-col no-padding *ngIf="reportForm.value.reportType == 'purchase'">
+        <ion-label>{{'Agrupado Por' | translate }}</ion-label>
+        <ion-select class="paymentCondition"
+          formControlName="groupBy"
+          cancelText="{{ 'CANCEL' | translate }}"
+          (ionChange)="goNextStep()"
+          okText="{{ 'OK' | translate }}">
+          <ion-option value="date">Fecha</ion-option>
+          <ion-option value="product">Producto</ion-option>
+          <ion-option value="contact">Contato</ion-option>
+          <ion-option value="category">Categoria</ion-option>
+          <ion-option value="payment">Condición de Pago</ion-option>
+        </ion-select>
+      </ion-col>
+      <ion-col no-padding *ngIf="reportForm.value.reportType == 'received' || reportForm.value.reportType == 'paid'">
+        <ion-label>{{'Agrupado Por' | translate }}</ion-label>
+        <ion-select class="paymentCondition"
+          formControlName="groupBy"
+          cancelText="{{ 'CANCEL' | translate }}"
+          (ionChange)="goNextStep()"
+          okText="{{ 'OK' | translate }}">
+          <ion-option value="date">Fecha</ion-option>
+          <ion-option value="contact">Contato</ion-option>
+          <ion-option value="category">Cuenta</ion-option>
+          <ion-option value="category">Caja</ion-option>
+        </ion-select>
+      </ion-col>
+    </ion-card>
+    </ion-row>
+      <ion-list>
+        <div *ngIf="reportForm.value.groupBy == 'product'">
+          <div *ngIf="reportForm.value.reportType == 'sale'">
+            <ion-list no-lines>
+              <ion-row class="report-title">
+                <ion-col width-40 (click)="orderByName()">
+                  Producto
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByPrice()">
+                  Precio
+                </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Cant.
+                </ion-col>
+                <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+                <ion-row *ngFor="let item of reportForm.value.items">
+                  <ion-col width-40 [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.price|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.quantity}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+            </ion-list>
+          </div>
+          <div *ngIf="reportForm.value.reportType == 'purchase'">
+            <ion-list no-lines>
+              <ion-row class="report-title">
+                <ion-col width-40 (click)="orderByName()">
+                  Producto
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByPrice()">
+                  Precio
+                </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Cant.
+                </ion-col>
+                <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+                <ion-row *ngFor="let item of reportForm.value.items">
+                  <ion-col width-40  [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.price|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.quantity}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+            </ion-list>
+          </div>
+          <div *ngIf="reportForm.value.reportType == 'paid'">
+            <ion-list no-lines>
+              <ion-row class="report-title">
+                <ion-col width-60 (click)="orderByName()">
+                  Producto
+                </ion-col>
+                <ion-col width-40 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+                <ion-row *ngFor="let item of reportForm.value.items">
+                  <ion-col width-60 [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+            </ion-list>
+          </div>
+
+          <div *ngIf="reportForm.value.reportType == 'received'">
+            <ion-list no-lines>
+              <ion-row class="report-title">
+                <ion-col width-60 (click)="orderByName()">
+                  Producto
+                </ion-col>
+                <ion-col width-40 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+                <ion-row *ngFor="let item of reportForm.value.items">
+                  <ion-col width-60 [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+            </ion-list>
+          </div>
+        </div>
+        <div *ngIf="reportForm.value.groupBy == 'category'">
+          <div *ngIf="reportForm.value.reportType == 'sale'">
+            <ion-list no-lines>
+              <ion-row class="report-title">
+                <ion-col width-40 (click)="orderByName()">
+                  Producto
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByPrice()">
+                  Precio
+                </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Cant.
+                </ion-col>
+                <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+                <ion-row *ngFor="let item of reportForm.value.items">
+                  <ion-col width-40>
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.price|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.quantity}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+            </ion-list>
+          </div>
+          <div *ngIf="reportForm.value.reportType == 'purchase'">
+            <ion-list no-lines>
+              <ion-row class="report-title">
+                <ion-col width-40 (click)="orderByName()">
+                  Producto
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByPrice()">
+                  Precio
+                </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Cant.
+                </ion-col>
+                <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+                <ion-row *ngFor="let item of reportForm.value.items">
+                  <ion-col width-40>
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.price|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.quantity}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+            </ion-list>
+          </div>
+          <div *ngIf="reportForm.value.reportType == 'paid'">
+            <ion-list no-lines>
+              <ion-row class="report-title">
+                <ion-col width-60 (click)="orderByName()">
+                  Cuenta
+                </ion-col>
+                <ion-col width-40 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+                <ion-row *ngFor="let item of reportForm.value.items">
+                  <ion-col width-60 [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+            </ion-list>
+          </div>
+
+          <div *ngIf="reportForm.value.reportType == 'received'">
+            <ion-list no-lines>
+              <ion-row class="report-title">
+                <ion-col width-60 (click)="orderByName()">
+                  Cuenta
+                </ion-col>
+                <ion-col width-40 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+                <ion-row *ngFor="let item of reportForm.value.items">
+                  <ion-col width-60 [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+            </ion-list>
+          </div>
+        </div>
+
+
+        <div>
+          <ion-list no-lines *ngIf="reportForm.value.groupBy == 'contact'">
+            <ion-row class="report-title">
+              <ion-col width-60  (click)="orderByName()">
+                Cliente
+              </ion-col>
+              <ion-col width-40 style="text-align: right" (click)="orderByTotal()">
+                Total
+              </ion-col>
+            </ion-row>
+              <ion-row *ngFor="let item of reportForm.value.items">
+                <ion-col width-60 [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                  {{item.name}}
+                </ion-col>
+                <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+          </ion-list>
+          <ion-list no-lines *ngIf="reportForm.value.groupBy == 'seller'">
+            <ion-row class="report-title">
+              <ion-col width-60  (click)="orderByName()">
+                Cliente
+              </ion-col>
+              <ion-col width-40 style="text-align: right" (click)="orderByTotal()">
+                Total
+              </ion-col>
+            </ion-row>
+              <ion-row *ngFor="let item of reportForm.value.items">
+                <ion-col width-60 [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                  {{item.name}}
+                </ion-col>
+                <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+          </ion-list>
+        </div>
+
+        <div>
+          <ion-list no-lines *ngIf="reportForm.value.groupBy == 'payment'">
+            <ion-row class="report-title">
+              <ion-col width-60  (click)="orderByName()">
+                Condicion de Pago
+              </ion-col>
+              <ion-col width-40 style="text-align: right" (click)="orderByTotal()">
+                Total
+              </ion-col>
+            </ion-row>
+              <ion-row *ngFor="let item of reportForm.value.items">
+                <ion-col width-60 [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                  {{item.name}}
+                </ion-col>
+                <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+          </ion-list>
+        </div>
+
+        <div>
+          <ion-list no-lines *ngIf="reportForm.value.groupBy == 'date'">
+            <ion-row class="report-title">
+              <ion-col width-60 (click)="orderByName()">
+                Fecha
+              </ion-col>
+              <ion-col width-40 style="text-align: right" (click)="orderByTotal()">
+                Total: 7540
+              </ion-col>
+            </ion-row>
+              <ion-row *ngFor="let item of reportForm.value.items">
+                <ion-col width-60 [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                  {{item.name}}
+                </ion-col>
+                <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+          </ion-list>
+        </div>
+      </ion-list>
+  </form>
+  <ion-fab bottom left>
+      <button ion-fab (click)="share()" color="green">
+          <ion-icon name="share">
+          </ion-icon>
+      </button>
+  </ion-fab>
+  <ion-fab bottom center>
+      <button ion-fab (click)="goNextStep()" color="green">
+          <ion-icon name="arrow-round-forward">
+          </ion-icon>
+      </button>
+  </ion-fab>
+  <ion-fab bottom right>
+      <button ion-fab (click)="printAndroid()" color="green">
+          <ion-icon name="print">
+          </ion-icon>
+      </button>
+  </ion-fab>
+</ion-content>

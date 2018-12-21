@@ -1,0 +1,325 @@
+<ion-header>
+  <ion-navbar>
+    <!-- <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button> -->
+    <ion-title>{{ 'EQUIPMENT' | translate }}</ion-title>
+    <ion-buttons end [hidden]="!invoiceForm.dirty">
+      <button ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="check-content">
+  <form class="sample-form validations-form" [formGroup]="invoiceForm"  (ngSubmit)="onSubmit(invoiceForm.value)">
+    <section class="form-section">
+      <h2 class="section-title">{{'Campo de Cliente' | translate}}</h2>
+        <ion-item style="background-color: white">
+          <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactName_top"></ion-input>
+        </ion-item>
+        <ion-item style="background-color: white">
+          <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactName_left"></ion-input>
+        </ion-item>
+        <ion-item style="background-color: white">
+          <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactName_width"></ion-input>
+        </ion-item>
+
+        <h2 class="section-title">{{'Numero de la Factura' | translate}}</h2>
+          <ion-item style="background-color: white">
+            <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+            <ion-input type="number" formControlName="invoiceNumber_top"></ion-input>
+          </ion-item>
+          <ion-item style="background-color: white">
+            <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+            <ion-input type="number" formControlName="invoiceNumber_left"></ion-input>
+          </ion-item>
+
+
+          <h2 class="section-title">{{'Fecha' | translate}}</h2>
+            <ion-item style="background-color: white">
+              <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+              <ion-input type="number" formControlName="invoiceDate_top"></ion-input>
+            </ion-item>
+            <ion-item style="background-color: white">
+              <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+              <ion-input type="number" formControlName="invoiceDate_left"></ion-input>
+            </ion-item>
+
+            <h2 class="section-title">{{'Condicion de Pago' | translate}}</h2>
+              <ion-item style="background-color: white">
+                <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                <ion-input type="number" formControlName="invoicePayment_top"></ion-input>
+              </ion-item>
+              <ion-item style="background-color: white">
+                <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                <ion-input type="number" formControlName="invoicePayment_left"></ion-input>
+              </ion-item>
+              <ion-item style="background-color: white">
+                <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                <ion-input type="number" formControlName="invoicePayment_width"></ion-input>
+              </ion-item>
+
+              <h2 class="section-title">{{'Documento del Cliente' | translate}}</h2>
+                <ion-item style="background-color: white">
+                  <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                  <ion-input type="number" formControlName="contactDocument_top"></ion-input>
+                </ion-item>
+                <ion-item style="background-color: white">
+                  <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                  <ion-input type="number" formControlName="contactDocument_left"></ion-input>
+                </ion-item>
+                <ion-item style="background-color: white">
+                  <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                  <ion-input type="number" formControlName="contactDocument_width"></ion-input>
+                </ion-item>
+
+                <h2 class="section-title">{{'Dirección del Cliente' | translate}}</h2>
+                  <ion-item style="background-color: white">
+                    <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                    <ion-input type="number" formControlName="contactAddress_top"></ion-input>
+                  </ion-item>
+                  <ion-item style="background-color: white">
+                    <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                    <ion-input type="number" formControlName="contactAddress_left"></ion-input>
+                  </ion-item>
+                  <ion-item style="background-color: white">
+                    <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                    <ion-input type="number" formControlName="contactAddress_width"></ion-input>
+                  </ion-item>
+
+                  <h2 class="section-title">{{'Telefono del Cliente' | translate}}</h2>
+                    <ion-item style="background-color: white">
+                      <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                      <ion-input type="number" formControlName="contactPhone_top"></ion-input>
+                    </ion-item>
+                    <ion-item style="background-color: white">
+                      <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                      <ion-input type="number" formControlName="contactPhone_left"></ion-input>
+                    </ion-item>
+                    <ion-item style="background-color: white">
+                      <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                      <ion-input type="number" formControlName="contactPhone_width"></ion-input>
+                    </ion-item>
+
+
+
+                    <h2 class="section-title">{{'Lineas del a Factura' | translate}}</h2>
+
+                    <ion-item style="background-color: white">
+                      <ion-label floating>{{'Alto del bloque de Lineas(mm)' | translate}}</ion-label>
+                      <ion-input type="number" formControlName="lines_height"></ion-input>
+                    </ion-item>
+                    <ion-item style="background-color: white">
+                      <ion-label floating>{{'Ancho del bloque de Lineas(mm)' | translate}}</ion-label>
+                      <ion-input type="number" formControlName="lines_width"></ion-input>
+                    </ion-item>
+
+                    <ion-item style="background-color: white">
+                      <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                      <ion-input type="number" formControlName="lines_top"></ion-input>
+                    </ion-item>
+
+                      <ion-item style="background-color: white">
+                        <ion-label floating>{{'Ancho de la Cantidad(mm)' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="linesQuantity_width"></ion-input>
+                      </ion-item>
+
+                      <ion-item style="background-color: white">
+                        <ion-label floating>{{'Ancho de Nombre del Producto(mm)' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="linesProductName_width"></ion-input>
+                      </ion-item>
+
+                      <ion-item style="background-color: white">
+                        <ion-label floating>{{'Ancho del Precio(mm)' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="linesPrice_width"></ion-input>
+                      </ion-item>
+
+                      <ion-item style="background-color: white">
+                        <ion-label floating>{{'Ancho de Exentas(mm)' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="linesTax0_width"></ion-input>
+                      </ion-item>
+
+                      <ion-item style="background-color: white">
+                        <ion-label floating>{{'Ancho de IVA 5%(mm)' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="linesTax5_width"></ion-input>
+                      </ion-item>
+
+                      <ion-item style="background-color: white">
+                        <ion-label floating>{{'Ancho de IVA 10%(mm)' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="linesTax10_width"></ion-input>
+                      </ion-item>
+
+
+
+
+
+
+                    <h2 class="section-title">{{'SubTotal Exentas' | translate}}</h2>
+                      <ion-item style="background-color: white">
+                        <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="subTotalTax0_top"></ion-input>
+                      </ion-item>
+                      <ion-item style="background-color: white">
+                        <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="subTotalTax0_left"></ion-input>
+                      </ion-item>
+                      <ion-item style="background-color: white">
+                        <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="subTotalTax0_width"></ion-input>
+                      </ion-item>
+
+                      <h2 class="section-title">{{'SubTotal IVA 5%' | translate}}</h2>
+                        <ion-item style="background-color: white">
+                          <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                          <ion-input type="number" formControlName="subTotalTax5_top"></ion-input>
+                        </ion-item>
+                        <ion-item style="background-color: white">
+                          <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                          <ion-input type="number" formControlName="subTotalTax5_left"></ion-input>
+                        </ion-item>
+                        <ion-item style="background-color: white">
+                          <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                          <ion-input type="number" formControlName="subTotalTax5_width"></ion-input>
+                        </ion-item>
+
+                        <h2 class="section-title">{{'SubTotal IVA 10%' | translate}}</h2>
+                          <ion-item style="background-color: white">
+                            <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                            <ion-input type="number" formControlName="subTotalTax10_top"></ion-input>
+                          </ion-item>
+                          <ion-item style="background-color: white">
+                            <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                            <ion-input type="number" formControlName="subTotalTax10_left"></ion-input>
+                          </ion-item>
+                          <ion-item style="background-color: white">
+                            <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                            <ion-input type="number" formControlName="subTotalTax10_width"></ion-input>
+                          </ion-item>
+
+
+
+                          <h2 class="section-title">{{'Monto en Letras' | translate}}</h2>
+                            <ion-item style="background-color: white">
+                              <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                              <ion-input type="number" formControlName="amountInWords_top"></ion-input>
+                            </ion-item>
+                            <ion-item style="background-color: white">
+                              <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                              <ion-input type="number" formControlName="amountInWords_left"></ion-input>
+                            </ion-item>
+                            <ion-item style="background-color: white">
+                              <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                              <ion-input type="number" formControlName="amountInWords_width"></ion-input>
+                            </ion-item>
+
+
+                            <h2 class="section-title">{{'Total de la Factura' | translate}}</h2>
+                              <ion-item style="background-color: white">
+                                <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                                <ion-input type="number" formControlName="invoiceTotal_top"></ion-input>
+                              </ion-item>
+                              <ion-item style="background-color: white">
+                                <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                                <ion-input type="number" formControlName="invoiceTotal_left"></ion-input>
+                              </ion-item>
+                              <ion-item style="background-color: white">
+                                <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                                <ion-input type="number" formControlName="invoiceTotal_width"></ion-input>
+                              </ion-item>
+
+
+                              <h2 class="section-title">{{'Total IVA 5%' | translate}}</h2>
+                                <ion-item style="background-color: white">
+                                  <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                                  <ion-input type="number" formControlName="totalTax5_top"></ion-input>
+                                </ion-item>
+                                <ion-item style="background-color: white">
+                                  <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                                  <ion-input type="number" formControlName="totalTax5_left"></ion-input>
+                                </ion-item>
+                                <ion-item style="background-color: white">
+                                  <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                                  <ion-input type="number" formControlName="totalTax5_width"></ion-input>
+                                </ion-item>
+
+                                <h2 class="section-title">{{'Total IVA 10%' | translate}}</h2>
+                                  <ion-item style="background-color: white">
+                                    <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                                    <ion-input type="number" formControlName="totalTax10_top"></ion-input>
+                                  </ion-item>
+                                  <ion-item style="background-color: white">
+                                    <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                                    <ion-input type="number" formControlName="totalTax10_left"></ion-input>
+                                  </ion-item>
+                                  <ion-item style="background-color: white">
+                                    <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                                    <ion-input type="number" formControlName="totalTax10_width"></ion-input>
+                                  </ion-item>
+
+                                  <h2 class="section-title">{{'IVA Total' | translate}}</h2>
+                                    <ion-item style="background-color: white">
+                                      <ion-label floating>{{'Distancia del Topo(mm)' | translate}}</ion-label>
+                                      <ion-input type="number" formControlName="totalTax_top"></ion-input>
+                                    </ion-item>
+                                    <ion-item style="background-color: white">
+                                      <ion-label floating>{{'Distancia de la Izquierda(mm)' | translate}}</ion-label>
+                                      <ion-input type="number" formControlName="totalTax_left"></ion-input>
+                                    </ion-item>
+                                    <ion-item style="background-color: white">
+                                      <ion-label floating>{{'Ancho(mm)' | translate}}</ion-label>
+                                      <ion-input type="number" formControlName="totalTax_width"></ion-input>
+                                    </ion-item>
+
+            <h2 class="section-title">{{'Configuraciones' | translate}}</h2>
+              <ion-item style="background-color: white">
+                <ion-label floating>{{'Limite de Lineas(mm)' | translate}}</ion-label>
+                <ion-input type="number" formControlName="lines_limit"></ion-input>
+              </ion-item>
+              <ion-item style="background-color: white">
+                <ion-label floating>{{'Cantidad de Vias(mm)' | translate}}</ion-label>
+                <ion-input type="number" formControlName="copy_count"></ion-input>
+              </ion-item>
+              <ion-item style="background-color: white">
+                <ion-label floating>{{'Espacio entre Vias(mm)' | translate}}</ion-label>
+                <ion-input type="number" formControlName="copy_height"></ion-input>
+              </ion-item>
+
+              <ion-item style="background-color: white">
+                <ion-label floating>{{'Alto de una Factura(mm)' | translate}}</ion-label>
+                <ion-input type="number" formControlName="invoice_height"></ion-input>
+              </ion-item>
+
+
+
+
+
+              <ion-item style="background-color: white">
+                <ion-label floating>{{'Margin Superior(mm)' | translate}}</ion-label>
+                <ion-input type="number" formControlName="marginTop_config"></ion-input>
+              </ion-item>
+              <ion-item style="background-color: white">
+                <ion-label floating>{{'Margin Izquierda(mm)' | translate}}</ion-label>
+                <ion-input type="number" formControlName="marginLeft_config"></ion-input>
+              </ion-item>
+
+              <ion-item style="background-color: white">
+                <ion-label floating>{{'Factor de Correccion de la Impressora(mm)' | translate}}</ion-label>
+                <ion-input type="number" formControlName="printerFactor_config"></ion-input>
+              </ion-item>
+
+
+
+
+    </section>
+  </form>
+  <button margin-bottom ion-button class="print-invoice"
+    [hidden]="!invoiceForm.dirty"
+    (click)="buttonSave()">
+    {{ 'SAVE' | translate }}
+  </button>
+</ion-content>

@@ -1,0 +1,17 @@
+Numero del Acopio------------------------------->Numero de Tarefa
+Fecha------------------------------------------->Fecha
+01 Safra------------------------------------------->Proyecto
+02 Contato(Dueño)---------------------------------->Contato
+03 Chofer------------------------------------------>Chofer
+04 Vehiculo---------------------------------------->Veiculo
+05 Chapa------------------------------------------->Chapa
+06 Peso Bruto-------------------------------------->Peso Bruto
+07 Humedad----------------------------------------->Humedad
+08 Descuentos Humedad------------------------------>Descuento Humedad
+09 Impureza---------------------------------------->Impureza
+10 Descuentos Impureza----------------------------->Descuento Impureza
+11 ph(si es trigo) -------------------------------->PH
+12 Es Intacta (si es soja)------------------------->Intacta
+13 Peso Tara--------------------------------------->Peso Tara
+14 Peso Neto--------------------------------------->Peso Neto
+15 Peso Liquido------------------------------------>Peso Liquido

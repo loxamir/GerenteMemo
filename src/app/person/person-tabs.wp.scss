@@ -1,0 +1,11 @@
+ion-app.wp {
+	person-tabs {
+		.tabbar
+		{
+			.tab-button[aria-selected=true]
+			{
+				border-bottom-color: $theme-color-1;
+			}
+		}
+	}
+}
