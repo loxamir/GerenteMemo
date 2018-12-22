@@ -5,6 +5,7 @@ const httpOptions = {
     'Content-Type':  'application/json',
   })
 };
+declare var Buffer: any;
 /*
   Generated class for the RestProvider provider.
 

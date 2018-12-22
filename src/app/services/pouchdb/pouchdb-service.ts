@@ -2,12 +2,14 @@ import { Injectable, NgZone } from '@angular/core';
 import { Events } from '@ionic/angular';
 import PouchDB1 from 'pouchdb';
 // import PouchDBFind from 'pouchdb-find';
+declare var require: any;
+declare var Buffer: any;
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import PouchdbUpsert from 'pouchdb-upsert';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { Storage } from '@ionic/storage';
-import { AppConfig } from '../../app/app.config';
-import { FormatService } from '../services/format.service';
+// import { AppConfig } from '../../app/app.config';
+import { FormatService } from '../format.service';
 // import * from 'pouchdb-quick-search';
 // import * as PouchQuickSearch from 'pouchdb-quick-search';
 
@@ -42,7 +44,7 @@ export class PouchdbService {
     public http: HttpClient,
     public zone: NgZone,
     public storage: Storage,
-    public appConfig: AppConfig,
+    // public appConfig: AppConfig,
     public events: Events,
     public formatService: FormatService,
   ) {
@@ -106,9 +108,9 @@ export class PouchdbService {
           }
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
-          // PouchDB.plugin(cordovaSqlitePlugin);
-          this.db = new PouchDB(database);
-          // this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+          PouchDB.plugin(cordovaSqlitePlugin);
+          // this.db = new PouchDB(database);
+          this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
           console.log("database", database);
           self.events.publish('got-database');
           this.storage.get('password').then(password => {
