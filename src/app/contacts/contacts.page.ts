@@ -29,6 +29,7 @@ export class ContactsPage implements OnInit {
     public route: ActivatedRoute,
     public router: Router,
     public modal: ModalController,
+    public navCtrl: NavController,
     public events: Events,
     public pouchdbService: PouchdbService,
   ) {
@@ -206,15 +207,16 @@ export class ContactsPage implements OnInit {
     this.events.subscribe('open-contact', (data) => {
       this.events.unsubscribe('open-contact');
     })
-    if (this.select){
-      // this.navCtrl.push(ContactPage, {'_id': contact._id});
-      this.router.navigate(['contact', {'_id': contact._id}]);
-    } else {
+    // if (this.select){
+    //   // this.navCtrl.push(ContactPage, {'_id': contact._id});
+    //   this.router.navigate(['contact', {'_id': contact._id}]);
+    // } else {
       // let newRootNav = <NavController>this.app.getRootNavById('n4');
       // newRootNav.push(ContactPage, {'_id': contact._id});
 
-      this.router.navigate(['contact', {'_id': contact._id}]);
-    }
+      // this.router.navigate(['contact', {'_id': contact._id}]);
+      this.navCtrl.navigateForward(['contact', {'_id': contact._id}]);
+    // }
   }
 
   selectContact(contact) {

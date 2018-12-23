@@ -9,3 +9,17 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
+
+.list-card {
+  width: 100%;
+}
+.field-50 {
+  width: 50%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+.field-100 {
+   background-color: #fff;
+   border: 1px solid #ddd;
+   width: 100%;
+}

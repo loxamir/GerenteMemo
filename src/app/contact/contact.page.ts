@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
-import { ModalController, LoadingController, Events } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, Events } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -17,6 +17,8 @@ import { RestProvider } from "../services/rest/rest";
   styleUrls: ['./contact.page.scss'],
 })
 export class ContactPage implements OnInit {
+@ViewChild('name') name: Input;
+@ViewChild('document') document: Input;
 
   contactForm: FormGroup;
   loading: any;
@@ -25,7 +27,7 @@ export class ContactPage implements OnInit {
   opened: boolean = false;
 
   constructor(
-    // public navCtrl: NavController,
+    public navCtrl: NavController,
     public modal: ModalController,
     // public loadingCtrl: LoadingController,
     public translate: TranslateService,
@@ -41,13 +43,17 @@ export class ContactPage implements OnInit {
   ) {
     // this.loading = this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     // this._id = this.navParams.data._id;
     // if (this.navParams.data._id){
     //   this.opened = true;
     // }
     // this.route.params.subscribe(...);
   }
-
+  goBack(){
+    this.navCtrl.navigateBack('/contacts');
+  }
   ngOnInit() {
     this.contactForm = this.formBuilder.group({
       name: new FormControl(this.route.snapshot.paramMap.get('name')||''),
@@ -89,13 +95,6 @@ export class ContactPage implements OnInit {
 
   }
 
-  getLegalName(){
-    this.restProvider.getRucName(this.contactForm.value.document).then((data: any)=>{
-      this.contactForm.patchValue({
-        'name_legal': data.name,
-      })
-    })
-  }
   justSave() {
     if (this._id){
       this.updateContact(this.contactForm.value);
@@ -159,6 +158,11 @@ export class ContactPage implements OnInit {
     return this.pouchdbService.getDoc(doc_id);
   }
 
+  ionViewDidEnter() {
+    setTimeout(() => {
+      this.name.setFocus();
+    }, 200);
+  }
   createContact(contact){
     return new Promise((resolve, reject)=>{
       contact.docType = 'contact';
@@ -183,4 +187,40 @@ export class ContactPage implements OnInit {
     return this.pouchdbService.updateDoc(contact);
   }
 
+  goNextStep() {
+  // if (this.contactForm.value.state == 'DRAFT'){
+    if (!this.contactForm.value.name){
+      this.name.setFocus();
+      // return;
+    }
+    else if (!this.contactForm.value.document){
+      this.document.setFocus();
+      // return;
+    }
+    else if (this.contactForm.value.document&&!this.contactForm.value.name_legal){
+      this.getLegalName();
+      // return;
+    }
+    else if (this.contactForm.dirty) {
+      this.justSave();
+    } else {
+      if (this.opened){
+        this.navCtrl.pop().then(() => {
+          this.events.publish('open-contact', this.contactForm.value);
+        });
+      } else {
+        this.navCtrl.pop().then(() => {
+          this.events.publish('create-contact', this.contactForm.value);
+        });
+      }
+    }
+  }
+
+  getLegalName(){
+    this.restProvider.getRucName(this.contactForm.value.document).then((data: any)=>{
+      this.contactForm.patchValue({
+        'name_legal': data.name,
+      })
+    })
+  }
 }
