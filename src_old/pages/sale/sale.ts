@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, NavParams, LoadingController, Platform, AlertController, Events, ToastController, ModalController, PopoverController } from '@ionic/angular';
+import { NavController, App,  LoadingController, Platform, AlertController, Events, ToastController, ModalController, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 //import { DecimalPipe } from '@angular/common';

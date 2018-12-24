@@ -1,5 +1,5 @@
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
-import { NavController, NavParams, ModalController, LoadingController, Platform, Events } from '@ionic/angular';
+import { NavController,  ModalController, LoadingController, Platform, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 

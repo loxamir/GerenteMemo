@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  ModalController, Events, PopoverController} from '@ionic/angular';
+import { NavController, App, LoadingController,   ModalController, Events, PopoverController} from '@ionic/angular';
 import { AccountCategoryPage } from '../accountCategory';
 import 'rxjs/Rx';
 import { AccountCategorysService } from './accountCategorys.service';

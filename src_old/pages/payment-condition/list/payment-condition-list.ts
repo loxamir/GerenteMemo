@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  ModalController, Events} from '@ionic/angular';
+import { NavController, App, LoadingController,   ModalController, Events} from '@ionic/angular';
 import { PaymentConditionPage } from '../payment-condition';
 import 'rxjs/Rx';
 import { PaymentConditionService } from '../payment-condition.service';

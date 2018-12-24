@@ -9,7 +9,7 @@
       [(ngModel)]="searchTerm"
       (ionInput)="setFilteredItems()">
     </ion-searchbar>
-    <ion-buttons right>
+    <ion-buttons slot="end">
       <!-- <ion-button icon-only color="royal" *ngIf="!has_search"
         (tap)="setSearch()">
         <ion-icon name="search"></ion-icon>
@@ -94,7 +94,7 @@
   </ion-infinite-scroll> -->
   <ion-row style="height:15px;">
   </ion-row>
-  <ion-fab bottom center>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
       <ion-fab-button (click)="createAnimal()" color="green">
           <ion-icon name="add">
           </ion-icon>

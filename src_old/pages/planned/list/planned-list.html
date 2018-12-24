@@ -90,7 +90,7 @@
 
   <div style="height:100px">
   </div>
-  <ion-fab bottom center *ngIf="amountPaid">
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="amountPaid">
       <ion-fab-button (click)="createPayment()" color="green">
           <ion-icon name="cash">
           </ion-icon>
@@ -99,7 +99,7 @@
         Crear Recibo
       </div>
   </ion-fab>
-  <ion-fab bottom center *ngIf="contact_id==''&& signal=='+'">
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="contact_id==''&& signal=='+'">
       <ion-fab-button (click)="createReceivableMove()" color="green">
           <ion-icon name="add">
           </ion-icon>
@@ -111,7 +111,7 @@
           </ion-icon>
       </ion-button>
   </ion-fab>
-  <ion-fab bottom center *ngIf="contact_id==''&& signal=='-'">
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="contact_id==''&& signal=='-'">
       <ion-fab-button (click)="createPayableMove()" color="green">
           <ion-icon name="add">
           </ion-icon>

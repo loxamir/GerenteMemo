@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  ModalController, Events, PopoverController} from '@ionic/angular';
+import { NavController, App, LoadingController,   ModalController, Events, PopoverController} from '@ionic/angular';
 import { TitlePage } from '../title';
 import 'rxjs/Rx';
 import { TitlesService } from './titles.service';

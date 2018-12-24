@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {  NavController, NavParams, ToastController } from '@ionic/angular';
+import {  NavController,  ToastController } from '@ionic/angular';
 
 @Component({
   template: `

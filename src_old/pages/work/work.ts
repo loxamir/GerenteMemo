@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController, NavParams, LoadingController, AlertController,
+import { NavController,  LoadingController, AlertController,
   Events, ToastController, ModalController, 
 } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  ModalController, Events, PopoverController} from '@ionic/angular';
+import { NavController, App, LoadingController,   ModalController, Events, PopoverController} from '@ionic/angular';
 import { ActivityPage } from '../activity';
 import 'rxjs/Rx';
 import { ActivitysService } from './activitys.service';

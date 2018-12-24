@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, LoadingController, PopoverController , Events, NavParams, ModalController  } from '@ionic/angular';
+import { NavController, App, LoadingController, PopoverController , Events,  ModalController  } from '@ionic/angular';
 import { PurchasePage } from '../purchase';
 //import { DecimalPipe } from '@angular/common';
 import 'rxjs/Rx';

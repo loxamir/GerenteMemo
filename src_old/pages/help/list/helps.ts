@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  ModalController, Events} from '@ionic/angular';
+import { NavController, App, LoadingController,   ModalController, Events} from '@ionic/angular';
 import { HelpPage } from '../help';
 import 'rxjs/Rx';
 import { HelpsService } from './helps.service';

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  Events } from '@ionic/angular';
+import { NavController, App, LoadingController,   Events } from '@ionic/angular';
 import { CategoryPage } from '../category';
 import 'rxjs/Rx';
 import { CategoriesService } from './categories.service';

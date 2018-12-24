@@ -404,10 +404,10 @@ export class ProductPage implements OnInit {
         if (product.code != ''){
           resolve(this.pouchdbService.createDoc(product));
         } else {
-          this.configService.getSequence('product').then((code) => {
-            product['code'] = code;
+          // this.configService.getSequence('product').then((code) => {
+          //   product['code'] = code;
             resolve(this.pouchdbService.createDoc(product));
-          });
+          // });
         }
       });
     }

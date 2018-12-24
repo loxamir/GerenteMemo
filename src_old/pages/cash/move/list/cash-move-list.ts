@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, NavParams, LoadingController,  Events, PopoverController } from '@ionic/angular';
+import { NavController, App,  LoadingController,  Events, PopoverController } from '@ionic/angular';
 import { CashMovePage } from '../cash-move';
 
 import 'rxjs/Rx';

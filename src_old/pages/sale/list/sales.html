@@ -9,7 +9,7 @@
       #searchbar
       (ionInput)="searchItems()">
     </ion-searchbar>
-    <ion-buttons right>
+    <ion-buttons slot="end">
       <ion-button icon-only color="royal"
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
@@ -72,7 +72,7 @@
   </ion-infinite-scroll>
   <ion-row style="height:15px;">
   </ion-row>
-  <ion-fab bottom center>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
       <ion-fab-button (click)="createSale()" color="green" class="add-sale-button">
           <ion-icon name="add">
           </ion-icon>

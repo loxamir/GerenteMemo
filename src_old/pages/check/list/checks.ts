@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  Events } from '@ionic/angular';
+import { NavController, App, LoadingController,   Events } from '@ionic/angular';
 import { CheckPage } from '../check';
 import 'rxjs/Rx';
 //import { ChecksModel } from './checks.model';

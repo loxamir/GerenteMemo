@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  ModalController, Events, AlertController } from '@ionic/angular';
+import { NavController, App, LoadingController,   ModalController, Events, AlertController } from '@ionic/angular';
 import 'rxjs/Rx';
 import { PlannedService } from './planned-list.service';
 import { ReceiptPage } from '../../receipt/receipt';

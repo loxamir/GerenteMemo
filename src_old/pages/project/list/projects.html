@@ -9,7 +9,7 @@
       #searchbar
       (ionInput)="setFilteredItems()">
     </ion-searchbar>
-    <ion-buttons right>
+    <ion-buttons slot="end">
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -67,7 +67,7 @@
   </ion-infinite-scroll>
   <ion-row style="height:15px;">
   </ion-row>
-  <ion-fab bottom center>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
       <ion-fab-button (click)="createProject()" color="green">
           <ion-icon name="add">
           </ion-icon>

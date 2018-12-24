@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, App, NavParams, LoadingController, AlertController, Select, Events, ToastController } from '@ionic/angular';
+import { NavController, App,  LoadingController, AlertController, Select, Events, ToastController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 //import { DecimalPipe } from '@angular/common';

@@ -6,7 +6,7 @@
       #searchBar
       (ionInput)="searchItems()">
     </ion-searchbar>
-    <ion-buttons right>
+    <ion-buttons slot="end">
       <ion-button icon-only color="royal"
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
@@ -53,7 +53,7 @@
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
-  <ion-fab bottom center>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
       <ion-fab-button (click)="createSalary()" color="green">
           <ion-icon name="add">
           </ion-icon>

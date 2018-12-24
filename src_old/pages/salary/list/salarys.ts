@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild  } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  ModalController, Events, PopoverController} from '@ionic/angular';
+import { NavController, App, LoadingController,   ModalController, Events, PopoverController} from '@ionic/angular';
 import { SalaryPage } from '../salary';
 import 'rxjs/Rx';
 import { SalarysService } from './salarys.service';

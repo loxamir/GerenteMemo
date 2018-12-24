@@ -23,3 +23,13 @@
    border: 1px solid #ddd;
    width: 100%;
 }
+h4.field-label {
+  position: absolute;
+  font-size: 13px;
+  margin-top: -10px;
+}
+h4.field-value {
+  font-size: 20px;
+  margin-top: 10px;
+  position: absolute;
+}

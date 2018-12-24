@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, ModalController, LoadingController, Platform,  Select, TextInput, Events } from '@ionic/angular';
+import { NavController,  ModalController, LoadingController, Platform,  Select, TextInput, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';

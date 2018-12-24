@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, NavParams, LoadingController,  Events, PopoverController, AlertController } from '@ionic/angular';
+import { NavController, App,  LoadingController,  Events, PopoverController, AlertController } from '@ionic/angular';
 import { AreaPage } from '../area';
 
 import 'rxjs/Rx';

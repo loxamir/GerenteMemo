@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController, Events, AlertController } from '@ionic/angular';
+import { IonicPage, NavController,  LoadingController, Events, AlertController } from '@ionic/angular';
 import * as papa from 'papaparse';
 import { Http } from '@angular/http';
 import { FileChooser } from '@ionic-native/file-chooser';

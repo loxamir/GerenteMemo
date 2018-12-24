@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  Events } from '@ionic/angular';
+import { NavController, App, LoadingController,   Events } from '@ionic/angular';
 import { ProjectPage } from '../project';
 import 'rxjs/Rx';
 //import { ProjectsModel } from './projects.model';

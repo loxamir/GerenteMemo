@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild  } from '@angular/core';
-import { NavController, App, LoadingController, NavParams,  ModalController, Events, PopoverController} from '@ionic/angular';
+import { NavController, App, LoadingController,   ModalController, Events, PopoverController} from '@ionic/angular';
 import { ContactPage } from '../contact';
 import 'rxjs/Rx';
 import { ContactsService } from './contacts.service';
