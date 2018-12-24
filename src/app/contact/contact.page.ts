@@ -17,8 +17,8 @@ import { RestProvider } from "../services/rest/rest";
   styleUrls: ['./contact.page.scss'],
 })
 export class ContactPage implements OnInit {
-@ViewChild('name') name: Input;
-@ViewChild('document') document: Input;
+@ViewChild('name') name;
+@ViewChild('document') document;
 
   contactForm: FormGroup;
   loading: any;
@@ -205,11 +205,11 @@ export class ContactPage implements OnInit {
       this.justSave();
     } else {
       if (this.opened){
-        this.navCtrl.pop().then(() => {
+        this.navCtrl.navigateBack('contacts').then(() => {
           this.events.publish('open-contact', this.contactForm.value);
         });
       } else {
-        this.navCtrl.pop().then(() => {
+        this.navCtrl.navigateBack('contacts').then(() => {
           this.events.publish('create-contact', this.contactForm.value);
         });
       }

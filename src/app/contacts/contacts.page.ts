@@ -5,7 +5,7 @@ import { NavController, LoadingController, ModalController, Events, PopoverContr
 import 'rxjs/Rx';
 // import { ContactsService } from './contacts.service';
 // import { ContactsPopover } from './contacts.popover';
-// import { File } from '@ionic-native/file';
+import { File } from '@ionic-native/file';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 @Component({
@@ -32,6 +32,7 @@ export class ContactsPage implements OnInit {
     public navCtrl: NavController,
     public events: Events,
     public pouchdbService: PouchdbService,
+    public file: File,
   ) {
     // //this.loading = //this.loadingCtrl.create();
     // this.select = this.navParams.get('select');
