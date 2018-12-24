@@ -150,9 +150,9 @@ export class ProductListPage implements OnInit {
 
   selectProduct(product) {
     if (this.select) {
-      this.navCtrl.navigateBack('').then(() => {
+      // this.navCtrl.navigateBack('').then(() => {
         this.events.publish('select-product', product);
-      });
+      // });
     } else {
       this.gotoProduct(product);
     }

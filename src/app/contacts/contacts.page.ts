@@ -223,7 +223,7 @@ export class ContactsPage implements OnInit {
   selectContact(contact) {
     if (this.select){
       // this.navCtrl.pop().then(() => {
-      //   this.events.publish('select-contact', contact);
+        this.events.publish('select-contact', contact);
       // });
     } else {
       this.openContact(contact);

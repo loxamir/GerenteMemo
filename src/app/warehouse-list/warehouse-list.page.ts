@@ -116,10 +116,11 @@ export class WarehouseListPage implements OnInit {
   }
 
   selectWarehouse(warehouse) {
+    console.log("this.select", this.select);
     if (this.select){
-      this.navCtrl.navigateBack('').then(() => {
+      // this.navCtrl.navigateBack('').then(() => {
         this.events.publish('select-warehouse', warehouse);
-      });
+      // });
     } else {
       this.openWarehouse(warehouse);
     }

@@ -215,12 +215,14 @@ export class StockMovePage implements OnInit {
   selectWarehouseFrom() {
     return new Promise(async resolve => {
       this.events.subscribe('select-warehouse', (data) => {
+        console.log("data98", data);
         this.stockMoveForm.patchValue({
           warehouseFrom: data,
           warehouseFrom_id: data._id,
         });
         this.stockMoveForm.markAsDirty();
         this.events.unsubscribe('select-warehouse');
+        profileModal.dismiss();
         resolve(true);
       })
       let profileModal = await this.modal.create({
@@ -228,7 +230,7 @@ export class StockMovePage implements OnInit {
         componentProps: {
           "select": true
         }});
-      profileModal.present();
+      await profileModal.present();
     });
   }
 
@@ -241,6 +243,7 @@ export class StockMovePage implements OnInit {
         });
         this.stockMoveForm.markAsDirty();
         this.events.unsubscribe('select-warehouse');
+        profileModal.dismiss();
         resolve(true);
       })
       let profileModal = await this.modal.create({
@@ -262,6 +265,7 @@ export class StockMovePage implements OnInit {
          });
          this.stockMoveForm.markAsDirty();
          this.events.unsubscribe('select-product');
+         profileModal.dismiss();
          resolve(true);
        })
        let profileModal = await this.modal.create({
@@ -282,6 +286,7 @@ export class StockMovePage implements OnInit {
           });
           this.stockMoveForm.markAsDirty();
           this.events.unsubscribe('select-contact');
+          profileModal.dismiss();
           resolve(true);
         })
         let profileModal = await this.modal.create({

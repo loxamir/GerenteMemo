@@ -17,6 +17,7 @@ const routes: Routes = [
   { path: 'stock-move-list', loadChildren: './stock-move-list/stock-move-list.module#StockMoveListPageModule' },
   { path: 'warehouse', loadChildren: './warehouse/warehouse.module#WarehousePageModule' },
   { path: 'warehouse-list', loadChildren: './warehouse-list/warehouse-list.module#WarehouseListPageModule' },
+  { path: 'cash-move', loadChildren: './cash-move/cash-move.module#CashMovePageModule' },
 ];
 
 @NgModule({
