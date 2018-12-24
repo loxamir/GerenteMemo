@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button>
+    <ion-title>{{ 'HOME' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="home-content">
+  <ion-fab bottom center>
+      <ion-fab-button (click)="startListening()" color="green">
+          <ion-icon name="mic">
+          </ion-icon>
+      </ion-button>
+  </ion-fab>
+  <ion-button full (click)="stopListening()" *ngIf="isIos()">Stop Listening</ion-button>
+
+  <div *ngFor="let answer of answers">
+     {{answer}}
+   </div>
+</ion-content>

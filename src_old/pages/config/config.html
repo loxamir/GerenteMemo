@@ -1,0 +1,160 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{ 'CONFIG' | translate }}</ion-title>
+    <ion-buttons slot="end" [hidden]="!configForm.dirty">
+      <ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="config-content" style="background-color: #ddd">
+  <form class="sample-form validations-form"
+  [formGroup]="configForm"
+  (ngSubmit)="onSubmit(configForm.value)">
+
+
+  <ion-row justify-content-center>
+    <ion-item no-padding (click)="selectAccount()" class="field-50">
+      <h4 class="sumary-label">{{'ACCOUNT' | translate }}</h4>
+      <h4 class="client-name">{{configForm.value.account && configForm.value.account.name || 'Seleccionar'}}</h4>
+    </ion-item>
+
+    <ion-item no-padding (click)="selectWarehouse()" class="field-50">
+      <h4 class="sumary-label">{{'WAREHOUSE' | translate }}</h4>
+      <h4 class="client-name">{{configForm.value.warehouse && configForm.value.warehouse.name || 'Seleccionar'}}</h4>
+    </ion-item>
+
+
+    <ion-item no-padding (click)="selectCurrency()" class="field-50">
+      <h4 class="sumary-label">{{'CURRENCY' | translate }}</h4>
+      <h4 class="client-name">{{configForm.value.currency && configForm.value.currency.name || 'Seleccionar'}}</h4>
+    </ion-item>
+
+    <ion-item no-padding (click)="selectCash()" class="field-50">
+      <h4 class="sumary-label">{{'CASH' | translate }}</h4>
+      <h4 class="client-name">{{configForm.value.cash && configForm.value.cash.name || 'Seleccionar'}}</h4>
+    </ion-item>
+
+    <ion-item no-padding (click)="selectContact()" class="field-50">
+      <h4 class="sumary-label">{{'CONTACT' | translate }}</h4>
+      <h4 class="client-name">{{configForm.value.contact && configForm.value.contact.name || 'Seleccionar'}}</h4>
+    </ion-item>
+
+    <ion-item no-padding (click)="selectLaborProduct()" class="field-50">
+      <h4 class="sumary-label">{{'LABOR_PRODUCT' | translate }}</h4>
+      <h4 class="client-name">{{configForm.value.labor_product && configForm.value.labor_product.name || 'Seleccionar'}}</h4>
+    </ion-item>
+
+
+    <ion-item no-padding (click)="selectTravelProduct()" class="field-50">
+      <h4 class="sumary-label">{{'TRAVEL_PRODUCT' | translate }}</h4>
+      <h4 class="client-name">{{configForm.value.travel_product && configForm.value.travel_product.name || 'Seleccionar'}}</h4>
+    </ion-item>
+
+    <ion-item no-padding (click)="selectInputProduct()" class="field-50">
+      <h4 class="sumary-label">{{'INPUT_PRODUCT' | translate }}</h4>
+      <h4 class="client-name">{{configForm.value.input_product && configForm.value.input_product.name || 'Seleccionar'}}</h4>
+    </ion-item>
+
+    <ion-item no-padding (click)="selectTravelProduct()" class="field-50">
+      <ion-label position="floating">{{'invoice_sequence' | translate}}</ion-label>
+      <ion-input type="text" formControlName="invoice_sequence"></ion-input>
+    </ion-item>
+
+    <ion-item no-padding (click)="selectInputProduct()" class="field-50">
+      <ion-label position="floating">{{'product_sequence' | translate}}</ion-label>
+      <ion-input type="text" formControlName="product_sequence"></ion-input>
+    </ion-item>
+
+
+    <ion-col width-100 class="item-content">
+      <ion-button class="print-invoice" (click)="configInvoicePrint()" style="width: 99%">Configurar Factura</ion-button>
+    </ion-col>
+  </ion-row>
+  <!-- <ion-list no-lines> -->
+  <ion-card class="list-card" style="border-radius: 7px;">
+  <h2 class="section-title">{{'Usuarios' | translate}}</h2>
+    <ion-item-sliding class="list-item" *ngFor="let user of configForm.value.users">
+  <ion-item  (click)="editUser(user)" style="border: 1px solid #ddd;height: 50px;">
+    <ion-row style="">
+      <ion-col no-padding>
+        <h4 class="sumary-label">{{'NAME' | translate}}</h4>
+        <h4 class="user-name">{{user.name}}</h4>
+      </ion-col>
+      <ion-col no-padding>
+        <h4 class="sumary-label">{{'PHONE' | translate}}</h4>
+        <h4 class="user-phone">{{user.phone}}</h4>
+      </ion-col>
+    </ion-row>
+  </ion-item>
+  <ion-item-options>
+    <ion-button icon-only color="primary" (click)="deleteUser(item)">
+      <ion-icon name="trash"></ion-icon>
+    </ion-button>
+  </ion-item-options>
+</ion-item-sliding>
+<ion-row style="border-radius: 7px;border: 1px solid blue; border-top-left-radius: 0px;border-top-right-radius: 0px;"
+ (click)="addUser()">
+  <a style="cursor: default;font-size:17px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
+    Agregar Usuario
+  </a>
+</ion-row>
+</ion-card>
+
+
+    <!-- <ion-item (click)="selectCurrency()">
+      <h4 class="sumary-label">{{'CURRENCY' | translate}}</h4>
+      {{configForm.value.currency && configForm.value.currency.name || 'Seleccionar'}}
+    </ion-item>
+    <ion-item (click)="selectCash()">
+      <h4 class="sumary-label">{{'CASH' | translate}}</h4>
+      {{configForm.value.cash && configForm.value.cash.name || 'Seleccionar'}}
+    </ion-item> -->
+    <!-- <ion-item (click)="selectAccount()">
+      <h4 class="sumary-label">{{'ACCOUNT' | translate}}</h4>
+      {{configForm.value.account && configForm.value.account.name || 'Seleccionar'}}
+    </ion-item>
+    <ion-item (click)="selectWarehouse()">
+      <h4 class="sumary-label">{{'WAREHOUSE' | translate}}</h4>
+      {{configForm.value.warehouse && configForm.value.warehouse.name || 'Seleccionar'}}
+    </ion-item> -->
+    <!-- <ion-item (click)="selectContact()">
+      <h4 class="sumary-label">{{'CONTACT' | translate}}</h4>
+      {{configForm.value.contact && configForm.value.contact.name || 'Seleccionar'}}
+    </ion-item>
+    <ion-item (click)="selectLaborProduct()">
+      <h4 class="sumary-label">{{'LABOR_PRODUCT' | translate}}</h4>
+      {{configForm.value.labor_product && configForm.value.labor_product.name || 'Seleccionar'}}
+    </ion-item> -->
+    <!-- <ion-item (click)="selectTravelProduct()">
+      <h4 class="sumary-label">{{'TRAVEL_PRODUCT' | translate}}</h4>
+      {{configForm.value.travel_product && configForm.value.travel_product.name || 'Seleccionar'}}
+    </ion-item>
+    <ion-item (click)="selectInputProduct()">
+      <h4 class="sumary-label">{{'INPUT_PRODUCT' | translate}}</h4>
+      {{configForm.value.input_product && configForm.value.input_product.name || 'Seleccionar'}}
+    </ion-item> -->
+    <!-- <ion-item>
+      <ion-label position="floating">{{'invoice_sequence' | translate}}</ion-label>
+      <ion-input type="text" formControlName="invoice_sequence"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">{{'product_sequence' | translate}}</ion-label>
+      <ion-input type="text" formControlName="product_sequence"></ion-input>
+    </ion-item> -->
+
+<!-- </ion-list> -->
+
+    <!-- <ion-col width-50 class="item-content">
+      <ion-button color="danger" class="print-invoice" (click)="duplicateDB()">Duplicar Base</ion-button>
+    </ion-col>
+
+    <ion-col width-50 class="item-content">
+      <ion-button color="danger" class="print-invoice" (click)="configInvoicePrint()">Atualizar Dados</ion-button>
+    </ion-col> -->
+
+  </form>
+  <span>Version 1.11.1</span>
+</ion-content>

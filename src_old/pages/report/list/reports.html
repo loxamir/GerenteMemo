@@ -1,0 +1,277 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <!-- <ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button> -->
+    <!-- <ion-title *ngIf="!has_search">{{ 'REPORTS' | translate}}</ion-title> -->
+    <ion-searchbar
+      placeholder="Buscar Informe"
+      [(ngModel)]="searchTerm"
+      (ionInput)="setFilteredItems()">
+    </ion-searchbar>
+    <ion-buttons right>
+      <!-- <ion-button icon-only color="royal" *ngIf="!has_search"
+        (tap)="setSearch()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <ion-button icon-only color="royal" *ngIf="has_search"
+        (tap)="setSearch()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button> -->
+      <!-- <ion-button icon-only color="royal"
+              (tap)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button> -->
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-row justify-content-center class="headerstyle">
+    <ion-col width-10>
+      <button (click)="goPeriodBack()" color="green">
+        <ion-icon name="arrow-round-back" style="">
+        </ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col no-padding width-40>
+      <ion-label>{{'Desde' | translate }}</ion-label>
+      <ion-datetime class="sale-date"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        (ionChange)="recomputeValues()"
+        [(ngModel)]="reportsForm.value.dateStart">
+      </ion-datetime>
+    </ion-col>
+    <ion-col no-padding width-40>
+      <ion-label>{{'Hasta' | translate }}</ion-label>
+      <ion-datetime class="sale-date"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        (ionChange)="recomputeValues()"
+        [(ngModel)]="reportsForm.value.dateEnd">
+      </ion-datetime>
+    </ion-col>
+    <ion-col width-10>
+      <button (click)="goPeriodForward()" color="green">
+        <ion-icon name="arrow-round-forward" style="">
+        </ion-icon>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-header>
+<ion-content class="list-mini-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <form class="sample-form validations-form" [formGroup]="reportsForm" (ngSubmit)="onSubmit(reportsForm.value)">
+
+
+  <!-- <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher> -->
+
+
+
+  <ion-list no-lines>
+    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+     (click)="showReportResult()">
+      <ion-row>
+        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+          Resultados
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col width-50>
+          <ion-row>
+            <ion-col>
+              Total de Ingresos:<div class="cash-move-amount positive" style="text-align: center">$ {{resultIncome|number:'1.0-1'}}</div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              Total de Despesas:<div class="cash-move-amount negative" style="text-align: center">$ {{resultExpense|number:'1.0-1'}}</div>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col width-50>
+          <ion-row>
+            <ion-col>
+              Resultado Liquido:<div class="cash-move-amount positive" style="text-align: center">$ {{resultIncome-resultExpense|number:'1.0-1'}}</div>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              Margen de Lucro:<div class="cash-move-amount positive" style="text-align: center"> {{100*(1 - resultExpense/resultIncome)|number:'1.0-1'}}%</div>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+
+    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+     (click)="showReportSale()">
+      <ion-row>
+        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+          Ventas de Mercaderia
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col width-40>
+          <ion-row>
+            <ion-col>
+              <div class="sale-margin-string">Total:</div>
+              <div class="cash-move-amount positive sale-margin-value">$ {{sold|number:'1.0-1'}}</div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <div class="sale-margin-string">Margem:</div>
+              <div class="cash-move-amount positive sale-margin-value">$ {{sale_margin|number:'1.0-1'}}</div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <div class="sale-margin-string">Ganho:</div>
+              <div class="cash-move-amount positive sale-margin-value">{{sale_margin_percent|number:'1.0-1'}}%</div>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col>
+          <div id="reportsSalePieChart" style="height:100px"></div>
+          <div id="reportsSaleBarChart" style="height:100px"></div>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+    <!-- <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;">
+      <ion-row>
+        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+          Servicios Prestados
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="sale-margin-string">Total:</div>
+          <div class="cash-move-amount positive sale-margin-value">$ {{service_total|number:'1.0-1'}}</div>
+        </ion-col>
+        <ion-col>
+          <div class="sale-margin-string">Margem:</div>
+          <div class="positive sale-margin-percent">{{service_margin_percent|number:'1.0-1'}}%</div>
+          <div class="cash-move-amount positive sale-margin-value">$ {{service_margin|number:'1.0-1'}}</div>
+        </ion-col>
+      </ion-row>
+    </ion-card> -->
+
+    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+     (click)="showReportPurchase()">
+      <ion-row>
+        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+          Compras
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col width-40>
+          <ion-row>
+            <ion-col>
+              <div class="sale-margin-string">Total:</div>
+              <div class="cash-move-amount positive sale-margin-value">$ {{purchased|number:'1.0-1'}}</div>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col>
+          <div id="purchaseChart" style="height:100px"></div>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+
+    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+     (click)="showReportCashFlow()">
+      <ion-row>
+        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+          Fluxo de Caixa
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col width-50>
+          <ion-row>
+            <ion-col>
+              Total de Recibido:<div class="cash-move-amount positive" style="text-align: center">$ {{cashflowIncome|number:'1.0-1'}}</div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              Total de Pagado:<div class="cash-move-amount negative" style="text-align: center">$ {{cashflowExpense|number:'1.0-1'}}</div>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col width-50>
+          <ion-row>
+            <ion-col>
+              Resultado Liquido:<div class="cash-move-amount positive" style="text-align: center">$ {{cashflowIncome-cashflowExpense|number:'1.0-1'}}</div>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              Rentabilidad:<div class="cash-move-amount positive" style="text-align: center">{{100*cashflowIncome/cashflowExpense|number:'1.0-1'}}%</div>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+
+    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+     (click)="showReportToReceive()">
+      <ion-row>
+        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+          Cuentas a Cobrar
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col width-100>
+          Total a Cobrar:<div class="cash-move-amount positive" style="text-align: center">$ {{toReceive|number:'1.0-1'}}</div>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+
+    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+     (click)="showReportToPay()">
+      <ion-row>
+        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+          Cuentas a Pagar
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col width-100>
+            Total a Pagar:<div class="cash-move-amount positive" style="text-align: center">$ {{ToPay|number:'1.0-1'}}</div>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+    (click)="showReportAccounts()">
+    <ion-row>
+      <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd;height:50px;">
+        Plan de Cuentas
+      </ion-col>
+    </ion-row>
+  </ion-card>
+    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+     (click)="showReportBalancete()">
+      <ion-row>
+        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd;height:50px;">
+          Balancete
+        </ion-col>
+      </ion-row>
+    </ion-card>
+    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+     (click)="showReportBalance()">
+      <ion-row>
+        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd;height:50px;">
+          Balance
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ion-list>
+  <div style="height: 90px">
+
+  </div>
+  </form>
+</ion-content>

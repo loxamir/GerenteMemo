@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      CSV Data
+    </ion-title>
+    <ion-buttons slot="end">
+      <!-- <ion-button icon-only (click)="chooseFile()">
+          <ion-icon name="paper"></ion-icon>
+        </ion-button> -->
+      <ion-button icon-only (click)="downloadCSV()">
+          <ion-icon name="download"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-scroll scrollX="true" scrollY="true" class="data-scroll">
+    <ion-button (tap)="chooseFile()">
+      Selecionar Archivo
+    </ion-button>
+    <ion-row>
+      <ion-button (tap)="validate()" style="background: green;" *ngIf="csvData.length > 0">
+        Validar
+      </ion-button>
+      <ion-button (tap)="import()" style="background: red;" *ngIf="csvData.length > 0">
+        Importar
+      </ion-button>
+    </ion-row>
+    <table border="1" class="data-table">
+      <tr>
+        <td *ngFor="let header of headerRow" text-center><b>{{ header }}</b></td>
+      </tr>
+      <tr *ngFor="let row of csvData; let i = index">
+        <td *ngFor="let data of row; let j = index; trackBy: trackByFn"
+        [class.red-background]="csvProperty[i][j] == 'red'"
+        [class.green-background]="csvProperty[i][j] == 'green'"
+        [class.yellow-background]="csvProperty[i][j] == 'yellow'"
+        [class.clean-background]="csvProperty[i][j] == ''"
+        (tap)="seeHelp(i,j)">
+          <ion-input type="text" [(ngModel)]="csvData[i][j]"></ion-input>
+        </td>
+      </tr>
+    </table>
+  </ion-scroll>
+</ion-content>
+<ion-footer *ngIf="errorMessage != ''" >
+  <ion-toolbar color="primary" style="border: 1px solid red;">
+    <h3 style="color: red;">Aviso</h3>
+    <ion-row *ngFor="let message of errorMessage; let counter = index">
+      <ion-col>{{counter+1+' - '+message}}</ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <!-- <ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button> -->
+    <ion-title>{{ 'INPUT' | translate }}</ion-title>
+    <!-- <ion-buttons slot="end" [hidden]="!inputForm.dirty">
+      <ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </ion-button>
+    </ion-buttons> -->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="check-content">
+  <form class="sample-form validations-form" [formGroup]="inputForm"
+   (ngSubmit)="onSubmit(inputForm.value)">
+        <ion-card class="list-card">
+          <ion-item style="background-color: white">
+            <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+            <ion-input type="text" formControlName="name"></ion-input>
+          </ion-item>
+        </ion-card>
+        <ion-card class="list-card">
+      <ion-item  style="background-color: white">
+        <ion-label position="floating">{{'AMOUNT' | translate}}</ion-label>
+        <ion-input type="number" formControlName="amount"></ion-input>
+      </ion-item>
+    </ion-card>
+    <!-- <ion-card class="list-card">
+      <ion-item  style="background-color: white">
+        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+        <ion-textarea rows="3" formControlName="note"></ion-textarea>
+      </ion-item>
+    </ion-card> -->
+  </form>
+  <button margin-bottom ion-button class="print-invoice"
+    [hidden]="!inputForm.dirty"
+    (click)="buttonSave()">
+    {{ 'SAVE' | translate }}
+  </ion-button>
+</ion-content>

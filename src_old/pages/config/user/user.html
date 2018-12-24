@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <!-- <ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button> -->
+    <ion-title>{{ 'USER' | translate }}</ion-title>
+    <ion-buttons slot="end" [hidden]="!form.dirty">
+      <ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="check-content">
+  <form class="sample-form validations-form" [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+    <!-- <h2 class="section-title">{{'Usuario do' | translate}}</h2> -->
+    <ion-item no-padding class="field-100">
+      <ion-label position="floating">{{'Nombre' | translate}}</ion-label>
+      <ion-input type="text" formControlName="name"></ion-input>
+    </ion-item>
+    <ion-item no-padding class="field-100">
+      <ion-label position="floating">{{'Telefono' | translate}}</ion-label>
+      <ion-input type="number" formControlName="phone"></ion-input>
+    </ion-item>
+    <ion-row>
+      <ion-item no-padding class="field-50">
+        <ion-label>{{'Ventas' | translate}}</ion-label>
+        <ion-toggle formControlName="sale"></ion-toggle>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <ion-label>{{'Compras' | translate}}</ion-label>
+        <ion-toggle formControlName="purchase"></ion-toggle>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <ion-label>{{'Financiero' | translate}}</ion-label>
+        <ion-toggle formControlName="finance"></ion-toggle>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <ion-label>{{'Servicios' | translate}}</ion-label>
+        <ion-toggle formControlName="service"></ion-toggle>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <ion-label>{{'Informes' | translate}}</ion-label>
+        <ion-toggle formControlName="report"></ion-toggle>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <ion-label>{{'Configuración' | translate}}</ion-label>
+        <ion-toggle formControlName="config"></ion-toggle>
+      </ion-item>
+    </ion-row>
+  </form>
+  <!-- <button margin-bottom ion-button class="print-invoice"
+    [hidden]="!form.dirty"
+    (click)="buttonSave()">
+    {{ 'SAVE' | translate }}
+  </ion-button> -->
+</ion-content>

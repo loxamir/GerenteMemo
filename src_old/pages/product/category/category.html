@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button>
+    <ion-title>{{ 'CATEGORY' | translate }}</ion-title>
+    <ion-buttons slot="end" [hidden]="!categoryForm.dirty">
+      <ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="category-content">
+  <form class="sample-form validations-form" [formGroup]="categoryForm"  (ngSubmit)="onSubmit(categoryForm.value)">
+    <section class="form-section">
+      <ion-item>
+        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+        <ion-input type="text" formControlName="name"></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validation_messages.name">
+          <div class="error-message" *ngIf="categoryForm.get('name').hasError(validation.type) && (categoryForm.get('name').dirty || categoryForm.get('name').touched)">
+            {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
+
+      <ion-item>
+        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+        <ion-textarea rows="7" formControlName="note"></ion-textarea>
+      </ion-item>
+    </section>
+  </form>
+</ion-content>

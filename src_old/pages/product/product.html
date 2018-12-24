@@ -1,0 +1,145 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button>
+    <ion-title>{{ 'PRODUCT' | translate }}-{{productForm.value.code}}</ion-title>
+    <ion-buttons slot="end" [hidden]="!productForm.dirty">
+      <ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="product-content">
+  <form class="sample-form validations-form"
+   [formGroup]="productForm"
+   (ngSubmit)="onSubmit(productForm.value)">
+
+    <ion-row>
+      <ion-item class="field-100">
+        <ion-label position="floating" style="font-size:14px">{{'NAME' | translate}}</ion-label>
+        <ion-input #name type="text" formControlName="name"></ion-input>
+      </ion-item>
+
+
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating" style="font-size:14px">{{'SALE_PRICE' | translate}}</ion-label>
+        <ion-input #price type="number"
+        formControlName="price"></ion-input>
+      </ion-item>
+
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating" style="font-size:14px">{{'PURCHASE_COST' | translate}}</ion-label>
+        <ion-input #cost type="number"
+        formControlName="cost"></ion-input>
+      </ion-item>
+      <ion-item
+      no-padding
+      class="field-50">
+        <ion-label>{{'Unidad' | translate}}</ion-label>
+        <ion-select formControlName="unity"
+          cancelText="{{ 'CANCEL' | translate }}"
+          okText="{{ 'OK' | translate }}">
+          <ion-select-option value="un">Unidad</ion-select-option>
+          <ion-select-option value="h">Hora</ion-select-option>
+          <ion-select-option value="L">Litro</ion-select-option>
+          <ion-select-option value="ml">miliLitro</ion-select-option>
+          <ion-select-option value="g">Gramo</ion-select-option>
+          <ion-select-option value="kg">KiloGramo</ion-select-option>
+          <ion-select-option value="m">Metro</ion-select-option>
+          <ion-select-option value="m3">Metro Cubico</ion-select-option>
+          <ion-select-option value="km">KiloMetro</ion-select-option>
+          <ion-select-option value="m2">Metro Cuadrado</ion-select-option>
+          <ion-select-option value="ha">Hectare</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item
+      no-padding
+      class="field-50">
+        <ion-label>{{'TYPE' | translate}}</ion-label>
+        <ion-select #type formControlName="type"
+          cancelText="{{ 'CANCEL' | translate }}"
+          okText="{{ 'OK' | translate }}">
+          <ion-select-option value="product">Producto</ion-select-option>
+          <ion-select-option value="service">Servicio</ion-select-option>
+          <ion-select-option value="urban_area">Area Urbana</ion-select-option>
+          <ion-select-option value="rural_area">Area Rural</ion-select-option>
+          <ion-select-option value="machine">Maquinario</ion-select-option>
+          <ion-select-option value="vehicle">Vehiculo</ion-select-option>
+          <ion-select-option value="animal">Animal</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item
+      no-padding
+      class="field-50">
+        <ion-label>{{'IVA' | translate}}</ion-label>
+        <ion-select formControlName="unity"
+          cancelText="{{ 'CANCEL' | translate }}"
+          okText="{{ 'OK' | translate }}">
+          <ion-select-option value="iva10">10%</ion-select-option>
+          <ion-select-option value="iva5">5%</ion-select-option>
+          <ion-select-option value="iva0">Exento</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating" style="font-size:14px">{{'CODE' | translate}}</ion-label>
+        <ion-input type="number"
+        formControlName="code"></ion-input>
+      </ion-item>
+      <ion-item
+      no-padding
+      (click)="selectCategory()"
+       class="field-50">
+        <h4 class="sumary-label">{{'CATEGORY' | translate}}</h4>
+        <h4 class="client-name">{{productForm.value.category && productForm.value.category.name || 'Selecionar'}}</h4>
+      </ion-item>
+      <ion-item
+      *ngIf="productForm.value.type=='product'"
+       no-padding
+       class="field-50">
+        <ion-label position="floating" style="font-size:14px">{{'STOCK' | translate}}</ion-label>
+        <ion-input type="number"
+        #stock
+        formControlName="stock"></ion-input>
+      </ion-item>
+      <ion-item
+      *ngIf="productForm.value.type=='product'"
+       no-padding
+       class="field-50">
+        <ion-label position="floating" style="font-size:14px">{{'STOCK_MIN' | translate}}</ion-label>
+        <ion-input type="number"
+        formControlName="stock_min"></ion-input>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-100">
+        <ion-label position="floating" style="font-size:14px">{{'BARCODE' | translate}}</ion-label>
+        <ion-input type="number"
+        formControlName="barcode"></ion-input>
+      </ion-item>
+
+      <ion-item class="field-100">
+        <ion-label position="floating" style="font-size:14px">{{'NOTE' | translate}}</ion-label>
+        <ion-input type="text" formControlName="note"></ion-input>
+      </ion-item>
+
+    </ion-row>
+  </form>
+  <ion-fab bottom center>
+    <ion-fab-button (click)="goNextStep()" color="green">
+      <ion-icon name="play" style="margin-left: 5px;">
+      </ion-icon>
+    </ion-button>
+  </ion-fab>
+</ion-content>

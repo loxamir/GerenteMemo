@@ -1,0 +1,206 @@
+<style>
+  .invoice {
+    height: invoice_heightmm;
+  }
+  .number {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    padding-top: invoiceNumber_topmm;
+    padding-left: invoiceNumber_leftmm;
+  }
+  .date {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: invoiceDate_widthmm;
+    padding-top: invoiceDate_topmm;
+    padding-left: invoiceDate_leftmm;
+  }
+  .payment_condition {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: invoicePayment_widthmm;
+    padding-top: invoicePayment_topmm;
+    padding-left: invoicePayment_leftmm;
+  }
+  .contact_name {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: contactName_widthmm;
+    padding-top: contactName_topmm;
+    padding-left: contactName_leftmm;
+  }
+  .doc {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: contactDocument_widthmm;
+    padding-top: contactDocument_topmm;
+    padding-left: contactDocument_leftmm;
+  }
+  .direction {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: contactAddress_widthmm;
+    padding-top: contactAddress_topmm;
+    padding-left: contactAddress_leftmm;
+  }
+  .phone {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: contactPhone_widthmm;
+    padding-top: contactPhone_topmm;
+    padding-left: contactPhone_leftmm;
+  }
+  .lines {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: lines_widthmm;
+    height: lines_heightmm;
+    padding-top: lines_topmm;
+  }
+  .totalExentas {
+    position: absolute;
+    font-size: 14px;
+    font-weight: normal;
+    width: subTotalTax0_widthmm;
+    padding-top: subTotalTax0_topmm;
+    padding-left: subTotalTax0_leftmm;
+  }
+  .totalIva5 {
+    position: absolute;
+    font-size: 14px;
+    font-weight: normal;
+    width: subTotalTax5_widthmm;
+    padding-top: subTotalTax5_topmm;
+    padding-left: subTotalTax5_leftmm;
+  }
+  .totalIva10 {
+    position: absolute;
+    font-size: 14px;
+    font-weight: normal;
+    width: subTotalTax10_widthmm;
+    padding-top: subTotalTax10_topmm;
+    padding-left: subTotalTax10_leftmm;
+  }
+  .totalInWords {
+    position: absolute;
+    font-size: 14px;
+    font-weight: normal;
+    width: amountInWords_widthmm;
+    padding-top: amountInWords_topmm;
+    padding-left: amountInWords_leftmm;
+  }
+  .totalAmount {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: invoiceTotal_widthmm;
+    padding-top: invoiceTotal_topmm;
+    padding-left: invoiceTotal_leftmm;
+  }
+  .amountIva5 {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: totalTax5_widthmm;
+    padding-top: totalTax5_topmm;
+    padding-left: totalTax5_leftmm;
+  }
+  .amountIva10 {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: totalTax10_widthmm;
+    padding-top: totalTax10_topmm;
+    padding-left: totalTax10_leftmm;
+  }
+  .amountIva {
+    position: absolute;
+    font-size: 15px;
+    font-weight: normal;
+    width: totalTax_widthmm;
+    padding-top: totalTax_topmm;
+    padding-left: totalTax_leftmm;
+  }
+  .space {
+    height: copy_heightmm;
+  }
+  .lines-quantity {
+      display: block;
+      float: left;
+      font-size: 14px;
+      font-weight: normal;
+      width: linesQuantity_widthmm;
+      text-align: center;
+  }
+  .lines-product {
+    display: block;
+    float: left;
+    font-size: 14px;
+    font-weight: normal;
+    width: linesProductName_widthmm;
+    text-align: left;
+    padding-left: 1mm;
+  }
+  .lines-price {
+    display: block;
+    float: left;
+    font-size: 14px;
+    font-weight: normal;
+    width: linesPrice_widthmm;
+    padding-left: 1mm;
+    text-align: right;
+  }
+  .lines-tax0 {
+    display: block;
+    float: left;
+    font-size: 14px;
+    font-weight: normal;
+    width: linesTax0_widthmm;
+    padding-left: 1mm;
+    text-align: right;
+  }
+  .lines-tax5 {
+    display: block;
+    float: left;
+    font-size: 14px;
+    font-weight: normal;
+    width: linesTax5_widthmm;
+    padding-left: 1mm;
+    text-align: right;
+  }
+  .lines-tax10 {
+    display: block;
+    float: left;
+    font-size: 14px;
+    font-weight: normal;
+    width: linesTax10_widthmm;
+    text-align: right;
+    padding-left: 1mm;
+  }
+</style>
+<div class=\"invoice\">
+  <div class=\"number\">+number+</div>
+  <div class=\"date\">+date+</div>
+  <div class=\"payment_condition\">+payment_condition+</div>
+  <div class=\"contact_name\">+contact_name+</div>
+  <div class=\"doc\">+doc+</div>
+  <div class=\"direction\">+direction+</div>
+  <div class=\"phone\">+phone+</div>
+  <div class=\"lines\">+lines+</div>
+  <div class=\"totalExentas\">+totalExentas+</div>
+  <div class=\"totalIva5\">+totalIva5+</div>
+  <div class=\"totalIva10\">+totalIva10+</div>
+  <div class=\"totalInWords\">+totalInWords+</div>
+  <div class=\"totalAmount\">+totalAmount+</div>
+  <div class=\"amountIva5\">+amountIva5+</div>
+  <div class=\"amountIva10\">+amountIva10+</div>
+  <div class=\"amountIva\">+amountIva+</div>
+</div>

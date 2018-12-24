@@ -1,0 +1,180 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      {{ 'SALE' | translate }}: {{saleForm.value.code}}
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button style="background: #2ad078;" (click)="buttonSave()" [hidden]="!saleForm.dirty">
+        {{ 'SAVE' | translate }}
+      </ion-button>
+      <ion-button icon-only color="royal" (tap)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-row>
+    <ion-col width-30>
+      <button class="clicked">
+        <span class="state-label">Presupuesto</span>
+      </ion-button>
+    </ion-col>
+    <ion-col width-30>
+      <button [class.unclicked]="saleForm.value.state=='QUOTATION'" [class.clicked]="saleForm.value.state!='QUOTATION'">
+        <span class="state-label">Confirmada</span>
+      </ion-button>
+    </ion-col>
+    <ion-col width-30>
+      <button [class.unclicked]="saleForm.value.state!='PAID'" [class.clicked]="saleForm.value.state=='PAID'">
+        <span class="state-label">Cobrada</span>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+  <ion-row justify-content-center>
+    <ion-col width-20 class="sumary-label" no-padding>
+      <h4 class="sumary-label">{{'TOTAL' | translate }}</h4>
+    </ion-col>
+    <ion-col width-30 class="sumary-label" no-padding>
+      <h4 class="sumary-value draft" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{saleForm.value.total|number:'1.0'}}</h4>
+    </ion-col>
+    <ion-col width-20 class="sumary-label" no-padding>
+      <h4 class="sumary-label">{{'Cobrar' | translate }}</h4>
+    </ion-col>
+    <ion-col width-30 class="sumary-label" no-padding>
+      <h4 class="sumary-value negative" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{saleForm.value.residual|number:'1.0'}}</h4>
+    </ion-col>
+  </ion-row>
+</ion-header>
+
+<ion-content class="sale-content" style="background-color: #ddd">
+  <form class="sample-form validations-form" [formGroup]="saleForm" (ngSubmit)="onSubmit(saleForm.value)">
+    <ion-row justify-content-center>
+      <ion-item no-padding (click)="selectContact()" class="field-100">
+        <h4 class="sumary-label">{{'CLIENT' | translate}}</h4>
+        <h4 class="client-name">{{saleForm.value.contact && saleForm.value.contact.name || 'Selecionar'}}</h4>
+      </ion-item>
+      <ion-item no-padding (click)="selectPaymentCondition()" class="field-50">
+        <h4 class="sumary-label">{{'Condición de Pago' | translate }}</h4>
+        <h4 class="client-name">{{saleForm.value.paymentCondition && saleForm.value.paymentCondition.name || 'Selecionar'}}</h4>
+      </ion-item>
+      <ion-item no-padding class="item-content" class="field-50">
+        <ion-label position="floating" class="sumary-label">{{'DATE' | translate }}</ion-label>
+        <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="date" [disabled]="saleForm.value.state!='QUOTATION'">
+        </ion-datetime>
+      </ion-item>
+      <ion-item no-padding (click)="selectSeller()" style="width: calc(50% - 0px);;background-color: #fff;border: 1px solid #ddd;height: 50px;">
+        <h4 class="sumary-label">{{'SELLER' | translate }}</h4>
+        <h4 class="client-name">{{saleForm.value.seller_name || 'Selecionar'}}</h4>
+      </ion-item>
+      <ion-item no-padding (click)="selectCurrency()" style="width: calc(50% - 0px);;background-color: #fff;border: 1px solid #ddd;height: 50px;">
+        <h4 class="sumary-label">{{'CURRENCY' | translate }}</h4>
+        <h4 class="client-name">{{saleForm.value.currency && saleForm.value.currency.name || 'Selecionar'}}</h4>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-col width-50 class="item-content" *ngIf="saleForm.value.state != 'QUOTATION' && saleForm.value.amount_unInvoiced == saleForm.value.total">
+        <ion-button class="print-invoice" (click)="addInvoice()">Crear Factura</ion-button>
+      </ion-col>
+      <ion-col width-50 class="item-content" *ngIf="saleForm.value.state == 'CONFIRMED'">
+        <ion-button class="print-invoice" (click)="beforeAddPayment()">Registrar Cobro</ion-button>
+      </ion-col>
+      <ion-col *ngIf="saleForm.value.state != 'QUOTATION'">
+        <ion-button class="print-confirm" (click)="print()">Imprimir Venta</ion-button>
+      </ion-col>
+      <ion-col width-50 class="item-content" *ngIf="saleForm.value.state == 'CONFIRMED' && ! saleForm.value.payments.length">
+        <ion-button class="print-invoice" (click)="saleCancel()">Cancelar</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-card class="list-card" *ngIf="saleForm.value.invoices.length" style="background-color: white">
+      <ion-item>
+        <ion-row no-padding (click)="openInvoice(item)" *ngFor="let item of saleForm.value.invoices" no-padding>
+          <ion-col no-padding>
+            <h4 class="sumary-label">{{'INVOICE' | translate}}</h4>
+            <h4 class="client-name">{{item.code || item.number}}</h4>
+          </ion-col>
+          <ion-col no-padding>
+            <h4 class="sumary-label">{{'INVOICED' | translate}}</h4>
+            <h4 class="client-name">$ {{item.total|number:'1.0'}}</h4>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-card>
+    <ion-card class="list-card" *ngIf="saleForm.value.payments.length">
+      <ion-item>
+        <ion-row (click)="openPayment(item)" *ngFor="let item of saleForm.value.payments" no-padding>
+          <ion-col no-padding>
+            <h4 class="sumary-label">{{'RECEIPT' | translate}}</h4>
+            <h4 class="client-name">{{item._id}}</h4>
+          </ion-col>
+          <ion-col no-padding>
+            <h4 class="sumary-label">{{'RECEIVED' | translate}}</h4>
+            <h4 class="client-name">$ {{item.paid|number:'1.0'}}</h4>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-card>
+
+    <ion-card class="list-card" *ngIf="saleForm.value.items.length">
+      <ion-list no-lines>
+        <h2 class="section-title">{{'Items de la Venta' | translate}}</h2>
+        <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.items" style="border-bottom: 1px solid blue;">
+          <ion-item>
+            <ion-row class="content-row one-line">
+              <ion-col width-70 class="item-content" style="white-space: normal;">
+                <ion-row (click)="openItem(item)" class="product-name-row">
+                  <!-- <ion-col width-20>
+                    {{item.product && item.product.code}}
+                  </ion-col> -->
+                  <ion-col>
+                    {{item.product && item.product.name}}
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col width-50 class="item-content price-tag" (click)="editItemPrice(item)">
+                    <span class="price-label">Precio:</span> ${{item.price|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+              <ion-col>
+                <ion-row>
+                  <ion-col width-50 class="item-content">
+                    <h4 class="sumary-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col width-30>
+                    <button class="quantity-button" (click)="remItem(item)">-</ion-button>
+
+                  </ion-col>
+                  <ion-col (click)="editItemQuantity(item)" width-40 class="item-content" style="text-align: center;top:4px;">
+                    {{item.quantity}}
+                  </ion-col>
+                  <ion-col width-30>
+                    <button class="quantity-button" (click)="sumItem(item)">+</ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+          <ion-item-options>
+            <ion-button icon-only color="primary" (click)="deleteItem(item)" *ngIf="saleForm.value.state!='QUOTATIONs'">
+              <ion-icon name="trash"></ion-icon>
+            </ion-button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-card>
+  </form>
+  <ion-fab bottom center>
+    <ion-fab-button (click)="goNextStep()" color="blue" class="play-button">
+      <ion-icon name="play" style="margin-left: 5px;">
+      </ion-icon>
+    </ion-button>
+  </ion-fab>
+  <ion-fab bottom right *ngIf="saleForm.value.state == 'QUOTATION'" class="add-product-button">
+    <ion-fab-button (click)="addItem()" color="green">
+      <ion-icon name="add">
+      </ion-icon>
+    </ion-button>
+  </ion-fab>
+</ion-content>
