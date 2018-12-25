@@ -9,11 +9,11 @@ import { File } from '@ionic-native/file';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 @Component({
-  selector: 'app-contacts',
-  templateUrl: './contacts.page.html',
-  styleUrls: ['./contacts.page.scss'],
+  selector: 'app-contact-list',
+  templateUrl: './contact-list.page.html',
+  styleUrls: ['./contact-list.page.scss'],
 })
-export class ContactsPage implements OnInit {
+export class ContactListPage implements OnInit {
   contacts: any;
   // loading: any;
   select:any;
@@ -268,5 +268,4 @@ export class ContactsPage implements OnInit {
       }]);
     }
   }
-
 }

@@ -13,7 +13,7 @@ import { LanguageModel } from "../services/language/language.model";
 // import { CashListPage } from '../list/cash-list';
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 import { ProductListPage } from '../product-list/product-list.page';
-import { ContactsPage } from '../contacts/contacts.page';
+import { ContactListPage } from '../contact-list/contact-list.page';
 // import { ConfigService } from '../config/config.service';
 import { ActivatedRoute } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';

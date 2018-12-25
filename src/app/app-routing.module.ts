@@ -5,7 +5,8 @@ const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'home', loadChildren: './home/home.module#HomePageModule' },
   { path: 'contact', loadChildren: './contact/contact.module#ContactPageModule' },
-  { path: 'contacts', loadChildren: './contacts/contacts.module#ContactsPageModule' },
+  { path: 'contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule' },
+  // { path: 'contacts', loadChildren: './contacts/contacts.module#ContactsPageModule' },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
   { path: 'menu', loadChildren: './menu/menu.module#MenuPageModule' },
   // { path: '', loadChildren: './menu/menu.module#MenuPageModule' },
@@ -18,6 +19,17 @@ const routes: Routes = [
   { path: 'warehouse', loadChildren: './warehouse/warehouse.module#WarehousePageModule' },
   { path: 'warehouse-list', loadChildren: './warehouse-list/warehouse-list.module#WarehouseListPageModule' },
   { path: 'cash-move', loadChildren: './cash-move/cash-move.module#CashMovePageModule' },
+  { path: 'account', loadChildren: './account/account.module#AccountPageModule' },
+  { path: 'account-list', loadChildren: './account-list/account-list.module#AccountListPageModule' },
+  { path: 'account-category', loadChildren: './account-category/account-category.module#AccountCategoryPageModule' },
+  { path: 'account-category-list', loadChildren: './account-category-list/account-category-list.module#AccountCategoryListPageModule' },
+  { path: 'title', loadChildren: './title/title.module#TitlePageModule' },
+  { path: 'title-list', loadChildren: './title-list/title-list.module#TitleListPageModule' },
+  { path: 'cash-move-list', loadChildren: './cash-move-list/cash-move-list.module#CashMoveListPageModule' },
+  { path: 'currency', loadChildren: './currency/currency.module#CurrencyPageModule' },
+  { path: 'currency-list', loadChildren: './currency-list/currency-list.module#CurrencyListPageModule' },
+  { path: 'check', loadChildren: './check/check.module#CheckPageModule' },
+  { path: 'check-list', loadChildren: './check-list/check-list.module#CheckListPageModule' },
 ];
 
 @NgModule({

@@ -1,28 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CashMovePage } from './cash-move.page';
+import { CashMoveListPage } from './cash-move-list.page';
+
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
-
 const routes: Routes = [
   {
     path: '',
-    component: CashMovePage
+    component: CashMoveListPage
   }
 ];
 
 @NgModule({
   imports: [
-    ReactiveFormsModule,
     HttpClientModule,
     TranslateModule.forRoot({
       loader: {
@@ -36,6 +35,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CashMovePage]
+  declarations: [CashMoveListPage]
 })
-export class CashMovePageModule {}
+export class CashMoveListPageModule {}

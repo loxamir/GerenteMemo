@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-searchbar
+      placeholder="Buscar Movimiento Financiero"
+      [(ngModel)]="searchTerm"
+      (ionInput)="setFilteredItems()">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button icon-only color="royal"
+              (tap)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+<ion-content class="list-mini-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list no-lines>
+    <ion-item-sliding class="list-item" *ngFor="let item of cashMoveList">
+    <ion-item no-padding (click)="selectCashMove(item)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-card class="list-card" style="border-radius: 5px;">
+        <ion-row no-padding>
+          <ion-col no-padding>
+            <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
+          </ion-col>
+        </ion-row>
+   <ion-row no-padding class="content-row one-line">
+      <ion-col no-padding width-25 class="schedule-date">
+        <h3 class="schedule-month">{{item.date|date: 'dd/MM/yyyy'}}</h3>
+        <h4 class="schedule-time">{{item.date|date: 'HH:mm:SS'}}</h4>
+      </ion-col>
+      <ion-col no-padding width-35  >
+        <ion-row no-padding>
+          <ion-col class="item-name" style="white-space: normal;">
+            {{item.name}}
+          </ion-col>
+        </ion-row>
+
+      </ion-col>
+      <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        <h2 *ngIf="item.amount > 0" class="list-big-number amount" style="color: green;">$ {{item.amount| number:'1.0'}}</h2>
+        <h2 *ngIf="item.amount <= 0" class="list-big-number amount" style="color: red;">$ {{item.amount| number:'1.0'}}</h2>
+      </ion-col>
+    </ion-row>
+
+    <ion-row no-padding
+      [class.paid]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] == 'cash'"
+      [class.due]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] != 'cash'"
+      [class.quotation]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] == 'cash'"
+      [class.confirmed]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] != 'cash'">
+      <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+        {{ item.accountFrom_name | translate}}
+      </ion-col>
+      <ion-col no-padding width-10 class="item-icon" (click)="openAsset(item)">
+        <ion-icon name="arrow-forward"></ion-icon>
+      </ion-col>
+      <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+        {{ item.accountTo_name | translate}}
+      </ion-col>
+    </ion-row>
+    </ion-card>
+  </ion-item>
+      <ion-item-options>
+        <ion-button icon-only color="primary" (click)="deleteCashMove(item)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      <ion-fab-button (click)="createCashMove()">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
+  </ion-fab>
+</ion-content>

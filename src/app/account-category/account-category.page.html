@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{ 'ACCOUNT_CATEGORY' | translate }}</ion-title>
+    <ion-buttons slot="end" [hidden]="!accountCategoryForm.dirty">
+      <ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="accountCategory-content">
+  <form class="sample-form validations-form" [formGroup]="accountCategoryForm"  (ngSubmit)="onSubmit(accountCategoryForm.value)">
+    <section class="form-section">
+      <ion-item>
+        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+        <ion-input type="text" formControlName="name" autocomplete='name'></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validation_messages.name">
+          <div class="error-message" *ngIf="accountCategoryForm.get('name').hasError(validation.type) && (accountCategoryForm.get('name').dirty || accountCategoryForm.get('name').touched)">
+            {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
+
+      <ion-item>
+            <h4 class="sumary-label">Tipo</h4>
+            <ion-select class="payment-term" formControlName="type"
+              cancelText="{{ 'CANCEL' | translate }}"
+              okText="{{ 'OK' | translate }}">
+              <ion-select-option value="receivable">Por Cobrar</ion-select-option>
+              <ion-select-option value="payable">Por Pagar</ion-select-option>
+              <ion-select-option value="liquidity">Liquidez</ion-select-option>
+              <ion-select-option value="income">Ingreso</ion-select-option>
+              <ion-select-option value="expense">Gasto</ion-select-option>
+              <ion-select-option value="other">Otro</ion-select-option>
+            </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">{{'CODE' | translate}}</ion-label>
+        <ion-input type="text" formControlName="code" autocomplete='name'></ion-input>
+      </ion-item>
+      <ion-card class="list-card"
+      class="sumary-label"
+      no-padding
+      (click)="selectTitle()"
+      style="width: calc(50% - 20px);margin-bottom: 4%;margin-top: 1%;">
+        <h4 class="sumary-label">{{'Titulo' | translate}}</h4>
+        <h4 class="client-name">{{accountCategoryForm.value.title && accountCategoryForm.value.title.name || 'Selecionar'}}</h4>
+      </ion-card>
+      <ion-item>
+        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+        <ion-textarea rows="7" formControlName="note"></ion-textarea>
+      </ion-item>
+
+    </section>
+
+  </form>
+
+</ion-content>

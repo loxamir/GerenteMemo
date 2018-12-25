@@ -322,34 +322,34 @@ export class WarehousePage implements OnInit {
     //console.log(values);
   }
 
-  // async changeName(){
-  //   let prompt = await this.alertCtrl.create({
-  //     title: 'Nombre del Caja',
-  //     message: 'Cual es el nombre de este caja?',
-  //     inputs: [
-  //       {
-  //         name: 'name',
-  //         placeholder: 'Caja Chica',
-  //         value: this.warehouseForm.value.name
-  //     },
-  //
-  //     ],
-  //     buttons: [
-  //       {
-  //         text: 'Cancel'
-  //       },
-  //       {
-  //         text: 'Confirmar',
-  //         handler: data => {
-  //           //console.log("sale", data);
-  //           this.warehouseForm.value.name = data.name;
-  //         }
-  //       }
-  //     ]
-  //   });
-  //
-  //   prompt.present();
-  // }
+  async changeName(){
+    let prompt = await this.alertCtrl.create({
+      header: 'Nombre del Caja',
+      message: 'Cual es el nombre de este caja?',
+      inputs: [
+        {
+          name: 'name',
+          placeholder: 'Caja Chica',
+          value: this.warehouseForm.value.name
+      },
+
+      ],
+      buttons: [
+        {
+          text: 'Cancel'
+        },
+        {
+          text: 'Confirmar',
+          handler: data => {
+            //console.log("sale", data);
+            this.warehouseForm.value.name = data.name;
+          }
+        }
+      ]
+    });
+
+    prompt.present();
+  }
 
   getWarehouse(doc_id): Promise<any> {
     return new Promise((resolve, reject)=>{

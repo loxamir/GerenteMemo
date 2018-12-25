@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{ 'TITLE_INFORMATION' | translate }}</ion-title>
+    <ion-buttons slot="end" [hidden]="!titleForm.dirty">
+      <ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="title-content">
+  <form class="sample-form validations-form" [formGroup]="titleForm"  (ngSubmit)="onSubmit(titleForm.value)">
+    <section class="form-section">
+      <ion-item>
+        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+        <ion-input type="text" formControlName="name" autocomplete='name'></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validation_messages.name">
+          <div class="error-message" *ngIf="titleForm.get('name').hasError(validation.type) && (titleForm.get('name').dirty || titleForm.get('name').touched)">
+            {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
+
+      <ion-item>
+        <ion-label position="floating">{{'CODE' | translate}}</ion-label>
+        <ion-input type="text" formControlName="code" autocomplete='name'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+        <ion-textarea rows="7" formControlName="note"></ion-textarea>
+      </ion-item>
+
+    </section>
+  </form>
+
+</ion-content>
