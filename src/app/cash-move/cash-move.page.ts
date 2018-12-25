@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events, TextInput, AlertController } from '@ionic/angular';
+import { NavController,  ModalController, LoadingController,  Events, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -26,8 +26,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class CashMovePage implements OnInit {
 
   // constructor() { }
-  @ViewChild('input') myInput: TextInput;
-  @ViewChild('description') description: TextInput;
+  @ViewChild('input') myInput;
+  @ViewChild('description') description;
 
   cashMoveForm: FormGroup;
   loading: any;
@@ -67,11 +67,11 @@ export class CashMovePage implements OnInit {
     // this.default_name = this.route.snapshot.paramMap.get('default_name');
     this.today = new Date();
     // console.log("dados nav", this.route.snapshot.paramMap.get('
-    if (this.route.snapshot.paramMap.get('accountTo') && this.route.snapshot.paramMap.get('accountTo')._id.split('.')[1]=='cash'){
+    if (this.route.snapshot.paramMap.get('accountTo') && this.route.snapshot.paramMap.get('accountTo')['_id'].split('.')[1]=='cash'){
       // console.log("to cash");
       this.to_cash = true;
     }
-    if (this.route.snapshot.paramMap.get('accountFrom') && this.route.snapshot.paramMap.get('accountFrom')._id.split('.')[1]=='cash'){
+    if (this.route.snapshot.paramMap.get('accountFrom') && this.route.snapshot.paramMap.get('accountFrom')['_id'].split('.')[1]=='cash'){
       // console.log("from cash");
       this.from_cash = true;
     }

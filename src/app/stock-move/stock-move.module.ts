@@ -8,7 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { StockMovePage } from './stock-move.page';
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 import { ProductListPage } from '../product-list/product-list.page';
-import { ContactsPage } from '../contacts/contacts.page';
+import { ContactListPage } from '../contact-list/contact-list.page';
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -40,8 +40,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [StockMovePage, WarehouseListPage, ProductListPage, ContactsPage],
+  declarations: [StockMovePage, WarehouseListPage, ProductListPage, ContactListPage],
   // declarations: [AppComponent, WarehouseListPage],
-  entryComponents: [WarehouseListPage, ProductListPage, ContactsPage],
+  entryComponents: [WarehouseListPage, ProductListPage, ContactListPage],
 })
 export class StockMovePageModule {}

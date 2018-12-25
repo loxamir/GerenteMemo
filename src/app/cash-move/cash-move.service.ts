@@ -98,9 +98,9 @@ export class CashMoveService {
       // this.configService.getSequence('cash_move').then((code) => {
         // cash['code'] = code;
         // cash['code'] = this.formatService.string_pad(4, code, "right", "0");
-        if (!cash.origin_id){
-          cash.origin_id = "M"+code;
-        }
+        // if (!cash.origin_id){
+        //   cash.origin_id = "M"+code;
+        // }
         cash.amount = parseFloat(cash.amount);
         delete cash.cash;
         delete cash.contact;

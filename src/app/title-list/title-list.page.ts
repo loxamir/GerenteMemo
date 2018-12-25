@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController,   ModalController, Events, PopoverController} from '@ionic/angular';
-import { TitlePage } from '../title';
+import { TitlePage } from '../title/title.page';
 import 'rxjs/Rx';
 // import { TitlesService } from './titles.service';
 // import { TitlesPopover } from './titles.popover';

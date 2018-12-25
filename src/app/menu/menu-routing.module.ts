@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { MenuPage } from './menu.page';
 import { Routes, RouterModule } from '@angular/router';
 
-import { ContactsPage } from '../contacts/contacts.page';
+import { ContactListPage } from '../contact-list/contact-list.page';
 import { ContactPage } from '../contact/contact.page';
 
 const routes: Routes = [{
@@ -13,7 +13,7 @@ const routes: Routes = [{
     {
       path: 'contacts',
       outlet: 'menucontent',
-      component: ContactsPage
+      component: ContactListPage
     },
     {
       path: 'contact',

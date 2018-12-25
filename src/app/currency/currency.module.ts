@@ -22,6 +22,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
+    ReactiveFormsModule,
     HttpClientModule,
     TranslateModule.forRoot({
       loader: {

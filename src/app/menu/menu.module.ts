@@ -6,7 +6,7 @@ import { MenuRoutingModule } from './menu-routing.module';
 import { IonicModule } from '@ionic/angular';
 
 import { MenuPage } from './menu.page';
-import { ContactsPageModule } from '../contacts/contacts.module';
+import { ContactListPageModule } from '../contact-list/contact-list.module';
 import { ContactPageModule } from '../contact/contact.module';
 // const routes: Routes = [
 //   {
@@ -22,7 +22,7 @@ import { ContactPageModule } from '../contact/contact.module';
     IonicModule,
     // RouterModule.forChild(routes)
     MenuRoutingModule,
-    ContactsPageModule,
+    ContactListPageModule,
     ContactPageModule,
   ],
   declarations: [MenuPage]

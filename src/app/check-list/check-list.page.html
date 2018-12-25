@@ -1,9 +1,57 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>CheckList</ion-title>
+  <ion-toolbar color="primary">
+    <!-- <ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button> -->
+    <ion-searchbar
+      placeholder="Buscar Check"
+      [(ngModel)]="searchTerm"
+      #searchbar
+      (ionInput)="setFilteredItems()">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="list-mini-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list no-lines>
+    <ion-item-sliding class="list-item" *ngFor="let item of checks">
+      <ion-item no-padding (click)="selectCheck(item)" style="margin-bottom: 0px; margin-top:0px;">
+        <ion-card class="list-card" style="border-radius: 5px;">
+          <ion-row>
+            <ion-col>
+              <h3 class="item-title"><b>{{ item.name }}</b></h3>
+            </ion-col>
+          </ion-row>
+     <ion-row no-padding class="content-row one-line">
+        <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+          <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.0'}}</h2>
+          <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.0'}}</h2>
+        </ion-col>
+      </ion-row>
+      </ion-card>
 
+    </ion-item>
+      <ion-item-options>
+        <ion-button icon-only color="primary" (click)="deleteCheck(item)" *ngIf="item.state=='QUOTATION'">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-row style="height:15px;">
+  </ion-row>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      <ion-fab-button (click)="createCheck()" color="green">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
+  </ion-fab>
 </ion-content>

@@ -30,6 +30,16 @@ const routes: Routes = [
   { path: 'currency-list', loadChildren: './currency-list/currency-list.module#CurrencyListPageModule' },
   { path: 'check', loadChildren: './check/check.module#CheckPageModule' },
   { path: 'check-list', loadChildren: './check-list/check-list.module#CheckListPageModule' },
+  { path: 'receipt', loadChildren: './receipt/receipt.module#ReceiptPageModule' },
+  { path: 'receipt-list', loadChildren: './receipt-list/receipt-list.module#ReceiptListPageModule' },
+  { path: 'cash', loadChildren: './cash/cash.module#CashPageModule' },
+  { path: 'cash-list', loadChildren: './cash-list/cash-list.module#CashListPageModule' },
+  { path: 'invoice', loadChildren: './invoice/invoice.module#InvoicePageModule' },
+  { path: 'invoice-list', loadChildren: './invoice-list/invoice-list.module#InvoiceListPageModule' },
+  { path: 'sale', loadChildren: './sale/sale.module#SalePageModule' },
+  { path: 'sale-list', loadChildren: './sale-list/sale-list.module#SaleListPageModule' },
+  { path: 'payment-condition', loadChildren: './payment-condition/payment-condition.module#PaymentConditionPageModule' },
+  { path: 'payment-condition-list', loadChildren: './payment-condition-list/payment-condition-list.module#PaymentConditionListPageModule' },
 ];
 
 @NgModule({

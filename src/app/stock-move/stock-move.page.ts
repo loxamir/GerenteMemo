@@ -290,7 +290,7 @@ export class StockMovePage implements OnInit {
           resolve(true);
         })
         let profileModal = await this.modal.create({
-          component: ContactsPage,
+          component: ContactListPage,
           componentProps: {
             "select": true
           }

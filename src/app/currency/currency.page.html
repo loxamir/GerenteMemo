@@ -1,9 +1,42 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Currency</ion-title>
+  <ion-toolbar color="primary">
+    <!-- <ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button> -->
+    <ion-title>{{ 'CURRENCY_INFORMATION' | translate }}</ion-title>
+    <ion-buttons slot="end" [hidden]="!currencyForm.dirty">
+      <ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="currency-content">
+  <form class="sample-form validations-form" [formGroup]="currencyForm"  (ngSubmit)="onSubmit(currencyForm.value)">
+    <section class="form-section">
+      <ion-item>
+        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+        <ion-input type="text" formControlName="name" autocomplete='name'></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validation_messages.name">
+          <div class="error-message" *ngIf="currencyForm.get('name').hasError(validation.type) && (currencyForm.get('name').dirty || currencyForm.get('name').touched)">
+            {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">{{'SALE' | translate}}</ion-label>
+        <ion-input type="text" formControlName="sale_rate" autocomplete='name'></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">{{'PURCHASE' | translate}}</ion-label>
+        <ion-input type="text" formControlName="purchase_rate" autocomplete='name'></ion-input>
+      </ion-item>
+
+    </section>
+  </form>
 
 </ion-content>

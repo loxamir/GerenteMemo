@@ -1,0 +1,136 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      <ion-row>
+        {{ 'RECEIPT' | translate }}: {{receiptForm.value.name}}
+      </ion-row>
+    </ion-title>
+
+    <ion-buttons slot="end" >
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-row justify-content-center>
+    <ion-item
+    no-padding
+    (click)="selectContact()"
+     style="width: calc(100% - 0px);background-color: #fff;border: 0px solid #ddd;">
+      <h4 class="sumary-label">{{'CONTACT' | translate}}</h4>
+      <h4 class="client-name">{{receiptForm.value.contact && receiptForm.value.contact.name || ''}}</h4>
+    </ion-item>
+    <ion-col width-34 class="sumary-label" no-padding >
+      <h4 class="sumary-label" style="text-align: center;">{{'TOTAL' | translate }}</h4>
+      <h4 class="sumary-value draft" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.total|number:'1.0-2'}}</h4>
+    </ion-col>
+    <ion-col width-33 class="sumary-label" no-padding >
+      <h4 class="sumary-label" style="text-align: center;">{{'A Cobrar' | translate }}</h4>
+      <h4 class="sumary-value negative" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.residual|number:'1.0-2'}}</h4>
+    </ion-col>
+    <ion-col width-33 class="sumary-label" no-padding >
+        <h4 class="sumary-label" style="text-align: center;">{{'Troco' | translate }}</h4>
+        <h4 class="sumary-value positive" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.change|number:'1.0-2'}}</h4>
+    </ion-col>
+  </ion-row>
+</ion-header>
+<ion-content class="receipt-content" style="background-color: #ddd">
+  <form class="sample-form validations-form" [formGroup]="receiptForm" (ngSubmit)="onSubmit(receiptForm.value)">
+    <ion-card class="list-card" *ngIf="receiptForm.value.state == 'DRAFT'">
+    <ion-row>
+    <ion-col>
+      <ion-item>
+        <ion-label position="floating" style="font-size:14px">{{'AMOUNT_RECEIVED' | translate}}</ion-label>
+        <ion-input #input type="number"
+        formControlName="amount_paid"
+        (ionChange)="recomputeValues()"
+        [disabled]="!this.isEmpty(receiptForm.value.check) || receiptForm.value.cash_paid.type == 'check'"
+        ></ion-input>
+      </ion-item>
+    </ion-col>
+    <ion-col (click)="selectCash()">
+      <h4 class="sumary-label">{{'CASH' | translate}}</h4>
+      <h4 class="client-name">{{receiptForm.value.cash_paid && receiptForm.value.cash_paid.name}}</h4>
+    </ion-col>
+    </ion-row>
+    <ion-row *ngIf="receiptForm.value.cash_paid.type != 'cash'">
+      <ion-col (click)="selectCheck()">
+        <h4 class="sumary-label">{{'Cheque' | translate}}</h4>
+        <h4 class="client-name">{{receiptForm.value.check && receiptForm.value.check.name || 'Sin Cheque'}}</h4>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+        <ion-list no-lines>
+          <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.payments">
+            <ion-item  style="background-color: #ddd;">
+              <ion-card class="list-card">
+              <ion-row>
+              <ion-col (click)="editPaymentAmount(item)">
+                <h4 class="sumary-label">{{'AMOUNT_RECEIVED' | translate}}</h4>
+                <h4 class="client-name">${{item.amount}}</h4>
+              </ion-col>
+              <ion-col (click)="editPaymentCash(item)">
+                <h4 class="sumary-label">{{'CASH' | translate}}</h4>
+                <h4 class="client-name">{{item.cash_id}}</h4>
+              </ion-col>
+              </ion-row>
+            </ion-card>
+            </ion-item>
+            <ion-item-options>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+        <ion-row>
+          <ion-col class="item-content">
+            <ion-button style="background-color: red" class="print-receipt" (click)="exitPage()">Cerrar</ion-button>
+          </ion-col>
+          <ion-col class="item-content" *ngIf="receiptForm.value.paid >= receiptForm.value.total*0 && receiptForm.value.state == 'DRAFT'">
+            <ion-button style="background-color: #278c2c" class="print-receipt" (click)="confirmReceipt()">Confirmar</ion-button>
+          </ion-col>
+          <ion-col class="item-content" *ngIf="receiptForm.value.state == 'CONFIRMED'">
+            <ion-button class="print-receipt" (click)="print()">Imprimir Recibo</ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="receiptForm.value.state == 'CONFIRMED' && receiptForm.value.amount_unInvoiced > 0">
+          <ion-col width-33 class="sumary-label" no-padding>
+              <h4 class="sumary-label" style="text-align: center;">{{'A Facturar' | translate }}</h4>
+              <h4 class="sumary-value positive" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.amount_unInvoiced|number:'1.0'}}</h4>
+          </ion-col>
+          <ion-col class="item-content">
+            <ion-button style="background-color: #278c2c" class="print-receipt" (click)="createInvoice()">Crear Factura</ion-button>
+          </ion-col>
+        </ion-row>
+
+        <ion-list no-lines *ngIf="receiptForm.value.invoices.length">
+          <section>
+          <h2 class="section-title">{{'INVOICE' | translate}}</h2>
+          <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.invoices">
+            <ion-item (click)="openInvoice(item)" style="background-color: #ddd;">
+              <ion-card class="list-card">
+              <ion-row style="padding-top:10px; padding-bottom:10px;">
+              <ion-col >
+                <h4 class="sumary-label">{{'NUMBER' | translate}}</h4>
+                <h4 class="client-name">{{item.number}}</h4>
+              </ion-col>
+              <ion-col >
+                <h4 class="sumary-label">{{'TAX' | translate}}</h4>
+                <h4 class="client-name">$ {{item.tax|number:'1.0'}}</h4>
+              </ion-col>
+              <ion-button class="relation-button"
+              [ngClass]="{following: !item.inverse_relation}"
+              clear icon-only item-right>
+                <ion-icon *ngIf="item.state=='CONFIRMED'" name="print"></ion-icon>
+              </ion-button>
+              </ion-row>
+              </ion-card>
+            </ion-item>
+          </ion-item-sliding>
+        </section>
+        </ion-list>
+  </form>
+  <ion-row style="height:120px;">
+  </ion-row>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+    <ion-fab-button (click)="goNextStep()" color="green">
+      <ion-icon name="play" style="margin-left: 5px;">
+      </ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
