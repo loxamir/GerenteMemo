@@ -41,7 +41,6 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [StockMovePage, WarehouseListPage, ProductListPage, ContactListPage],
-  // declarations: [AppComponent, WarehouseListPage],
   entryComponents: [WarehouseListPage, ProductListPage, ContactListPage],
 })
 export class StockMovePageModule {}

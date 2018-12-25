@@ -12,7 +12,10 @@ export function createTranslateLoader(http: HttpClient) {
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { Printer } from '@ionic-native/printer';
 import { SocialSharing } from '@ionic-native/social-sharing';
-
+import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
+import { ProductListPage } from '../product-list/product-list.page';
+import { ContactListPage } from '../contact-list/contact-list.page';
+import { CurrencyListPage } from '../currency-list/currency-list.page';
 import { IonicModule } from '@ionic/angular';
 
 import { SalePage } from './sale.page';
@@ -40,7 +43,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [SalePage],
+  declarations: [SalePage, PaymentConditionListPage, ProductListPage, ContactListPage, CurrencyListPage],
+  entryComponents: [PaymentConditionListPage, ProductListPage, ContactListPage, CurrencyListPage],
   providers: [
     BluetoothSerial,
     Printer,
