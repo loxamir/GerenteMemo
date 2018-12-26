@@ -23,12 +23,12 @@
            <ion-toggle (ionChange)="changeMyCheck()" formControlName="my_check"></ion-toggle>
         </ion-item>
         <ion-item no-padding (click)="selectContact()" class="field-100">
-          <h4 class="sumary-label">{{'CLIENT' | translate}}</h4>
-          <h4 class="client-name">{{checkForm.value.contact && checkForm.value.contact.name || 'Selecionar'}}</h4>
+          <h4 class="field-label">{{'CLIENT' | translate}}</h4>
+          <h4 class="field-value">{{checkForm.value.contact && checkForm.value.contact.name || 'Selecionar'}}</h4>
         </ion-item>
         <ion-col (click)="selectBank()">
-          <h4 class="sumary-label">{{'BANK' | translate}}</h4>
-          <h4 class="client-name">{{checkForm.value.bank && checkForm.value.bank.name}}</h4>
+          <h4 class="field-label">{{'BANK' | translate}}</h4>
+          <h4 class="field-value">{{checkForm.value.bank && checkForm.value.bank.name}}</h4>
         </ion-col>
         <ion-item
          no-padding
@@ -61,12 +61,12 @@
           <ion-input #name type="text" formControlName="owner_doc"></ion-input>
         </ion-item>
         <ion-item no-padding (click)="selectCurrency()" class="field-50">
-          <h4 class="sumary-label">{{'CURRENCY' | translate}}</h4>
-          <h4 class="client-name">{{checkForm.value.currency && checkForm.value.currency.name || 'Selecionar'}}</h4>
+          <h4 class="field-label">{{'CURRENCY' | translate}}</h4>
+          <h4 class="field-value">{{checkForm.value.currency && checkForm.value.currency.name || 'Selecionar'}}</h4>
         </ion-item>
         <ion-item no-padding (click)="selectReceipt()" class="field-50">
-          <h4 class="sumary-label">{{'RECEIPT' | translate}}</h4>
-          <h4 class="client-name">{{checkForm.value.receipt && checkForm.value.receipt.name || 'Selecionar'}}</h4>
+          <h4 class="field-label">{{'RECEIPT' | translate}}</h4>
+          <h4 class="field-value">{{checkForm.value.receipt && checkForm.value.receipt.name || 'Selecionar'}}</h4>
         </ion-item>
     </ion-row>
       <ion-item>

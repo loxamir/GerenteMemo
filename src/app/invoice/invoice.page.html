@@ -43,7 +43,7 @@
     <!-- <ion-item
     no-padding
      style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;height: 50px;border-right: 0px;">
-      <h4 class="sumary-label">{{'TOTAL' | translate}}</h4>
+      <h4 class="field-label">{{'TOTAL' | translate}}</h4>
       <h4 class="sumary-value draft"
       style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">
         $ {{invoiceForm.value.total|number:'1.0'}}
@@ -52,25 +52,25 @@
     <ion-item
     no-padding
      style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;height: 50px;border-right: 0px;">
-      <h4 class="sumary-label">{{'IVA' | translate}}</h4>
+      <h4 class="field-label">{{'IVA' | translate}}</h4>
       <h4 class="sumary-value negative"
       style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">
         $ {{invoiceForm.value.tax|number:'1.0-0'}}
       </h4>
     </ion-item> -->
-    <ion-col width-20 class="sumary-label" no-padding >
-      <h4 class="sumary-label">{{'TOTAL' | translate }}</h4>
+    <ion-col width-20 class="field-label" no-padding >
+      <h4 class="field-label">{{'TOTAL' | translate }}</h4>
     </ion-col>
-    <ion-col width-30 class="sumary-label" no-padding >
+    <ion-col width-30 class="field-label" no-padding >
       <h4 class="sumary-value draft"
       style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">
         $ {{invoiceForm.value.total|number:'1.0'}}
       </h4>
     </ion-col>
-    <ion-col width-20 class="sumary-label" no-padding >
-        <h4 class="sumary-label">{{'IVA' | translate }}</h4>
+    <ion-col width-20 class="field-label" no-padding >
+        <h4 class="field-label">{{'IVA' | translate }}</h4>
     </ion-col>
-    <ion-col width-30 class="sumary-label" no-padding >
+    <ion-col width-30 class="field-label" no-padding >
         <h4 class="sumary-value negative"
         style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">
           $ {{invoiceForm.value.tax|number:'1.0-0'}}
@@ -83,16 +83,16 @@
       no-padding
       (click)="selectContact()"
        style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;height: 50px;border-right: 0px;">
-        <h4 class="sumary-label" *ngIf="invoiceForm.value.type == 'out'">{{'CLIENT' | translate}}</h4>
-        <h4 class="sumary-label" *ngIf="invoiceForm.value.type == 'in'">{{'SUPPLIER' | translate}}</h4>
-        <h4 class="client-name">{{invoiceForm.value.contact && invoiceForm.value.contact.name || 'Selecionar'}}</h4>
+        <h4 class="field-label" *ngIf="invoiceForm.value.type == 'out'">{{'CLIENT' | translate}}</h4>
+        <h4 class="field-label" *ngIf="invoiceForm.value.type == 'in'">{{'SUPPLIER' | translate}}</h4>
+        <h4 class="field-value">{{invoiceForm.value.contact && invoiceForm.value.contact.name || 'Selecionar'}}</h4>
       </ion-item>
       <ion-item
       no-padding
       (click)="editContact()"
        style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;height: 50px;border-left: 0px;">
-        <h4 class="sumary-label">{{'RUC' | translate}}</h4>
-        <h4 class="client-name">{{invoiceForm.value.contact && invoiceForm.value.contact.document || 'Informar'}}</h4>
+        <h4 class="field-label">{{'RUC' | translate}}</h4>
+        <h4 class="field-value">{{invoiceForm.value.contact && invoiceForm.value.contact.document || 'Informar'}}</h4>
       </ion-item>
       <ion-item
        no-padding
@@ -107,7 +107,7 @@
       </ion-item>
       <ion-item no-padding class="item-content"
       class="field-50">
-        <ion-label position="floating" class="sumary-label">{{'DATE' | translate }}</ion-label>
+        <ion-label position="floating" class="field-label">{{'DATE' | translate }}</ion-label>
         <ion-datetime class="sale-date"
           displayFormat="DD/MM/YYYY"
           pickerFormat="DD/MM/YYYY"
@@ -155,7 +155,7 @@
           <ion-col>
             <ion-row>
               <ion-col  width-50 class="item-content">
-                <h4 class="sumary-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
+                <h4 class="field-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
               </ion-col>
             </ion-row>
             <ion-row>

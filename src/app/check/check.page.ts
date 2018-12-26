@@ -43,6 +43,8 @@ export class CheckPage implements OnInit {
       //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.translate.setDefaultLang('es');
+      this.translate.use('es');
     }
 
     ngOnInit() {

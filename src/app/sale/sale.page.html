@@ -31,16 +31,16 @@
     </ion-col>
   </ion-row>
   <ion-row justify-content-center>
-    <ion-col width-20 class="sumary-label" no-padding>
-      <h4 class="sumary-label">{{'TOTAL' | translate }}</h4>
+    <ion-col width-20 class="field-label" no-padding>
+      <h4 class="field-label">{{'TOTAL' | translate }}</h4>
     </ion-col>
-    <ion-col width-30 class="sumary-label" no-padding>
+    <ion-col width-30 class="field-label" no-padding>
       <h4 class="sumary-value draft" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{saleForm.value.total|number:'1.0'}}</h4>
     </ion-col>
-    <ion-col width-20 class="sumary-label" no-padding>
-      <h4 class="sumary-label">{{'Cobrar' | translate }}</h4>
+    <ion-col width-20 class="field-label" no-padding>
+      <h4 class="field-label">{{'Cobrar' | translate }}</h4>
     </ion-col>
-    <ion-col width-30 class="sumary-label" no-padding>
+    <ion-col width-30 class="field-label" no-padding>
       <h4 class="sumary-value negative" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{saleForm.value.residual|number:'1.0'}}</h4>
     </ion-col>
   </ion-row>
@@ -50,25 +50,25 @@
   <form class="sample-form validations-form" [formGroup]="saleForm" (ngSubmit)="onSubmit(saleForm.value)">
     <ion-row justify-content-center>
       <ion-item no-padding (click)="selectContact()" class="field-100">
-        <h4 class="sumary-label">{{'CLIENT' | translate}}</h4>
-        <h4 class="client-name">{{saleForm.value.contact && saleForm.value.contact.name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'CLIENT' | translate}}</h4>
+        <h4 class="field-value">{{saleForm.value.contact && saleForm.value.contact.name || 'Selecionar'}}</h4>
       </ion-item>
       <ion-item no-padding (click)="selectPaymentCondition()" class="field-50">
-        <h4 class="sumary-label">{{'Condición de Pago' | translate }}</h4>
-        <h4 class="client-name">{{saleForm.value.paymentCondition && saleForm.value.paymentCondition.name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
+        <h4 class="field-value">{{saleForm.value.paymentCondition && saleForm.value.paymentCondition.name || 'Selecionar'}}</h4>
       </ion-item>
       <ion-item no-padding class="item-content" class="field-50">
-        <ion-label position="floating" class="sumary-label">{{'DATE' | translate }}</ion-label>
+        <ion-label position="floating" class="field-label">{{'DATE' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="date" [disabled]="saleForm.value.state!='QUOTATION'">
         </ion-datetime>
       </ion-item>
       <ion-item no-padding (click)="selectSeller()" style="width: calc(50% - 0px);;background-color: #fff;border: 1px solid #ddd;height: 50px;">
-        <h4 class="sumary-label">{{'SELLER' | translate }}</h4>
-        <h4 class="client-name">{{saleForm.value.seller_name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'SELLER' | translate }}</h4>
+        <h4 class="field-value">{{saleForm.value.seller_name || 'Selecionar'}}</h4>
       </ion-item>
       <ion-item no-padding (click)="selectCurrency()" style="width: calc(50% - 0px);;background-color: #fff;border: 1px solid #ddd;height: 50px;">
-        <h4 class="sumary-label">{{'CURRENCY' | translate }}</h4>
-        <h4 class="client-name">{{saleForm.value.currency && saleForm.value.currency.name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
+        <h4 class="field-value">{{saleForm.value.currency && saleForm.value.currency.name || 'Selecionar'}}</h4>
       </ion-item>
     </ion-row>
     <ion-row>
@@ -89,12 +89,12 @@
       <ion-item>
         <ion-row no-padding (click)="openInvoice(item)" *ngFor="let item of saleForm.value.invoices" no-padding>
           <ion-col no-padding>
-            <h4 class="sumary-label">{{'INVOICE' | translate}}</h4>
-            <h4 class="client-name">{{item.code || item.number}}</h4>
+            <h4 class="field-label">{{'INVOICE' | translate}}</h4>
+            <h4 class="field-value">{{item.code || item.number}}</h4>
           </ion-col>
           <ion-col no-padding>
-            <h4 class="sumary-label">{{'INVOICED' | translate}}</h4>
-            <h4 class="client-name">$ {{item.total|number:'1.0'}}</h4>
+            <h4 class="field-label">{{'INVOICED' | translate}}</h4>
+            <h4 class="field-value">$ {{item.total|number:'1.0'}}</h4>
           </ion-col>
         </ion-row>
       </ion-item>
@@ -103,12 +103,12 @@
       <ion-item>
         <ion-row (click)="openPayment(item)" *ngFor="let item of saleForm.value.payments" no-padding>
           <ion-col no-padding>
-            <h4 class="sumary-label">{{'RECEIPT' | translate}}</h4>
-            <h4 class="client-name">{{item._id}}</h4>
+            <h4 class="field-label">{{'RECEIPT' | translate}}</h4>
+            <h4 class="field-value">{{item._id}}</h4>
           </ion-col>
           <ion-col no-padding>
-            <h4 class="sumary-label">{{'RECEIVED' | translate}}</h4>
-            <h4 class="client-name">$ {{item.paid|number:'1.0'}}</h4>
+            <h4 class="field-label">{{'RECEIVED' | translate}}</h4>
+            <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
           </ion-col>
         </ion-row>
       </ion-item>
@@ -138,7 +138,7 @@
               <ion-col>
                 <ion-row>
                   <ion-col width-50 class="item-content">
-                    <h4 class="sumary-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
+                    <h4 class="field-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
                   </ion-col>
                 </ion-row>
                 <ion-row>
