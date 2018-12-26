@@ -216,7 +216,7 @@ export class ContactListPage implements OnInit {
       // newRootNav.push(ContactPage, {'_id': contact._id});
 
       // this.router.navigate(['contact', {'_id': contact._id}]);
-      this.navCtrl.navigateForward(['contact', {'_id': contact._id}]);
+      this.navCtrl.navigateForward(['/contact', {'_id': contact._id}]);
     // }
   }
 

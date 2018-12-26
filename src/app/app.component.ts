@@ -10,6 +10,29 @@ import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
+  public appPages = [
+  {
+    title: 'Contactos',
+    url: '/contact-list',
+    icon: 'home'
+  },
+  {
+    title: 'Productos',
+    url: '/product-list',
+    icon: 'cube'
+  },
+  {
+    title: 'Ventas',
+    url: '/sale-list',
+    icon: 'pricetag'
+  },
+  {
+    title: 'Compras',
+    url: '/purchase-list',
+    icon: 'cart'
+  }
+];
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,

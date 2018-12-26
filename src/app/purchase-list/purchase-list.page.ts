@@ -6,6 +6,7 @@ import 'rxjs/Rx';
 // import { PurchasesService } from './purchases.service';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-purchase-list',
@@ -25,6 +26,7 @@ export class PurchaseListPage implements OnInit {
     public navCtrl: NavController,
     // public app: App,
     // public purchasesService: PurchasesService,
+    public menu: MenuController,
     public pouchdbService: PouchdbService,
     public loadingCtrl: LoadingController,
     public popoverCtrl: PopoverController,
@@ -40,6 +42,11 @@ export class PurchaseListPage implements OnInit {
     this.events.subscribe('got-database', ()=>{
       this.setFilteredItems();
     })
+  }
+
+  openMenu() {
+    console.log("asdfasdf");
+    this.menu.open();
   }
 
   doInfinite(infiniteScroll) {
