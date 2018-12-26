@@ -46,6 +46,12 @@ const routes: Routes = [
   { path: 'user', loadChildren: './user/user.module#UserPageModule' },
   { path: 'help', loadChildren: './help/help.module#HelpPageModule' },
   { path: 'help-list', loadChildren: './help-list/help-list.module#HelpListPageModule' },
+  { path: 'importer', loadChildren: './importer/importer.module#ImporterPageModule' },
+  { path: 'planned-list', loadChildren: './planned-list/planned-list.module#PlannedListPageModule' },
+  { path: 'purchase', loadChildren: './purchase/purchase.module#PurchasePageModule' },
+  { path: 'salary', loadChildren: './salary/salary.module#SalaryPageModule' },
+  { path: 'service', loadChildren: './service/service.module#ServicePageModule' },
+  { path: 'purchase-list', loadChildren: './purchase-list/purchase-list.module#PurchaseListPageModule' },
 ];
 
 @NgModule({

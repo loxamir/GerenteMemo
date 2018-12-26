@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { NavController, LoadingController,   ModalController, Events} from '@ionic/angular';
 import { PaymentConditionPage } from '../payment-condition/payment-condition.page';
 import 'rxjs/Rx';
-import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 // import { PaymentConditionService } from '../payment-condition.service';
 
 @Component({

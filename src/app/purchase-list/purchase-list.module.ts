@@ -11,12 +11,12 @@ export function createTranslateLoader(http: HttpClient) {
 
 import { IonicModule } from '@ionic/angular';
 
-import { PaymentConditionListPage } from './payment-condition-list.page';
+import { PurchaseListPage } from './purchase-list.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: PaymentConditionListPage
+    component: PurchaseListPage
   }
 ];
 
@@ -36,6 +36,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [PaymentConditionListPage]
+  declarations: [PurchaseListPage]
 })
-export class PaymentConditionListPageModule {}
+export class PurchaseListPageModule {}
