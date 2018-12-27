@@ -1,9 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-button menuToggle *ngIf="!select">
-      <ion-icon name="menu"></ion-icon>
-    </ion-button> -->
-    <!-- <ion-title *ngIf="!has_search">{{ 'PRODUCTS' | translate}}</ion-title> -->
+    <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-searchbar
       placeholder="Buscar Producto"
       [(ngModel)]="searchTerm"
@@ -19,11 +18,11 @@
         (tap)="setSearch()">
         <ion-icon name="close"></ion-icon>
       </ion-button> -->
-      <ion-button *ngIf="!select" ion-button icon-only color="royal" class="more-button"
+      <ion-button *ngIf="!select" ion-button icon-only class="more-button"
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
-      <ion-button  *ngIf="select" ion-button icon-only color="royal"
+      <ion-button  *ngIf="select" ion-button icon-only
               (tap)="closeModal()">
         <ion-icon name="close"></ion-icon>
       </ion-button>

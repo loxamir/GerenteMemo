@@ -8,7 +8,18 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
-
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { Printer } from '@ionic-native/printer';
+import { SocialSharing } from '@ionic-native/social-sharing';
+import { TextToSpeech } from '@ionic-native/text-to-speech';
+import { SpeechRecognition } from '@ionic-native/speech-recognition';
+import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
+import { ProductListPage } from '../product-list/product-list.page';
+import { ContactListPage } from '../contact-list/contact-list.page';
+import { CurrencyListPage } from '../currency-list/currency-list.page';
+import { ServiceWorkPage, } from './work/work.page';
+import { ServiceInputPage, } from './input/input.page';
+import { ServiceTravelPage, } from './travel/travel.page';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -37,6 +48,18 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ServicePage]
+  declarations: [ServicePage, PaymentConditionListPage, ProductListPage, ContactListPage, CurrencyListPage , ServiceWorkPage,
+  ServiceInputPage,
+  ServiceTravelPage,],
+  entryComponents: [PaymentConditionListPage, ProductListPage, ContactListPage, CurrencyListPage, ServiceWorkPage,
+  ServiceInputPage,
+  ServiceTravelPage,],
+  providers: [
+    BluetoothSerial,
+    Printer,
+    SocialSharing,
+    TextToSpeech,
+    SpeechRecognition,
+  ]
 })
 export class ServicePageModule {}

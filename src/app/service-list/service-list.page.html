@@ -4,7 +4,7 @@
         <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Venta"
+      placeholder="Buscar Servicio"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionInput)="searchItems()">
@@ -23,20 +23,22 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
-    <ion-item-sliding class="list-item" *ngFor="let item of sales">
-      <ion-item no-padding (click)="openSale(item)" style="margin-bottom: 0px; margin-top:0px;">
+    <ion-item-sliding class="list-item" *ngFor="let item of services">
+      <ion-item no-padding (click)="openService(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
           <ion-row>
-            <!-- <ion-col no-padding width-20 class="schedule-date">
+            <ion-col no-padding width-20 class="schedule-date">
               <h2 class="list-big-number">{{item.code}}</h2>
-            </ion-col> -->
+            </ion-col>
             <ion-col>
-              <h3 class="item-title"><b>{{ item.contact_name || 'No Informado'}}</b></h3>
+              <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
             </ion-col>
           </ion-row>
      <ion-row no-padding class="content-row one-line">
         <ion-col no-padding width-35 class="schedule-date">
+          <!-- <h2 class="list-big-number">{{item.code}}</h2> -->
           <h3 class="schedule-month">{{item.date|date: 'dd/MM/yyyy'}}</h3>
+          <!-- <h4 class="schedule-time">{{item.date|date: 'HH:mm:SS'}}</h4> -->
           <h3 class="item-title">{{item.payment_name | translate}}</h3>
         </ion-col>
         <ion-col no-padding width-65 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
@@ -48,9 +50,15 @@
         </ion-col>
       </ion-row>
       <ion-row no-padding>
-        <ion-col no-padding
-        style="text-align: center;border-radius: 4px;"
+        <ion-col class="item-content" style="white-space: normal;">
+          {{item.client_request}}
+        </ion-col>
+      </ion-row>
+      <ion-row no-padding>
+        <ion-col no-padding style="text-align: center;border-radius: 4px;"
         [class.quotation]="item.state=='QUOTATION'"
+        [class.started]="item.state=='STARTED'"
+        [class.quotation]="item.state=='SCHEDULED'"
         [class.confirmed]="item.state=='CONFIRMED'"
         [class.paid]="item.state=='PAID'"
         [class.cancel]="item.state=='CANCELED'">
@@ -61,7 +69,7 @@
 
     </ion-item>
       <ion-item-options>
-        <ion-button icon-only color="primary" (click)="deleteSale(item)" *ngIf="item.state=='QUOTATION'">
+        <ion-button icon-only color="primary" (click)="deleteService(item)" *ngIf="item.state=='QUOTATION'">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-item-options>
@@ -72,10 +80,18 @@
   </ion-infinite-scroll>
   <ion-row style="height:15px;">
   </ion-row>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createSale()" class="add-sale-button">
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="createService()">
           <ion-icon name="add">
           </ion-icon>
-      </ion-fab-button>
+      </ion-button>
+  </ion-fab> -->
+  <!-- <ion-fab center bottom #fab> -->
+      <ion-fab vertical="bottom" horizontal="center" slot="fixed"  #fab>
+    <ion-fab-button><ion-icon name="add"></ion-icon></ion-fab-button>
+    <ion-fab-list side="top">
+      <div style="background: #FF5722;color: white;margin-top: -5px;">Servicio</div><ion-button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="createService(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
+    <div style="background: #4CAF50;color: white;margin-top: -5px;">Producción</div><ion-button style="background: #4CAF50;color: white;margin-bottom: 5px;" ion-fab (click)="createProduction(fab)"><ion-icon name="arrow-round-down"></ion-icon></ion-button>
+    </ion-fab-list>
   </ion-fab>
 </ion-content>

@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <!-- <ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button> -->
+    <ion-title>{{ 'TRAVEL' | translate }}</ion-title>
+    <!-- <ion-buttons slot="end" [hidden]="!travelForm.dirty">
+      <ion-button (click)="buttonSave()">
+        {{ 'SAVE' | translate }}
+      </ion-button>
+    </ion-buttons> -->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="check-content">
+  <form class="sample-form validations-form" [formGroup]="travelForm"  (ngSubmit)="onSubmit(travelForm.value)">
+    <ion-card class="list-card">
+      <ion-item style="background-color: white">
+        <ion-label position="floating">{{'DISTANCE_KM' | translate}}</ion-label>
+        <ion-input #distance type="number" formControlName="distance" (ionChange)="onChangeDistance()"></ion-input>
+      </ion-item>
+    </ion-card>
+
+    <ion-card class="list-card"
+    class="field-label"
+    no-padding
+    (click)="selectVehicle()">
+      <h4 class="field-label">{{'Vehiculo' | translate}}</h4>
+      <h4 class="field-value">{{travelForm.value.vehicle && travelForm.value.vehicle.name || 'No Informado'}}</h4>
+    </ion-card>
+
+
+    <ion-card class="list-card" *ngIf="travelForm.value.vehicle">
+      <ion-col>
+        <ion-item style="background-color: white">
+          <ion-label position="floating">{{'START_KM' | translate}}</ion-label>
+          <ion-input type="number" formControlName="start_km" (ionChange)="onChangeStartKm()"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-card>
+
+
+
+    <ion-card class="list-card" *ngIf="travelForm.value.vehicle">
+      <ion-col>
+        <ion-item style="background-color: white">
+          <ion-label position="floating">{{'END_KM' | translate}}</ion-label>
+          <ion-input type="number"
+           formControlName="end_km"
+           (ionChange)="onChangeEndKm()">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-card>
+
+
+    <!-- <ion-card class="list-card">
+      <ion-col no-padding>
+        <ion-label>{{'START_TIME' | translate }}</ion-label>
+        <ion-datetime class="service-date"
+          displayFormat="DD/MM/YYYY HH:mm"
+          formControlName="start_time"
+          [disabled]="travelForm.value.state=='CONFIRMED'">
+        </ion-datetime>
+      </ion-col>
+    </ion-card>
+    <ion-card class="list-card">
+      <ion-col no-padding>
+        <ion-label>{{'END_TIME' | translate }}</ion-label>
+        <ion-datetime class="service-date"
+          displayFormat="DD/MM/YYYY HH:mm"
+          formControlName="end_time"
+          [disabled]="travelForm.value.state=='CONFIRMED'">
+        </ion-datetime>
+      </ion-col>
+    </ion-card>
+    <ion-card class="list-card">
+      <ion-item style="background-color: white">
+        <ion-label position="floating">{{'TIME_HS' | translate}}</ion-label>
+        <ion-input type="number" formControlName="time"></ion-input>
+      </ion-item>
+    </ion-card> -->
+
+    <!-- <ion-card class="list-card">
+      <ion-item style="background-color: white">
+        <ion-label position="floating">{{'NOTES' | translate}}</ion-label>
+        <ion-textarea rows="3" formControlName="note"></ion-textarea>
+      </ion-item>
+    </ion-card> -->
+  </form>
+  <ion-button margin-bottom ion-button class="print-invoice"
+    [hidden]="!travelForm.dirty"
+    (click)="buttonSave()">
+    {{ 'SAVE' | translate }}
+  </ion-button>
+</ion-content>

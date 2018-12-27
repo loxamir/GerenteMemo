@@ -9,25 +9,7 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'contact-list',
-        children: [
-          {
-            path: '',
-            loadChildren: '../contact-list/contact-list.module#ContactListPageModule'
-          }
-        ]
-      },
-      {
-        path: 'tab2',
-        children: [
-          {
-            path: '',
-            loadChildren: '../product-list/product-list.module#ProductListPageModule'
-          }
-        ]
-      },
-      {
-        path: 'tab3',
+        path: 'sale-list',
         children: [
           {
             path: '',
@@ -36,15 +18,51 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'purchase-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../purchase-list/purchase-list.module#PurchaseListPageModule'
+          }
+        ]
+      },
+      {
+        path: 'cash-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../cash-list/cash-list.module#CashListPageModule'
+          }
+        ]
+      },
+      {
+        path: 'product-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../product-list/product-list.module#ProductListPageModule'
+          }
+        ]
+      },
+      {
+        path: 'service-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../service-list/service-list.module#ServiceListPageModule'
+          }
+        ]
+      },
+      {
         path: '',
-        redirectTo: '/tabs/contact-list',
+        redirectTo: '/tabs/sale-list',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/contact-list',
+    redirectTo: '/tabs/sale-list',
     pathMatch: 'full'
   }
 ];

@@ -11,26 +11,31 @@ import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 })
 export class AppComponent {
   public appPages = [
-  {
-    title: 'Contactos',
-    url: '/contact-list',
-    icon: 'home'
-  },
-  {
-    title: 'Productos',
-    url: '/product-list',
-    icon: 'cube'
-  },
-  {
-    title: 'Ventas',
-    url: '/sale-list',
-    icon: 'pricetag'
-  },
-  {
-    title: 'Home',
-    url: '/tabs',
-    icon: 'cart'
-  }
+    {
+      title: 'Inicio',
+      url: '/tabs',
+      icon: 'home'
+    },
+    {
+      title: 'Informes',
+      url: '/help-list',
+      icon: 'stats'
+    },
+    {
+      title: 'Ayuda',
+      url: '/help-list',
+      icon: 'help-circle'
+    },
+    {
+      title: 'Contactos',
+      url: '/contact-list',
+      icon: 'contacts'
+    },
+    {
+      title: 'Ajustes',
+      url: '/config',
+      icon: 'settings'
+    },
 ];
 
   constructor(
