@@ -56,6 +56,15 @@ const routes: Routes = [
   { path: 'service/input', loadChildren: './service/input/input.module#ServiceInputPageModule' },
   { path: 'service/travel', loadChildren: './service/travel/travel.module#ServiceTravelPageModule' },
   { path: 'service/work', loadChildren: './service/work/work.module#ServiceWorkPageModule' },
+  { path: 'report-list', loadChildren: './report-list/report-list.module#ReportListPageModule' },
+  { path: 'report', loadChildren: './report/report.module#ReportPageModule' },
+  { path: 'accounts-report', loadChildren: './accounts-report/accounts-report.module#AccountsReportPageModule' },
+  { path: 'balance-report', loadChildren: './balance-report/balance-report.module#BalanceReportPageModule' },
+  { path: 'cash-flow', loadChildren: './cash-flow/cash-flow.module#CashFlowPageModule' },
+  { path: 'purchase-report', loadChildren: './purchase-report/purchase-report.module#PurchaseReportPageModule' },
+  { path: 'result-report', loadChildren: './result-report/result-report.module#ResultReportPageModule' },
+  { path: 'sale-report', loadChildren: './sale-report/sale-report.module#SaleReportPageModule' },
+  { path: 'view-report', loadChildren: './view-report/view-report.module#ViewReportPageModule' },
   // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 

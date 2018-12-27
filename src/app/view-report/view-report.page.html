@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <!-- <ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button> -->
+    <ion-title *ngIf="!has_search">{{ name | translate}}</ion-title>
+    <ion-searchbar
+      placeholder="Busqueda"
+      [(ngModel)]="searchTerm"
+      (ionInput)="setFilteredItems()"
+      *ngIf="has_search">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+      <!-- <ion-button icon-only  *ngIf="!has_search"
+        (tap)="setSearch()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <ion-button icon-only  *ngIf="has_search"
+        (tap)="setSearch()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button> -->
+      <!-- <ion-button icon-only
+              (tap)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button> -->
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="list-mini-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-card class="list-card" *ngFor="let item of view" (click)="selectView(item)">
+    <!-- <ion-row>
+      <ion-col class="item.title" no-padding style="text-align: left"
+       (press)="gotoDoc(item)">
+        {{item.doc.name}}
+      </ion-col>
+    </ion-row>
+    <ion-row class="view-list-item" align-items-center>
+      <ion-col class="stock-move-amount" no-padding style="text-align: right;margin-right: 0.5em;">
+        <h2 class="list-big-number" style="color: green;">$ {{item.value|number:'1.0'}}</h2>
+      </ion-col>
+    </ion-row> -->
+    <ion-row no-padding class="content-row one-line" style="margin-left:0.3em" (press)="gotoDoc(item)">
+      <h3 class="item-title"><b>{{item.doc && item.doc.name}}</b></h3>
+    </ion-row>
+   <ion-row no-padding class="content-row one-line" (press)="gotoDoc(item)">
+      <ion-col no-padding width-30 >
+        <!-- <h3 class="item-title" style="margin-left: 5px;">{{item.contact && item.contact.phone || ''}}</h3> -->
+      </ion-col>
+      <ion-col no-padding width-70 class="item-icon" align-self-center style="text-align: right;">
+        <h2 class="list-big-number" style="color: green;margin-right:0.5em">$ {{item.value| number:'1.0'}}</h2>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+  <!-- <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll> -->
+  <ion-row style="height:120px;">
+  </ion-row>
+</ion-content>
