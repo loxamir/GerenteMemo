@@ -27,8 +27,8 @@ export class AppComponent {
     icon: 'pricetag'
   },
   {
-    title: 'Compras',
-    url: '/purchase-list',
+    title: 'Home',
+    url: '/tabs',
     icon: 'cart'
   }
 ];
