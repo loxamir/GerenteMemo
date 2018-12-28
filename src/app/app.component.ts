@@ -18,7 +18,7 @@ export class AppComponent {
     },
     {
       title: 'Informes',
-      url: '/help-list',
+      url: '/report-list',
       icon: 'stats'
     },
     {

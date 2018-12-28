@@ -65,6 +65,9 @@ const routes: Routes = [
   { path: 'result-report', loadChildren: './result-report/result-report.module#ResultReportPageModule' },
   { path: 'sale-report', loadChildren: './sale-report/sale-report.module#SaleReportPageModule' },
   { path: 'view-report', loadChildren: './view-report/view-report.module#ViewReportPageModule' },
+  { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardPageModule' },
+  { path: 'dashboard-list', loadChildren: './dashboard-list/dashboard-list.module#DashboardListPageModule' },
+  { path: 'dashboard-filter', loadChildren: './dashboard-filter/dashboard-filter.module#DashboardFilterPageModule' },
   // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 
