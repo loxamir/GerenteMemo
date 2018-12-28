@@ -12,14 +12,20 @@
 
 .list-card {
   width: 100%;
+  --background: #fff;
+  --ion-background-color: #fff;
+  border-radius: 5px;
+  margin-top:5px;
+  margin-bottom:5px;
+  margin-right:0px;
 }
 .field-50 {
   width: 50%;
-  background-color: #fff;
+  --ion-background-color: #fff;
   border: 1px solid #ddd;
 }
 .field-100 {
-   background-color: #fff;
+   --ion-background-color: #fff;
    border: 1px solid #ddd;
    width: 100%;
 }
@@ -32,8 +38,134 @@ h4.field-value {
   font-size: 20px;
   margin-top: 10px;
   position: absolute;
+  width: 100%;
+  text-align: center;
 }
 .sc-ion-modal-md-h {
   --width: 90%;
   --height: 90%;
+}
+.list-tag {
+  text-align: center;
+  // border-radius: 4px;
+}
+.state {
+	background-color: green;
+	-webkit-clip-path: polygon(75% 0%, 85% 50%, 75% 100%, 0% 100%, 10% 50%, 0% 0%);
+	clip-path: polygon(75% 0%, 85% 50%, 75% 100%, 0% 100%, 10% 50%, 0% 0%);
+	width: 100%;
+	height: 95%;;
+	color: white;
+	font-weight: bold;
+	font-size: 13px;
+	display: flex;
+}
+.due {
+	background-color: red;
+	// background-color: white;
+}
+.confirmed {
+	color: black;
+  background-color: #fffc8b;
+}
+.paid {
+	color: black;
+	background-color: #a6fe8b;
+}
+.cancel {
+	color: black;
+	background-color: #d1d9de;
+}
+.quotation {
+	color: black;
+	background-color: #7fc9ff;
+}
+
+.arrow {
+  -webkit-clip-path: polygon(75% 0%, 85% 50%, 75% 100%, 0% 100%, 10% 50%, 0% 0%);
+  clip-path: polygon(80% 0%, 85% 50%, 80% 100%, 0% 100%, 5% 50%, 0% 0%);
+}
+
+.arron {
+  -webkit-clip-path: polygon(75% 0%, 85% 50%, 75% 100%, 0% 100%, 10% 50%, 0% 0%);
+  clip-path: polygon(80% 0%, 85% 50%, 80% 100%, 0% 100%, 0% 50%, 0% 0%);
+}
+
+.clicked {
+	background-color: #477cf3;
+	width: 135%;
+	height: 135%;
+	color: white;
+	font-weight: bold;
+	font-size: 13px;
+	display: flex;
+}
+.unclicked {
+	background-color: #c3deff;
+	width: 135%;
+	height: 135%;
+	color: black;
+	font-weight: bold;
+	font-size: 13px;
+	display: flex;
+}
+ .state-label {
+    margin-left: 10%;
+}
+.summary-50 {
+    width: 50%;
+    // background-color: #fff;
+    // border: 1px solid #ddd;
+}
+ion-content {
+    --ion-background-color: #ddd;
+}
+
+.field-50-datetime {
+    margin-bottom: -22px;
+}
+
+.section-title
+{
+  font-size: 1.3rem;
+  line-height: 1.2;
+  letter-spacing: 1.1px;
+  text-align: center;
+  color: green;
+  font-weight: 400;
+  margin: 0px;
+}
+
+h3.schedule-month {
+	font-size: 1.2rem;
+	font-weight: 500;
+	text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+h2.list-big-number
+{
+	text-align: right;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 0.2em;
+}
+
+.residual-value {
+  color: red;
+  text-align: right;
+  margin-right: 0.2em;
+}
+.item-name {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.item-title {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.menu-style {
+  --background: white;
+  --ion-background-color: white;
 }

@@ -85,7 +85,7 @@ export class ProductListPage implements OnInit {
     return csv
   }
 
-  ionViewDidLoad() {
+  ngOnInit() {
     //this.loading.present();
     this.setFilteredItems();
   }
@@ -198,9 +198,6 @@ export class ProductListPage implements OnInit {
   //   this.products.splice(index, 1);
   //   this.productsService.deleteProduct(product);
   // }
-
-  ngOnInit() {
-  }
 
   getProductsPage(keyword, page, type='all'){
     return new Promise((resolve, reject)=>{

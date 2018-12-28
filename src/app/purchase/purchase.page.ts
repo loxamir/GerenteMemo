@@ -157,6 +157,9 @@ export class PurchasePage implements OnInit {
       //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
+      this.languages = this.languageService.getLanguages();
+      this.translate.setDefaultLang('es');
+      this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
       this.avoidAlertMessage = false;
     }

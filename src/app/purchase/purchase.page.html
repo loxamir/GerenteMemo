@@ -18,7 +18,7 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-row>
+  <!-- <ion-row>
     <ion-col width-30>
         <ion-button class="clicked">
           <span class="state-label">Presupuesto</span>
@@ -48,6 +48,39 @@
     <ion-col width-30 class="field-label" no-padding >
         <h4 class="sumary-value negative" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{purchaseForm.value.residual|number:'1.0'}}</h4>
     </ion-col>
+  </ion-row> -->
+
+  <ion-row>
+    <ion-item
+    no-padding
+     class="summary-50">
+      <h4 class="field-label">{{'TOTAL' | translate}}</h4>
+      <h4 class="field-value" style="color:blue">$ {{purchaseForm.value.total|number:'1.0'}}</h4>
+    </ion-item>
+
+    <ion-item
+    no-padding
+     class="summary-50">
+      <h4 class="field-label">{{'Pagar' | translate}}</h4>
+      <h4 class="field-value" style="color:red">$ {{purchaseForm.value.residual|number:'1.0'}}</h4>
+    </ion-item>
+  </ion-row>
+  <ion-row style="margin-top:-5px">
+    <ion-col size="4" style="margin-left:-5px;">
+      <div class="clicked arron">
+        <span class="state-label">Presupuesto</span>
+      </div>
+    </ion-col>
+    <ion-col size="4">
+      <div [class.unclicked]="purchaseForm.value.state=='QUOTATION'" [class.clicked]="purchaseForm.value.state!='QUOTATION'" class="arrow">
+        <span class="state-label">Confirmada</span>
+      </div>
+    </ion-col>
+    <ion-col size="4">
+      <div [class.unclicked]="purchaseForm.value.state!='PAID'" [class.clicked]="purchaseForm.value.state=='PAID'" class="arrow">
+        <span class="state-label">Pagada</span>
+      </div>
+    </ion-col>
   </ion-row>
 
 
@@ -72,20 +105,15 @@
         <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
         <h4 class="field-value">{{purchaseForm.value.paymentCondition && purchaseForm.value.paymentCondition.name || 'Selecionar'}}</h4>
       </ion-item>
-      <ion-item no-padding class="item-content"
-      class="field-50">
-      <!-- <ion-col no-padding> -->
-        <!-- <ion-label>{{'DATE' | translate }}</ion-label> -->
-        <ion-label position="floating" class="field-label">{{'DATE' | translate }}</ion-label>
-        <ion-datetime class="purchase-date"
-          displayFormat="DD/MM/YYYY"
-          pickerFormat="DD/MM/YYYY"
-          class="task-date"
-          formControlName="date"
-          [disabled]="purchaseForm.value.state!='QUOTATION'">
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'DATE' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="date"
+        [disabled]="purchaseForm.value.state!='QUOTATION'">
         </ion-datetime>
-      <!-- </ion-col> -->
-    </ion-item>
+      </ion-item>
     </ion-row>
 
     <ion-row>

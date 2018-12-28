@@ -52,7 +52,7 @@ export class ContactPage implements OnInit {
     // this.route.params.subscribe(...);
   }
   goBack(){
-    this.navCtrl.navigateBack('/contacts');
+    this.navCtrl.navigateBack('/contact-list');
   }
   ngOnInit() {
     this.contactForm = this.formBuilder.group({

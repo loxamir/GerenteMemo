@@ -17,9 +17,32 @@ import { IonicStorageModule } from '@ionic/storage';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
+// Custom Imports
+import { ProductListPage } from './product-list/product-list.page';
+import { PaymentConditionListPage } from './payment-condition-list/payment-condition-list.page';
+import { ContactListPage } from './contact-list/contact-list.page';
+import { CurrencyListPage } from './currency-list/currency-list.page';
+import { ReceiptPage } from './receipt/receipt.page';
+import { InvoicePage } from './invoice/invoice.page';
+
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
+  declarations: [
+    AppComponent,
+    ContactListPage,
+    CurrencyListPage,
+    PaymentConditionListPage,
+    ProductListPage,
+    ReceiptPage,
+    InvoicePage,
+  ],
+  entryComponents: [
+    ContactListPage,
+    CurrencyListPage,
+    PaymentConditionListPage,
+    ProductListPage,
+    ReceiptPage,
+    InvoicePage,
+  ],
   imports: [
     BrowserModule,
     FormsModule,

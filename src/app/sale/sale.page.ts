@@ -15,7 +15,7 @@ import { LanguageModel } from "../services/language/language.model";
 import { ContactListPage } from '../contact-list/contact-list.page';
 //import { SaleItemPage } from '../sale-item/sale-item';
 //import { CashMovePage } from '../cash/move/cash-move';
-// import { ProductService } from '../product/product.service';
+import { ProductService } from '../product/product.service';
 //import { SalesPage } from '../sales/sales';
 import { ProductListPage } from '../product-list/product-list.page';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
@@ -127,7 +127,7 @@ export class SalePage implements OnInit {
       public formBuilder: FormBuilder,
       // public app: App,
       public alertCtrl: AlertController,
-      // public productService: ProductService,
+      public productService: ProductService,
       // public plannedService: PlannedService,
       // public cashMoveService: CashMoveService,
       // public stockMoveService: StockMoveService,
@@ -1380,5 +1380,7 @@ export class SalePage implements OnInit {
         return this.pouchdbService.deleteDoc(sale);
     //  }
     }
-
+    goBack(){
+      this.navCtrl.navigateBack('/sale-list');
+    }
 }

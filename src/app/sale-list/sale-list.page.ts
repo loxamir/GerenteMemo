@@ -10,6 +10,9 @@ import { SalePage } from '../sale/sale.page';
 // import { SalesPopover } from './sales.popover';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
+import { LanguageModel } from "../services/language/language.model";
 
 @Component({
   selector: 'app-sale-list',
@@ -21,6 +24,7 @@ export class SaleListPage implements OnInit {
   loading: any;
   searchTerm: string = '';
   page = 0;
+  languages: Array<LanguageModel>;
 
   constructor(
     public navCtrl: NavController,
@@ -31,8 +35,13 @@ export class SaleListPage implements OnInit {
     public route: ActivatedRoute,
     public file: File,
     public pouchdbService: PouchdbService,
+    public languageService: LanguageService,
+    public translate: TranslateService,
   ) {
     //this.loading = //this.loadingCtrl.create();
+    this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this.events.subscribe('changed-sale', (change)=>{
       this.handleChange(this.sales, change);
     })

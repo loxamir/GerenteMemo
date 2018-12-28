@@ -46,8 +46,8 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   // declarations: [PurchasePage]
-  declarations: [PurchasePage, PaymentConditionListPage, ProductListPage, ContactListPage, CurrencyListPage, ReceiptPage, InvoicePage],
-  entryComponents: [PaymentConditionListPage, ProductListPage, ContactListPage, CurrencyListPage, ReceiptPage, InvoicePage],
+  declarations: [PurchasePage],
+  entryComponents: [],
   providers: [
     BluetoothSerial,
     Printer,

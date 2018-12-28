@@ -50,7 +50,7 @@ export class ContactListPage implements OnInit {
   }
 
   ngOnInit() {
-    // this.setFilteredItems();
+    this.setFilteredItems();
   }
 
   gotoContact(){

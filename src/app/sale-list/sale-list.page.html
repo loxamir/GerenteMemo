@@ -18,38 +18,37 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="list-mini-content">
+<ion-content>
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
-    <ion-item-sliding class="list-item" *ngFor="let item of sales">
-      <ion-item no-padding (click)="openSale(item)" style="margin-bottom: 0px; margin-top:0px;">
-        <ion-card class="list-card" style="border-radius: 5px;">
+    <ion-item-sliding *ngFor="let item of sales">
+      <ion-item no-padding (click)="openSale(item)">
+        <ion-card class="list-card" no-padding>
           <ion-row>
             <!-- <ion-col no-padding width-20 class="schedule-date">
               <h2 class="list-big-number">{{item.code}}</h2>
             </ion-col> -->
             <ion-col>
-              <h3 class="item-title"><b>{{ item.contact_name || 'No Informado'}}</b></h3>
+              <h3 class="item-name"><b>{{ item.contact_name || 'No Informado'}}</b></h3>
             </ion-col>
           </ion-row>
      <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-35 class="schedule-date">
+        <ion-col no-padding size="6">
           <h3 class="schedule-month">{{item.date|date: 'dd/MM/yyyy'}}</h3>
           <h3 class="item-title">{{item.payment_name | translate}}</h3>
         </ion-col>
-        <ion-col no-padding width-65 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        <ion-col no-padding size="6" align-self-center>
           <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.total| number:'1.0'}}</h2>
           <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.0'}}</h2>
-          <div *ngIf="item.residual != 0 && item.state!='CANCELED'" style="color: red;">
+          <div *ngIf="item.residual != 0 && item.state!='CANCELED'" class="residual-value">
             $ {{ item.residual | number:'1.0' }}
           </div>
         </ion-col>
       </ion-row>
       <ion-row no-padding>
-        <ion-col no-padding
-        style="text-align: center;border-radius: 4px;"
+        <ion-col no-padding class="list-tag"
         [class.quotation]="item.state=='QUOTATION'"
         [class.confirmed]="item.state=='CONFIRMED'"
         [class.paid]="item.state=='PAID'"
@@ -73,7 +72,7 @@
   <ion-row style="height:15px;">
   </ion-row>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createSale()" class="add-sale-button">
+      <ion-fab-button (click)="createSale()" color="primary">
           <ion-icon name="add">
           </ion-icon>
       </ion-fab-button>
