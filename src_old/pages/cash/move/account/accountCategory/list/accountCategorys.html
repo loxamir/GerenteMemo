@@ -1,27 +1,11 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button> -->
-    <!-- <ion-title *ngIf="!has_search">{{ 'CONTACTS' | translate}}</ion-title> -->
     <ion-searchbar
       placeholder="Buscar Categoria"
       [(ngModel)]="searchTerm"
       (ionInput)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only color="royal" *ngIf="!has_search"
-        (tap)="setSearch()">
-        <ion-icon name="search"></ion-icon>
-      </ion-button>
-      <ion-button icon-only color="royal" *ngIf="has_search"
-        (tap)="setSearch()">
-        <ion-icon name="close"></ion-icon>
-      </ion-button> -->
-      <!-- <ion-button icon-only color="royal"
-              (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -30,11 +14,6 @@
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <!-- <ion-searchbar
-    placeholder="Busqueda"
-    [(ngModel)]="searchTerm"
-    (ionInput)="setFilteredItems()">
-  </ion-searchbar> -->
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of accountCategorys">
       <ion-item no-padding >
@@ -67,10 +46,10 @@
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
-  <ion-fab bottom right>
-      <ion-fab-button (click)="createAccountCategory()" color="green">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="createAccountCategory()">
           <ion-icon name="add">
           </ion-icon>
-      </ion-button>
+      </ion-fab-button>
   </ion-fab>
 </ion-content>

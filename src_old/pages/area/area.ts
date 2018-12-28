@@ -49,7 +49,7 @@ export class AreaPage {
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
-    this._id = this.navParams.data._id;
+    this._id = this.route.snapshot.paramMap.get(_id);
     this.events.subscribe('changed-area-move', (change)=>{
       this.areaService.handleChange(this.areaForm.value.moves, change);
     })

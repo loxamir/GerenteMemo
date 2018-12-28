@@ -112,7 +112,7 @@ export class InvoicePage {
     //this.loading = //this.loadingCtrl.create();
     this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
-    this._id = this.navParams.data._id;
+    this._id = this.route.snapshot.paramMap.get(_id);
     this.type = this.navParams.data.type;
     this.avoidAlertMessage = false;
   }

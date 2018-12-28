@@ -1,8 +1,5 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button> -->
     <ion-title>{{ 'ACCOUNT' | translate }}</ion-title>
     <ion-buttons slot="end" [hidden]="!accountForm.dirty">
       <ion-button (click)="buttonSave()">
@@ -13,18 +10,6 @@
 </ion-header>
 
 <ion-content class="account-content">
-  <!-- <div class="user-image-content">
-    <ion-row no-padding class="user-image-row">
-      <ion-col no-padding width-40>
-        <preload-image class="user-image" [ratio]="{w:1, h:1}" (click)="openImagePicker()" [src]="accountForm.value.image" alt="this is the image" title="IMAGE!"></preload-image>
-      </ion-col>
-    </ion-row>
-    <ion-row no-padding class="user-image-row">
-      <ion-col no-padding width-60>
-        <button class="image-action-button" ion-button outline block small (click)="openImagePicker()">{{ 'CHANGE_PLACE_PICTURE' | translate}}</ion-button>
-      </ion-col>
-    </ion-row>
-  </div> -->
 
   <form class="sample-form validations-form" [formGroup]="accountForm"  (ngSubmit)="onSubmit(accountForm.value)">
     <section class="form-section">
@@ -44,12 +29,12 @@
 
 
       <ion-card class="list-card"
-      class="sumary-label"
+      class="field-label"
       no-padding
       (click)="selectCategory()"
       style="width: calc(50% - 20px);margin-bottom: 4%;margin-top: 1%;">
-        <h4 class="sumary-label">{{'Categoria' | translate}}</h4>
-        <h4 class="client-name">{{accountForm.value.category && accountForm.value.category.name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'Categoria' | translate}}</h4>
+        <h4 class="field-value">{{accountForm.value.category && accountForm.value.category.name || 'Selecionar'}}</h4>
       </ion-card>
       <ion-item>
         <ion-label position="floating">{{'CODE' | translate}}</ion-label>
@@ -86,24 +71,6 @@
          <ion-label>{{'Conta a Cobrar' | translate}}</ion-label>
          <ion-toggle formControlName="receivable"></ion-toggle>
       </ion-item>
-      <!-- <ion-item>
-        <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
-        <ion-input type="text" formControlName="address"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
-        <ion-input type="text" formControlName="phone"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">{{'EMAIL' | translate}}</ion-label>
-        <ion-input type="text" formControlName="email"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">{{'DOCUMENT' | translate}}</ion-label>
-        <ion-input type="text" formControlName="document"></ion-input>
-      </ion-item> -->
 
       <ion-item>
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
@@ -112,7 +79,6 @@
 
     </section>
 
-    <!--ion-button full type="submit" [disabled]="!accountForm.valid">{{'SUBMIT' | translate}}</ion-button-->
   </form>
 
 </ion-content>

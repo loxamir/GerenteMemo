@@ -8,15 +8,15 @@
       *ngIf="has_search">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <ion-button icon-only color="royal" *ngIf="!has_search"
+      <ion-button icon-only  *ngIf="!has_search"
         (tap)="setSearch()">
         <ion-icon name="search"></ion-icon>
       </ion-button>
-      <ion-button icon-only color="royal" *ngIf="has_search"
+      <ion-button icon-only  *ngIf="has_search"
         (tap)="setSearch()">
         <ion-icon name="close"></ion-icon>
       </ion-button>
-      <ion-button icon-only color="royal"
+      <ion-button icon-only 
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
@@ -25,21 +25,13 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <!-- <ion-searchbar
-    placeholder="Busqueda"
-    [(ngModel)]="searchTerm"
-    (ionInput)="setFilteredItems()">
-  </ion-searchbar> -->
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of paymentConditionList">
       <ion-item no-padding>
         <ion-card class="list-card">
       <ion-row style="padding-top:10px; padding-bottom:10px;" class="content-row one-line">
-        <!-- You can limit the rows of the description by using the class one-line. If you remove it, all the content from the row will be shown -->
         <ion-col width-90 class="payment-condition" (click)="selectPaymentCondition(item)">
           <h3 class="item-title">{{item.name}}</h3>
-          <!-- <h3 class="item-title">{{item.sale_rate}}</h3> -->
-          <!-- <p class="item-description">{{item.purchase_rate}}</p> -->
         </ion-col>
         <ion-col width-10 (click)="openPaymentCondition(item)" class="item-icon">
           <ion-icon name="arrow-forward"></ion-icon>
@@ -48,14 +40,11 @@
 </ion-card>
     </ion-item>
       <ion-item-options>
-        <!-- <ion-button icon-only color="primary" (click)="deletePaymentCondition(item)">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button> -->
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
-  <ion-fab bottom right>
-      <ion-fab-button (click)="createPaymentCondition()" color="green">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="createPaymentCondition()">
           <ion-icon name="add">
           </ion-icon>
       </ion-button>

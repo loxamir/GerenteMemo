@@ -74,8 +74,8 @@
       </ion-card>
       <ion-card class="list-card" *ngIf="fieldForm.value.type == 'list'">
         <ion-item style="background-color: white" (click)="selectActivity()">
-          <h4 class="sumary-label">{{'ACTIVITY' | translate }}</h4>
-          <h4 class="client-name">{{fieldForm.value.activity.name || 'Selecionar'}}</h4>
+          <h4 class="field-label">{{'ACTIVITY' | translate }}</h4>
+          <h4 class="field-value">{{fieldForm.value.activity.name || 'Selecionar'}}</h4>
         </ion-item>
       </ion-card>
       <ion-card class="list-card" *ngIf="fieldForm.value.type == 'button'">
@@ -91,7 +91,7 @@
               <ion-item  (click)="editFieldItem(attribute, i)" style="border: 1px solid #ddd;height: 50px;">
                 <ion-row>
                   <ion-col no-padding>
-                    <h4 class="sumary-label">{{attribute.label}}</h4>
+                    <h4 class="field-label">{{attribute.label}}</h4>
                     <h4 class="user-name">{{attribute.name}}</h4>
                   </ion-col>
                 </ion-row>

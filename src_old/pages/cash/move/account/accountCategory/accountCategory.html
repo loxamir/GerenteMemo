@@ -29,7 +29,7 @@
 
       <ion-item>
 
-            <h4 class="sumary-label">Tipo</h4>
+            <h4 class="field-label">Tipo</h4>
             <ion-select class="payment-term" formControlName="type"
               cancelText="{{ 'CANCEL' | translate }}"
               okText="{{ 'OK' | translate }}">
@@ -82,12 +82,12 @@
         <ion-input type="text" formControlName="code" autocomplete='name'></ion-input>
       </ion-item>
       <ion-card class="list-card"
-      class="sumary-label"
+      class="field-label"
       no-padding
       (click)="selectTitle()"
       style="width: calc(50% - 20px);margin-bottom: 4%;margin-top: 1%;">
-        <h4 class="sumary-label">{{'Titulo' | translate}}</h4>
-        <h4 class="client-name">{{accountCategoryForm.value.title && accountCategoryForm.value.title.name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'Titulo' | translate}}</h4>
+        <h4 class="field-value">{{accountCategoryForm.value.title && accountCategoryForm.value.title.name || 'Selecionar'}}</h4>
       </ion-card>
       <ion-item>
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>

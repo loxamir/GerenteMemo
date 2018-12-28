@@ -6,7 +6,7 @@
       (ionInput)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <ion-button icon-only color="royal"
+      <ion-button icon-only 
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
@@ -23,9 +23,6 @@
     <ion-item no-padding (click)="selectCashMove(item)" style="margin-bottom: 0px; margin-top:0px;">
       <ion-card class="list-card" style="border-radius: 5px;">
         <ion-row no-padding>
-          <!-- <ion-col width-25 no-padding>
-            <h2 class="list-big-number">{{item.code}}</h2>
-          </ion-col> -->
           <ion-col no-padding>
             <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
           </ion-col>
@@ -77,9 +74,9 @@
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createCashMove()" color="green">
+      <ion-fab-button (click)="createCashMove()">
           <ion-icon name="add">
           </ion-icon>
-      </ion-button>
+      </ion-fab-button>
   </ion-fab>
 </ion-content>

@@ -11,19 +11,19 @@
       (ionInput)="searchItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only color="royal" *ngIf="!has_search"
+      <!-- <ion-button icon-only  *ngIf="!has_search"
         (tap)="setSearch()">
         <ion-icon name="search"></ion-icon>
       </ion-button>
-      <ion-button icon-only color="royal" *ngIf="has_search"
+      <ion-button icon-only  *ngIf="has_search"
         (tap)="setSearch()">
         <ion-icon name="close"></ion-icon>
       </ion-button> -->
-      <button *ngIf="!select" ion-button icon-only color="royal" class="more-button"
+      <button *ngIf="!select" ion-button icon-only  class="more-button"
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
-      <button  *ngIf="select" ion-button icon-only color="royal"
+      <button  *ngIf="select" ion-button icon-only 
               (tap)="closeModal()">
         <ion-icon name="close"></ion-icon>
       </ion-button>
@@ -91,7 +91,7 @@
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createProduct()" color="green">
+      <ion-fab-button (click)="createProduct()">
           <ion-icon name="add">
           </ion-icon>
       </ion-fab-button>

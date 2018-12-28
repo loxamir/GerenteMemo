@@ -9,7 +9,7 @@
       </ion-row>
     </ion-title>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only color="royal" (tap)="presentPopover($event)">
+      <!-- <ion-button icon-only  (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button> -->
     </ion-buttons>
@@ -19,14 +19,14 @@
 <ion-content class="report-content" style="background-color: #ddd">
   <form class="sample-form validations-form" [formGroup]="reportPurchaseForm" (ngSubmit)="onSubmit(reportPurchaseForm.value)">
     <ion-row justify-content-center>
-      <ion-card class="list-card" class="sumary-label" no-padding style="width: calc(50% - 20px);margin-bottom: 2%;margin-top: 1%;">
+      <ion-card class="list-card" class="field-label" no-padding style="width: calc(50% - 20px);margin-bottom: 2%;margin-top: 1%;">
         <ion-col no-padding width-50>
           <ion-label>{{'Desde' | translate }}</ion-label>
           <ion-datetime class="purchase-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" (ionChange)="goNextStep()" formControlName="dateStart">
           </ion-datetime>
         </ion-col>
       </ion-card>
-      <ion-card class="list-card" class="sumary-label" no-padding style="width: calc(50% - 20px);margin-bottom: 2%;margin-top: 1%;">
+      <ion-card class="list-card" class="field-label" no-padding style="width: calc(50% - 20px);margin-bottom: 2%;margin-top: 1%;">
         <ion-col no-padding>
           <ion-label>{{'Hasta' | translate }}</ion-label>
           <ion-datetime class="purchase-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" (ionChange)="goNextStep()" formControlName="dateEnd">
@@ -260,12 +260,12 @@
     <ion-fab-button (click)="share()">
           <ion-icon name="share">
           </ion-icon>
-      </ion-button>
+      </ion-fab-button>
   </ion-fab>
-  <ion-fab bottom right>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="printAndroid()">
           <ion-icon name="print">
           </ion-icon>
-      </ion-button>
+      </ion-fab-button>
   </ion-fab>
 </ion-content>

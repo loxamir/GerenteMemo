@@ -36,7 +36,7 @@
           </ion-col>
           <ion-col width-40>
             <h4 class="section-title">{{'Campos' | translate}}</h4>
-            <h4 class="client-name">$ {{activityForm.value.input_amount|number:'1.0'}}</h4>
+            <h4 class="field-value">$ {{activityForm.value.input_amount|number:'1.0'}}</h4>
           </ion-col>
           <ion-col width-40 class="item-content">
             <ion-button class="print-invoice"
@@ -56,19 +56,19 @@
                 <ion-card class="list-card">
               <ion-row no-padding class="content-row one-line">
                 <ion-col no-padding width-40 class="item-content" style="white-space: normal;">
-                  <h4 class="sumary-label">Titulo</h4>{{item.sequence}}
+                  <h4 class="field-label">Titulo</h4>{{item.sequence}}
                 </ion-col>
                 <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
-                  <h4 class="sumary-label">Sequencia</h4>{{item.label}}
+                  <h4 class="field-label">Sequencia</h4>{{item.label}}
                 </ion-col>
                 <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
-                  <h4 class="sumary-label">Nombre</h4> {{item.name}}
+                  <h4 class="field-label">Nombre</h4> {{item.name}}
                 </ion-col>
                 <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
-                  <h4 class="sumary-label">Tipo</h4>{{item.type}}
+                  <h4 class="field-label">Tipo</h4>{{item.type}}
                 </ion-col>
                 <!-- <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
-                  <h4 class="sumary-label">SubTotal</h4>{{item.quantity*item.price}}
+                  <h4 class="field-label">SubTotal</h4>{{item.quantity*item.price}}
                 </ion-col> -->
               </ion-row>
             </ion-card>

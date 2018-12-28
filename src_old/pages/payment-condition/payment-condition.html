@@ -29,20 +29,20 @@
         </ng-container>
       </div>
       <ion-card class="list-card"
-      class="sumary-label"
+      class="field-label"
       no-padding
       (click)="selectAccountTo()"
       style="width: calc(50% - 20px);margin-bottom: 4%;margin-top: 1%;">
-        <h4 class="sumary-label">{{'Cuenta para Venta' | translate}}</h4>
-        <h4 class="client-name">{{paymentConditionForm.value.accountTo && paymentConditionForm.value.accountTo.name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'Cuenta para Venta' | translate}}</h4>
+        <h4 class="field-value">{{paymentConditionForm.value.accountTo && paymentConditionForm.value.accountTo.name || 'Selecionar'}}</h4>
       </ion-card>
       <ion-card class="list-card"
-      class="sumary-label"
+      class="field-label"
       no-padding
       (click)="selectAccountFrom()"
       style="width: calc(50% - 20px);margin-bottom: 4%;margin-top: 1%;">
-        <h4 class="sumary-label">{{'Cuenta para Compra' | translate}}</h4>
-        <h4 class="client-name">{{paymentConditionForm.value.accountFrom && paymentConditionForm.value.accountFrom.name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'Cuenta para Compra' | translate}}</h4>
+        <h4 class="field-value">{{paymentConditionForm.value.accountFrom && paymentConditionForm.value.accountFrom.name || 'Selecionar'}}</h4>
       </ion-card>
       <ion-list>
         <ion-item-sliding no-padding class="list-item" *ngFor="let item of paymentConditionForm.value.items">
@@ -67,8 +67,8 @@
           </ion-item-options>
         </ion-item-sliding>
       </ion-list>
-      <ion-fab bottom right>
-          <ion-fab-button (click)="addItem()" color="green">
+      <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+          <ion-fab-button (click)="addItem()">
               <ion-icon name="add">
               </ion-icon>
           </ion-button>

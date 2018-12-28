@@ -44,11 +44,11 @@
         </ion-list>
       </ion-item> -->
       <ion-card class="list-card"
-      class="sumary-label"
+      class="field-label"
       no-padding
       (click)="selectResponsible()">
-        <h4 class="sumary-label">{{'Responsable' | translate}}</h4>
-        <h4 class="client-name">{{workForm.value.responsible && workForm.value.responsible.name || 'Nadie'}}</h4>
+        <h4 class="field-label">{{'Responsable' | translate}}</h4>
+        <h4 class="field-value">{{workForm.value.responsible && workForm.value.responsible.name || 'Nadie'}}</h4>
       </ion-card>
       <ion-card class="list-card">
       <!-- <ion-item  style="background-color: white">

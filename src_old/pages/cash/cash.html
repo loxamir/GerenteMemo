@@ -9,7 +9,7 @@
           <ion-button (click)="buttonSave()" [hidden]="!cashForm.dirty">
             {{ 'SAVE' | translate }}
           </ion-button>
-          <ion-button icon-only color="royal"
+          <ion-button icon-only 
                   (tap)="presentPopover($event)">
             <ion-icon name="more"></ion-icon>
           </ion-button>
@@ -39,8 +39,8 @@
            no-padding
            (click)="selectCurrency()"
            class="field-50">
-            <h4 class="sumary-label">{{'CURRENCY' | translate }}</h4>
-            <h4 class="client-name">{{cashForm.value.currency && cashForm.value.currency.name || 'Selecionar'}}</h4>
+            <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
+            <h4 class="field-value">{{cashForm.value.currency && cashForm.value.currency.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item
            no-padding

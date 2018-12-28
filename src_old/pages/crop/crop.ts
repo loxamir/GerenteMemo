@@ -49,7 +49,7 @@ export class CropPage {
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
-    this._id = this.navParams.data._id;
+    this._id = this.route.snapshot.paramMap.get(_id);
     this.events.subscribe('changed-crop-move', (change)=>{
       this.cropService.handleChange(this.cropForm.value.moves, change);
     })

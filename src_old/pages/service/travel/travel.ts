@@ -36,7 +36,7 @@ export class ServiceTravelPage {
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
-    this._id = this.navParams.data._id;
+    this._id = this.route.snapshot.paramMap.get(_id);
     // this.today = new Date().toISOString();
   }
 

@@ -16,7 +16,7 @@
        [hidden]="!serviceForm.dirty">
         {{ 'SAVE' | translate }}
       </ion-button>
-      <ion-button icon-only color="royal"
+      <ion-button icon-only 
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
@@ -63,19 +63,19 @@
     </ion-col>
   </ion-row>
   <ion-row justify-content-center>
-    <ion-col width-20 class="sumary-label" no-padding >
-      <h4 class="sumary-label">{{'TOTAL' | translate }}</h4>
+    <ion-col width-20 class="field-label" no-padding >
+      <h4 class="field-label">{{'TOTAL' | translate }}</h4>
     </ion-col>
-    <ion-col width-30 class="sumary-label" no-padding >
+    <ion-col width-30 class="field-label" no-padding >
       <h4 class="sumary-value draft"
        style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">
        $ {{serviceForm.value.total|number:'1.0'}}
      </h4>
     </ion-col>
-    <ion-col width-20 class="sumary-label" no-padding *ngIf="!serviceForm.value.production">
-        <h4 class="sumary-label">{{'Cobrar' | translate }}</h4>
+    <ion-col width-20 class="field-label" no-padding *ngIf="!serviceForm.value.production">
+        <h4 class="field-label">{{'Cobrar' | translate }}</h4>
     </ion-col>
-    <ion-col width-30 class="sumary-label" no-padding *ngIf="!serviceForm.value.production">
+    <ion-col width-30 class="field-label" no-padding *ngIf="!serviceForm.value.production">
         <h4 class="sumary-value negative"
          style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">
          $ {{serviceForm.value.residual|number:'1.0'}}
@@ -95,16 +95,16 @@
           (click)="selectContact()"
           *ngIf="!serviceForm.value.production"
            class="field-100">
-            <h4 class="sumary-label">{{'CLIENT' | translate}}</h4>
-            <h4 class="client-name">{{serviceForm.value.contact && serviceForm.value.contact.name || 'Selecionar'}}</h4>
+            <h4 class="field-label">{{'CLIENT' | translate}}</h4>
+            <h4 class="field-value">{{serviceForm.value.contact && serviceForm.value.contact.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item
           no-padding
           (click)="selectProduct()"
           *ngIf="serviceForm.value.production"
            class="field-100">
-            <h4 class="sumary-label">{{'PRODUCED_PRODUCT' | translate}}</h4>
-            <h4 class="client-name">{{serviceForm.value.product && serviceForm.value.product.name || 'Selecionar'}}</h4>
+            <h4 class="field-label">{{'PRODUCED_PRODUCT' | translate}}</h4>
+            <h4 class="field-value">{{serviceForm.value.product && serviceForm.value.product.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item
            no-padding
@@ -139,13 +139,13 @@
            (click)="selectPaymentCondition()"
            *ngIf="!serviceForm.value.production && (serviceForm.value.state == 'CONFIRMED' || serviceForm.value.state == 'PAID' || serviceForm.value.state == 'STARTED')"
            class="field-50">
-            <h4 class="sumary-label">{{'Condición de Pago' | translate }}</h4>
-            <h4 class="client-name">{{serviceForm.value.paymentCondition && serviceForm.value.paymentCondition.name || 'Selecionar'}}</h4>
+            <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
+            <h4 class="field-value">{{serviceForm.value.paymentCondition && serviceForm.value.paymentCondition.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item no-padding class="item-content"
           *ngIf="!serviceForm.value.production && (serviceForm.value.state == 'CONFIRMED' || serviceForm.value.state == 'PAID' || serviceForm.value.state == 'STARTED')"
           class="field-50">
-            <ion-label position="floating" class="sumary-label">{{'DATE' | translate }}</ion-label>
+            <ion-label position="floating" class="field-label">{{'DATE' | translate }}</ion-label>
             <ion-datetime class="sale-date"
               displayFormat="DD/MM/YYYY"
               pickerFormat="DD/MM/YYYY"
@@ -157,7 +157,7 @@
         <ion-item no-padding class="item-content"
         *ngIf="!(!serviceForm.value.production && (serviceForm.value.state == 'CONFIRMED' || serviceForm.value.state == 'PAID' || serviceForm.value.state == 'STARTED'))"
         class="field-100">
-          <ion-label position="floating" class="sumary-label">{{'DATE' | translate }}</ion-label>
+          <ion-label position="floating" class="field-label">{{'DATE' | translate }}</ion-label>
           <ion-datetime class="sale-date"
             displayFormat="DD/MM/YYYY"
             pickerFormat="DD/MM/YYYY"
@@ -244,7 +244,7 @@
             </ion-col>
             <ion-col width-75 (click)="showWorks()">
               <h4 class="section-title">{{'SERVICES_DONE' | translate}}</h4>
-              <h4 class="client-name">$ {{serviceForm.value.work_amount|number:'1.0'}}</h4>
+              <h4 class="field-value">$ {{serviceForm.value.work_amount|number:'1.0'}}</h4>
             </ion-col>
             <ion-col width-15 class="item-content"
             *ngIf="serviceForm.value.state == 'STARTED'">
@@ -263,23 +263,23 @@
                   >
                 <ion-row no-padding class="content-row one-line">
                   <!-- <ion-col no-padding width-85 class="item-content" style="white-space: normal;">
-                    <h4 class="sumary-label">Descripción</h4>{{item.description}}
+                    <h4 class="field-label">Descripción</h4>{{item.description}}
                   </ion-col>
                   <ion-col width-15>
-                    <h4 class="sumary-label">Tiempo</h4> {{item.time|number:'1.0'}} hs
+                    <h4 class="field-label">Tiempo</h4> {{item.time|number:'1.0'}} hs
                   </ion-col> -->
 
                   <ion-col width-40 (click)="editWork(item)" class="item-content" style="white-space: normal;">
-                    <h4 class="sumary-label">Descripción</h4>{{item.description}}
+                    <h4 class="field-label">Descripción</h4>{{item.description}}
                   </ion-col>
                   <ion-col width-20 (click)="editWork(item)">
-                    <h4 class="sumary-label">Tiempo</h4> {{item.time|number:'1.0'}}
+                    <h4 class="field-label">Tiempo</h4> {{item.time|number:'1.0'}}
                   </ion-col>
                   <ion-col width-20 (click)="editWorkPrice(item)">
-                    <h4 class="sumary-label">Precio</h4> {{item.price|number:'1.0'}}
+                    <h4 class="field-label">Precio</h4> {{item.price|number:'1.0'}}
                   </ion-col>
                   <ion-col width-20 (click)="editWorkPrice(item)">
-                    <h4 class="sumary-label">Subtotal</h4> {{item.price*item.time|number:'1.0'}}
+                    <h4 class="field-label">Subtotal</h4> {{item.price*item.time|number:'1.0'}}
                   </ion-col>
                 </ion-row>
             </ion-item>
@@ -303,7 +303,7 @@
             </ion-col>
             <ion-col width-75 (click)="showInputs()">
               <h4 class="section-title">{{'Productos Consumidos' | translate}}</h4>
-              <h4 class="client-name">$ {{serviceForm.value.input_amount|number:'1.0'}}</h4>
+              <h4 class="field-value">$ {{serviceForm.value.input_amount|number:'1.0'}}</h4>
             </ion-col>
             <ion-col width-15 class="item-content"
             *ngIf="serviceForm.value.state == 'STARTED'">
@@ -348,11 +348,11 @@
                   <ion-row>
                     <ion-col  width-50 class="item-content"
                     *ngIf="!serviceForm.value.production">
-                      <h4 class="sumary-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
+                      <h4 class="field-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
                     </ion-col>
                     <ion-col  width-50 class="item-content"
                     *ngIf="serviceForm.value.production">
-                      <h4 class="sumary-label">Subtotal</h4> ${{item.cost*item.quantity|number:'1.0'}}
+                      <h4 class="field-label">Subtotal</h4> ${{item.cost*item.quantity|number:'1.0'}}
                     </ion-col>
                   </ion-row>
                   <ion-row>
@@ -393,10 +393,10 @@
                   <ion-card class="list-card">
                 <ion-row no-padding class="content-row one-line">
                   <ion-col no-padding width-85 class="item-content" style="white-space: normal;">
-                    <h4 class="sumary-label">Descripción</h4>{{item.description}}
+                    <h4 class="field-label">Descripción</h4>{{item.description}}
                   </ion-col>
                   <ion-col width-15>
-                    <h4 class="sumary-label">Tiempo</h4> {{item.time|number:'1.0'}}
+                    <h4 class="field-label">Tiempo</h4> {{item.time|number:'1.0'}}
                   </ion-col>
                 </ion-row>
                 </ion-card>
@@ -435,7 +435,7 @@
 
                   <ion-row>
                     <ion-col  width-50 class="item-content">
-                      <h4 class="sumary-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
+                      <h4 class="field-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
                     </ion-col>
                   </ion-row>
                   <ion-row>
@@ -470,16 +470,16 @@
                   <ion-card class="list-card">
                 <ion-row no-padding class="content-row one-line">
                   <ion-col no-padding width-55 class="item-content" style="white-space: normal;">
-                    <h4 class="sumary-label">Product</h4>{{item.description}}
+                    <h4 class="field-label">Product</h4>{{item.description}}
                   </ion-col>
                   <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
-                    <h4 class="sumary-label">Cantidad</h4> {{item.quantity|number:'1.0'}}
+                    <h4 class="field-label">Cantidad</h4> {{item.quantity|number:'1.0'}}
                   </ion-col>
                   <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
-                    <h4 class="sumary-label">Precio</h4>{{item.price}}
+                    <h4 class="field-label">Precio</h4>{{item.price}}
                   </ion-col>
                   <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
-                    <h4 class="sumary-label">SubTotal</h4>{{item.quantity*item.price}}
+                    <h4 class="field-label">SubTotal</h4>{{item.quantity*item.price}}
                   </ion-col>
                 </ion-row>
               </ion-card>
@@ -503,7 +503,7 @@
               </ion-col>
               <ion-col width-75 (click)="showTravels()">
                 <h4 class="section-title">{{'Viaticos' | translate}}</h4>
-                <h4 class="client-name">$ {{serviceForm.value.travel_amount|number:'1.0'}}</h4>
+                <h4 class="field-value">$ {{serviceForm.value.travel_amount|number:'1.0'}}</h4>
               </ion-col>
               <ion-col width-15 class="item-content"
               *ngIf="serviceForm.value.state == 'STARTED'">
@@ -523,13 +523,13 @@
                     >
                     <ion-row no-padding class="content-row one-line">
                       <ion-col width-50 (click)="editTravel(item)">
-                        <h4 class="sumary-label">Distancia</h4>{{item.distance}}
+                        <h4 class="field-label">Distancia</h4>{{item.distance}}
                       </ion-col>
                       <ion-col width-25 (click)="editTravelPrice(item)">
-                        <h4 class="sumary-label">Precio</h4> {{item.price|number:'1.0'}}
+                        <h4 class="field-label">Precio</h4> {{item.price|number:'1.0'}}
                       </ion-col>
                       <ion-col width-25 (click)="editTravelPrice(item)">
-                        <h4 class="sumary-label">Subtotal</h4> {{item.price*item.distance|number:'1.0'}}
+                        <h4 class="field-label">Subtotal</h4> {{item.price*item.distance|number:'1.0'}}
                       </ion-col>
                     </ion-row>
               </ion-item>
@@ -550,10 +550,10 @@
                   <ion-card class="list-card">
                 <ion-row no-padding class="content-row one-line">
                   <ion-col no-padding width-85 class="item-content" style="white-space: normal;">
-                    <h4 class="sumary-label">Distancia</h4>{{item.distance}}
+                    <h4 class="field-label">Distancia</h4>{{item.distance}}
                   </ion-col>
                   <ion-col width-15>
-                    <h4 class="sumary-label">Tiempo</h4> {{item.time|number:'1.0'}}
+                    <h4 class="field-label">Tiempo</h4> {{item.time|number:'1.0'}}
                   </ion-col>
                 </ion-row>
               </ion-card>
@@ -576,8 +576,8 @@
             (click)="selectProduct()"
             *ngIf="serviceForm.value.production"
              class="field-50">
-              <h4 class="sumary-label">{{'PRODUCED_PRODUCT' | translate}}</h4>
-              <h4 class="client-name">{{serviceForm.value.product.name || 'Selecionar'}}</h4>
+              <h4 class="field-label">{{'PRODUCED_PRODUCT' | translate}}</h4>
+              <h4 class="field-value">{{serviceForm.value.product.name || 'Selecionar'}}</h4>
             </ion-item>
             <ion-item
              no-padding
@@ -669,12 +669,12 @@
                 <ion-card class="list-card">
                 <ion-row style="padding-top:10px; padding-bottom:10px;">
                 <ion-col >
-                  <h4 class="sumary-label">{{'NUMBER' | translate}}</h4>
-                  <h4 class="client-name">{{item.number}}</h4>
+                  <h4 class="field-label">{{'NUMBER' | translate}}</h4>
+                  <h4 class="field-value">{{item.number}}</h4>
                 </ion-col>
                 <ion-col >
-                  <h4 class="sumary-label">{{'TAX' | translate}}</h4>
-                  <h4 class="client-name">$ {{item.tax|number:'1.0'}}</h4>
+                  <h4 class="field-label">{{'TAX' | translate}}</h4>
+                  <h4 class="field-value">$ {{item.tax|number:'1.0'}}</h4>
                 </ion-col>
                 <button class="relation-button"
                 [ngClass]="{following: !item.inverse_relation}"
@@ -700,8 +700,8 @@
                   <p class="item-description" rows="2">En {{item.date.toString().split('T')[0]}}</p>
                 </ion-col>
                 <ion-col>
-                  <h4 class="sumary-label">{{'AMOUNT' | translate}}</h4>
-                  <h4 class="client-name">$ {{item.paid|number:'1.0'}}</h4>
+                  <h4 class="field-label">{{'AMOUNT' | translate}}</h4>
+                  <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
                 </ion-col>
                 <button class="relation-button"
                 [ngClass]="{following: !item.inverse_relation}"
@@ -729,13 +729,13 @@
                 <ion-row no-padding (click)="openInvoice(item)" *ngFor="let item of serviceForm.value.invoices" no-padding>
                 <ion-col no-padding>
                   <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
-                  <h4 class="sumary-label">{{'INVOICE' | translate}}</h4>
-                  <h4 class="client-name">{{item.number}}</h4>
+                  <h4 class="field-label">{{'INVOICE' | translate}}</h4>
+                  <h4 class="field-value">{{item.number}}</h4>
                 </ion-col>
                 <ion-col no-padding>
                   <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
-                  <h4 class="sumary-label">{{'AMOUNT' | translate}}</h4>
-                  <h4 class="client-name">$ {{item.total|number:'1.0'}}</h4>
+                  <h4 class="field-label">{{'AMOUNT' | translate}}</h4>
+                  <h4 class="field-value">$ {{item.total|number:'1.0'}}</h4>
                 </ion-col>
                 <!-- <button class="relation-button"
                 [ngClass]="{following: !item.inverse_relation}"
@@ -764,13 +764,13 @@
                 <ion-col no-padding>
                   <!-- <h2 class="item-title" *ngIf="item.state=='CONFIRMED'">{{'RECEIPT' | translate}}</h2>
                   <p class="item-description" rows="2">{{item.}}</p> -->
-                  <h4 class="sumary-label">{{'RECEIPT' | translate}}</h4>
-                  <h4 class="client-name">{{item._id}}</h4>
+                  <h4 class="field-label">{{'RECEIPT' | translate}}</h4>
+                  <h4 class="field-value">{{item._id}}</h4>
                 </ion-col>
                 <ion-col no-padding>
                   <!-- <h2 class="item-title">Monto: ${{item.paid}}</h2> -->
-                  <h4 class="sumary-label">{{'RECEIVED' | translate}}</h4>
-                  <h4 class="client-name">$ {{item.paid|number:'1.0'}}</h4>
+                  <h4 class="field-label">{{'RECEIVED' | translate}}</h4>
+                  <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
                 </ion-col>
                 <button class="relation-button"
                 [ngClass]="{following: !item.inverse_relation}"
@@ -796,7 +796,7 @@
   </form>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="goNextStep()" color="green">
+    <ion-fab-button (click)="goNextStep()">
       <ion-icon name="play" style="margin-left: 5px;">
       </ion-icon>
     </ion-button>

@@ -20,8 +20,8 @@
     *ngIf="this.contact_id != ''"
      no-padding
      class="field-100">
-      <h4 class="sumary-label">{{'CLIENT' | translate}}</h4>
-      <h4 class="client-name">{{this.contact && this.contact.name}}</h4>
+      <h4 class="field-label">{{'CLIENT' | translate}}</h4>
+      <h4 class="field-value">{{this.contact && this.contact.name}}</h4>
     </ion-item>
   </ion-row>
   <ion-row style="background-color: white;">
@@ -91,7 +91,7 @@
   <div style="height:100px">
   </div>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="amountPaid">
-      <ion-fab-button (click)="createPayment()" color="green">
+      <ion-fab-button (click)="createPayment()">
           <ion-icon name="cash">
           </ion-icon>
       </ion-button>
@@ -100,25 +100,25 @@
       </div>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="contact_id==''&& signal=='+'">
-      <ion-fab-button (click)="createReceivableMove()" color="green">
+      <ion-fab-button (click)="createReceivableMove()">
           <ion-icon name="add">
           </ion-icon>
       </ion-button>
   </ion-fab>
-  <ion-fab bottom right *ngIf="contact_id!=''&& signal=='+'">
-      <ion-fab-button (click)="createReceivableMove()" color="green">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="contact_id!=''&& signal=='+'">
+      <ion-fab-button (click)="createReceivableMove()">
           <ion-icon name="add">
           </ion-icon>
       </ion-button>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="contact_id==''&& signal=='-'">
-      <ion-fab-button (click)="createPayableMove()" color="green">
+      <ion-fab-button (click)="createPayableMove()">
           <ion-icon name="add">
           </ion-icon>
       </ion-button>
   </ion-fab>
-  <ion-fab bottom right *ngIf="contact_id!=''&& signal=='-'">
-      <ion-fab-button (click)="createPayableMove()" color="green">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="contact_id!=''&& signal=='-'">
+      <ion-fab-button (click)="createPayableMove()">
           <ion-icon name="add">
           </ion-icon>
       </ion-button>

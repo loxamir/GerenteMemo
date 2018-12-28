@@ -23,8 +23,8 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
-  <ion-fab bottom right>
-      <ion-fab-button (click)="createCategory()" color="green">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="createCategory()">
           <ion-icon name="add">
           </ion-icon>
       </ion-button>
@@ -95,7 +95,7 @@
 <ion-row style="height:15px;">
 </ion-row>
 <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="createCategory()" color="green">
+    <ion-fab-button (click)="createCategory()">
         <ion-icon name="add">
         </ion-icon>
     </ion-button>

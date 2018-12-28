@@ -50,7 +50,7 @@ export class StockMovePage {
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
-    this._id = this.navParams.data._id;
+    this._id = this.route.snapshot.paramMap.get(_id);
     // this.cash_id = this.navParams.data.cash_id;
     this.default_quantity = parseFloat(this.navParams.data.default_quantity||1);
     this.default_name = this.navParams.data.default_name;

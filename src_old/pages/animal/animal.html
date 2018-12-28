@@ -10,7 +10,7 @@
           <ion-button (click)="buttonSave()" [hidden]="!animalForm.dirty">
             {{ 'SAVE' | translate }}
           </ion-button>
-          <ion-button icon-only color="royal"
+          <ion-button icon-only 
                   (tap)="presentPopover($event)">
             <ion-icon name="more"></ion-icon>
           </ion-button>
@@ -71,7 +71,7 @@
     </ion-fab-list>
   </ion-fab> -->
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" class="add-product-button">
-    <ion-fab-button (click)="addActivity()" color="green">
+    <ion-fab-button (click)="addActivity()">
       <ion-icon name="add">
       </ion-icon>
     </ion-button>

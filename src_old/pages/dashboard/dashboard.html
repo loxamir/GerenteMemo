@@ -49,14 +49,14 @@
               <ion-item (click)="openFilter(item)" style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
                 <ion-row>
                   <ion-col no-padding>
-                    <h4 class="sumary-label">Campo</h4>
+                    <h4 class="field-label">Campo</h4>
                     <h4 class="user-name">{{item.field}}</h4>
                   </ion-col>
                   <ion-col no-padding>
                     <h4 class="user-name" style="margin-top: 18px;text-align: center;">{{item.comparation}}</h4>
                   </ion-col>
                   <ion-col no-padding>
-                    <h4 class="sumary-label">Valor</h4>
+                    <h4 class="field-label">Valor</h4>
                     <h4 class="user-name">{{item.value}}</h4>
                   </ion-col>
                 </ion-row>
@@ -124,11 +124,11 @@
               <ion-item style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
                 <ion-row>
                   <ion-col no-padding>
-                    <h4 class="sumary-label">Key</h4>
+                    <h4 class="field-label">Key</h4>
                     <h4 class="user-name">{{item.key}}</h4>
                   </ion-col>
                   <ion-col no-padding>
-                    <h4 class="sumary-label">Value</h4>
+                    <h4 class="field-label">Value</h4>
                     <h4 class="user-name">{{item.value| number:'1.0'}}</h4>
                   </ion-col>
                 </ion-row>
@@ -183,7 +183,7 @@
 
 
   <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="goNextStep()" color="green">
+    <ion-fab-button (click)="goNextStep()">
       <ion-icon name="play" style="margin-left: 5px;">
       </ion-icon>
     </ion-button>

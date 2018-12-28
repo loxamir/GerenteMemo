@@ -7,9 +7,6 @@
     </ion-title>
 
     <ion-buttons slot="end" >
-      <!-- <ion-button (click)="buttonSave()" [hidden]="!receiptForm.dirty">
-        {{ 'SAVE' | translate }}
-      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
   <ion-row justify-content-center>
@@ -17,33 +14,25 @@
     no-padding
     (click)="selectContact()"
      style="width: calc(100% - 0px);background-color: #fff;border: 0px solid #ddd;">
-      <h4 class="sumary-label">{{'CONTACT' | translate}}</h4>
-      <h4 class="client-name">{{receiptForm.value.contact && receiptForm.value.contact.name || ''}}</h4>
+      <h4 class="field-label">{{'CONTACT' | translate}}</h4>
+      <h4 class="field-value">{{receiptForm.value.contact && receiptForm.value.contact.name || ''}}</h4>
     </ion-item>
-    <ion-col width-34 class="sumary-label" no-padding >
-      <h4 class="sumary-label" style="text-align: center;">{{'TOTAL' | translate }}</h4>
+    <ion-col width-34 class="field-label" no-padding >
+      <h4 class="field-label" style="text-align: center;">{{'TOTAL' | translate }}</h4>
       <h4 class="sumary-value draft" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.total|number:'1.0-2'}}</h4>
     </ion-col>
-    <ion-col width-33 class="sumary-label" no-padding >
-      <h4 class="sumary-label" style="text-align: center;">{{'A Cobrar' | translate }}</h4>
+    <ion-col width-33 class="field-label" no-padding >
+      <h4 class="field-label" style="text-align: center;">{{'A Cobrar' | translate }}</h4>
       <h4 class="sumary-value negative" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.residual|number:'1.0-2'}}</h4>
     </ion-col>
-    <ion-col width-33 class="sumary-label" no-padding >
-        <h4 class="sumary-label" style="text-align: center;">{{'Troco' | translate }}</h4>
+    <ion-col width-33 class="field-label" no-padding >
+        <h4 class="field-label" style="text-align: center;">{{'Troco' | translate }}</h4>
         <h4 class="sumary-value positive" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.change|number:'1.0-2'}}</h4>
     </ion-col>
   </ion-row>
 </ion-header>
 <ion-content class="receipt-content" style="background-color: #ddd">
   <form class="sample-form validations-form" [formGroup]="receiptForm" (ngSubmit)="onSubmit(receiptForm.value)">
-    <!-- <ion-item>
-      <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
-      <ion-input #input type="number" formControlName="amount_paid"></ion-input>
-    </ion-item>
-    <ion-item (click)="selectCash(item)">
-      <h4 class="sumary-label">{{'CASH' | translate}}</h4>
-      <h4 class="client-name">{{receiptForm.value.cash_paid.name}}</h4>
-    </ion-item> -->
     <ion-card class="list-card" *ngIf="receiptForm.value.state == 'DRAFT'">
     <ion-row>
     <ion-col>
@@ -57,20 +46,16 @@
       </ion-item>
     </ion-col>
     <ion-col (click)="selectCash()">
-      <h4 class="sumary-label">{{'CASH' | translate}}</h4>
-      <h4 class="client-name">{{receiptForm.value.cash_paid && receiptForm.value.cash_paid.name}}</h4>
+      <h4 class="field-label">{{'CASH' | translate}}</h4>
+      <h4 class="field-value">{{receiptForm.value.cash_paid && receiptForm.value.cash_paid.name}}</h4>
     </ion-col>
     </ion-row>
     <ion-row *ngIf="receiptForm.value.cash_paid.type != 'cash'">
       <ion-col (click)="selectCheck()">
-        <h4 class="sumary-label">{{'Cheque' | translate}}</h4>
-        <h4 class="client-name">{{receiptForm.value.check && receiptForm.value.check.name || 'Sin Cheque'}}</h4>
+        <h4 class="field-label">{{'Cheque' | translate}}</h4>
+        <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'Sin Cheque'}}</h4>
       </ion-col>
     </ion-row>
-    <!-- <ion-item class="switcher-item" style="width: 48%">
-      <ion-label>{{'Crear Factura' | translate}}</ion-label>
-      <ion-toggle formControlName="createInvoice"></ion-toggle>
-    </ion-item> -->
   </ion-card>
         <ion-list no-lines>
           <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.payments">
@@ -78,12 +63,12 @@
               <ion-card class="list-card">
               <ion-row>
               <ion-col (click)="editPaymentAmount(item)">
-                <h4 class="sumary-label">{{'AMOUNT_RECEIVED' | translate}}</h4>
-                <h4 class="client-name">${{item.amount}}</h4>
+                <h4 class="field-label">{{'AMOUNT_RECEIVED' | translate}}</h4>
+                <h4 class="field-value">${{item.amount}}</h4>
               </ion-col>
               <ion-col (click)="editPaymentCash(item)">
-                <h4 class="sumary-label">{{'CASH' | translate}}</h4>
-                <h4 class="client-name">{{item.cash_id}}</h4>
+                <h4 class="field-label">{{'CASH' | translate}}</h4>
+                <h4 class="field-value">{{item.cash_id}}</h4>
               </ion-col>
               </ion-row>
             </ion-card>
@@ -94,25 +79,22 @@
         </ion-list>
         <ion-row>
           <ion-col class="item-content">
-            <button style="background-color: red" ion-button class="print-receipt" (click)="exitPage()">Cerrar</ion-button>
+            <ion-button style="background-color: red" class="print-receipt" (click)="exitPage()">Cerrar</ion-button>
           </ion-col>
           <ion-col class="item-content" *ngIf="receiptForm.value.paid >= receiptForm.value.total*0 && receiptForm.value.state == 'DRAFT'">
-            <button style="background-color: #278c2c" ion-button class="print-receipt" (click)="confirmReceipt()">Confirmar</ion-button>
+            <ion-button style="background-color: #278c2c" class="print-receipt" (click)="confirmReceipt()">Confirmar</ion-button>
           </ion-col>
-          <!-- <ion-col class="item-content" *ngIf="receiptForm.value.paid < receiptForm.value.total">
-            <ion-button class="print-receipt" (click)="addPayment()">Agregar Pago</ion-button>
-          </ion-col> -->
           <ion-col class="item-content" *ngIf="receiptForm.value.state == 'CONFIRMED'">
             <ion-button class="print-receipt" (click)="print()">Imprimir Recibo</ion-button>
           </ion-col>
         </ion-row>
         <ion-row *ngIf="receiptForm.value.state == 'CONFIRMED' && receiptForm.value.amount_unInvoiced > 0">
-          <ion-col width-33 class="sumary-label" no-padding>
-              <h4 class="sumary-label" style="text-align: center;">{{'A Facturar' | translate }}</h4>
+          <ion-col width-33 class="field-label" no-padding>
+              <h4 class="field-label" style="text-align: center;">{{'A Facturar' | translate }}</h4>
               <h4 class="sumary-value positive" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.amount_unInvoiced|number:'1.0'}}</h4>
           </ion-col>
           <ion-col class="item-content">
-            <button style="background-color: #278c2c" ion-button class="print-receipt" (click)="createInvoice()">Crear Factura</ion-button>
+            <ion-button style="background-color: #278c2c" class="print-receipt" (click)="createInvoice()">Crear Factura</ion-button>
           </ion-col>
         </ion-row>
 
@@ -124,18 +106,16 @@
               <ion-card class="list-card">
               <ion-row style="padding-top:10px; padding-bottom:10px;">
               <ion-col >
-                <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
-                <h4 class="sumary-label">{{'NUMBER' | translate}}</h4>
-                <h4 class="client-name">{{item.number}}</h4>
+                <h4 class="field-label">{{'NUMBER' | translate}}</h4>
+                <h4 class="field-value">{{item.number}}</h4>
               </ion-col>
               <ion-col >
-                <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
-                <h4 class="sumary-label">{{'TAX' | translate}}</h4>
-                <h4 class="client-name">$ {{item.tax|number:'1.0'}}</h4>
+                <h4 class="field-label">{{'TAX' | translate}}</h4>
+                <h4 class="field-value">$ {{item.tax|number:'1.0'}}</h4>
               </ion-col>
-              <button class="relation-button"
+              <ion-button class="relation-button"
               [ngClass]="{following: !item.inverse_relation}"
-              ion-button clear icon-only item-right>
+              clear icon-only item-right>
                 <ion-icon *ngIf="item.state=='CONFIRMED'" name="print"></ion-icon>
               </ion-button>
               </ion-row>
@@ -144,124 +124,13 @@
           </ion-item-sliding>
         </section>
         </ion-list>
-
-<!-- <h2 class="section-title">{{'A Cobrar' | translate}}</h2>
-        <ion-list no-lines>
-          <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.receivables">
-          <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
-            <ion-card class="list-card" style="border-radius: 5px;">
-         <ion-row no-padding class="content-row one-line">
-            <ion-col no-padding width-25 class="schedule-date">
-              <h2 class="list-big-number">{{item.doc.code}}</h2>
-              <h3 class="schedule-month">{{item.doc.date|date: 'dd/MM/yyyy'}}</h3>
-              <h4 class="schedule-time">{{item.doc.dateDue|date: 'dd/MM/yyyy'}}</h4>
-            </ion-col>
-            <ion-col no-padding width-35  >
-              <ion-row no-padding>
-
-
-                <ion-col no-padding>
-                  <h3 class="item-title" style="margin-left: 5px;font-size: 12px;">{{ item.doc.name | translate}}</h3>
-                </ion-col>
-              </ion-row>
-
-            </ion-col>
-            <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-              <h2 class="list-big-number" style="color: green;">$ {{item.doc.amount| number:'1.0'}}</h2>
-            </ion-col>
-          </ion-row>
-          <ion-row no-padding class="paid">
-            <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
-              {{ item.doc.accountFrom && item.doc.accountFrom.name | translate}}
-            </ion-col>
-            <ion-col no-padding width-10 class="item-icon">
-              <ion-icon name="arrow-forward"></ion-icon>
-            </ion-col>
-            <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
-              {{ item.doc.accountTo && item.doc.accountTo.name | translate}}
-            </ion-col>
-          </ion-row>
-          </ion-card>
-
-        </ion-item>
-
-
-
-
-
-            <ion-item-options>
-              <ion-button icon-only color="primary" (click)="deleteCashMove(item)">
-                <ion-icon name="trash"></ion-icon>
-              </ion-button>
-            </ion-item-options>
-          </ion-item-sliding>
-        </ion-list>
-
-        <h2 class="section-title">{{'A Pagar' | translate}}</h2>
-        <ion-list no-lines>
-          <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.payables">
-          <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
-            <ion-card class="list-card" style="border-radius: 5px;">
-         <ion-row no-padding class="content-row one-line">
-            <ion-col no-padding width-25 class="schedule-date">
-              <h2 class="list-big-number">{{item.doc.code}}</h2>
-              <h3 class="schedule-month">{{item.doc.date|date: 'dd/MM/yyyy'}}</h3>
-              <h4 class="schedule-time">{{item.doc.dateDue|date: 'dd/MM/yyyy'}}</h4>
-            </ion-col>
-            <ion-col no-padding width-35>
-              <ion-row no-padding>
-
-
-                <ion-col no-padding>
-                  <h3 class="item-title" style="margin-left: 5px;font-size: 12px;">{{ item.doc.name | translate}}</h3>
-                </ion-col>
-              </ion-row>
-
-            </ion-col>
-            <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-              <h2 class="list-big-number" style="color: red;">$ {{item.doc.amount| number:'1.0'}}</h2>
-            </ion-col>
-          </ion-row>
-          <ion-row no-padding class="paid">
-            <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
-              {{ item.doc.accountFrom && item.doc.accountFrom.name | translate}}
-            </ion-col>
-            <ion-col no-padding width-10 class="item-icon">
-              <ion-icon name="arrow-forward"></ion-icon>
-            </ion-col>
-            <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
-              {{ item.doc.accountTo && item.doc.accountTo.name | translate}}
-            </ion-col>
-          </ion-row>
-          </ion-card>
-
-        </ion-item>
-
-
-
-
-
-            <ion-item-options>
-              <ion-button icon-only color="primary" (click)="deleteCashMove(item)">
-                <ion-icon name="trash"></ion-icon>
-              </ion-button>
-            </ion-item-options>
-          </ion-item-sliding>
-        </ion-list> -->
-
   </form>
   <ion-row style="height:120px;">
   </ion-row>
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="goNextStep()" color="green">
-          <ion-icon name="arrow-round-forward">
-          </ion-icon>
-      </ion-button>
-  </ion-fab> -->
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="goNextStep()" color="green">
+    <ion-fab-button (click)="goNextStep()">
       <ion-icon name="play" style="margin-left: 5px;">
       </ion-icon>
-    </ion-button>
+    </ion-fab-button>
   </ion-fab>
 </ion-content>

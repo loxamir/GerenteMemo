@@ -10,7 +10,7 @@
     </ion-title>
 
     <ion-buttons slot="end" >
-      <!-- <ion-button icon-only color="royal"
+      <!-- <ion-button icon-only
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button> -->
@@ -50,19 +50,19 @@ class="field-100">
   </ion-refresher>
   <form class="sample-form validations-form" [formGroup]="accountsReportForm" (ngSubmit)="onSubmit(accountsReportForm.value)">
     <ion-row justify-content-center>
-      <ion-col width-10 class="sumary-label" no-padding>
-          <h4 class="sumary-label">{{'Desde' | translate }}</h4>
+      <ion-col width-10 class="field-label" no-padding>
+          <h4 class="field-label">{{'Desde' | translate }}</h4>
       </ion-col>
       <ion-col width-37 class="item-content" no-padding>
-          <!-- <h4 class="client-name">{{accountsReportForm.value.contact.name || '01/05/2018'}}</h4> -->
+          <!-- <h4 class="field-value">{{accountsReportForm.value.contact.name || '01/05/2018'}}</h4> -->
           <ion-datetime class="accountsReport-date-start"
             displayFormat="DD/MM/YYYY"
             pickerFormat="DD/MM/YYYY"
             formControlName="dateStart">
             </ion-datetime>
       </ion-col>
-      <ion-col width-15 class="sumary-label" no-padding>
-          <h4 class="sumary-label">{{'Hasta' | translate }}</h4>
+      <ion-col width-15 class="field-label" no-padding>
+          <h4 class="field-label">{{'Hasta' | translate }}</h4>
       </ion-col>
       <ion-col width-38  no-padding>
           <ion-datetime class="accountsReport-date-end"
@@ -279,21 +279,21 @@ class="field-100">
     </div>
   </form>
   <ion-fab bottom left>
-      <ion-fab-button (click)="share()" color="green">
+      <ion-fab-button (click)="share()">
           <ion-icon name="share">
           </ion-icon>
-      </ion-button>
+      </ion-fab-button>
   </ion-fab>
   <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="recomputeValues()" color="green">
+      <ion-fab-button (click)="recomputeValues()">
           <ion-icon name="arrow-round-forward">
           </ion-icon>
       </ion-button>
   </ion-fab> -->
-  <ion-fab bottom right>
-      <ion-fab-button (click)="printAndroid()" color="green">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="printAndroid()">
           <ion-icon name="print">
           </ion-icon>
-      </ion-button>
+      </ion-fab-button>
   </ion-fab>
 </ion-content>

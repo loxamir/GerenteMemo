@@ -9,7 +9,7 @@
       </ion-row>
     </ion-title>
     <ion-buttons slot="end" >
-      <!-- <ion-button icon-only color="royal"
+      <!-- <ion-button icon-only
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button> -->
@@ -21,7 +21,7 @@
   <form class="sample-form validations-form" [formGroup]="reportForm" (ngSubmit)="onSubmit(reportForm.value)">
     <ion-row justify-content-center>
       <ion-card class="list-card"
-      class="sumary-label"
+      class="field-label"
       no-padding
       (click)="selectContact()"
       style="width: calc(50% - 20px);margin-bottom: 2%;margin-top: 1%;">
@@ -36,7 +36,7 @@
       </ion-col>
       </ion-card>
       <ion-card class="list-card"
-       class="sumary-label"
+       class="field-label"
        no-padding
        style="width: calc(50% - 20px);margin-bottom: 2%;margin-top: 1%;">
        <ion-col no-padding>
@@ -395,21 +395,21 @@
       </ion-list>
   </form>
   <ion-fab bottom left>
-      <ion-fab-button (click)="share()" color="green">
+      <ion-fab-button (click)="share()">
           <ion-icon name="share">
           </ion-icon>
-      </ion-button>
+      </ion-fab-utton>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="goNextStep()" color="green">
+      <ion-fab-button (click)="goNextStep()">
           <ion-icon name="arrow-round-forward">
           </ion-icon>
-      </ion-button>
+      </ion-fab-button>
   </ion-fab>
-  <ion-fab bottom right>
-      <ion-fab-button (click)="printAndroid()" color="green">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="printAndroid()">
           <ion-icon name="print">
           </ion-icon>
-      </ion-button>
+      </ion-fab-button>
   </ion-fab>
 </ion-content>

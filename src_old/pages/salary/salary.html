@@ -16,8 +16,8 @@
   <form class="sample-form validations-form" [formGroup]="salaryForm"  (ngSubmit)="onSubmit(salaryForm.value)">
     <ion-row>
       <ion-item no-padding (click)="selectContact()" style="width: calc(100% - 0px);;background-color: #fff;border: 1px solid #ddd;height: 50px;">
-        <h4 class="sumary-label">{{'EMPLOYEE' | translate }}</h4>
-        <h4 class="client-name">{{salaryForm.value.contact && salaryForm.value.contact.name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'EMPLOYEE' | translate }}</h4>
+        <h4 class="field-value">{{salaryForm.value.contact && salaryForm.value.contact.name || 'Selecionar'}}</h4>
       </ion-item>
       <ion-item class="field-100">
         <ion-label position="floating" style="font-size:14px">{{'DESCRIPTION' | translate}}</ion-label>
@@ -32,17 +32,17 @@
       </div>
 
       <ion-item no-padding class="item-content" class="field-50">
-        <ion-label position="floating" class="sumary-label">{{'DATE_START' | translate }}</ion-label>
+        <ion-label position="floating" class="field-label">{{'DATE_START' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="date_start">
         </ion-datetime>
       </ion-item>
       <ion-item no-padding class="item-content" class="field-50">
-        <ion-label position="floating" class="sumary-label">{{'DATE_END' | translate }}</ion-label>
+        <ion-label position="floating" class="field-label">{{'DATE_END' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="date_end">
         </ion-datetime>
       </ion-item>
       <ion-item no-padding class="item-content" class="field-100">
-        <ion-label position="floating" class="sumary-label">{{'DATE' | translate }}</ion-label>
+        <ion-label position="floating" class="field-label">{{'DATE' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="date">
         </ion-datetime>
       </ion-item>
@@ -55,11 +55,11 @@
           <ion-item (click)="openInput(item)" style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
             <ion-row>
               <ion-col no-padding>
-                <h4 class="sumary-label">Description</h4>
+                <h4 class="field-label">Description</h4>
                 <h4 class="user-name">{{item.name}}</h4>
               </ion-col>
               <ion-col no-padding>
-                <h4 class="sumary-label">Monto</h4>
+                <h4 class="field-label">Monto</h4>
                 <h4 class="user-name">{{item.amount}}</h4>
               </ion-col>
             </ion-row>
@@ -104,10 +104,10 @@
   </form>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="goNextStep()" color="green">
+    <ion-fab-button (click)="goNextStep()">
       <ion-icon name="play" style="margin-left: 5px;">
       </ion-icon>
-    </ion-button>
+    </ion-fab-button>
   </ion-fab>
 
 </ion-content>

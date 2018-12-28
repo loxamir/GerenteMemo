@@ -10,15 +10,15 @@
       (ionInput)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only color="royal" *ngIf="!has_search"
+      <!-- <ion-button icon-only  *ngIf="!has_search"
         (tap)="setSearch()">
         <ion-icon name="search"></ion-icon>
       </ion-button>
-      <ion-button icon-only color="royal" *ngIf="has_search"
+      <ion-button icon-only  *ngIf="has_search"
         (tap)="setSearch()">
         <ion-icon name="close"></ion-icon>
       </ion-button> -->
-      <ion-button icon-only color="royal"
+      <ion-button icon-only 
         class="more-button"
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
@@ -95,7 +95,7 @@
   <ion-row style="height:15px;">
   </ion-row>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createCash()" color="green">
+      <ion-fab-button (click)="createCash()">
           <ion-icon name="add">
           </ion-icon>
       </ion-button>

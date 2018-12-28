@@ -7,11 +7,11 @@
       *ngIf="has_search">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <ion-button icon-only color="royal" *ngIf="!has_search"
+      <ion-button icon-only  *ngIf="!has_search"
         (tap)="setSearch()">
         <ion-icon name="search"></ion-icon>
       </ion-button>
-      <ion-button icon-only color="royal" *ngIf="has_search"
+      <ion-button icon-only  *ngIf="has_search"
         (tap)="setSearch()">
         <ion-icon name="close"></ion-icon>
       </ion-button>
@@ -42,8 +42,8 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
-  <ion-fab bottom right>
-      <ion-fab-button (click)="createCurrency()" color="green">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="createCurrency()">
           <ion-icon name="add">
           </ion-icon>
       </ion-button>
@@ -58,7 +58,7 @@
       (ionInput)="searchItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <ion-button icon-only color="royal"
+      <ion-button icon-only 
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
@@ -110,7 +110,7 @@
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createCurrency()" color="green">
+      <ion-fab-button (click)="createCurrency()">
           <ion-icon name="add">
           </ion-icon>
       </ion-button>

@@ -109,11 +109,11 @@
         formControlName="salary"></ion-input>
       </ion-item>
       <ion-item *ngIf="contactForm.value.employee" no-padding (click)="selectCurrency()" style="width: calc(50% - 0px);;background-color: #fff;border: 1px solid #ddd;height: 50px;">
-        <h4 class="sumary-label">{{'CURRENCY' | translate }}</h4>
-        <h4 class="client-name">{{contactForm.value.currency && contactForm.value.currency.name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
+        <h4 class="field-value">{{contactForm.value.currency && contactForm.value.currency.name || 'Selecionar'}}</h4>
       </ion-item>
       <ion-item *ngIf="contactForm.value.employee" no-padding class="item-content" class="field-100">
-        <ion-label position="floating" class="sumary-label">{{'HIRE_DATE' | translate }}</ion-label>
+        <ion-label position="floating" class="field-label">{{'HIRE_DATE' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="hire_date">
         </ion-datetime>
       </ion-item>
@@ -142,11 +142,11 @@
             <ion-item (click)="openSalary(item)" style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
               <ion-row>
                 <ion-col no-padding>
-                  <h4 class="sumary-label">AMOUNT</h4>
+                  <h4 class="field-label">AMOUNT</h4>
                   <h4 class="user-name">{{item.amount}}</h4>
                 </ion-col>
                 <ion-col no-padding>
-                  <h4 class="sumary-label">Fecha</h4>
+                  <h4 class="field-label">Fecha</h4>
                   <h4 class="user-name">{{item.date|date: 'dd/MM/yyyy'}}</h4>
                 </ion-col>
               </ion-row>
@@ -172,11 +172,11 @@
             <ion-item (click)="openAdvance(item)" style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
               <ion-row>
                 <ion-col no-padding>
-                  <h4 class="sumary-label">AMOUNT</h4>
+                  <h4 class="field-label">AMOUNT</h4>
                   <h4 class="user-name">{{item.amount}}</h4>
                 </ion-col>
                 <ion-col no-padding>
-                  <h4 class="sumary-label">Fecha</h4>
+                  <h4 class="field-label">Fecha</h4>
                   <h4 class="user-name">{{item.date|date: 'dd/MM/yyyy'}}</h4>
                 </ion-col>
               </ion-row>
@@ -193,7 +193,7 @@
   </form>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="goNextStep()" color="green">
+    <ion-fab-button (click)="goNextStep()">
       <ion-icon name="play" style="margin-left: 5px;">
       </ion-icon>
     </ion-button>
