@@ -18,7 +18,7 @@ export class AppComponent {
     },
     {
       title: 'Informes',
-      url: '/report-list',
+      url: '/report-tabs',
       icon: 'stats'
     },
     {
@@ -28,7 +28,7 @@ export class AppComponent {
     },
     {
       title: 'Contactos',
-      url: '/contact-list',
+      url: '/person-tabs',
       icon: 'contacts'
     },
     {

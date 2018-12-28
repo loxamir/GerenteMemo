@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-  // { path: '', redirectTo: 'contact-list', pathMatch: 'full' },
+  { path: '', redirectTo: 'tabs', pathMatch: 'full' },
   // { path: 'home', loadChildren: './home/home.module#HomePageModule' },
   { path: 'contact', loadChildren: './contact/contact.module#ContactPageModule' },
   { path: 'contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule' },
@@ -51,7 +51,7 @@ const routes: Routes = [
   { path: 'salary', loadChildren: './salary/salary.module#SalaryPageModule' },
   { path: 'service', loadChildren: './service/service.module#ServicePageModule' },
   { path: 'purchase-list', loadChildren: './purchase-list/purchase-list.module#PurchaseListPageModule' },
-  { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' },
+  { path: 'tabs', loadChildren: './tabs/tabs.module#TabsPageModule' },
   { path: 'service-list', loadChildren: './service-list/service-list.module#ServiceListPageModule' },
   { path: 'service/input', loadChildren: './service/input/input.module#ServiceInputPageModule' },
   { path: 'service/travel', loadChildren: './service/travel/travel.module#ServiceTravelPageModule' },
@@ -68,6 +68,8 @@ const routes: Routes = [
   { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardPageModule' },
   { path: 'dashboard-list', loadChildren: './dashboard-list/dashboard-list.module#DashboardListPageModule' },
   { path: 'dashboard-filter', loadChildren: './dashboard-filter/dashboard-filter.module#DashboardFilterPageModule' },
+  { path: 'person-tabs', loadChildren: './person-tabs/person-tabs.module#PersonTabsPageModule' },
+  { path: 'report-tabs', loadChildren: './report-tabs/report-tabs.module#ReportTabsPageModule' },
   // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 

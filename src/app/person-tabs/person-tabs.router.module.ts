@@ -1,68 +1,68 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { TabsPage } from './tabs.page';
+import { PersonTabsPage } from './person-tabs.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: TabsPage,
+    component: PersonTabsPage,
     children: [
       {
-        path: 'sale-list',
+        path: 'contact-list',
         children: [
           {
             path: '',
-            loadChildren: '../sale-list/sale-list.module#SaleListPageModule'
+            loadChildren: '../contact-list/contact-list.module#ContactListPageModule'
           }
         ]
       },
       {
-        path: 'purchase-list',
+        path: 'client-list',
         children: [
           {
             path: '',
-            loadChildren: '../purchase-list/purchase-list.module#PurchaseListPageModule'
+            loadChildren: '../contact-list/contact-list.module#ContactListPageModule'
           }
         ]
       },
       {
-        path: 'cash-list',
+        path: 'supplier-list',
         children: [
           {
             path: '',
-            loadChildren: '../cash-list/cash-list.module#CashListPageModule'
+            loadChildren: '../contact-list/contact-list.module#ContactListPageModule'
           }
         ]
       },
       {
-        path: 'product-list',
+        path: 'seller-list',
         children: [
           {
             path: '',
-            loadChildren: '../product-list/product-list.module#ProductListPageModule'
+            loadChildren: '../contact-list/contact-list.module#ContactListPageModule'
           }
         ]
       },
       {
-        path: 'service-list',
+        path: 'employee-list',
         children: [
           {
             path: '',
-            loadChildren: '../service-list/service-list.module#ServiceListPageModule'
+            loadChildren: '../contact-list/contact-list.module#ContactListPageModule'
           }
         ]
       },
       {
         path: '',
-        redirectTo: '/tabs/sale-list',
+        redirectTo: '/person-tabs/contact-list',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/sale-list',
+    redirectTo: '/person-tabs/contact-list',
     pathMatch: 'full'
   }
 ];
@@ -71,4 +71,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TabsPageRoutingModule {}
+export class PersonTabsPageRoutingModule {}
