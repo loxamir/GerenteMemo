@@ -7,6 +7,7 @@ import 'rxjs/Rx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
+import { PurchaseListPopover} from './purchase-list.popover';
 
 @Component({
   selector: 'app-purchase-list',
@@ -92,6 +93,16 @@ export class PurchaseListPage implements OnInit {
   //     ev: myEvent
   //   });
   // }
+
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: PurchaseListPopover,
+      event: myEvent,
+      componentProps: {message: 'asdf', popoverController: this.popoverCtrl}
+    });
+    popover.present();
+  }
 
   ngOnInit() {
     //this.loading.present();

@@ -7,6 +7,7 @@ import 'rxjs/Rx';
 // import { ServicesPopover } from './services.popover';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ServiceListPopover} from './service-list.popover';
 
 @Component({
   selector: 'app-service-list',
@@ -84,6 +85,16 @@ export class ServiceListPage implements OnInit {
   //     ev: myEvent
   //   });
   // }
+
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: ServiceListPopover,
+      event: myEvent,
+      componentProps: {popoverController: this.popoverCtrl}
+    });
+    popover.present();
+  }
 
   getMonth(month) {
     if (month == '01'){

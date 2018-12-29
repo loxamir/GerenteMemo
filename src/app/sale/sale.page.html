@@ -1,6 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
+    </ion-buttons>
     <ion-title>
       {{ 'SALE' | translate }}: {{saleForm.value.code}}
     </ion-title>
@@ -96,34 +98,6 @@
         <ion-button class="print-invoice" (click)="saleCancel()">Cancelar</ion-button>
       </ion-col>
     </ion-row>
-    <!-- <ion-card class="list-card" *ngIf="saleForm.value.invoices.length" style="background-color: white">
-      <ion-item>
-        <ion-row no-padding (click)="openInvoice(item)" *ngFor="let item of saleForm.value.invoices" no-padding>
-          <ion-col no-padding>
-            <h4 class="field-label">{{'INVOICE' | translate}}</h4>
-            <h4 class="field-value">{{item.code || item.number}}</h4>
-          </ion-col>
-          <ion-col no-padding>
-            <h4 class="field-label">{{'INVOICED' | translate}}</h4>
-            <h4 class="field-value">$ {{item.total|number:'1.0'}}</h4>
-          </ion-col>
-        </ion-row>
-      </ion-item>
-    </ion-card>
-    <ion-card class="list-card" *ngIf="saleForm.value.payments.length">
-      <ion-item>
-        <ion-row (click)="openPayment(item)" *ngFor="let item of saleForm.value.payments" no-padding>
-          <ion-col no-padding>
-            <h4 class="field-label">{{'RECEIPT' | translate}}</h4>
-            <h4 class="field-value">{{item._id}}</h4>
-          </ion-col>
-          <ion-col no-padding>
-            <h4 class="field-label">{{'RECEIVED' | translate}}</h4>
-            <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
-          </ion-col>
-        </ion-row>
-      </ion-item>
-    </ion-card> -->
 
     <ion-list no-lines *ngIf="saleForm.value.invoices.length">
       <section>
@@ -162,17 +136,11 @@
         <ion-item (click)="openPayment(item)" style="background-color: #ddd;">
           <ion-card class="list-card">
           <ion-row style="padding-top:10px; padding-bottom:10px;">
-          <!-- <ion-col>
-            <h2 class="item-title" *ngIf="item.state=='CONFIRMED'">Recibido</h2>
-            <p class="item-description" rows="2">En {{item.date.toString().split('T')[0]}}</p>
-          </ion-col> -->
           <ion-col >
-            <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
             <h4 class="field-label">{{'Fecha' | translate}}</h4>
             <h4 class="field-value">{{item.date|date: 'dd/MM/yyyy'}}</h4>
           </ion-col>
           <ion-col>
-            <!-- <h2 class="item-title">Monto: ${{item.paid}}</h2> -->
             <h4 class="field-label">{{'AMOUNT' | translate}}</h4>
             <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
           </ion-col>
@@ -200,9 +168,6 @@
               {{item.product && item.product.name}}
             </ion-row>
         <ion-row>
-          <!-- <ion-col (click)="openItem(item)"  width-20 class="item-content">
-            <preload-image   class="avatar-image" [ratio]="{h:1}" [src]="item.product.image"></preload-image>
-          </ion-col> -->
           <ion-col size="6" style="white-space: normal;">
             <ion-row style="margin-top: -5px;">
               <ion-col  size="12" (click)="editItemPrice(item)" >
@@ -212,18 +177,8 @@
                 </div>
 
               </ion-col>
-
-              <!-- <ion-col size="12">
-                <h4 class="field-label">Precio</h4>
-                <h4 class="field-value">${{item.price|number:'1.0'}}</h4>
-              </ion-col> -->
             </ion-row>
             <ion-row (click)="openItem(item)">
-              <!-- {{item.product && item.product.name}} -->
-              <!-- <ion-col size="12">
-                <h4 class="field-label">Subtotal</h4>
-                <h4 class="field-value">${{item.price*item.quantity|number:'1.0'}}</h4>
-              </ion-col> -->
               <ion-col  size="12" class="item-content price-tag" (click)="editItemPrice(item)" >
                 <span class="price-label">SubTotal:</span>
                 <div style="font-size: 20px;color:green;">

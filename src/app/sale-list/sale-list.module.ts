@@ -13,6 +13,7 @@ export function createTranslateLoader(http: HttpClient) {
 import { IonicModule } from '@ionic/angular';
 
 import { SaleListPage } from './sale-list.page';
+import { SalesPopover } from './sale-list.popover';
 
 const routes: Routes = [
   {
@@ -36,6 +37,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [SaleListPage]
+  declarations: [SaleListPage, SalesPopover],
+  entryComponents: [SalesPopover]
 })
 export class SaleListPageModule {}

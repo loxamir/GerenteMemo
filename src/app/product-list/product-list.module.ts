@@ -11,7 +11,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
-
+import { ProductListPopover} from './product-list.popover';
 const routes: Routes = [
   {
     path: '',
@@ -35,6 +35,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ProductListPage]
+  declarations: [ProductListPage, ProductListPopover],
+  entryComponents: [ProductListPopover]
 })
 export class ProductListPageModule {}

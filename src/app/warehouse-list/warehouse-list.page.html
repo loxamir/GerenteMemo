@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button> -->
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/product-list"></ion-back-button>
+    </ion-buttons>
     <ion-searchbar
       placeholder="Buscar Deposito"
       [(ngModel)]="searchTerm"

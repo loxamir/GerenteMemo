@@ -7,7 +7,7 @@ import 'rxjs/Rx';
 import { File } from '@ionic-native/file';
 import { SalePage } from '../sale/sale.page';
 // import { SalesService } from './sales.service';
-// import { SalesPopover } from './sales.popover';
+import { SalesPopover } from './sale-list.popover';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -72,12 +72,15 @@ export class SaleListPage implements OnInit {
     }, 200);
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(SalesPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: SalesPopover,
+      event: myEvent,
+      componentProps: {popoverController: this.popoverCtrl}
+    });
+    popover.present();
+  }
 
   ngOnInit() {
     //this.loading.present();

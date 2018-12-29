@@ -8,7 +8,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
-
+import { PurchaseListPopover} from './purchase-list.popover';
 import { IonicModule } from '@ionic/angular';
 
 import { PurchaseListPage } from './purchase-list.page';
@@ -36,6 +36,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [PurchaseListPage]
+  declarations: [PurchaseListPage, PurchaseListPopover],
+  entryComponents: [PurchaseListPopover]
 })
 export class PurchaseListPageModule {}

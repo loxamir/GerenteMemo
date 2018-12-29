@@ -7,6 +7,7 @@ import 'rxjs/Rx';
 import { File } from '@ionic-native/file';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ProductListPopover} from './product-list.popover';
 
 @Component({
   selector: 'app-product-list',
@@ -147,6 +148,16 @@ export class ProductListPage implements OnInit {
   //     ev: myEvent
   //   });
   // }
+
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: ProductListPopover,
+      event: myEvent,
+      componentProps: {popoverController: this.popoverCtrl}
+    });
+    popover.present();
+  }
 
   selectProduct(product) {
     if (this.select) {

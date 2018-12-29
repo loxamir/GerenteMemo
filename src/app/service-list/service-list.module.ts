@@ -11,7 +11,7 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
 import { ServiceListPage } from './service-list.page';
-
+import { ServiceListPopover} from './service-list.popover';
 const routes: Routes = [
   {
     path: '',
@@ -34,6 +34,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ServiceListPage]
+  declarations: [ServiceListPage, ServiceListPopover],
+  entryComponents: [ServiceListPopover]
 })
 export class ServiceListPageModule {}
