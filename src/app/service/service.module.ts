@@ -48,12 +48,15 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ServicePage, PaymentConditionListPage, ProductListPage, ContactListPage, CurrencyListPage , ServiceWorkPage,
+  declarations: [ServicePage,
+  ServiceWorkPage,
   ServiceInputPage,
   ServiceTravelPage,],
-  entryComponents: [PaymentConditionListPage, ProductListPage, ContactListPage, CurrencyListPage, ServiceWorkPage,
-  ServiceInputPage,
-  ServiceTravelPage,],
+  entryComponents: [
+    ServiceWorkPage,
+    ServiceInputPage,
+    ServiceTravelPage,
+  ],
   providers: [
     BluetoothSerial,
     Printer,

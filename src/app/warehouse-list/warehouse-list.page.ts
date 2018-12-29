@@ -30,11 +30,6 @@ export class WarehouseListPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-
-  ngOnInit() {
-  }
-
-
   setSearch() {
     if (this.has_search){
       this.searchTerm = "";
@@ -43,7 +38,7 @@ export class WarehouseListPage implements OnInit {
     this.has_search = ! this.has_search;
   }
 
-  ionViewDidLoad() {
+  ngOnInit() {
     //this.loading.present();
     this.setFilteredItems();
   }

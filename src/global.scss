@@ -9,7 +9,11 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
-
+.state-header{
+  margin-left: -5px;
+  margin-top: -5px;
+  height: 24px;
+}
 .list-card {
   width: 100%;
   --background: #fff;
@@ -35,7 +39,7 @@ h4.field-label {
   margin-top: -10px;
 }
 h4.field-value {
-  font-size: 20px;
+  font-size: 18px;
   margin-top: 10px;
   position: absolute;
   width: 100%;
@@ -127,8 +131,8 @@ ion-content {
 
 .section-title
 {
-  font-size: 1.3rem;
-  line-height: 1.2;
+  font-size: 1.0rem;
+  line-height: 1.0;
   letter-spacing: 1.1px;
   text-align: center;
   color: green;
@@ -168,4 +172,26 @@ h2.list-big-number
 .menu-style {
   --background: white;
   --ion-background-color: white;
+}
+.internal-card {
+    // margin-right: 1.5em;
+    width: 95%;
+    --background: #fff;
+    --ion-background-color: #fff;
+    border-radius: 5px;
+    margin-top:5px;
+    margin-bottom:5px;
+    margin-right:0px;
+}
+ion-item-sliding, ion-item-sliding .item {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin-right: -9px;
+}
+.product-name-row {
+  font-size: 17px;
+  margin-left: 5px;
+  color: black;
 }

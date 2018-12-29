@@ -37,9 +37,6 @@ export class StockMoveListPage implements OnInit {
   }
 
   ngOnInit() {
-  }
-
-  ionViewDidLoad() {
     //this.loading.present();
     this.setFilteredItems();
   }

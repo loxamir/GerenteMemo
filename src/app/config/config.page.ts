@@ -331,9 +331,10 @@ export class ConfigPage implements OnInit {
 
   configInvoicePrint() {
     return new Promise(async resolve => {
+      console.log("invoice", {"teste": "ok"});
       let profileModal = await this.modal.create({
         component: InvoiceConfigPage,
-        componentProps: this.configForm.value.invoicePrint
+        componentProps: {"teste": "ok"}
       });
       await profileModal.present();
       const { data } = await profileModal.onDidDismiss();

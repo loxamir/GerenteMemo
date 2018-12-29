@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
+    </ion-buttons>
     <ion-title>{{ 'CONFIG' | translate }}</ion-title>
     <ion-buttons slot="end" [hidden]="!configForm.dirty">
       <ion-button (click)="buttonSave()">
@@ -81,11 +84,11 @@
     <ion-row style="">
       <ion-col no-padding>
         <h4 class="field-label">{{'NAME' | translate}}</h4>
-        <h4 class="user-name">{{user.name}}</h4>
+        <h4 class="field-name">{{user.name}}</h4>
       </ion-col>
       <ion-col no-padding>
         <h4 class="field-label">{{'PHONE' | translate}}</h4>
-        <h4 class="user-phone">{{user.phone}}</h4>
+        <h4 class="field-name">{{user.phone}}</h4>
       </ion-col>
     </ion-row>
   </ion-item>

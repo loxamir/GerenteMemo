@@ -1,5 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
+    <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
     <ion-title>
       {{ 'SALE' | translate }}: {{saleForm.value.code}}
     </ion-title>
@@ -28,8 +29,8 @@
       <h4 class="field-value" style="color:red">$ {{saleForm.value.residual|number:'1.0'}}</h4>
     </ion-item>
   </ion-row>
-  <ion-row style="margin-top:-5px">
-    <ion-col size="4" style="margin-left:-5px;">
+  <ion-row  class="state-header">
+    <ion-col size="4">
       <div class="clicked arron">
         <span class="state-label">Presupuesto</span>
       </div>
@@ -95,7 +96,7 @@
         <ion-button class="print-invoice" (click)="saleCancel()">Cancelar</ion-button>
       </ion-col>
     </ion-row>
-    <ion-card class="list-card" *ngIf="saleForm.value.invoices.length" style="background-color: white">
+    <!-- <ion-card class="list-card" *ngIf="saleForm.value.invoices.length" style="background-color: white">
       <ion-item>
         <ion-row no-padding (click)="openInvoice(item)" *ngFor="let item of saleForm.value.invoices" no-padding>
           <ion-col no-padding>
@@ -122,55 +123,145 @@
           </ion-col>
         </ion-row>
       </ion-item>
-    </ion-card>
+    </ion-card> -->
 
-    <ion-card class="list-card" *ngIf="saleForm.value.items.length">
-      <ion-list no-lines>
-        <h2 class="section-title">{{'Items de la Venta' | translate}}</h2>
-        <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.items" style="border-bottom: 1px solid blue;">
-          <ion-item>
-            <ion-row class="content-row one-line">
-              <ion-col size="8" class="item-content" style="white-space: normal;">
-                <ion-row (click)="openItem(item)" class="product-name-row">
-                  <ion-col>
-                    {{item.product && item.product.name}}
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col (click)="editItemPrice(item)">
-                    <span class="price-label">Precio:</span> ${{item.price|number:'1.0'}}
-                  </ion-col>
-                </ion-row>
+    <ion-list no-lines *ngIf="saleForm.value.invoices.length">
+      <section>
+      <h2 class="section-title">{{'INVOICE' | translate}}</h2>
+      <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.invoices">
+        <ion-item (click)="openInvoice(item)" style="background-color: #ddd;">
+          <ion-card class="list-card">
+          <ion-row style="padding-top:10px; padding-bottom:10px;">
+          <ion-col >
+            <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
+            <h4 class="field-label">{{'NUMBER' | translate}}</h4>
+            <h4 class="field-value">{{item.name}}</h4>
+          </ion-col>
+          <ion-col >
+            <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
+            <h4 class="field-label">{{'TAX' | translate}}</h4>
+            <h4 class="field-value">$ {{item.tax|number:'1.0'}}</h4>
+          </ion-col>
+          <ion-button class="relation-button"
+          [ngClass]="{following: !item.inverse_relation}"
+          ion-button clear icon-only item-right>
+            <ion-icon *ngIf="item.state=='CONFIRMED'" name="print"></ion-icon>
+          </ion-button>
+          </ion-row>
+          </ion-card>
+        </ion-item>
+      </ion-item-sliding>
+    </section>
+    </ion-list>
+
+
+    <ion-list no-lines *ngIf="saleForm.value.payments.length">
+      <section>
+      <h2 class="section-title">{{'Recibos' | translate}}</h2>
+      <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.payments">
+        <ion-item (click)="openPayment(item)" style="background-color: #ddd;">
+          <ion-card class="list-card">
+          <ion-row style="padding-top:10px; padding-bottom:10px;">
+          <!-- <ion-col>
+            <h2 class="item-title" *ngIf="item.state=='CONFIRMED'">Recibido</h2>
+            <p class="item-description" rows="2">En {{item.date.toString().split('T')[0]}}</p>
+          </ion-col> -->
+          <ion-col >
+            <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
+            <h4 class="field-label">{{'Fecha' | translate}}</h4>
+            <h4 class="field-value">{{item.date|date: 'dd/MM/yyyy'}}</h4>
+          </ion-col>
+          <ion-col>
+            <!-- <h2 class="item-title">Monto: ${{item.paid}}</h2> -->
+            <h4 class="field-label">{{'AMOUNT' | translate}}</h4>
+            <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
+          </ion-col>
+          <ion-button class="relation-button"
+          [ngClass]="{following: !item.inverse_relation}"
+          ion-button clear icon-only item-right>
+            <ion-icon *ngIf="item.state=='CONFIRMED'" name="print"></ion-icon>
+          </ion-button>
+          </ion-row>
+          </ion-card>
+        </ion-item>
+        <ion-item-options>
+        </ion-item-options>
+      </ion-item-sliding>
+    </section>
+    </ion-list>
+
+    <ion-list no-lines *ngIf="saleForm.value.items.length">
+      <section>
+      <h2 class="section-title">{{'Items de la Venta' | translate}}</h2>
+      <ion-item-sliding  class="list-item" *ngFor="let item of saleForm.value.items">
+        <ion-item style="width: 100%; margin-right: -5px;">
+          <ion-card class="internal-card">
+            <ion-row (click)="openItem(item)" class="product-name-row">
+              {{item.product && item.product.name}}
+            </ion-row>
+        <ion-row>
+          <!-- <ion-col (click)="openItem(item)"  width-20 class="item-content">
+            <preload-image   class="avatar-image" [ratio]="{h:1}" [src]="item.product.image"></preload-image>
+          </ion-col> -->
+          <ion-col size="6" style="white-space: normal;">
+            <ion-row style="margin-top: -5px;">
+              <ion-col  size="12" (click)="editItemPrice(item)" >
+                <span class="price-label">Precio:</span>
+                <div style="font-size: 15px;display: contents; color:red">
+                   ${{item.price|number:'1.0'}}
+                </div>
+
               </ion-col>
-              <ion-col size="4">
-                <ion-row>
-                  <ion-col size="6" class="item-content">
-                    <h4 class="field-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col size="3">
-                    <ion-button class="quantity-button" (click)="remItem(item)">-</ion-button>
 
-                  </ion-col>
-                  <ion-col (click)="editItemQuantity(item)" size="5" class="item-content" style="text-align: center;top:4px;">
-                    {{item.quantity}}
-                  </ion-col>
-                  <ion-col size="3">
-                    <ion-button class="quantity-button" (click)="sumItem(item)">+</ion-button>
-                  </ion-col>
-                </ion-row>
+              <!-- <ion-col size="12">
+                <h4 class="field-label">Precio</h4>
+                <h4 class="field-value">${{item.price|number:'1.0'}}</h4>
+              </ion-col> -->
+            </ion-row>
+            <ion-row (click)="openItem(item)">
+              <!-- {{item.product && item.product.name}} -->
+              <!-- <ion-col size="12">
+                <h4 class="field-label">Subtotal</h4>
+                <h4 class="field-value">${{item.price*item.quantity|number:'1.0'}}</h4>
+              </ion-col> -->
+              <ion-col  size="12" class="item-content price-tag" (click)="editItemPrice(item)" >
+                <span class="price-label">SubTotal:</span>
+                <div style="font-size: 20px;color:green;">
+                   ${{item.price*item.quantity|number:'1.0'}}
+                </div>
               </ion-col>
             </ion-row>
-          </ion-item>
-          <ion-item-options>
-            <ion-button icon-only color="primary" (click)="deleteItem(item)" *ngIf="saleForm.value.state!='QUOTATIONs'">
-              <ion-icon name="trash"></ion-icon>
-            </ion-button>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ion-list>
-    </ion-card>
+          </ion-col>
+          <ion-col size="6">
+
+            <ion-row>
+              <ion-col style="text-align: center;">
+                Cantidad
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="3">
+                <ion-button class="quantity-button" (click)="remItem(item)">-</ion-button>
+              </ion-col>
+              <ion-col size="6" (click)="editItemQuantity(item)" style="text-align: center;font-size: 30px;">
+                {{item.quantity}}
+              </ion-col>
+              <ion-col size="3">
+                <ion-button class="quantity-button" (click)="sumItem(item)">+</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      </ion-item>
+        <ion-item-options>
+          <ion-button icon-only color="primary" (click)="deleteItem(item)" *ngIf="saleForm.value.state!='QUOTATIONs'">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </section>
+    </ion-list>
   </form>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
     <ion-fab-button (click)="goNextStep()" color="primary">

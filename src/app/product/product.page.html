@@ -1,8 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button> -->
+    <ion-back-button defaultHref="/tabs/product-list"></ion-back-button>
     <ion-title>{{ 'PRODUCT' | translate }}-{{productForm.value.code}}</ion-title>
     <ion-buttons slot="end" [hidden]="!productForm.dirty">
       <ion-button (click)="buttonSave()">

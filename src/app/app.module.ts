@@ -24,16 +24,35 @@ import { ContactListPage } from './contact-list/contact-list.page';
 import { CurrencyListPage } from './currency-list/currency-list.page';
 import { ReceiptPage } from './receipt/receipt.page';
 import { InvoicePage } from './invoice/invoice.page';
+import { WarehouseListPage } from './warehouse-list/warehouse-list.page';
+import { AccountListPage } from './account-list/account-list.page';
+import { CashListPage } from './cash-list/cash-list.page';
+
+
+import { ProductListPageModule } from './product-list/product-list.module';
+import { PaymentConditionListPageModule } from './payment-condition-list/payment-condition-list.module';
+import { ContactListPageModule } from './contact-list/contact-list.module';
+import { CurrencyListPageModule } from './currency-list/currency-list.module';
+import { ReceiptPageModule } from './receipt/receipt.module';
+import { InvoicePageModule } from './invoice/invoice.module';
+import { WarehouseListPageModule } from './warehouse-list/warehouse-list.module';
+import { AccountListPageModule } from './account-list/account-list.module';
+import { CashListPageModule } from './cash-list/cash-list.module';
+
+import { UserPageModule } from './user/user.module';
+import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ContactListPage,
-    CurrencyListPage,
-    PaymentConditionListPage,
-    ProductListPage,
-    ReceiptPage,
-    InvoicePage,
+    // CurrencyListPage,
+    // PaymentConditionListPage,
+    // ProductListPage,
+    // ReceiptPage,
+    // InvoicePage,
+    // WarehouseListPage,
+    // AccountListPage,
+    // CashListPage,
   ],
   entryComponents: [
     ContactListPage,
@@ -42,10 +61,25 @@ import { InvoicePage } from './invoice/invoice.page';
     ProductListPage,
     ReceiptPage,
     InvoicePage,
+    WarehouseListPage,
+    AccountListPage,
+    CashListPage,
   ],
   imports: [
+
+    ProductListPageModule,
+    PaymentConditionListPageModule,
+    CurrencyListPageModule,
+    ReceiptPageModule,
+    InvoicePageModule,
+    WarehouseListPageModule,
+    AccountListPageModule,
+    CashListPageModule,
+    UserPageModule,
+    InvoiceConfigPageModule,
     BrowserModule,
     FormsModule,
+    ContactListPageModule,
     ReactiveFormsModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),

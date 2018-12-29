@@ -3,13 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
-import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
-import { ProductListPage } from '../product-list/product-list.page';
-import { ContactListPage } from '../contact-list/contact-list.page';
-import { AccountListPage } from '../account-list/account-list.page';
-import { CurrencyListPage } from '../currency-list/currency-list.page';
-import { CashListPage } from '../cash-list/cash-list.page';
-
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -47,7 +40,7 @@ const routes: Routes = [
   ],
   providers: [ConfigService],
   // declarations: [ConfigPage]
-  declarations: [ConfigPage, WarehouseListPage, ProductListPage, ContactListPage, AccountListPage, CurrencyListPage, CashListPage],
-  entryComponents: [WarehouseListPage, ProductListPage, ContactListPage, AccountListPage, CurrencyListPage, CashListPage],
+  declarations: [ConfigPage],
+  entryComponents: [],
 })
 export class ConfigPageModule {}
