@@ -6,6 +6,9 @@ import { ReceiptPage } from '../receipt/receipt.page';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
+import { LanguageModel } from "../services/language/language.model";
 
 @Component({
   selector: 'app-planned-list',
@@ -23,13 +26,15 @@ export class PlannedListPage implements OnInit {
   contact_id = "";
   today: any;
   signal: string = '+';
+  languages: Array<LanguageModel>;
 
   constructor(
     public navCtrl: NavController,
     // public app: App,
     public plannedService: PlannedService,
     public loadingCtrl: LoadingController,
-
+    public translate: TranslateService,
+    public languageService: LanguageService,
     public modal: ModalController,
     public route: ActivatedRoute,
     public events: Events,
@@ -37,6 +42,9 @@ export class PlannedListPage implements OnInit {
     public alertCtrl: AlertController,
   ) {
     //this.loading = //this.loadingCtrl.create();
+    this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select');
     this.signal = this.route.snapshot.paramMap.get('signal') || '+';
     // this.contact = {"name": "Todos"};
@@ -47,9 +55,9 @@ export class PlannedListPage implements OnInit {
         this.selectedContact();
       })
     }
-    // this.events.subscribe('changed-cash-move', (change)=>{
-    //   this.plannedService.handleChange(this.plannedList, change);
-    // })
+    this.events.subscribe('changed-cash-move', (change)=>{
+      this.plannedService.handleChange(this.plannedList, change);
+    })
     this.today = new Date();
   }
 
@@ -95,6 +103,7 @@ export class PlannedListPage implements OnInit {
         this.plannedService.getReceivables(
           this.searchTerm
         ).then((plannedList: any[]) => {
+          console.log("plannedList", plannedList);
           this.plannedList = plannedList;
           this.recomputeValues();
           //this.loading.dismiss();
@@ -133,21 +142,25 @@ export class PlannedListPage implements OnInit {
     this.amountPaid = payment;
   }
 
-  createPayment() {
+  async createPayment() {
     let paidPlanneds = [];
     this.plannedList.forEach(item => {
       if (item.amount_paid > 0){
         paidPlanneds.push(item.doc);
       }
     })
-    this.navCtrl.navigateForward(['/receipt', {
-      "addPayment": true,
-      "contact": this.contact,
-      "account_id": "account.debtColleted",
-      "name": "Cobro de Deudas",
-      "items": paidPlanneds,
-      "signal": this.signal,
-    }]);
+    let profileModal = await this.modal.create({
+      component: ReceiptPage,
+      componentProps: {
+        "addPayment": true,
+        "contact": this.contact,
+        "account_id": "account.debtColleted",
+        "name": "Cobro de Deudas",
+        "items": paidPlanneds,
+        "signal": this.signal,
+      }
+    });
+    profileModal.present();
   }
 
   showContact(contact){

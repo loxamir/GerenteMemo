@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController,  LoadingController,
+import { NavController, NavParams, LoadingController,
   AlertController,  Events, ToastController,
   ModalController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
@@ -13,17 +13,16 @@ import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 // import { ImagePicker } from '@ionic-native/image-picker';
 // import { Crop } from '@ionic-native/crop';
-// import { ReceiptService } from './receipt.service';
+import { ReceiptService } from './receipt.service';
 // import { ContactsPage } from '../contact/list/contacts';
 //import { ReceiptItemPage } from '../receipt-item/receipt-item';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { CashMoveService } from '../cash-move/cash-move.service';
-// import { ProductService } from '../product/product.service';
 import { CashListPage } from '../cash-list/cash-list.page';
 // import { ProductsPage } from '../product/list/products';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 // import { PlannedService } from '../planned/list/planned-list.service';
-// import { ConfigService } from '../config/config.service';
+import { ConfigService } from '../config/config.service';
 // import { HostListener } from '@angular/core';
 // import { PlannedPage } from '../planned/planned';
 import { FormatService } from '../services/format.service';
@@ -31,13 +30,14 @@ import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { InvoicePage } from '../invoice/invoice.page';
 import { CheckListPage } from '../check-list/check-list.page';
 
+
 @Component({
   selector: 'app-receipt',
   templateUrl: './receipt.page.html',
   styleUrls: ['./receipt.page.scss'],
 })
 export class ReceiptPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('Select') select;
   @ViewChild('input') myInput;
     receiptForm: FormGroup;
     loading: any;
@@ -55,16 +55,17 @@ export class ReceiptPage implements OnInit {
       // public imagePicker: ImagePicker,
       // public cropService: Crop,
       // public platform: Platform,
-      // public receiptService: ReceiptService,
+      public receiptService: ReceiptService,
       public route: ActivatedRoute,
       public formBuilder: FormBuilder,
+      public navParams: NavParams,
       public alertCtrl: AlertController,
       // public productService: ProductService,
       // public plannedService: PlannedService,
       public bluetoothSerial: BluetoothSerial,
       public toastCtrl: ToastController,
       public printer: Printer,
-      // public configService: ConfigService,
+      public configService: ConfigService,
       public cashMoveService: CashMoveService,
       public formatService: FormatService,
       public pouchdbService: PouchdbService,
@@ -74,19 +75,25 @@ export class ReceiptPage implements OnInit {
       //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
+      this.translate.setDefaultLang('es');
+      this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
       this.avoidAlertMessage = false;
     }
 
     ngOnInit() {
       //var today = new Date().toISOString();
-
+      setTimeout(() => {
+        if(this.receiptForm.value.state == "DRAFT"){
+          this.myInput.setFocus();
+        }
+      }, 200);
       this.receiptForm = this.formBuilder.group({
-        contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
-        // account_id: new FormControl(this.route.snapshot.paramMap.get('account_id||""),
-        // project_id: new FormControl(this.route.snapshot.paramMap.get('project_id||""),
-        name: new FormControl(this.route.snapshot.paramMap.get('name')||'Recibo'),
-        // contact_name: new FormControl(this.route.snapshot.paramMap.get('contact && this.route.snapshot.paramMap.get('contact.name || ''),
+        contact: new FormControl(this.navParams.data.contact||{}, Validators.required),
+        // account_id: new FormControl(this.navParams.data.account_id||""),
+        // project_id: new FormControl(this.navParams.data.project_id||""),
+        name: new FormControl(this.navParams.data.name||'Recibo'),
+        // contact_name: new FormControl(this.navParams.data.contact && this.navParams.data.contact.name || ''),
         code: new FormControl(''),
         date: new FormControl(this.today),
         total: new FormControl(0),
@@ -95,10 +102,10 @@ export class ReceiptPage implements OnInit {
         paid: new FormControl(0),
         note: new FormControl(''),
         state: new FormControl('DRAFT'),
-        items: new FormControl(this.route.snapshot.paramMap.get('items')||[], Validators.required),
-        origin_id: new FormControl(this.route.snapshot.paramMap.get('origin_id')||''),
+        items: new FormControl(this.navParams.data.items||[], Validators.required),
+        origin_id: new FormControl(this.navParams.data.origin_id||''),
         payments: new FormControl([]),
-        // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
+        // origin_ids: new FormControl(this.navParams.data.origin_ids||[]),
         // paymentCondition: new FormControl({}),
         payment_name: new FormControl(''),
         invoices: new FormControl([]),
@@ -110,45 +117,50 @@ export class ReceiptPage implements OnInit {
         receivables: new FormControl([]),
         cash_paid: new FormControl({}),
         check: new FormControl({}),
-        signal: new FormControl(this.route.snapshot.paramMap.get('signal')||'+'),
-        exchange_rate: new FormControl(this.route.snapshot.paramMap.get('exchange_rate')||'1'),
+        signal: new FormControl(this.navParams.data.signal||'+'),
+        exchange_rate: new FormControl(this.navParams.data.exchange_rate||'1'),
         _id: new FormControl(''),
       });
       this.recomputeValues();
-        // this.configService.getConfig().then(async config => {
-        //   this.receiptForm.patchValue({
-        //     "cash_paid": config.cash,
-        //     "exchange_rate": config.currency.sale_rate,
-        //   });
-        //   this.recomputeValues();
-        // });
-      //this.loading.present();
-      if (this._id){
-        this.getReceipt(this._id).then((data) => {
-          //console.log("data", data);
-          this.receiptForm.patchValue(data);
-          //this.loading.dismiss();
+        this.configService.getConfig().then(async config => {
+          this.receiptForm.patchValue({
+            "cash_paid": config.cash,
+            "exchange_rate": config.currency.sale_rate,
+          });
+
+          this.recomputeValues();
+          if (this._id){
+            this.receiptService.getReceipt(this._id).then((data) => {
+              //console.log("data", data);
+              this.receiptForm.patchValue(data);
+              //this.loading.dismiss();
+            });
+          } else {
+            //this.loading.dismiss();
+          }
         });
-      } else {
-        //this.loading.dismiss();
-      }
+    // }
+    //
+    // ionViewDidLoad() {
+      //this.loading.present();
+
     }
 
     goNextStep() {
       if (this.receiptForm.value.state == 'DRAFT'){
         this.confirmReceipt();
       } else {
-          // this.navCtrl.navigateBack();
+          this.navCtrl.navigateBack('/receipt-list');
       }
     }
 
-    ionViewDidEnter() {
-      setTimeout(() => {
-        if(this.receiptForm.value.state == "DRAFT"){
-          this.myInput.setFocus();
-        }
-      }, 200);
-    }
+    // ionViewDidEnter() {
+    //   setTimeout(() => {
+    //     if(this.receiptForm.value.state == "DRAFT"){
+    //       this.myInput.setFocus();
+    //     }
+    //   }, 200);
+    // }
 
     createInvoice() {
       // if (this.receiptForm.value.amount_unInvoiced > 0){
@@ -236,29 +248,29 @@ export class ReceiptPage implements OnInit {
           this.events.publish('create-receipt', this.receiptForm.value);
           this.justSave();
         });
-        // this.configService.getConfig().then(async config => {
-        //   let profileModal = await this.modal.create({
-        //     component: InvoicePage,
-        //     componentProps: {
-        //       // "openPayment": true,
-        //       "contact_id": this.receiptForm.value.contact._id,
-        //       "contact": this.receiptForm.value.contact,
-        //       "date": new Date(),
-        //       "paymentCondition": "Contado",
-        //       // "tab": "invoice",
-        //       // "origin_id": [this.receiptForm.value._id],
-        //       "origin_id": this.receiptForm.value.origin_id || this.receiptForm.value._id,
-        //       "items": [{
-        //         "product": config.input_product,
-        //         "description": config.input_product.name,
-        //         "quantity": 1,
-        //         "price": this.receiptForm.value.amount_unInvoiced,
-        //       }],
-        //       'type': 'out',
-        //     }
-        //   });
-        //   profileModal.present();
-        // });
+        this.configService.getConfig().then(async config => {
+          let profileModal = await this.modal.create({
+            component: InvoicePage,
+            componentProps: {
+              // "openPayment": true,
+              "contact_id": this.receiptForm.value.contact._id,
+              "contact": this.receiptForm.value.contact,
+              "date": new Date(),
+              "paymentCondition": "Contado",
+              // "tab": "invoice",
+              // "origin_id": [this.receiptForm.value._id],
+              "origin_id": this.receiptForm.value.origin_id || this.receiptForm.value._id,
+              "items": [{
+                "product": config.input_product,
+                "description": config.input_product.name,
+                "quantity": 1,
+                "price": this.receiptForm.value.amount_unInvoiced,
+              }],
+              'type': 'out',
+            }
+          });
+          profileModal.present();
+        });
       // }
     }
 
@@ -332,21 +344,21 @@ export class ReceiptPage implements OnInit {
 
     buttonSave() {
       if (this._id){
-        this.updateReceipt(this.receiptForm.value);
+        this.receiptService.updateReceipt(this.receiptForm.value);
         this.receiptForm.markAsPristine();
-        // this.navCtrl.navigateBack().then(() => {
+        // this.navCtrl.navigateBack('/receipt-list').then(() => {
           this.events.publish('open-receipt', this.receiptForm.value);
         // });
       } else {
         //this.invoiceService.createInvoice(this.invoiceForm.value);
-        this.createReceipt(this.receiptForm.value).then((doc: any) => {
+        this.receiptService.createReceipt(this.receiptForm.value).then((doc: any) => {
           this.receiptForm.patchValue({
             _id: doc['doc'].id,
             code: doc.code,
           });
           this._id = doc['doc'].id;
           this.receiptForm.markAsPristine();
-          // this.navCtrl.navigateBack().then(() => {
+          // this.navCtrl.navigateBack('/receipt-list').then(() => {
             this.events.publish('create-receipt', this.receiptForm.value);
           // });
         });
@@ -355,12 +367,12 @@ export class ReceiptPage implements OnInit {
 
     justSave() {
       if (this._id){
-        this.updateReceipt(this.receiptForm.value);
+        this.receiptService.updateReceipt(this.receiptForm.value);
         this.receiptForm.markAsPristine();
         //this.events.publish('open-receipt', this.receiptForm.value);
       } else {
         //this.invoiceService.createInvoice(this.invoiceForm.value);
-        this.createReceipt(this.receiptForm.value).then((doc: any) => {
+        this.receiptService.createReceipt(this.receiptForm.value).then((doc: any) => {
           // console.log("docss receipt2", JSON.stringify(doc));
           this.receiptForm.patchValue({
             _id: doc['doc'].id,
@@ -476,8 +488,7 @@ export class ReceiptPage implements OnInit {
         let profileModal = await this.modal.create({
         component: CashMovePage,
         componentProps: {
-            "_id": item.doc._id
-          }
+          "_id": item.doc._id}
         });
         profileModal.present();
       });
@@ -590,10 +601,7 @@ export class ReceiptPage implements OnInit {
         });
         let profileModal = await this.modal.create({
           component: CheckListPage,
-          componentProps: {
-            "select": true,
-          }
-        });
+          componentProps: {"select": true,}});
         profileModal.present();
       // }
     }
@@ -613,9 +621,7 @@ export class ReceiptPage implements OnInit {
         });
         let profileModal = await this.modal.create({
           component: CashListPage,
-          componentProps: {
-            "select": true,
-          }
+          componentProps: {"select": true,}
         });
         profileModal.present();
       // }
@@ -630,10 +636,8 @@ export class ReceiptPage implements OnInit {
           this.events.unsubscribe('select-cash');
         });
         let profileModal = await this.modal.create({
-          component:CashListPage,
-          componentProps: {
-            "select": true,
-          }
+          component: CashListPage,
+          componentProps: {"select": true,}
         });
         profileModal.present();
       }
@@ -868,16 +872,16 @@ export class ReceiptPage implements OnInit {
       //console.log(values);
     }
 
-    openPayment(item) {
-      this.events.subscribe('open-cash-move', (data) => {
-        //console.log("Payment", data);
-        this.events.unsubscribe('open-cash-move');
-      });
-      //console.log("item", item);
-      // this.navCtrl.navigateForward(CashMovePage, {
-      //   "_id": item._id,
-      // });
-    }
+    // openPayment(item) {
+    //   this.events.subscribe('open-cash-move', (data) => {
+    //     //console.log("Payment", data);
+    //     this.events.unsubscribe('open-cash-move');
+    //   });
+    //   //console.log("item", item);
+    //   this.navCtrl.navigateForward(CashMovePage, {
+    //     "_id": item._id,
+    //   });
+    // }
 
     isEmpty(object){
       if (Object.keys(object).length == 0){
@@ -888,167 +892,96 @@ export class ReceiptPage implements OnInit {
     }
 
     print() {
-      // this.configService.getConfig().then(async (data) => {
-      //   let company_name = data.name || "";
-      //   let company_ruc = data.doc || "";
-      //   let company_phone = data.phone || "";
-      //   //let number = this.receiptForm.value.receipt || "";
-      //   let date = this.receiptForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
-      //   date = date[2]+"/"+date[1]+"/"+date[0]
-      //   // let payment_condition = this.receiptForm.value.paymentCondition.name || "";
-      //   let contact_name = this.receiptForm.value.contact.name || "";
-      //   let code = this.receiptForm.value.code || "";
-      //   let doc = this.receiptForm.value.contact.document || "";
-      //   //let direction = this.receiptForm.value.contact.city || "";
-      //   //let phone = this.receiptForm.value.contact.phone || "";
-      //   let lines = ""
-      //   let totalExentas = 0;
-      //   let totalIva5 = 0;
-      //   let totalIva10 = 0;
-      //   let totalAmount = totalIva10 + totalIva5 + totalExentas;
-      //   totalAmount = this.formatService.string_pad(16, totalAmount, "right");
-      //   let ticket=""
-      //   ticket +=company_name+"\n";
-      //   ticket += "Ruc: "+company_ruc+"\n";
-      //   ticket += "Tel: "+company_phone+"\n";
-      //   ticket += "\n";
-      //   ticket += "RECIBO COD.: "+code+"\n";
-      //   ticket += "Fecha: "+date+"\n";
-      //   ticket += "Cliente: "+contact_name+"\n";
-      //   ticket += "Ruc: "+doc+"\n";
-      //   ticket += "\n";
-      //   // ticket += "Condicion de pago: "+payment_condition+"\n";
-      //   ticket += "\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "ARTICULOS DEL PEDIDO\n";
-      //   ticket += "\n";
-      //   ticket += "Cod.  Cant.   Precio   Sub-total\n";
-      //   ticket += lines;
-      //   ticket += "--------------------------------\n";
-      //   ticket += "TOTAL Gs.:     "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "AVISO LEGAL: Este comprobante \n";
-      //   ticket += "no tiene valor fiscal.\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "Firma del vendedor: Francisco Xavier Schwertner\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "Firma del cliente: "+contact_name+"\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //
-      //
-      //   //console.log("ticket", ticket);
-      //
-      //
-      //   // Print to bluetooth printer
-      //   let toast = await this.toastCtrl.create({
-      //   message: "Imprimiendo...",
-      //   duration: 3000
-      //   });
-      //   toast.present();
-      //   this.bluetoothSerial.isEnabled().then(res => {
-      //     this.bluetoothSerial.list().then((data)=> {
-      //       this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
-      //         this.bluetoothSerial.isConnected().then(res => {
-      //           // |---- 32 characteres ----|
-      //           this.bluetoothSerial.write(ticket);
-      //           this.bluetoothSerial.disconnect();
-      //         }).catch(res => {
-      //             //console.log("res1", res);
-      //         });
-      //      },error=>{
-      //        //console.log("error", error);
-      //      });
-      //    })
-      //   }).catch(res => {
-      //        //console.log("res", res);
-      //   });
-      // });
-    }
+      this.configService.getConfig().then(async (data) => {
+        let company_name = data.name || "";
+        let company_ruc = data.doc || "";
+        let company_phone = data.phone || "";
+        //let number = this.receiptForm.value.receipt || "";
+        let date = this.receiptForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+        date = date[2]+"/"+date[1]+"/"+date[0]
+        // let payment_condition = this.receiptForm.value.paymentCondition.name || "";
+        let contact_name = this.receiptForm.value.contact.name || "";
+        let code = this.receiptForm.value.code || "";
+        let doc = this.receiptForm.value.contact.document || "";
+        //let direction = this.receiptForm.value.contact.city || "";
+        //let phone = this.receiptForm.value.contact.phone || "";
+        let lines = ""
+        let totalExentas = 0;
+        let totalIva5 = 0;
+        let totalIva10 = 0;
+        let totalAmount = totalIva10 + totalIva5 + totalExentas;
+        totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+        let ticket=""
+        ticket +=company_name+"\n";
+        ticket += "Ruc: "+company_ruc+"\n";
+        ticket += "Tel: "+company_phone+"\n";
+        ticket += "\n";
+        ticket += "RECIBO COD.: "+code+"\n";
+        ticket += "Fecha: "+date+"\n";
+        ticket += "Cliente: "+contact_name+"\n";
+        ticket += "Ruc: "+doc+"\n";
+        ticket += "\n";
+        // ticket += "Condicion de pago: "+payment_condition+"\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "ARTICULOS DEL PEDIDO\n";
+        ticket += "\n";
+        ticket += "Cod.  Cant.   Precio   Sub-total\n";
+        ticket += lines;
+        ticket += "--------------------------------\n";
+        ticket += "TOTAL Gs.:     "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+        ticket += "--------------------------------\n";
+        ticket += "AVISO LEGAL: Este comprobante \n";
+        ticket += "no tiene valor fiscal.\n";
+        ticket += "--------------------------------\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "Firma del vendedor: Francisco Xavier Schwertner\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "Firma del cliente: "+contact_name+"\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
 
-    getReceipt(doc_id): Promise<any> {
-      return new Promise((resolve, reject)=>{
-        this.unserializeReceipt(doc_id).then(viewData => {
-          resolve(viewData);
+
+        //console.log("ticket", ticket);
+
+
+        // Print to bluetooth printer
+        let toast = await this.toastCtrl.create({
+        message: "Imprimiendo...",
+        duration: 3000
+        });
+        toast.present();
+        this.bluetoothSerial.isEnabled().then(res => {
+          this.bluetoothSerial.list().then((data)=> {
+            this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+              this.bluetoothSerial.isConnected().then(res => {
+                // |---- 32 characteres ----|
+                this.bluetoothSerial.write(ticket);
+                this.bluetoothSerial.disconnect();
+              }).catch(res => {
+                  //console.log("res1", res);
+              });
+           },error=>{
+             //console.log("error", error);
+           });
+         })
+        }).catch(res => {
+             //console.log("res", res);
         });
       });
     }
-
-    createReceipt(viewData){
-      return new Promise((resolve, reject)=>{
-        let receipt = this.serializeReceipt(viewData);
-        // this.configService.getSequence('receipt').then((code) => {
-        //   receipt['code'] = code;
-          this.pouchdbService.createDoc(receipt).then(doc => {
-            resolve({doc: doc, receipt: receipt});
-          });
-        // });
-      });
-    }
-
-    serializeReceipt(viewData){
-      let receipt = Object.assign({}, viewData);
-      receipt.lines = [];
-      receipt.docType = 'receipt';
-      if (receipt['state'] != 'QUOTATION'){
-        delete receipt.payments;
-      }
-      delete receipt.planned;
-      delete receipt.amount_paid;
-      receipt.cash_id = receipt.cash_paid._id;
-      delete receipt.cash_paid;
-      receipt.contact_id = receipt.contact._id;
-      delete receipt.contact;
-      return receipt;
-    }
-
-    unserializeReceipt(doc_id){
-      return new Promise((resolve, reject)=>{
-        return this.pouchdbService.getDoc(doc_id).then(((pouchData: any) => {
-          let getList = [
-            pouchData['contact_id'],
-            pouchData['cash_id']
-          ];
-          this.pouchdbService.getList(getList).then((docs: any[])=>{
-            var doc_dict = {};
-            docs.forEach(row=>{
-              doc_dict[row.id] = row.doc;
-            })
-            pouchData.contact = doc_dict[pouchData.contact_id] || {};
-            pouchData.cash_paid = doc_dict[pouchData.cash_id] || {};
-
-            if (pouchData['state'] != 'QUOTATION'){
-              this.pouchdbService.getRelated(
-              "cash-move", "origin_id", doc_id).then((payments) => {
-                pouchData['payments'] = payments;
-                resolve(pouchData);
-              });
-            } else {
-              resolve(pouchData);
-            }
-          })
-        }));
-      });
-    }
-
-    updateReceipt(viewData){
-      let receipt = this.serializeReceipt(viewData)
-      return this.pouchdbService.updateDoc(receipt);
-    }
-
 }

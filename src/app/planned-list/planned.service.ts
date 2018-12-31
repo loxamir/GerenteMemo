@@ -108,6 +108,7 @@ export class PlannedService {
       this.pouchdbService.getView(
         'stock/A Cobrar', 1
       ).then((planneds: any[]) => {
+        console.log("planneds", planneds);
         let promise_ids = [];
         let pts = [];
         planneds.forEach(item => {

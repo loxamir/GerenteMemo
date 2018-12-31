@@ -1,16 +1,19 @@
 <ion-header>
   <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/cash-list"></ion-back-button>
+    </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Movimiento Financiero"
+      placeholder="Buscar Movimiento"
       [(ngModel)]="searchTerm"
       (ionInput)="setFilteredItems()">
     </ion-searchbar>
-    <ion-buttons slot="end">
+    <!-- <ion-buttons slot="end">
       <ion-button icon-only color="royal"
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 
 </ion-header>

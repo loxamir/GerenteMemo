@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button> -->
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/report-tabs/short-report"></ion-back-button>
+    </ion-buttons>
     <ion-title *ngIf="!has_search">{{ name | translate}}</ion-title>
     <ion-searchbar
       placeholder="Busqueda"

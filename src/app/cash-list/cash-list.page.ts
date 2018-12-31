@@ -4,7 +4,7 @@ import { CashPage } from '../cash/cash.page';
 
 import 'rxjs/Rx';
 // import { CashListService } from './cash-list.service';
-// import { CashListPopover } from './cash-list.popover';
+import { CashListPopover } from './cash-list.popover';
 // import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 // import { CashService } from '../cash.service';
 import { CashMoveService } from '../cash-move/cash-move.service';
@@ -89,6 +89,16 @@ export class CashListPage implements OnInit {
   //     ev: myEvent
   //   });
   // }
+
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: CashListPopover,
+      event: myEvent,
+      componentProps: {popoverController: this.popoverCtrl}
+    });
+    popover.present();
+  }
 
   openCash(cash) {
     this.events.subscribe('open-cash', (data) => {

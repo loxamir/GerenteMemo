@@ -40,7 +40,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [StockMovePage, WarehouseListPage, ProductListPage, ContactListPage],
-  entryComponents: [WarehouseListPage, ProductListPage, ContactListPage],
+  declarations: [StockMovePage],
+  entryComponents: [],
 })
 export class StockMovePageModule {}

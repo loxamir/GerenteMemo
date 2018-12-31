@@ -29,6 +29,7 @@ import { AccountListPage } from './account-list/account-list.page';
 import { CashListPage } from './cash-list/cash-list.page';
 
 
+import { ProductCategoryListPageModule } from './product-category-list/product-category-list.module';
 import { ProductListPageModule } from './product-list/product-list.module';
 import { PaymentConditionListPageModule } from './payment-condition-list/payment-condition-list.module';
 import { ContactListPageModule } from './contact-list/contact-list.module';
@@ -38,6 +39,7 @@ import { InvoicePageModule } from './invoice/invoice.module';
 import { WarehouseListPageModule } from './warehouse-list/warehouse-list.module';
 import { AccountListPageModule } from './account-list/account-list.module';
 import { CashListPageModule } from './cash-list/cash-list.module';
+import { CashMovePageModule } from './cash-move/cash-move.module';
 
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
@@ -66,7 +68,8 @@ import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module'
     CashListPage,
   ],
   imports: [
-
+    CashMovePageModule,
+    ProductCategoryListPageModule,
     ProductListPageModule,
     PaymentConditionListPageModule,
     CurrencyListPageModule,

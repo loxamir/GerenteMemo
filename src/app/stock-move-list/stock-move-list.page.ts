@@ -103,7 +103,7 @@ export class StockMoveListPage implements OnInit {
     })
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // newRootNav.push(StockMovePage, {});
-    this.navCtrl.navigateForward('/product', {});
+    this.navCtrl.navigateForward('/stock-move', {});
   }
 
   doInfinite(infiniteScroll) {

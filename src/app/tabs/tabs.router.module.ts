@@ -53,11 +53,11 @@ const routes: Routes = [
           }
         ]
       },
-      // {
-      //   path: '',
-      //   redirectTo: '/tabs/purchase-list',
-      //   pathMatch: 'full'
-      // }
+      {
+        path: '',
+        redirectTo: '/tabs/sale-list',
+        pathMatch: 'full'
+      }
     ]
   },
   {

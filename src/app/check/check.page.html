@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button>
-    <ion-title>{{ 'ASSET' | translate }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/check-list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'CHECK_LIST' | translate }}</ion-title>
     <ion-buttons slot="end" [hidden]="!checkForm.dirty">
       <ion-button (click)="buttonSave()">
         {{ 'SAVE' | translate }}

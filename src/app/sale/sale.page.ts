@@ -21,7 +21,7 @@ import { ProductListPage } from '../product-list/product-list.page';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 // import { PlannedService } from '../planned/planned.service';
-// import { ConfigService } from '../config/config.service';
+import { ConfigService } from '../config/config.service';
 import { HostListener } from '@angular/core';
 import { ReceiptPage } from '../receipt/receipt.page';
 // import { ReceiptService } from '../receipt/receipt.service';
@@ -135,7 +135,7 @@ export class SalePage implements OnInit {
       public bluetoothSerial: BluetoothSerial,
       public toastCtrl: ToastController,
       public printer: Printer,
-      // public configService: ConfigService,
+      public configService: ConfigService,
       public formatService: FormatService,
       public events:Events,
       public pouchdbService: PouchdbService,
@@ -249,7 +249,7 @@ export class SalePage implements OnInit {
 
     private exitPage() {
         this.saleForm.markAsPristine();
-        // this.navCtrl.navigateBack();
+        this.navCtrl.navigateBack('/sale-list');
     }
 
     goNextStep() {
@@ -262,7 +262,7 @@ export class SalePage implements OnInit {
           this.beforeAddPayment();
       } else if (this.saleForm.value.state == 'PAID'){
         if (this.saleForm.value.invoices.length){
-          // this.navCtrl.navigateBack();
+          this.navCtrl.navigateBack('/sale-list');
         } else {
           this.addInvoice();
         }
@@ -628,98 +628,98 @@ export class SalePage implements OnInit {
     afterConfirm(){
       return new Promise(resolve => {
         let createList = [];
-        // this.configService.getConfigDoc().then((config: any)=>{
-        //   this.pouchdbService.getList([
-        //     'warehouse.client',
-        //     config.warehouse_id,
-        //     'account.other.stock',
-        //     'account.expense.soldGoodCost',
-        //     'account.income.sale',
-        //     this.saleForm.value.paymentCondition.accountTo_id
-        //   ]).then((docList: any)=>{
-        //     let docDict = {}
-        //     docList.forEach(item=>{
-        //       docDict[item.id] = item;
-        //     })
-        //
-        //     this.saleForm.value.items.forEach((item) => {
-        //       let product_id = item.product_id || item.product._id;
-        //       let product_name = item.product_name || item.product.name;
-        //       createList.push({
-        //         'name': "Venta "+this.saleForm.value.code,
-        //         'quantity': parseFloat(item.quantity),
-        //         'origin_id': this.saleForm.value._id,
-        //         'contact_id': this.saleForm.value.contact._id,
-        //         'contact_name': this.saleForm.value.contact.name,
-        //         'product_id': product_id,
-        //         'product_name': product_name,
-        //         'docType': "stock-move",
-        //         'date': new Date(),
-        //         'cost': parseFloat(item.cost)*parseFloat(item.quantity),
-        //         'warehouseFrom_id': config.warehouse_id,
-        //         'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
-        //         'warehouseTo_id': 'warehouse.client',
-        //         'warehouseTo_name': docDict['warehouse.client'].doc.name,
-        //       })
-        //       createList.push({
-        //         'name': "Venta "+this.saleForm.value.code,
-        //         'contact_id': this.saleForm.value.contact._id,
-        //         'contact_name': this.saleForm.value.contact.name,
-        //         'amount': item.quantity*item.cost,
-        //         'origin_id': this.saleForm.value._id,
-        //         'date': new Date(),
-        //         'accountFrom_id': 'account.other.stock',
-        //         'accountFrom_name': docDict['account.other.stock'].doc.name,
-        //         'accountTo_id': 'account.expense.soldGoodCost',
-        //         'accountTo_name': docDict['account.expense.soldGoodCost'].doc.name,
-        //         'docType': "cash-move",
-        //       })
-        //     });
-        //     this.saleForm.value.paymentCondition.items.forEach(item => {
-        //       let dateDue = this.formatService.addDays(this.today, item.days);
-        //       // console.log("dentro", this.saleForm.value);
-        //       let amount = (item.percent/100)*this.saleForm.value.total;
-        //       let cashMoveTemplate = {
-        //         '_return': true,
-        //         'date': new Date(),
-        //         'name': "Venta "+this.saleForm.value.code,
-        //         'contact_id': this.saleForm.value.contact._id,
-        //         'contact_name': this.saleForm.value.contact.name,
-        //         'amount': amount,
-        //         'amount_residual': amount,
-        //         'amount_unInvoiced': amount,
-        //         'docType': "cash-move",
-        //         'payments': [],
-        //         'invoices': [],
-        //         'origin_id': this.saleForm.value._id,
-        //         'dateDue': dateDue,
-        //         'accountFrom_id': 'account.income.sale',
-        //         'accountFrom_name': docDict['account.income.sale'].doc.name,
-        //         'accountTo_id': this.saleForm.value.paymentCondition.accountTo_id,
-        //         'accountTo_name': docDict[this.saleForm.value.paymentCondition.accountTo_id].doc.name,
-        //       }
-        //       if (this.saleForm.value.currency._id){
-        //         cashMoveTemplate['currency'] = this.saleForm.value.currency;
-        //         cashMoveTemplate['currency_amount'] = amount;
-        //         cashMoveTemplate['currency_residual'] = amount;
-        //         cashMoveTemplate['amount'] = amount*this.saleForm.value.currency.sale_rate;
-        //         cashMoveTemplate['residual'] = amount*this.saleForm.value.currency.sale_rate;
-        //       }
-        //       createList.push(cashMoveTemplate);
-        //     });
-        //
-        //     this.pouchdbService.createDocList(createList).then((created: any)=>{
-        //       this.saleForm.patchValue({
-        //         state: 'CONFIRMED',
-        //         amount_unInvoiced: this.saleForm.value.total,
-        //         planned: created,
-        //       });
-        //       console.log("Sale created", created);
-        //       this.buttonSave();
-        //       resolve(true);
-        //     })
-        //   })
-        // });
+        this.configService.getConfigDoc().then((config: any)=>{
+          this.pouchdbService.getList([
+            'warehouse.client',
+            config.warehouse_id,
+            'account.other.stock',
+            'account.expense.soldGoodCost',
+            'account.income.sale',
+            this.saleForm.value.paymentCondition.accountTo_id
+          ]).then((docList: any)=>{
+            let docDict = {}
+            docList.forEach(item=>{
+              docDict[item.id] = item;
+            })
+
+            this.saleForm.value.items.forEach((item) => {
+              let product_id = item.product_id || item.product._id;
+              let product_name = item.product_name || item.product.name;
+              createList.push({
+                'name': "Venta "+this.saleForm.value.code,
+                'quantity': parseFloat(item.quantity),
+                'origin_id': this.saleForm.value._id,
+                'contact_id': this.saleForm.value.contact._id,
+                'contact_name': this.saleForm.value.contact.name,
+                'product_id': product_id,
+                'product_name': product_name,
+                'docType': "stock-move",
+                'date': new Date(),
+                'cost': parseFloat(item.cost)*parseFloat(item.quantity),
+                'warehouseFrom_id': config.warehouse_id,
+                'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
+                'warehouseTo_id': 'warehouse.client',
+                'warehouseTo_name': docDict['warehouse.client'].doc.name,
+              })
+              createList.push({
+                'name': "Venta "+this.saleForm.value.code,
+                'contact_id': this.saleForm.value.contact._id,
+                'contact_name': this.saleForm.value.contact.name,
+                'amount': item.quantity*item.cost,
+                'origin_id': this.saleForm.value._id,
+                'date': new Date(),
+                'accountFrom_id': 'account.other.stock',
+                'accountFrom_name': docDict['account.other.stock'].doc.name,
+                'accountTo_id': 'account.expense.soldGoodCost',
+                'accountTo_name': docDict['account.expense.soldGoodCost'].doc.name,
+                'docType': "cash-move",
+              })
+            });
+            this.saleForm.value.paymentCondition.items.forEach(item => {
+              let dateDue = this.formatService.addDays(this.today, item.days);
+              // console.log("dentro", this.saleForm.value);
+              let amount = (item.percent/100)*this.saleForm.value.total;
+              let cashMoveTemplate = {
+                '_return': true,
+                'date': new Date(),
+                'name': "Venta "+this.saleForm.value.code,
+                'contact_id': this.saleForm.value.contact._id,
+                'contact_name': this.saleForm.value.contact.name,
+                'amount': amount,
+                'amount_residual': amount,
+                'amount_unInvoiced': amount,
+                'docType': "cash-move",
+                'payments': [],
+                'invoices': [],
+                'origin_id': this.saleForm.value._id,
+                'dateDue': dateDue,
+                'accountFrom_id': 'account.income.sale',
+                'accountFrom_name': docDict['account.income.sale'].doc.name,
+                'accountTo_id': this.saleForm.value.paymentCondition.accountTo_id,
+                'accountTo_name': docDict[this.saleForm.value.paymentCondition.accountTo_id].doc.name,
+              }
+              if (this.saleForm.value.currency._id){
+                cashMoveTemplate['currency'] = this.saleForm.value.currency;
+                cashMoveTemplate['currency_amount'] = amount;
+                cashMoveTemplate['currency_residual'] = amount;
+                cashMoveTemplate['amount'] = amount*this.saleForm.value.currency.sale_rate;
+                cashMoveTemplate['residual'] = amount*this.saleForm.value.currency.sale_rate;
+              }
+              createList.push(cashMoveTemplate);
+            });
+
+            this.pouchdbService.createDocList(createList).then((created: any)=>{
+              this.saleForm.patchValue({
+                state: 'CONFIRMED',
+                amount_unInvoiced: this.saleForm.value.total,
+                planned: created,
+              });
+              console.log("Sale created", created);
+              this.buttonSave();
+              resolve(true);
+            })
+          })
+        });
       });
     }
 
@@ -1033,230 +1033,230 @@ export class SalePage implements OnInit {
     }
 
     print() {
-      // this.configService.getConfigDoc().then((data) => {
-      //   let company_name = data.name || "";
-      //   let company_ruc = data.doc || "";
-      //   let company_phone = data.phone || "";
-      //   //let number = this.saleForm.value.invoice || "";
-      //   let date = this.saleForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
-      //   date = date[2]+"/"+date[1]+"/"+date[0]
-      //   let payment_condition = this.saleForm.value.paymentCondition.name || "";
-      //   let contact_name = this.saleForm.value.contact.name || "";
-      //   let seller_name = this.saleForm.value.seller.name || "";
-      //   let code = this.saleForm.value.code || "";
-      //   let doc = this.saleForm.value.contact.document || "";
-      //   //let direction = this.saleForm.value.contact.city || "";
-      //   //let phone = this.saleForm.value.contact.phone || "";
-      //   let lines = ""
-      //   let totalExentas = 0;
-      //   let totalIva5 = 0;
-      //   let totalIva10 = 0;
-      //   this.saleForm.value.items.forEach(item => {
-      //     let code = item.product.code;
-      //     let quantity = item.quantity;
-      //     //  let productName = item.product.name;
-      //     let price = item.price;
-      //     let subtotal = quantity*price;
-      //     let exenta = 0;
-      //     let iva5 = 0;
-      //     let iva10 = 0;
-      //     if (item.product.tax == "iva10"){
-      //       iva10 = item.quantity*item.price;
-      //       totalIva10 += iva10;
-      //     } else if (item.product.tax == "exenta"){
-      //       exenta = item.quantity*item.price;
-      //       totalExentas += exenta;
-      //     } else if (item.product.tax == "iva5"){
-      //       iva5 = item.quantity*item.price;
-      //       totalIva5 += iva5;
-      //     }
-      //     code = this.formatService.string_pad(6, code).toString();
-      //     quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-      //     price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-      //     subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-      //     let product_name = this.formatService.string_pad(32, item.product.name);
-      //     lines += code+quantity+price+subtotal+product_name+"\n";
-      //   });
-      //   let totalAmount = totalIva10 + totalIva5 + totalExentas;
-      //   totalAmount = this.formatService.string_pad(16, totalAmount, "right");
-      //
-      //   let ticket=""
-      //   ticket +=company_name+"\n";
-      //   ticket += "Ruc: "+company_ruc+"\n";
-      //   ticket += "Tel: "+company_phone+"\n";
-      //   ticket += "\n";
-      //   ticket += "VENTA COD.: "+code+"\n";
-      //   ticket += "Fecha: "+date+"\n";
-      //   ticket += "Cliente: "+contact_name+"\n";
-      //   ticket += "Ruc: "+doc+"\n";
-      //   ticket += "\n";
-      //   ticket += "Condicion de pago: "+payment_condition+"\n";
-      //   ticket += "\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "ARTICULOS DEL PEDIDO\n";
-      //   ticket += "\n";
-      //   ticket += "Cod.  Cant.   Precio   Sub-total\n";
-      //   ticket += lines;
-      //   ticket += "--------------------------------\n";
-      //   // ticket += "TOTAL Gs.:     "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-      //   ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "AVISO LEGAL: Este comprobante \n";
-      //   ticket += "no tiene valor fiscal.\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "Firma del vendedor: " +seller_name+"\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "Firma del cliente: "+contact_name+"\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //   ticket += "\n";
-      //
-      //
-      //   console.log("ticket", ticket);
-      //
-      //
-      //   // Print to bluetooth printer
-      //   let toast = this.toastCtrl.create({
-      //   message: "Imprimiendo...",
-      //   duration: 3000
-      //   });
-      //   toast.present();
-      //   this.bluetoothSerial.isEnabled().then(res => {
-      //     this.bluetoothSerial.list().then((data)=> {
-      //       this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
-      //         this.bluetoothSerial.isConnected().then(res => {
-      //           // |---- 32 characteres ----|
-      //           this.bluetoothSerial.write(ticket);
-      //           this.bluetoothSerial.disconnect();
-      //         }).catch(res => {
-      //             //console.log("res1", res);
-      //         });
-      //      },error=>{
-      //        //console.log("error", error);
-      //      });
-      //    })
-      //   }).catch(res => {
-      //        //console.log("res", res);
-      //   });
-      // });
+      this.configService.getConfigDoc().then(async (data) => {
+        let company_name = data.name || "";
+        let company_ruc = data.doc || "";
+        let company_phone = data.phone || "";
+        //let number = this.saleForm.value.invoice || "";
+        let date = this.saleForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+        date = date[2]+"/"+date[1]+"/"+date[0]
+        let payment_condition = this.saleForm.value.paymentCondition.name || "";
+        let contact_name = this.saleForm.value.contact.name || "";
+        let seller_name = this.saleForm.value.seller.name || "";
+        let code = this.saleForm.value.code || "";
+        let doc = this.saleForm.value.contact.document || "";
+        //let direction = this.saleForm.value.contact.city || "";
+        //let phone = this.saleForm.value.contact.phone || "";
+        let lines = ""
+        let totalExentas = 0;
+        let totalIva5 = 0;
+        let totalIva10 = 0;
+        this.saleForm.value.items.forEach(item => {
+          let code = item.product.code;
+          let quantity = item.quantity;
+          //  let productName = item.product.name;
+          let price = item.price;
+          let subtotal = quantity*price;
+          let exenta = 0;
+          let iva5 = 0;
+          let iva10 = 0;
+          if (item.product.tax == "iva10"){
+            iva10 = item.quantity*item.price;
+            totalIva10 += iva10;
+          } else if (item.product.tax == "exenta"){
+            exenta = item.quantity*item.price;
+            totalExentas += exenta;
+          } else if (item.product.tax == "iva5"){
+            iva5 = item.quantity*item.price;
+            totalIva5 += iva5;
+          }
+          code = this.formatService.string_pad(6, code).toString();
+          quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+          price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          let product_name = this.formatService.string_pad(32, item.product.name);
+          lines += code+quantity+price+subtotal+product_name+"\n";
+        });
+        let totalAmount = totalIva10 + totalIva5 + totalExentas;
+        totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+
+        let ticket=""
+        ticket +=company_name+"\n";
+        ticket += "Ruc: "+company_ruc+"\n";
+        ticket += "Tel: "+company_phone+"\n";
+        ticket += "\n";
+        ticket += "VENTA COD.: "+code+"\n";
+        ticket += "Fecha: "+date+"\n";
+        ticket += "Cliente: "+contact_name+"\n";
+        ticket += "Ruc: "+doc+"\n";
+        ticket += "\n";
+        ticket += "Condicion de pago: "+payment_condition+"\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "ARTICULOS DEL PEDIDO\n";
+        ticket += "\n";
+        ticket += "Cod.  Cant.   Precio   Sub-total\n";
+        ticket += lines;
+        ticket += "--------------------------------\n";
+        // ticket += "TOTAL Gs.:     "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+        ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+        ticket += "--------------------------------\n";
+        ticket += "AVISO LEGAL: Este comprobante \n";
+        ticket += "no tiene valor fiscal.\n";
+        ticket += "--------------------------------\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "Firma del vendedor: " +seller_name+"\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "Firma del cliente: "+contact_name+"\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+
+
+        console.log("ticket", ticket);
+
+
+        // Print to bluetooth printer
+        let toast = await this.toastCtrl.create({
+        message: "Imprimiendo...",
+        duration: 3000
+        });
+        toast.present();
+        this.bluetoothSerial.isEnabled().then(res => {
+          this.bluetoothSerial.list().then((data)=> {
+            this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+              this.bluetoothSerial.isConnected().then(res => {
+                // |---- 32 characteres ----|
+                this.bluetoothSerial.write(ticket);
+                this.bluetoothSerial.disconnect();
+              }).catch(res => {
+                  //console.log("res1", res);
+              });
+           },error=>{
+             //console.log("error", error);
+           });
+         })
+        }).catch(res => {
+             //console.log("res", res);
+        });
+      });
     }
 
     share() {
-      // this.configService.getConfigDoc().then((data) => {
-      //   let company_name = data.name || "";
-      //   let company_ruc = data.doc || "";
-      //   let company_phone = data.phone || "";
-      //   //let number = this.saleForm.value.invoice || "";
-      //   let date = this.saleForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
-      //   date = date[2]+"/"+date[1]+"/"+date[0]
-      //   let payment_condition = this.saleForm.value.paymentCondition.name || "";
-      //   let contact_name = this.saleForm.value.contact.name || "";
-      //   let seller_name = this.saleForm.value.seller.name || "";
-      //   let code = this.saleForm.value.code || "";
-      //   let doc = this.saleForm.value.contact.document || "";
-      //   //let direction = this.saleForm.value.contact.city || "";
-      //   //let phone = this.saleForm.value.contact.phone || "";
-      //   let lines = ""
-      //   let totalExentas = 0;
-      //   let totalIva5 = 0;
-      //   let totalIva10 = 0;
-      //   this.saleForm.value.items.forEach(item => {
-      //     let code = item.product.code;
-      //     let quantity = item.quantity;
-      //     //  let productName = item.product.name;
-      //     let price = item.price;
-      //     let subtotal = quantity*price;
-      //     let exenta = 0;
-      //     let iva5 = 0;
-      //     let iva10 = 0;
-      //     if (item.product.tax == "iva10"){
-      //       iva10 = item.quantity*item.price;
-      //       totalIva10 += iva10;
-      //     } else if (item.product.tax == "exenta"){
-      //       exenta = item.quantity*item.price;
-      //       totalExentas += exenta;
-      //     } else if (item.product.tax == "iva5"){
-      //       iva5 = item.quantity*item.price;
-      //       totalIva5 += iva5;
-      //     }
-      //     code = this.formatService.string_pad(6, code.toString());
-      //     quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-      //     price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-      //     subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-      //     let product_name = this.formatService.string_pad(32, item.product.name);
-      //     lines += code+quantity+price+subtotal+"\n"+product_name+"\n";
-      //   });
-      //   let totalAmount = totalIva10 + totalIva5 + totalExentas;
-      //   totalAmount = this.formatService.string_pad(16, totalAmount, "right");
-      //
-      //   let ticket='<div style="font-family: monospace;width: 251px;background: #fffae3;word-break: break-all;"><pre>'
-      //   ticket += company_name+"\n";
-      //   ticket += "Ruc: "+company_ruc+"\n";
-      //   ticket += "Tel: "+company_phone+"\n";
-      //   ticket += "\n";
-      //   ticket += "PRESUPUESTO COD.: "+code+"\n";
-      //   ticket += "Fecha: "+date+"\n";
-      //   ticket += "Vendedor: "+seller_name+"\n";
-      //   ticket += "Cliente: "+contact_name+"\n";
-      //   ticket += "Ruc: "+doc+"\n";
-      //   ticket += "\n";
-      //   ticket += "Condicion de pago: "+payment_condition+"\n";
-      //   ticket += "\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "ARTICULOS DEL PEDIDO\n";
-      //   ticket += "\n";
-      //   ticket += "Cod.  Cant.   Precio   Sub-total\n";
-      //   ticket += lines;
-      //   ticket += "--------------------------------\n";
-      //   // ticket += "TOTAL Gs.:     "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-      //   ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "AVISO LEGAL: Este presupuesto \n";
-      //   ticket += "no tiene valor fiscal.\n";
-      //   ticket += "--------------------------------\n";
-      //   ticket += "\n</pre></div>";
-      //
-      //
-      //   console.log("ticket", ticket);
-      //
-      //
-      //   // Print to bluetooth printer
-      //   console.log("htmlTemplate", ticket);
-      //   cordova.plugins.pdf.htmlToPDF({
-      //     data: ticket,
-      //     documentSize: "A4",
-      //     landscape: "portrait",
-      //     type: "base64"
-      //   },
-      //   (sucess) => {
-      //       // To define the type of the Blob
-      //       //console.log("Ponto3");
-      //       var contentType = "application/pdf";
-      //       //console.log("share sucess");
-      //       // if cordova.file is not available use instead :
-      //       // var folderpath = "file:///storage/emulated/0/Download/";
-      //       var folderpath = cordova.file.externalRootDirectory + "Download/"; //you can select other folders
-      //       //console.log("folderpath", folderpath);
-      //       this.formatService.savebase64AsPDF(folderpath, "Presupuesto.pdf", sucess, contentType);
-      //       this.socialSharing.share("Presupuesto alcanza "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "Presupuesto "+code, folderpath+"Presupuesto.pdf")
-      //   },
-      //   (error) => console.log('error:', error));
-      //
-      // });
+      this.configService.getConfigDoc().then((data) => {
+        let company_name = data.name || "";
+        let company_ruc = data.doc || "";
+        let company_phone = data.phone || "";
+        //let number = this.saleForm.value.invoice || "";
+        let date = this.saleForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+        date = date[2]+"/"+date[1]+"/"+date[0]
+        let payment_condition = this.saleForm.value.paymentCondition.name || "";
+        let contact_name = this.saleForm.value.contact.name || "";
+        let seller_name = this.saleForm.value.seller.name || "";
+        let code = this.saleForm.value.code || "";
+        let doc = this.saleForm.value.contact.document || "";
+        //let direction = this.saleForm.value.contact.city || "";
+        //let phone = this.saleForm.value.contact.phone || "";
+        let lines = ""
+        let totalExentas = 0;
+        let totalIva5 = 0;
+        let totalIva10 = 0;
+        this.saleForm.value.items.forEach(item => {
+          let code = item.product.code;
+          let quantity = item.quantity;
+          //  let productName = item.product.name;
+          let price = item.price;
+          let subtotal = quantity*price;
+          let exenta = 0;
+          let iva5 = 0;
+          let iva10 = 0;
+          if (item.product.tax == "iva10"){
+            iva10 = item.quantity*item.price;
+            totalIva10 += iva10;
+          } else if (item.product.tax == "exenta"){
+            exenta = item.quantity*item.price;
+            totalExentas += exenta;
+          } else if (item.product.tax == "iva5"){
+            iva5 = item.quantity*item.price;
+            totalIva5 += iva5;
+          }
+          code = this.formatService.string_pad(6, code.toString());
+          quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+          price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          let product_name = this.formatService.string_pad(32, item.product.name);
+          lines += code+quantity+price+subtotal+"\n"+product_name+"\n";
+        });
+        let totalAmount = totalIva10 + totalIva5 + totalExentas;
+        totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+
+        let ticket='<div style="font-family: monospace;width: 251px;background: #fffae3;word-break: break-all;"><pre>'
+        ticket += company_name+"\n";
+        ticket += "Ruc: "+company_ruc+"\n";
+        ticket += "Tel: "+company_phone+"\n";
+        ticket += "\n";
+        ticket += "PRESUPUESTO COD.: "+code+"\n";
+        ticket += "Fecha: "+date+"\n";
+        ticket += "Vendedor: "+seller_name+"\n";
+        ticket += "Cliente: "+contact_name+"\n";
+        ticket += "Ruc: "+doc+"\n";
+        ticket += "\n";
+        ticket += "Condicion de pago: "+payment_condition+"\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "ARTICULOS DEL PEDIDO\n";
+        ticket += "\n";
+        ticket += "Cod.  Cant.   Precio   Sub-total\n";
+        ticket += lines;
+        ticket += "--------------------------------\n";
+        // ticket += "TOTAL Gs.:     "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+        ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+        ticket += "--------------------------------\n";
+        ticket += "AVISO LEGAL: Este presupuesto \n";
+        ticket += "no tiene valor fiscal.\n";
+        ticket += "--------------------------------\n";
+        ticket += "\n</pre></div>";
+
+
+        console.log("ticket", ticket);
+
+
+        // Print to bluetooth printer
+        console.log("htmlTemplate", ticket);
+        cordova.plugins.pdf.htmlToPDF({
+          data: ticket,
+          documentSize: "A4",
+          landscape: "portrait",
+          type: "base64"
+        },
+        (sucess) => {
+            // To define the type of the Blob
+            //console.log("Ponto3");
+            var contentType = "application/pdf";
+            //console.log("share sucess");
+            // if cordova.file is not available use instead :
+            // var folderpath = "file:///storage/emulated/0/Download/";
+            var folderpath = cordova.file.externalRootDirectory + "Download/"; //you can select other folders
+            //console.log("folderpath", folderpath);
+            this.formatService.savebase64AsPDF(folderpath, "Presupuesto.pdf", sucess, contentType);
+            this.socialSharing.share("Presupuesto alcanza "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "Presupuesto "+code, folderpath+"Presupuesto.pdf")
+        },
+        (error) => console.log('error:', error));
+
+      });
     }
 
     getSale(doc_id): Promise<any> {

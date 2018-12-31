@@ -9,6 +9,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
+import { CashListPopover} from './cash-list.popover';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -37,6 +38,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CashListPage]
+  declarations: [CashListPage, CashListPopover],
+  entryComponents: [CashListPopover]
 })
 export class CashListPageModule {}

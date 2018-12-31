@@ -63,7 +63,7 @@
           </ion-row>
       <ion-row no-padding>
         <ion-col no-padding style="text-align: center;border-radius: 4px;" class="paid">
-            {{item.doc.accountFrom && item.doc.accountFrom.name || item.doc.accountTo && item.doc.accountTo.name | translate}}
+            {{item.doc && ( item.doc.accountFrom && item.doc.accountFrom.name || item.doc.accountTo && item.doc.accountTo.name) | translate}}
         </ion-col>
       </ion-row>
       </ion-card>

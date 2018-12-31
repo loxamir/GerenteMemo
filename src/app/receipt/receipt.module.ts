@@ -14,6 +14,7 @@ import { Printer } from '@ionic-native/printer';
 import { IonicModule } from '@ionic/angular';
 
 import { ReceiptPage } from './receipt.page';
+import { ReceiptService } from './receipt.service';
 
 const routes: Routes = [
   {
@@ -42,6 +43,7 @@ const routes: Routes = [
   providers: [
     BluetoothSerial,
     Printer,
+    ReceiptService,
   ]
 })
 export class ReceiptPageModule {}

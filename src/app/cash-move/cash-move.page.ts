@@ -8,12 +8,12 @@ import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 // import { ImagePicker } from '@ionic-native/image-picker';
 // import { Crop } from '@ionic-native/crop';
-// import { CashService } from '../cash.service';
+// import { CashService } from '../cash/cash.service';
 import { CashMoveService } from './cash-move.service';
 // import { CashListPage } from '../list/cash-list';
 import { AccountListPage } from '../account-list/account-list.page';
 import { ContactListPage } from '../contact-list/contact-list.page';
-// import { ConfigService } from '../../config/config.service';
+import { ConfigService } from '../config/config.service';
 import { CheckListPage } from '../check-list/check-list.page';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -56,7 +56,7 @@ export class CashMovePage implements OnInit {
     public cashMoveService: CashMoveService,
     // public cashService: CashService,
     public events: Events,
-    // public configService: ConfigService,
+    public configService: ConfigService,
     public alertCtrl: AlertController,
   ) {
     //this.loading = //this.loadingCtrl.create();
@@ -85,7 +85,9 @@ export class CashMovePage implements OnInit {
 
   ngOnInit() {
     var today = new Date().toISOString();
-
+    setTimeout(() => {
+      this.myInput.setFocus();
+    }, 200);
 
     this.cashMoveForm = this.formBuilder.group({
       name: new FormControl(this.default_name, Validators.required),
@@ -120,6 +122,44 @@ export class CashMovePage implements OnInit {
       currency_residual: new FormControl(this.route.snapshot.paramMap.get('currency_residual')||0),
       _id: new FormControl(''),
     });
+
+    if (this._id){
+      this.cashMoveService.getCashMove(this._id).then((data) => {
+        // data.date = Date(data.date)
+        this.cashMoveForm.patchValue(data);
+        //this.loading.dismiss();
+      });
+    } else {
+      this.cashMoveForm.markAsDirty();
+      //console.log("caja", this.route.snapshot.paramMap.get('cash);
+      // if (this.route.snapshot.paramMap.get('hasOwnProperty('cash')){
+      //   this.cashMoveForm.patchValue({
+      //     cash: this.route.snapshot.paramMap.get('cash,
+      //     cash_id: this.route.snapshot.paramMap.get('cash._id,
+      //   });
+      // } else {
+        // this.configService.getConfig().then(config => {
+          let accountFrom = this.route.snapshot.paramMap.get('accountFrom') || {};
+          let accountTo = this.route.snapshot.paramMap.get('accountTo') || {};
+          let contact = this.route.snapshot.paramMap.get('contact') || {};
+          //console.log("configconfig", config);
+          this.cashMoveForm.patchValue({
+            // cash: config.cash,
+            // cash_id: config.cash['_id'],
+            accountFrom: accountFrom,
+            accountFrom_id: accountFrom['_id'],
+            accountTo: accountTo,
+            accountTo_id: accountTo['_id'],
+            contact: contact,
+            contact_id: contact['_id'],
+          });
+        // });
+        // this.cashService.getDefaultCash().then(default_cash => {
+        //
+        // });
+      // }
+      //this.loading.dismiss();
+    }
   }
 
   async goNextStep() {
@@ -170,55 +210,6 @@ export class CashMovePage implements OnInit {
     }
   }
 
-  ionViewDidEnter() {
-    setTimeout(() => {
-      this.myInput.setFocus();
-    }, 200);
-  }
-
-  ionViewDidLoad() {
-    //console.log("ionViewDidLoad");
-    //this.loading.present();
-
-    if (this._id){
-      this.cashMoveService.getCashMove(this._id).then((data) => {
-        // data.date = Date(data.date)
-        this.cashMoveForm.patchValue(data);
-        //this.loading.dismiss();
-      });
-    } else {
-      this.cashMoveForm.markAsDirty();
-      //console.log("caja", this.route.snapshot.paramMap.get('cash);
-      // if (this.route.snapshot.paramMap.get('hasOwnProperty('cash')){
-      //   this.cashMoveForm.patchValue({
-      //     cash: this.route.snapshot.paramMap.get('cash,
-      //     cash_id: this.route.snapshot.paramMap.get('cash._id,
-      //   });
-      // } else {
-        // this.configService.getConfig().then(config => {
-          let accountFrom = this.route.snapshot.paramMap.get('accountFrom') || {};
-          let accountTo = this.route.snapshot.paramMap.get('accountTo') || {};
-          let contact = this.route.snapshot.paramMap.get('contact') || {};
-          //console.log("configconfig", config);
-          this.cashMoveForm.patchValue({
-            // cash: config.cash,
-            // cash_id: config.cash['_id'],
-            accountFrom: accountFrom,
-            accountFrom_id: accountFrom['_id'],
-            accountTo: accountTo,
-            accountTo_id: accountTo['_id'],
-            contact: contact,
-            contact_id: contact['_id'],
-          });
-        // });
-        // this.cashService.getDefaultCash().then(default_cash => {
-        //
-        // });
-      // }
-      //this.loading.dismiss();
-    }
-  }
-
   validation_messages = {
     'name': [
       { type: 'required', message: 'Name is required.' }
@@ -248,7 +239,7 @@ export class CashMovePage implements OnInit {
         //console.log("the_doc", doc);
         this.cashMoveForm.value._id = doc['id'];
         this.cashMoveForm.markAsPristine();
-        // this.navCtrl.navigateBack();
+        this.navCtrl.navigateBack('/cash-move');
       });
     }
   }

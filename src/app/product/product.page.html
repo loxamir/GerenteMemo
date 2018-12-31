@@ -75,7 +75,13 @@
           <ion-select-option value="animal">Animal</ion-select-option>
         </ion-select>
       </ion-item>
-
+      <ion-item
+      no-padding
+      (click)="selectCategory()"
+       class="field-50">
+        <h4 class="field-label">{{'CATEGORY' | translate}}</h4>
+        <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'Selecionar'}}</h4>
+      </ion-item>
       <ion-item
       no-padding
       class="field-50">
@@ -96,13 +102,6 @@
         <ion-label position="floating">{{'CODE' | translate}}</ion-label>
         <ion-input type="number"
         formControlName="code"></ion-input>
-      </ion-item>
-      <ion-item
-      no-padding
-      (click)="selectCategory()"
-       class="field-50">
-        <h4 class="field-label">{{'CATEGORY' | translate}}</h4>
-        <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'Selecionar'}}</h4>
       </ion-item>
       <ion-item
       *ngIf="productForm.value.type=='product'"

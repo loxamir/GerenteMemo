@@ -12,7 +12,7 @@ import 'rxjs/Rx';
 export class ProductCategoryListPage implements OnInit {
   categories: any;
   loading: any;
-  select: boolean;
+  select;
   searchTerm: string = '';
   page = 0;
 
@@ -25,8 +25,8 @@ export class ProductCategoryListPage implements OnInit {
     public events: Events,
   ) {
     //this.loading = //this.loadingCtrl.create();
-    // this.select = this.navParams.get('select');
-    this.route.snapshot.paramMap.get('select')
+    this.select = this.route.snapshot.paramMap.get('select');
+
   }
 
   ngOnInit() {
@@ -60,9 +60,9 @@ export class ProductCategoryListPage implements OnInit {
 
   selectCategory(category) {
     if (this.select){
-      this.navCtrl.navigateBack('').then(() => {
+      // this.navCtrl.navigateBack('').then(() => {
         this.events.publish('select-category', category);
-      });
+      // });
     } else {
       this.gotoCategory(category);
     }

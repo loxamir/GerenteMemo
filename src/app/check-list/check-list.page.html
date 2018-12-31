@@ -1,10 +1,10 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button> -->
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/cash-list"></ion-back-button>
+    </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Check"
+      placeholder="Buscar Cheque"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionInput)="setFilteredItems()">
@@ -49,7 +49,7 @@
   <ion-row style="height:15px;">
   </ion-row>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createCheck()" color="green">
+      <ion-fab-button (click)="createCheck()" color="primary">
           <ion-icon name="add">
           </ion-icon>
       </ion-fab-button>
