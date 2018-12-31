@@ -70,6 +70,7 @@ const routes: Routes = [
   { path: 'dashboard-filter', loadChildren: './dashboard-filter/dashboard-filter.module#DashboardFilterPageModule' },
   { path: 'person-tabs', loadChildren: './person-tabs/person-tabs.module#PersonTabsPageModule' },
   { path: 'report-tabs', loadChildren: './report-tabs/report-tabs.module#ReportTabsPageModule' },
+  { path: 'importer', loadChildren: './importer/importer.module#ImporterPageModule' },
   // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 

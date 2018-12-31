@@ -20,7 +20,7 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 import { ServiceWorkPage, } from './work/work.page';
 import { ServiceInputPage, } from './input/input.page';
 import { ServiceTravelPage, } from './travel/travel.page';
-
+import { ServicePopover, } from './service.popover';
 import { IonicModule } from '@ionic/angular';
 
 import { ServicePage } from './service.page';
@@ -51,11 +51,14 @@ const routes: Routes = [
   declarations: [ServicePage,
   ServiceWorkPage,
   ServiceInputPage,
-  ServiceTravelPage,],
+  ServiceTravelPage,
+  ServicePopover,
+],
   entryComponents: [
     ServiceWorkPage,
     ServiceInputPage,
     ServiceTravelPage,
+    ServicePopover,
   ],
   providers: [
     BluetoothSerial,

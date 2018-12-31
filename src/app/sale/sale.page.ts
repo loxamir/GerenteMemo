@@ -31,7 +31,7 @@ import { FormatService } from '../services/format.service';
 // import { StockMoveService } from '../stock/stock-move.service';
 // import { ProjectsPage } from '../project/list/projects';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
-// import { SalePopover } from './sale.popover';
+import { SalePopover } from './sale.popover';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
 declare var cordova:any;
@@ -624,6 +624,19 @@ export class SalePage implements OnInit {
     //     ev: myEvent
     //   });
     // }
+
+    async presentPopover(myEvent) {
+      console.log("teste my event");
+      let popover = await this.popoverCtrl.create({
+        component: SalePopover,
+        event: myEvent,
+        componentProps: {
+          popoverController: this.popoverCtrl,
+          doc: this
+        }
+      });
+      popover.present();
+    }
 
     afterConfirm(){
       return new Promise(resolve => {

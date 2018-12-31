@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button> -->
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/contact-list"></ion-back-button>
+    </ion-buttons>
     <ion-title>{{ 'HELP_INFORMATION' | translate }}</ion-title>
     <ion-buttons slot="end" [hidden]="!helpForm.dirty">
       <ion-button (click)="buttonSave()">
@@ -37,7 +37,8 @@
           placeholder="Strat writing your markdown below...">
         </ion-textarea>
       </ion-item>
-        <div [innerHtml]="content" #content></div>
+        <!-- <div [innerHtml]="content" #content></div> -->
+          <div [innerHtml]="content"></div>
     </section>
   </form>
 

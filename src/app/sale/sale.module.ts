@@ -16,6 +16,7 @@ import { PaymentConditionListPage } from '../payment-condition-list/payment-cond
 import { ProductListPage } from '../product-list/product-list.page';
 import { ContactListPage } from '../contact-list/contact-list.page';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
+import { SalePopover } from './sale.popover';
 import { IonicModule } from '@ionic/angular';
 
 import { SalePage } from './sale.page';
@@ -43,8 +44,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [SalePage],
-  entryComponents: [],
+  declarations: [SalePage, SalePopover],
+  entryComponents: [SalePopover],
   providers: [
     BluetoothSerial,
     Printer,

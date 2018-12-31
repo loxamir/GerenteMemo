@@ -68,9 +68,9 @@ export class AccountsReportPage implements OnInit {
 
     accountCategories: any[];
     accounts: any[];
-    showAccounts: boolean = true;
-    showCateg: boolean = true
-    showTitle: boolean = true;
+    // showAccounts: boolean = true;
+    // showCateg: boolean = true
+    // showTitle: boolean = true;
     // : number = 0;
 
     languages: Array<LanguageModel>;
@@ -231,6 +231,9 @@ export class AccountsReportPage implements OnInit {
         filterBy: new FormControl('contact'),
         filter: new FormControl(''),
         invoices: new FormControl([]),
+        showAccounts: new FormControl(true),
+        showCateg: new FormControl(true),
+        showTitle: new FormControl(true),
         _id: new FormControl(''),
       });
       this.recomputeValues();

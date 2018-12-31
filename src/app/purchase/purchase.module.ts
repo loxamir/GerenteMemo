@@ -15,7 +15,7 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 
 import { ReceiptPage } from '../receipt/receipt.page';
 import { InvoicePage } from '../invoice/invoice.page';
-
+import { PurchasePopover } from './purchase.popover';
 import { IonicModule } from '@ionic/angular';
 
 import { PurchasePage } from './purchase.page';
@@ -46,8 +46,8 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   // declarations: [PurchasePage]
-  declarations: [PurchasePage],
-  entryComponents: [],
+  declarations: [PurchasePage, PurchasePopover],
+  entryComponents: [PurchasePopover],
   providers: [
     BluetoothSerial,
     Printer,

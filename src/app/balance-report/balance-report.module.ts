@@ -12,6 +12,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { BalanceReportPage } from './balance-report.page';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 const routes: Routes = [
   {
@@ -36,6 +37,9 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [BalanceReportPage]
+  declarations: [BalanceReportPage],
+  providers: [
+    SocialSharing,
+  ]
 })
 export class BalanceReportPageModule {}

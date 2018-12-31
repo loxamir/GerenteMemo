@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button> -->
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/report-tabs/short-report"></ion-back-button>
+    </ion-buttons>
     <ion-title>
       <ion-row>
         {{ 'REPORT' | translate }}: {{reportSaleForm.value.code}}
@@ -19,7 +19,7 @@
 <ion-content class="report-content" style="background-color: #ddd">
   <form class="sample-form validations-form" [formGroup]="reportSaleForm" (ngSubmit)="onSubmit(reportSaleForm.value)">
     <ion-row justify-content-center>
-      <ion-card class="list-card" class="field-label" no-padding style="width: calc(50% - 20px);margin-bottom: 2%;margin-top: 1%;">
+      <!-- <ion-card class="list-card" class="field-label" no-padding style="width: calc(50% - 20px);margin-bottom: 2%;margin-top: 1%;">
         <ion-col no-padding width-50>
           <ion-label>{{'Desde' | translate }}</ion-label>
           <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" (ionChange)="goNextStep()" formControlName="dateStart">
@@ -45,9 +45,45 @@
             <ion-select-option value="seller">Vendedor</ion-select-option>
           </ion-select>
         </ion-col>
-      </ion-card>
+      </ion-card> -->
 
-      <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;height: 400px;">
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'Desde' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        (ionChange)="goNextStep()"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="dateStart">
+        </ion-datetime>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'Hasta' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        (ionChange)="goNextStep()"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="dateEnd">
+        </ion-datetime>
+      </ion-item>
+      <ion-item
+      *ngIf="reportSaleForm.value.reportType == 'sale'"
+      no-padding
+      class="field-100">
+        <ion-label>{{'Agrupado Por' | translate}}</ion-label>
+        <ion-select #groupBy formControlName="groupBy"
+          (ionChange)="goNextStep()"
+          cancelText="{{ 'CANCEL' | translate }}"
+          okText="{{ 'OK' | translate }}">
+          <ion-select-option value="date">Fecha</ion-select-option>
+          <ion-select-option value="product">Producto</ion-select-option>
+          <ion-select-option value="contact">Contato</ion-select-option>
+          <ion-select-option value="category">Categoria</ion-select-option>
+          <ion-select-option value="payment">Condición de Pago</ion-select-option>
+          <ion-select-option value="seller">Vendedor</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;height: 400px;">
         <ion-row>
           <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
             Ventas por Producto
@@ -59,7 +95,7 @@
             <svg width='320' height='260' id="svg" style="margin-top:100px;"></svg>
           </ion-col>
         </ion-row>
-      </ion-card>
+      </ion-card> -->
 
 
 

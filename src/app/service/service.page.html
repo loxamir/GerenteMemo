@@ -17,7 +17,7 @@
         {{ 'SAVE' | translate }}
       </ion-button>
       <ion-button icon-only
-              (tap)="presentPopover($event)">
+              (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -194,37 +194,6 @@
             </ion-col>
           </ion-row>
           <ion-list no-lines *ngIf="serviceForm.value.works.length && show_works" style="border-top: 1px solid blue;;background: #ddd">
-            <!-- <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.works" style="border-bottom: 1px solid blue;">
-                <ion-item no-padding>
-                  <ion-row>
-                    <ion-col size="12" (click)="editWork(item)" style="white-space: normal;">
-                      <ion-row>
-                        <ion-col size="12" (click)="editWork(item)" style="white-space: normal;">
-                          <h4 class="field-label">Descripción</h4>{{item.description}}
-                        </ion-col>
-                      </ion-row>
-                      <ion-row no-padding>
-                        <ion-col size="4" (click)="editWork(item)">
-                          <h4 class="field-label">Tiempo</h4> {{item.time|number:'1.0'}}
-                        </ion-col>
-                        <ion-col size="4" (click)="editWorkPrice(item)">
-                          <h4 class="field-label">Precio</h4> {{item.price|number:'1.0'}}
-                        </ion-col>
-                        <ion-col size="4" (click)="editWorkPrice(item)">
-                          <h4 class="field-label">Subtotal</h4> {{item.price*item.time|number:'1.0'}}
-                        </ion-col>
-                      </ion-row>
-                    </ion-col>
-                  </ion-row>
-
-
-            </ion-item>
-              <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeWork(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
-                  <ion-icon name="trash"></ion-icon>
-                </ion-button>
-              </ion-item-options>
-            </ion-item-sliding> -->
 
             <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.works">
               <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
@@ -261,13 +230,13 @@
                   </ion-row>
                   <ion-row>
                     <ion-col size="3">
-                      <ion-button class="quantity-button" (click)="remItem(item)">-</ion-button>
+                      <ion-button class="quantity-button" (click)="remWork(item)">-</ion-button>
                     </ion-col>
-                    <ion-col size="6" (click)="editItemQuantity(item)" style="text-align: center;font-size: 30px;">
+                    <ion-col size="6" (click)="editWork(item)" style="text-align: center;font-size: 30px;">
                       {{item.time}}
                     </ion-col>
                     <ion-col size="3">
-                      <ion-button class="quantity-button" (click)="sumItem(item)">+</ion-button>
+                      <ion-button class="quantity-button" (click)="sumWork(item)">+</ion-button>
                     </ion-col>
                   </ion-row>
                 </ion-col>
@@ -275,7 +244,7 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="deleteItem(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
+                <ion-button icon-only color="primary" (click)="removeWork(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
                   <ion-icon name="trash"></ion-icon>
                 </ion-button>
               </ion-item-options>
@@ -316,63 +285,6 @@
 
 
           <ion-list no-lines *ngIf="show_inputs" style="border-top: 1px solid blue;background: #ddd">
-            <!-- <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.inputs" style="border-bottom: 1px solid blue;">
-              <ion-item>
-              <ion-row  class="content-row one-line" >
-                <ion-col  size="8" class="item-content" style="white-space: normal;">
-                  <ion-row (click)="openItem(item)" class="product-name-row">
-                    <ion-col size="2">
-                      {{item.product && item.product.code}}
-                    </ion-col>
-                    <ion-col>
-                      {{item.product && item.product.name}}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col  size="6" class="item-content price-tag"
-                    *ngIf="!serviceForm.value.production"
-                     (click)="editItemPrice(item)">
-                      <span class="price-label">Precio:</span> ${{item.price|number:'1.0'}}
-                    </ion-col>
-                    <ion-col  size="6" class="item-content price-tag"
-                    *ngIf="serviceForm.value.production">
-                      <span class="price-label">Costo:</span> ${{item.cost|number:'1.0'}}
-                    </ion-col>
-                  </ion-row>
-                </ion-col>
-                <ion-col>
-
-                  <ion-row>
-                    <ion-col  size="6" class="item-content"
-                    *ngIf="!serviceForm.value.production">
-                      <h4 class="field-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
-                    </ion-col>
-                    <ion-col  size="6" class="item-content"
-                    *ngIf="serviceForm.value.production">
-                      <h4 class="field-label">Subtotal</h4> ${{item.cost*item.quantity|number:'1.0'}}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col  size="3">
-                      <ion-button class="quantity-button" (click)="remItem(item)">-</ion-button>
-
-                    </ion-col>
-                    <ion-col (click)="editItemQuantity(item)"  size="4" class="item-content" style="text-align: center;top:4px;">
-                      {{item.quantity}}
-                    </ion-col>
-                    <ion-col size="3">
-                      <ion-button class="quantity-button" (click)="sumItem(item)">+</ion-button>
-                    </ion-col>
-                  </ion-row>
-                </ion-col>
-              </ion-row>
-            </ion-item>
-              <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeInput(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
-                  <ion-icon name="trash"></ion-icon>
-                </ion-button>
-              </ion-item-options>
-            </ion-item-sliding> -->
 
             <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.inputs">
               <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
@@ -423,7 +335,7 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="deleteItem(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
+                <ion-button icon-only color="primary" (click)="removeInput(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
                   <ion-icon name="trash"></ion-icon>
                 </ion-button>
               </ion-item-options>
@@ -457,28 +369,6 @@
               </ion-col>
             </ion-row>
             <ion-list no-lines *ngIf="serviceForm.value.travels.length && show_travels" style="border-top: 1px solid blue;;background: #ddd">
-              <!-- <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.travels" style="border-bottom: 1px solid blue;">
-                  <ion-item
-                    no-padding
-                    >
-                    <ion-row no-padding class="content-row one-line">
-                      <ion-col size="6" (click)="editTravel(item)">
-                        <h4 class="field-label">Distancia</h4>{{item.distance}}
-                      </ion-col>
-                      <ion-col size="3" (click)="editTravelPrice(item)">
-                        <h4 class="field-label">Precio</h4> {{item.price|number:'1.0'}}
-                      </ion-col>
-                      <ion-col size="3" (click)="editTravelPrice(item)">
-                        <h4 class="field-label">Subtotal</h4> {{item.price*item.distance|number:'1.0'}}
-                      </ion-col>
-                    </ion-row>
-              </ion-item>
-                <ion-item-options>
-                  <ion-button icon-only color="primary" (click)="removeTravel(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
-                    <ion-icon name="trash"></ion-icon>
-                  </ion-button>
-                </ion-item-options>
-              </ion-item-sliding> -->
               <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.travels">
                 <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
                   <ion-card class="internal-card">
@@ -514,13 +404,13 @@
                     </ion-row>
                     <ion-row>
                       <ion-col size="3">
-                        <ion-button class="quantity-button" (click)="remItem(item)">-</ion-button>
+                        <ion-button class="quantity-button" (click)="remTravel(item)">-</ion-button>
                       </ion-col>
-                      <ion-col size="6" (click)="editItemQuantity(item)" style="text-align: center;font-size: 30px;">
+                      <ion-col size="6" (click)="editTravel(item)" style="text-align: center;font-size: 30px;">
                         {{item.distance}}
                       </ion-col>
                       <ion-col size="3">
-                        <ion-button class="quantity-button" (click)="sumItem(item)">+</ion-button>
+                        <ion-button class="quantity-button" (click)="sumTravel(item)">+</ion-button>
                       </ion-col>
                     </ion-row>
                   </ion-col>
@@ -576,13 +466,6 @@
               <ion-button class="print-invoice"
               (click)="addInvoice()">
                 Crear Fatura
-              </ion-button>
-            </ion-col>
-            <ion-col size="6" class="item-content"
-            *ngIf="serviceForm.value.state == 'CONFIRMED'">
-              <ion-button class="print-invoice"
-              (click)="serviceCancel()">
-                Cancelar
               </ion-button>
             </ion-col>
             <ion-col *ngIf="serviceForm.value.state == 'STARTED'">

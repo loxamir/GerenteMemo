@@ -8,22 +8,23 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
 import { Routes, RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
-
-import { PurchaseReportPage } from './purchase-report.page';
-import { SocialSharing } from '@ionic-native/social-sharing';
+import { HttpModule } from '@angular/http';
+import { ImporterPage } from './importer.page';
+import { FileChooser } from '@ionic-native/file-chooser';
+import { FilePath } from '@ionic-native/file-path';
+import { File } from '@ionic-native/file';
 
 const routes: Routes = [
   {
     path: '',
-    component: PurchaseReportPage
+    component: ImporterPage
   }
 ];
 
 @NgModule({
   imports: [
-    ReactiveFormsModule,
+    HttpModule,
     HttpClientModule,
     TranslateModule.forRoot({
       loader: {
@@ -37,9 +38,11 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [PurchaseReportPage],
+  declarations: [ImporterPage],
   providers: [
-    SocialSharing,
+    FileChooser,
+    FilePath,
+    File,
   ]
 })
-export class PurchaseReportPageModule {}
+export class ImporterPageModule {}

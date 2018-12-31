@@ -6,7 +6,7 @@ import 'rxjs/Rx';
 // import { CashListService } from './cash-list.service';
 import { CashListPopover } from './cash-list.popover';
 // import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-// import { CashService } from '../cash.service';
+import { CashService } from '../cash/cash.service';
 import { CashMoveService } from '../cash-move/cash-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
@@ -27,6 +27,7 @@ export class CashListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public route: ActivatedRoute,
     public pouchdbService: PouchdbService,
+    public cashService: CashService,
     public events: Events,
     public popoverCtrl: PopoverController,
     public cashMoveService: CashMoveService,
@@ -175,16 +176,16 @@ export class CashListPage implements OnInit {
                 {
                   text: 'Confirmar',
                   handler: type => {
-                    // this.cashService.createCash({
-                    //   'name': data.name,
-                    //   'type': type,
-                    //   'category_id': 'accountCategory.cash',
-                    //   'transfer': true,
-                    //   'payable': false,
-                    //   'receivable': false,
-                    // }).then((res:any)=>{
-                    //   this.setInitialBalance(res.cash);
-                    // })
+                    this.cashService.createCash({
+                      'name': data.name,
+                      'type': type,
+                      'category_id': 'accountCategory.cash',
+                      'transfer': true,
+                      'payable': false,
+                      'receivable': false,
+                    }).then((res:any)=>{
+                      this.setInitialBalance(res.cash);
+                    })
                   }
                 }
               ]

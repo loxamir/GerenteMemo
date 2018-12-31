@@ -121,7 +121,7 @@ export class ServiceTravelPage implements OnInit {
       }
     }
     buttonSave(){
-      // this.viewCtrl.dismiss(this.travelForm.value);
+      this.modal.dismiss(this.travelForm.value);
       if (this.travelForm.value.vehicle){
         this.travelForm.value.vehicle['meter'] = this.travelForm.value.end_km;
         this.pouchdbService.updateDoc(this.travelForm.value.vehicle);

@@ -37,8 +37,7 @@ import { ReceiptPage } from '../receipt/receipt.page';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 // import { StockMoveService } from '../stock/stock-move.service';
 // import { CashMoveService } from '../cash/move/cash-move.service';
-// import { ServicePopover } from './service.popover';
-
+import { ServicePopover } from './service.popover';
 
 @Component({
   selector: 'app-service',
@@ -237,10 +236,32 @@ export class ServicePage implements OnInit {
     //   });
     // }
 
+    async presentPopover(myEvent) {
+      console.log("teste my event");
+      let popover = await this.popoverCtrl.create({
+        component: ServicePopover,
+        event: myEvent,
+        componentProps: {
+          popoverController: this.popoverCtrl,
+          doc: this
+        }
+      });
+      popover.present();
+    }
+
+
     async openItem(item) {
       if (this.serviceForm.value.state!='CONFIRMED'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
+        let profileModal = await this.modal.create({
+          component: ProductListPage,
+          componentProps: {
+            "select": true,
+            "type": "product"
+          }
+        });
+        profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
           item.price = data.price;
@@ -250,24 +271,14 @@ export class ServicePage implements OnInit {
           this.avoidAlertMessage = false;
           this.serviceForm.markAsDirty();
           this.buttonSave();
+          profileModal.dismiss();
           this.events.unsubscribe('select-product');
         })
-        let profileModal = await this.modal.create({
-          component: ProductListPage,
-          componentProps: {
-            "select": true,
-            "type": "product"
-          }
-        });
-        profileModal.present();
       }
     }
 
     async openPayment(item) {
       this.events.unsubscribe('open-receipt');
-      this.events.subscribe('open-receipt', (data) => {
-        this.events.unsubscribe('open-receipt');
-      });
       let profileModal = await this.modal.create({
         component: ReceiptPage,
         componentProps: {
@@ -275,6 +286,10 @@ export class ServicePage implements OnInit {
         }
       });
       profileModal.present();
+      this.events.subscribe('open-receipt', (data) => {
+        profileModal.dismiss();
+        this.events.unsubscribe('open-receipt');
+      });
     }
 
     recomputeResidual(){
@@ -647,17 +662,6 @@ export class ServicePage implements OnInit {
       if (this.serviceForm.value.state=='STARTED'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-payment-condition');
-        this.events.subscribe('select-payment-condition', (data) => {
-          this.serviceForm.patchValue({
-            paymentCondition: data,
-            payment_name: data.name,
-          });
-          this.serviceForm.markAsDirty();
-          this.avoidAlertMessage = false;
-          this.events.unsubscribe('select-payment-condition');
-          resolve(data);
-          //this.beforeAddPayment();
-        })
         let profileModal = await this.modal.create({
           component: PaymentConditionListPage,
           componentProps: {
@@ -665,6 +669,18 @@ export class ServicePage implements OnInit {
           }
         });
         profileModal.present();
+        this.events.subscribe('select-payment-condition', (data) => {
+          this.serviceForm.patchValue({
+            paymentCondition: data,
+            payment_name: data.name,
+          });
+          this.serviceForm.markAsDirty();
+          this.avoidAlertMessage = false;
+          profileModal.dismiss();
+          this.events.unsubscribe('select-payment-condition');
+          resolve(data);
+          //this.beforeAddPayment();
+        })
       }
     });
     }
@@ -738,33 +754,12 @@ export class ServicePage implements OnInit {
       async addPayment() {
         this.avoidAlertMessage = true;
           this.events.unsubscribe('create-receipt');
-          this.events.subscribe('create-receipt', (data) => {
-              console.log("DDDDDDDATA", data);
-              this.serviceForm.value.payments.push({
-                'paid': data.paid,
-                'date': data.date,
-                'state': data.state,
-                '_id': data._id,
-              });
-            this.serviceForm.patchValue({
-              'residual': this.serviceForm.value.residual - data.paid,
-            });
-            this.recomputeValues();
-            this.avoidAlertMessage = false;
-            this.buttonSave();
-            this.events.unsubscribe('create-receipt');
-          });
           let plannedItems = [];
           this.serviceForm.value.planned.forEach(planned => {
             if (planned.amount_residual > 0){
               plannedItems.push(planned);
             }
           })
-
-            // plannedItems = [this.serviceForm.value.planned[this.serviceForm.value.planned.length - 1]];
-
-          console.log("this.serviceForm.value.planned", this.serviceForm.value.planned);
-          console.log("plannedItems", JSON.stringify(plannedItems));
           let profileModal = await this.modal.create({
             component: ReceiptPage,
             componentProps: {
@@ -783,25 +778,35 @@ export class ServicePage implements OnInit {
             }
           });
           profileModal.present();
+          this.events.subscribe('create-receipt', (data) => {
+              console.log("DDDDDDDATA", data);
+              this.serviceForm.value.payments.push({
+                'paid': data.paid,
+                'date': data.date,
+                'state': data.state,
+                '_id': data._id,
+              });
+            this.serviceForm.patchValue({
+              'residual': this.serviceForm.value.residual - data.paid,
+            });
+            this.recomputeValues();
+            this.avoidAlertMessage = false;
+            this.buttonSave();
+            profileModal.dismiss();
+            this.events.unsubscribe('create-receipt');
+          });
+
+
+            // plannedItems = [this.serviceForm.value.planned[this.serviceForm.value.planned.length - 1]];
+
+          console.log("this.serviceForm.value.planned", this.serviceForm.value.planned);
+          console.log("plannedItems", JSON.stringify(plannedItems));
+
       }
 
     async addInvoice() {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('create-invoice');
-      this.events.subscribe('create-invoice', (data) => {
-          this.serviceForm.value.invoices.push({
-            'number': data.number,
-            'date': data.date,
-            'residual': data.residual,
-            'total': data.total,
-            'tax': data.tax,
-            'state': data.state,
-            '_id': data._id,
-          });
-        this.avoidAlertMessage = false;
-        this.buttonSave();
-        this.events.unsubscribe('create-invoice');
-      });
       let items = []
       let work_sum = {
         'product': this.labor_product,
@@ -859,15 +864,31 @@ export class ServicePage implements OnInit {
         }
       });
       profileModal.present();
+      this.events.subscribe('create-invoice', (data) => {
+          this.serviceForm.value.invoices.push({
+            'number': data.number,
+            'date': data.date,
+            'residual': data.residual,
+            'total': data.total,
+            'tax': data.tax,
+            'state': data.state,
+            '_id': data._id,
+          });
+        this.avoidAlertMessage = false;
+        this.buttonSave();
+        let plannedItems = [];
+        this.serviceForm.value.planned.forEach(planned => {
+          if (planned.amount_residual > 0){
+            plannedItems.push(planned);
+          }
+        })
+        this.events.unsubscribe('create-invoice');
+      });
+
     }
 
     async openInvoice(item) {
       this.events.unsubscribe('open-invoice');
-      this.events.subscribe('open-invoice', (data) => {
-        this.avoidAlertMessage = false;
-        this.buttonSave();
-        this.events.unsubscribe('open-invoice');
-      });
       let profileModal = await this.modal.create({
         component: InvoicePage,
         componentProps: {
@@ -875,6 +896,12 @@ export class ServicePage implements OnInit {
         }
       });
       profileModal.present();
+      this.events.subscribe('open-invoice', (data) => {
+        this.avoidAlertMessage = false;
+        this.buttonSave();
+        profileModal.dismiss();
+        this.events.unsubscribe('open-invoice');
+      });
     }
 
     buttonSave() {
@@ -973,11 +1000,11 @@ export class ServicePage implements OnInit {
         });
         profileModal.present();
         let data: any = await profileModal.onDidDismiss();//data => {
-          //console.log(data);
+          console.log("Work", data);
           if (data) {
-            data.cost = this.labor_product['cost'];
-            data.price = this.labor_product['price'];
-            this.serviceForm.value.works.unshift(data)
+            data.data.cost = this.labor_product['cost'];
+            data.data.price = this.labor_product['price'];
+            this.serviceForm.value.works.unshift(data.data)
             this.recomputeValues();
             this.serviceForm.markAsDirty();
             this.show_works=true;
@@ -997,8 +1024,8 @@ export class ServicePage implements OnInit {
         let data = await profileModal.onDidDismiss()
           if (data) {
             //console.log("asdf", data);
-            Object.keys(data).forEach(key => {
-              item[key] = data[key];
+            Object.keys(data.data).forEach(key => {
+              item[key] = data.data[key];
             })
             this.recomputeValues();
             this.serviceForm.markAsDirty();
@@ -1059,10 +1086,10 @@ export class ServicePage implements OnInit {
         profileModal.present();
         let data: any = await profileModal.onDidDismiss();
           if (data) {
-            data.cost = this.travel_product['cost'];
-            data.price = this.travel_product['price'];
+            data.data.cost = this.travel_product['cost'];
+            data.data.price = this.travel_product['price'];
             console.log(data);
-            this.serviceForm.value.travels.unshift(data)
+            this.serviceForm.value.travels.unshift(data.data)
             this.recomputeValues();
             this.show_travels=true;
             this.serviceForm.markAsDirty();
@@ -1113,8 +1140,8 @@ export class ServicePage implements OnInit {
         profileModal.present();
         let data = await profileModal.onDidDismiss();
         if (data) {
-          Object.keys(data).forEach(key => {
-            item[key] = data[key];
+          Object.keys(data.data).forEach(key => {
+            item[key] = data.data[key];
           })
           this.recomputeValues();
           this.serviceForm.markAsDirty();
@@ -1136,6 +1163,14 @@ export class ServicePage implements OnInit {
       // if (this.serviceForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
+        let profileModal = await this.modal.create({
+          component: ProductListPage,
+          componentProps: {
+            "select": true,
+            "type": "product",
+          }
+        });
+        profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
           if (data) {
@@ -1152,17 +1187,10 @@ export class ServicePage implements OnInit {
             this.avoidAlertMessage = false;
             this.show_inputs=true;
             this.buttonSave();
+            profileModal.dismiss();
             this.events.unsubscribe('select-product');
           }
         })
-        let profileModal = await this.modal.create({
-          component: ProductListPage,
-          componentProps: {
-            "select": true,
-            "type": "product",
-          }
-        });
-        profileModal.present();
       // }
     }
 
@@ -1193,6 +1221,37 @@ export class ServicePage implements OnInit {
         this.recomputeValues();
         this.serviceForm.markAsDirty();
       // }
+    }
+    sumWork(item) {
+      if (this.serviceForm.value.state!='CONFIRMED'){
+        item.time = parseFloat(item.time)+1;
+        this.recomputeValues();
+        this.serviceForm.markAsDirty();
+      }
+    }
+
+    remWork(item) {
+      if (this.serviceForm.value.state!='CONFIRMED'){
+        item.time = parseFloat(item.time)-1;
+        this.recomputeValues();
+        this.serviceForm.markAsDirty();
+      }
+    }
+
+    sumTravel(item) {
+      if (this.serviceForm.value.state!='CONFIRMED'){
+        item.distance = parseFloat(item.distance)+1;
+        this.recomputeValues();
+        this.serviceForm.markAsDirty();
+      }
+    }
+
+    remTravel(item) {
+      if (this.serviceForm.value.state!='CONFIRMED'){
+        item.distance = parseFloat(item.distance)-1;
+        this.recomputeValues();
+        this.serviceForm.markAsDirty();
+      }
     }
 
     sumItem(item) {
@@ -1575,16 +1634,6 @@ export class ServicePage implements OnInit {
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
           this.events.unsubscribe('select-contact');
-          this.events.subscribe('select-contact', (data) => {
-            this.serviceForm.patchValue({
-              contact: data,
-              contact_name: data.name,
-            });
-            this.serviceForm.markAsDirty();
-            this.avoidAlertMessage = false;
-            this.events.unsubscribe('select-contact');
-            resolve(data);
-          })
           let profileModal = await this.modal.create({
             component:ContactListPage,
             componentProps: {
@@ -1594,6 +1643,17 @@ export class ServicePage implements OnInit {
             }
           });
           profileModal.present();
+          this.events.subscribe('select-contact', (data) => {
+            this.serviceForm.patchValue({
+              contact: data,
+              contact_name: data.name,
+            });
+            this.serviceForm.markAsDirty();
+            this.avoidAlertMessage = false;
+            profileModal.dismiss()
+            this.events.unsubscribe('select-contact');
+            resolve(data);
+          })
         });
       }
     }
@@ -1621,6 +1681,13 @@ export class ServicePage implements OnInit {
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
           this.events.unsubscribe('select-product');
+          let profileModal = await this.modal.create({
+            component:ProductListPage,
+            componentProps: {
+              "select": true,
+            }
+          });
+          profileModal.present();
           this.events.subscribe('select-product', (data) => {
             this.serviceForm.patchValue({
               product: data,
@@ -1630,16 +1697,10 @@ export class ServicePage implements OnInit {
             this.serviceForm.markAsDirty();
             this.avoidAlertMessage = false;
             this.recomputeValues();
+            profileModal.dismiss();
             this.events.unsubscribe('select-product');
             resolve(data);
           })
-          let profileModal = await this.modal.create({
-            component:ProductListPage,
-            componentProps: {
-              "select": true,
-            }
-          });
-          profileModal.present();
         });
       }
     }

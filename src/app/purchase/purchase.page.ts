@@ -28,7 +28,7 @@ import { FormatService } from '../services/format.service';
 // import { StockMoveService } from '../stock/stock-move.service';
 // import { ProjectsPage } from '../project/list/projects';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
-// import { PurchasePopover } from './purchase.popover';
+import { PurchasePopover } from './purchase.popover';
 
 @Component({
   selector: 'app-purchase',
@@ -284,6 +284,19 @@ export class PurchasePage implements OnInit {
     //     ev: myEvent
     //   });
     // }
+    async presentPopover(myEvent) {
+      console.log("teste my event");
+      let popover = await this.popoverCtrl.create({
+        component: PurchasePopover,
+        event: myEvent,
+        componentProps: {
+          popoverController: this.popoverCtrl,
+          doc: this
+        }
+      });
+      popover.present();
+    }
+
 
     private exitPage() {
         this.purchaseForm.markAsPristine();
@@ -482,6 +495,14 @@ export class PurchasePage implements OnInit {
       if (this.purchaseForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
+        let profileModal = await this.modal.create({
+          component: ProductListPage,
+          componentProps: {
+            "select": true,
+            'operation': 'purchase',
+          }
+        });
+        profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
           this.purchaseForm.value.items.unshift({
@@ -494,8 +515,16 @@ export class PurchasePage implements OnInit {
           this.recomputeValues();
           this.purchaseForm.markAsDirty();
           this.avoidAlertMessage = false;
+          profileModal.dismiss();
           this.events.unsubscribe('select-product');
         })
+      }
+    }
+
+    async openItem(item) {
+      if (this.purchaseForm.value.state=='QUOTATION'){
+        this.avoidAlertMessage = true;
+        this.events.unsubscribe('select-product');
         let profileModal = await this.modal.create({
           component: ProductListPage,
           componentProps: {
@@ -504,13 +533,6 @@ export class PurchasePage implements OnInit {
           }
         });
         profileModal.present();
-      }
-    }
-
-    async openItem(item) {
-      if (this.purchaseForm.value.state=='QUOTATION'){
-        this.avoidAlertMessage = true;
-        this.events.unsubscribe('select-product');
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
           item.price = data.price;
@@ -519,16 +541,9 @@ export class PurchasePage implements OnInit {
           this.recomputeValues();
           this.avoidAlertMessage = false;
           this.purchaseForm.markAsDirty();
+          profileModal.dismiss();
           this.events.unsubscribe('select-product');
         })
-        let profileModal = await this.modal.create({
-          component: ProductListPage,
-          componentProps: {
-            "select": true,
-            'operation': 'purchase',
-          }
-        });
-        profileModal.present();
       }
     }
 
@@ -971,16 +986,6 @@ export class PurchasePage implements OnInit {
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
           this.events.unsubscribe('select-contact');
-          this.events.subscribe('select-contact', (data) => {
-            this.purchaseForm.patchValue({
-              contact: data,
-              contact_name: data.name,
-            });
-            this.purchaseForm.markAsDirty();
-            this.avoidAlertMessage = false;
-            this.events.unsubscribe('select-contact');
-            resolve(true);
-          })
           let profileModal = await this.modal.create({
             component: ContactListPage,
             componentProps: {
@@ -990,6 +995,17 @@ export class PurchasePage implements OnInit {
             }
           });
           profileModal.present();
+          this.events.subscribe('select-contact', (data) => {
+            this.purchaseForm.patchValue({
+              contact: data,
+              contact_name: data.name,
+            });
+            this.purchaseForm.markAsDirty();
+            this.avoidAlertMessage = false;
+            profileModal.dismiss();
+            this.events.unsubscribe('select-contact');
+            resolve(true);
+          })
         });
       }
     }
@@ -1021,16 +1037,6 @@ export class PurchasePage implements OnInit {
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
           this.events.unsubscribe('select-contact');
-          this.events.subscribe('select-contact', (data) => {
-            this.purchaseForm.patchValue({
-              seller: data,
-              seller_name: data.name,
-            });
-            this.purchaseForm.markAsDirty();
-            this.avoidAlertMessage = false;
-            this.events.unsubscribe('select-contact');
-            resolve(true);
-          })
           let profileModal = await this.modal.create({
             component: ContactListPage,
             componentProps: {
@@ -1039,6 +1045,17 @@ export class PurchasePage implements OnInit {
             }
           });
           profileModal.present();
+          this.events.subscribe('select-contact', (data) => {
+            this.purchaseForm.patchValue({
+              seller: data,
+              seller_name: data.name,
+            });
+            this.purchaseForm.markAsDirty();
+            this.avoidAlertMessage = false;
+            profileModal.dismiss();
+            this.events.unsubscribe('select-contact');
+            resolve(true);
+          })
         });
       // }
     }
@@ -1048,17 +1065,6 @@ export class PurchasePage implements OnInit {
       if (this.purchaseForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-payment-condition');
-        this.events.subscribe('select-payment-condition', (data) => {
-          this.purchaseForm.patchValue({
-            paymentCondition: data,
-            payment_name: data.name,
-          });
-          this.purchaseForm.markAsDirty();
-          this.avoidAlertMessage = false;
-          this.events.unsubscribe('select-payment-condition');
-          resolve(data);
-          //this.beforeAddPayment();
-        })
         let profileModal = await this.modal.create({
           component: PaymentConditionListPage,
           componentProps: {
@@ -1066,6 +1072,18 @@ export class PurchasePage implements OnInit {
           }
         });
         profileModal.present();
+        this.events.subscribe('select-payment-condition', (data) => {
+          this.purchaseForm.patchValue({
+            paymentCondition: data,
+            payment_name: data.name,
+          });
+          this.purchaseForm.markAsDirty();
+          this.avoidAlertMessage = false;
+          profileModal.dismiss();
+          this.events.unsubscribe('select-payment-condition');
+          resolve(data);
+          //this.beforeAddPayment();
+        })
       }
     });
     }

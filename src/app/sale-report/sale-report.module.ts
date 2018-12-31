@@ -10,7 +10,7 @@ export function createTranslateLoader(http: HttpClient) {
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
-
+import { SocialSharing } from '@ionic-native/social-sharing';
 import { SaleReportPage } from './sale-report.page';
 
 const routes: Routes = [
@@ -36,6 +36,9 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [SaleReportPage]
+  declarations: [SaleReportPage],
+  providers: [
+    SocialSharing,
+  ]
 })
 export class SaleReportPageModule {}

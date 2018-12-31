@@ -11,7 +11,7 @@
       <ion-button style="background: #2ad078;" (click)="buttonSave()" [hidden]="!saleForm.dirty">
         {{ 'SAVE' | translate }}
       </ion-button>
-      <ion-button icon-only (tap)="presentPopover($event)">
+      <ion-button icon-only (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -94,9 +94,9 @@
       <ion-col *ngIf="saleForm.value.state != 'QUOTATION'">
         <ion-button class="print-confirm" (click)="print()">Imprimir Venta</ion-button>
       </ion-col>
-      <ion-col size="6" class="item-content" *ngIf="saleForm.value.state == 'CONFIRMED' && ! saleForm.value.payments.length">
+      <!-- <ion-col size="6" class="item-content" *ngIf="saleForm.value.state == 'CONFIRMED' && ! saleForm.value.payments.length">
         <ion-button class="print-invoice" (click)="saleCancel()">Cancelar</ion-button>
-      </ion-col>
+      </ion-col> -->
     </ion-row>
 
     <ion-list no-lines *ngIf="saleForm.value.invoices.length">
@@ -160,10 +160,10 @@
 
     <ion-list no-lines *ngIf="saleForm.value.items.length">
       <section>
-      <h2 class="section-title">{{'Items de la Venta' | translate}}</h2>
+      <h2 class="section-title">{{'Itenes de la Venta' | translate}}</h2>
       <ion-item-sliding  class="list-item" *ngFor="let item of saleForm.value.items">
-        <ion-item style="width: 100%; margin-right: -5px;">
-          <ion-card class="internal-card">
+        <ion-item>
+          <ion-card class="list-card">
             <ion-row (click)="openItem(item)" class="product-name-row">
               {{item.product && item.product.name}}
             </ion-row>
@@ -198,7 +198,7 @@
               <ion-col size="3">
                 <ion-button class="quantity-button" (click)="remItem(item)">-</ion-button>
               </ion-col>
-              <ion-col size="6" (click)="editItemQuantity(item)" style="text-align: center;font-size: 30px;">
+              <ion-col size="6" (click)="editItemQuantity(item)" style="text-align: center;font-size: 20px;margin-top: 8px;">
                 {{item.quantity}}
               </ion-col>
               <ion-col size="3">

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events } from '@ionic/angular';
+import { NavController, NavParams, ModalController, LoadingController,  Events } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,7 +28,7 @@ export class ServiceWorkPage implements OnInit {
       public translate: TranslateService,
       public languageService: LanguageService,
       public route: ActivatedRoute,
-
+      public navParams: NavParams,
       public formBuilder: FormBuilder,
       public speechRecognition: SpeechRecognition,
       public events: Events,
@@ -40,11 +40,11 @@ export class ServiceWorkPage implements OnInit {
 
     ngOnInit() {
       this.workForm = this.formBuilder.group({
-        description: new FormControl(this.route.snapshot.paramMap.get('description')||''),
-        date: new FormControl(this.route.snapshot.paramMap.get('date')||new Date().toISOString()),
-        time: new FormControl(this.route.snapshot.paramMap.get('time')||1),
-        // note: new FormControl(this.route.snapshot.paramMap.get('note||''),
-        responsible: new FormControl(this.route.snapshot.paramMap.get('responsible')||''),
+        description: new FormControl(this.navParams.data.description||''),
+        date: new FormControl(this.navParams.data.date||new Date().toISOString()),
+        time: new FormControl(this.navParams.data.time||1),
+        // note: new FormControl(this.navParams.datanote||''),
+        responsible: new FormControl(this.navParams.data.responsible||''),
       });
     // }
     //
@@ -55,7 +55,7 @@ export class ServiceWorkPage implements OnInit {
     }
 
     buttonSave(){
-      // this.viewCtrl.dismiss(this.workForm.value);
+      this.modal.dismiss(this.workForm.value);
     }
 
     selectResponsible() {
