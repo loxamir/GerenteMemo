@@ -14,7 +14,7 @@ declare var Buffer: any;
 */
 @Injectable({ providedIn: 'root' })
 export class RestProvider {
-  apiUrl = 'http://couchdb.sistema.social:8080';
+  apiUrl = 'https://couchdb.sistema.social';
 
   constructor(public http: HttpClient) {
     console.log('Hello RestProvider Provider');
@@ -144,7 +144,7 @@ export class RestProvider {
 
   checkDbExist(database) {
     return new Promise(resolve => {
-        this.http.get('http://couchdb.sistema.social:5984/'+database).subscribe(data => {
+        this.http.get('https://couchdb.sistema.social/'+database).subscribe(data => {
         console.log("check exist", data);
         resolve(data);
       }, err => {
@@ -173,7 +173,7 @@ export class RestProvider {
         "password":password
       }
       console.log("loginData", loginData);
-      this.http.post('http://couchdb.sistema.social:5984/_session', loginData).subscribe(data => {
+      this.http.post('https://couchdb.sistema.social/_session', loginData).subscribe(data => {
         console.log("check login", data);
         resolve(data);
       }, err => {
@@ -187,7 +187,7 @@ export class RestProvider {
     // return new Promise(resolve => {
       return new Promise(resolve => {
         this.http.get(
-          'http://couchdb.sistema.social:5984/_users/org.couchdb.user:' + username,
+          'https://couchdb.sistema.social/_users/org.couchdb.user:' + username,
           {
             // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
             headers: new HttpHeaders().set('Authorization', "Basic " + new Buffer(username + ":" + old_passowrd).toString("base64"))
@@ -203,7 +203,7 @@ export class RestProvider {
           // }
           // console.log("loginData", loginData);
           this.http.put(
-            'http://couchdb.sistema.social:5984/_users/org.couchdb.user:'+ username,
+            'https://couchdb.sistema.social/_users/org.couchdb.user:'+ username,
             userData,
             {
               // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
