@@ -43,6 +43,8 @@ import { CashMovePageModule } from './cash-move/cash-move.module';
 
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -94,7 +96,8 @@ import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module'
       }
     }),
     IonicModule.forRoot(),
-    AppRoutingModule],
+    AppRoutingModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })],
   providers: [
     NativeStorage,
     File,

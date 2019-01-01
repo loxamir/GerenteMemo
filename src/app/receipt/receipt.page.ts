@@ -319,10 +319,10 @@ export class ReceiptPage implements OnInit {
         // }
     }
 
-    // private exitPage() {
-    //     this.receiptForm.markAsPristine();
-    //     this.navCtrl.navigateBack();
-    // }
+    exitPage() {
+        this.receiptForm.markAsPristine();
+        this.modal.dismiss();
+    }
 
     beforeConfirm(){
       if(!this.receiptForm.value._id){

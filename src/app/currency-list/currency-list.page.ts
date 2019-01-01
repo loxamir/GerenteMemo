@@ -39,6 +39,10 @@ export class CurrencyListPage implements OnInit {
     this.setFilteredItems();
   }
 
+  searchItems(){
+    this.setFilteredItems();
+  }
+
 
   setFilteredItems() {
     this.getCurrencyList(this.searchTerm).then(currencyList => {
@@ -46,6 +50,7 @@ export class CurrencyListPage implements OnInit {
       //this.loading.dismiss();
     });
   }
+
 
   openCurrency(currency) {
     console.log("open", currency);

@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/invoice-list"></ion-back-button>
+    </ion-buttons>
     <ion-title>
       {{ 'INVOICE' | translate }}: {{invoiceForm.value.code||invoiceForm.value.number}}
     </ion-title>
@@ -9,10 +12,10 @@
       [hidden]="!invoiceForm.dirty">
         {{ 'SAVE' | translate }}
       </ion-button>
-      <ion-button icon-only color="royal"
+      <!-- <ion-button icon-only color="royal"
               (tap)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
-      </ion-button>
+      </ion-button> -->
     </ion-buttons>
 
   </ion-toolbar>

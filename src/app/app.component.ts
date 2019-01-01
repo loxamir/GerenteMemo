@@ -36,6 +36,11 @@ export class AppComponent {
       url: '/config',
       icon: 'settings'
     },
+    {
+      title: 'Login',
+      url: '/login',
+      icon: 'settings'
+    },
 ];
 
   constructor(

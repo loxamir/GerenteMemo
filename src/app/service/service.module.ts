@@ -17,9 +17,9 @@ import { PaymentConditionListPage } from '../payment-condition-list/payment-cond
 import { ProductListPage } from '../product-list/product-list.page';
 import { ContactListPage } from '../contact-list/contact-list.page';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
-import { ServiceWorkPage, } from './work/work.page';
-import { ServiceInputPage, } from './input/input.page';
-import { ServiceTravelPage, } from './travel/travel.page';
+import { ServiceWorkPageModule, } from './work/work.module';
+import { ServiceInputPageModule, } from './input/input.module';
+import { ServiceTravelPageModule, } from './travel/travel.module';
 import { ServicePopover, } from './service.popover';
 import { IonicModule } from '@ionic/angular';
 
@@ -46,18 +46,21 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    ServiceInputPageModule,
+    ServiceWorkPageModule,
+    ServiceTravelPageModule,
     RouterModule.forChild(routes)
   ],
   declarations: [ServicePage,
-  ServiceWorkPage,
-  ServiceInputPage,
-  ServiceTravelPage,
+  // ServiceWorkPage,
+  // ServiceInputPage,
+  // ServiceTravelPage,
   ServicePopover,
 ],
   entryComponents: [
-    ServiceWorkPage,
-    ServiceInputPage,
-    ServiceTravelPage,
+    // ServiceWorkPage,
+    // ServiceInputPage,
+    // ServiceTravelPage,
     ServicePopover,
   ],
   providers: [

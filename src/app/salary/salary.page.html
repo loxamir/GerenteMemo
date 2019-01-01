@@ -3,17 +3,17 @@
     <!-- <ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </ion-button> -->
-    <ion-title>{{ 'CONTACT'| translate }}-{{salaryForm.value.code}}</ion-title>
-    <ion-buttons slot="end" [hidden]="!salaryForm.dirty">
+    <ion-title>{{ 'CONTACT'| translate }}</ion-title>
+    <!-- <ion-buttons slot="end" [hidden]="!salaryForm.dirty">
       <ion-button (click)="buttonSave()">
         {{ 'SAVE' | translate }}
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="salary-content">
-  <form class="sample-form validations-form" [formGroup]="salaryForm"  (ngSubmit)="onSubmit(salaryForm.value)">
+  <!-- <form class="sample-form validations-form" [formGroup]="salaryForm"  (ngSubmit)="onSubmit(salaryForm.value)">
     <ion-row>
       <ion-item no-padding (click)="selectContact()" style="width: calc(100% - 0px);;background-color: #fff;border: 1px solid #ddd;height: 50px;">
         <h4 class="field-label">{{'EMPLOYEE' | translate }}</h4>
@@ -108,6 +108,6 @@
       <ion-icon name="play" style="margin-left: 5px;">
       </ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
 
 </ion-content>

@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/service-list"></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="!has_search && !serviceForm.value.production">
+    <ion-title *ngIf="!serviceForm.value.production">
         {{ 'SERVICE' | translate }}: {{serviceForm.value.code}}
     </ion-title>
-    <ion-title *ngIf="!has_search && serviceForm.value.production">
+    <ion-title *ngIf="serviceForm.value.production">
         {{ 'PRODUCTION' | translate }}: {{serviceForm.value.code}}
     </ion-title>
 
