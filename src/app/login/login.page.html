@@ -1,39 +1,55 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
+<ion-header *ngIf="selected_user">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <!-- <ion-searchbar
+      placeholder="Buscar Venta"
+      [(ngModel)]="searchTerm"
+      #searchbar
+      (ionInput)="searchItems()">
+    </ion-searchbar> -->
+    <ion-title>
+      Inicio
+    </ion-title>
+    <ion-buttons slot="end">
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-
-</ion-content> -->
-
-
-<ion-header>
-  <ion-toolbar>
-    <ion-title>{{ 'LOGIN' | translate }}</ion-title>
-  </ion-toolbar>
-</ion-header>
 <ion-content>
 
   <form [formGroup]="loginForm">
-
-
-
+    <ion-row>
+      <ion-col></ion-col>
+    </ion-row>
 <ion-row>
   <ion-col></ion-col>
-</ion-row>
-<div style="height:50px;">
-  <ion-row *ngIf="selected_user">
-    <h2 class="section-title">{{'Elija una Empresa' | translate}}</h2>
+    <ion-col no-padding width-80>
+      <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="./assets/images/login2.png" />
+    </ion-col>
+    <ion-col></ion-col>
   </ion-row>
-</div>
+
+  <div style="height:50px;">
+    <ion-row *ngIf="selected_user">
+      <ion-col>
+        <h2 class="section-title" style="width: 100%; text-align: center;">{{'Bien Venido al Sistema Memo' | translate}}</h2>
+      </ion-col>
+    </ion-row>
+  </div>
+  <ion-row *ngIf="selected_user">
+    <ion-col style="text-align: right;">
+      <a style="font-size:15px;" (click)="logout()">Salir</a>
+      <!-- <a style="font-size:15px;" (click)="showLogin()">Hacer Login</a> -->
+    </ion-col>
+  </ion-row>
 
     <ion-row *ngIf="!selected_user">
       <ion-col></ion-col>
       <ion-col no-padding width-80>
-            <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="./assets/images/login2.png"/>
-        <ion-item  *ngIf="show_create" style="background:white;border-radius:10px;margin-bottom:10px;">
+        <!-- <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="./assets/images/login2.png" /> -->
+        <ion-item *ngIf="show_create" style="background:white;border-radius:10px;margin-bottom:10px;">
           <ion-label position="floating">{{'NAME' | translate}}</ion-label>
           <ion-input type="text" formControlName="name"></ion-input>
         </ion-item>
@@ -44,11 +60,9 @@
             </div>
           </ng-container>
         </div>
-        <ion-item  *ngIf="show_create" style="background:white;border-radius:10px;margin-bottom:10px;">
+        <ion-item *ngIf="show_create" style="background:white;border-radius:10px;margin-bottom:10px;">
           <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
-          <ion-input
-            type="number"
-            formControlName="mobile">
+          <ion-input type="number" formControlName="mobile">
           </ion-input>
         </ion-item>
         <div class="validation-errors" style="color: red;">
@@ -60,7 +74,7 @@
         </div>
         <ion-item style="background:white;border-radius:10px;margin-bottom:10px;">
           <ion-label position="floating">{{'USER' | translate}}</ion-label>
-          <ion-input type="text"  formControlName="user" autocomplete='name'></ion-input>
+          <ion-input type="text" formControlName="user" autocomplete='name'></ion-input>
         </ion-item>
         <div class="validation-errors" style="color: red;">
           <ng-container *ngFor="let validation of validation_messages.user">
@@ -80,17 +94,10 @@
             </div>
           </ng-container>
         </div>
-        <ion-button class="print-invoice"
-          (click)="login()"
-          *ngIf="!show_create"
-          style="border-radius:10px;width:100%">
+        <ion-button class="print-invoice" (click)="login()" *ngIf="!show_create" style="border-radius:10px;width:100%">
           Entrar
         </ion-button>
-        <ion-button class="print-invoice"
-          (click)="register()"
-          [disabled]="!loginForm.valid"
-          *ngIf="show_create"
-          style="border-radius:10px;width:100%">
+        <ion-button class="print-invoice" (click)="register()" [disabled]="!loginForm.valid" *ngIf="show_create" style="border-radius:10px;width:100%">
           Registrar
         </ion-button>
         <ion-row>
@@ -106,18 +113,81 @@
       </ion-col>
       <ion-col></ion-col>
     </ion-row>
-
+  </form>
     <ion-row *ngIf="selected_user">
       <ion-item class="database-list-item" *ngFor="let database of databaseList" (click)="selectDatabase(database)">
         {{database}}
       </ion-item>
     </ion-row>
 
-    <ion-row *ngIf="selected_user">
-      <ion-col style="text-align: right;">
-        <a style="font-size:15px;" (click)="logout()">Salir</a>
-        <!-- <a style="font-size:15px;" (click)="showLogin()">Hacer Login</a> -->
-      </ion-col>
-    </ion-row>
-  </form>
+    <!-- <ion-item *ngIf="selected_user" class="database-list-item" (click)="selectDatabase()">
+      Entrar
+    </ion-item> -->
+    <ion-button *ngIf="selected_user" style="width: 99%;" (click)="selectDatabase()">
+      Entrar
+    </ion-button>
+    <!-- <ion-item *ngIf="selected_user" class="database-list-item" (click)="gotoHelp()">
+      Ajuda
+    </ion-item> -->
+  <!-- </ion-row> -->
+  <ion-searchbar
+    *ngIf="selected_user"
+    style="--background: white;"
+    placeholder="Buscar Ayuda"
+    [(ngModel)]="searchTerm"
+    (ionInput)="setFilteredItems()">
+  </ion-searchbar>
+    <!-- <ion-row> -->
+
+    <ion-refresher *ngIf="selected_user" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <ion-list no-lines *ngIf="selected_user">
+
+      <ion-item-sliding class="list-item" *ngFor="let item of helps">
+        <ion-item no-padding >
+          <ion-card class="list-card">
+        <ion-row no-padding class="content-row one-line">
+          <ion-col no-padding width-90 class="item-content" (click)="selectHelp(item)">
+            <ion-row>
+              <h3 class="item-title"><b>{{item.name}}</b></h3>
+            </ion-row>
+            <!-- <ion-row>
+                <h3 class="item-title">Documento: {{item.document}}</h3>
+            </ion-row>
+            <ion-row>
+                <h3 class="item-title">{{item.address}}</h3>
+            </ion-row> -->
+          </ion-col>
+          <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;">
+            <ion-icon (click)="openHelp(item)" name="arrow-forward"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      </ion-item>
+        <ion-item-options>
+          <ion-button icon-only color="primary" (click)="deleteHelp(item)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+    <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+        <ion-fab-button (click)="createPurchase()" color="primary">
+            <ion-icon name="logo-youtube">
+            </ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="createPurchase()" color="primary">
+            <ion-icon name="logo-whatsapp">
+            </ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+
 </ion-content>

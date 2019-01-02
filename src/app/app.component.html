@@ -8,8 +8,8 @@
     <ion-content class="menu-style">
       <ion-list>
         <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
-          <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
-            <ion-icon slot="start" [name]="p.icon"></ion-icon>
+          <ion-item [class.active-menu]="p.active" [routerDirection]="'root'" [routerLink]="[p.url]">
+            <ion-icon slot="start" [name]="p.icon" [class.active-icon]="p.active"></ion-icon>
             <ion-label>
               {{p.title}}
             </ion-label>

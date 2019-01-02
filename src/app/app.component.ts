@@ -1,33 +1,39 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
+import { Platform, MenuController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
+import { ActivatedRoute, Router, RouterEvent, NavigationEnd, } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public appPages = [
     {
       title: 'Inicio',
-      url: '/tabs',
+      url: '/login',
       icon: 'home'
+    },
+    {
+      title: 'Operativo',
+      url: '/tabs',
+      icon: 'infinite'
     },
     {
       title: 'Informes',
       url: '/report-tabs',
       icon: 'stats'
     },
+    // {
+    //   title: 'Ayuda',
+    //   url: '/help-list',
+    //   icon: 'help-circle'
+    // },
     {
-      title: 'Ayuda',
-      url: '/help-list',
-      icon: 'help-circle'
-    },
-    {
-      title: 'Contactos',
+      title: 'Personas',
       url: '/person-tabs',
       icon: 'contacts'
     },
@@ -36,18 +42,15 @@ export class AppComponent {
       url: '/config',
       icon: 'settings'
     },
-    {
-      title: 'Login',
-      url: '/login',
-      icon: 'settings'
-    },
 ];
 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     public translate: TranslateService,
-    private statusBar: StatusBar
+    private statusBar: StatusBar,
+    public router: Router,
+    public menuCtrl: MenuController,
   ) {
     this.initializeApp();
   }
@@ -59,5 +62,18 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+  }
+
+  ngOnInit(){
+    this.router.events.subscribe((event: RouterEvent) => {
+      if (event instanceof NavigationEnd) {
+        // if (event.url === '/login') {
+        //   this.menuCtrl.enable(false);
+        // }
+        this.appPages.map( p => {
+          return p['active'] = (event.url === p.url);
+        });
+      }
+    })
   }
 }

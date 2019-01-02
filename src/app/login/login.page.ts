@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, LoadingController, Events, ToastController } from '@ionic/angular';
+import { ModalController, LoadingController, Events, ToastController, MenuController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -11,7 +11,7 @@ import { Storage } from '@ionic/storage';
 // import { AppConfig } from '../../app/app.config';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from '../services/rest/rest';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +27,14 @@ export class LoginPage implements OnInit {
   selected_user: boolean = false;
   databaseList: any[];
 
+
+  helps: any;
+  select:any;
+  searchTerm: string = '';
+  page = 0;
+  has_search = false;
+  filter: string = 'all';
+
   constructor(
     public modal: ModalController,
     public loadingCtrl: LoadingController,
@@ -36,18 +44,20 @@ export class LoginPage implements OnInit {
     public storage: Storage,
     public events: Events,
     // public appConfig: AppConfig,
+    public menuCtrl: MenuController,
     public pouchdbService: PouchdbService,
     public toastCtrl: ToastController,
     public restProvider: RestProvider,
     public route: ActivatedRoute,
     public router: Router,
   ) {
-    //this.loading = //this.loadingCtrl.create();
+    // this.loading = this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
 
     this.storage.get("username").then((username)=>{
       if (username){
-        this.showDatabaseList();
+        // this.showDatabaseList();
+        // this.selectDatabase(username);
         this.selected_user = true;
       }
     })
@@ -66,7 +76,93 @@ export class LoginPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    // this.router.events.subscribe((event: RouterEvent) => {
+      // if (event instanceof NavigationEnd && event.url === '/login') {
+      let username = await this.storage.get('username');
+      if (!username){
+        this.menuCtrl.enable(false);
+      }
+      console.log("usernames", username);
+      // }
+    // });
+    this.setFilteredItems();
+  }
+
+  setFilteredItems() {
+    let filter = null;
+    if (this.filter == "all"){
+      let filter = null;
+    } else {
+      let filter = this.filter;
+    }
+    this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
+        this.helps = helps;
+      // this.helps = helps;
+      this.page = 1;
+    });
+  }
+
+  doInfinite(infiniteScroll) {
+    setTimeout(() => {
+      this.getHelpsPage(this.searchTerm, this.page).then((helps: any[]) => {
+        // this.helps = helps
+        helps.forEach(help => {
+          this.helps.push(help);
+        });
+        this.page += 1;
+      });
+      infiniteScroll.target.complete();
+    }, 200);
+  }
+  doRefresh(refresher) {
+    setTimeout(() => {
+      this.getHelpsPage(this.searchTerm, 0).then((helps: any[]) => {
+        if (this.filter == 'all'){
+          this.helps = helps;
+        }
+        else if (this.filter == 'seller'){
+          this.helps = helps.filter(word => word.seller == true);
+        }
+        else if (this.filter == 'customer'){
+          this.helps = helps.filter(word => word.customer == true);
+        }
+        else if (this.filter == 'supplier'){
+          this.helps = helps.filter(word => word.supplier == true);
+        }
+        else if (this.filter == 'employee'){
+          this.helps = helps.filter(word => word.employee == true);
+        }
+        this.page = 1;
+      });
+      refresher.target.complete();
+    }, 500);
+  }
+
+  getHelpsPage(keyword, page, field=''){
+    return new Promise(resolve => {
+      // this.pouchdbService.searchDocTypeData('help', keyword, page, "document", field).then((helps: any[]) => {
+      //   resolve(helps);
+      // });
+      let list = [
+        {
+          name: "Ajyda"
+        },
+        {
+          name: "Ajuda"
+        },
+        {
+          name: "Ayuda"
+        }
+      ];
+    // let otro = list.filter(help => help['name'].toString().search(new RegExp(keyword, "i")) != -1);
+    let otro = list.filter(word=>word.name.toString().search(new RegExp(keyword, "i")) != -1)
+    console.log("list", list);
+    console.log("otro", otro);
+    console.log("keyword", keyword);
+    console.log("this.searchTerm", this.searchTerm);
+    resolve(otro);
+  });
   }
 
   validation_messages = {
@@ -140,7 +236,7 @@ export class LoginPage implements OnInit {
         //   duration: 3000
         // });
         // toast.present();
-        //this.loading.present();
+        // this.loading.present();
         this.createLogin(this.loginForm.value).then(login => {
           setTimeout(() => {
             this.doLogin();
@@ -186,40 +282,50 @@ export class LoginPage implements OnInit {
     this.storage.set("password", this.loginForm.value.password.toLowerCase());
     this.events.publish('get-user', {"user": this.loginForm.value.user.toLowerCase()});
     this.selected_user = true;
-    this.showDatabaseList();
+    // this.showDatabaseList();
+    // this.selectDatabase();
+    this.menuCtrl.enable(true);
+
   }
 
   showDatabaseList(){
     this.databaseList = ['moga', 'demo'];
   }
 
-  async selectDatabase(database){
-    //this.loading.present();
-    // if (this.navParams.data.current_db){
-    //   this.pouchdbService.getDisConnect();
-    // }
-    await this.storage.set('database', database.toLowerCase());
-    // this.appConfig.setDatabase(database.toLowerCase());
-    // let toast = this.toastCtrl.create({
-    //   message: "1/8 - Sincronizando Datos",
-    // });
-    // toast.present();
-    this.pouchdbService.getConnect();
-    // if (this.navParams.data.current_db){
-    //   this.navCtrl.pop()
-    // }
+  async selectDatabase(){
+    let username = await this.storage.get("username");
+      // this.loading.present();
+      // if (this.navParams.data.current_db){
+      //   this.pouchdbService.getDisConnect();
+      // }
+      await this.storage.set('database', username);
+      // this.appConfig.setDatabase(database.toLowerCase());
+      // let toast = this.toastCtrl.create({
+      //   message: "1/8 - Sincronizando Datos",
+      // });
+      // toast.present();
+      this.pouchdbService.getConnect();
+      // if (this.navParams.data.current_db){
+      //   this.navCtrl.pop()
+      // }
 
-    this.events.subscribe('end-sync', () => {
-      // toast.dismiss();
-      let isFirst = false;
-      if(isFirst){
-        this.initiateViews();
-      } else {
-        // window.location.reload();
-      }
-      // this.navCtrl.setRoot(TabsNavigationPage);
-      //this.loading.dismiss();
-    })
+      this.events.subscribe('end-sync', () => {
+        // toast.dismiss();
+        let isFirst = false;
+        if(isFirst){
+          this.initiateViews();
+        } else {
+          // window.location.reload();
+        }
+        // this.navCtrl.setRoot(TabsNavigationPage);
+        // this.loading.dismiss();
+      })
+      this.router.navigate(['/tabs/sale-list']);
+    // }
+  }
+
+  gotoHelp(){
+    this.router.navigate(['/help-list']);
   }
 
   async initiateViews(){
@@ -266,9 +372,9 @@ export class LoginPage implements OnInit {
     await this.pouchdbService.getView('stock/Fluxo');
     toast8.dismiss();
     this.events.publish('get-database', {});
-    //this.loading.dismiss();
+    // this.loading.dismiss();
     // this.navCtrl.setRoot(TabsNavigationPage);
-    this.router.navigate(['contacts']);
+    // this.router.navigate(['/tabs/sale-list']);
   }
 
   logout(){

@@ -3,27 +3,6 @@
     <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <!-- <ion-title *ngIf="!has_search">{{ 'REPORTS' | translate}}</ion-title> -->
-    <ion-searchbar
-      placeholder="Buscar Indicador"
-      [(ngModel)]="searchTerm"
-      (ionInput)="setFilteredItems()">
-    </ion-searchbar>
-    <ion-buttons slot="end">
-      <!-- <ion-button icon-only  *ngIf="!has_search"
-        (tap)="setSearch()">
-        <ion-icon name="search"></ion-icon>
-      </ion-button>
-      <ion-button icon-only  *ngIf="has_search"
-        (tap)="setSearch()">
-        <ion-icon name="close"></ion-icon>
-      </ion-button> -->
-      <!-- <ion-button icon-only
-              (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
-    </ion-buttons>
-  </ion-toolbar>
   <ion-row justify-content-center class="headerstyle">
     <ion-col width-10>
       <ion-button (click)="goPeriodBack()">
@@ -56,6 +35,7 @@
       </ion-button>
     </ion-col>
   </ion-row>
+    </ion-toolbar>
 </ion-header>
 <ion-content class="list-mini-content">
   <ion-refresher (ionRefresh)="doRefresh($event)">

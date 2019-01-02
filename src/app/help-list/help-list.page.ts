@@ -77,32 +77,6 @@ export class HelpListPage implements OnInit {
       this.page = 1;
     });
   }
-  // setFilteredItems() {
-  //   if (this.searchTerm == ""){
-  //     this.helpsService.getHelpsPage(this.searchTerm, 0).then((helps) => {
-  //       this.helps = helps;
-  //     });
-  //   } else {
-  //     console.log("search", this.searchTerm);
-  //     let selector = {
-  //       "$and": [
-  //         {
-  //           "$or": [
-  //             {code: { $regex: RegExp(this.searchTerm, "i") }},
-  //             {name: { $regex: RegExp(this.searchTerm, "i") }},
-  //             {document: { $regex: RegExp(this.searchTerm, "i") }},
-  //           ]
-  //         },
-  //         {docType: 'help'},
-  //       ]
-  //     }
-  //     let sort = [ {'_id' : 'desc'} ];
-  //     this.helpsService.searchHelps(selector, sort).then((helps) => {
-  //       console.log("helps", helps);
-  //       this.helps = helps;
-  //     });
-  //   }
-  // }
   doInfinite(infiniteScroll) {
     setTimeout(() => {
       this.getHelpsPage(this.searchTerm, this.page).then((helps: any[]) => {
@@ -168,22 +142,9 @@ export class HelpListPage implements OnInit {
     this.navCtrl.navigateForward(['/help', {}]);
   }
 
-  // deleteHelp(help){
-  //   let index = this.helps.indexOf(help)
-  //   this.helps.splice(index, 1);
-  //   this.helpsService.deleteHelp(help);
-  // }
   getHelpsPage(keyword, page, field=''){
     return new Promise(resolve => {
-      // this.pouchdbService.searchDocTypePage('help', this.options).then((helps: any[]) => {
-      // this.pouchdbService.searchDocTypePage('help', keyword, page).then((helps: any[]) => {
-      console.log("field", field);
       this.pouchdbService.searchDocTypeData('help', keyword, page, "document", field).then((helps: any[]) => {
-        // console.log("search", keyword, JSON.stringify(helps));
-        // if (helps && helps.length > 0) {
-        //   this.options.startkey = helps[helps.length - 1]._id;
-        //   this.options.skip = 1;
-        // }
         resolve(helps);
       });
     });

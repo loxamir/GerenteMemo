@@ -40,6 +40,7 @@ import { WarehouseListPageModule } from './warehouse-list/warehouse-list.module'
 import { AccountListPageModule } from './account-list/account-list.module';
 import { CashListPageModule } from './cash-list/cash-list.module';
 import { CashMovePageModule } from './cash-move/cash-move.module';
+import { LoginPageModule } from './login/login.module';
 
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
@@ -70,6 +71,7 @@ import { environment } from '../environments/environment';
     CashListPage,
   ],
   imports: [
+    LoginPageModule,
     CashMovePageModule,
     ProductCategoryListPageModule,
     ProductListPageModule,
