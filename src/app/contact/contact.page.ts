@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
-import { NavController, ModalController, LoadingController, Events } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, AlertController, Events } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -19,6 +19,9 @@ import { RestProvider } from "../services/rest/rest";
 export class ContactPage implements OnInit {
 @ViewChild('name') name;
 @ViewChild('document') document;
+@ViewChild('phone') phone;
+@ViewChild('address') address;
+@ViewChild('salary') salary;
 
   contactForm: FormGroup;
   loading: any;
@@ -32,6 +35,7 @@ export class ContactPage implements OnInit {
     // public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
+    public alertCtrl: AlertController,
     // public contactService: ContactService,
     // public restProvider: RestProvider,
     // public navParams: NavParams,
@@ -56,12 +60,12 @@ export class ContactPage implements OnInit {
   }
   ngOnInit() {
     this.contactForm = this.formBuilder.group({
-      name: new FormControl(this.route.snapshot.paramMap.get('name')||''),
-      name_legal: new FormControl(''),
-      address: new FormControl(''),
-      phone: new FormControl(''),
+      name: new FormControl(this.route.snapshot.paramMap.get('name')||null),
+      name_legal: new FormControl(null),
+      address: new FormControl(null),
+      phone: new FormControl(null),
       // document: new FormControl(''), // parse(regex(de 1 a 9 mais o hifen '-'))),
-      document: new FormControl('', Validators.compose([
+      document: new FormControl(null, Validators.compose([
         // Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]+$')
         Validators.pattern('^[0-9+-]+$')
       ])),
@@ -70,11 +74,11 @@ export class ContactPage implements OnInit {
       email: new FormControl(''),
       note: new FormControl(''),
       // image: new FormControl(''),
-      customer: new FormControl(this.route.snapshot.paramMap.get('customer')||false),
-      supplier: new FormControl(this.route.snapshot.paramMap.get('supplier')||false),
-      seller: new FormControl(this.route.snapshot.paramMap.get('seller')||false),
-      employee: new FormControl(this.route.snapshot.paramMap.get('employee')||false),
-      salary: new FormControl(0),
+      customer: new FormControl(this.route.snapshot.paramMap.get('customer')=='true'||false),
+      supplier: new FormControl(this.route.snapshot.paramMap.get('supplier')=='true'||false),
+      seller: new FormControl(this.route.snapshot.paramMap.get('seller')=='true'||false),
+      employee: new FormControl(this.route.snapshot.paramMap.get('employee')=='true'||false),
+      salary: new FormControl(null),
       currency: new FormControl({}),
       hire_date: new FormControl(undefined),
       salaries: new FormControl([]),
@@ -93,6 +97,14 @@ export class ContactPage implements OnInit {
     }
     // this.buttonSave();
 
+  }
+
+  changedDocument(){
+    let dv = this.contactForm.value.document.split('-')[1] || '';
+    if (dv && dv.length == 1){
+      console.log("ruc", this.contactForm.value.document);
+      this.getLegalName();
+    }
   }
 
   justSave() {
@@ -114,8 +126,9 @@ export class ContactPage implements OnInit {
     if (this._id){
       this.updateContact(this.contactForm.value);
       // this.navCtrl.pop().then(() => {
+      this.navCtrl.navigateBack('/contact-list').then(() => {
         this.events.publish('open-contact', this.contactForm.value);
-      // });
+      });
     } else {
       this.createContact(this.contactForm.value).then((doc: any) => {
         // this.contactForm.patchValue({
@@ -124,8 +137,9 @@ export class ContactPage implements OnInit {
         console.log("create contact", doc);
         this._id = doc.doc.id;
         // this.navCtrl.pop().then(() => {
+        this.navCtrl.navigateBack('/contact-list').then(() => {
           this.events.publish('create-contact', this.contactForm.value);
-        // });
+        });
       });
     }
   }
@@ -189,38 +203,109 @@ export class ContactPage implements OnInit {
 
   goNextStep() {
   // if (this.contactForm.value.state == 'DRAFT'){
-    if (!this.contactForm.value.name){
+    if (this.contactForm.value.name==null){
       this.name.setFocus();
-      // return;
     }
-    else if (!this.contactForm.value.document){
+    else if (this.contactForm.value.document==null){
       this.document.setFocus();
-      // return;
     }
-    else if (this.contactForm.value.document&&!this.contactForm.value.name_legal){
-      this.getLegalName();
-      // return;
+    else if (this.contactForm.value.phone==null){
+      this.phone.setFocus();
     }
-    else if (this.contactForm.dirty) {
-      this.justSave();
-    } else {
-      if (this.opened){
-        this.navCtrl.navigateBack('contacts').then(() => {
-          this.events.publish('open-contact', this.contactForm.value);
-        });
-      } else {
-        this.navCtrl.navigateBack('contacts').then(() => {
-          this.events.publish('create-contact', this.contactForm.value);
-        });
-      }
+    else if (this.contactForm.value.address==null){
+      this.address.setFocus();
     }
+    else if (this.contactForm.value.employee==true&&this.contactForm.value.salary==null){
+      this.salary.setFocus();
+    }
+    // else if (this.contactForm.value.document&&!this.contactForm.value.name_legal){
+    //   this.getLegalName();
+    //   // return;
+    // }
+    // else if (this.contactForm.dirty) {
+    //   this.justSave();
+    // } else {
+    //   if (this.opened){
+    //     this.navCtrl.navigateBack('contacts').then(() => {
+    //       this.events.publish('open-contact', this.contactForm.value);
+    //     });
+    //   } else {
+    //     this.navCtrl.navigateBack('contacts').then(() => {
+    //       this.events.publish('create-contact', this.contactForm.value);
+    //     });
+    //   }
+    // }
   }
 
   getLegalName(){
     this.restProvider.getRucName(this.contactForm.value.document).then((data: any)=>{
-      this.contactForm.patchValue({
-        'name_legal': data.name,
-      })
+      console.log("data", data);
+      if (data.name!='HttpErrorResponse'){
+        this.contactForm.patchValue({
+          'name_legal': data.name,
+        })
+      }
     })
+  }
+
+  showNextButton(){
+    // console.log("stock",this.contactForm.value.stock);
+    if (this.contactForm.value.name==null){
+      return true;
+    }
+    else if (this.contactForm.value.document==null){
+      return true;
+    }
+    else if (this.contactForm.value.phone==null){
+      return true;
+    }
+    else if (this.contactForm.value.address==null){
+      return true;
+    }
+    else if (this.contactForm.value.employee==true&&this.contactForm.value.salary==null){
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.contactForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+      this.contactForm.markAsPristine();
+      this.navCtrl.navigateBack('/contact-list');
   }
 }

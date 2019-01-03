@@ -221,10 +221,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         });
       }
     }
-    discard(){
-      this.canDeactivate();
-      // this.navCtrl.navigateBack('/tabs/product-list');
-    }
     buttonSave() {
       let product = Object.assign({}, this.productForm.value);
       // if(this.productForm.value.stock != this.theoreticalStock){
@@ -383,7 +379,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         return false;
       }
     }
-
+    discard(){
+      this.canDeactivate();
+    }
     async canDeactivate() {
         if(this.productForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
@@ -410,6 +408,8 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
             // Return false to avoid the page to be popped up
             return false;
+        } else {
+          this.exitPage();
         }
     }
 

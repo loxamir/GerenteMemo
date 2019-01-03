@@ -5,11 +5,11 @@
       <ion-back-button defaultHref="/contact-list"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'CONTACT'| translate }}</ion-title>
-    <ion-buttons slot="end" [hidden]="!contactForm.dirty">
+    <!-- <ion-buttons slot="end" [hidden]="!contactForm.dirty">
       <ion-button (click)="buttonSave()">
         {{ 'SAVE' | translate }}
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -33,6 +33,7 @@
        class="field-50">
         <ion-label position="floating">{{'DOCUMENT' | translate}}</ion-label>
         <ion-input type="text"
+        (ionChange)="changedDocument()"
         #document
         formControlName="document"></ion-input>
       </ion-item>
@@ -41,6 +42,7 @@
       class="field-50">
       <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
       <ion-input type="text"
+      #phone
       formControlName="phone"></ion-input>
     </ion-item>
     <div class="validation-errors" style="width: 50%;">
@@ -60,6 +62,7 @@
        class="field-50">
         <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
         <ion-input type="text"
+        #address
         formControlName="address"></ion-input>
       </ion-item>
 
@@ -98,10 +101,6 @@
          <ion-label>{{'Funcionario' | translate}}</ion-label>
          <ion-toggle formControlName="employee"></ion-toggle>
       </ion-item>
-      <ion-item class="field-100">
-        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
-        <ion-input type="text" formControlName="note"></ion-input>
-      </ion-item>
       <ion-item
        no-padding
        *ngIf="contactForm.value.employee"
@@ -112,8 +111,10 @@
       </ion-item>
       <ion-item *ngIf="contactForm.value.employee" no-padding (click)="selectCurrency()"
       class="field-50">
-        <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-        <h4 class="field-value">{{contactForm.value.currency && contactForm.value.currency.name || 'Selecionar'}}</h4>
+        <div class="field-many2one">
+          <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
+          <h4 class="field-value">{{contactForm.value.currency && contactForm.value.currency.name || 'Selecionar'}}</h4>
+        </div>
       </ion-item>
       <ion-item
       *ngIf="contactForm.value.employee"
@@ -122,6 +123,10 @@
         <ion-label position="floating" class="field-label">{{'HIRE_DATE' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="hire_date">
         </ion-datetime>
+      </ion-item>
+      <ion-item class="field-100">
+        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+        <ion-input type="text" formControlName="note"></ion-input>
       </ion-item>
     </ion-row>
     <!-- <ion-segment formControlName="section" class="cash-segment" *ngIf="contactForm.value.employee">
@@ -204,9 +209,32 @@
       </ion-icon>
     </ion-fab-button>
   </ion-fab> -->
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
       <ion-fab-button (click)="goNextStep()">
           <ion-icon name="play"> </ion-icon>
       </ion-fab-button>
+  </ion-fab> -->
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
+    <ion-button (click)="goNextStep()"  class="next-button">
+      <ion-icon name="fastforward"> </ion-icon>
+      Proximo
+    </ion-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-button (click)="discard()" color="danger">
+      <ion-icon name="backspace" *ngIf="contactForm.dirty"> </ion-icon>
+      <ion-icon name="arrow-back" *ngIf="!contactForm.dirty"> </ion-icon>
+      <span *ngIf="contactForm.dirty">Descartar</span>
+      <span *ngIf="!contactForm.dirty">Volver</span>
+    </ion-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="contactForm.dirty">
+    <ion-button (click)="buttonSave()"  color="success">
+      <ion-icon name="save"> </ion-icon>
+      Guardar
+    </ion-button>
   </ion-fab>
 </ion-content>
