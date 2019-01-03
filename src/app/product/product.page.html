@@ -28,14 +28,14 @@
       </ion-item>
       <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
-        <ion-select #type formControlName="type" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
+        <ion-select #type (ionChange)="getDefaultCategory()" formControlName="type" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
           <ion-select-option value="product">Producto</ion-select-option>
           <ion-select-option value="service">Servicio</ion-select-option>
-          <ion-select-option value="urban_area">Area Urbana</ion-select-option>
+          <!-- <ion-select-option value="urban_area">Area Urbana</ion-select-option>
           <ion-select-option value="rural_area">Area Rural</ion-select-option>
           <ion-select-option value="machine">Maquinario</ion-select-option>
           <ion-select-option value="vehicle">Vehiculo</ion-select-option>
-          <ion-select-option value="animal">Animal</ion-select-option>
+          <ion-select-option value="animal">Animal</ion-select-option> -->
         </ion-select>
       </ion-item>
       <ion-item no-padding class="field-50">

@@ -55,6 +55,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       // public base64: Base64,
       public events:Events,
       // public camera: Camera,
+      public pouchdbService: PouchdbService,
       public stockMoveService: StockMoveService,
       public cashMoveService: CashMoveService,
     ) {
@@ -119,8 +120,16 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           //this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.getDefaultCategory();
       }
+    }
+
+    getDefaultCategory(){
+      this.pouchdbService.getDoc('category.'+this.productForm.value.type).then((category)=>{
+        this.productForm.patchValue({
+          category: category
+        })
+      })
     }
 
     goNextStep() {
