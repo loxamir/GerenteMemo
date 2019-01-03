@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, Events } from '@ionic/angular';
+import { NavController, LoadingController, Events, ModalController } from '@ionic/angular';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProductCategoryPage } from '../product-category/product-category.page';
 import 'rxjs/Rx';
 
 @Component({
@@ -18,9 +19,12 @@ export class ProductCategoryListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
+    // public navPush: IonNavPush,
+    public modalController: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
+    public router: Router,
     // public navParams: NavParams,
     public events: Events,
   ) {
@@ -76,17 +80,32 @@ export class ProductCategoryListPage implements OnInit {
     this.navCtrl.navigateForward(['product-category', {'_id': category._id}]);
   }
 
-  createCategory(){
+  async createCategory(){
     this.events.subscribe('create-category', (data) => {
       if (this.select){
         // this.navCtrl.pop().then(() => {
-        this.navCtrl.navigateBack('').then(() => {
+        // this.navCtrl.navigateBack('').then(() => {
           this.events.publish('select-category', data);
-        });
+        // });
       }
       this.events.unsubscribe('create-category');
     })
-    this.navCtrl.navigateForward(['product-category', {}]);
+    // this.modalController.dismiss();
+    if (this.select){
+      let modal = await this.modalController.create({
+        component: ProductCategoryPage,
+        componentProps: {
+          select: true
+        }
+      })
+      modal.present();
+    }else {
+      // this.router.navigate(['product-category', {}])
+          this.navCtrl.navigateForward(['product-category', {}]);
+          // .then(() => {
+          //   this.events.publish('select-category', data);
+          // });
+    }
     // this.navCtrl.push(CategoryPage, {});
   }
 

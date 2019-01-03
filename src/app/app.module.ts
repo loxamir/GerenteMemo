@@ -42,6 +42,8 @@ import { CashListPageModule } from './cash-list/cash-list.module';
 import { CashMovePageModule } from './cash-move/cash-move.module';
 import { LoginPageModule } from './login/login.module';
 
+import { ProductCategoryPageModule } from './product-category/product-category.module';
+
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -88,6 +90,7 @@ import { environment } from '../environments/environment';
     FormsModule,
     ContactListPageModule,
     ReactiveFormsModule,
+    ProductCategoryPageModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),
     TranslateModule.forRoot({

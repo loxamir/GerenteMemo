@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, ModalController, LoadingController, Platform, Events } from '@ionic/angular';
+import { NavController, AlertController, ModalController, LoadingController, Platform, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,7 +14,7 @@ import { ProductCategoryListPage } from '../product-category-list/product-catego
 import { StockMoveService } from '../stock-move/stock-move.service';
 import { CashMoveService } from '../cash-move/cash-move.service';
 import { ConfigService } from '../config/config.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 @Component({
@@ -22,7 +22,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   templateUrl: './product.page.html',
   styleUrls: ['./product.page.scss'],
 })
-export class ProductPage implements OnInit {
+export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
   @ViewChild('name') name;
   @ViewChild('price') price;
@@ -43,6 +43,7 @@ export class ProductPage implements OnInit {
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
+      public alertCtrl: AlertController,
       // public imagePicker: ImagePicker,
       // public cropService: Crop,
       public platform: Platform,
@@ -91,18 +92,19 @@ export class ProductPage implements OnInit {
     ngOnInit() {
       setTimeout(() => {
         this.name.setFocus();
+        this.productForm.markAsPristine();
       }, 200);
       this.productForm = this.formBuilder.group({
-        name: new FormControl('', Validators.required),
-        image: new FormControl(''),
-        price: new FormControl('', Validators.required),
+        name: new FormControl(null, Validators.required),
+        // image: new FormControl(''),
+        price: new FormControl(null, Validators.required),
         category: new FormControl({}),
-        cost: new FormControl(this.route.snapshot.paramMap.get('cost')),
+        cost: new FormControl(this.route.snapshot.paramMap.get('cost')||null),
         code: new FormControl(''),
         barcode: new FormControl(this.route.snapshot.paramMap.get('barcode')),
         tax: new FormControl(this.route.snapshot.paramMap.get('iva')||'iva10'),
-        type: new FormControl(this.route.snapshot.paramMap.get('type')),
-        stock: new FormControl(this.route.snapshot.paramMap.get('stock')),
+        type: new FormControl(this.route.snapshot.paramMap.get('type')||'product'),
+        stock: new FormControl(this.route.snapshot.paramMap.get('stock')||null),
         stock_min: new FormControl(this.route.snapshot.paramMap.get('stock_min')),
         note: new FormControl(''),
         date: new FormControl(new Date().toJSON()),
@@ -113,6 +115,7 @@ export class ProductPage implements OnInit {
         this.productService.getProduct(this._id).then((data) => {
           this.productForm.patchValue(data);
           this.theoreticalStock = data.stock;
+          // this.productForm.markAsPristine();
           //this.loading.dismiss();
         });
       } else {
@@ -121,42 +124,28 @@ export class ProductPage implements OnInit {
     }
 
     goNextStep() {
-      // if (this.productForm.value.state == 'DRAFT'){
-        if (!this.productForm.value.name){
+        if (this.productForm.value.name==null){
           this.name.setFocus();
-          // return;
         }
-        else if (this.productForm.value.price==''){
+        else if (this.productForm.value.price==null){
           this.price.setFocus();
-          // return;
         }
-        else if (this.productForm.value.cost==''){
+        else if (this.productForm.value.cost==null){
           this.cost.setFocus();
-          // return;
         }
-        else if (!this.productForm.value.type){
-          this.type.open();
-          // return;
-        }
-        else if (Object.keys(this.productForm.value.category).length === 0){
-          // this.category.setFocus();
-          this.selectCategory();
-
-        }
-        else if (this.productForm.value.stock.toString()==''){
-          // console.l
+        else if (this.productForm.value.stock==null){
           this.stock.setFocus();
-          // return;
+          return;
         }
         else if (this.productForm.dirty) {
-          this.justSave();
+          this.buttonSave();
         } else {
           if (this.opened){
-            this.navCtrl.navigateBack('').then(() => {
+            // this.navCtrl.navigateBack('/tabs/product-list').then(() => {
               this.events.publish('open-product', this.productForm.value);
-            });
+            // });
           } else {
-            this.navCtrl.navigateBack('').then(() => {
+            this.navCtrl.navigateBack('/tabs/product-list').then(() => {
               this.events.publish('create-product', this.productForm.value);
             });
           }
@@ -223,7 +212,10 @@ export class ProductPage implements OnInit {
         });
       }
     }
-
+    discard(){
+      this.canDeactivate();
+      // this.navCtrl.navigateBack('/tabs/product-list');
+    }
     buttonSave() {
       let product = Object.assign({}, this.productForm.value);
       // if(this.productForm.value.stock != this.theoreticalStock){
@@ -362,6 +354,59 @@ export class ProductPage implements OnInit {
         });
         profileModal.present();
       });
+    }
+
+    showNextButton(){
+      // console.log("stock",this.productForm.value.stock);
+      if (this.productForm.value.name==null){
+        return true;
+      }
+      else if (this.productForm.value.price==null){
+        return true;
+      }
+      else if (this.productForm.value.cost==null){
+        return true;
+      }
+      else if (this.productForm.value.type=='product'&&this.productForm.value.stock==null){
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    async canDeactivate() {
+        if(this.productForm.dirty) {
+            let alertPopup = await this.alertCtrl.create({
+                header: 'Descartar',
+                message: '¿Deseas salir sin guardar?',
+                buttons: [{
+                        text: 'Si',
+                        handler: () => {
+                            // alertPopup.dismiss().then(() => {
+                                this.exitPage();
+                            // });
+                        }
+                    },
+                    {
+                        text: 'No',
+                        handler: () => {
+                            // need to do something if the user stays?
+                        }
+                    }]
+            });
+
+            // Show the alert
+            alertPopup.present();
+
+            // Return false to avoid the page to be popped up
+            return false;
+        }
+    }
+
+    private exitPage() {
+        this.productForm.markAsPristine();
+        this.navCtrl.navigateBack('/tabs/product-list');
     }
 
 }

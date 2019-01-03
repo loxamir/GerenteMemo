@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, ModalController, LoadingController, Events } from '@ionic/angular';
+import { NavController, NavParams, ModalController, LoadingController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -19,6 +19,7 @@ export class ProductCategoryPage implements OnInit {
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
+  select;
 
   constructor(
     public navCtrl: NavController,
@@ -26,7 +27,7 @@ export class ProductCategoryPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    // public navParams: NavParams,
+    public navParams: NavParams,
     public formBuilder: FormBuilder,
     public events: Events,
     public pouchdbService: PouchdbService,
@@ -37,7 +38,12 @@ export class ProductCategoryPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     // this._id = this.navParams.data._id;
-    this._id = this.route.snapshot.paramMap.get('_id')
+    this.select = this.navParams.data.select;
+    if (this.select){
+      this._id = this.navParams.get('_id');
+    } else {
+      this._id = this.route.snapshot.paramMap.get('_id');
+    }
   }
 
   ngOnInit() {
@@ -75,14 +81,23 @@ export class ProductCategoryPage implements OnInit {
   buttonSave() {
     if (this._id){
       this.updateCategory(this.categoryForm.value);
-      this.navCtrl.navigateBack('/product-category-list').then(() => {
-        this.events.publish('open-category', this.categoryForm.value);
-      });
+      if (this.select){
+        this.modal.dismiss()
+      } else {
+        this.navCtrl.navigateBack('/product-category-list').then(() => {
+          this.events.publish('open-category', this.categoryForm.value);
+        });
+      }
     } else {
       this.createCategory(this.categoryForm.value);
-      this.navCtrl.navigateBack('/product-category-list').then(() => {
+      if (this.select){
+        this.modal.dismiss();
         this.events.publish('create-category', this.categoryForm.value);
-      });
+      } else {
+        this.navCtrl.navigateBack('/product-category-list').then(() => {
+          this.events.publish('create-category', this.categoryForm.value);
+        });
+      }
     }
   }
 

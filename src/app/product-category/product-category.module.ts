@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, NavParams } from '@ionic/angular';
 import { ProductCategoryPage } from './product-category.page';
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -36,6 +36,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ProductCategoryPage]
+  declarations: [ProductCategoryPage],
+  // providers: [NavParams]
 })
 export class ProductCategoryPageModule {}

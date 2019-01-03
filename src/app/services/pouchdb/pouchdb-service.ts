@@ -314,7 +314,9 @@ export class PouchdbService {
       // } else {
       //   code = data['code'];
       // }
-      data['code'] = code;
+      if (!data['code']){
+        data['code'] = code;
+      }
       data['_id'] = data['docType']+"."+code;
       this.sequences[data.docType] += 1;
     } else {
