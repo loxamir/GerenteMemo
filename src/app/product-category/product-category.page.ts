@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ModalController, LoadingController, Events } from '@ionic/angular';
+import { NavController, NavParams, AlertController, ModalController, LoadingController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -32,6 +32,7 @@ export class ProductCategoryPage implements OnInit {
     public events: Events,
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
+    public alertCtrl: AlertController,
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
@@ -99,6 +100,52 @@ export class ProductCategoryPage implements OnInit {
         });
       }
     }
+  }
+
+  discard(){
+    this.canDeactivate();
+    // this.navCtrl.navigateBack('/tabs/product-list');
+  }
+
+  async canDeactivate() {
+      if(this.categoryForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    console.log("exitPage", this.select);
+      this.categoryForm.markAsPristine();
+      if (this.select){
+        this.modal.dismiss()
+      } else {
+        this.navCtrl.navigateBack('/product-category-list');
+      }
   }
 
   setLanguage(lang: LanguageModel){
