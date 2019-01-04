@@ -3,6 +3,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController,   ModalController, Events} from '@ionic/angular';
 import 'rxjs/Rx';
+import { CurrencyPage } from '../currency/currency.page';
 
 @Component({
   selector: 'app-currency-list',
@@ -52,12 +53,23 @@ export class CurrencyListPage implements OnInit {
   }
 
 
-  openCurrency(currency) {
+  async openCurrency(currency) {
     console.log("open", currency);
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: CurrencyPage,
+        componentProps: {
+          "select": true,
+          "_id": currency._id,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/currency', {'_id': currency._id}]);
+    }
     this.events.subscribe('open-currency', (data) => {
       this.events.unsubscribe('open-currency');
     })
-    this.navCtrl.navigateForward(['/currency', {'_id': currency._id}]);
   }
 
   selectCurrency(currency) {
@@ -72,7 +84,18 @@ export class CurrencyListPage implements OnInit {
     // });
   }
 
-  createCurrency(){
+  async createCurrency(){
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: CurrencyPage,
+        componentProps: {
+          "select": true,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/currency', {}]);
+    }
     this.events.subscribe('create-currency', (data) => {
       if (this.select){
         // this.navCtrl.navigateBack().then(() => {
@@ -82,7 +105,6 @@ export class CurrencyListPage implements OnInit {
       }
       this.events.unsubscribe('create-currency');
     })
-    this.navCtrl.navigateForward(['/currency', {}]);
   }
 
   // deleteCurrency(currency){

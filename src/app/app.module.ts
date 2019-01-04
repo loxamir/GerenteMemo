@@ -34,6 +34,7 @@ import { ProductListPageModule } from './product-list/product-list.module';
 import { PaymentConditionListPageModule } from './payment-condition-list/payment-condition-list.module';
 import { ContactListPageModule } from './contact-list/contact-list.module';
 import { CurrencyListPageModule } from './currency-list/currency-list.module';
+import { CurrencyPageModule } from './currency/currency.module';
 import { ReceiptPageModule } from './receipt/receipt.module';
 import { InvoicePageModule } from './invoice/invoice.module';
 import { WarehouseListPageModule } from './warehouse-list/warehouse-list.module';
@@ -48,6 +49,7 @@ import { ProductPageModule } from './product/product.module';
 
 import { CheckListPageModule } from './check-list/check-list.module';
 import { CheckPageModule } from './check/check.module';
+import { PaymentConditionPageModule } from './payment-condition/payment-condition.module';
 
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
@@ -89,6 +91,7 @@ import { environment } from '../environments/environment';
     InvoicePageModule,
     WarehouseListPageModule,
     AccountListPageModule,
+    CurrencyPageModule,
     CashListPageModule,
     UserPageModule,
     CheckPageModule,
@@ -99,6 +102,7 @@ import { environment } from '../environments/environment';
     ReactiveFormsModule,
     ProductPageModule,
     ProductCategoryPageModule,
+    PaymentConditionPageModule,
     CheckListPageModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),

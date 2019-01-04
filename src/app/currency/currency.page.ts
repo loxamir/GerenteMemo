@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { Component, OnInit } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events } from '@ionic/angular';
+import { NavController,  ModalController, LoadingController,  Events, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import 'rxjs/Rx';
@@ -22,6 +22,7 @@ export class CurrencyPage implements OnInit {
     loading: any;
     languages: Array<LanguageModel>;
     _id: string;
+    select;
 
     constructor(
       public navCtrl: NavController,
@@ -29,11 +30,13 @@ export class CurrencyPage implements OnInit {
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
+      public alertCtrl: AlertController,
       public pouchdbService: PouchdbService,
       // public imagePicker: ImagePicker,
       // public cropService: Crop,
       // public platform: Platform,
       // public currencyService: CurrencyService,
+      public modalCtrl: ModalController,
       public route: ActivatedRoute,
 
       public formBuilder: FormBuilder,
@@ -41,6 +44,8 @@ export class CurrencyPage implements OnInit {
     ) {
       //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
+      this.translate.setDefaultLang('es');
+      this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
     }
 
@@ -112,6 +117,49 @@ export class CurrencyPage implements OnInit {
 
     getCurrencyList(keyword){
       return this.pouchdbService.searchDocTypeData('currency');
+    }
+
+    discard(){
+      this.canDeactivate();
+    }
+    async canDeactivate() {
+        if(this.currencyForm.dirty) {
+            let alertPopup = await this.alertCtrl.create({
+                header: 'Descartar',
+                message: '¿Deseas salir sin guardar?',
+                buttons: [{
+                        text: 'Si',
+                        handler: () => {
+                            // alertPopup.dismiss().then(() => {
+                                this.exitPage();
+                            // });
+                        }
+                    },
+                    {
+                        text: 'No',
+                        handler: () => {
+                            // need to do something if the user stays?
+                        }
+                    }]
+            });
+
+            // Show the alert
+            alertPopup.present();
+
+            // Return false to avoid the page to be popped up
+            return false;
+        } else {
+          this.exitPage();
+        }
+    }
+
+    private exitPage() {
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
+        // this.currencyForm.markAsPristine();
+        this.navCtrl.navigateBack('/currency-list');
+      }
     }
 
 }

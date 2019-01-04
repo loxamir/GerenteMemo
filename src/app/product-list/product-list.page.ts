@@ -198,9 +198,9 @@ export class ProductListPage implements OnInit {
   async createProduct() {
     this.events.subscribe('create-product', (data) => {
       if (this.select) {
-        this.navCtrl.navigateBack('').then(() => {
+        // this.navCtrl.navigateBack('').then(() => {
           this.events.publish('select-product', data);
-        });
+        // });
       }
       this.events.unsubscribe('create-product');
     })

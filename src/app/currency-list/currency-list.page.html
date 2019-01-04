@@ -1,17 +1,10 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-searchbar
-      placeholder="Buscar Moneda"
-      [(ngModel)]="searchTerm"
-      #searchBar
-      (ionInput)="searchItems()">
+    <ion-searchbar placeholder="Buscar Moneda"
+    [(ngModel)]="searchTerm"
+    #searchBar
+    (ionInput)="searchItems()">
     </ion-searchbar>
-    <!-- <ion-buttons slot="end">
-      <ion-button icon-only
-              (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button>
-    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -21,30 +14,37 @@
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of currencyList">
-      <ion-item no-padding >
+      <ion-item no-padding>
         <ion-card class="list-card">
-      <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-90 class="currency" (click)="selectCurrency(item)">
-          <ion-row>
-            <ion-col no-padding>
-              <h3 class="item-title" style="white-space:normal"><b>{{ item.name }}</b></h3>
+          <ion-row no-padding style="height: 70px;">
+            <ion-col no-padding class="currency" (click)="selectCurrency(item)">
+              <ion-row>
+                <ion-col no-padding>
+                  <h3 class="item-title" style="white-space:normal"><b>{{ item.name }}</b></h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <!-- <h3 class="item-title">Venta: {{item.sale_rate}}</h3> -->
+                  <h4 class="currency-label">{{'Venta' | translate}}</h4>
+                  <h4 class="currency-value">{{item.sale_rate}}</h4>
+                </ion-col>
+                <ion-col no-padding style="margin-top: 13px;">
+                  <!-- <h3 class="item-title">Compra: {{item.purchase_rate}}</h3> -->
+                  <h4 class="field-label">{{'Compra' | translate}}</h4>
+                  <h4 class="field-value">{{item.purchase_rate}}</h4>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+            <!-- <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;">
+          <ion-icon (click)="openCurrency(item)" name="arrow-forward"></ion-icon>
+        </ion-col> -->
+            <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openCurrency(item)">
+              <ion-icon name="open" class="open-item-arrow"></ion-icon>
             </ion-col>
           </ion-row>
-          <ion-row no-padding class="content-row one-line">
-                 <ion-col no-padding>
-                   <h3 class="item-title">Venta: {{item.sale_rate}}</h3>
-                 </ion-col>
-                 <ion-col no-padding>
-                   <h3 class="item-title">Compra: {{item.purchase_rate}}</h3>
-                 </ion-col>
-           </ion-row>
-         </ion-col>
-        <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;">
-          <ion-icon (click)="openCurrency(item)" name="arrow-forward"></ion-icon>
-        </ion-col>
-      </ion-row>
-    </ion-card>
-    </ion-item>
+        </ion-card>
+      </ion-item>
       <ion-item-options>
         <ion-button icon-only color="primary" (click)="deleteCurrency(item)">
           <ion-icon name="trash"></ion-icon>
@@ -56,9 +56,9 @@
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createCurrency()" color="green">
-          <ion-icon name="add">
-          </ion-icon>
-      </ion-fab-button>
+    <ion-fab-button (click)="createCurrency()" color="primary">
+      <ion-icon name="add">
+      </ion-icon>
+    </ion-fab-button>
   </ion-fab>
 </ion-content>

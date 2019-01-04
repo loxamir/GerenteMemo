@@ -21,6 +21,7 @@ export class PaymentConditionListPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     // public paymentConditionService: PaymentConditionService,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public modal: ModalController,
@@ -54,29 +55,56 @@ export class PaymentConditionListPage implements OnInit {
     return this.pouchdbService.searchDocTypeData('payment-condition');
   }
 
-  openPaymentCondition(paymentCondition) {
+  async openPaymentCondition(paymentCondition) {
+    if (this.select) {
+      // this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
+      let profileModal = await this.modalCtrl.create({
+        component: PaymentConditionPage,
+        componentProps: {
+          "select": true,
+          "_id": paymentCondition._id,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/payment-condition', {'_id': paymentCondition._id}]);
+    }
     this.events.subscribe('open-payment-condition', (data) => {
       this.events.unsubscribe('open-payment-condition');
     })
-    this.navCtrl.navigateForward(['/payment-condition', {'_id': paymentCondition._id}]);
   }
 
   selectPaymentCondition(paymentCondition) {
     // this.navCtrl.navigateBack().then(() => {
+    // if(this.select){
+    this.modalCtrl.dismiss();
+  // }
       this.events.publish('select-payment-condition', paymentCondition);
     // });
   }
 
-  createPaymentCondition(){
+  async createPaymentCondition(){
+    if (this.select) {
+      // this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
+      let profileModal = await this.modalCtrl.create({
+        component: PaymentConditionPage,
+        componentProps: {
+          "select": true,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/payment-condition', {}]);
+    }
     this.events.subscribe('create-payment-condition', (data) => {
       if (this.select){
         // this.navCtrl.navigateBack().then(() => {
+          this.modalCtrl.dismiss();
           this.events.publish('select-payment-condition', data);
         // });
       }
       this.events.unsubscribe('create-payment-condition');
     })
-    this.navCtrl.navigateForward(['/payment-condition', {}]);
   }
 
   deletePaymentCondition(paymentCondition) {

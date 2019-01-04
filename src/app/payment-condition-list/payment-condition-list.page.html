@@ -31,14 +31,19 @@
     <ion-item-sliding class="list-item" *ngFor="let item of paymentConditionList">
       <ion-item no-padding>
         <ion-card class="list-card">
-      <ion-row style="padding-top:10px; padding-bottom:10px;" class="content-row one-line">
-        <ion-col width-90 class="payment-condition" (click)="selectPaymentCondition(item)">
-          <h3 class="item-title">{{item.name}}</h3>
-        </ion-col>
-        <ion-col width-10 (click)="openPaymentCondition(item)" class="item-icon">
-          <ion-icon name="arrow-forward"></ion-icon>
-        </ion-col>
-      </ion-row>
+          <ion-row>
+            <ion-col (click)="selectPaymentCondition(item)">
+              <ion-row style="padding-top:10px; padding-bottom:10px;" class="content-row one-line">
+                <ion-col  >
+                  <h3 class="item-title">{{item.name}}</h3>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+            <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openPaymentCondition(item)">
+              <ion-icon name="open" class="open-item-arrow"></ion-icon>
+            </ion-col>
+          </ion-row>
+
 </ion-card>
     </ion-item>
       <ion-item-options>

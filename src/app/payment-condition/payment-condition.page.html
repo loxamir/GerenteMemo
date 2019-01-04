@@ -12,12 +12,12 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="payment-condition-content">
-  <form class="sample-form validations-form"
+<ion-content>
+  <form
   [formGroup]="paymentConditionForm"
   (ngSubmit)="onSubmit(paymentConditionForm.value)">
-    <section class="form-section">
-      <ion-item>
+    <ion-row>
+      <ion-item class="field-100">
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input type="text" formControlName="name" autocomplete='name'></ion-input>
       </ion-item>
@@ -28,27 +28,26 @@
           </div>
         </ng-container>
       </div>
-      <ion-card class="list-card"
-      class="field-label"
+      <ion-item class="field-100"
       no-padding
-      (click)="selectAccountTo()"
-      style="width: calc(50% - 20px);margin-bottom: 4%;margin-top: 1%;">
+      (click)="selectAccountTo()">
         <h4 class="field-label">{{'Cuenta para Venta' | translate}}</h4>
         <h4 class="field-value">{{paymentConditionForm.value.accountTo && paymentConditionForm.value.accountTo.name || 'Selecionar'}}</h4>
-      </ion-card>
-      <ion-card class="list-card"
-      class="field-label"
+      </ion-item>
+      <ion-item class="field-100"
       no-padding
-      (click)="selectAccountFrom()"
-      style="width: calc(50% - 20px);margin-bottom: 4%;margin-top: 1%;">
+      (click)="selectAccountFrom()">
         <h4 class="field-label">{{'Cuenta para Compra' | translate}}</h4>
         <h4 class="field-value">{{paymentConditionForm.value.accountFrom && paymentConditionForm.value.accountFrom.name || 'Selecionar'}}</h4>
-      </ion-card>
+      </ion-item>
+    </ion-row>
+
+
       <ion-list>
-        <ion-item-sliding no-padding class="list-item" *ngFor="let item of paymentConditionForm.value.items">
-          <ion-item no-padding (click)="editItem(item)">
-            <ion-row no-padding class="content-row one-line">
-              <ion-col no-padding width-100 class="item-content" style="white-space: normal;">
+        <ion-item-sliding no-padding *ngFor="let item of paymentConditionForm.value.items">
+          <!-- <ion-item no-padding (click)="editItem(item)"> -->
+            <!-- <ion-row no-padding> -->
+              <!-- <ion-col no-padding width-100 class="item-content" style="white-space: normal;">
                 <ion-row (click)="openItem(item)" class="product-name-row">
                   Dias {{item.days}}
                 </ion-row>
@@ -57,9 +56,21 @@
                     <span class="price-label">Porcentage:</span> {{item.percent}}
                   </ion-col>
                 </ion-row>
-              </ion-col>
-            </ion-row>
-          </ion-item>
+              </ion-col> -->
+              <ion-row>
+                <ion-item class="field-50"
+                no-padding>
+                <h4 class="field-label">{{'Porcentage' | translate}}</h4>
+                <h4 class="field-value">{{item.percent}}</h4>
+              </ion-item>
+              <ion-item class="field-50"
+                no-padding>
+                <h4 class="field-label">{{'Dias' | translate}}</h4>
+                <h4 class="field-value">{{item.days}}</h4>
+              </ion-item>
+              </ion-row>
+            <!-- </ion-row>
+          </ion-item> -->
           <ion-item-options>
             <ion-button icon-only color="primary" (click)="deleteItem(item)">
               <ion-icon name="trash"></ion-icon>
@@ -67,14 +78,14 @@
           </ion-item-options>
         </ion-item-sliding>
       </ion-list>
-      <ion-fab bottom right>
+      <ion-fab vertical="bottom" horizontal="center" slot="fixed">
           <ion-fab-button (click)="addItem()" color="green">
               <ion-icon name="add">
               </ion-icon>
           </ion-fab-button>
       </ion-fab>
 
-    </section>
+    <!-- </ion-row> -->
 
     <!--ion-button full type="submit" [disabled]="!paymentConditionForm.valid">{{'SUBMIT' | translate}}</ion-button-->
   </form>

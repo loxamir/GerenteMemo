@@ -85,14 +85,14 @@
       </ion-item>
     </ion-row>
     <ion-row>
-      <ion-col size="6" class="item-content" *ngIf="saleForm.value.state != 'QUOTATION' && saleForm.value.amount_unInvoiced == saleForm.value.total">
-        <ion-button class="print-invoice" (click)="addInvoice()">Crear Factura</ion-button>
+      <ion-col size="6" *ngIf="saleForm.value.state != 'QUOTATION' && saleForm.value.amount_unInvoiced == saleForm.value.total">
+        <ion-button class="button-100" (click)="addInvoice()">Crear Factura</ion-button>
       </ion-col>
-      <ion-col size="6" class="item-content" *ngIf="saleForm.value.state == 'CONFIRMED'">
-        <ion-button class="print-invoice" (click)="beforeAddPayment()">Registrar Cobro</ion-button>
+      <ion-col size="6" *ngIf="saleForm.value.state == 'CONFIRMED'">
+        <ion-button class="button-100" (click)="beforeAddPayment()">Registrar Cobro</ion-button>
       </ion-col>
       <ion-col *ngIf="saleForm.value.state != 'QUOTATION'">
-        <ion-button class="print-confirm" (click)="print()">Imprimir Venta</ion-button>
+        <ion-button class="button-100" (click)="print()">Imprimir Venta</ion-button>
       </ion-col>
       <ion-col size="12" *ngIf="saleForm.value.state == 'QUOTATION'">
         <ion-button class="button-100" (click)="addItem()">+ Agregar Item</ion-button>
@@ -103,7 +103,7 @@
       <section>
       <h2 class="section-title">{{'INVOICE' | translate}}</h2>
       <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.invoices">
-        <ion-item (click)="openInvoice(item)" style="background-color: #ddd;">
+        <ion-item (click)="openInvoice(item)"  class="internal-item" style="background-color: #ddd;">
           <ion-card class="list-card">
           <ion-row style="padding-top:10px; padding-bottom:10px;">
           <ion-col >
@@ -133,7 +133,7 @@
       <section>
       <h2 class="section-title">{{'Recibos' | translate}}</h2>
       <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.payments">
-        <ion-item (click)="openPayment(item)" style="background-color: #ddd;">
+        <ion-item  class="internal-item" (click)="openPayment(item)" style="background-color: #ddd;">
           <ion-card class="list-card">
           <ion-row style="padding-top:10px; padding-bottom:10px;">
           <ion-col >

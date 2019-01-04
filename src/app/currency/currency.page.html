@@ -4,18 +4,18 @@
       <ion-icon name="menu"></ion-icon>
     </ion-button> -->
     <ion-title>{{ 'CURRENCY_INFORMATION' | translate }}</ion-title>
-    <ion-buttons slot="end" [hidden]="!currencyForm.dirty">
+    <!-- <ion-buttons slot="end" [hidden]="!currencyForm.dirty">
       <ion-button (click)="buttonSave()">
         {{ 'SAVE' | translate }}
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="currency-content">
   <form class="sample-form validations-form" [formGroup]="currencyForm"  (ngSubmit)="onSubmit(currencyForm.value)">
-    <section class="form-section">
-      <ion-item>
+    <ion-row>
+      <ion-item class="field-100">
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input type="text" formControlName="name" autocomplete='name'></ion-input>
       </ion-item>
@@ -26,17 +26,40 @@
           </div>
         </ng-container>
       </div>
-      <ion-item>
+      <ion-item class="field-100">
         <ion-label position="floating">{{'SALE' | translate}}</ion-label>
         <ion-input type="text" formControlName="sale_rate" autocomplete='name'></ion-input>
       </ion-item>
 
-      <ion-item>
+      <ion-item class="field-100">
         <ion-label position="floating">{{'PURCHASE' | translate}}</ion-label>
         <ion-input type="text" formControlName="purchase_rate" autocomplete='name'></ion-input>
       </ion-item>
 
-    </section>
+    </ion-row>
   </form>
+
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
+    <ion-button (click)="goNextStep()"  class="next-button">
+      <ion-icon name="fastforward"> </ion-icon>
+      Proximo
+    </ion-button>
+  </ion-fab> -->
+
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-button (click)="discard()" color="danger">
+      <ion-icon name="backspace" *ngIf="currencyForm.dirty"> </ion-icon>
+      <ion-icon name="arrow-back" *ngIf="!currencyForm.dirty"> </ion-icon>
+      <span *ngIf="currencyForm.dirty">Descartar</span>
+      <span *ngIf="!currencyForm.dirty">Volver</span>
+    </ion-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="currencyForm.dirty">
+    <ion-button (click)="buttonSave()"  color="success">
+      <ion-icon name="save"> </ion-icon>
+      Guardar
+    </ion-button>
+  </ion-fab>
 
 </ion-content>
