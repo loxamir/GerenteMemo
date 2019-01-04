@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events, AlertController } from '@ionic/angular';
+import { NavController, NavParams, ModalController, LoadingController,  Events, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -44,7 +44,7 @@ export class CashMovePage implements OnInit {
   constructor(
 
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -55,6 +55,7 @@ export class CashMovePage implements OnInit {
     public formBuilder: FormBuilder,
     public cashMoveService: CashMoveService,
     // public cashService: CashService,
+    public navParams: NavParams,
     public events: Events,
     public configService: ConfigService,
     public alertCtrl: AlertController,
@@ -63,21 +64,21 @@ export class CashMovePage implements OnInit {
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
-    this._id = this.route.snapshot.paramMap.get('_id');
-    // this.cash_id = this.route.snapshot.paramMap.get('cash_id');
-    // this.default_amount = this.route.snapshot.paramMap.get('default_amount');
-    // this.default_name = this.route.snapshot.paramMap.get('default_name');
+    this._id = this.navParams.get('_id');
+    // this.cash_id = this.navParams.get('cash_id');
+    // this.default_amount = this.navParams.get('default_amount');
+    // this.default_name = this.navParams.get('default_name');
     this.today = new Date();
-    // console.log("dados nav", this.route.snapshot.paramMap.get('
-    if (this.route.snapshot.paramMap.get('accountTo') && this.route.snapshot.paramMap.get('accountTo')['_id'].split('.')[1]=='cash'){
+    // console.log("dados nav", this.navParams.get('
+    if (this.navParams.get('accountTo') && this.navParams.get('accountTo')['_id'].split('.')[1]=='cash'){
       // console.log("to cash");
       this.to_cash = true;
     }
-    if (this.route.snapshot.paramMap.get('accountFrom') && this.route.snapshot.paramMap.get('accountFrom')['_id'].split('.')[1]=='cash'){
+    if (this.navParams.get('accountFrom') && this.navParams.get('accountFrom')['_id'].split('.')[1]=='cash'){
       // console.log("from cash");
       this.from_cash = true;
     }
-    if (this.route.snapshot.paramMap.get('transfer')){
+    if (this.navParams.get('transfer')){
       // console.log("from cash");
       this.transfer = true;
     }
@@ -96,18 +97,18 @@ export class CashMovePage implements OnInit {
       dateDue: new FormControl(today, Validators.required),
       state: new FormControl('DRAFT'),
       // cash: new FormControl({}),
-      // cash_id: new FormControl(this.route.snapshot.paramMap.get('cash_id')),
-      origin_id: new FormControl(this.route.snapshot.paramMap.get('origin_id')),
+      // cash_id: new FormControl(this.navParams.get('cash_id')),
+      origin_id: new FormControl(this.navParams.get('origin_id')),
       accountFrom: new FormControl({}),
-      accountFrom_id: new FormControl(this.route.snapshot.paramMap.get('accountFrom_id')),
+      accountFrom_id: new FormControl(this.navParams.get('accountFrom_id')),
       accountTo: new FormControl({}),
-      accountTo_id: new FormControl(this.route.snapshot.paramMap.get('accountTo_id')),
-      contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}),
-      contact_id: new FormControl(this.route.snapshot.paramMap.get('contact_id')),
-      // project: new FormControl(this.route.snapshot.paramMap.get('project')||{}),
-      // project_name: new FormControl(this.route.snapshot.paramMap.get('project_name')||''),
-      signal: new FormControl(this.route.snapshot.paramMap.get('signal')||'-'),
-      check: new FormControl(this.route.snapshot.paramMap.get('check')||{}),
+      accountTo_id: new FormControl(this.navParams.get('accountTo_id')),
+      contact: new FormControl(this.navParams.get('contact')||{}),
+      contact_id: new FormControl(this.navParams.get('contact_id')),
+      // project: new FormControl(this.navParams.get('project')||{}),
+      // project_name: new FormControl(this.navParams.get('project_name')||''),
+      signal: new FormControl(this.navParams.get('signal')||'-'),
+      check: new FormControl(this.navParams.get('check')||{}),
       bank: new FormControl(''),
       amount_residual: new FormControl(this.default_amount||null),
       payments: new FormControl([]),
@@ -117,9 +118,9 @@ export class CashMovePage implements OnInit {
       code: new FormControl(''),
       maturity: new FormControl(''),
 
-      currency: new FormControl(this.route.snapshot.paramMap.get('currency')||{}),
-      currency_amount: new FormControl(this.route.snapshot.paramMap.get('currency_amount')||0),
-      currency_residual: new FormControl(this.route.snapshot.paramMap.get('currency_residual')||0),
+      currency: new FormControl(this.navParams.get('currency')||{}),
+      currency_amount: new FormControl(this.navParams.get('currency_amount')||0),
+      currency_residual: new FormControl(this.navParams.get('currency_residual')||0),
       _id: new FormControl(''),
     });
 
@@ -131,17 +132,17 @@ export class CashMovePage implements OnInit {
       });
     } else {
       this.cashMoveForm.markAsDirty();
-      //console.log("caja", this.route.snapshot.paramMap.get('cash);
-      // if (this.route.snapshot.paramMap.get('hasOwnProperty('cash')){
+      //console.log("caja", this.navParams.get('cash);
+      // if (this.navParams.get('hasOwnProperty('cash')){
       //   this.cashMoveForm.patchValue({
-      //     cash: this.route.snapshot.paramMap.get('cash,
-      //     cash_id: this.route.snapshot.paramMap.get('cash._id,
+      //     cash: this.navParams.get('cash,
+      //     cash_id: this.navParams.get('cash._id,
       //   });
       // } else {
         // this.configService.getConfig().then(config => {
-          let accountFrom = this.route.snapshot.paramMap.get('accountFrom') || {};
-          let accountTo = this.route.snapshot.paramMap.get('accountTo') || {};
-          let contact = this.route.snapshot.paramMap.get('contact') || {};
+          let accountFrom = this.navParams.get('accountFrom') || {};
+          let accountTo = this.navParams.get('accountTo') || {};
+          let contact = this.navParams.get('contact') || {};
           //console.log("configconfig", config);
           this.cashMoveForm.patchValue({
             // cash: config.cash,
@@ -275,7 +276,7 @@ export class CashMovePage implements OnInit {
         this.events.unsubscribe('select-check');
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: CheckListPage,
         componentProps: {
           "select": true
@@ -296,7 +297,7 @@ export class CashMovePage implements OnInit {
         this.events.unsubscribe('select-currency');
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: CurrencyListPage,
         componentProps: {
           "select": true
@@ -307,6 +308,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectAccountFrom() {
+    let self = this;
     return new Promise(async resolve => {
       this.events.subscribe('select-account', (data) => {
         this.cashMoveForm.patchValue({
@@ -317,16 +319,16 @@ export class CashMovePage implements OnInit {
         this.events.unsubscribe('select-account');
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await self.modalCtrl.create({
         component: AccountListPage,
         componentProps: {
           "select": true,
           show_cash_in: this.to_cash,
           show_cash_out: this.from_cash,
-          transfer: this.route.snapshot.paramMap.get('transfer'),
-          accountFrom: this.route.snapshot.paramMap.get('accountFrom'),
-          payable: this.route.snapshot.paramMap.get('payable'),
-          receivable: this.route.snapshot.paramMap.get('receivable'),
+          transfer: this.navParams.get('transfer'),
+          accountFrom: this.navParams.get('accountFrom'),
+          payable: this.navParams.get('payable'),
+          receivable: this.navParams.get('receivable'),
         }
       });
       profileModal.present();
@@ -344,16 +346,16 @@ export class CashMovePage implements OnInit {
         this.events.unsubscribe('select-account');
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: AccountListPage,
         componentProps: {
           "select": true,
           show_cash_in: this.to_cash,
           show_cash_out: this.from_cash,
-          transfer: this.route.snapshot.paramMap.get('transfer'),
-          accountFrom: this.route.snapshot.paramMap.get('accountFrom'),
-          payable: this.route.snapshot.paramMap.get('payable'),
-          receivable: this.route.snapshot.paramMap.get('receivable')
+          transfer: this.navParams.get('transfer'),
+          accountFrom: this.navParams.get('accountFrom'),
+          payable: this.navParams.get('payable'),
+          receivable: this.navParams.get('receivable')
         }
       });
       profileModal.present();
@@ -371,7 +373,7 @@ export class CashMovePage implements OnInit {
          this.events.unsubscribe('select-contact');
          resolve(true);
        })
-       let profileModal = await this.modal.create({
+       let profileModal = await this.modalCtrl.create({
          component: ContactListPage,
          componentProps: {
            "select": true
@@ -397,7 +399,7 @@ export class CashMovePage implements OnInit {
    //         this.events.unsubscribe('select-project');
    //         resolve(true);
    //       })
-   //       let profileModal = this.modal.create(ProjectsPage, {"select": true});
+   //       let profileModal = this.modalCtrl.create(ProjectsPage, {"select": true});
    //       profileModal.present();
    //     });
    //   }
