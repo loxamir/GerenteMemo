@@ -75,8 +75,10 @@
         </ion-select>
       </ion-item>
       <ion-item no-padding (click)="selectCategory()" class="field-100">
-        <h4 class="field-label">{{'CATEGORY' | translate}}</h4>
-        <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'Selecionar'}}</h4>
+        <div class="field-many2one">
+          <h4 class="field-label">{{'CATEGORY' | translate}}</h4>
+          <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'Selecionar'}}</h4>
+        </div>
       </ion-item>
       <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'BARCODE' | translate}}</ion-label>

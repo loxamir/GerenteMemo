@@ -23,7 +23,7 @@ export class ProductCategoryPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -83,7 +83,7 @@ export class ProductCategoryPage implements OnInit {
     if (this._id){
       this.updateCategory(this.categoryForm.value);
       if (this.select){
-        this.modal.dismiss()
+        this.modalCtrl.dismiss();
       } else {
         this.navCtrl.navigateBack('/product-category-list').then(() => {
           this.events.publish('open-category', this.categoryForm.value);
@@ -92,7 +92,7 @@ export class ProductCategoryPage implements OnInit {
     } else {
       this.createCategory(this.categoryForm.value);
       if (this.select){
-        this.modal.dismiss();
+        this.modalCtrl.dismiss();
         this.events.publish('create-category', this.categoryForm.value);
       } else {
         this.navCtrl.navigateBack('/product-category-list').then(() => {
@@ -142,7 +142,7 @@ export class ProductCategoryPage implements OnInit {
     console.log("exitPage", this.select);
       this.categoryForm.markAsPristine();
       if (this.select){
-        this.modal.dismiss()
+        this.modalCtrl.dismiss();
       } else {
         this.navCtrl.navigateBack('/product-category-list');
       }

@@ -30,7 +30,7 @@ export class CheckPage implements OnInit {
 
     constructor(
       public navCtrl: NavController,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
@@ -100,6 +100,7 @@ export class CheckPage implements OnInit {
         this.updateCheck(this.checkForm.value);
         // this.navCtrl.navigateBack().then(() => {
           this.events.publish('open-check', this.checkForm.value);
+          this.modalCtrl.dismiss();
         // });
       } else {
         this.createCheck(this.checkForm.value).then((doc: any) => {
@@ -109,6 +110,7 @@ export class CheckPage implements OnInit {
           this._id = doc.id;
           // this.navCtrl.navigateBack().then(() => {
             this.events.publish('create-check', this.checkForm.value);
+            this.modalCtrl.dismiss();
           // });
         });
       }
@@ -127,7 +129,7 @@ export class CheckPage implements OnInit {
             this.events.unsubscribe('select-contact');
             resolve(true);
           })
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: ContactListPage,
             componentProps: {
               "select": true
@@ -153,7 +155,7 @@ export class CheckPage implements OnInit {
             this.events.unsubscribe('select-cash');
             resolve(true);
           })
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: CashListPage,
             componentProps: {
               "select": true
@@ -174,7 +176,7 @@ export class CheckPage implements OnInit {
           this.events.unsubscribe('select-currency');
           resolve(true);
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: CurrencyListPage,
           componentProps: {
             "select": true
@@ -194,7 +196,7 @@ export class CheckPage implements OnInit {
           this.events.unsubscribe('select-receipt');
           resolve(true);
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ReceiptListPage,
           componentProps: {
             "select": true

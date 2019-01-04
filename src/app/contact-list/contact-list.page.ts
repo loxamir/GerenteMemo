@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, Input, ViewChild, OnInit  } from '@angular/core';
 import { NavController, LoadingController, ModalController, Events, PopoverController} from '@ionic/angular';
-// import { ContactPage } from '../contact';
+import { ContactPage } from '../contact/contact.page';
 import 'rxjs/Rx';
 // import { ContactsService } from './contacts.service';
 // import { ContactsPopover } from './contacts.popover';
@@ -28,7 +28,7 @@ export class ContactListPage implements OnInit {
   constructor(
     public route: ActivatedRoute,
     public router: Router,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public navCtrl: NavController,
     public events: Events,
     public pouchdbService: PouchdbService,
@@ -53,11 +53,11 @@ export class ContactListPage implements OnInit {
     this.setFilteredItems();
   }
 
-  gotoContact(){
-    console.log("gotoContact");
-    // this.router.navigate(['contact', {id: 123}]);
-    this.setFilteredItems();
-  }
+  // gotoContact(){
+  //   console.log("gotoContact");
+  //   // this.router.navigate(['contact', {id: 123}]);
+  //   this.setFilteredItems();
+  // }
 
 
   setFilteredItems() {
@@ -156,10 +156,10 @@ export class ContactListPage implements OnInit {
     return csv
   }
 
-  ionViewDidLoad() {
-    //this.loading.present();
-    this.setFilteredItems();
-  }
+  // ionViewDidLoad() {
+  //   //this.loading.present();
+  //   this.setFilteredItems();
+  // }
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
@@ -224,42 +224,23 @@ export class ContactListPage implements OnInit {
     if (this.select){
       // this.navCtrl.pop().then(() => {
         this.events.publish('select-contact', contact);
+        this.modalCtrl.dismiss();
       // });
     } else {
       this.openContact(contact);
     }
   }
 
-  createContact(){
-    this.events.subscribe('create-contact', (data) => {
-      if (this.select){
-        // this.navCtrl.pop().then(() => {
-          this.events.publish('select-contact', data);
-        // });
-      }
-      this.events.unsubscribe('create-contact');
-    })
+  async createContact(){
     if (this.select){
-      this.router.navigate(['contact', {
-        'supplier': this.supplier,
-        'seller': this.seller,
-        'employee': this.employee,
-        'customer': this.customer,
-      }]);
-      // this.navCtrl.push(ContactPage, {
-      //   'supplier': this.supplier,
-      //   'seller': this.seller,
-      //   'employee': this.employee,
-      //   'customer': this.customer,
-      // });
+      let profileModal = await this.modalCtrl.create({
+        component: ContactPage,
+        componentProps: {
+          select: true
+        }
+      })
+      profileModal.present();
     } else {
-      // let newRootNav = <NavController>this.app.getRootNavById('n4');
-      // newRootNav.push(ContactPage, {
-      //   'supplier': this.supplier,
-      //   'seller': this.seller,
-      //   'employee': this.employee,
-      //   'customer': this.customer,
-      // });
       this.router.navigate(['contact', {
         'supplier': this.supplier,
         'seller': this.seller,
@@ -267,5 +248,13 @@ export class ContactListPage implements OnInit {
         'customer': this.customer,
       }]);
     }
+    this.events.subscribe('create-contact', (data) => {
+      if (this.select){
+        this.events.publish('select-contact', data);
+        this.modalCtrl.dismiss();
+        // });
+      }
+      this.events.unsubscribe('create-contact');
+    })
   }
 }

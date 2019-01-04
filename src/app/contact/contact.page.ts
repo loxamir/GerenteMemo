@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
-import { NavController, ModalController, LoadingController, AlertController, Events } from '@ionic/angular';
+import { NavController, ModalController, NavParams, LoadingController, AlertController, Events } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -28,17 +28,17 @@ export class ContactPage implements OnInit {
   languages: Array<LanguageModel>;
   _id: string;
   opened: boolean = false;
-
+  isModal = false;
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     // public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
     public alertCtrl: AlertController,
     // public contactService: ContactService,
     // public restProvider: RestProvider,
-    // public navParams: NavParams,
+    public navParams: NavParams,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public events: Events,
@@ -55,9 +55,9 @@ export class ContactPage implements OnInit {
     // }
     // this.route.params.subscribe(...);
   }
-  goBack(){
-    this.navCtrl.navigateBack('/contact-list');
-  }
+  // goBack(){
+  //   this.navCtrl.navigateBack('/contact-list');
+  // }
   ngOnInit() {
     this.contactForm = this.formBuilder.group({
       name: new FormControl(this.route.snapshot.paramMap.get('name')||null),
@@ -87,6 +87,7 @@ export class ContactPage implements OnInit {
     });
     this._id = this.route.snapshot.paramMap.get('_id');
     // this.route.params.subscribe(...);
+    this.isModal = this.navParams.get('select');
     if (this._id){
       this.getContact(this._id).then((data) => {
         this.contactForm.patchValue(data);
@@ -125,10 +126,13 @@ export class ContactPage implements OnInit {
   buttonSave() {
     if (this._id){
       this.updateContact(this.contactForm.value);
-      // this.navCtrl.pop().then(() => {
-      this.navCtrl.navigateBack('/contact-list').then(() => {
-        this.events.publish('open-contact', this.contactForm.value);
-      });
+      if (this.isModal){
+        this.modalCtrl.dismiss();
+      } else {
+        this.navCtrl.navigateBack('/contact-list').then(() => {
+          this.events.publish('open-contact', this.contactForm.value);
+        });
+      }
     } else {
       this.createContact(this.contactForm.value).then((doc: any) => {
         // this.contactForm.patchValue({
@@ -137,9 +141,14 @@ export class ContactPage implements OnInit {
         console.log("create contact", doc);
         this._id = doc.doc.id;
         // this.navCtrl.pop().then(() => {
-        this.navCtrl.navigateBack('/contact-list').then(() => {
+        if (this.isModal){
           this.events.publish('create-contact', this.contactForm.value);
-        });
+          this.modalCtrl.dismiss();
+        } else {
+          this.navCtrl.navigateBack('/contact-list').then(() => {
+            this.events.publish('create-contact', this.contactForm.value);
+          });
+        }
       });
     }
   }
@@ -305,7 +314,11 @@ export class ContactPage implements OnInit {
   }
 
   private exitPage() {
-      this.contactForm.markAsPristine();
+    if (this.isModal){
+      this.modalCtrl.dismiss();
+    } else {
+      // this.contactForm.markAsPristine();
       this.navCtrl.navigateBack('/contact-list');
+    }
   }
 }

@@ -283,5 +283,6 @@
   "PURCHASE_COST": "Costo de Compra",
   "HIRE_DATE": "Fecha de Contratación",
   "SALARY": "Salario",
+  "CURRENCY_AMOUNT": "Monto de la Moneda",
   "RESULT": "Resultado"
 }

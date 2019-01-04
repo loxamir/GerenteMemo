@@ -26,8 +26,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class CashMovePage implements OnInit {
 
   // constructor() { }
-  @ViewChild('input') myInput;
+  @ViewChild('amount') amount;
   @ViewChild('description') description;
+  @ViewChild('currency_amount') currency_amount;
 
   cashMoveForm: FormGroup;
   loading: any;
@@ -40,7 +41,7 @@ export class CashMovePage implements OnInit {
   from_cash: boolean = false;
   to_cash: boolean = false;
   transfer: boolean = false;
-
+  isModal;
   constructor(
 
     public navCtrl: NavController,
@@ -65,6 +66,7 @@ export class CashMovePage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.navParams.get('_id');
+    this.isModal = this.navParams.get('isModal');
     // this.cash_id = this.navParams.get('cash_id');
     // this.default_amount = this.navParams.get('default_amount');
     // this.default_name = this.navParams.get('default_name');
@@ -87,7 +89,7 @@ export class CashMovePage implements OnInit {
   ngOnInit() {
     var today = new Date().toISOString();
     setTimeout(() => {
-      this.myInput.setFocus();
+      this.amount.setFocus();
     }, 200);
 
     this.cashMoveForm = this.formBuilder.group({
@@ -117,7 +119,8 @@ export class CashMovePage implements OnInit {
       owner: new FormControl(''),
       code: new FormControl(''),
       maturity: new FormControl(''),
-
+      is_check: new FormControl(false),
+      is_other_currency:  new FormControl(false),
       currency: new FormControl(this.navParams.get('currency')||{}),
       currency_amount: new FormControl(this.navParams.get('currency_amount')||0),
       currency_residual: new FormControl(this.navParams.get('currency_residual')||0),
@@ -166,7 +169,11 @@ export class CashMovePage implements OnInit {
   async goNextStep() {
     if (this.cashMoveForm.value.state == 'DRAFT'){
       if (this.cashMoveForm.value.amount == ''){
-        this.myInput.setFocus();
+        this.amount.setFocus();
+      }
+      else if (!this.transfer && Object.keys(this.cashMoveForm.value.contact).length === 0){
+        this.selectContact();
+        return;
       }
       else if (!this.cashMoveForm.value.name){
         this.description.setFocus();
@@ -180,30 +187,47 @@ export class CashMovePage implements OnInit {
         this.selectAccountTo();
         return;
       }
-      else if (!this.transfer && Object.keys(this.cashMoveForm.value.contact).length === 0){
-        this.selectContact();
-        return;
+      else if (
+        this.cashMoveForm.value.is_check==true
+        && Object.keys(this.cashMoveForm.value.check).length==0
+      ){
+        this.selectCheck();
       }
+      else if (
+        this.cashMoveForm.value.is_other_currency==true
+        && Object.keys(this.cashMoveForm.value.currency).length==0
+      ){
+        this.selectCurrency();
+      }
+      else if (
+        this.cashMoveForm.value.is_other_currency==true
+        && Object.keys(this.cashMoveForm.value.currency).length!=0
+        && this.cashMoveForm.value.currency_amount===0
+      ){
+        this.currency_amount.setFocus();
+      }
+
       else {
-        let prompt = await this.alertCtrl.create({
-          header: 'Confirmar',
-          message: 'Estas seguro que deseas confirmar el movimiento?',
-          buttons: [
-            {
-              text: 'No',
-              handler: data => {
-              }
-            },
-            {
-              text: 'Si',
-              handler: data => {
-                // this.addTravel();
-                this.confirmCashMove();
-              }
-            }
-          ]
-        });
-        prompt.present();
+        // TODO: Just use this for bank destination moves
+        // let prompt = await this.alertCtrl.create({
+        //   header: 'Confirmar',
+        //   message: 'Estas seguro que deseas confirmar el movimiento?',
+        //   buttons: [
+        //     {
+        //       text: 'No',
+        //       handler: data => {
+        //       }
+        //     },
+        //     {
+        //       text: 'Si',
+        //       handler: data => {
+        //         // this.addTravel();
+        //         this.confirmCashMove();
+        //       }
+        //     }
+        //   ]
+        // });
+        // prompt.present();
       }
     }
     else {
@@ -235,12 +259,19 @@ export class CashMovePage implements OnInit {
       this.cashMoveService.updateCashMove(this.cashMoveForm.value);
       this.cashMoveForm.markAsPristine();
       // this.navCtrl.navigateBack();
+      if (this.isModal){
+        this.modalCtrl.dismiss()
+      }
     } else {
       this.cashMoveService.createCashMove(this.cashMoveForm.value).then(doc => {
         //console.log("the_doc", doc);
-        this.cashMoveForm.value._id = doc['id'];
-        this.cashMoveForm.markAsPristine();
-        this.navCtrl.navigateBack('/cash-move');
+        if (this.isModal){
+          this.modalCtrl.dismiss()
+        } else {
+          this.cashMoveForm.value._id = doc['id'];
+          this.cashMoveForm.markAsPristine();
+          this.navCtrl.navigateBack('/cash-move');
+        }
       });
     }
   }
@@ -265,6 +296,13 @@ export class CashMovePage implements OnInit {
 
   selectCheck() {
     return new Promise(async resolve => {
+      let profileModal = await this.modalCtrl.create({
+        component: CheckListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      profileModal.present();
       this.events.subscribe('select-check', (data) => {
         this.cashMoveForm.patchValue({
           check: data,
@@ -273,30 +311,15 @@ export class CashMovePage implements OnInit {
           // cash_id: data._id,
         });
         this.cashMoveForm.markAsDirty();
+        profileModal.dismiss();
         this.events.unsubscribe('select-check');
         resolve(true);
       })
-      let profileModal = await this.modalCtrl.create({
-        component: CheckListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
     });
   }
 
   selectCurrency() {
     return new Promise(async resolve => {
-      this.events.subscribe('select-currency', (data) => {
-        this.cashMoveForm.patchValue({
-          currency: data,
-          // cash_id: data._id,
-        });
-        this.cashMoveForm.markAsDirty();
-        this.events.unsubscribe('select-currency');
-        resolve(true);
-      })
       let profileModal = await this.modalCtrl.create({
         component: CurrencyListPage,
         componentProps: {
@@ -304,22 +327,24 @@ export class CashMovePage implements OnInit {
         }
       });
       profileModal.present();
+      this.events.subscribe('select-currency', (data) => {
+        this.cashMoveForm.patchValue({
+          currency: data,
+          // cash_id: data._id,
+        });
+        this.cashMoveForm.markAsDirty();
+        profileModal.dismiss();
+        this.currency_amount.setFocus();
+        this.events.unsubscribe('select-currency');
+        resolve(true);
+      })
     });
   }
 
   selectAccountFrom() {
-    let self = this;
+    // let self = this;
     return new Promise(async resolve => {
-      this.events.subscribe('select-account', (data) => {
-        this.cashMoveForm.patchValue({
-          accountFrom: data,
-          accountFrom_id: data._id,
-        });
-        this.cashMoveForm.markAsDirty();
-        this.events.unsubscribe('select-account');
-        resolve(true);
-      })
-      let profileModal = await self.modalCtrl.create({
+      let profileModal = await this.modalCtrl.create({
         component: AccountListPage,
         componentProps: {
           "select": true,
@@ -332,20 +357,21 @@ export class CashMovePage implements OnInit {
         }
       });
       profileModal.present();
+      this.events.subscribe('select-account', (data) => {
+        this.cashMoveForm.patchValue({
+          accountFrom: data,
+          accountFrom_id: data._id,
+        });
+        this.cashMoveForm.markAsDirty();
+        profileModal.dismiss();
+        this.events.unsubscribe('select-account');
+        resolve(true);
+      })
     });
   }
 
   selectAccountTo() {
     return new Promise(async resolve => {
-      this.events.subscribe('select-account', (data) => {
-        this.cashMoveForm.patchValue({
-          accountTo: data,
-          accountTo_id: data._id,
-        });
-        this.cashMoveForm.markAsDirty();
-        this.events.unsubscribe('select-account');
-        resolve(true);
-      })
       let profileModal = await this.modalCtrl.create({
         component: AccountListPage,
         componentProps: {
@@ -359,20 +385,21 @@ export class CashMovePage implements OnInit {
         }
       });
       profileModal.present();
+      this.events.subscribe('select-account', (data) => {
+        this.cashMoveForm.patchValue({
+          accountTo: data,
+          accountTo_id: data._id,
+        });
+        this.cashMoveForm.markAsDirty();
+        profileModal.dismiss();
+        this.events.unsubscribe('select-account');
+        resolve(true);
+      })
     });
   }
 
   selectContact() {
      return new Promise(async resolve => {
-       this.events.subscribe('select-contact', (data) => {
-         this.cashMoveForm.patchValue({
-           contact: data,
-           contact_id: data._id,
-         });
-         this.cashMoveForm.markAsDirty();
-         this.events.unsubscribe('select-contact');
-         resolve(true);
-       })
        let profileModal = await this.modalCtrl.create({
          component: ContactListPage,
          componentProps: {
@@ -380,6 +407,16 @@ export class CashMovePage implements OnInit {
          }
        });
        profileModal.present();
+       this.events.subscribe('select-contact', (data) => {
+         this.cashMoveForm.patchValue({
+           contact: data,
+           contact_id: data._id,
+         });
+         this.cashMoveForm.markAsDirty();
+         profileModal.dismiss();
+         this.events.unsubscribe('select-contact');
+         resolve(true);
+       })
      });
    }
 
@@ -407,6 +444,92 @@ export class CashMovePage implements OnInit {
 
   onSubmit(values){
     //console.log(values);
+  }
+
+  showNextButton(){
+    // console.log("stock",this.cashMoveForm.value.stock);
+    if (this.cashMoveForm.value.amount==null){
+      return true;
+    }
+    else if (this.cashMoveForm.value.name==null){
+      return true;
+    }
+    else if (Object.keys(this.cashMoveForm.value.contact).length==0){
+    // else if (this.cashMoveForm.value.contact.toJSON()=='{}'){
+      return true;
+    }
+    else if (Object.keys(this.cashMoveForm.value.accountTo).length==0){
+      return true;
+    }
+    // else if (this.cashMoveForm.value.accountFrom.toJSON()=='{}'){
+    else if (Object.keys(this.cashMoveForm.value.accountFrom).length==0){
+      return true;
+    }
+    else if (
+      this.cashMoveForm.value.is_check==true
+      && Object.keys(this.cashMoveForm.value.check).length==0
+    ){
+      return true;
+    }
+    else if (
+      this.cashMoveForm.value.is_other_currency==true
+      && Object.keys(this.cashMoveForm.value.currency).length==0
+    ){
+      return true;
+    }
+    else if (
+      this.cashMoveForm.value.is_other_currency==true
+      && Object.keys(this.cashMoveForm.value.currency).length!=0
+      && this.cashMoveForm.value.currency_amount===0
+    ){
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.cashMoveForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    if (this.isModal){
+      this.modalCtrl.dismiss();
+    } else {
+      // this.cashMoveForm.markAsPristine();
+      this.navCtrl.navigateBack('/contact-list');
+    }
   }
 
 

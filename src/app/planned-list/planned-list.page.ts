@@ -62,13 +62,19 @@ export class PlannedListPage implements OnInit {
   }
 
   createReceivableMove(){
-    this.pouchdbService.getDoc('account.other.open').then(async openAccount=>{
+    this.pouchdbService.getList([
+      'account.other.open',
+      'account.receivable.credit'
+    ]).then(async accounts=>{
+      console.log("accounts", accounts);
       let profileModal = await this.modal.create({
         component: CashMovePage,
         componentProps: {
-          "accountFrom": openAccount,
+          "accountFrom": accounts[0].doc,
+          "accountTo": accounts[1].doc,
           "receivable": true,
           "contact": this.contact,
+          "isModal": true,
         }
       });
       profileModal.present();
@@ -76,13 +82,18 @@ export class PlannedListPage implements OnInit {
   }
 
   createPayableMove(){
-    this.pouchdbService.getDoc('account.other.open').then(async openAccount=>{
+    this.pouchdbService.getList([
+      'account.payable.credit',
+      'account.other.open',
+    ]).then(async accounts=>{
       let profileModal = await this.modal.create({
         component: CashMovePage,
         componentProps: {
-          "accountTo": openAccount,
+          "accountFrom": accounts[0].doc,
+          "accountTo": accounts[1].doc,
           "payable": true,
           "contact": this.contact,
+          "isModal": true,
         }
       });
       profileModal.present();

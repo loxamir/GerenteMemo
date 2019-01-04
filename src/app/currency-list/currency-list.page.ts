@@ -20,7 +20,7 @@ export class CurrencyListPage implements OnInit {
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public route: ActivatedRoute,
     public events: Events,
   ) {
@@ -65,6 +65,7 @@ export class CurrencyListPage implements OnInit {
     if (this.select){
       console.log("select", currency);
       this.events.publish('select-currency', currency);
+      this.modalCtrl.dismiss();
     } else {
       this.openCurrency(currency);
     }
@@ -76,6 +77,7 @@ export class CurrencyListPage implements OnInit {
       if (this.select){
         // this.navCtrl.navigateBack().then(() => {
           this.events.publish('select-currency', data);
+          this.modalCtrl.dismiss();
         // });
       }
       this.events.unsubscribe('create-currency');

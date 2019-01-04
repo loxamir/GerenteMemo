@@ -22,42 +22,26 @@
     <ion-row justify-content-center>
       <ion-item
        no-padding
-       (click)="selectCheck()"
-       class="field-100">
-        <h4 class="field-label">{{'Cheque' | translate }}</h4>
-        <h4 class="field-value">{{cashMoveForm.value.check && cashMoveForm.value.check.name || 'Selecionar'}}</h4>
-      </ion-item>
-      <ion-item
-       no-padding
-       (click)="selectCurrency()"
-       class="field-50">
-       <div class="field-many2one">
-         <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-         <h4 class="field-value">{{cashMoveForm.value.currency && cashMoveForm.value.currency.name || 'Selecionar'}}</h4>
-       </div>
-      </ion-item>
-      <ion-item
-       no-padding
-       class="field-50">
-        <ion-label position="floating" style="font-size:14px">{{'CURRENCY_AMOUNT' | translate}}</ion-label>
-        <ion-input #input type="number"
-        formControlName="currency_amount"></ion-input>
-      </ion-item>
-      <ion-item
-       no-padding
-       *ngIf="!cashMoveForm.value.origin_id"
        class="field-100">
         <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
-        <ion-input #input type="number"
+        <ion-input #amount type="number"
         formControlName="amount"></ion-input>
       </ion-item>
-      <ion-item
+      <!-- <ion-item
        no-padding
        *ngIf="cashMoveForm.value.origin_id"
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
         <ion-input #input type="number"
         formControlName="amount"></ion-input>
+      </ion-item> -->
+      <ion-item
+      no-padding
+      *ngIf="!transfer"
+      (click)="selectContact()"
+       class="field-100">
+        <h4 class="field-label">{{'CONTACT' | translate}}</h4>
+        <h4 class="field-value">{{cashMoveForm.value.contact && cashMoveForm.value.contact.name || 'Selecionar'}}</h4>
       </ion-item>
       <ion-item
        *ngIf="cashMoveForm.value.origin_id"
@@ -85,14 +69,6 @@
        class="field-100">
         <h4 class="field-label">{{'Destino' | translate }}</h4>
         <h4 class="field-value">{{cashMoveForm.value.accountTo && cashMoveForm.value.accountTo.name || 'Selecionar'}}</h4>
-      </ion-item>
-      <ion-item
-      no-padding
-      *ngIf="!transfer"
-      (click)="selectContact()"
-       class="field-100">
-        <h4 class="field-label">{{'CONTACT' | translate}}</h4>
-        <h4 class="field-value">{{cashMoveForm.value.contact && cashMoveForm.value.contact.name || 'Selecionar'}}</h4>
       </ion-item>
       <!-- *ngIf="cashMoveForm.value.accountFrom.type=='payable' || cashMoveForm.value.accountTo.type=='payable' || cashMoveForm.value.accountFrom.type=='receivable' || cashMoveForm.value.accountTo.type=='receivable'" -->
       <ion-item no-padding class="item-content"
@@ -131,52 +107,85 @@
       </ion-datetime>
   </ion-item>
 
-  </ion-row>
-  <!-- <ion-item class="field-100">
-    <ion-label position="floating" style="font-size:14px">{{'DESCRIPTION' | translate}}</ion-label>
-    <ion-input #description type="text" formControlName="name"></ion-input>
-  </ion-item> -->
-    <!-- <ion-item *ngIf="cashMoveForm.value.cash.type == 'check'">
-      <ion-label position="floating">{{ 'Emision' | translate }}</ion-label>
-      <ion-datetime
-        displayFormat="DD/MM/YYYY"
-        pickerFormat="DD/MM/YYYY"
-        formControlName="emision">
-      </ion-datetime>
-    </ion-item>
-    <ion-item *ngIf="cashMoveForm.value.cash.type == 'check'">
-      <ion-label position="floating">{{ 'Maturidade' | translate }}</ion-label>
-      <ion-datetime
-        displayFormat="DD/MM/YYYY"
-        pickerFormat="DD/MM/YYYY"
-        formControlName="maturity">
-      </ion-datetime>
-    </ion-item>
-    <ion-item *ngIf="cashMoveForm.value.cash.type == 'check'">
-      <ion-label position="floating">{{'bank' | translate}}</ion-label>
-      <ion-input type="text" formControlName="bank"></ion-input>
-    </ion-item>
-    <ion-item *ngIf="cashMoveForm.value.cash.type == 'check'">
-      <ion-label position="floating">{{'number' | translate}}</ion-label>
-      <ion-input type="text" formControlName="number"></ion-input>
-    </ion-item>
-    <ion-item *ngIf="cashMoveForm.value.cash.type == 'check'">
-      <ion-label position="floating">{{'owner' | translate}}</ion-label>
-      <ion-input type="text" formControlName="owner"></ion-input>
-    </ion-item> -->
+  <ion-item
+  no-padding
+  class="field-50">
+  <ion-label>{{'Es Cheque' | translate}}</ion-label>
+  <ion-toggle formControlName="is_check"></ion-toggle>
+</ion-item>
+
+<ion-item
+no-padding
+class="field-50">
+<ion-label >{{'Es Otra Moneda' | translate}}</ion-label>
+<ion-toggle formControlName="is_other_currency"
+style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
+</ion-item>
+
+
+  <ion-item
+   no-padding
+   (click)="selectCheck()"
+   *ngIf="cashMoveForm.value.is_check"
+   class="field-100">
+    <h4 class="field-label">{{'Cheque' | translate }}</h4>
+    <h4 class="field-value">{{cashMoveForm.value.check && cashMoveForm.value.check.name || 'Selecionar'}}</h4>
+  </ion-item>
+  <ion-item
+   no-padding
+   *ngIf="cashMoveForm.value.is_other_currency"
+   (click)="selectCurrency()"
+   class="field-50">
+   <div class="field-many2one">
+     <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
+     <h4 class="field-value">{{cashMoveForm.value.currency && cashMoveForm.value.currency.name || 'Selecionar'}}</h4>
+   </div>
+  </ion-item>
+  <ion-item
+   no-padding
+   *ngIf="cashMoveForm.value.is_other_currency"
+   class="field-50">
+    <ion-label position="floating" style="font-size:14px">{{'CURRENCY_AMOUNT' | translate}}</ion-label>
+    <ion-input #currency_amount type="number"
+    formControlName="currency_amount"></ion-input>
+  </ion-item>
+    </ion-row>
   </form>
-  <ion-row>
+  <!-- <ion-row>
     <ion-col class="item-content" *ngIf="cashMoveForm.value.state=='WAITING'">
       <ion-button class="print-receipt" (click)="confirmState()">
         {{ 'Confirmar' | translate }}
       </ion-button>
     </ion-col>
-  </ion-row>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+  </ion-row> -->
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
     <ion-fab-button (click)="goNextStep()" color="primary">
       <ion-icon name="play" style="margin-left: 5px;">
       </ion-icon>
     </ion-fab-button>
+  </ion-fab> -->
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
+    <ion-button (click)="goNextStep()"  class="next-button">
+      <ion-icon name="fastforward"> </ion-icon>
+      Proximo
+    </ion-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-button (click)="discard()" color="danger">
+      <ion-icon name="backspace" *ngIf="cashMoveForm.dirty"> </ion-icon>
+      <ion-icon name="arrow-back" *ngIf="!cashMoveForm.dirty"> </ion-icon>
+      <span *ngIf="cashMoveForm.dirty">Descartar</span>
+      <span *ngIf="!cashMoveForm.dirty">Volver</span>
+    </ion-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="cashMoveForm.dirty">
+    <ion-button (click)="buttonSave()"  color="success">
+      <ion-icon name="save"> </ion-icon>
+      Guardar
+    </ion-button>
   </ion-fab>
   <div style="height: 70px">
 

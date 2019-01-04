@@ -43,6 +43,10 @@ import { CashMovePageModule } from './cash-move/cash-move.module';
 import { LoginPageModule } from './login/login.module';
 
 import { ProductCategoryPageModule } from './product-category/product-category.module';
+import { ContactPageModule } from './contact/contact.module';
+
+import { CheckListPageModule } from './check-list/check-list.module';
+import { CheckPageModule } from './check/check.module';
 
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
@@ -74,6 +78,7 @@ import { environment } from '../environments/environment';
   ],
   imports: [
     LoginPageModule,
+    ContactPageModule,
     CashMovePageModule,
     ProductCategoryListPageModule,
     ProductListPageModule,
@@ -85,12 +90,14 @@ import { environment } from '../environments/environment';
     AccountListPageModule,
     CashListPageModule,
     UserPageModule,
+    CheckPageModule,
     InvoiceConfigPageModule,
     BrowserModule,
     FormsModule,
     ContactListPageModule,
     ReactiveFormsModule,
     ProductCategoryPageModule,
+    CheckListPageModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),
     TranslateModule.forRoot({

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-// import { ConfigService } from '../../config/config.service';
+import { ConfigService } from '../config/config.service';
 import { FormatService } from '../services/format.service';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class CashMoveService {
 
   constructor(
     public pouchdbService: PouchdbService,
-    // public configService: ConfigService,
+    public configService: ConfigService,
     public formatService: FormatService,
   ) {}
 
@@ -95,12 +95,12 @@ export class CashMoveService {
       cash.accountTo_name = docs[1].doc.name;
     }
     return new Promise((resolve, reject)=>{
-      // this.configService.getSequence('cash_move').then((code) => {
-        // cash['code'] = code;
-        // cash['code'] = this.formatService.string_pad(4, code, "right", "0");
-        // if (!cash.origin_id){
-        //   cash.origin_id = "M"+code;
-        // }
+      this.configService.getSequence('cash_move').then((code) => {
+        cash['code'] = code;
+        cash['code'] = this.formatService.string_pad(4, code, "right", "0");
+        if (!cash.origin_id){
+          cash.origin_id = "M"+code;
+        }
         cash.amount = parseFloat(cash.amount);
         delete cash.cash;
         delete cash.contact;
@@ -115,7 +115,7 @@ export class CashMoveService {
           cash.id = data.id;
           resolve(cash);
         })
-      // });
+      });
     });
   }
 
