@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController,  Events, PopoverController, AlertController } from '@ionic/angular';
+import { NavController, ModalController, LoadingController,  Events, PopoverController, AlertController } from '@ionic/angular';
 import { CashPage } from '../cash/cash.page';
 
 import 'rxjs/Rx';
@@ -32,6 +32,7 @@ export class CashListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public cashMoveService: CashMoveService,
     public alertCtrl: AlertController,
+    public modalCtrl: ModalController,
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
@@ -114,6 +115,7 @@ export class CashListPage implements OnInit {
     if (this.select){
       // this.navCtrl.navigateBack().then(() => {
         this.events.publish('select-cash', cash);
+        this.modalCtrl.dismiss();
       // });
     } else {
       this.openCash(cash);

@@ -1,7 +1,11 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
+        <ion-menu-button *ngIf="!select"></ion-menu-button>
+        <ion-button *ngIf="select"
+                (click)="discard()">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
     </ion-buttons>
     <ion-searchbar
       placeholder="Buscar Producto"
@@ -10,21 +14,9 @@
       (ionInput)="searchItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only color="royal" *ngIf="!has_search"
-        (tap)="setSearch()">
-        <ion-icon name="search"></ion-icon>
-      </ion-button>
-      <ion-button icon-only color="royal" *ngIf="has_search"
-        (tap)="setSearch()">
-        <ion-icon name="close"></ion-icon>
-      </ion-button> -->
       <ion-button *ngIf="!select" ion-button icon-only class="more-button"
               (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
-      </ion-button>
-      <ion-button  *ngIf="select" ion-button icon-only
-              (tap)="closeModal()">
-        <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -46,39 +38,48 @@
       <ion-item no-padding style="background-color: #ddd">
       <ion-card class="list-card">
 
-
-        <ion-row (click)="selectProduct(item)" class="producto">
-          <!-- <ion-col width-25 no-padding>
-            <h2 class="list-big-number">{{item.code}}</h2>
-          </ion-col> -->
-          <ion-col no-padding>
-            <h3 class="item-title"><b>{{ item.name }}</b></h3>
+        <ion-row>
+          <ion-col>
+            <ion-row (click)="selectProduct(item)" class="producto">
+              <!-- <ion-col width-25 no-padding>
+                <h2 class="list-big-number">{{item.code}}</h2>
+              </ion-col> -->
+              <ion-col no-padding>
+                <h3 class="item-title"><b>{{ item.name }}</b></h3>
+              </ion-col>
+            </ion-row>
+             <ion-row no-padding class="content-row one-line">
+                <ion-col no-padding class="schedule-date" (click)="selectProduct(item)">
+                  <h3 class="item-title" *ngIf="item.type != 'service'">
+                    <!-- <div *ngIf="item.stock>item.stock_min"> -->
+                      Stock: <b style="color: green;margin-left: 5px">{{item.stock}}</b>
+                    <!-- </div> -->
+                    <!-- <div *ngIf="item.stock<=item.stock_min">
+                      Stock: <b style="background: yellow;margin-left: 5px">{{item.stock}}</b>
+                    </div> -->
+                  </h3>
+                </ion-col>
+                <ion-col no-padding size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
+                  <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">$ {{item.price| number:'1.0'}}</h2>
+                  <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.0'}}</h2>
+                </ion-col>
+              </ion-row>
+              <ion-row no-padding *ngIf="item.stock>=0&&item.stock<item.stock_min&&item.type=='product'">
+                <ion-col no-padding style="text-align: center;" class="confirmed">
+                    {{ 'Stock Abajo del Minimo' | translate }}
+                </ion-col>
+              </ion-row>
+              <ion-row no-padding *ngIf="item.stock<0&&item.type=='product'"  class="due">
+                <ion-col no-padding style="text-align: center;color: white;">
+                    {{ 'Stock Negativo' | translate }}
+                </ion-col>
+              </ion-row>
+          </ion-col>
+          <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openProduct(item)">
+            <ion-icon name="open" class="open-item-arrow"></ion-icon>
           </ion-col>
         </ion-row>
-         <ion-row no-padding class="content-row one-line">
-            <ion-col no-padding width-29 class="schedule-date" (click)="selectProduct(item)">
-              <h3 class="item-title" *ngIf="item.type != 'service'">
-                <!-- <div *ngIf="item.stock>item.stock_min"> -->
-                  Stock: <b style="color: green;margin-left: 5px">{{item.stock}}</b>
-                <!-- </div> -->
-                <!-- <div *ngIf="item.stock<=item.stock_min">
-                  Stock: <b style="background: yellow;margin-left: 5px">{{item.stock}}</b>
-                </div> -->
-              </h3>
-            </ion-col>
-            <ion-col no-padding width-50 class="item-icon" align-self-center style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
-              <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">$ {{item.price| number:'1.0'}}</h2>
-              <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.0'}}</h2>
-            </ion-col>
-            <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;" (click)="gotoProduct(item)">
-              <ion-icon  name="arrow-forward"></ion-icon>
-            </ion-col>
-          </ion-row>
-          <ion-row no-padding>
-            <ion-col no-padding style="text-align: center;border-radius: 4px;" [class.paid]="item.stock>item.stock_min||item.type=='service'" [class.confirmed]="item.stock<=item.stock_min&&item.type=='product'" [class.due]="item.stock<=0&&item.type=='product'">
-                {{ item.category_name | translate }}
-            </ion-col>
-          </ion-row>
+
       </ion-card>
     </ion-item>
       <ion-item-options *ngIf="!select">

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, LoadingController, ModalController, Events, PopoverController } from '@ionic/angular';
-// import { ProductPage } from '../product';
+import { ProductPage } from '../product/product.page';
 import 'rxjs/Rx';
 // import { ProductsService } from './products.service';
 // import { ProductsPopover } from './products.popover';
@@ -27,6 +27,7 @@ export class ProductListPage implements OnInit {
     public navCtrl: NavController,
     public router: Router,
     // public productsService: ProductsService,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public modal: ModalController,
@@ -165,16 +166,24 @@ export class ProductListPage implements OnInit {
         this.events.publish('select-product', product);
       // });
     } else {
-      this.gotoProduct(product);
+      this.openProduct(product);
     }
   }
 
-  gotoProduct(product) {
+  async openProduct(product) {
     this.events.subscribe('open-product', (data) => {
       this.events.unsubscribe('open-product');
     })
     if (this.select) {
-      this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
+      // this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
+      let profileModal = await this.modalCtrl.create({
+        component: ProductPage,
+        componentProps: {
+          "select": true,
+          "_id": product._id,
+        }
+      })
+      profileModal.present();
     } else {
       // let newRootNav = <NavController>this.app.getRootNavById('n4');
       // this.navCtrl.navigateForward(['contact', {'_id': contact._id}]);
@@ -186,7 +195,7 @@ export class ProductListPage implements OnInit {
     this.navCtrl.navigateBack('');
   }
 
-  createProduct() {
+  async createProduct() {
     this.events.subscribe('create-product', (data) => {
       if (this.select) {
         this.navCtrl.navigateBack('').then(() => {
@@ -196,7 +205,14 @@ export class ProductListPage implements OnInit {
       this.events.unsubscribe('create-product');
     })
     if (this.select) {
-      this.navCtrl.navigateForward('/product', {});
+      let profileModal = await this.modalCtrl.create({
+        component: ProductPage,
+        componentProps: {
+          "select": true,
+        }
+      })
+      profileModal.present();
+      // this.navCtrl.navigateForward('/product', {});
     } else {
       // let newRootNav = <NavController>this.app.getRootNavById('n4');
       // newRootNav.push(ProductPage, {});

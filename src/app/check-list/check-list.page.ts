@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, LoadingController, ModalController, Events } from '@ionic/angular';
+import { NavController, LoadingController, ModalController, Events } from '@ionic/angular';
 import { CheckPage } from '../check/check.page';
 import 'rxjs/Rx';
 // import { ChecksService } from './checks.service';
@@ -29,10 +29,11 @@ export class CheckListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
     public events: Events,
-    public navParams: NavParams,
+    // public navParams: NavParams,
   ) {
     //this.loading = //this.loadingCtrl.create();
-    this.select = this.navParams.get('select');
+    // this.select = this.navParams.get('select');
+    this.select = this.route.snapshot.paramMap.get('select');
   }
 
   ngOnInit() {
@@ -93,12 +94,23 @@ export class CheckListPage implements OnInit {
     }
   }
 
-  openCheck(check) {
+  async openCheck(check) {
     this.events.subscribe('open-check', (data) => {
       this.events.unsubscribe('open-check');
-      this.doRefreshList();
+      // this.doRefreshList();
     })
-    this.navCtrl.navigateForward(['/check', {'_id': check._id}]);
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: CheckPage,
+        componentProps: {
+          select: true,
+          '_id': check._id,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/check', {'_id': check._id}]);
+    }
   }
 
   createChesck(){

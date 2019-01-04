@@ -111,7 +111,7 @@ export class SalePage implements OnInit {
     today: any;
     _id: string;
     avoidAlertMessage: boolean;
-
+    select;
     languages: Array<LanguageModel>;
 
     constructor(
@@ -119,6 +119,7 @@ export class SalePage implements OnInit {
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
+      public modalCtrl: ModalController,
       // public imagePicker: ImagePicker,
       // public cropService: Crop,
       public platform: Platform,
@@ -139,7 +140,7 @@ export class SalePage implements OnInit {
       public formatService: FormatService,
       public events:Events,
       public pouchdbService: PouchdbService,
-      public modal: ModalController,
+      // public modal: ModalController,
       public popoverCtrl: PopoverController,
       public socialSharing: SocialSharing,
       // public file: File,
@@ -150,6 +151,7 @@ export class SalePage implements OnInit {
       this.translate.setDefaultLang('es');
       this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.select = this.route.snapshot.paramMap.get('select');
       this.avoidAlertMessage = false;
     }
 
@@ -208,7 +210,7 @@ export class SalePage implements OnInit {
           profileModal.dismiss();
           resolve(true);
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: CurrencyListPage,
           componentProps: {
             "select": true
@@ -218,39 +220,39 @@ export class SalePage implements OnInit {
       });
     }
 
-    async ionViewCanLeave() {
-        if(this.saleForm.dirty && ! this.avoidAlertMessage) {
-            let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
-                buttons: [{
-                        text: 'Si',
-                        handler: () => {
-                            // alertPopup.dismiss().then(() => {
-                                this.exitPage();
-                            // });
-                        }
-                    },
-                    {
-                        text: 'No',
-                        handler: () => {
-                            // need to do something if the user stays?
-                        }
-                    }]
-            });
+    // async ionViewCanLeave() {
+    //     if(this.saleForm.dirty && ! this.avoidAlertMessage) {
+    //         let alertPopup = await this.alertCtrl.create({
+    //             header: 'Descartar',
+    //             message: '¿Deseas salir sin guardar?',
+    //             buttons: [{
+    //                     text: 'Si',
+    //                     handler: () => {
+    //                         // alertPopup.dismiss().then(() => {
+    //                             this.exitPage();
+    //                         // });
+    //                     }
+    //                 },
+    //                 {
+    //                     text: 'No',
+    //                     handler: () => {
+    //                         // need to do something if the user stays?
+    //                     }
+    //                 }]
+    //         });
+    //
+    //         // Show the alert
+    //         alertPopup.present();
+    //
+    //         // Return false to avoid the page to be popped up
+    //         return false;
+    //     }
+    // }
 
-            // Show the alert
-            alertPopup.present();
-
-            // Return false to avoid the page to be popped up
-            return false;
-        }
-    }
-
-    private exitPage() {
-        this.saleForm.markAsPristine();
-        this.navCtrl.navigateBack('/sale-list');
-    }
+    // private exitPage() {
+    //     this.saleForm.markAsPristine();
+    //     this.navCtrl.navigateBack('/sale-list');
+    // }
 
     goNextStep() {
       if (this.saleForm.value.state == 'QUOTATION'){
@@ -446,7 +448,7 @@ export class SalePage implements OnInit {
           });
           prompt.present();
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductListPage,
           componentProps: {
             "select": true
@@ -471,7 +473,7 @@ export class SalePage implements OnInit {
           this.events.unsubscribe('select-product');
           profileModal.dismiss();
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductListPage,
           componentProps: {
             "select": true,
@@ -566,7 +568,7 @@ export class SalePage implements OnInit {
         this.events.unsubscribe('open-receipt');
         profileModal.dismiss();
       });
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,
         componentProps: {
           "_id": item._id,
@@ -830,7 +832,7 @@ export class SalePage implements OnInit {
 
         console.log("this.saleForm.value.planned", this.saleForm.value.planned);
         console.log("plannedItems", JSON.stringify(plannedItems));
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ReceiptPage,
           componentProps: {
             "addPayment": true,
@@ -900,7 +902,7 @@ export class SalePage implements OnInit {
       if (this.saleForm.value.paymentCondition._id == 'payment-condition.cash'){
         paymentType = 'Contado';
       }
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
           "openPayment": true,
@@ -924,7 +926,7 @@ export class SalePage implements OnInit {
         this.events.unsubscribe('open-invoice');
         profileModal.dismiss();
       });
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
           "_id": item._id,
@@ -953,7 +955,7 @@ export class SalePage implements OnInit {
             profileModal.dismiss();
             resolve(true);
           })
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: ContactListPage,
             componentProps: {
               "select": true,
@@ -982,7 +984,7 @@ export class SalePage implements OnInit {
     //         this.events.unsubscribe('select-project');
     //         resolve(true);
     //       })
-    //       let profileModal = this.modal.create(ProjectsPage, {"select": true});
+    //       let profileModal = this.modalCtrl.create(ProjectsPage, {"select": true});
     //       profileModal.present();
     //     });
     //   }
@@ -1004,7 +1006,7 @@ export class SalePage implements OnInit {
             profileModal.dismiss();
             resolve(true);
           })
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: ContactListPage,
             componentProps: {
               "select": true,
@@ -1034,7 +1036,7 @@ export class SalePage implements OnInit {
           resolve(data);
           //this.beforeAddPayment();
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: PaymentConditionListPage,
           componentProps: {
             "select": true
@@ -1395,5 +1397,66 @@ export class SalePage implements OnInit {
     }
     goBack(){
       this.navCtrl.navigateBack('/sale-list');
+    }
+
+    showNextButton(){
+      // console.log("stock",this.saleForm.value.stock);
+      if (this.saleForm.value.name==null){
+        return true;
+      }
+      else if (this.saleForm.value.price==null){
+        return true;
+      }
+      else if (this.saleForm.value.cost==null){
+        return true;
+      }
+      else if (this.saleForm.value.type=='product'&&this.saleForm.value.stock==null){
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    discard(){
+      this.canDeactivate();
+    }
+    async canDeactivate() {
+        if(this.saleForm.dirty) {
+            let alertPopup = await this.alertCtrl.create({
+                header: 'Descartar',
+                message: '¿Deseas salir sin guardar?',
+                buttons: [{
+                        text: 'Si',
+                        handler: () => {
+                            // alertPopup.dismiss().then(() => {
+                                this.exitPage();
+                            // });
+                        }
+                    },
+                    {
+                        text: 'No',
+                        handler: () => {
+                            // need to do something if the user stays?
+                        }
+                    }]
+            });
+
+            // Show the alert
+            alertPopup.present();
+
+            // Return false to avoid the page to be popped up
+            return false;
+        } else {
+          this.exitPage();
+        }
+    }
+
+    private exitPage() {
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
+        this.saleForm.markAsPristine();
+        this.navCtrl.navigateBack('/tabs/sale-list');
+      }
     }
 }

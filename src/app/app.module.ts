@@ -44,6 +44,7 @@ import { LoginPageModule } from './login/login.module';
 
 import { ProductCategoryPageModule } from './product-category/product-category.module';
 import { ContactPageModule } from './contact/contact.module';
+import { ProductPageModule } from './product/product.module';
 
 import { CheckListPageModule } from './check-list/check-list.module';
 import { CheckPageModule } from './check/check.module';
@@ -96,6 +97,7 @@ import { environment } from '../environments/environment';
     FormsModule,
     ContactListPageModule,
     ReactiveFormsModule,
+    ProductPageModule,
     ProductCategoryPageModule,
     CheckListPageModule,
     HttpClientModule,

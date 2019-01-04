@@ -27,7 +27,7 @@
         <ion-card class="list-card">
 
         <ion-row no-padding>
-          <ion-col no-padding size="11" (click)="selectContact(item)">
+          <ion-col no-padding (click)="selectContact(item)">
             <ion-row>
               <ion-col no-padding>
                 <h3 class="item-title" style="white-space:normal"><b>{{ item.name }}</b></h3>
@@ -40,8 +40,11 @@
                </ion-col>
              </ion-row>
           </ion-col>
-          <ion-col no-padding size="1" align-self-center text-center>
+          <!-- <ion-col no-padding size="1" align-self-center text-center>
             <ion-icon (click)="openContact(item)" name="arrow-forward"></ion-icon>
+          </ion-col> -->
+          <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openContact(item)">
+            <ion-icon name="open" class="open-item-arrow"></ion-icon>
           </ion-col>
         </ion-row>
 

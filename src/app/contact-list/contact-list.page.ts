@@ -204,10 +204,11 @@ export class ContactListPage implements OnInit {
   //   });
   // }
 
-  openContact(contact) {
+  async openContact(contact) {
     this.events.subscribe('open-contact', (data) => {
       this.events.unsubscribe('open-contact');
     })
+    console.log("contact", contact);
     // if (this.select){
     //   // this.navCtrl.push(ContactPage, {'_id': contact._id});
     //   this.router.navigate(['contact', {'_id': contact._id}]);
@@ -216,7 +217,18 @@ export class ContactListPage implements OnInit {
       // newRootNav.push(ContactPage, {'_id': contact._id});
 
       // this.router.navigate(['contact', {'_id': contact._id}]);
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: ContactPage,
+        componentProps: {
+          "select": true,
+          "_id": contact._id,
+        }
+      })
+      profileModal.present();
+    } else {
       this.navCtrl.navigateForward(['/contact', {'_id': contact._id}]);
+    }
     // }
   }
 

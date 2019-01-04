@@ -22,7 +22,7 @@
       <ion-item no-padding style="margin-bottom: 0px; margin-top:0px;">
       <ion-card  class="list-card" style="border-radius: 5px;">
         <ion-row>
-          <ion-col size="11" (click)="selectCategory(item)">
+          <ion-col (click)="selectCategory(item)">
             <ion-row>
               <!-- <ion-col no-padding width-20 class="schedule-date">
                 <h3 class="item-title">{{item.code}}</h3>
@@ -44,8 +44,8 @@
               </ion-col>
             </ion-row> -->
           </ion-col>
-          <ion-col no-padding size="1" align-self-center  text-center (click)="gotoCategory(item)">
-            <ion-icon  name="arrow-forward"></ion-icon>
+          <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openCategory(item)">
+            <ion-icon name="open" class="open-item-arrow"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-card>

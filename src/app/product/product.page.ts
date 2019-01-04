@@ -36,6 +36,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     languages: Array<LanguageModel>;
     theoreticalStock: number = 0;
     opened: boolean = false;
+    select;
 
     constructor(
       public navCtrl: NavController,
@@ -50,7 +51,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public productService: ProductService,
       public configService: ConfigService,
       public route: ActivatedRoute,
-
+      public modalCtrl: ModalController,
       public formBuilder: FormBuilder,
       // public base64: Base64,
       public events:Events,
@@ -64,6 +65,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.translate.setDefaultLang('es');
       this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.select = this.route.snapshot.paramMap.get('select');
       if (this.route.snapshot.paramMap.get('_id')){
         this.opened = true;
       }
@@ -230,9 +232,14 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.productService.updateProduct(product).then(doc=>{
           this.createInventoryAdjustment();
         })
-        this.navCtrl.navigateBack('/tabs/product-list').then(() => {
+        if (this.select){
+          this.modalCtrl.dismiss();
           this.events.publish('open-product', this.productForm.value);
-        });
+        } else {
+          this.navCtrl.navigateBack('/tabs/product-list').then(() => {
+            this.events.publish('open-product', this.productForm.value);
+          });
+        }
       } else {
         this.productService.createProduct(product).then(doc => {
           //console.log("docss", doc);
@@ -241,9 +248,14 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           });
           this._id = doc['id'];
           this.createInventoryAdjustment();
-          this.navCtrl.navigateBack('/tabs/product-list').then(() => {
+          if (this.select){
+            this.modalCtrl.dismiss();
             this.events.publish('create-product', this.productForm.value);
-          });
+          } else {
+            this.navCtrl.navigateBack('/tabs/product-list').then(() => {
+              this.events.publish('create-product', this.productForm.value);
+            });
+          }
         });
       }
     }
@@ -339,6 +351,13 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     selectCategory() {
       return new Promise(async resolve => {
         // this.avoidAlertMessage = true;
+        let profileModal = await this.modal.create({
+          component: ProductCategoryListPage,
+          componentProps: {
+            "select": true,
+          }
+        });
+        profileModal.present();
         this.events.unsubscribe('select-category');
         this.events.subscribe('select-category', (data) => {
           this.productForm.patchValue({
@@ -351,13 +370,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           profileModal.dismiss();
           // resolve(true);
         })
-        let profileModal = await this.modal.create({
-          component: ProductCategoryListPage,
-          componentProps: {
-            "select": true,
-          }
-        });
-        profileModal.present();
       });
     }
 
@@ -414,8 +426,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     private exitPage() {
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
         this.productForm.markAsPristine();
         this.navCtrl.navigateBack('/tabs/product-list');
+      }
     }
 
 }

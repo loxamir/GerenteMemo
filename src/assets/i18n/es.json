@@ -284,5 +284,11 @@
   "HIRE_DATE": "Fecha de Contratación",
   "SALARY": "Salario",
   "CURRENCY_AMOUNT": "Monto de la Moneda",
+  "CHECK_NUMBER": "Numero del Cheque",
+  "CHECK_AMOUNT": "Monto del Cheque",
+  "BANK": "Banco",
+  "OWNER_NAME": "Nombre del Emisor",
+  "OWNER_DOC": "Documento del Emisor",
+  "CHECK_LIST": "Lista de Cheques",
   "RESULT": "Resultado"
 }

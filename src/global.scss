@@ -222,9 +222,38 @@ ion-button {
 }
 
 .next-button {
-  margin-left: -20px;
+  font-size: 12px;
+  margin-left: -16px;
+}
+.discard-button {
+  font-size: 12px;
+  margin-left: -5px;
+}
+.save-button {
+  font-size: 12px;
+  margin-right: -5px;
 }
 .field-many2one {
   margin-top: 17px;
   margin-bottom: 48px;
+}
+.open-item-col {
+  text-align: center;
+  background: #3880ff;
+  color: white;
+  font-size: 29px;
+}
+.open-item-arrow {
+  height: 100%;
+  // text-align: center;
+/* border: 1px solid black; */
+
+}
+.button-100 {
+  width: 100%;
+}
+
+.internal-item {
+    margin-right: -16px;
+    margin-left: -6px;
 }

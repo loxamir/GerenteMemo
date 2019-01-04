@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { Component, OnInit } from '@angular/core';
-import { NavController,  ModalController, LoadingController, Events } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NavController, AlertController, ModalController, LoadingController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -21,10 +21,13 @@ import { CashListPage } from '../cash-list/cash-list.page';
   styleUrls: ['./check.page.scss'],
 })
 export class CheckPage implements OnInit {
+  @ViewChild('amount') amount;
+  @ViewChild('name') name;
 
     checkForm: FormGroup;
     loading: any;
     _id: string;
+    isModal;
 
     languages: Array<LanguageModel>;
 
@@ -35,6 +38,7 @@ export class CheckPage implements OnInit {
       public translate: TranslateService,
       public languageService: LanguageService,
       // public checkService: CheckService,
+      public alertCtrl: AlertController,
       public route: ActivatedRoute,
       public formBuilder: FormBuilder,
       public events: Events,
@@ -43,16 +47,21 @@ export class CheckPage implements OnInit {
       //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.isModal = this.route.snapshot.paramMap.get('select');
       this.translate.setDefaultLang('es');
       this.translate.use('es');
     }
 
     ngOnInit() {
+      setTimeout(() => {
+        this.amount.setFocus();
+      }, 200);
       this.checkForm = this.formBuilder.group({
         bank_name: new FormControl(''),
+
         bank: new FormControl({}),
-        name: new FormControl(''),
-        amount: new FormControl(),
+        name: new FormControl(null),
+        amount: new FormControl(null),
         owner_name: new FormControl(''),
         owner_doc: new FormControl(''),
         my_check: new FormControl(false),
@@ -271,5 +280,159 @@ export class CheckPage implements OnInit {
       delete check.bank;
       return this.pouchdbService.updateDoc(check);
     }
+
+
+      showNextButton(){
+        // console.log("stock",this.checkForm.value.stock);
+        if (this.checkForm.value.amount==null){
+          return true;
+        }
+        else if (this.checkForm.value.name==null){
+          return true;
+        }
+        else if (Object.keys(this.checkForm.value.contact).length==0){
+        // else if (this.checkForm.value.contact.toJSON()=='{}'){
+          return true;
+        }
+        // else if (Object.keys(this.checkForm.value.accountTo).length==0){
+        //   return true;
+        // }
+        // // else if (this.checkForm.value.accountFrom.toJSON()=='{}'){
+        // else if (Object.keys(this.checkForm.value.accountFrom).length==0){
+        //   return true;
+        // }
+        // else if (
+        //   this.checkForm.value.is_check==true
+        //   && Object.keys(this.checkForm.value.check).length==0
+        // ){
+        //   return true;
+        // }
+        // else if (
+        //   this.checkForm.value.is_other_currency==true
+        //   && Object.keys(this.checkForm.value.currency).length==0
+        // ){
+        //   return true;
+        // }
+        // else if (
+        //   this.checkForm.value.is_other_currency==true
+        //   && Object.keys(this.checkForm.value.currency).length!=0
+        //   && this.checkForm.value.currency_amount===0
+        // ){
+        //   return true;
+        // }
+        else {
+          return false;
+        }
+      }
+
+      discard(){
+        this.canDeactivate();
+      }
+      async canDeactivate() {
+          if(this.checkForm.dirty) {
+              let alertPopup = await this.alertCtrl.create({
+                  header: 'Descartar',
+                  message: '¿Deseas salir sin guardar?',
+                  buttons: [{
+                          text: 'Si',
+                          handler: () => {
+                              // alertPopup.dismiss().then(() => {
+                                  this.exitPage();
+                              // });
+                          }
+                      },
+                      {
+                          text: 'No',
+                          handler: () => {
+                              // need to do something if the user stays?
+                          }
+                      }]
+              });
+
+              // Show the alert
+              alertPopup.present();
+
+              // Return false to avoid the page to be popped up
+              return false;
+          } else {
+            this.exitPage();
+          }
+      }
+
+      private exitPage() {
+        if (this.isModal){
+          this.modalCtrl.dismiss();
+        } else {
+          // this.checkForm.markAsPristine();
+          this.navCtrl.navigateBack('/contact-list');
+        }
+      }
+
+
+      async goNextStep() {
+        if (this.checkForm.value.amount == null){
+          this.amount.setFocus();
+          return;
+        }
+          else if (this.checkForm.value.name == null){
+            this.name.setFocus();
+            return;
+          }
+          else if (Object.keys(this.checkForm.value.contact).length === 0){
+            this.selectContact();
+            return;
+          }
+
+          // else if (Object.keys(this.checkForm.value.accountFrom).length === 0){
+          //   this.selectAccountFrom();
+          //   return;
+          // }
+          // else if (Object.keys(this.checkForm.value.accountTo).length === 0){
+          //   this.selectAccountTo();
+          //   return;
+          // }
+          // else if (
+          //   this.checkForm.value.is_check==true
+          //   && Object.keys(this.checkForm.value.check).length==0
+          // ){
+          //   this.selectCheck();
+          // }
+          // else if (
+          //   this.checkForm.value.is_other_currency==true
+          //   && Object.keys(this.checkForm.value.currency).length==0
+          // ){
+          //   this.selectCurrency();
+          // }
+          // else if (
+          //   this.checkForm.value.is_other_currency==true
+          //   && Object.keys(this.checkForm.value.currency).length!=0
+          //   && this.checkForm.value.currency_amount===0
+          // ){
+          //   this.currency_amount.setFocus();
+          // }
+
+          else {
+            // TODO: Just use this for bank destination moves
+            // let prompt = await this.alertCtrl.create({
+            //   header: 'Confirmar',
+            //   message: 'Estas seguro que deseas confirmar el movimiento?',
+            //   buttons: [
+            //     {
+            //       text: 'No',
+            //       handler: data => {
+            //       }
+            //     },
+            //     {
+            //       text: 'Si',
+            //       handler: data => {
+            //         // this.addTravel();
+            //         this.confirmCashMove();
+            //       }
+            //     }
+            //   ]
+            // });
+            // prompt.present();
+          }
+        }
 
 }

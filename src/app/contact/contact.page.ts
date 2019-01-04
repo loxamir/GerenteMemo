@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
-import { NavController, ModalController, NavParams, LoadingController, AlertController, Events } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, AlertController, Events } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -28,7 +28,7 @@ export class ContactPage implements OnInit {
   languages: Array<LanguageModel>;
   _id: string;
   opened: boolean = false;
-  isModal = false;
+  select;
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -38,7 +38,7 @@ export class ContactPage implements OnInit {
     public alertCtrl: AlertController,
     // public contactService: ContactService,
     // public restProvider: RestProvider,
-    public navParams: NavParams,
+    // public navParams: NavParams,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public events: Events,
@@ -49,7 +49,11 @@ export class ContactPage implements OnInit {
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
-    // this._id = this.navParams.data._id;
+    this._id = this.route.snapshot.paramMap.get('_id');
+    // this._id = this.route.snapshot.paramMap.get('_id');
+    // this.route.params.subscribe(...);
+    // console.log("paramap", this.route.snapshot.paramMap.get('_id'), this._id);
+    this.select = this.route.snapshot.paramMap.get('select');
     // if (this.navParams.data._id){
     //   this.opened = true;
     // }
@@ -85,9 +89,7 @@ export class ContactPage implements OnInit {
       advances: new FormControl([]),
       _id: new FormControl(''),
     });
-    this._id = this.route.snapshot.paramMap.get('_id');
-    // this.route.params.subscribe(...);
-    this.isModal = this.navParams.get('select');
+    console.log("paramap", this.route.snapshot.paramMap.get('_id'), this._id, this.select);
     if (this._id){
       this.getContact(this._id).then((data) => {
         this.contactForm.patchValue(data);
@@ -126,7 +128,7 @@ export class ContactPage implements OnInit {
   buttonSave() {
     if (this._id){
       this.updateContact(this.contactForm.value);
-      if (this.isModal){
+      if (this.select){
         this.modalCtrl.dismiss();
       } else {
         this.navCtrl.navigateBack('/contact-list').then(() => {
@@ -141,7 +143,7 @@ export class ContactPage implements OnInit {
         console.log("create contact", doc);
         this._id = doc.doc.id;
         // this.navCtrl.pop().then(() => {
-        if (this.isModal){
+        if (this.select){
           this.events.publish('create-contact', this.contactForm.value);
           this.modalCtrl.dismiss();
         } else {
@@ -314,7 +316,7 @@ export class ContactPage implements OnInit {
   }
 
   private exitPage() {
-    if (this.isModal){
+    if (this.select){
       this.modalCtrl.dismiss();
     } else {
       // this.contactForm.markAsPristine();
