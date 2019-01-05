@@ -207,7 +207,7 @@ export class SalePage implements OnInit {
           });
           this.saleForm.markAsDirty();
           this.events.unsubscribe('select-currency');
-          profileModal.dismiss();
+          // profileModal.dismiss();
           resolve(true);
         })
         let profileModal = await this.modalCtrl.create({
@@ -566,11 +566,12 @@ export class SalePage implements OnInit {
       this.events.unsubscribe('open-receipt');
       this.events.subscribe('open-receipt', (data) => {
         this.events.unsubscribe('open-receipt');
-        profileModal.dismiss();
+        // profileModal.dismiss();
       });
       let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,
         componentProps: {
+          "select": true,
           "_id": item._id,
         }
       });
@@ -819,7 +820,7 @@ export class SalePage implements OnInit {
           this.avoidAlertMessage = false;
           this.buttonSave();
           this.events.unsubscribe('create-receipt');
-          profileModal.dismiss();
+          // profileModal.dismiss();
         });
         let plannedItems = [];
         this.saleForm.value.planned.forEach(planned => {
@@ -835,6 +836,7 @@ export class SalePage implements OnInit {
         let profileModal = await this.modalCtrl.create({
           component: ReceiptPage,
           componentProps: {
+            "select": true,
             "addPayment": true,
             "contact": this.saleForm.value.contact,
             "account_id": "account.income.sale",
@@ -895,7 +897,7 @@ export class SalePage implements OnInit {
         // });
 
         this.events.unsubscribe('create-invoice');
-        profileModal.dismiss();
+        // profileModal.dismiss();
       });
 
       let paymentType = 'Credito';
@@ -924,7 +926,7 @@ export class SalePage implements OnInit {
         this.avoidAlertMessage = false;
         this.buttonSave();
         this.events.unsubscribe('open-invoice');
-        profileModal.dismiss();
+        // profileModal.dismiss();
       });
       let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
@@ -952,7 +954,7 @@ export class SalePage implements OnInit {
             this.saleForm.markAsDirty();
             this.avoidAlertMessage = false;
             this.events.unsubscribe('select-contact');
-            profileModal.dismiss();
+            // profileModal.dismiss();
             resolve(true);
           })
           let profileModal = await this.modalCtrl.create({
@@ -1003,7 +1005,7 @@ export class SalePage implements OnInit {
             this.saleForm.markAsDirty();
             this.avoidAlertMessage = false;
             this.events.unsubscribe('select-contact');
-            profileModal.dismiss();
+            // profileModal.dismiss();
             resolve(true);
           })
           let profileModal = await this.modalCtrl.create({
@@ -1032,7 +1034,7 @@ export class SalePage implements OnInit {
           this.saleForm.markAsDirty();
           this.avoidAlertMessage = false;
           this.events.unsubscribe('select-payment-condition');
-          profileModal.dismiss();
+          // profileModal.dismiss();
           resolve(data);
           //this.beforeAddPayment();
         })

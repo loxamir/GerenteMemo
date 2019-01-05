@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, NavParams, LoadingController,
+import { NavController, LoadingController,
   AlertController,  Events, ToastController,
   ModalController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
@@ -37,15 +37,27 @@ import { CheckListPage } from '../check-list/check-list.page';
   styleUrls: ['./receipt.page.scss'],
 })
 export class ReceiptPage implements OnInit {
-  @ViewChild('Select') select;
-  @ViewChild('input') myInput;
+  // @ViewChild('Select') select;
+  @ViewChild('amount_paid') amount_paid;
     receiptForm: FormGroup;
     loading: any;
     today: any;
-    _id: string;
+    // _id: string;
     avoidAlertMessage: boolean;
-
+    // select;
     languages: Array<LanguageModel>;
+    // items;
+  @Input() items: any;
+  @Input() select: any;
+  @Input() _id: any;
+  @Input() contact: any;
+@Input() name: any;
+@Input() signal: any;
+@Input() exchange_rate: any;
+@Input() origin_id: any;
+
+
+
 
     constructor(
       public navCtrl: NavController,
@@ -55,10 +67,11 @@ export class ReceiptPage implements OnInit {
       // public imagePicker: ImagePicker,
       // public cropService: Crop,
       // public platform: Platform,
+      public modalCtrl: ModalController,
       public receiptService: ReceiptService,
       public route: ActivatedRoute,
       public formBuilder: FormBuilder,
-      public navParams: NavParams,
+      // public navParams: NavParams,
       public alertCtrl: AlertController,
       // public productService: ProductService,
       // public plannedService: PlannedService,
@@ -70,30 +83,37 @@ export class ReceiptPage implements OnInit {
       public formatService: FormatService,
       public pouchdbService: PouchdbService,
       public events:Events,
-      public modal: ModalController,
+      // public modal: ModalController,
     ) {
       //this.loading = //this.loadingCtrl.create();
+      console.log("route", this.route);
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');
-      this._id = this.route.snapshot.paramMap.get('_id');
+      // this._id = this.route.snapshot.paramMap.get('_id');
+      // this.select = this.route.snapshot.paramMap.get('select');
+      // this.items =  this.route.snapshot.paramMap.get('items');
       this.avoidAlertMessage = false;
     }
+
+    // ngAfterViewInit(){
+    //   console.log("after", this.route.snapshot.paramMap.get('items'));
+    // }
 
     ngOnInit() {
       //var today = new Date().toISOString();
       setTimeout(() => {
         if(this.receiptForm.value.state == "DRAFT"){
-          this.myInput.setFocus();
+          this.amount_paid.setFocus();
         }
       }, 200);
       this.receiptForm = this.formBuilder.group({
-        contact: new FormControl(this.navParams.data.contact||{}, Validators.required),
-        // account_id: new FormControl(this.navParams.data.account_id||""),
-        // project_id: new FormControl(this.navParams.data.project_id||""),
-        name: new FormControl(this.navParams.data.name||'Recibo'),
-        // contact_name: new FormControl(this.navParams.data.contact && this.navParams.data.contact.name || ''),
+        contact: new FormControl(this.contact||{}, Validators.required),
+        // account_id: new FormControl(this.route.snapshot.paramMap.get('account_id')||""),
+        // project_id: new FormControl(this.route.snapshot.paramMap.get('project_id')||""),
+        name: new FormControl(this.name||'Recibo'),
+        // contact_name: new FormControl(this.route.snapshot.paramMap.get('contact') && this.route.snapshot.paramMap.get('contact.name') || ''),
         code: new FormControl(''),
         date: new FormControl(this.today),
         total: new FormControl(0),
@@ -102,23 +122,23 @@ export class ReceiptPage implements OnInit {
         paid: new FormControl(0),
         note: new FormControl(''),
         state: new FormControl('DRAFT'),
-        items: new FormControl(this.navParams.data.items||[], Validators.required),
-        origin_id: new FormControl(this.navParams.data.origin_id||''),
+        items: new FormControl(this.items||[], Validators.required),
+        origin_id: new FormControl(this.origin_id||''),
         payments: new FormControl([]),
-        // origin_ids: new FormControl(this.navParams.data.origin_ids||[]),
+        // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids')||[]),
         // paymentCondition: new FormControl({}),
         payment_name: new FormControl(''),
         invoices: new FormControl([]),
         amount_unInvoiced: new FormControl(''),
         receipt: new FormControl(''),
-        amount_paid: new FormControl(''),
+        amount_paid: new FormControl(null),
         // createInvoice: new FormControl(false),
         payables: new FormControl([]),
         receivables: new FormControl([]),
         cash_paid: new FormControl({}),
         check: new FormControl({}),
-        signal: new FormControl(this.navParams.data.signal||'+'),
-        exchange_rate: new FormControl(this.navParams.data.exchange_rate||'1'),
+        signal: new FormControl(this.signal||'+'),
+        exchange_rate: new FormControl(this.exchange_rate||'1'),
         _id: new FormControl(''),
       });
       this.recomputeValues();
@@ -147,20 +167,16 @@ export class ReceiptPage implements OnInit {
     }
 
     goNextStep() {
-      if (this.receiptForm.value.state == 'DRAFT'){
-        this.confirmReceipt();
-      } else {
-          this.navCtrl.navigateBack('/receipt-list');
+      if (this.receiptForm.value.amount_paid==null){
+        this.amount_paid.setFocus();
       }
+      else if (this.receiptForm.value.state == 'DRAFT'){
+        this.confirmReceipt();
+      }
+      //  else {
+      //     this.navCtrl.navigateBack('/receipt-list');
+      // }
     }
-
-    // ionViewDidEnter() {
-    //   setTimeout(() => {
-    //     if(this.receiptForm.value.state == "DRAFT"){
-    //       this.myInput.setFocus();
-    //     }
-    //   }, 200);
-    // }
 
     createInvoice() {
       // if (this.receiptForm.value.amount_unInvoiced > 0){
@@ -249,7 +265,7 @@ export class ReceiptPage implements OnInit {
           this.justSave();
         });
         this.configService.getConfig().then(async config => {
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: InvoicePage,
             componentProps: {
               // "openPayment": true,
@@ -281,7 +297,7 @@ export class ReceiptPage implements OnInit {
         this.buttonSave();
         this.events.unsubscribe('open-invoice');
       });
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
           "_id": item._id,
@@ -290,39 +306,39 @@ export class ReceiptPage implements OnInit {
       profileModal.present();
     }
 
-    ionViewCanLeave() {
-        // if(this.receiptForm.dirty && ! this.avoidAlertMessage) {
-        //     let alertPopup = this.alertCtrl.create({
-        //         title: 'Exit',
-        //         message: '¿Are you sure?',
-        //         buttons: [{
-        //                 text: 'Exit',
-        //                 handler: () => {
-        //                     alertPopup.dismiss().then(() => {
-        //                         this.exitPage();
-        //                     });
-        //                 }
-        //             },
-        //             {
-        //                 text: 'Stay',
-        //                 handler: () => {
-        //                     // need to do something if the user stays?
-        //                 }
-        //             }]
-        //     });
-        //
-        //     // Show the alert
-        //     alertPopup.present();
-        //
-        //     // Return false to avoid the page to be popped up
-        //     return false;
-        // }
-    }
-
-    exitPage() {
-        this.receiptForm.markAsPristine();
-        this.modal.dismiss();
-    }
+    // ionViewCanLeave() {
+    //     // if(this.receiptForm.dirty && ! this.avoidAlertMessage) {
+    //     //     let alertPopup = this.alertCtrl.create({
+    //     //         title: 'Exit',
+    //     //         message: '¿Are you sure?',
+    //     //         buttons: [{
+    //     //                 text: 'Exit',
+    //     //                 handler: () => {
+    //     //                     alertPopup.dismiss().then(() => {
+    //     //                         this.exitPage();
+    //     //                     });
+    //     //                 }
+    //     //             },
+    //     //             {
+    //     //                 text: 'Stay',
+    //     //                 handler: () => {
+    //     //                     // need to do something if the user stays?
+    //     //                 }
+    //     //             }]
+    //     //     });
+    //     //
+    //     //     // Show the alert
+    //     //     alertPopup.present();
+    //     //
+    //     //     // Return false to avoid the page to be popped up
+    //     //     return false;
+    //     // }
+    // }
+    //
+    // exitPage() {
+    //     this.receiptForm.markAsPristine();
+    //     this.modalCtrl.dismiss();
+    // }
 
     beforeConfirm(){
       if(!this.receiptForm.value._id){
@@ -485,7 +501,7 @@ export class ReceiptPage implements OnInit {
         //   this.events.unsubscribe('select-account');
         //   resolve(data);
         // })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
           "_id": item.doc._id}
@@ -599,7 +615,7 @@ export class ReceiptPage implements OnInit {
           this.events.unsubscribe('select-check');
           this.recomputeValues();
         });
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: CheckListPage,
           componentProps: {"select": true,}});
         profileModal.present();
@@ -619,7 +635,7 @@ export class ReceiptPage implements OnInit {
           this.events.unsubscribe('select-cash');
           this.recomputeValues();
         });
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: CashListPage,
           componentProps: {"select": true,}
         });
@@ -635,7 +651,7 @@ export class ReceiptPage implements OnInit {
           item.cash = data;
           this.events.unsubscribe('select-cash');
         });
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: CashListPage,
           componentProps: {"select": true,}
         });
@@ -756,7 +772,7 @@ export class ReceiptPage implements OnInit {
             "accountTo_id": this.receiptForm.value.cash_paid._id,
             'signal': this.receiptForm.value.signal,
             "payments": paymentAccount[account_id],
-            "origin_id": this.receiptForm.value.origin_id || this.receiptForm.value._id,
+            "origin_id": this.receiptForm.value._id,
           }));
 
         });
@@ -774,7 +790,7 @@ export class ReceiptPage implements OnInit {
             "contact_id": this.receiptForm.value.contact._id,
             "accountTo_id": account_id,
             'signal': this.receiptForm.value.signal,
-            "origin_id": this.receiptForm.value.origin_id || this.receiptForm.value._id,
+            "origin_id":this.receiptForm.value._id,
             "payments": payments,
           }));
         });
@@ -984,4 +1000,60 @@ export class ReceiptPage implements OnInit {
         });
       });
     }
+
+
+        showNextButton(){
+          // console.log("stock",this.receiptForm.value.stock);
+          if (this.receiptForm.value.amount_paid==null&&this.receiptForm.value.state=='DRAFT'){
+            return true;
+          }
+          else if (this.receiptForm.value.state=='DRAFT'){
+            return true;
+          }
+          else {
+            return false;
+          }
+        }
+        discard(){
+          this.canDeactivate();
+        }
+        async canDeactivate() {
+            if(this.receiptForm.dirty) {
+                let alertPopup = await this.alertCtrl.create({
+                    header: 'Descartar',
+                    message: '¿Deseas salir sin guardar?',
+                    buttons: [{
+                            text: 'Si',
+                            handler: () => {
+                                // alertPopup.dismiss().then(() => {
+                                    this.exitPage();
+                                // });
+                            }
+                        },
+                        {
+                            text: 'No',
+                            handler: () => {
+                                // need to do something if the user stays?
+                            }
+                        }]
+                });
+
+                // Show the alert
+                alertPopup.present();
+
+                // Return false to avoid the page to be popped up
+                return false;
+            } else {
+              this.exitPage();
+            }
+        }
+
+        private exitPage() {
+          if (this.select){
+            this.modalCtrl.dismiss();
+          } else {
+            this.receiptForm.markAsPristine();
+            this.navCtrl.navigateBack('/tabs/receipt-list');
+          }
+        }
 }
