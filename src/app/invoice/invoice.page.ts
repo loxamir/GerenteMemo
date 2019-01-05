@@ -731,7 +731,10 @@ export class InvoicePage implements OnInit {
 
     setNumber(){
       if (this.invoiceForm.value.type == 'in'){
-        this.informNumber("001-001-000");
+        this.informNumberSupplier("001-001-000");
+        if (this.select){
+          this.modalCtrl.dismiss();
+        }
       } else if (this.invoiceForm.value.code){
         this.informNumber(this.invoiceForm.value.code);
       } else {
@@ -782,6 +785,42 @@ export class InvoicePage implements OnInit {
                 this.justSave();
                 // this.navCtrl.navigateBack();
               }
+            }
+          }
+        ]
+      });
+
+      prompt.present();
+    }
+
+
+    async informNumberSupplier(code){
+      let prompt = await this.alertCtrl.create({
+        header: 'Numero de Factura',
+        message: 'Cual es el numero de la factura?',
+        inputs: [
+          {
+            name: 'code',
+            placeholder: '001-001-0001234',
+            value: code
+        },
+
+        ],
+        buttons: [
+          {
+            text: 'Cancel'
+          },
+          {
+            text: 'Imprimir',
+            handler: data => {
+              this.invoiceForm.patchValue({
+                code: data.code,
+                state: 'RECEIVED',
+              });
+              this.recomputeValues();
+              // this.printAndroid();
+              this.justSave();
+              // this.navCtrl.navigateBack();
             }
           }
         ]

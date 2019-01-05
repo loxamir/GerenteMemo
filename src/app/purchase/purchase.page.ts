@@ -151,7 +151,7 @@ export class PurchasePage implements OnInit {
       public formatService: FormatService,
       public events:Events,
       public pouchdbService: PouchdbService,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
       public popoverCtrl: PopoverController,
     ) {
       //this.loading = //this.loadingCtrl.create();
@@ -191,7 +191,7 @@ export class PurchasePage implements OnInit {
           this.events.unsubscribe('create-product');
         })
         console.log("barcode", barcode);
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductPage,
           componentProps: {
             "barcode": barcode,
@@ -495,7 +495,7 @@ export class PurchasePage implements OnInit {
       if (this.purchaseForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductListPage,
           componentProps: {
             "select": true,
@@ -525,7 +525,7 @@ export class PurchasePage implements OnInit {
       if (this.purchaseForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductListPage,
           componentProps: {
             "select": true,
@@ -632,10 +632,11 @@ export class PurchasePage implements OnInit {
       this.events.subscribe('open-receipt', (data) => {
         this.events.unsubscribe('open-receipt');
       });
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,
         componentProps: {
           "_id": item._id,
+          "select": true,
         }
       });
       profileModal.present();
@@ -877,10 +878,11 @@ export class PurchasePage implements OnInit {
 
         console.log("this.purchaseForm.value.planned", this.purchaseForm.value.planned);
         console.log("plannedItems", plannedItems);
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ReceiptPage,
           componentProps: {
             "addPayment": true,
+            "select": true,
             "contact": this.purchaseForm.value.contact,
             "account_id": "account.other.transitStock",
             // "project_id": this.purchaseForm.value.project_id
@@ -944,10 +946,11 @@ export class PurchasePage implements OnInit {
       if (this.purchaseForm.value.paymentCondition._id == 'payment-condition.cash'){
         paymentType = 'Contado';
       }
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
           "openPayment": true,
+          "select": true,
           "contact_id": this.purchaseForm.value.contact._id,
           "contact": this.purchaseForm.value.contact,
           "date": this.purchaseForm.value.date,
@@ -967,10 +970,11 @@ export class PurchasePage implements OnInit {
         this.buttonSave();
         this.events.unsubscribe('open-invoice');
       });
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
           "_id": item._id,
+          "select": true,
         }
       });
       profileModal.present();
@@ -986,7 +990,7 @@ export class PurchasePage implements OnInit {
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
           this.events.unsubscribe('select-contact');
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: ContactListPage,
             componentProps: {
               "select": true,
@@ -1026,7 +1030,7 @@ export class PurchasePage implements OnInit {
     //         this.events.unsubscribe('select-project');
     //         resolve(true);
     //       })
-    //       let profileModal = this.modal.create(ProjectsPage, {"select": true});
+    //       let profileModal = this.modalCtrl.create(ProjectsPage, {"select": true});
     //       profileModal.present();
     //     });
     //   }
@@ -1037,7 +1041,7 @@ export class PurchasePage implements OnInit {
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
           this.events.unsubscribe('select-contact');
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: ContactListPage,
             componentProps: {
               "select": true,
@@ -1065,7 +1069,7 @@ export class PurchasePage implements OnInit {
       if (this.purchaseForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-payment-condition');
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: PaymentConditionListPage,
           componentProps: {
             "select": true
@@ -1183,6 +1187,68 @@ export class PurchasePage implements OnInit {
       //  if (purchase.state == 'QUOTATION'){
           return this.pouchdbService.deleteDoc(purchase);
       //  }
+      }
+
+
+      showNextButton(){
+        // console.log("stock",this.purchaseForm.value.stock);
+        // if (this.purchaseForm.value.name==null){
+          return true;
+        // }
+        // else if (this.purchaseForm.value.price==null){
+        //   return true;
+        // }
+        // else if (this.purchaseForm.value.cost==null){
+        //   return true;
+        // }
+        // else if (this.purchaseForm.value.type=='product'&&this.purchaseForm.value.stock==null){
+        //   return true;
+        // }
+        // else {
+        //   return false;
+        // }
+      }
+      discard(){
+        this.canDeactivate();
+      }
+      async canDeactivate() {
+          if(this.purchaseForm.dirty) {
+              let alertPopup = await this.alertCtrl.create({
+                  header: 'Descartar',
+                  message: '¿Deseas salir sin guardar?',
+                  buttons: [{
+                          text: 'Si',
+                          handler: () => {
+                              // alertPopup.dismiss().then(() => {
+                                  this.exitPage();
+                              // });
+                          }
+                      },
+                      {
+                          text: 'No',
+                          handler: () => {
+                              // need to do something if the user stays?
+                          }
+                      }]
+              });
+
+              // Show the alert
+              alertPopup.present();
+
+              // Return false to avoid the page to be popped up
+              return false;
+          } else {
+            this.exitPage();
+          }
+      }
+
+      private exitPage() {
+        if (this.select){
+          this.modalCtrl.dismiss();
+        } else {
+          this.purchaseForm.markAsPristine();
+          this.navCtrl.navigateBack('/tabs/sale-list');
+        }
       }
 
 }

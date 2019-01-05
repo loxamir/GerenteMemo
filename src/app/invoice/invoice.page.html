@@ -107,9 +107,9 @@
       <ion-col size="12" *ngIf="invoiceForm.value.type == 'out' && invoiceForm.value.state != 'QUOTATION'">
         <ion-button class="button-100" color="success" (click)="setNumber()">ReImprimir Factura</ion-button>
       </ion-col>
-      <!-- <ion-col *ngIf="invoiceForm.value.type == 'in' && invoiceForm.value.state == 'QUOTATION'" >
-        <ion-button class="print-confirm" (click)="setNumber()">Confirmar Factura</ion-button>
-      </ion-col> -->
+      <ion-col *ngIf="invoiceForm.value.type == 'in' && invoiceForm.value.state == 'QUOTATION'" >
+        <ion-button class="button-100" (click)="setNumber()">Confirmar Factura</ion-button>
+      </ion-col>
 </ion-row>
     <ion-list no-lines *ngIf="invoiceForm.value.items.length">
       <section>

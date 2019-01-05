@@ -8,6 +8,9 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
 import { PurchaseListPopover} from './purchase-list.popover';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
+import { LanguageModel } from "../services/language/language.model";
 
 @Component({
   selector: 'app-purchase-list',
@@ -22,11 +25,14 @@ export class PurchaseListPage implements OnInit {
   select;
   field = "contact";
   criteria = "=";
+  languages: Array<LanguageModel>;
 
   constructor(
     public navCtrl: NavController,
     // public app: App,
     // public purchasesService: PurchasesService,
+    public translate: TranslateService,
+    public languageService: LanguageService,
     public menu: MenuController,
     public pouchdbService: PouchdbService,
     public loadingCtrl: LoadingController,
@@ -36,6 +42,9 @@ export class PurchaseListPage implements OnInit {
     public modal: ModalController,
   ) {
     //this.loading = //this.loadingCtrl.create();
+    this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select');
     this.events.subscribe('changed-purchase', (change)=>{
       this.handleChange(this.purchases, change);
