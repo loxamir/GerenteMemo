@@ -50,6 +50,8 @@ import { ProductPageModule } from './product/product.module';
 import { CheckListPageModule } from './check-list/check-list.module';
 import { CheckPageModule } from './check/check.module';
 import { PaymentConditionPageModule } from './payment-condition/payment-condition.module';
+import { ServiceWorkPageModule } from './service/work/work.module';
+import { ServiceTravelPageModule } from './service/travel/travel.module';
 
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
@@ -104,6 +106,8 @@ import { environment } from '../environments/environment';
     ProductCategoryPageModule,
     PaymentConditionPageModule,
     CheckListPageModule,
+    ServiceWorkPageModule,
+    ServiceTravelPageModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),
     TranslateModule.forRoot({

@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events } from '@ionic/angular';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { NavController,  ModalController, LoadingController, AlertController, Events } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,7 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./travel.page.scss'],
 })
 export class ServiceTravelPage implements OnInit {
-  @ViewChild('distance') distance;
+  @ViewChild('distance') distanceField;
     travelForm: FormGroup;
     loading: any;
     _id: string;
@@ -23,43 +23,54 @@ export class ServiceTravelPage implements OnInit {
     changeEnd: boolean = false;
     languages: Array<LanguageModel>;
       today: any = new Date().toISOString();
+    select = true;
+    @Input() distance;
+    @Input() start_time;
+    @Input() start_km;
+    @Input() end_time;
+    @Input() end_km;
+    @Input() time;
+    @Input() vehicle;
+    @Input() note;
 
     constructor(
       public navCtrl: NavController,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
       public route: ActivatedRoute,
-
+      public alertCtrl: AlertController,
       public formBuilder: FormBuilder,
       public events: Events,
       public pouchdbService: PouchdbService,
     ) {
       //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
-      this._id = this.route.snapshot.paramMap.get('_id');
+      this.translate.setDefaultLang('es');
+      this.translate.use('es');
+      // this._id = this._id');
       // this.today = new Date().toISOString();
     }
 
     ngOnInit() {
       this.travelForm = this.formBuilder.group({
-        distance: new FormControl(this.route.snapshot.paramMap.get('distance')||''),
-        start_time: new FormControl(this.route.snapshot.paramMap.get('start_time')||''),
-        start_km: new FormControl(this.route.snapshot.paramMap.get('start_km')||''),
-        end_time: new FormControl(this.route.snapshot.paramMap.get('end_time')||''),
-        end_km: new FormControl(this.route.snapshot.paramMap.get('end_km')||''),
-        // date: new FormControl(this.route.snapshot.paramMap.get('date||new Date().toISOString()),
-        time: new FormControl(this.route.snapshot.paramMap.get('time')||''),
-        vehicle: new FormControl(this.route.snapshot.paramMap.get('vehicle')||''),
-        note: new FormControl(this.route.snapshot.paramMap.get('note')||''),
+        distance: new FormControl(this.distance||''),
+        start_time: new FormControl(this.start_time||''),
+        start_km: new FormControl(this.start_km||''),
+        end_time: new FormControl(this.end_time||''),
+        end_km: new FormControl(this.end_km||''),
+        // date: new FormControl(this.date||new Date().toISOString()),
+        time: new FormControl(this.time||''),
+        vehicle: new FormControl(this.vehicle||''),
+        note: new FormControl(this.note||''),
       });
     // }
     //
     // ionViewDidLoad(){
       setTimeout(() => {
-        this.distance.setFocus();
-      }, 700);
+        this.distanceField.setFocus();
+      }, 200);
     }
 
     selectVehicle() {
@@ -78,7 +89,7 @@ export class ServiceTravelPage implements OnInit {
           this.events.unsubscribe('select-product');
           resolve(true);
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductListPage,
           componentProps: {"select": true, "filter": "vehicle"}
         });
@@ -121,10 +132,81 @@ export class ServiceTravelPage implements OnInit {
       }
     }
     buttonSave(){
-      this.modal.dismiss(this.travelForm.value);
+      this.modalCtrl.dismiss(this.travelForm.value);
       if (this.travelForm.value.vehicle){
         this.travelForm.value.vehicle['meter'] = this.travelForm.value.end_km;
         this.pouchdbService.updateDoc(this.travelForm.value.vehicle);
+      }
+    }
+
+
+    async goNextStep() {
+      // if (this.travelForm.value.state == 'QUOTATION'){
+      //   console.log("set Focus");
+      //   if (this.travelForm.value.client_request == ''){
+      //     this.clientRequest.setFocus();
+      //   }
+    }
+
+
+    showNextButton(){
+      // console.log("stock",this.travelForm.value.stock);
+      // if (this.travelForm.value.client_request==null){
+        return true;
+      // }
+      // else if (this.travelForm.value.price==null){
+      //   return true;
+      // }
+      // else if (this.travelForm.value.cost==null){
+      //   return true;
+      // }
+      // else if (this.travelForm.value.type=='product'&&this.travelForm.value.stock==null){
+      //   return true;
+      // }
+      // else {
+      //   return false;
+      // }
+    }
+    discard(){
+      this.canDeactivate();
+    }
+    async canDeactivate() {
+        if(this.travelForm.dirty) {
+            let alertPopup = await this.alertCtrl.create({
+                header: 'Descartar',
+                message: '¿Deseas salir sin guardar?',
+                buttons: [{
+                        text: 'Si',
+                        handler: () => {
+                            // alertPopup.dismiss().then(() => {
+                                this.exitPage();
+                            // });
+                        }
+                    },
+                    {
+                        text: 'No',
+                        handler: () => {
+                            // need to do something if the user stays?
+                        }
+                    }]
+            });
+
+            // Show the alert
+            alertPopup.present();
+
+            // Return false to avoid the page to be popped up
+            return false;
+        } else {
+          this.exitPage();
+        }
+    }
+
+    private exitPage() {
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
+        this.travelForm.markAsPristine();
+        this.navCtrl.navigateBack('/tabs/sale-list');
       }
     }
 

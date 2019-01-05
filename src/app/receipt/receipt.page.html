@@ -80,7 +80,7 @@
 
     <ion-row>
       <ion-col class="item-content" *ngIf="receiptForm.value.state == 'CONFIRMED'">
-        <ion-button class="button-100" (click)="print()">Imprimir Recibo</ion-button>
+        <ion-button class="button-100" color="success" (click)="print()">Imprimir Recibo</ion-button>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="receiptForm.value.state == 'CONFIRMED' && receiptForm.value.amount_unInvoiced > 0">

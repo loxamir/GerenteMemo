@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, NavParams, ModalController, LoadingController,  Events } from '@ionic/angular';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { NavController, ModalController, LoadingController,  Events, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,47 +15,55 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./work.page.scss'],
 })
 export class ServiceWorkPage implements OnInit {
-  @ViewChild('description') description;
+  @ViewChild('description') descriptionField;
     workForm: FormGroup;
     loading: any;
     _id: string;
     languages: Array<LanguageModel>;
+    select = true;
+    @Input() description;
+    @Input() date;
+    @Input() time;
+    @Input() responsible;
 
     constructor(
       public navCtrl: NavController,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
       public route: ActivatedRoute,
-      public navParams: NavParams,
+      // public navParams: NavParams,
+      public alertCtrl: AlertController,
       public formBuilder: FormBuilder,
       public speechRecognition: SpeechRecognition,
       public events: Events,
     ) {
       //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
+      this.translate.setDefaultLang('es');
+      this.translate.use('es');
       // this._id = this.route.snapshot.paramMap.get(_id);
     }
 
     ngOnInit() {
       this.workForm = this.formBuilder.group({
-        description: new FormControl(this.navParams.data.description||''),
-        date: new FormControl(this.navParams.data.date||new Date().toISOString()),
-        time: new FormControl(this.navParams.data.time||1),
+        description: new FormControl(this.description||''),
+        date: new FormControl(this.date||new Date().toISOString()),
+        time: new FormControl(this.time||1),
         // note: new FormControl(this.navParams.datanote||''),
-        responsible: new FormControl(this.navParams.data.responsible||''),
+        responsible: new FormControl(this.route.snapshot.paramMap.get('responsible')||''),
       });
     // }
     //
     // ionViewDidLoad(){
       setTimeout(() => {
-        this.description.setFocus();
-      }, 700);
+        this.descriptionField.setFocus();
+      }, 200);
     }
 
     buttonSave(){
-      this.modal.dismiss(this.workForm.value);
+      this.modalCtrl.dismiss(this.workForm.value);
     }
 
     selectResponsible() {
@@ -71,7 +79,7 @@ export class ServiceWorkPage implements OnInit {
           this.events.unsubscribe('select-contact');
           resolve(true);
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ContactListPage,
           componentProps: {"select": true, "filter": "employee"}
         });
@@ -97,5 +105,77 @@ export class ServiceWorkPage implements OnInit {
         }
       });
     }
+
+
+    async goNextStep() {
+      // if (this.workForm.value.state == 'QUOTATION'){
+      //   console.log("set Focus");
+      //   if (this.workForm.value.client_request == ''){
+      //     this.clientRequest.setFocus();
+      //   }
+    }
+
+
+    showNextButton(){
+      // console.log("stock",this.workForm.value.stock);
+      // if (this.workForm.value.client_request==null){
+        return true;
+      // }
+      // else if (this.workForm.value.price==null){
+      //   return true;
+      // }
+      // else if (this.workForm.value.cost==null){
+      //   return true;
+      // }
+      // else if (this.workForm.value.type=='product'&&this.workForm.value.stock==null){
+      //   return true;
+      // }
+      // else {
+      //   return false;
+      // }
+    }
+    discard(){
+      this.canDeactivate();
+    }
+    async canDeactivate() {
+        if(this.workForm.dirty) {
+            let alertPopup = await this.alertCtrl.create({
+                header: 'Descartar',
+                message: '¿Deseas salir sin guardar?',
+                buttons: [{
+                        text: 'Si',
+                        handler: () => {
+                            // alertPopup.dismiss().then(() => {
+                                this.exitPage();
+                            // });
+                        }
+                    },
+                    {
+                        text: 'No',
+                        handler: () => {
+                            // need to do something if the user stays?
+                        }
+                    }]
+            });
+
+            // Show the alert
+            alertPopup.present();
+
+            // Return false to avoid the page to be popped up
+            return false;
+        } else {
+          this.exitPage();
+        }
+    }
+
+    private exitPage() {
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
+        this.workForm.markAsPristine();
+        this.navCtrl.navigateBack('/tabs/sale-list');
+      }
+    }
+
 
 }

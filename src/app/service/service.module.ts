@@ -13,13 +13,13 @@ import { Printer } from '@ionic-native/printer';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
-import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
-import { ProductListPage } from '../product-list/product-list.page';
-import { ContactListPage } from '../contact-list/contact-list.page';
-import { CurrencyListPage } from '../currency-list/currency-list.page';
-import { ServiceWorkPageModule, } from './work/work.module';
-import { ServiceInputPageModule, } from './input/input.module';
-import { ServiceTravelPageModule, } from './travel/travel.module';
+// import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
+// import { ProductListPage } from '../product-list/product-list.page';
+// import { ContactListPage } from '../contact-list/contact-list.page';
+// import { CurrencyListPage } from '../currency-list/currency-list.page';
+// import { ServiceWorkPageModule, } from './work/work.module';
+// import { ServiceInputPageModule, } from './input/input.module';
+// import { ServiceTravelPageModule, } from './travel/travel.module';
 import { ServicePopover, } from './service.popover';
 import { IonicModule } from '@ionic/angular';
 
@@ -46,10 +46,10 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    ServiceInputPageModule,
-    ServiceWorkPageModule,
-    ServiceTravelPageModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    // ServiceInputPageModule,
+    // ServiceWorkPageModule,
+    // ServiceTravelPageModule,
   ],
   declarations: [ServicePage,
   // ServiceWorkPage,

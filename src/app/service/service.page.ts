@@ -28,7 +28,7 @@ import { HostListener } from '@angular/core';
 import { FormatService } from '../services/format.service';
 
 // import { ServiceEquipmentPage } from './equipment/equipment';
-import { ServiceInputPage } from './input/input.page';
+// import { ServiceInputPage } from './input/input.page';
 import { ServiceWorkPage } from './work/work.page';
 import { ServiceTravelPage } from './travel/travel.page';
 // import { PlannedService } from '../planned/planned.service';
@@ -101,7 +101,7 @@ export class ServicePage implements OnInit {
   //       }, 30);
   //
   //   }
-
+    select;
     timeStamp: any;
     barcode: string = "";
     serviceForm: FormGroup;
@@ -124,6 +124,7 @@ export class ServicePage implements OnInit {
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
+      public modalCtrl: ModalController,
       // public imagePicker: ImagePicker,
       // public cropService: Crop,
       // public platform: Platform,
@@ -148,7 +149,7 @@ export class ServicePage implements OnInit {
     ) {
       //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
+      // this.languages = this.languageService.getLanguages();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');
@@ -254,7 +255,7 @@ export class ServicePage implements OnInit {
       if (this.serviceForm.value.state!='CONFIRMED'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductListPage,
           componentProps: {
             "select": true,
@@ -279,7 +280,7 @@ export class ServicePage implements OnInit {
 
     async openPayment(item) {
       this.events.unsubscribe('open-receipt');
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,
         componentProps: {
           "_id": item._id,
@@ -417,39 +418,39 @@ export class ServicePage implements OnInit {
       });
     }
 
-    async ionViewCanLeave() {
-        if(this.serviceForm.dirty && ! this.avoidAlertMessage) {
-            let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
-                buttons: [{
-                        text: 'Si',
-                        handler: () => {
-                            // alertPopup.dismiss().then(() => {
-                                this.exitPage();
-                            // });
-                        }
-                    },
-                    {
-                        text: 'No',
-                        handler: () => {
-                            // need to do something if the user stays?
-                        }
-                    }]
-            });
-
-            // Show the alert
-            alertPopup.present();
-
-            // Return false to avoid the page to be popped up
-            return false;
-        }
-    }
-
-    private exitPage() {
-        this.serviceForm.markAsPristine();
-        // this.navCtrl.navigateBack();
-    }
+    // async ionViewCanLeave() {
+    //     if(this.serviceForm.dirty && ! this.avoidAlertMessage) {
+    //         let alertPopup = await this.alertCtrl.create({
+    //             header: 'Descartar',
+    //             message: '¿Deseas salir sin guardar?',
+    //             buttons: [{
+    //                     text: 'Si',
+    //                     handler: () => {
+    //                         // alertPopup.dismiss().then(() => {
+    //                             this.exitPage();
+    //                         // });
+    //                     }
+    //                 },
+    //                 {
+    //                     text: 'No',
+    //                     handler: () => {
+    //                         // need to do something if the user stays?
+    //                     }
+    //                 }]
+    //         });
+    //
+    //         // Show the alert
+    //         alertPopup.present();
+    //
+    //         // Return false to avoid the page to be popped up
+    //         return false;
+    //     }
+    // }
+    //
+    // private exitPage() {
+    //     this.serviceForm.markAsPristine();
+    //     // this.navCtrl.navigateBack();
+    // }
 
     async goNextStep() {
       if (this.serviceForm.value.state == 'QUOTATION'){
@@ -662,7 +663,7 @@ export class ServicePage implements OnInit {
       if (this.serviceForm.value.state=='STARTED'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-payment-condition');
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: PaymentConditionListPage,
           componentProps: {
             "select": true
@@ -738,7 +739,7 @@ export class ServicePage implements OnInit {
     //       plannedItems = [plannedItems[0]];
     //       // origin_ids = [this.serviceForm.value._id];
     //     }
-    //     let profileModal = this.modal.create({ component:ReceiptPage, {
+    //     let profileModal = this.modalCtrl.create({ component:ReceiptPage, {
     //       "addPayment": true,
     //       "contact": this.serviceForm.value.contact,
     //       "account_id": "account.income.service",
@@ -760,7 +761,7 @@ export class ServicePage implements OnInit {
               plannedItems.push(planned);
             }
           })
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: ReceiptPage,
             componentProps: {
               "addPayment": true,
@@ -853,7 +854,7 @@ export class ServicePage implements OnInit {
       if (input_sum['price'] > 0){
         items.push(input_sum);
       }
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
           "contact_id": this.serviceForm.value.contact._id,
@@ -889,7 +890,7 @@ export class ServicePage implements OnInit {
 
     async openInvoice(item) {
       this.events.unsubscribe('open-invoice');
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
           "_id": item._id,
@@ -994,7 +995,7 @@ export class ServicePage implements OnInit {
 
     async addWork(){
       // if (this.serviceForm.value.state=='QUOTATION'){
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ServiceWorkPage,
           componentProps: {}
         });
@@ -1016,7 +1017,7 @@ export class ServicePage implements OnInit {
 
     async editWork(item){
       // if (this.serviceForm.value.state=='QUOTATION'){
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ServiceWorkPage,
           componentProps: item
         });
@@ -1079,7 +1080,7 @@ export class ServicePage implements OnInit {
 
     async addTravel(){
       // if (this.serviceForm.value.state=='QUOTATION'){
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ServiceTravelPage,
           componentProps: {}
         });
@@ -1133,7 +1134,7 @@ export class ServicePage implements OnInit {
 
     async editTravel(item){
       // if (this.serviceForm.value.state=='QUOTATION'){
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component:ServiceTravelPage,
           componentProps: item
         });
@@ -1163,7 +1164,7 @@ export class ServicePage implements OnInit {
       // if (this.serviceForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductListPage,
           componentProps: {
             "select": true,
@@ -1196,7 +1197,7 @@ export class ServicePage implements OnInit {
 
     // editInput(item){
     //   // if (this.serviceForm.value.state=='QUOTATION'){
-    //     let profileModal = this.modal.create({ component:ServiceInputPage, item);
+    //     let profileModal = this.modalCtrl.create({ component:ServiceInputPage, item);
     //     let data: any profileModal.onDidDismiss();
     //       //console.log("ITEM", data);
     //       if (data) {
@@ -1634,7 +1635,7 @@ export class ServicePage implements OnInit {
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
           this.events.unsubscribe('select-contact');
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component:ContactListPage,
             componentProps: {
               "select": true,
@@ -1662,7 +1663,7 @@ export class ServicePage implements OnInit {
     //   //console.log("values");
     //   if (this.serviceForm.value.state!='PAID'){
     //     return new Promise(resolve => {
-    //       let profileModal = this.modal.create({ component:ServiceEquipmentPage, this.serviceForm.value.equipment);
+    //       let profileModal = this.modalCtrl.create({ component:ServiceEquipmentPage, this.serviceForm.value.equipment);
     //       let data: any profileModal.onDidDismiss();
     //         //console.log(data);
     //         if (data) {
@@ -1681,7 +1682,7 @@ export class ServicePage implements OnInit {
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
           this.events.unsubscribe('select-product');
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component:ProductListPage,
             componentProps: {
               "select": true,
@@ -2008,6 +2009,67 @@ export class ServicePage implements OnInit {
     //  if (service.state == 'QUOTATION'){
         return this.pouchdbService.deleteDoc(service);
     //  }
+    }
+
+    showNextButton(){
+      // console.log("stock",this.serviceForm.value.stock);
+      // if (this.serviceForm.value.client_request==null){
+        return true;
+      // }
+      // else if (this.serviceForm.value.price==null){
+      //   return true;
+      // }
+      // else if (this.serviceForm.value.cost==null){
+      //   return true;
+      // }
+      // else if (this.serviceForm.value.type=='product'&&this.serviceForm.value.stock==null){
+      //   return true;
+      // }
+      // else {
+      //   return false;
+      // }
+    }
+    discard(){
+      this.canDeactivate();
+    }
+    async canDeactivate() {
+        if(this.serviceForm.dirty) {
+            let alertPopup = await this.alertCtrl.create({
+                header: 'Descartar',
+                message: '¿Deseas salir sin guardar?',
+                buttons: [{
+                        text: 'Si',
+                        handler: () => {
+                            // alertPopup.dismiss().then(() => {
+                                this.exitPage();
+                            // });
+                        }
+                    },
+                    {
+                        text: 'No',
+                        handler: () => {
+                            // need to do something if the user stays?
+                        }
+                    }]
+            });
+
+            // Show the alert
+            alertPopup.present();
+
+            // Return false to avoid the page to be popped up
+            return false;
+        } else {
+          this.exitPage();
+        }
+    }
+
+    private exitPage() {
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
+        this.serviceForm.markAsPristine();
+        this.navCtrl.navigateBack('/tabs/sale-list');
+      }
     }
 
 }

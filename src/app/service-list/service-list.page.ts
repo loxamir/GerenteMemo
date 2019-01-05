@@ -8,6 +8,9 @@ import 'rxjs/Rx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ServiceListPopover} from './service-list.popover';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
+import { LanguageModel } from "../services/language/language.model";
 
 @Component({
   selector: 'app-service-list',
@@ -21,11 +24,14 @@ export class ServiceListPage implements OnInit {
   items = [];
   page = 0;
   select;
+  languages: Array<LanguageModel>;
 
   constructor(
     public navCtrl: NavController,
     // public app: App,
     // public servicesService: ServicesService,
+    public translate: TranslateService,
+    public languageService: LanguageService,
     public loadingCtrl: LoadingController,
     public popoverCtrl: PopoverController,
     public events:Events,
@@ -33,6 +39,9 @@ export class ServiceListPage implements OnInit {
     public route: ActivatedRoute,
   ) {
     //this.loading = //this.loadingCtrl.create();
+    this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select')  ;
     this.events.subscribe('changed-service', (change)=>{
       this.handleChange(this.services, change);

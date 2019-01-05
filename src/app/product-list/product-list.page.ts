@@ -30,7 +30,7 @@ export class ProductListPage implements OnInit {
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
-    public modal: ModalController,
+    // public modal: ModalController,
     public events: Events,
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
@@ -163,6 +163,7 @@ export class ProductListPage implements OnInit {
   selectProduct(product) {
     if (this.select) {
       // this.navCtrl.navigateBack('').then(() => {
+        this.modalCtrl.dismiss();
         this.events.publish('select-product', product);
       // });
     } else {
