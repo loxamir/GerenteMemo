@@ -4,176 +4,169 @@
       <ion-back-button defaultHref="/invoice-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{ 'INVOICE' | translate }}: {{invoiceForm.value.code||invoiceForm.value.number}}
+	{{ 'INVOICE' | translate }}: {{invoiceForm.value.code||invoiceForm.value.number}}
     </ion-title>
-
-    <ion-buttons slot="end">
-      <ion-button style="background: #2ad078;" (click)="buttonSave()"
-      [hidden]="!invoiceForm.dirty">
-        {{ 'SAVE' | translate }}
-      </ion-button>
-      <!-- <ion-button icon-only color="royal"
-              (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
-    </ion-buttons>
-
   </ion-toolbar>
-</ion-header>
-<ion-content class="invoice-content">
   <ion-row>
-    <ion-col width-30>
-        <ion-button class="clicked">
-          <span class="state-label">Borrador</span>
-        </ion-button>
-    </ion-col>
-    <ion-col width-30 *ngIf="invoiceForm.value.type=='out'">
-      <ion-button
-      [class.unclicked]="invoiceForm.value.state=='QUOTATION'"
-      [class.clicked]="invoiceForm.value.state!='QUOTATION'">
-        <span class="state-label">Impresa</span>
-      </ion-button>
-    </ion-col>
-    <ion-col width-30 *ngIf="invoiceForm.value.type=='in'">
-      <ion-button
-      [class.unclicked]="invoiceForm.value.state=='QUOTATION'"
-      [class.clicked]="invoiceForm.value.state!='QUOTATION'">
-        <span class="state-label">Recebida</span>
-      </ion-button>
-    </ion-col>
-  </ion-row>
-  <ion-row justify-content-center>
-    <!-- <ion-item
+    <ion-item
     no-padding
-     style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;height: 50px;border-right: 0px;">
+     class="summary-50">
       <h4 class="field-label">{{'TOTAL' | translate}}</h4>
-      <h4 class="sumary-value draft"
-      style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">
-        $ {{invoiceForm.value.total|number:'1.0'}}
-      </h4>
+      <h4 class="field-value" style="color:blue">$ {{invoiceForm.value.total|number:'1.0'}}</h4>
     </ion-item>
     <ion-item
     no-padding
-     style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;height: 50px;border-right: 0px;">
+     class="summary-50">
       <h4 class="field-label">{{'IVA' | translate}}</h4>
-      <h4 class="sumary-value negative"
-      style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">
-        $ {{invoiceForm.value.tax|number:'1.0-0'}}
-      </h4>
-    </ion-item> -->
-    <ion-col width-20 class="field-label" no-padding >
-      <h4 class="field-label">{{'TOTAL' | translate }}</h4>
-    </ion-col>
-    <ion-col width-30 class="field-label" no-padding >
-      <h4 class="sumary-value draft"
-      style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">
-        $ {{invoiceForm.value.total|number:'1.0'}}
-      </h4>
-    </ion-col>
-    <ion-col width-20 class="field-label" no-padding >
-        <h4 class="field-label">{{'IVA' | translate }}</h4>
-    </ion-col>
-    <ion-col width-30 class="field-label" no-padding >
-        <h4 class="sumary-value negative"
-        style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">
-          $ {{invoiceForm.value.tax|number:'1.0-0'}}
-        </h4>
-    </ion-col>
+      <h4 class="field-value" style="color:red">$ {{invoiceForm.value.tax|number:'1.0'}}</h4>
+    </ion-item>
   </ion-row>
-  <form class="sample-form validations-form" [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
+
+  <ion-row  class="state-header">
+    <ion-col size="6">
+      <div class="clicked arron" style="width:131%;">
+        <span class="state-label">Borrador</span>
+      </div>
+    </ion-col>
+    <ion-col size="6">
+      <div [class.unclicked]="invoiceForm.value.state=='QUOTATION'" [class.clicked]="invoiceForm.value.state!='QUOTATION'" class="arrow">
+        <span class="state-label">Impresa</span>
+      </div>
+    </ion-col>
+    <!-- <ion-col size="4">
+      <div [class.unclicked]="invoiceForm.value.state!='PAID'" [class.clicked]="invoiceForm.value.state=='PAID'" class="arrow">
+        <span class="state-label">Cobrada</span>
+      </div>
+    </ion-col> -->
+  </ion-row>
+
+
+
+
+
+</ion-header>
+
+<ion-content background="#ddd">
+  <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
     <ion-row justify-content-center>
-      <ion-item
-      no-padding
-      (click)="selectContact()"
-       style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;height: 50px;border-right: 0px;">
+      <ion-item no-padding (click)="selectContact()" class="field-100">
         <h4 class="field-label" *ngIf="invoiceForm.value.type == 'out'">{{'CLIENT' | translate}}</h4>
         <h4 class="field-label" *ngIf="invoiceForm.value.type == 'in'">{{'SUPPLIER' | translate}}</h4>
         <h4 class="field-value">{{invoiceForm.value.contact && invoiceForm.value.contact.name || 'Selecionar'}}</h4>
       </ion-item>
+      <!-- <ion-item no-padding (click)="selectPaymentCondition()" class="field-100">
+        <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
+        <h4 class="field-value">{{invoiceForm.value.paymentCondition && invoiceForm.value.paymentCondition.name || 'Selecionar'}}</h4>
+      </ion-item> -->
       <ion-item
       no-padding
       (click)="editContact()"
-       style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;height: 50px;border-left: 0px;">
+       class="field-100">
         <h4 class="field-label">{{'RUC' | translate}}</h4>
         <h4 class="field-value">{{invoiceForm.value.contact && invoiceForm.value.contact.document || 'Informar'}}</h4>
       </ion-item>
-      <ion-item
+<ion-item
        no-padding
-       class="field-50">
-        <ion-label>{{'Pago' | translate}}</ion-label>
+       class="field-100">
+        <ion-label position="floating">{{'Condición de Pago' | translate}}</ion-label>
         <ion-select formControlName="paymentCondition"
+          style="text-align: center;"
+          interface="popover"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
           <ion-select-option value="Contado">Contado</ion-select-option>
           <ion-select-option value="Credito">Credito</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item no-padding class="item-content"
-      class="field-50">
-        <ion-label position="floating" class="field-label">{{'DATE' | translate }}</ion-label>
-        <ion-datetime class="sale-date"
-          displayFormat="DD/MM/YYYY"
-          pickerFormat="DD/MM/YYYY"
-          class="task-date"
-          formControlName="date"
-          [disabled]="invoiceForm.value.state!='QUOTATION'">
+
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'DATE' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="date"
+        [disabled]="invoiceForm.value.state!='QUOTATION'">
         </ion-datetime>
-    </ion-item>
+      </ion-item>
+      <ion-item no-padding (click)="selectCurrency()" class="field-50">
+        <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
+        <h4 class="field-value">{{invoiceForm.value.currency && invoiceForm.value.currency.name || 'Selecionar'}}</h4>
+      </ion-item>
     </ion-row>
     <ion-row>
-      <ion-col width-100 *ngIf="invoiceForm.value.state == 'QUOTATION'">
-        <ion-button class="print-confirm" (click)="addItem()">Agregar Item</ion-button>
-      </ion-col>
-      <ion-col width-100 *ngIf="invoiceForm.value.type == 'out' && invoiceForm.value.state == 'QUOTATION'">
-        <ion-button class="print-confirm" (click)="setNumber()">Imprimir Factura</ion-button>
-      </ion-col>
-      <ion-col width-100 *ngIf="invoiceForm.value.type == 'out' && invoiceForm.value.state != 'QUOTATION'">
-        <ion-button class="print-confirm" (click)="setNumber()">ReImprimir Factura</ion-button>
-      </ion-col>
-      <ion-col *ngIf="invoiceForm.value.type == 'in' && invoiceForm.value.state == 'QUOTATION'" >
-        <ion-button class="print-confirm" (click)="setNumber()">Confirmar Factura</ion-button>
+      <ion-col size="12" *ngIf="invoiceForm.value.state == 'QUOTATION'">
+        <ion-button class="button-100" (click)="addItem()">+ Agregar Item</ion-button>
       </ion-col>
     </ion-row>
-    <ion-card class="list-card" *ngIf="invoiceForm.value.items.length">
-    <ion-list no-lines >
-      <h2 class="section-title">{{'Items de la Factura' | translate}}</h2>
-      <ion-item-sliding  class="list-item" *ngFor="let item of invoiceForm.value.items" style="border-bottom: 1px solid blue;">
-        <ion-item >
-        <ion-row  class="content-row one-line" >
-          <ion-col  width-70 class="item-content" style="white-space: normal;">
-            <ion-row  class="product-name-row">
-              <ion-col width-20 (click)="openItem(item)">
+
+    <ion-row>
+
+      <ion-col size="12" *ngIf="invoiceForm.value.type == 'out' && invoiceForm.value.state == 'QUOTATION'">
+        <ion-button class="button-100" color="success" (click)="setNumber()">Imprimir Factura</ion-button>
+      </ion-col>
+      <ion-col size="12" *ngIf="invoiceForm.value.type == 'out' && invoiceForm.value.state != 'QUOTATION'">
+        <ion-button class="button-100" color="success" (click)="setNumber()">ReImprimir Factura</ion-button>
+      </ion-col>
+      <!-- <ion-col *ngIf="invoiceForm.value.type == 'in' && invoiceForm.value.state == 'QUOTATION'" >
+        <ion-button class="print-confirm" (click)="setNumber()">Confirmar Factura</ion-button>
+      </ion-col> -->
+</ion-row>
+    <ion-list no-lines *ngIf="invoiceForm.value.items.length">
+      <section>
+      <h2 class="section-title">{{'Lineas de la Factura' | translate}}</h2>
+      <ion-item-sliding  class="list-item" *ngFor="let item of invoiceForm.value.items">
+        <ion-item class="internal-item">
+          <ion-card class="list-card">
+            <ion-row class="product-name-row">
+              <!-- {{item.product && item.product.name}} -->
+              <ion-col size="2" (click)="openItem(item)">
                 {{item.product && item.product.code}}
               </ion-col>
               <ion-col (click)="editItemDescription(item)">
                 {{item.product && item.product.name}}
               </ion-col>
             </ion-row>
-            <ion-row>
-              <ion-col  width-50 class="item-content price-tag" (click)="editItemPrice(item)" >
-                <span class="price-label">Precio:</span> ${{item.price|number:'1.0'}}
+        <ion-row>
+          <ion-col size="6" style="white-space: normal;">
+            <ion-row style="margin-top: -5px;">
+              <ion-col  size="12" (click)="editItemPrice(item)" >
+                <span class="price-label">Precio:</span>
+                <div style="font-size: 15px;display: contents; color:red">
+                   ${{item.price|number:'1.0'}}
+                </div>
+
+              </ion-col>
+            </ion-row>
+            <ion-row (click)="openItem(item)">
+              <ion-col  size="12" class="item-content price-tag" (click)="editItemPrice(item)" >
+                <span class="price-label">SubTotal:</span>
+                <div style="font-size: 20px;color:green;">
+                   ${{item.price*item.quantity|number:'1.0'}}
+                </div>
               </ion-col>
             </ion-row>
           </ion-col>
-          <ion-col>
+          <ion-col size="6">
+
             <ion-row>
-              <ion-col  width-50 class="item-content">
-                <h4 class="field-label">Subtotal</h4> ${{item.price*item.quantity|number:'1.0'}}
+              <ion-col style="text-align: center;">
+                Cantidad
               </ion-col>
             </ion-row>
             <ion-row>
-              <ion-col  width-30>
+              <ion-col size="3">
                 <ion-button class="quantity-button" (click)="remItem(item)">-</ion-button>
               </ion-col>
-              <ion-col (click)="editItemQuantity(item)"  width-40 class="item-content" style="text-align: center;top:4px;">
+              <ion-col size="6" (click)="editItemQuantity(item)" style="text-align: center;font-size: 20px;margin-top: 8px;">
                 {{item.quantity}}
               </ion-col>
-              <ion-col  width-30>
+              <ion-col size="3">
                 <ion-button class="quantity-button" (click)="sumItem(item)">+</ion-button>
               </ion-col>
             </ion-row>
           </ion-col>
         </ion-row>
+      </ion-card>
       </ion-item>
         <ion-item-options>
           <ion-button icon-only color="primary" (click)="deleteItem(item)" *ngIf="invoiceForm.value.state!='QUOTATIONs'">
@@ -181,13 +174,39 @@
           </ion-button>
         </ion-item-options>
       </ion-item-sliding>
+    </section>
     </ion-list>
-  </ion-card>
   </form>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="goNextStep()" color="green">
-      <ion-icon name="play" style="margin-left: 5px;">
+  <!-- <ion-fab vertical="footer" horizontal="end" slot="fixed" *ngIf="invoiceForm.value.state == 'QUOTATION'">
+    <ion-fab-button (click)="addItem()" color="primary">
+      <ion-icon name="add">
       </ion-icon>
     </ion-fab-button>
+  </ion-fab> -->
+
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
+    <ion-button (click)="goNextStep()"  class="next-button">
+      <ion-icon name="fastforward"> </ion-icon>
+      Proximo
+    </ion-button>
   </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-button (click)="discard()" color="danger" class="discard-button">
+      <ion-icon name="backspace" *ngIf="invoiceForm.dirty"> </ion-icon>
+      <ion-icon name="arrow-back" *ngIf="!invoiceForm.dirty"> </ion-icon>
+      <span *ngIf="invoiceForm.dirty">Descartar</span>
+      <span *ngIf="!invoiceForm.dirty">Volver</span>
+    </ion-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="invoiceForm.dirty">
+    <ion-button (click)="buttonSave()"  color="success" class="save-button">
+      <ion-icon name="save"> </ion-icon>
+      Guardar
+    </ion-button>
+  </ion-fab>
+  <div style="height: 100px;">
+  </div>
 </ion-content>

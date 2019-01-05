@@ -35,6 +35,7 @@
 }
 h4.field-label {
   position: absolute;
+  margin-left: 5px;
   font-size: 13px;
   margin-top: -10px;
 }
@@ -98,7 +99,7 @@ h4.field-value {
 }
 
 .clicked {
-	background-color: #477cf3;
+	background-color: #3880ff;
 	width: 135%;
 	height: 135%;
 	color: white;
@@ -266,4 +267,11 @@ ion-button {
 }
 .currency-value{
   text-align: center;
+}
+.label-floating.sc-ion-label-md-h, .label-stacked.sc-ion-label-md-h {
+    margin-left: 5px;
+    margin-bottom: 0;
+}
+ion-input {
+    margin-left: 10px;
 }

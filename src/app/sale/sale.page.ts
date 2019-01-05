@@ -908,6 +908,7 @@ export class SalePage implements OnInit {
         component: InvoicePage,
         componentProps: {
           "openPayment": true,
+          "select": true,
           "contact_id": this.saleForm.value.contact._id,
           "contact": this.saleForm.value.contact,
           "date": this.saleForm.value.date,
@@ -931,6 +932,7 @@ export class SalePage implements OnInit {
       let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
+          "select": true,
           "_id": item._id,
         }
       });

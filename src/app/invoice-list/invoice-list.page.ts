@@ -94,6 +94,7 @@ export class InvoiceListPage implements OnInit {
       this.events.unsubscribe('open-invoice');
     })
     // this.navCtrl.navigateForward(InvoicePage,{'_id': invoice._id});
+    console.log("invoice.id", invoice._id);
     this.navCtrl.navigateForward(['/invoice', {'_id': invoice._id}]);
   }
 

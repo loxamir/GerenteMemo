@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NavController,  LoadingController, AlertController, Events, ToastController, ModalController, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -26,6 +26,14 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   styleUrls: ['./invoice.page.scss'],
 })
 export class InvoicePage implements OnInit {
+
+  @Input() _id;
+  @Input() contact;
+  @Input() paymentCondition;
+  @Input() items;
+  @Input() type: any = 'out';
+  @Input() origin_id;
+
   @ViewChild('select') select;
   @HostListener('document:keypress', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent) {
@@ -82,18 +90,18 @@ export class InvoicePage implements OnInit {
     invoiceForm: FormGroup;
     loading: any;
     today: any;
-    _id: string;
+    // _id: string;
     avoidAlertMessage: boolean;
 
     languages: Array<LanguageModel>;
-    type: any = 'out';
+    // type: any = 'out';
 
     constructor(
       public navCtrl: NavController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
       // public imagePicker: ImagePicker,
       // public cropService: Crop,
       // public platform: Platform,
@@ -115,8 +123,10 @@ export class InvoicePage implements OnInit {
       //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
+      this.translate.setDefaultLang('es');
+      this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
-      this.type = this.route.snapshot.paramMap.get('type');
+      // this.type = this.route.snapshot.paramMap.get('type');
       this.avoidAlertMessage = false;
     }
 
@@ -131,8 +141,8 @@ export class InvoicePage implements OnInit {
       //var today = new Date().toISOString();
       //console.log("this.route.snapshot.paramMap.get('origin_ids", this.route.snapshot.paramMap.get('contact);
       let items = [];
-      if (this.route.snapshot.paramMap.get('items')){
-        let lista: any = this.route.snapshot.paramMap.get('items');
+      if (this.items){
+        let lista: any = this.items;
         console.log("lista", lista);
         lista.forEach(item=>{
           items.push({
@@ -144,9 +154,9 @@ export class InvoicePage implements OnInit {
         })
       }
       this.invoiceForm = this.formBuilder.group({
-        contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
+        contact: new FormControl(this.contact||{}, Validators.required),
         name: new FormControl(''),
-        contact_name: new FormControl(this.route.snapshot.paramMap.get('contact') && this.route.snapshot.paramMap.get('contact')['name']||''),
+        contact_name: new FormControl(this.contact && this.contact['name']||''),
         code: new FormControl(''),
         date: new FormControl(this.today),
         total: new FormControl(0),
@@ -156,22 +166,36 @@ export class InvoicePage implements OnInit {
         state: new FormControl('QUOTATION'),
         // tab: new FormControl(this.route.snapshot.paramMap.get('tab||'products'),
         items: new FormControl(items||[], Validators.required),
-        type: new FormControl(this.route.snapshot.paramMap.get('type')||'out'),
+        type: new FormControl(this.type||'out'),
         payments: new FormControl(this.route.snapshot.paramMap.get('payments')||[]),
-        planned: new FormControl(this.route.snapshot.paramMap.get('planned')||[]),
+        // planned: new FormControl(this.route.snapshot.paramMap.get('planned')||[]),
         invoices: new FormControl([]),
-        paymentCondition: new FormControl(this.route.snapshot.paramMap.get('paymentCondition')||''),
+        paymentCondition: new FormControl(this.paymentCondition||''),
         payment_name: new FormControl(''),
         number: new FormControl(''),
         _id: new FormControl(''),
-        origin_id: new FormControl(this.route.snapshot.paramMap.get('origin_id')||''),
+        origin_id: new FormControl(this.origin_id||''),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
       });
       this.recomputeValues();
       //this.loading.present();
+      // console.log("id", this._id);
+      // if (this._id){
+      //   this.pouchdbService.getDoc(this._id).then((data) => {
+      //     console.log("data invoice", data);
+      //     this.invoiceForm.patchValue(data);
+      //     //this.loading.dismiss();
+      //   });
+      // } else {
+      //   //this.loading.dismiss();
+      // }
+    }
+
+    ngAfterViewInit(){
+      console.log("id", this._id);
       if (this._id){
-        this.pouchdbService.getDoc(this._id).then((data) => {
-          //console.log("data invoice", data);
+        this.getInvoice(this._id).then((data) => {
+          console.log("data invoice", data);
           this.invoiceForm.patchValue(data);
           //this.loading.dismiss();
         });
@@ -180,39 +204,39 @@ export class InvoicePage implements OnInit {
       }
     }
 
-    async ionViewCanLeave() {
-        if(this.invoiceForm.dirty && ! this.avoidAlertMessage) {
-            let alertPopup = await this.alertCtrl.create({
-                header: 'Queres Descartar Cambios?',
-                message: '¿Estas seguro que deseas salir de la factura sin guardar las modificaciones?',
-                buttons: [{
-                        text: 'Si',
-                        handler: () => {
-                            // alertPopup.dismiss().then(() => {
-                                this.exitPage();
-                            // });
-                        }
-                    },
-                    {
-                        text: 'No',
-                        handler: () => {
-                            // need to do something if the user stays?
-                        }
-                    }]
-            });
-
-            // Show the alert
-            alertPopup.present();
-
-            // Return false to avoid the page to be popped up
-            return false;
-        }
-    }
-
-    private exitPage() {
-        this.invoiceForm.markAsPristine();
-        // this.navCtrl.navigateBack();
-    }
+    // async ionViewCanLeave() {
+    //     if(this.invoiceForm.dirty && ! this.avoidAlertMessage) {
+    //         let alertPopup = await this.alertCtrl.create({
+    //             header: 'Queres Descartar Cambios?',
+    //             message: '¿Estas seguro que deseas salir de la factura sin guardar las modificaciones?',
+    //             buttons: [{
+    //                     text: 'Si',
+    //                     handler: () => {
+    //                         // alertPopup.dismiss().then(() => {
+    //                             this.exitPage();
+    //                         // });
+    //                     }
+    //                 },
+    //                 {
+    //                     text: 'No',
+    //                     handler: () => {
+    //                         // need to do something if the user stays?
+    //                     }
+    //                 }]
+    //         });
+    //
+    //         // Show the alert
+    //         alertPopup.present();
+    //
+    //         // Return false to avoid the page to be popped up
+    //         return false;
+    //     }
+    // }
+    //
+    // private exitPage() {
+    //     this.invoiceForm.markAsPristine();
+    //     // this.navCtrl.navigateBack();
+    // }
 
     // goNextStep() {
     //   if (this.invoiceForm.value.state == 'QUOTATION'){
@@ -548,7 +572,7 @@ export class InvoicePage implements OnInit {
           this.avoidAlertMessage = false;
           this.events.unsubscribe('select-product');
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductListPage,
           componentProps: {
             "select": true
@@ -572,7 +596,7 @@ export class InvoicePage implements OnInit {
           this.invoiceForm.markAsDirty();
           this.events.unsubscribe('select-product');
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductListPage,
           componentProps: {
             "select": true
@@ -871,7 +895,7 @@ export class InvoicePage implements OnInit {
             this.events.unsubscribe('select-contact');
             resolve(true);
           })
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: ContactListPage,
             componentProps: {
               "select": true,
@@ -896,7 +920,7 @@ export class InvoicePage implements OnInit {
             this.events.unsubscribe('open-contact');
             resolve(true);
           })
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: ContactPage,
             componentProps: {
               "_id": this.invoiceForm.value.contact._id
@@ -1200,7 +1224,7 @@ export class InvoicePage implements OnInit {
       invoice.lines = [];
       invoice.docType = 'invoice';
       delete invoice.payments;
-      delete invoice.planned;
+      // delete invoice.planned;
       invoice.contact_id = invoice.contact._id;
       delete invoice.contact;
       invoice.items.forEach(item => {
@@ -1250,6 +1274,61 @@ export class InvoicePage implements OnInit {
     updateInvoice(viewData){
       let invoice = this.serializeInvoice(viewData)
       return this.pouchdbService.updateDoc(invoice);
+    }
+
+    showNextButton(){
+      // console.log("stock",this.invoiceForm.value.stock);
+      if (this.invoiceForm.value.amount_paid==null&&this.invoiceForm.value.state=='DRAFT'){
+        return true;
+      }
+      else if (this.invoiceForm.value.state=='DRAFT'){
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    discard(){
+      this.canDeactivate();
+    }
+    async canDeactivate() {
+        if(this.invoiceForm.dirty) {
+            let alertPopup = await this.alertCtrl.create({
+                header: 'Descartar',
+                message: '¿Deseas salir sin guardar?',
+                buttons: [{
+                        text: 'Si',
+                        handler: () => {
+                            // alertPopup.dismiss().then(() => {
+                                this.exitPage();
+                            // });
+                        }
+                    },
+                    {
+                        text: 'No',
+                        handler: () => {
+                            // need to do something if the user stays?
+                        }
+                    }]
+            });
+
+            // Show the alert
+            alertPopup.present();
+
+            // Return false to avoid the page to be popped up
+            return false;
+        } else {
+          this.exitPage();
+        }
+    }
+
+    private exitPage() {
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
+        this.invoiceForm.markAsPristine();
+        this.navCtrl.navigateBack('/tabs/receipt-list');
+      }
     }
 
 }

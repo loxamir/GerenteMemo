@@ -6,11 +6,7 @@
     <ion-title>
       {{ 'SALE' | translate }}: {{saleForm.value.code}}
     </ion-title>
-
     <ion-buttons slot="end">
-      <!-- <ion-button style="background: #2ad078;" (click)="buttonSave()" [hidden]="!saleForm.dirty">
-        {{ 'SAVE' | translate }}
-      </ion-button> -->
       <ion-button icon-only (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
@@ -23,7 +19,6 @@
       <h4 class="field-label">{{'TOTAL' | translate}}</h4>
       <h4 class="field-value" style="color:blue">$ {{saleForm.value.total|number:'1.0'}}</h4>
     </ion-item>
-
     <ion-item
     no-padding
      class="summary-50">
@@ -109,7 +104,7 @@
           <ion-col >
             <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
             <h4 class="field-label">{{'NUMBER' | translate}}</h4>
-            <h4 class="field-value">{{item.name}}</h4>
+            <h4 class="field-value">{{item.code}}</h4>
           </ion-col>
           <ion-col >
             <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
@@ -248,4 +243,6 @@
       Guardar
     </ion-button>
   </ion-fab>
+  <div style="height: 100px;">
+  </div>
 </ion-content>
