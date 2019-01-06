@@ -164,6 +164,7 @@ export class PlannedListPage implements OnInit {
       component: ReceiptPage,
       componentProps: {
         "addPayment": true,
+        "select": true,
         "contact": this.contact,
         "account_id": "account.debtColleted",
         "name": "Cobro de Deudas",

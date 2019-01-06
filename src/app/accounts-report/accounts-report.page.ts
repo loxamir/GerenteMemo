@@ -100,7 +100,7 @@ export class AccountsReportPage implements OnInit {
       public socialSharing: SocialSharing,
       public file: File,
       public pouchdbService: PouchdbService,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
     ) {
       //this.loading = //this.loadingCtrl.create();
       this.today = new Date();
@@ -125,25 +125,34 @@ export class AccountsReportPage implements OnInit {
     }
 
     async openTitle(view) {
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: TitlePage,
-        componentProps: {'_id': view._id}
+        componentProps: {
+          '_id': view._id,
+          select: true,
+        }
       });
       profileModal.present();
     }
 
     async openCategory(view) {
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: AccountCategoryPage,
-        componentProps: {'_id': view._id}
+        componentProps: {
+          _id: view._id,
+          select: true,
+        }
       });
       profileModal.present();
     }
 
     async openAccount(view) {
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: AccountPage,
-        componentProps: {'_id': view._id}
+        componentProps: {
+          _id: view._id,
+          select: true,
+        }
       });
       profileModal.present();
     }

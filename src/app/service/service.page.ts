@@ -495,7 +495,7 @@ export class ServicePage implements OnInit {
                   this.ignore_inputs = true;
                   let prompt = await this.alertCtrl.create({
                     header: 'Viaticos',
-                    message: 'Has hecho algun viaja para realizar el trabajo?',
+                    message: 'Has hecho algun viaje para realizar el trabajo?',
                     buttons: [
                       {
                         text: 'No',
@@ -531,7 +531,7 @@ export class ServicePage implements OnInit {
           console.log("ignore_travels");
           let prompt = await this.alertCtrl.create({
             header: 'Viaticos',
-            message: 'Has hecho algun viaja para realizar el trabajo?',
+            message: 'Has hecho algun viaje para realizar el trabajo?',
             buttons: [
               {
                 text: 'No',

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, ModalController, LoadingController,  Events } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, AlertController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import 'rxjs/Rx';
@@ -20,10 +20,11 @@ export class TitlePage implements OnInit {
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
+  select;
 
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -31,6 +32,7 @@ export class TitlePage implements OnInit {
     // public cropService: Crop,
     // public platform: Platform,
     // public titleService: TitleService,
+    public alertCtrl: AlertController,
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
 
@@ -42,6 +44,7 @@ export class TitlePage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
+    this.select = this.route.snapshot.paramMap.get('select');
   }
 
   ngOnInit() {
@@ -73,20 +76,21 @@ export class TitlePage implements OnInit {
   buttonSave() {
     if (this._id){
       this.updateTitle(this.titleForm.value);
-      // this.navCtrl.navigateBack().then(() => {
-        this.events.publish('open-title', this.titleForm.value);
-      // });
+      this.events.publish('open-title', this.titleForm.value);
     } else {
       this.createTitle(this.titleForm.value).then((doc: any) => {
-        //console.log("docss", doc);
         this.titleForm.patchValue({
           _id: doc.id,
         });
         this._id = doc.id;
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('create-title', this.titleForm.value);
-        // });
+        this.events.publish('create-title', this.titleForm.value);
       });
+    }
+    if (this.select){
+      this.modalCtrl.dismiss();
+    }
+    else {
+      this.navCtrl.navigateBack('/title-list');
     }
   }
 
@@ -122,6 +126,49 @@ export class TitlePage implements OnInit {
   updateTitle(title){
     title.docType = 'title';
     return this.pouchdbService.updateDoc(title);
+  }
+
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.titleForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      this.titleForm.markAsPristine();
+      this.navCtrl.navigateBack('/tabs/sale-list');
+    }
   }
 
 }

@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { Component, OnInit } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events } from '@ionic/angular';
+import { NavController,  ModalController, LoadingController, AlertController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import 'rxjs/Rx';
@@ -22,13 +22,14 @@ export class AccountCategoryPage implements OnInit {
     loading: any;
     languages: Array<LanguageModel>;
     _id: string;
-
+    select;
     constructor(
       public navCtrl: NavController,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
+      public alertCtrl: AlertController,
       // public imagePicker: ImagePicker,
       // public cropService: Crop,
       // public platform: Platform,
@@ -44,6 +45,7 @@ export class AccountCategoryPage implements OnInit {
       this.translate.setDefaultLang('es');
       this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.select = this.route.snapshot.paramMap.get('select');
     }
 
     ngOnInit() {
@@ -70,20 +72,21 @@ export class AccountCategoryPage implements OnInit {
     buttonSave() {
       if (this._id){
         this.updateAccountCategory(this.accountCategoryForm.value);
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('open-accountCategory', this.accountCategoryForm.value);
-        // });
+        this.events.publish('open-accountCategory', this.accountCategoryForm.value);
       } else {
         this.createAccountCategory(this.accountCategoryForm.value).then((doc: any) => {
-          //console.log("docss", doc);
           this.accountCategoryForm.patchValue({
             _id: doc.id,
           });
           this._id = doc.id;
-          // this.navCtrl.navigateBack().then(() => {
-            this.events.publish('create-accountCategory', this.accountCategoryForm.value);
-          // });
+          this.events.publish('create-accountCategory', this.accountCategoryForm.value);
         });
+      }
+      if (this.select){
+        this.modalCtrl.dismiss();
+      }
+      else {
+        this.navCtrl.navigateBack('/account-category-list');
       }
     }
 
@@ -102,7 +105,7 @@ export class AccountCategoryPage implements OnInit {
           this.events.unsubscribe('select-title');
           resolve(true);
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: TitleListPage,
           componentProps: {
             "select": true
@@ -160,5 +163,48 @@ export class AccountCategoryPage implements OnInit {
 
     deleteAccountCategory(accountCategory){
       return this.pouchdbService.deleteDoc(accountCategory);
+    }
+
+    discard(){
+      this.canDeactivate();
+    }
+    async canDeactivate() {
+        if(this.accountCategoryForm.dirty) {
+            let alertPopup = await this.alertCtrl.create({
+                header: 'Descartar',
+                message: '¿Deseas salir sin guardar?',
+                buttons: [{
+                        text: 'Si',
+                        handler: () => {
+                            // alertPopup.dismiss().then(() => {
+                                this.exitPage();
+                            // });
+                        }
+                    },
+                    {
+                        text: 'No',
+                        handler: () => {
+                            // need to do something if the user stays?
+                        }
+                    }]
+            });
+
+            // Show the alert
+            alertPopup.present();
+
+            // Return false to avoid the page to be popped up
+            return false;
+        } else {
+          this.exitPage();
+        }
+    }
+
+    private exitPage() {
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
+        this.accountCategoryForm.markAsPristine();
+        this.navCtrl.navigateBack('/tabs/sale-list');
+      }
     }
 }

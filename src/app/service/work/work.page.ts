@@ -16,6 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ServiceWorkPage implements OnInit {
   @ViewChild('description') descriptionField;
+  @ViewChild('time') timeField;
     workForm: FormGroup;
     loading: any;
     _id: string;
@@ -48,9 +49,9 @@ export class ServiceWorkPage implements OnInit {
 
     ngOnInit() {
       this.workForm = this.formBuilder.group({
-        description: new FormControl(this.description||''),
+        description: new FormControl(this.description||null),
         date: new FormControl(this.date||new Date().toISOString()),
-        time: new FormControl(this.time||1),
+        time: new FormControl(this.time||null),
         // note: new FormControl(this.navParams.datanote||''),
         responsible: new FormControl(this.route.snapshot.paramMap.get('responsible')||''),
       });
@@ -113,26 +114,34 @@ export class ServiceWorkPage implements OnInit {
       //   if (this.workForm.value.client_request == ''){
       //     this.clientRequest.setFocus();
       //   }
+      if (this.workForm.value.description==null){
+        this.descriptionField.setFocus();
+        return;
+      }
+      else if (this.workForm.value.time==null){
+        this.timeField.setFocus();
+        return;
+      }
     }
 
 
     showNextButton(){
       // console.log("stock",this.workForm.value.stock);
-      // if (this.workForm.value.client_request==null){
+      if (this.workForm.value.description==null){
         return true;
-      // }
-      // else if (this.workForm.value.price==null){
-      //   return true;
-      // }
+      }
+      else if (this.workForm.value.time==null){
+        return true;
+      }
       // else if (this.workForm.value.cost==null){
       //   return true;
       // }
       // else if (this.workForm.value.type=='product'&&this.workForm.value.stock==null){
       //   return true;
       // }
-      // else {
-      //   return false;
-      // }
+      else {
+        return false;
+      }
     }
     discard(){
       this.canDeactivate();

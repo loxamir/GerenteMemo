@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { Component, OnInit } from '@angular/core';
-import { NavController,  ModalController, LoadingController, Events } from '@ionic/angular';
+import { NavController, AlertController, ModalController, LoadingController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -21,15 +21,17 @@ export class AccountPage implements OnInit {
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
+  select;
 
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
+    public alertCtrl: AlertController,
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
@@ -38,6 +40,7 @@ export class AccountPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
+    this.select = this.route.snapshot.paramMap.get('select');
   }
 
   ngOnInit() {
@@ -70,15 +73,18 @@ export class AccountPage implements OnInit {
   buttonSave() {
     if (this._id){
       this.updateAccount(this.accountForm.value);
-      // this.navCtrl.navigateBack().then(() => {
-        this.events.publish('open-account', this.accountForm.value);
-      // });
+      this.events.publish('open-account', this.accountForm.value);
     } else {
       this.createAccount(this.accountForm.value);
-      // this.navCtrl.navigateBack().then(() => {
-        this.events.publish('create-account', this.accountForm.value);
-      // });
+      this.events.publish('create-account', this.accountForm.value);
+      // this.navCtrl.navigateBack('/account-list');
     }
+    if (this.select){
+      this.modalCtrl.dismiss();
+    }
+    else {
+      this.navCtrl.navigateBack('/account-list');
+    } 
   }
 
   setLanguage(lang: LanguageModel){
@@ -115,7 +121,7 @@ export class AccountPage implements OnInit {
         this.events.unsubscribe('select-accountCategory');
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: AccountCategoryListPage,
         componentProps: {
           "select": true,
@@ -152,6 +158,49 @@ export class AccountPage implements OnInit {
     account.category_id = account.category && account.category._id || account.category_id;
     delete account.category;
     return this.pouchdbService.updateDoc(account);
+  }
+
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.accountForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      this.accountForm.markAsPristine();
+      this.navCtrl.navigateBack('/tabs/sale-list');
+    }
   }
 
 }

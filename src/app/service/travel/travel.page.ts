@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./travel.page.scss'],
 })
 export class ServiceTravelPage implements OnInit {
+  @ViewChild('description') descriptionField;
   @ViewChild('distance') distanceField;
     travelForm: FormGroup;
     loading: any;
@@ -24,6 +25,7 @@ export class ServiceTravelPage implements OnInit {
     languages: Array<LanguageModel>;
       today: any = new Date().toISOString();
     select = true;
+    @Input() description;
     @Input() distance;
     @Input() start_time;
     @Input() start_km;
@@ -55,7 +57,8 @@ export class ServiceTravelPage implements OnInit {
 
     ngOnInit() {
       this.travelForm = this.formBuilder.group({
-        distance: new FormControl(this.distance||''),
+        description: new FormControl(this.distance||null),
+        distance: new FormControl(this.distance||null),
         start_time: new FormControl(this.start_time||''),
         start_km: new FormControl(this.start_km||''),
         end_time: new FormControl(this.end_time||''),
@@ -69,7 +72,7 @@ export class ServiceTravelPage implements OnInit {
     //
     // ionViewDidLoad(){
       setTimeout(() => {
-        this.distanceField.setFocus();
+        this.descriptionField.setFocus();
       }, 200);
     }
 
@@ -146,26 +149,34 @@ export class ServiceTravelPage implements OnInit {
       //   if (this.travelForm.value.client_request == ''){
       //     this.clientRequest.setFocus();
       //   }
+      if (this.travelForm.value.description==null){
+        this.descriptionField.setFocus();
+        return;
+      }
+      else if (this.travelForm.value.distance==null){
+        this.distanceField.setFocus();
+        return;
+      }
     }
 
 
     showNextButton(){
       // console.log("stock",this.travelForm.value.stock);
-      // if (this.travelForm.value.client_request==null){
+      if (this.travelForm.value.description==null){
         return true;
-      // }
-      // else if (this.travelForm.value.price==null){
-      //   return true;
-      // }
+      }
+      else if (this.travelForm.value.distance==null){
+        return true;
+      }
       // else if (this.travelForm.value.cost==null){
       //   return true;
       // }
       // else if (this.travelForm.value.type=='product'&&this.travelForm.value.stock==null){
       //   return true;
       // }
-      // else {
-      //   return false;
-      // }
+      else {
+        return false;
+      }
     }
     discard(){
       this.canDeactivate();

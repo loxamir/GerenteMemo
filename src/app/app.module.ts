@@ -26,6 +26,10 @@ import { ReceiptPage } from './receipt/receipt.page';
 import { InvoicePage } from './invoice/invoice.page';
 import { WarehouseListPage } from './warehouse-list/warehouse-list.page';
 import { AccountListPage } from './account-list/account-list.page';
+
+import { TitlePageModule } from './title/title.module';
+import { AccountPageModule } from './account/account.module';
+import { AccountCategoryPageModule } from './account-category/account-category.module';
 import { CashListPage } from './cash-list/cash-list.page';
 
 
@@ -90,6 +94,9 @@ import { environment } from '../environments/environment';
     PaymentConditionListPageModule,
     CurrencyListPageModule,
     ReceiptPageModule,
+    TitlePageModule,
+    AccountPageModule,
+    AccountCategoryPageModule,
     InvoicePageModule,
     WarehouseListPageModule,
     AccountListPageModule,

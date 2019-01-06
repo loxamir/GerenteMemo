@@ -12,8 +12,38 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="check-content">
+<ion-content>
   <form class="sample-form validations-form" [formGroup]="travelForm">
+
+    <!-- <ion-row>
+      <ion-col>
+        <ion-item class="field-100">
+          <ion-label position="floating">{{ 'DESCRIPTION' | translate }}</ion-label>
+          <ion-textarea #description formControlName="description"
+            rows="3">
+          </ion-textarea>
+        </ion-item>
+      </ion-col>
+    </ion-row> -->
+    <ion-item class="field-100">
+      <ion-row>
+        <ion-col>
+          <ion-item  style="background-color: white">
+            <ion-label position="floating">{{ 'DESCRIPTION' | translate }}</ion-label>
+            <ion-textarea #description formControlName="description"
+              rows="3">
+            </ion-textarea>
+          </ion-item>
+        </ion-col>
+        <ion-col size="2" color="primary">
+          <ion-button icon-only  style="height: 100%;margin-top: 0px;"
+          color="primary"
+          (click)="listenDescription()">
+            <ion-icon name="mic"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-item>
     <ion-item class="field-100">
       <ion-item style="background-color: white">
         <ion-label position="floating">{{'DISTANCE_KM' | translate}}</ion-label>
