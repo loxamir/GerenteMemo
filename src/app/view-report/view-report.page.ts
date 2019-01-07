@@ -34,7 +34,7 @@ export class ViewReportPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public viewService: ViewService,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
 
     public route: ActivatedRoute,
@@ -55,6 +55,7 @@ export class ViewReportPage implements OnInit {
 
   ngOnInit() {
     //this.loading.present();
+
     this.setFilteredItems();
   }
 
@@ -67,13 +68,31 @@ export class ViewReportPage implements OnInit {
   }
 
   setFilteredItems() {
+    console.log('searchTerm', this.searchTerm);
+    console.log("this.reportView", this.reportView);
+    console.log('level', this.level);
+    console.log('startkey', this.startkey);
+    console.log('endkey', this.endkey);
+    let startkey = this.startkey;
+    let endkey = this.endkey;
+    if (this.level > 1){
+      startkey = [
+        this.startkey.split(',')[0],
+        this.startkey.split(',')[1]
+      ]
+      endkey = [
+        this.endkey.split(',')[0],
+        this.endkey.split(',')[1]
+      ]
+    }
     this.viewService.getView(
       this.searchTerm,
       this.reportView,
       this.level,
-      this.startkey,
-      this.endkey
+      startkey,
+      endkey
     ).then((view: any[]) => {
+      console.log("view", view);
       if (this.filter){
         this.view = view.filter(doc => doc.doc.name == this.filter);
       } else {
@@ -92,7 +111,13 @@ export class ViewReportPage implements OnInit {
     this.endkey = endkey;
     this.endkey.splice(this.endkey.length -1, 0, view.key[view.key.length - 1]);
     this.startkey.splice(this.startkey.length -1, 0, view.key[view.key.length - 1]);
-
+    console.log( "goto", {
+      'reportView': this.reportView,
+      'level': this.level+1,
+      'startkey': this.startkey,
+      'endkey': this.endkey,
+      'name': this.name+"/"+view.doc.name
+    });
     this.navCtrl.navigateForward(['/view-report', {
       'reportView': this.reportView,
       'level': this.level+1,
@@ -125,9 +150,12 @@ export class ViewReportPage implements OnInit {
         docView = WarehousePage;
         break;
     }
-    let profileModal = await this.modal.create({
+    let profileModal = await this.modalCtrl.create({
       component: docView,
-      componentProps: {'_id': view.doc._id}
+      componentProps: {
+        'select': true,
+        '_id': view.doc._id,
+      }
     });
     profileModal.present();
     // this.navCtrl.navigateForward(AccountPage, {'_id': view.doc._id});
