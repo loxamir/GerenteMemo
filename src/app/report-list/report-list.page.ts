@@ -21,6 +21,9 @@ import { ProductService } from '../product/product.service';
 import { ReportService } from '../report/report.service';
 import { CashFlowPage } from '../cash-flow/cash-flow.page';
 import * as d3 from 'd3';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
+import { LanguageModel } from "../services/language/language.model";
 
 @Component({
   selector: 'app-report-list',
@@ -40,6 +43,8 @@ export class ReportListPage implements OnInit {
   sold = 0;
   sale_margin = 0;
   sale_margin_percent = 0;
+  sale_cash = 0;
+  sale_credit = 0;
   sale_pie_payments = [];
   sale_pie_products = [];
   toReceive = 0;
@@ -49,6 +54,8 @@ export class ReportListPage implements OnInit {
   received = 0;
   purchased = 0;
   purchased_pie_payments = [];
+  purchase_cash = 0;
+  purchase_credit = 0;
   ToPay = 0;
   ToPayDued = 0;
   ToPayWillDue = 0;
@@ -66,6 +73,7 @@ export class ReportListPage implements OnInit {
   balanceAtive = 0;
   balancePassive = 0;
   _current: any;
+  languages: Array<LanguageModel>;
 
   constructor(
     public navCtrl: NavController,
@@ -76,11 +84,16 @@ export class ReportListPage implements OnInit {
     public events:Events,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
+    public translate: TranslateService,
+    public languageService: LanguageService,
     public pouchdbService: PouchdbService,
     public productService: ProductService,
     public reportService: ReportService,
   ) {
     //this.loading = //this.loadingCtrl.create();
+    this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select')  ;
     this.today = new Date().toISOString();
   }
@@ -608,6 +621,8 @@ export class ReportListPage implements OnInit {
       this.sold = sold;
       this.sale_margin = sale_margin;
       this.sale_margin_percent = (sale_margin/sold)*100;
+      this.sale_cash = cash_payment;
+      this.sale_credit = credit_payment;
       this.sale_pie_payments = [
         {"name": "Al Contado", "total": cash_payment},
         {"name": "Credito", "total": credit_payment},
@@ -744,6 +759,8 @@ export class ReportListPage implements OnInit {
         }
       });
       this.purchased = sold;
+      this.purchase_cash = cash_payment;
+      this.purchase_credit = credit_payment;
       this.purchased_pie_payments = [
         {"name": "Al Contado", "total": cash_payment},
         {"name": "Credito", "total": credit_payment},
