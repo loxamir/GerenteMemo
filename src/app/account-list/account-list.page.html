@@ -43,8 +43,11 @@
               </ion-col>
             </ion-row>
           </ion-col>
-          <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;" (click)="gotoAccount(item)">
-            <ion-icon  name="arrow-forward"></ion-icon>
+          <!-- <ion-col no-padding size="2" class="item-icon"  align-self-center style="text-align: center;" (click)="gotoAccount(item)">
+            <ion-icon  name="open"></ion-icon>
+          </ion-col> -->
+          <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openAccount(item)">
+            <ion-icon name="open" class="open-item-arrow"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-card>

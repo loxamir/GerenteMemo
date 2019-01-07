@@ -48,7 +48,7 @@ h4.field-value {
 }
 @media screen and (max-width: 770px){
   .sc-ion-modal-md-h {
-    --width: 90%;
+    --width: 95%;
     --height: 90%;
   }
 }
@@ -69,7 +69,7 @@ h4.field-value {
 }
 .due {
 	background-color: red;
-	// background-color: white;
+  color: white;
 }
 .confirmed {
 	color: black;
@@ -222,17 +222,44 @@ ion-item-sliding, ion-item-sliding .item {
 ion-button {
   font-size:13px;
 }
-
+@media screen and (max-width: 400px){
+  ion-button {
+    --padding-end:5px;
+    --padding-start:5px;
+    // font-size:12px;
+  }
+}
+@media screen and (max-width: 360px){
+  ion-button {
+    --padding-end:3px;
+    --padding-start:3px;
+    font-size:12px;
+  }
+}
+@media screen and (max-width: 335px){
+  ion-button {
+    --padding-end:3px;
+    --padding-start:3px;
+    font-size:10px;
+  }
+}
+@media screen and (max-width: 300px){
+  ion-button {
+    --padding-end:0px;
+    --padding-start:0px;
+    font-size:10px;
+  }
+}
 .next-button {
-  font-size: 12px;
+  // font-size: 12px;
   margin-left: -16px;
 }
 .discard-button {
-  font-size: 12px;
+  // font-size: 12px;
   margin-left: -5px;
 }
 .save-button {
-  font-size: 12px;
+  // font-size: 12px;
   margin-right: -5px;
 }
 .field-many2one {
@@ -284,4 +311,21 @@ ion-input {
     margin-top: 5px;
     margin-bottom: 5px;
     margin-right: 0px;
+}
+ion-segment {
+  // --background: white;
+  background: white;
+}
+ion-segment-button {
+  background: white;
+}
+
+.field-value-max {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-left: 5px;
+    position: absolute;
+    text-align: left !important;
+    width: 100%;
+    text-align: center;
 }

@@ -34,7 +34,7 @@ export class CashPage implements OnInit {
 
     constructor(
       public navCtrl: NavController,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
@@ -107,7 +107,7 @@ export class CashPage implements OnInit {
           this.events.unsubscribe('select-currency');
           resolve(true);
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: CurrencyListPage,
           componentProps: {
             "select": true
@@ -147,7 +147,16 @@ export class CashPage implements OnInit {
     }
 
 
-    openItem(item) {
+    async openItem(item) {
+      let profileModal = await this.modalCtrl.create({
+        component: CashMovePage,
+        componentProps: {
+          "select": true,
+          "_id": item._id,
+        }
+      });
+      profileModal.present();
+
       this.events.subscribe('open-cash-move', (data) => {
         //console.log("Payment", data);
         item.amount = data.amount;
@@ -156,9 +165,9 @@ export class CashPage implements OnInit {
         this.events.unsubscribe('open-cash-move');
       });
       //console.log("item", item);
-      this.navCtrl.navigateForward(['/cash-move', {
-        "_id": item._id,
-      }]);
+      // this.navCtrl.navigateForward(['/cash-move', {
+      //   "_id": item._id,
+      // }]);
     }
 
     recomputeValues() {
@@ -177,7 +186,7 @@ export class CashPage implements OnInit {
           this.events.unsubscribe('select-account');
           resolve(data);
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: AccountListPage,
           componentProps: {
             "select": true
@@ -189,9 +198,10 @@ export class CashPage implements OnInit {
 
     async addIncome(fab){
       fab.close();
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
+          "select": true,
           "accountTo": this.cashForm.value,
         }
       });
@@ -200,9 +210,10 @@ export class CashPage implements OnInit {
 
     async addTransfer(fab){
       fab.close();
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
+          "select": true,
           "accountFrom": this.cashForm.value,
           "transfer": true,
         }
@@ -212,9 +223,10 @@ export class CashPage implements OnInit {
 
     async addExpense(fab){
       fab.close();
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
+          "select": true,
           "accountFrom": this.cashForm.value,
         }
       });

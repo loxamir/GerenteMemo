@@ -249,41 +249,41 @@ export class PurchasePage implements OnInit {
       }
     }
 
-    async ionViewCanLeave() {
-        if(this.purchaseForm.dirty && ! this.avoidAlertMessage) {
-            let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
-                buttons: [{
-                        text: 'Si',
-                        handler: () => {
-                            // alertPopup.dismiss().then(() => {
-                                this.exitPage();
-                            // });
-                        }
-                    },
-                    {
-                        text: 'No',
-                        handler: () => {
-                            // need to do something if the user stays?
-                        }
-                    }]
-            });
-
-            // Show the alert
-            alertPopup.present();
-
-            // Return false to avoid the page to be popped up
-            return false;
-        }
-    }
-
-    // presentPopover(myEvent) {
-    //   let popover = this.popoverCtrl.create(PurchasePopover, {doc: this});
-    //   popover.present({
-    //     ev: myEvent
-    //   });
+    // async ionViewCanLeave() {
+    //     if(this.purchaseForm.dirty && ! this.avoidAlertMessage) {
+    //         let alertPopup = await this.alertCtrl.create({
+    //             header: 'Descartar',
+    //             message: '¿Deseas salir sin guardar?',
+    //             buttons: [{
+    //                     text: 'Si',
+    //                     handler: () => {
+    //                         // alertPopup.dismiss().then(() => {
+    //                             this.exitPage();
+    //                         // });
+    //                     }
+    //                 },
+    //                 {
+    //                     text: 'No',
+    //                     handler: () => {
+    //                         // need to do something if the user stays?
+    //                     }
+    //                 }]
+    //         });
+    //
+    //         // Show the alert
+    //         alertPopup.present();
+    //
+    //         // Return false to avoid the page to be popped up
+    //         return false;
+    //     }
     // }
+    //
+    // // presentPopover(myEvent) {
+    // //   let popover = this.popoverCtrl.create(PurchasePopover, {doc: this});
+    // //   popover.present({
+    // //     ev: myEvent
+    // //   });
+    // // }
     async presentPopover(myEvent) {
       console.log("teste my event");
       let popover = await this.popoverCtrl.create({
@@ -296,12 +296,12 @@ export class PurchasePage implements OnInit {
       });
       popover.present();
     }
-
-
-    private exitPage() {
-        this.purchaseForm.markAsPristine();
-        // this.navCtrl.navigateBack();
-    }
+    //
+    //
+    // private exitPage() {
+    //     this.purchaseForm.markAsPristine();
+    //     // this.navCtrl.navigateBack();
+    // }
 
     goNextStep() {
       if (this.purchaseForm.value.state == 'QUOTATION'){

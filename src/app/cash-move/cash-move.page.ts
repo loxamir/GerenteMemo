@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, NavParams, ModalController, LoadingController,  Events, AlertController } from '@ionic/angular';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { NavController, ModalController, LoadingController,  Events, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -28,12 +28,30 @@ export class CashMovePage implements OnInit {
   // constructor() { }
   @ViewChild('amount') amount;
   @ViewChild('description') description;
-  @ViewChild('currency_amount') currency_amount;
+  @ViewChild('currency_amount') currency_amountField;
+
+@Input() _id;
+// @Input() select;
+@Input() origin_id;
+@Input() accountFrom_id;
+@Input() accountTo_id;
+@Input() accountFrom;
+@Input() accountTo;
+@Input() contact;
+@Input() contact_id;
+@Input() signal;
+@Input() check;
+@Input() currency;
+@Input() currency_amount;
+@Input() currency_residual;
+@Input() payable;
+@Input() receivable;
+@Input() select;
 
   cashMoveForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
-  _id: string;
+  // _id: string;
   // cash_id: string;
   default_amount: number;
   default_name: number;
@@ -41,7 +59,6 @@ export class CashMovePage implements OnInit {
   from_cash: boolean = false;
   to_cash: boolean = false;
   transfer: boolean = false;
-  isModal;
   constructor(
 
     public navCtrl: NavController,
@@ -56,7 +73,7 @@ export class CashMovePage implements OnInit {
     public formBuilder: FormBuilder,
     public cashMoveService: CashMoveService,
     // public cashService: CashService,
-    public navParams: NavParams,
+    // public navParams: NavParams,
     public events: Events,
     public configService: ConfigService,
     public alertCtrl: AlertController,
@@ -65,22 +82,22 @@ export class CashMovePage implements OnInit {
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
-    this._id = this.navParams.get('_id');
-    this.isModal = this.navParams.get('isModal');
-    // this.cash_id = this.navParams.get('cash_id');
-    // this.default_amount = this.navParams.get('default_amount');
-    // this.default_name = this.navParams.get('default_name');
+    this._id =  this.route.snapshot.paramMap.get('_id');
+    this.select =  this.route.snapshot.paramMap.get('select');;
+    // this.cash_id = this.cash_id');
+    // this.default_amount = this.default_amount');
+    // this.default_name = this.default_name');
     this.today = new Date();
-    // console.log("dados nav", this.navParams.get('
-    if (this.navParams.get('accountTo') && this.navParams.get('accountTo')['_id'].split('.')[1]=='cash'){
+    // console.log("dados nav", this.
+    if (this.accountTo && this.accountTo['_id'].split('.')[1]=='cash'){
       // console.log("to cash");
       this.to_cash = true;
     }
-    if (this.navParams.get('accountFrom') && this.navParams.get('accountFrom')['_id'].split('.')[1]=='cash'){
+    if (this.accountFrom && this.accountFrom['_id'].split('.')[1]=='cash'){
       // console.log("from cash");
       this.from_cash = true;
     }
-    if (this.navParams.get('transfer')){
+    if (this.transfer){
       // console.log("from cash");
       this.transfer = true;
     }
@@ -90,6 +107,7 @@ export class CashMovePage implements OnInit {
     var today = new Date().toISOString();
     setTimeout(() => {
       this.amount.setFocus();
+      this.cashMoveForm.markAsPristine();
     }, 200);
 
     this.cashMoveForm = this.formBuilder.group({
@@ -99,18 +117,18 @@ export class CashMovePage implements OnInit {
       dateDue: new FormControl(today, Validators.required),
       state: new FormControl('DRAFT'),
       // cash: new FormControl({}),
-      // cash_id: new FormControl(this.navParams.get('cash_id')),
-      origin_id: new FormControl(this.navParams.get('origin_id')),
+      // cash_id: new FormControl(this.cash_id')),
+      origin_id: new FormControl(this.origin_id),
       accountFrom: new FormControl({}),
-      accountFrom_id: new FormControl(this.navParams.get('accountFrom_id')),
+      accountFrom_id: new FormControl(this.accountFrom_id),
       accountTo: new FormControl({}),
-      accountTo_id: new FormControl(this.navParams.get('accountTo_id')),
-      contact: new FormControl(this.navParams.get('contact')||{}),
-      contact_id: new FormControl(this.navParams.get('contact_id')),
-      // project: new FormControl(this.navParams.get('project')||{}),
-      // project_name: new FormControl(this.navParams.get('project_name')||''),
-      signal: new FormControl(this.navParams.get('signal')||'-'),
-      check: new FormControl(this.navParams.get('check')||{}),
+      accountTo_id: new FormControl(this.accountTo_id),
+      contact: new FormControl(this.contact||{}),
+      contact_id: new FormControl(this.contact_id),
+      // project: new FormControl(this.project||{}),
+      // project_name: new FormControl(this.project_name||''),
+      signal: new FormControl(this.signal||'-'),
+      check: new FormControl(this.check||{}),
       bank: new FormControl(''),
       amount_residual: new FormControl(this.default_amount||null),
       payments: new FormControl([]),
@@ -121,9 +139,9 @@ export class CashMovePage implements OnInit {
       maturity: new FormControl(''),
       is_check: new FormControl(false),
       is_other_currency:  new FormControl(false),
-      currency: new FormControl(this.navParams.get('currency')||{}),
-      currency_amount: new FormControl(this.navParams.get('currency_amount')||0),
-      currency_residual: new FormControl(this.navParams.get('currency_residual')||0),
+      currency: new FormControl(this.currency||{}),
+      currency_amount: new FormControl(this.currency_amount||0),
+      currency_residual: new FormControl(this.currency_residual||0),
       _id: new FormControl(''),
     });
 
@@ -135,17 +153,17 @@ export class CashMovePage implements OnInit {
       });
     } else {
       this.cashMoveForm.markAsDirty();
-      //console.log("caja", this.navParams.get('cash);
-      // if (this.navParams.get('hasOwnProperty('cash')){
+      //console.log("caja", this.cash);
+      // if (this.hasOwnProperty('cash')){
       //   this.cashMoveForm.patchValue({
-      //     cash: this.navParams.get('cash,
-      //     cash_id: this.navParams.get('cash._id,
+      //     cash: this.cash,
+      //     cash_id: this.cash._id,
       //   });
       // } else {
         // this.configService.getConfig().then(config => {
-          let accountFrom = this.navParams.get('accountFrom') || {};
-          let accountTo = this.navParams.get('accountTo') || {};
-          let contact = this.navParams.get('contact') || {};
+          let accountFrom = this.accountFrom || {};
+          let accountTo = this.accountTo || {};
+          let contact = this.contact || {};
           //console.log("configconfig", config);
           this.cashMoveForm.patchValue({
             // cash: config.cash,
@@ -258,19 +276,20 @@ export class CashMovePage implements OnInit {
     if (this._id){
       this.cashMoveService.updateCashMove(this.cashMoveForm.value);
       this.cashMoveForm.markAsPristine();
-      // this.navCtrl.navigateBack();
-      if (this.isModal){
+      if (this.select){
         this.modalCtrl.dismiss()
+      } else {
+        this.navCtrl.navigateBack('/cash-move-list');
       }
     } else {
       this.cashMoveService.createCashMove(this.cashMoveForm.value).then(doc => {
         //console.log("the_doc", doc);
-        if (this.isModal){
+        if (this.select){
           this.modalCtrl.dismiss()
         } else {
           this.cashMoveForm.value._id = doc['id'];
           this.cashMoveForm.markAsPristine();
-          this.navCtrl.navigateBack('/cash-move');
+          this.navCtrl.navigateBack('/cash-move-list');
         }
       });
     }
@@ -350,10 +369,10 @@ export class CashMovePage implements OnInit {
           "select": true,
           show_cash_in: this.to_cash,
           show_cash_out: this.from_cash,
-          transfer: this.navParams.get('transfer'),
-          accountFrom: this.navParams.get('accountFrom'),
-          payable: this.navParams.get('payable'),
-          receivable: this.navParams.get('receivable'),
+          transfer: this.transfer,
+          accountFrom: this.accountFrom,
+          payable: this.payable,
+          receivable: this.receivable,
         }
       });
       profileModal.present();
@@ -378,10 +397,10 @@ export class CashMovePage implements OnInit {
           "select": true,
           show_cash_in: this.to_cash,
           show_cash_out: this.from_cash,
-          transfer: this.navParams.get('transfer'),
-          accountFrom: this.navParams.get('accountFrom'),
-          payable: this.navParams.get('payable'),
-          receivable: this.navParams.get('receivable')
+          transfer: this.transfer,
+          accountFrom: this.accountFrom,
+          payable: this.payable,
+          receivable: this.receivable
         }
       });
       profileModal.present();
@@ -524,11 +543,11 @@ export class CashMovePage implements OnInit {
   }
 
   private exitPage() {
-    if (this.isModal){
+    if (this.select){
       this.modalCtrl.dismiss();
     } else {
       // this.cashMoveForm.markAsPristine();
-      this.navCtrl.navigateBack('/contact-list');
+      this.navCtrl.navigateBack('/cash-move-list');
     }
   }
 

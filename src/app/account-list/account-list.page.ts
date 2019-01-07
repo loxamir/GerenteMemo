@@ -1,8 +1,8 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController,   Events } from '@ionic/angular';
-// import { AccountPage } from '../account';
+import { NavController, LoadingController, ModalController, Events } from '@ionic/angular';
+import { AccountPage } from '../account/account.page';
 import 'rxjs/Rx';
 //import { AccountsModel } from './accounts.model';
 // import { AccountsService } from './accounts.service';
@@ -29,6 +29,7 @@ export class AccountListPage implements OnInit {
     public navCtrl: NavController,
     // public app: App,
     // public accountsService: AccountsService,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
@@ -98,7 +99,7 @@ export class AccountListPage implements OnInit {
         this.events.publish('select-account', accounts);
       // });
     } else {
-      this.gotoAccount(accounts);
+      this.openAccount(accounts);
     }
 
     this.events.subscribe('open-account', (data) => {
@@ -106,14 +107,36 @@ export class AccountListPage implements OnInit {
     })
   }
 
-  gotoAccount(accounts) {
+  async openAccount(account) {
     this.events.subscribe('open-account', (data) => {
       this.events.unsubscribe('open-account');
     })
-    this.navCtrl.navigateForward(['/account', {'_id': accounts._id}]);
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: AccountPage,
+        componentProps: {
+          "select": true,
+          "_id": account._id,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/account', {'_id': account._id}]);
+    }
   }
 
-  createAccount(){
+  async createAccount(){
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: AccountPage,
+        componentProps: {
+          "select": true,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/account', {}]);
+    }
     this.events.subscribe('create-account', (data) => {
       if (this.select){
         // this.navCtrl.navigateBack().then(() => {
@@ -122,7 +145,6 @@ export class AccountListPage implements OnInit {
       }
       this.events.unsubscribe('create-account');
     })
-    this.navCtrl.navigateForward(['/account', {}]);
   }
 
   doRefresh(refresher) {
