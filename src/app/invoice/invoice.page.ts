@@ -19,6 +19,7 @@ import { HostListener } from '@angular/core';
 import { FormatService } from '../services/format.service';
 // import { InvoicePopover } from './invoice.popover';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { CurrencyListPage } from '../currency-list/currency-list.page';
 
 @Component({
   selector: 'app-invoice',
@@ -173,6 +174,7 @@ export class InvoicePage implements OnInit {
         paymentCondition: new FormControl(this.paymentCondition||''),
         payment_name: new FormControl(''),
         number: new FormControl(''),
+        currency: new FormControl({}),
         _id: new FormControl(''),
         origin_id: new FormControl(this.origin_id||''),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
@@ -1368,6 +1370,28 @@ export class InvoicePage implements OnInit {
         this.invoiceForm.markAsPristine();
         this.navCtrl.navigateBack('/tabs/receipt-list');
       }
+    }
+
+    selectCurrency() {
+      return new Promise(async resolve => {
+        this.events.subscribe('select-currency', (data) => {
+          this.invoiceForm.patchValue({
+            currency: data,
+            // cash_id: data._id,
+          });
+          this.invoiceForm.markAsDirty();
+          this.events.unsubscribe('select-currency');
+          // profileModal.dismiss();
+          resolve(true);
+        })
+        let profileModal = await this.modalCtrl.create({
+          component: CurrencyListPage,
+          componentProps: {
+            "select": true
+          }
+        });
+        profileModal.present();
+      });
     }
 
 }

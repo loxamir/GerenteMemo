@@ -29,6 +29,7 @@ import { FormatService } from '../services/format.service';
 // import { ProjectsPage } from '../project/list/projects';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { PurchasePopover } from './purchase.popover';
+import { CurrencyListPage } from '../currency-list/currency-list.page';
 
 @Component({
   selector: 'app-purchase',
@@ -214,6 +215,7 @@ export class PurchasePage implements OnInit {
         // project_name: new FormControl(this.route.snapshot.paramMap.get('project_name')||''),
 
         name: new FormControl(''),
+        currency: new FormControl({}),
         code: new FormControl(''),
         date: new FormControl(this.route.snapshot.paramMap.get('date')||this.today),
         origin_id: new FormControl(this.route.snapshot.paramMap.get('origin_id')),
@@ -1250,5 +1252,28 @@ export class PurchasePage implements OnInit {
           this.navCtrl.navigateBack('/tabs/sale-list');
         }
       }
+
+
+          selectCurrency() {
+            return new Promise(async resolve => {
+              this.events.subscribe('select-currency', (data) => {
+                this.purchaseForm.patchValue({
+                  currency: data,
+                  // cash_id: data._id,
+                });
+                this.purchaseForm.markAsDirty();
+                this.events.unsubscribe('select-currency');
+                // profileModal.dismiss();
+                resolve(true);
+              })
+              let profileModal = await this.modalCtrl.create({
+                component: CurrencyListPage,
+                componentProps: {
+                  "select": true
+                }
+              });
+              profileModal.present();
+            });
+          }
 
 }
