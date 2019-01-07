@@ -12,7 +12,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { CashFlowPage } from './cash-flow.page';
-
+import { SocialSharing } from '@ionic-native/social-sharing';
 const routes: Routes = [
   {
     path: '',
@@ -36,6 +36,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CashFlowPage]
+  declarations: [CashFlowPage],
+  providers: [SocialSharing]
 })
 export class CashFlowPageModule {}

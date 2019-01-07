@@ -500,7 +500,7 @@ export class ReportListPage implements OnInit {
         let cashflowExpense = 0;
         items.forEach((item, index)=>{
           // console.log("type", item.type, result[index].value, result[index].key, item);
-          if (item.type == 'liquidity'){
+          if (item._id.split('.')[1] == 'cash' || item._id.split('.')[1] == 'bank' || item._id.split('.')[1] == 'check'){
             console.log("Conta", item.name, result[index].value);
             if (result[index].value > 0){
               cashflowIncome += result[index].value;

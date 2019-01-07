@@ -28,8 +28,10 @@ import { WarehouseListPage } from './warehouse-list/warehouse-list.page';
 import { AccountListPage } from './account-list/account-list.page';
 
 import { TitlePageModule } from './title/title.module';
+import { TitleListPageModule } from './title-list/title-list.module';
 import { AccountPageModule } from './account/account.module';
 import { AccountCategoryPageModule } from './account-category/account-category.module';
+import { AccountCategoryListPageModule } from './account-category-list/account-category-list.module';
 import { CashListPage } from './cash-list/cash-list.page';
 
 
@@ -90,9 +92,11 @@ import { environment } from '../environments/environment';
     ContactPageModule,
     CashMovePageModule,
     ProductCategoryListPageModule,
+    AccountCategoryListPageModule,
     ProductListPageModule,
     PaymentConditionListPageModule,
     CurrencyListPageModule,
+    TitleListPageModule,
     ReceiptPageModule,
     TitlePageModule,
     AccountPageModule,

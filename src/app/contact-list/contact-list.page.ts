@@ -248,7 +248,11 @@ export class ContactListPage implements OnInit {
       let profileModal = await this.modalCtrl.create({
         component: ContactPage,
         componentProps: {
-          select: true
+          select: true,
+          'supplier': this.supplier,
+          'seller': this.seller,
+          'employee': this.employee,
+          'customer': this.customer,
         }
       })
       profileModal.present();

@@ -1,12 +1,11 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController,   ModalController, Events, PopoverController} from '@ionic/angular';
+import { NavController, LoadingController, ModalController, Events, PopoverController} from '@ionic/angular';
 import { TitlePage } from '../title/title.page';
 import 'rxjs/Rx';
 // import { TitlesService } from './titles.service';
 // import { TitlesPopover } from './titles.popover';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-
 @Component({
   selector: 'app-title-list',
   templateUrl: './title-list.page.html',
@@ -18,7 +17,7 @@ export class TitleListPage implements OnInit {
   select:any;
   searchTerm: string = '';
   page = 0;
-  has_search = false;
+  // has_search = false;
   filter: string = 'all';
 
   constructor(
@@ -27,46 +26,46 @@ export class TitleListPage implements OnInit {
     // public titlesService: TitlesService,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public route: ActivatedRoute,
     public events: Events,
     public popoverCtrl: PopoverController,
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
-    if (this.select){
-      this.has_search = true;
-    }
+    // if (this.select){
+    //   this.has_search = true;
+    // }
     this.filter = this.route.snapshot.paramMap.get('filter')||'all';
   }
 
   ngOnInit() {
     //this.loading.present();
-    this.startFilteredItems();
+    this.setFilteredItems();
   }
-  setSearch() {
-    if (this.has_search){
-      this.searchTerm = "";
-      this.setFilteredItems();
-    }
-    this.has_search = ! this.has_search;
-  }
-  startFilteredItems() {
-    //console.log("setFilteredItems");
-    let filter = null;
-    if (this.filter == "all"){
-      let filter = null;
-    } else {
-      let filter = this.filter;
-    }
-    this.getTitlesPage(this.searchTerm, 0, filter).then((titles: any[]) => {
-      console.log("this.filter", this.filter);
-      this.titles = titles;
-
-      this.page = 1;
-      //this.loading.dismiss();
-    });
-  }
+  // setSearch() {
+  //   if (this.has_search){
+  //     this.searchTerm = "";
+  //     this.setFilteredItems();
+  //   }
+  //   this.has_search = ! this.has_search;
+  // }
+  // startFilteredItems() {
+  //   //console.log("setFilteredItems");
+  //   let filter = null;
+  //   if (this.filter == "all"){
+  //     let filter = null;
+  //   } else {
+  //     let filter = this.filter;
+  //   }
+  //   this.getTitlesPage(this.searchTerm, 0, filter).then((titles: any[]) => {
+  //     console.log("this.filter", this.filter);
+  //     this.titles = titles;
+  //
+  //     this.page = 1;
+  //     //this.loading.dismiss();
+  //   });
+  // }
   setFilteredItems() {
     let filter = null;
     if (this.filter == "all"){
@@ -74,14 +73,18 @@ export class TitleListPage implements OnInit {
     } else {
       let filter = this.filter;
     }
-    this.getTitlesPage(this.searchTerm, 0, filter).then((titles: any[]) => {
+    this.getTitlesPage(
+      this.searchTerm, 0, filter
+    ).then((titles: any[]) => {
       this.titles = titles;
       this.page = 1;
     });
   }
   doInfinite(infiniteScroll) {
     setTimeout(() => {
-      this.getTitlesPage(this.searchTerm, this.page).then((titles: any[]) => {
+      this.getTitlesPage(
+        this.searchTerm, this.page
+      ).then((titles: any[]) => {
         // this.titles = titles
         titles.forEach(title => {
           this.titles.push(title);
@@ -121,16 +124,28 @@ export class TitleListPage implements OnInit {
   //   });
   // }
 
-  openTitle(title) {
+  async openTitle(title) {
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: TitlePage,
+        componentProps: {
+          _id: title._id,
+          select: true,
+        }
+      });
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/title', {'_id': title._id}]);
+    }
     this.events.subscribe('open-title', (data) => {
       this.events.unsubscribe('open-title');
     })
-    this.navCtrl.navigateForward(['/title', {'_id': title._id}]);
   }
 
   selectTitle(title) {
     if (this.select){
       // this.navCtrl.navigateBack().then(() => {
+        this.modalCtrl.dismiss();
         this.events.publish('select-title', title);
       // });
     } else {
@@ -138,7 +153,18 @@ export class TitleListPage implements OnInit {
     }
   }
 
-  createTitle(){
+  async createTitle(){
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: TitlePage,
+        componentProps: {
+          select: true,
+        }
+      });
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/title', {}]);
+    }
     this.events.subscribe('create-title', (data) => {
       if (this.select){
         // this.navCtrl.navigateBack().then(() => {
@@ -147,7 +173,6 @@ export class TitleListPage implements OnInit {
       }
       this.events.unsubscribe('create-title');
     })
-    this.navCtrl.navigateForward(['/title', {}]);
   }
 
   getTitlesPage(keyword, page, field=''){
