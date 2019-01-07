@@ -124,6 +124,15 @@ export class AccountsReportPage implements OnInit {
       }, {})
     }
 
+    sortByCode(list=[]){
+      let self= this;
+      let list2 = list.sort(function(a, b) {
+        return self.formatService.compareField(a, b, 'code', 'increase');
+      });
+      return list2;
+      // list.sort(this.formatService.compareField('code'))
+    }
+
     async openTitle(view) {
       let profileModal = await this.modalCtrl.create({
         component: TitlePage,

@@ -99,13 +99,22 @@ export class BalanceReportPage implements OnInit {
       public socialSharing: SocialSharing,
       public file: File,
       public pouchdbService: PouchdbService,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
     ) {
       //this.loading = //this.loadingCtrl.create();
       this.today = new Date();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
       this.avoidAlertMessage = false;
+    }
+
+    sortByCode(list=[]){
+      let self= this;
+      let list2 = list.sort(function(a, b) {
+        return self.formatService.compareField(a, b, 'code', 'increase');
+      });
+      return list2;
+      // list.sort(this.formatService.compareField('code'))
     }
 
     groupBySum(object, prop, sum) {
@@ -124,7 +133,13 @@ export class BalanceReportPage implements OnInit {
     }
 
     async openTitle(view) {
-      let profileModal = await this.modal.create({component: TitlePage, componentProps: {'_id': view._id}});
+      let profileModal = await this.modalCtrl.create({
+        component: TitlePage,
+        componentProps: {
+          select: true,
+          '_id': view._id
+        }
+      });
       profileModal.present();
     }
 
@@ -137,7 +152,13 @@ export class BalanceReportPage implements OnInit {
 
 
     async openCategory(view) {
-      let profileModal = await this.modal.create({component: AccountCategoryPage, componentProps: {'_id': view._id}});
+      let profileModal = await this.modalCtrl.create({
+        component: AccountCategoryPage,
+        componentProps: {
+          select: true,
+          '_id': view._id
+        }
+      });
       profileModal.present();
     }
 

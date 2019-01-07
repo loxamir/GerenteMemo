@@ -47,7 +47,7 @@
     </ion-row>
     <div>
       <ion-list no-lines>
-        <div *ngFor="let title of balance">
+        <div *ngFor="let title of sortByCode(balance)">
           <ion-row style="background: #d9edf7; color: black;font-weight: bold;">
             <ion-col width-70 (click)=openTitle(title)>
               {{ title.code + ' - ' + title.name }}
@@ -56,8 +56,8 @@
               {{title.balance|number:'1.0-1'}}
             </ion-col>
           </ion-row>
-          <div *ngFor="let category of title.categories">
-            <ion-row>
+          <div *ngFor="let category of sortByCode(title.categories)">
+            <ion-row style="background: white;">
               <ion-col width-60 (click)="openCategory(category)">
                 {{category.code + ' - ' + category.name}}
               </ion-col>
@@ -67,11 +67,6 @@
             </ion-row>
           </div>
         </div>
-
-        <ion-row>
-          <ion-col width-100 style="height: 60px">
-          </ion-col>
-        </ion-row>
       </ion-list>
 
 
@@ -95,4 +90,6 @@
           </ion-icon>
       </ion-fab-button>
   </ion-fab>
+  <div style="height: 100px;">
+  </div>
 </ion-content>

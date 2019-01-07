@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'BALANCE' | translate }}: {{accountsReportForm.value.code}}
+        {{ 'Plan de Cuentas' | translate }}
       </ion-row>
     </ion-title>
 
@@ -63,7 +63,7 @@
     </ion-row>
     <div>
       <ion-list no-lines>
-        <div *ngFor="let title of accountsReport">
+        <div *ngFor="let title of sortByCode(accountsReport)">
           <ion-row style="background: #28aff5; color: black;font-weight: bold;"  *ngIf="accountsReportForm.value.showTitle">
             <ion-col (click)=openTitle(title)>
               {{ title.code + ' - ' + title.name }}
@@ -72,7 +72,7 @@
               {{title.accountsReport|number:'1.0-1'}}
             </ion-col>
           </ion-row>
-          <div *ngFor="let category of title.categories">
+          <div *ngFor="let category of sortByCode(title.categories)">
             <ion-row style="margin-left:0px;    font-weight: normal;background: #8bcdef;"  *ngIf="accountsReportForm.value.showCateg" >
               <ion-col style="margin-left:15px;" (click)="openCategory(category)">
                 {{category.code + ' - ' + category.name}}
@@ -81,7 +81,7 @@
                 {{category.accountsReport|number:'1.0-1'}}
               </ion-col>
             </ion-row>
-            <div *ngFor="let account of category.accounts" >
+            <div *ngFor="let account of sortByCode(category.accounts)" >
               <ion-row style="margin-left:0px;background: #fff;" *ngIf="accountsReportForm.value.showAccounts" (click)="openAccount(account)">
                 <ion-col style="margin-left:30px;">
                   {{account.code + ' - ' + account.name}}
