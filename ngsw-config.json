@@ -2,7 +2,7 @@
   "index": "/index.html",
   "assetGroups": [
     {
-      "name": "app",
+      "name": "Sistema Memo",
       "installMode": "prefetch",
       "resources": {
         "files": [

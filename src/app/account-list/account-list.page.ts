@@ -24,6 +24,9 @@ export class AccountListPage implements OnInit {
   show_cash_out;
   field:any = null;
   filter:any = null;
+  receivable;
+  payable;
+  transfer;
 
   constructor(
     public navCtrl: NavController,
@@ -39,27 +42,47 @@ export class AccountListPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
     this.show_cash_in = this.route.snapshot.paramMap.get('show_cash_in');
     this.show_cash_out = this.route.snapshot.paramMap.get('show_cash_out');
+    this.receivable = this.route.snapshot.paramMap.get('receivable');
+    this.payable = this.route.snapshot.paramMap.get('payable');
+    this.transfer = this.route.snapshot.paramMap.get('transfer');
+    // if (this.show_cash_in){
+    //   this.field = null;
+    //   this.filter = "cash_in";
+    // } else if (this.show_cash_out){
+    //   this.field = null;
+    //   this.filter = "cash_out";
+    // } else if (this.route.snapshot.paramMap.get('receivable')){
+    //   this.field = null;
+    //   this.filter = "receivable";
+    // } else if (this.route.snapshot.paramMap.get('payable')){
+    //   this.field = null;
+    //   this.filter = "payable";
+    // }
+    // if (this.route.snapshot.paramMap.get('transfer')){
+    //   this.field = null;
+    //   this.filter = "transfer";
+    // }
+  }
+
+  ngOnInit() {
+    //this.loading.present();
     if (this.show_cash_in){
       this.field = null;
       this.filter = "cash_in";
     } else if (this.show_cash_out){
       this.field = null;
       this.filter = "cash_out";
-    } else if (this.route.snapshot.paramMap.get('receivable')){
+    } else if (this.receivable){
       this.field = null;
       this.filter = "receivable";
-    } else if (this.route.snapshot.paramMap.get('payable')){
+    } else if (this.payable){
       this.field = null;
       this.filter = "payable";
     }
-    if (this.route.snapshot.paramMap.get('transfer')){
+    if (this.transfer){
       this.field = null;
       this.filter = "transfer";
     }
-  }
-
-  ngOnInit() {
-    //this.loading.present();
     this.setFilteredItems();
   }
 

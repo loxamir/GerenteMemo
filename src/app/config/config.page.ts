@@ -108,10 +108,16 @@ export class ConfigPage implements OnInit {
 
   buttonSave() {
     this.configService.updateConfig(this.configForm.value);
-    // this.navCtrl.navigateBack().then(() => {
+    if (this.select){
+      this.modalCtrl.dismiss();
       this.events.publish('open-config', this.configForm.value);
-    // });
-    this.setDbUsers();
+    } else {
+      this.navCtrl.navigateBack('/tabs/sale-list').then(() => {
+        this.events.publish('open-config', this.configForm.value);
+      });
+    }
+    //TODO: Restore this to work with multi-users
+    // this.setDbUsers();
   }
 
   setDbUsers(){

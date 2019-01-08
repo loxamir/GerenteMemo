@@ -20,10 +20,10 @@ export class ContactListPage implements OnInit {
   searchTerm: string = '';
   page = 0;
   filter: string = 'all';
-  supplier: boolean = false;
-  seller: boolean = false;
-  employee: boolean = false;
-  customer: boolean = true;
+  supplier;
+  seller;
+  employee;
+  customer;
 
   constructor(
     public route: ActivatedRoute,
@@ -35,12 +35,13 @@ export class ContactListPage implements OnInit {
     public file: File,
   ) {
     // //this.loading = //this.loadingCtrl.create();
-    // this.select = this.navParams.get('select');
-    // this.filter = this.navParams.get('filter')||'all';
-    // this.supplier = this.navParams.data.supplier|| false;
-    // this.seller = this.navParams.data.seller|| false;
-    // this.employee = this.navParams.data.employee|| false;
-    // this.customer = this.navParams.data.customer|| false;
+    // this._id = this.route.snapshot.paramMap.get('_id');
+    this.select = this.route.snapshot.paramMap.get('select');
+    this.filter = this.route.snapshot.paramMap.get('filter')||'all';
+    this.supplier = this.route.snapshot.paramMap.get('supplier') || false;
+    this.seller = this.route.snapshot.paramMap.get('seller')|| false;
+    this.employee = this.route.snapshot.paramMap.get('employee')|| false;
+    this.customer = this.route.snapshot.paramMap.get('customer')|| false;
     this.events.subscribe('changed-contact', (change)=>{
       this.handleChange(this.contacts, change);
     })
@@ -68,10 +69,30 @@ export class ContactListPage implements OnInit {
     } else {
       let filter = this.filter;
     }
-    this.getContactsPage(this.searchTerm, 0, filter).then((contacts: any[]) => {
+    this.getContactsPage(
+      this.searchTerm, 0, filter
+    ).then((contacts: any[]) => {
       console.log("contacts", contacts);
-      this.contacts = contacts;
+
+      if (this.filter == 'all'){
+        this.contacts = contacts;
+      }
+      else if (this.filter == 'seller'){
+        this.contacts = contacts.filter(word => word.seller == true);
+      }
+      else if (this.filter == 'customer'){
+        this.contacts = contacts.filter(word => word.customer == true);
+      }
+      else if (this.filter == 'supplier'){
+        this.contacts = contacts.filter(word => word.supplier == true);
+      }
+      else if (this.filter == 'employee'){
+        this.contacts = contacts.filter(word => word.employee == true);
+      }
       this.page = 1;
+
+      // this.contacts = contacts;
+      // this.page = 1;
       // //this.loading.dismiss();
     });
   }
@@ -164,7 +185,27 @@ export class ContactListPage implements OnInit {
   doInfinite(infiniteScroll) {
     setTimeout(() => {
       this.getContactsPage(this.searchTerm, this.page).then((contacts: any[]) => {
-        contacts.forEach(contact => {
+
+        let list = [];
+        if (this.filter == 'all'){
+          list = contacts;
+        }
+        else if (this.filter == 'seller'){
+          list = contacts.filter(word => word.seller == true);
+        }
+        else if (this.filter == 'customer'){
+          list = contacts.filter(word => word.customer == true);
+        }
+        else if (this.filter == 'supplier'){
+          list = contacts.filter(word => word.supplier == true);
+        }
+        else if (this.filter == 'employee'){
+          list = contacts.filter(word => word.employee == true);
+        }
+        // this.page = 1;
+
+
+        list.forEach(contact => {
           this.contacts.push(contact);
         });
         this.page += 1;
@@ -175,24 +216,25 @@ export class ContactListPage implements OnInit {
 
   doRefresh(refresher) {
     setTimeout(() => {
-      this.getContactsPage(this.searchTerm, 0).then((contacts: any[]) => {
-        if (this.filter == 'all'){
-          this.contacts = contacts;
-        }
-        else if (this.filter == 'seller'){
-          this.contacts = contacts.filter(word => word.seller == true);
-        }
-        else if (this.filter == 'customer'){
-          this.contacts = contacts.filter(word => word.customer == true);
-        }
-        else if (this.filter == 'supplier'){
-          this.contacts = contacts.filter(word => word.supplier == true);
-        }
-        else if (this.filter == 'employee'){
-          this.contacts = contacts.filter(word => word.employee == true);
-        }
-        this.page = 1;
-      });
+      // this.getContactsPage(this.searchTerm, 0).then((contacts: any[]) => {
+      //   if (this.filter == 'all'){
+      //     this.contacts = contacts;
+      //   }
+      //   else if (this.filter == 'seller'){
+      //     this.contacts = contacts.filter(word => word.seller == true);
+      //   }
+      //   else if (this.filter == 'customer'){
+      //     this.contacts = contacts.filter(word => word.customer == true);
+      //   }
+      //   else if (this.filter == 'supplier'){
+      //     this.contacts = contacts.filter(word => word.supplier == true);
+      //   }
+      //   else if (this.filter == 'employee'){
+      //     this.contacts = contacts.filter(word => word.employee == true);
+      //   }
+      //   this.page = 1;
+      // });
+      this.setFilteredItems();
       refresher.target.complete();
     }, 50);
   }
