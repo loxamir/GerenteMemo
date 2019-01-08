@@ -32,7 +32,7 @@
 </ion-header>
 <ion-content class="receipt-content" style="background-color: #ddd">
   <form class="sample-form validations-form" [formGroup]="receiptForm" (ngSubmit)="onSubmit(receiptForm.value)">
-    <ion-card class="list-card" *ngIf="receiptForm.value.state == 'DRAFT'">
+    <ion-card class="list-card" style="width: 96%; margin-left:5px;" *ngIf="receiptForm.value.state == 'DRAFT'">
       <ion-row>
         <ion-col>
           <ion-item>
@@ -46,11 +46,19 @@
         </ion-col>
       </ion-row>
       <ion-row *ngIf="receiptForm.value.cash_paid.type != 'cash'">
-        <ion-col (click)="selectCheck()">
-          <h4 class="field-label">{{'Cheque' | translate}}</h4>
-          <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'Sin Cheque'}}</h4>
+        <ion-col size="6" (click)="selectCheck()">
+          <ion-button class="button-100">Seleccionar Cheque</ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button class="button-100" (click)="createCheck()">Registrar Cheque</ion-button>
         </ion-col>
       </ion-row>
+      <ion-item class="field-100" *ngIf="receiptForm.value.cash_paid.type != 'cash'">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Cheque' | translate}}</h4>
+          <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'Seleccionar'}}</h4>
+        </div>
+      </ion-item>
     </ion-card>
 
 

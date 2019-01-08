@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { NavController, ModalController, LoadingController,
    AlertController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
@@ -26,11 +26,12 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./cash.page.scss'],
 })
 export class CashPage implements OnInit {
+  @Input() select;
 
     cashForm: FormGroup;
     loading: any;
     languages: Array<LanguageModel>;
-    _id: string;
+    @Input() _id: string;
 
     constructor(
       public navCtrl: NavController,
@@ -54,6 +55,7 @@ export class CashPage implements OnInit {
       //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.select = this.route.snapshot.paramMap.get('select');
       this.translate.setDefaultLang('es');
       this.translate.use('es');
       this.events.subscribe('changed-cash-move', (change)=>{
@@ -121,8 +123,9 @@ export class CashPage implements OnInit {
       if (this._id){
         this.cashService.updateCash(this.cashForm.value);
         // this.navCtrl.navigateBack().then(() => {
+        this.navCtrl.navigateBack('/cash-list').then(() => {
           this.events.publish('open-cash', this.cashForm.value);
-        // });
+        });
       } else {
         this.cashService.createCash(this.cashForm.value).then(doc => {
           //console.log("docss", doc);
@@ -130,9 +133,9 @@ export class CashPage implements OnInit {
             _id: doc['id'],
           });
           this._id = doc['id'];
-          // this.navCtrl.navigateBack().then(() => {
+          this.navCtrl.navigateBack('/cash-list').then(() => {
             this.events.publish('create-cash', this.cashForm.value);
-          // });
+          });
         });
       }
     }
@@ -283,5 +286,49 @@ export class CashPage implements OnInit {
       });
 
       prompt.present();
+    }
+
+
+    discard(){
+      this.canDeactivate();
+    }
+    async canDeactivate() {
+        if(this.cashForm.dirty) {
+            let alertPopup = await this.alertCtrl.create({
+                header: 'Descartar',
+                message: '¿Deseas salir sin guardar?',
+                buttons: [{
+                        text: 'Si',
+                        handler: () => {
+                            // alertPopup.dismiss().then(() => {
+                                this.exitPage();
+                            // });
+                        }
+                    },
+                    {
+                        text: 'No',
+                        handler: () => {
+                            // need to do something if the user stays?
+                        }
+                    }]
+            });
+
+            // Show the alert
+            alertPopup.present();
+
+            // Return false to avoid the page to be popped up
+            return false;
+        } else {
+          this.exitPage();
+        }
+    }
+
+    private exitPage() {
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
+        this.cashForm.markAsPristine();
+        this.navCtrl.navigateBack('/tabs/sale-list');
+      }
     }
 }

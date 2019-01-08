@@ -23,22 +23,22 @@
       <ion-item no-padding style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
           <ion-row>
-            <ion-col size="10" (click)="selectCheck(item)">
+            <ion-col (click)="selectCheck(item)">
               <ion-row>
                 <ion-col>
                   <h3 class="item-title"><b>{{ item.name }}</b></h3>
                 </ion-col>
               </ion-row>
-         <ion-row no-padding class="content-row one-line">
-            <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-              <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.0'}}</h2>
-              <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.0'}}</h2>
+             <ion-row no-padding class="content-row one-line">
+                <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+                  <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.0'}}</h2>
+                  <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.0'}}</h2>
+                </ion-col>
+              </ion-row>
             </ion-col>
-          </ion-row>
-            </ion-col>
-            <ion-col class="open-item-col" (click)="openCheck(item)">
+            <!-- <ion-col size="2" class="open-item-col" (click)="openCheck(item)">
               <ion-icon name="open" class="open-item-arrow"></ion-icon>
-            </ion-col>
+            </ion-col> -->
           </ion-row>
 
       </ion-card>

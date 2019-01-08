@@ -27,7 +27,7 @@ export class CheckPage implements OnInit {
     checkForm: FormGroup;
     loading: any;
     _id: string;
-    isModal;
+    select;
 
     languages: Array<LanguageModel>;
 
@@ -47,7 +47,7 @@ export class CheckPage implements OnInit {
       //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
-      this.isModal = this.route.snapshot.paramMap.get('select');
+      this.select = this.route.snapshot.paramMap.get('select');
       this.translate.setDefaultLang('es');
       this.translate.use('es');
     }
@@ -360,7 +360,7 @@ export class CheckPage implements OnInit {
       }
 
       private exitPage() {
-        if (this.isModal){
+        if (this.select){
           this.modalCtrl.dismiss();
         } else {
           // this.checkForm.markAsPristine();

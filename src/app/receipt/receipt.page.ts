@@ -29,6 +29,7 @@ import { FormatService } from '../services/format.service';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { InvoicePage } from '../invoice/invoice.page';
 import { CheckListPage } from '../check-list/check-list.page';
+import { CheckPage } from '../check/check.page';
 
 
 @Component({
@@ -51,10 +52,10 @@ export class ReceiptPage implements OnInit {
   @Input() select: any;
   @Input() _id: any;
   @Input() contact: any;
-@Input() name: any;
-@Input() signal: any;
-@Input() exchange_rate: any;
-@Input() origin_id: any;
+  @Input() name: any;
+  @Input() signal: any;
+  @Input() exchange_rate: any;
+  @Input() origin_id: any;
 
 
 
@@ -604,6 +605,12 @@ export class ReceiptPage implements OnInit {
 
     async selectCheck(){
       this.avoidAlertMessage = true;
+      let profileModal = await this.modalCtrl.create({
+        component: CheckListPage,
+        componentProps: {
+          "select": true,
+        }});
+      profileModal.present();
       // if (default_amount != 0){
         this.events.subscribe('select-check',  (data: any) => {
           // this.receiptForm.value.cash = data;
@@ -612,13 +619,35 @@ export class ReceiptPage implements OnInit {
             "check": data,
             "amount_paid": data.amount,
           })
+          profileModal.dismiss();
           this.events.unsubscribe('select-check');
           this.recomputeValues();
         });
-        let profileModal = await this.modalCtrl.create({
-          component: CheckListPage,
-          componentProps: {"select": true,}});
-        profileModal.present();
+
+      // }
+    }
+
+    async createCheck(){
+      this.avoidAlertMessage = true;
+      let profileModal = await this.modalCtrl.create({
+        component: CheckPage,
+        componentProps: {
+          "select": true,
+        }});
+      profileModal.present();
+      // if (default_amount != 0){
+        this.events.subscribe('create-check',  (data: any) => {
+          // this.receiptForm.value.cash = data;
+          // console.log("selectCash", (await this.pouchdbService.getDoc(data.currency_id)))
+          this.receiptForm.patchValue({
+            "check": data,
+            "amount_paid": data.amount,
+          })
+          profileModal.dismiss();
+          this.events.unsubscribe('create-check');
+          this.recomputeValues();
+        });
+
       // }
     }
 

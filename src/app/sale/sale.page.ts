@@ -956,7 +956,7 @@ export class SalePage implements OnInit {
             this.saleForm.markAsDirty();
             this.avoidAlertMessage = false;
             this.events.unsubscribe('select-contact');
-            // profileModal.dismiss();
+            profileModal.dismiss();
             resolve(true);
           })
           let profileModal = await this.modalCtrl.create({
@@ -1007,7 +1007,7 @@ export class SalePage implements OnInit {
             this.saleForm.markAsDirty();
             this.avoidAlertMessage = false;
             this.events.unsubscribe('select-contact');
-            // profileModal.dismiss();
+            profileModal.dismiss();
             resolve(true);
           })
           let profileModal = await this.modalCtrl.create({
@@ -1036,7 +1036,7 @@ export class SalePage implements OnInit {
           this.saleForm.markAsDirty();
           this.avoidAlertMessage = false;
           this.events.unsubscribe('select-payment-condition');
-          // profileModal.dismiss();
+          profileModal.dismiss();
           resolve(data);
           //this.beforeAddPayment();
         })

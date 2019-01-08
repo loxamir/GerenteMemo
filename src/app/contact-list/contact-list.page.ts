@@ -265,9 +265,12 @@ export class ContactListPage implements OnInit {
       }]);
     }
     this.events.subscribe('create-contact', (data) => {
+      console.log("select", data);
       if (this.select){
         this.events.publish('select-contact', data);
+        console.log("dismiss");
         this.modalCtrl.dismiss();
+
         // });
       }
       this.events.unsubscribe('create-contact');

@@ -84,9 +84,10 @@ export class CheckListPage implements OnInit {
   }
 
   selectCheck(check) {
-    //console.log("selectCheck");
+    console.log("selectCheck", check, this.select);
     if (this.select){
       // this.navCtrl.navigateBack().then(() => {
+        this.modalCtrl.dismiss();
         this.events.publish('select-check', check);
       // });
     } else {
@@ -95,6 +96,7 @@ export class CheckListPage implements OnInit {
   }
 
   async openCheck(check) {
+    console.log("openCheck", this.select);
     this.events.subscribe('open-check', (data) => {
       this.events.unsubscribe('open-check');
       // this.doRefreshList();
@@ -113,19 +115,19 @@ export class CheckListPage implements OnInit {
     }
   }
 
-  createChesck(){
-    this.events.subscribe('create-check', async (data) => {
-      if (this.select){
-
-        // this.navCtrl.navigateBack().then(() => {
-          // this.events.publish('select-check', data);
-        // });
-      }
-      this.events.unsubscribe('create-check');
-      this.doRefreshList();
-    })
-    // this.navCtrl.navigateForward(['/check', {}]);
-  }
+  // createChesck(){
+  //   this.events.subscribe('create-check', async (data) => {
+  //     if (this.select){
+  //       // this.navCtrl.navigateBack().then(() => {
+  //         this.events.publish('select-check', data);
+  //         this.modalCtrl.dismiss();
+  //       // });
+  //     }
+  //     this.events.unsubscribe('create-check');
+  //     this.doRefreshList();
+  //   })
+  //   // this.navCtrl.navigateForward(['/check', {}]);
+  // }
 
   async createCheck(){
     this.events.subscribe('create-check', (data) => {

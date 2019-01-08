@@ -58,7 +58,10 @@ export class CashService {
           }
           // console.log("PTS2", cash);
           // let receivables = pts.filter(word => word['contact_name'] && word['contact_name'].toString().search(new RegExp(keyword, "i")) != -1);
-          resolve(cash);
+          this.pouchdbService.getDoc(cash.currency_id).then(currency=>{
+            cash.currency = currency;
+            resolve(cash);
+          })
         })
       });
     });
@@ -114,7 +117,8 @@ export class CashService {
     });
   }
 
-  updateCash(cash){
+  updateCash(viewData){
+    let cash = Object.assign({}, viewData);
     cash.docType = 'account';
     delete cash.moves;
     delete cash.cash;
