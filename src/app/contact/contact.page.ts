@@ -29,6 +29,12 @@ export class ContactPage implements OnInit {
   _id: string;
   opened: boolean = false;
   select;
+  customer;
+  supplier;
+  seller;
+  employee;
+
+
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -54,6 +60,11 @@ export class ContactPage implements OnInit {
     // this.route.params.subscribe(...);
     // console.log("paramap", this.route.snapshot.paramMap.get('_id'), this._id);
     this.select = this.route.snapshot.paramMap.get('select');
+
+    this.customer = this.route.snapshot.paramMap.get('customer');
+    this.supplier = this.route.snapshot.paramMap.get('supplier');
+    this.seller = this.route.snapshot.paramMap.get('seller');
+    this.employee = this.route.snapshot.paramMap.get('employee');
     // if (this.navParams.data._id){
     //   this.opened = true;
     // }
@@ -78,10 +89,10 @@ export class ContactPage implements OnInit {
       email: new FormControl(''),
       note: new FormControl(''),
       // image: new FormControl(''),
-      customer: new FormControl(this.route.snapshot.paramMap.get('customer')=='true'||false),
-      supplier: new FormControl(this.route.snapshot.paramMap.get('supplier')=='true'||false),
-      seller: new FormControl(this.route.snapshot.paramMap.get('seller')=='true'||false),
-      employee: new FormControl(this.route.snapshot.paramMap.get('employee')=='true'||false),
+      customer: new FormControl(this.customer||false),
+      supplier: new FormControl(this.supplier||false),
+      seller: new FormControl(this.seller||false),
+      employee: new FormControl(this.employee||false),
       salary: new FormControl(null),
       currency: new FormControl({}),
       hire_date: new FormControl(undefined),

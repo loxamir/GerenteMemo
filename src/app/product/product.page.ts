@@ -40,7 +40,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
     constructor(
       public navCtrl: NavController,
-      public modal: ModalController,
+      // public modal: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
@@ -351,13 +351,13 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     selectCategory() {
       return new Promise(async resolve => {
         // this.avoidAlertMessage = true;
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ProductCategoryListPage,
           componentProps: {
             "select": true,
           }
         });
-        profileModal.present();
+        await profileModal.present();
         this.events.unsubscribe('select-category');
         this.events.subscribe('select-category', (data) => {
           this.productForm.patchValue({

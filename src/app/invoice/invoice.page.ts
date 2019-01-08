@@ -127,6 +127,7 @@ export class InvoicePage implements OnInit {
       this.translate.setDefaultLang('es');
       this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.select = this.route.snapshot.paramMap.get('select');
       // this.type = this.route.snapshot.paramMap.get('type');
       this.avoidAlertMessage = false;
     }
@@ -709,7 +710,6 @@ export class InvoicePage implements OnInit {
             }
           ]
         });
-
         prompt.present();
       }
     }

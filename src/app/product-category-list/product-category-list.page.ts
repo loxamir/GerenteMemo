@@ -20,7 +20,7 @@ export class ProductCategoryListPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     // public navPush: IonNavPush,
-    public modalController: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
@@ -65,19 +65,33 @@ export class ProductCategoryListPage implements OnInit {
   selectCategory(category) {
     if (this.select){
       // this.navCtrl.navigateBack('').then(() => {
+        this.modalCtrl.dismiss();
         this.events.publish('select-category', category);
       // });
     } else {
-      this.gotoCategory(category);
+      this.openCategory(category);
     }
   }
 
-  gotoCategory(category) {
+  async openCategory(category) {
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: ProductCategoryPage,
+        componentProps: {
+          "select": true,
+          _id: category._id,
+        }
+      });
+      await profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['product-category', {
+        '_id': category._id
+      }]);
+    }
     this.events.subscribe('open-category', (data) => {
       this.events.unsubscribe('open-category');
     })
     // this.navCtrl.push(CategoryPage, {'_id': category._id});
-    this.navCtrl.navigateForward(['product-category', {'_id': category._id}]);
   }
 
   async createCategory(){
@@ -85,14 +99,15 @@ export class ProductCategoryListPage implements OnInit {
       if (this.select){
         // this.navCtrl.pop().then(() => {
         // this.navCtrl.navigateBack('').then(() => {
+        this.modalCtrl.dismiss();
           this.events.publish('select-category', data);
         // });
       }
       this.events.unsubscribe('create-category');
     })
-    // this.modalController.dismiss();
+    // this.modalCtrl.dismiss();
     if (this.select){
-      let modal = await this.modalController.create({
+      let modal = await this.modalCtrl.create({
         component: ProductCategoryPage,
         componentProps: {
           select: true

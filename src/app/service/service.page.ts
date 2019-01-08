@@ -262,7 +262,7 @@ export class ServicePage implements OnInit {
             "type": "product"
           }
         });
-        profileModal.present();
+        await profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
           item.price = data.price;
@@ -283,10 +283,11 @@ export class ServicePage implements OnInit {
       let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,
         componentProps: {
+          "select": true,
           "_id": item._id,
         }
       });
-      profileModal.present();
+      await profileModal.present();
       this.events.subscribe('open-receipt', (data) => {
         profileModal.dismiss();
         this.events.unsubscribe('open-receipt');
@@ -453,7 +454,7 @@ export class ServicePage implements OnInit {
     // }
 
     async goNextStep() {
-      if (this.serviceForm.value.state == 'QUOTATION'){
+      if (this.serviceForm.value.state == 'QUOTATION' || this.serviceForm.value.state == 'SCHEDULED'){
         console.log("set Focus");
         if (this.serviceForm.value.client_request == ''){
           this.clientRequest.setFocus();
@@ -669,7 +670,7 @@ export class ServicePage implements OnInit {
             "select": true
           }
         });
-        profileModal.present();
+        await profileModal.present();
         this.events.subscribe('select-payment-condition', (data) => {
           this.serviceForm.patchValue({
             paymentCondition: data,
@@ -764,6 +765,7 @@ export class ServicePage implements OnInit {
           let profileModal = await this.modalCtrl.create({
             component: ReceiptPage,
             componentProps: {
+              "select": true,
               "addPayment": true,
               "contact": this.serviceForm.value.contact,
               "account_id": "account.income.sale",
@@ -778,7 +780,7 @@ export class ServicePage implements OnInit {
               // "origin_ids": origin_ids,
             }
           });
-          profileModal.present();
+          await profileModal.present();
           this.events.subscribe('create-receipt', (data) => {
               console.log("DDDDDDDATA", data);
               this.serviceForm.value.payments.push({
@@ -857,6 +859,7 @@ export class ServicePage implements OnInit {
       let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
+          "select": true,
           "contact_id": this.serviceForm.value.contact._id,
           "contact": this.serviceForm.value.contact,
           "origin_id": this.serviceForm.value._id,
@@ -864,7 +867,7 @@ export class ServicePage implements OnInit {
           'type': 'out',
         }
       });
-      profileModal.present();
+      await profileModal.present();
       this.events.subscribe('create-invoice', (data) => {
           this.serviceForm.value.invoices.push({
             'number': data.number,
@@ -893,10 +896,11 @@ export class ServicePage implements OnInit {
       let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
+          "select": true,
           "_id": item._id,
         }
       });
-      profileModal.present();
+      await profileModal.present();
       this.events.subscribe('open-invoice', (data) => {
         this.avoidAlertMessage = false;
         this.buttonSave();
@@ -999,7 +1003,7 @@ export class ServicePage implements OnInit {
           component: ServiceWorkPage,
           componentProps: {}
         });
-        profileModal.present();
+        await profileModal.present();
         let data: any = await profileModal.onDidDismiss();//data => {
           console.log("Work", data);
           if (data) {
@@ -1021,7 +1025,7 @@ export class ServicePage implements OnInit {
           component: ServiceWorkPage,
           componentProps: item
         });
-        profileModal.present();
+        await profileModal.present();
         let data = await profileModal.onDidDismiss()
           if (data) {
             //console.log("asdf", data);
@@ -1084,7 +1088,7 @@ export class ServicePage implements OnInit {
           component: ServiceTravelPage,
           componentProps: {}
         });
-        profileModal.present();
+        await profileModal.present();
         let data: any = await profileModal.onDidDismiss();
           if (data) {
             data.data.cost = this.travel_product['cost'];
@@ -1138,7 +1142,7 @@ export class ServicePage implements OnInit {
           component:ServiceTravelPage,
           componentProps: item
         });
-        profileModal.present();
+        await profileModal.present();
         let data = await profileModal.onDidDismiss();
         if (data) {
           Object.keys(data.data).forEach(key => {
@@ -1171,7 +1175,7 @@ export class ServicePage implements OnInit {
             "type": "product",
           }
         });
-        profileModal.present();
+        await profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
           if (data) {
@@ -1643,7 +1647,7 @@ export class ServicePage implements OnInit {
               "customer": true,
             }
           });
-          profileModal.present();
+          await profileModal.present();
           this.events.subscribe('select-contact', (data) => {
             this.serviceForm.patchValue({
               contact: data,
@@ -1688,7 +1692,7 @@ export class ServicePage implements OnInit {
               "select": true,
             }
           });
-          profileModal.present();
+          await profileModal.present();
           this.events.subscribe('select-product', (data) => {
             this.serviceForm.patchValue({
               product: data,

@@ -252,7 +252,7 @@ export class ContactListPage implements OnInit {
           'supplier': this.supplier,
           'seller': this.seller,
           'employee': this.employee,
-          'customer': this.customer,
+          'customer': true,
         }
       })
       profileModal.present();

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, AlertController, ModalController, LoadingController, Events } from '@ionic/angular';
+import { NavController, AlertController, ModalController, LoadingController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -27,7 +27,6 @@ export class ProductCategoryPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    public navParams: NavParams,
     public formBuilder: FormBuilder,
     public events: Events,
     public pouchdbService: PouchdbService,
@@ -38,13 +37,8 @@ export class ProductCategoryPage implements OnInit {
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
-    // this._id = this.navParams.data._id;
-    this.select = this.navParams.data.select;
-    if (this.select){
-      this._id = this.navParams.get('_id');
-    } else {
-      this._id = this.route.snapshot.paramMap.get('_id');
-    }
+    this.select = this.route.snapshot.paramMap.get('select');
+    this._id = this.route.snapshot.paramMap.get('_id');
   }
 
   ngOnInit() {
@@ -58,6 +52,7 @@ export class ProductCategoryPage implements OnInit {
       this.getCategory(this._id).then((data) => {
         //let currentLang = this.translate.currentLang;
         this.categoryForm.patchValue(data);
+        this.categoryForm.markAsPristine();
         //this.loading.dismiss();
       });
     } else {
