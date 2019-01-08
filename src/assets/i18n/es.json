@@ -292,5 +292,6 @@
   "OWNER_NAME": "Nombre del Emisor",
   "OWNER_DOC": "Documento del Emisor",
   "CHECK_LIST": "Lista de Cheques",
+  "MATURITY_DATE": "Fecha de Maturidad",
   "RESULT": "Resultado"
 }

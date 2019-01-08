@@ -632,6 +632,8 @@ export class ReceiptPage implements OnInit {
       let profileModal = await this.modalCtrl.create({
         component: CheckPage,
         componentProps: {
+          contact: this.receiptForm.value.contact,
+          amount: this.receiptForm.value.total,
           "select": true,
         }});
       profileModal.present();

@@ -1,6 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NavController, AlertController, ModalController, LoadingController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -21,13 +21,15 @@ import { CashListPage } from '../cash-list/cash-list.page';
   styleUrls: ['./check.page.scss'],
 })
 export class CheckPage implements OnInit {
-  @ViewChild('amount') amount;
+  @ViewChild('amount') amountField;
   @ViewChild('name') name;
 
     checkForm: FormGroup;
     loading: any;
     _id: string;
     select;
+    @Input() contact;
+    @Input() amount;
 
     languages: Array<LanguageModel>;
 
@@ -48,26 +50,28 @@ export class CheckPage implements OnInit {
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
+      this.contact = this.route.snapshot.paramMap.get('contact');
+      this.amount = this.route.snapshot.paramMap.get('amount');
       this.translate.setDefaultLang('es');
       this.translate.use('es');
     }
 
     ngOnInit() {
       setTimeout(() => {
-        this.amount.setFocus();
+        this.amountField.setFocus();
       }, 200);
       this.checkForm = this.formBuilder.group({
         bank_name: new FormControl(''),
 
         bank: new FormControl({}),
         name: new FormControl(null),
-        amount: new FormControl(null),
+        amount: new FormControl(this.amount||null),
         owner_name: new FormControl(''),
         owner_doc: new FormControl(''),
         my_check: new FormControl(false),
         emision_date: new FormControl(''),
         maturity_date: new FormControl(''),
-        contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}),
+        contact: new FormControl(this.contact||{}),
         state: new FormControl('draft'),
         currency: new FormControl(this.route.snapshot.paramMap.get('currency')||{}),
         note: new FormControl(''),
@@ -371,7 +375,7 @@ export class CheckPage implements OnInit {
 
       async goNextStep() {
         if (this.checkForm.value.amount == null){
-          this.amount.setFocus();
+          this.amountField.setFocus();
           return;
         }
           else if (this.checkForm.value.name == null){

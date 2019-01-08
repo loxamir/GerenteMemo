@@ -33,10 +33,11 @@ export class ConfigPage implements OnInit {
   loading: any;
   _id: string;
   languages: Array<LanguageModel>;
+  select;
 
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -59,6 +60,7 @@ export class ConfigPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
+    this.select = this.route.snapshot.paramMap.get('select');
   }
 
   ngOnInit() {
@@ -147,7 +149,7 @@ export class ConfigPage implements OnInit {
         this.events.unsubscribe('select-currency');
         resolve(data);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: CurrencyListPage,
         componentProps: {
           "select": true
@@ -167,7 +169,7 @@ export class ConfigPage implements OnInit {
         this.events.unsubscribe('select-cash');
         resolve(data);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: CashListPage,
         componentProps: {
           "select": true
@@ -187,7 +189,7 @@ export class ConfigPage implements OnInit {
         this.events.unsubscribe('select-product');
         resolve(data);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: ProductListPage,
         componentProps: {
           "select": true
@@ -207,7 +209,7 @@ export class ConfigPage implements OnInit {
         this.events.unsubscribe('select-product');
         resolve(data);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: ProductListPage,
         componentProps: {
           "select": true
@@ -227,7 +229,7 @@ export class ConfigPage implements OnInit {
         this.events.unsubscribe('select-product');
         resolve(data);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: ProductListPage,
         componentProps: {
           "select": true
@@ -247,7 +249,7 @@ export class ConfigPage implements OnInit {
         this.events.unsubscribe('select-account');
         resolve(data);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: AccountListPage,
         componentProps: {
           "select": true
@@ -266,7 +268,7 @@ export class ConfigPage implements OnInit {
         this.events.unsubscribe('select-warehouse');
         resolve(data);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: WarehouseListPage,
         componentProps: {
           "select": true
@@ -276,16 +278,25 @@ export class ConfigPage implements OnInit {
     });
   }
   selectContact() {
-    return new Promise(resolve => {
+    return new Promise(async resolve => {
+      let profileModal = await this.modalCtrl.create({
+        component: ContactListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      profileModal.present();
+
       this.events.subscribe('select-contact', (data) => {
         this.configForm.patchValue({
           contact: data,
         });
         this.configForm.markAsDirty();
+        profileModal.dismiss();
         this.events.unsubscribe('select-contact');
         resolve(data);
       })
-      this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
+      // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
     });
   }
 
@@ -332,9 +343,9 @@ export class ConfigPage implements OnInit {
   configInvoicePrint() {
     return new Promise(async resolve => {
       console.log("invoice", {"teste": "ok"});
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: InvoiceConfigPage,
-        componentProps: {"teste": "ok"}
+        componentProps: this.configForm.value.invoicePrint,
       });
       await profileModal.present();
       const { data } = await profileModal.onDidDismiss();
@@ -355,12 +366,14 @@ export class ConfigPage implements OnInit {
 
   addUser() {
     return new Promise(async resolve => {
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: UserPage,
         componentProps: {}
       });
-      profileModal.present();
-      let data = await profileModal.onDidDismiss();
+      await profileModal.present();
+      // let data = await profileModal.onDidDismiss();
+      const { data } = await profileModal.onDidDismiss();
+      console.log("userdata", data);
       // data => {
         if (data) {
           this.configForm.value.users.push(data);
@@ -375,12 +388,13 @@ export class ConfigPage implements OnInit {
 
   async editUser(user) {
     // return new Promise(resolve => {
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: UserPage,
         componentProps: user
       });
-      profileModal.present();
-      let data: any = profileModal.onDidDismiss();
+      await profileModal.present();
+      // let data: any = profileModal.onDidDismiss();
+      const { data } = await profileModal.onDidDismiss();
       // data => {
         if (data) {
           user["name"] = data.name;
@@ -400,6 +414,50 @@ export class ConfigPage implements OnInit {
         }
       // });
     // });
+  }
+
+
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.configForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      this.configForm.markAsPristine();
+      this.navCtrl.navigateBack('/tabs/sale-list');
+    }
   }
 
 }

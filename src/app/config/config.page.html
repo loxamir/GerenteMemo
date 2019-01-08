@@ -4,11 +4,11 @@
       <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'CONFIG' | translate }}</ion-title>
-    <ion-buttons slot="end" [hidden]="!configForm.dirty">
+    <!-- <ion-buttons slot="end" [hidden]="!configForm.dirty">
       <ion-button (click)="buttonSave()">
         {{ 'SAVE' | translate }}
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -61,12 +61,12 @@
       <h4 class="field-value">{{configForm.value.input_product && configForm.value.input_product.name || 'Seleccionar'}}</h4>
     </ion-item>
 
-    <ion-item no-padding (click)="selectTravelProduct()" class="field-50">
+    <ion-item no-padding class="field-50">
       <ion-label position="floating">{{'invoice_sequence' | translate}}</ion-label>
       <ion-input type="text" formControlName="invoice_sequence"></ion-input>
     </ion-item>
 
-    <ion-item no-padding (click)="selectInputProduct()" class="field-50">
+    <ion-item no-padding class="field-50">
       <ion-label position="floating">{{'product_sequence' | translate}}</ion-label>
       <ion-input type="text" formControlName="product_sequence"></ion-input>
     </ion-item>
@@ -77,20 +77,22 @@
     </ion-col>
   </ion-row>
   <!-- <ion-list no-lines> -->
-  <ion-card class="list-card" style="border-radius: 7px;">
+  <ion-card class="list-card" style="border-radius: 7px;width: 98%;margin-left: 3px;">
   <h2 class="section-title">{{'Usuarios' | translate}}</h2>
     <ion-item-sliding class="list-item" *ngFor="let user of configForm.value.users">
   <ion-item  (click)="editUser(user)" style="border: 1px solid #ddd;height: 50px;">
-    <ion-row style="">
-      <ion-col no-padding>
-        <h4 class="field-label">{{'NAME' | translate}}</h4>
-        <h4 class="field-name">{{user.name}}</h4>
-      </ion-col>
-      <ion-col no-padding>
+    <!-- <ion-row style="height:50px;width: 100%;">
+      <ion-col no-padding size="6"> -->
+      <!-- <div class="field-many2one" style="width: 100%;text-align:center"> -->
+        <!-- <h4 class="field-label">{{'NAME' | translate}}</h4> -->
+        <h4 style="font-size: 20px;text-align: center;width: 100%;">{{user.name}}</h4>
+      <!-- </div> -->
+      <!-- </ion-col> -->
+      <!-- <ion-col no-padding size="6">
         <h4 class="field-label">{{'PHONE' | translate}}</h4>
         <h4 class="field-name">{{user.phone}}</h4>
-      </ion-col>
-    </ion-row>
+      </ion-col> -->
+    <!-- </ion-row> -->
   </ion-item>
   <ion-item-options>
     <ion-button icon-only color="primary" (click)="deleteUser(item)">
@@ -108,4 +110,22 @@
 
   </form>
   <span>Version 2</span>
+
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-button (click)="discard()" color="danger">
+      <ion-icon name="backspace" *ngIf="configForm.dirty"> </ion-icon>
+      <ion-icon name="arrow-back" *ngIf="!configForm.dirty"> </ion-icon>
+      <span *ngIf="configForm.dirty">Descartar</span>
+      <span *ngIf="!configForm.dirty">Volver</span>
+    </ion-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="configForm.dirty">
+    <ion-button (click)="buttonSave()"  color="success">
+      <ion-icon name="save"> </ion-icon>
+      Guardar
+    </ion-button>
+  </ion-fab>
+  <div style="height: 100px;">
+  </div>
 </ion-content>

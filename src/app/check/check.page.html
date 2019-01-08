@@ -53,7 +53,7 @@
         </ion-item>
         <ion-item
          no-padding
-         class="field-100" *ngIf="!checkForm.value.my_check">
+         class="field-50" *ngIf="!checkForm.value.my_check">
           <ion-label position="floating">{{'Banco' | translate}}</ion-label>
           <ion-select formControlName="bank_name"
             interface="popover"
@@ -63,6 +63,15 @@
             <ion-select-option value="regional">Banco Regional</ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-item no-padding class="item-content"
+        class="field-50">
+          <ion-label position="floating" class="field-label">{{'MATURITY_DATE' | translate }}</ion-label>
+          <ion-datetime
+            displayFormat="DD/MM/YYYY"
+            pickerFormat="DD/MM/YYYY"
+            formControlName="maturity_date">
+          </ion-datetime>
+      </ion-item>
         <ion-item no-padding (click)="selectCurrency()" class="field-100">
           <h4 class="field-label">{{'CURRENCY' | translate}}</h4>
           <h4 class="field-value">{{checkForm.value.currency && checkForm.value.currency.name || 'Selecionar'}}</h4>

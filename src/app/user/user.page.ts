@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ModalController, LoadingController,  } from '@ionic/angular';
+import { NavController, NavParams, ModalController, LoadingController, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,15 +17,17 @@ export class UserPage implements OnInit {
   loading: any;
   _id: string;
   languages: Array<LanguageModel>;
+  select = true;
 
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
     public route: ActivatedRoute,
     public navParams: NavParams,
+    public alertCtrl: AlertController,
     public formBuilder: FormBuilder,
   ) {
     //this.loading = //this.loadingCtrl.create();
@@ -48,6 +50,49 @@ export class UserPage implements OnInit {
   }
 
   buttonSave(){
-    // this.viewCtrl.dismiss(this.form.value);
+    this.modalCtrl.dismiss(this.form.value);
+  }
+
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.form.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      this.form.markAsPristine();
+      this.navCtrl.navigateBack('/tabs/product-list');
+    }
   }
 }

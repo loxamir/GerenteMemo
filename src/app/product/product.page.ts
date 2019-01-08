@@ -96,7 +96,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       setTimeout(() => {
         this.name.setFocus();
         this.productForm.markAsPristine();
-      }, 200);
+      }, 400);
       this.productForm = this.formBuilder.group({
         name: new FormControl(null, Validators.required),
         // image: new FormControl(''),
@@ -118,7 +118,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.productService.getProduct(this._id).then((data) => {
           this.productForm.patchValue(data);
           this.theoreticalStock = data.stock;
-          // this.productForm.markAsPristine();
+          this.productForm.markAsPristine();
           //this.loading.dismiss();
         });
       } else {
