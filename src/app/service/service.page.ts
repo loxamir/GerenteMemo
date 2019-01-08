@@ -223,9 +223,11 @@ export class ServicePage implements OnInit {
           });
         } else {
           //this.loading.dismiss();
-          setTimeout(() => {
-            this.clientRequest.setFocus();
-          }, 700);
+          if (!this.serviceForm.value.production){
+            setTimeout(() => {
+              this.clientRequest.setFocus();
+            }, 700);
+          }
         }
       });
 
@@ -456,7 +458,7 @@ export class ServicePage implements OnInit {
     async goNextStep() {
       if (this.serviceForm.value.state == 'QUOTATION' || this.serviceForm.value.state == 'SCHEDULED'){
         console.log("set Focus");
-        if (this.serviceForm.value.client_request == ''){
+        if (this.serviceForm.value.client_request == '' && !this.serviceForm.value.production){
           this.clientRequest.setFocus();
         }
         else if (this.serviceForm.value.production){
@@ -494,26 +496,28 @@ export class ServicePage implements OnInit {
                   console.log("ignore_inputs");
 
                   this.ignore_inputs = true;
-                  let prompt = await this.alertCtrl.create({
-                    header: 'Viaticos',
-                    message: 'Has hecho algun viaje para realizar el trabajo?',
-                    buttons: [
-                      {
-                        text: 'No',
-                        handler: data => {
-                          // this.addTravel();
-                          this.ignore_travels = true;
+                  if (!this.serviceForm.value.production){
+                    let prompt = await this.alertCtrl.create({
+                      header: 'Viaticos',
+                      message: 'Has hecho algun viaje para realizar el trabajo?',
+                      buttons: [
+                        {
+                          text: 'No',
+                          handler: data => {
+                            // this.addTravel();
+                            this.ignore_travels = true;
+                          }
+                        },
+                        {
+                          text: 'Si',
+                          handler: data => {
+                            this.addTravel();
+                          }
                         }
-                      },
-                      {
-                        text: 'Si',
-                        handler: data => {
-                          this.addTravel();
-                        }
-                      }
-                    ]
-                  });
-                  prompt.present();
+                      ]
+                    });
+                    prompt.present();
+                  }
                 }
               },
               {
@@ -528,7 +532,7 @@ export class ServicePage implements OnInit {
 
           prompt.present();
         }
-        else if (this.serviceForm.value.travels.length==0 && ! this.ignore_travels){
+        else if (this.serviceForm.value.travels.length==0 && ! this.ignore_travels && !this.serviceForm.value.production){
           console.log("ignore_travels");
           let prompt = await this.alertCtrl.create({
             header: 'Viaticos',
@@ -555,6 +559,8 @@ export class ServicePage implements OnInit {
           console.log("Confirm Service");
           this.confirmService();
         }
+      } else if (this.serviceForm.value.production){
+        this.confirmService();
       } else if (this.serviceForm.value.state == 'CONFIRMED'){
           this.beforeAddPayment();
       } else if (this.serviceForm.value.state == 'PAID'){
