@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/cash-list"></ion-back-button>
+    </ion-buttons>
     <ion-searchbar
       placeholder="Buscar Titulo"
       [(ngModel)]="searchTerm"
@@ -19,7 +22,7 @@
       <ion-item no-padding >
         <ion-card class="list-card">
       <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-90 class="item-content" (click)="selectTitle(item)">
+        <ion-col no-padding class="item-content" (click)="selectTitle(item)">
           <ion-row>
             <h3 class="item-title"><b>{{item.name}}</b></h3>
           </ion-row>
@@ -30,8 +33,11 @@
               <h3 class="item-title">{{item.address}}</h3>
           </ion-row>
         </ion-col>
-        <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;">
+        <!-- <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;">
           <ion-icon (click)="openTitle(item)" name="arrow-forward"></ion-icon>
+        </ion-col> -->
+        <ion-col size="2" class="open-item-col" (click)="openTitle(item)">
+          <ion-icon name="open" class="open-item-arrow"></ion-icon>
         </ion-col>
       </ion-row>
     </ion-card>

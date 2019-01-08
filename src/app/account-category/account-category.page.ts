@@ -139,10 +139,15 @@ export class AccountCategoryPage implements OnInit {
       // return this.pouchdbService.getDoc(doc_id);
       return new Promise((resolve, reject)=>{
         this.pouchdbService.getDoc(doc_id).then((category: any)=>{
-          this.pouchdbService.getDoc(category.title_id).then(title=>{
-            category.title = title || {};
+          if (category.title_id){
+            this.pouchdbService.getDoc(category.title_id).then(title=>{
+              category.title = title || {};
+              resolve(category);
+            });
+          } else {
+            category.title = {};
             resolve(category);
-          });
+          }
         });
       });
     }
