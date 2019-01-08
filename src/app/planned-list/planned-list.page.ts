@@ -35,7 +35,7 @@ export class PlannedListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public route: ActivatedRoute,
     public events: Events,
     public pouchdbService: PouchdbService,
@@ -67,14 +67,14 @@ export class PlannedListPage implements OnInit {
       'account.receivable.credit'
     ]).then(async accounts=>{
       console.log("accounts", accounts);
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
           "accountFrom": accounts[0].doc,
           "accountTo": accounts[1].doc,
           "receivable": true,
           "contact": this.contact,
-          "isModal": true,
+          "select": true,
         }
       });
       profileModal.present();
@@ -86,14 +86,14 @@ export class PlannedListPage implements OnInit {
       'account.payable.credit',
       'account.other.open',
     ]).then(async accounts=>{
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
           "accountFrom": accounts[0].doc,
           "accountTo": accounts[1].doc,
           "payable": true,
           "contact": this.contact,
-          "isModal": true,
+          "select": true,
         }
       });
       profileModal.present();
@@ -160,7 +160,7 @@ export class PlannedListPage implements OnInit {
         paidPlanneds.push(item.doc);
       }
     })
-    let profileModal = await this.modal.create({
+    let profileModal = await this.modalCtrl.create({
       component: ReceiptPage,
       componentProps: {
         "addPayment": true,
