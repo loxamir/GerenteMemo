@@ -74,21 +74,21 @@ export class ContactListPage implements OnInit {
     ).then((contacts: any[]) => {
       console.log("contacts", contacts);
 
-      if (this.filter == 'all'){
+      // if (this.filter == 'all'){
         this.contacts = contacts;
-      }
-      else if (this.filter == 'seller'){
-        this.contacts = contacts.filter(word => word.seller == true);
-      }
-      else if (this.filter == 'customer'){
-        this.contacts = contacts.filter(word => word.customer == true);
-      }
-      else if (this.filter == 'supplier'){
-        this.contacts = contacts.filter(word => word.supplier == true);
-      }
-      else if (this.filter == 'employee'){
-        this.contacts = contacts.filter(word => word.employee == true);
-      }
+      // }
+      // else if (this.filter == 'seller'){
+      //   this.contacts = contacts.filter(word => word.seller == true);
+      // }
+      // else if (this.filter == 'customer'){
+      //   this.contacts = contacts.filter(word => word.customer == true);
+      // }
+      // else if (this.filter == 'supplier'){
+      //   this.contacts = contacts.filter(word => word.supplier == true);
+      // }
+      // else if (this.filter == 'employee'){
+      //   this.contacts = contacts.filter(word => word.employee == true);
+      // }
       this.page = 1;
 
       // this.contacts = contacts;
@@ -187,22 +187,21 @@ export class ContactListPage implements OnInit {
       this.getContactsPage(this.searchTerm, this.page).then((contacts: any[]) => {
 
         let list = [];
-        if (this.filter == 'all'){
+        // if (this.filter == 'all'){
           list = contacts;
-        }
-        else if (this.filter == 'seller'){
-          list = contacts.filter(word => word.seller == true);
-        }
-        else if (this.filter == 'customer'){
-          list = contacts.filter(word => word.customer == true);
-        }
-        else if (this.filter == 'supplier'){
-          list = contacts.filter(word => word.supplier == true);
-        }
-        else if (this.filter == 'employee'){
-          list = contacts.filter(word => word.employee == true);
-        }
-        // this.page = 1;
+        // }
+        // else if (this.filter == 'seller'){
+        //   list = contacts.filter(word => word.seller == true);
+        // }
+        // else if (this.filter == 'customer'){
+        //   list = contacts.filter(word => word.customer == true);
+        // }
+        // else if (this.filter == 'supplier'){
+        //   list = contacts.filter(word => word.supplier == true);
+        // }
+        // else if (this.filter == 'employee'){
+        //   list = contacts.filter(word => word.employee == true);
+        // }
 
 
         list.forEach(contact => {
@@ -294,7 +293,7 @@ export class ContactListPage implements OnInit {
           'supplier': this.supplier,
           'seller': this.seller,
           'employee': this.employee,
-          'customer': true,
+          'customer': this.customer,
         }
       })
       profileModal.present();

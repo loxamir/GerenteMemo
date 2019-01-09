@@ -73,6 +73,14 @@ h4.field-value {
 	background-color: red;
   color: white;
 }
+.started {
+	background-color: #e86464;
+  color: white;
+}
+.scheduled {
+	background-color: #6565ea;
+	color: white;
+}
 .confirmed {
 	color: black;
   background-color: #fffc8b;
@@ -227,20 +235,20 @@ ion-item-sliding, ion-item-sliding .item {
 ion-button {
   font-size:13px;
 }
-@media screen and (max-width: 400px){
-  ion-button {
-    --padding-end:5px;
-    --padding-start:5px;
-    // font-size:12px;
-  }
-}
-@media screen and (max-width: 360px){
-  ion-button {
-    --padding-end:3px;
-    --padding-start:3px;
-    font-size:12px;
-  }
-}
+// @media screen and (max-width: 400px){
+//   ion-button {
+//     --padding-end:5px;
+//     --padding-start:5px;
+//     // font-size:12px;
+//   }
+// }
+// @media screen and (max-width: 360px){
+//   ion-button {
+//     --padding-end:3px;
+//     --padding-start:3px;
+//     font-size:12px;
+//   }
+// }
 @media screen and (max-width: 335px){
   ion-button {
     --padding-end:3px;

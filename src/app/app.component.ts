@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
     // },
     {
       title: 'Personas',
-      url: '/person-tabs',
+      url: '/contact-list',
       icon: 'contacts'
     },
     {

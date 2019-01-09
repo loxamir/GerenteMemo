@@ -254,7 +254,7 @@ export class ServicePage implements OnInit {
 
 
     async openItem(item) {
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
         let profileModal = await this.modalCtrl.create({
@@ -1047,7 +1047,7 @@ export class ServicePage implements OnInit {
     }
 
     async editWorkPrice(item){
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
           header: 'Precio del servicio por hora',
           message: 'Cual es el precio del la hora?',
@@ -1111,7 +1111,7 @@ export class ServicePage implements OnInit {
     }
 
     async editTravelPrice(item){
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
           header: 'Precio del Viatico por km',
           message: 'Cual es el precio de este del viatico por km?',
@@ -1234,7 +1234,7 @@ export class ServicePage implements OnInit {
       // }
     }
     sumWork(item) {
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         item.time = parseFloat(item.time)+1;
         this.recomputeValues();
         this.serviceForm.markAsDirty();
@@ -1242,7 +1242,7 @@ export class ServicePage implements OnInit {
     }
 
     remWork(item) {
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         item.time = parseFloat(item.time)-1;
         this.recomputeValues();
         this.serviceForm.markAsDirty();
@@ -1250,7 +1250,7 @@ export class ServicePage implements OnInit {
     }
 
     sumTravel(item) {
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         item.distance = parseFloat(item.distance)+1;
         this.recomputeValues();
         this.serviceForm.markAsDirty();
@@ -1258,7 +1258,7 @@ export class ServicePage implements OnInit {
     }
 
     remTravel(item) {
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         item.distance = parseFloat(item.distance)-1;
         this.recomputeValues();
         this.serviceForm.markAsDirty();
@@ -1266,7 +1266,7 @@ export class ServicePage implements OnInit {
     }
 
     sumItem(item) {
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         item.quantity = parseFloat(item.quantity)+1;
         this.recomputeValues();
         this.serviceForm.markAsDirty();
@@ -1274,7 +1274,7 @@ export class ServicePage implements OnInit {
     }
 
     remItem(item) {
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         item.quantity = parseFloat(item.quantity)-1;
         this.recomputeValues();
         this.serviceForm.markAsDirty();
@@ -1282,7 +1282,7 @@ export class ServicePage implements OnInit {
     }
 
     async editItemPrice(item){
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
           header: 'Precio del Producto',
           message: 'Cual es el precio de este producto?',
@@ -1314,7 +1314,7 @@ export class ServicePage implements OnInit {
     }
 
     async editItemQuantity(item){
-      if (this.serviceForm.value.state!='CONFIRMED'){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
           header: 'Cantidad del Producto',
           message: 'Cual es el Cantidad de este producto?',
@@ -1574,9 +1574,13 @@ export class ServicePage implements OnInit {
                 });
               });
             }
+            let state = 'CONFIRMED';
+            if (this.serviceForm.value.production){
+              let state = 'PRODUCED';
+            }
             this.pouchdbService.createDocList(createList).then((created: any)=>{
               this.serviceForm.patchValue({
-                state: 'CONFIRMED',
+                state: state,
                 amount_unInvoiced: this.serviceForm.value.total,
                 planned: created,
               });

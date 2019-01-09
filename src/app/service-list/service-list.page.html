@@ -50,12 +50,12 @@
         </ion-col>
       </ion-row>
       <ion-row no-padding>
-        <ion-col no-padding style="text-align: center;border-radius: 4px;"
+        <ion-col no-padding style="text-align: center;"
         [class.quotation]="item.state=='QUOTATION'"
         [class.started]="item.state=='STARTED'"
         [class.quotation]="item.state=='SCHEDULED'"
         [class.confirmed]="item.state=='CONFIRMED'"
-        [class.paid]="item.state=='PAID'"
+        [class.paid]="item.state=='PAID'||item.state=='PRODUCED'"
         [class.cancel]="item.state=='CANCELED'">
             {{ item.state | translate }}
         </ion-col>

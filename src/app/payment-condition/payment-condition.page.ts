@@ -26,10 +26,11 @@ export class PaymentConditionPage implements OnInit {
     loading: any;
     languages: Array<LanguageModel>;
     _id: string;
+    select;
 
     constructor(
       public navCtrl: NavController,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
@@ -47,6 +48,7 @@ export class PaymentConditionPage implements OnInit {
       //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.select = this.route.snapshot.paramMap.get('select');
     }
 
     ngOnInit() {
@@ -89,7 +91,7 @@ export class PaymentConditionPage implements OnInit {
             this.events.unsubscribe('select-account');
             resolve(true);
           })
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: AccountListPage,
             componentProps: {
               "select": true
@@ -116,7 +118,7 @@ export class PaymentConditionPage implements OnInit {
             this.events.unsubscribe('select-account');
             resolve(true);
           })
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: AccountListPage,
             componentProps: {
               "select": true
@@ -176,9 +178,13 @@ export class PaymentConditionPage implements OnInit {
     buttonSave() {
       if (this._id){
         this.updatePaymentCondition(this.paymentConditionForm.value);
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('open-payment-condition', this.paymentConditionForm.value);
-        // });
+        if (this.select){
+          this.modalCtrl.dismiss();
+        } else {
+          this.navCtrl.navigateBack('payment-condition-list').then(() => {
+            this.events.publish('open-payment-condition', this.paymentConditionForm.value);
+          });
+        }
       } else {
         this.createPaymentCondition(this.paymentConditionForm.value).then((doc: any) => {
           //console.log("docss", doc);
@@ -186,9 +192,13 @@ export class PaymentConditionPage implements OnInit {
             _id: doc.id,
           });
           this._id = doc.id;
-          // this.navCtrl.navigateBack().then(() => {
-            this.events.publish('create-payment-condition', this.paymentConditionForm.value);
-          // });
+          if (this.select){
+            this.modalCtrl.dismiss();
+          } else {
+            this.navCtrl.navigateBack('payment-condition-list').then(() => {
+              this.events.publish('create-payment-condition', this.paymentConditionForm.value);
+            });
+          }
         });
       }
     }
