@@ -57,7 +57,7 @@
     </ion-item> -->
   </ion-row>
   <ion-row class="state-header">
-    <ion-col size="4" *ngIf="serviceForm.value.state == 'QUOTATION' || serviceForm.value.state == 'PRODUCED'">
+    <ion-col size="4" *ngIf="(serviceForm.value.state == 'QUOTATION' || serviceForm.value.state == 'PRODUCED') || serviceForm.value.production">
       <div class="clicked arron">
         <span class="state-label">
           Nuevo

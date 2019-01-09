@@ -127,11 +127,15 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     getDefaultCategory(){
-      this.pouchdbService.getDoc('category.'+this.productForm.value.type).then((category)=>{
-        this.productForm.patchValue({
-          category: category
+      if (this._id){
+        //TODO: find a way to avoid the loading time
+      } else {
+        this.pouchdbService.getDoc('category.'+this.productForm.value.type).then((category)=>{
+          this.productForm.patchValue({
+            category: category
+          })
         })
-      })
+      }
     }
 
     goNextStep() {
