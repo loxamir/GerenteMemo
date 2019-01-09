@@ -14,7 +14,7 @@ import { ContactPage } from '../contact/contact.page';
 // import { ProductService } from '../product/product.service';
 import { ProductListPage } from '../product-list/product-list.page';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
-// import { ConfigService } from '../config/config.service';
+import { ConfigService } from '../config/config.service';
 import { HostListener } from '@angular/core';
 import { FormatService } from '../services/format.service';
 // import { InvoicePopover } from './invoice.popover';
@@ -116,7 +116,7 @@ export class InvoicePage implements OnInit {
       public bluetoothSerial: BluetoothSerial,
       public toastCtrl: ToastController,
       public printer: Printer,
-      // public configService: ConfigService,
+      public configService: ConfigService,
       public formatService: FormatService,
       public events:Events,
       // public popoverCtrl: PopoverController,
@@ -128,7 +128,7 @@ export class InvoicePage implements OnInit {
       this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
-      // this.type = this.route.snapshot.paramMap.get('type');
+      this.type = this.route.snapshot.paramMap.get('type');
       this.avoidAlertMessage = false;
     }
 
@@ -740,9 +740,9 @@ export class InvoicePage implements OnInit {
       } else if (this.invoiceForm.value.code){
         this.informNumber(this.invoiceForm.value.code);
       } else {
-        // this.configService.showNextSequence('invoice').then((code) => {
-        //   this.informNumber(code);
-        // });
+        this.configService.showNextSequence('invoice').then((code) => {
+          this.informNumber(code);
+        });
       }
     }
 
@@ -766,7 +766,7 @@ export class InvoicePage implements OnInit {
             text: 'Imprimir',
             handler: data => {
               if (this.invoiceForm.value.type == 'out'){
-                // this.configService.setNextSequence('invoice', data.code).then(dados => {
+                this.configService.setNextSequence('invoice', data.code).then(dados => {
                   //console.log("dados", dados);
                   this.invoiceForm.patchValue({
                     code: data.code,
@@ -776,7 +776,7 @@ export class InvoicePage implements OnInit {
                   this.printAndroid();
                   this.justSave();
                   // this.navCtrl.navigateBack();
-                // });
+                });
               } else {
                 this.invoiceForm.patchValue({
                   code: data.code,

@@ -66,10 +66,26 @@ export class ConfigService {
   }
 
   getSequence(docType): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      this.getConfigDoc().then((data) => {
-        let code = data[docType+'_sequence'].toString();
-        //console.log("code", code);
+    return new Promise(async (resolve, reject)=>{
+      if (docType == 'product'){
+        this.getConfigDoc().then((data) => {
+          let code = data[docType+'_sequence'].toString();
+          //console.log("code", code);
+          let regex = /[0-9]+$/
+          let string_end = code.match(regex).index;
+          let number = code.match(regex)[0];
+          let next_number = parseFloat(number)+1;
+          let prefix = code.substr(0, string_end);
+          let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
+          let new_code = prefix+pad_number;
+          data[docType+'_sequence'] = new_code;
+          this.pouchdbService.updateDoc(data);
+          resolve(code);
+        });
+      } else {
+        let data = await this.pouchdbService.getDoc('sequence'+'.'+'user'+'.'+docType);
+        let code = data['value'];
+        console.log('code', code);
         let regex = /[0-9]+$/
         let string_end = code.match(regex).index;
         let number = code.match(regex)[0];
@@ -77,42 +93,72 @@ export class ConfigService {
         let prefix = code.substr(0, string_end);
         let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
         let new_code = prefix+pad_number;
-        data[docType+'_sequence'] = new_code;
-        this.pouchdbService.updateDoc(data);
+        data['value'] = new_code;
+        console.log("data", data);
+        let test = await this.pouchdbService.updateDoc(data);
+        console.log("test", test);
         resolve(code);
-      });
+      }
     });
     //code = this.formatService.string_pad(4, code.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
   }
 
   showNextSequence(docType): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      this.getConfigDoc().then((data) => {
-        resolve(data[docType+'_sequence']);
-      });
+    return new Promise(async (resolve, reject)=>{
+      if (docType == 'product'){
+        this.getConfigDoc().then((data) => {
+          resolve(data[docType+'_sequence']);
+        });
+      } else {
+        let code = await this.pouchdbService.getDoc(
+          'sequence'+'.'+'user'+'.'+docType
+        );
+        console.log('code', code);
+        resolve(code['value']);
+      }
     });
     //code = this.formatService.string_pad(4, code.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
   }
 
   setNextSequence(docType, new_code): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      //console.log("new_code1", new_code);
-      this.code = new_code.toString();
-      this.getConfigDoc().then((data) => {
-        //console.log("new_code", this.code);
-        let code = this.code;
-        let regex = /[0-9]+$/;
+    return new Promise(async (resolve, reject)=>{
+
+      if (docType == 'product'){
+        this.code = new_code.toString();
+        this.getConfigDoc().then((data) => {
+          //console.log("new_code", this.code);
+          let code = this.code;
+          let regex = /[0-9]+$/;
+          let string_end = code.match(regex).index;
+          //console.log("string_end", string_end);
+          let number = code.match(regex)[0];
+          let next_number = parseFloat(number)+1;
+          let prefix = code.substr(0, string_end);
+          let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
+          let new_code = prefix+pad_number;
+          data[docType+'_sequence'] = new_code;
+          this.pouchdbService.updateDoc(data);
+          resolve(new_code);
+        });
+      } else {
+        let data = await this.pouchdbService.getDoc('sequence'+'.'+'user'+'.'+docType);
+        let code = data['value'];
+        console.log('code', code);
+        let regex = /[0-9]+$/
         let string_end = code.match(regex).index;
-        //console.log("string_end", string_end);
         let number = code.match(regex)[0];
         let next_number = parseFloat(number)+1;
         let prefix = code.substr(0, string_end);
         let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
         let new_code = prefix+pad_number;
-        data[docType+'_sequence'] = new_code;
-        this.pouchdbService.updateDoc(data);
-        resolve(new_code);
-      });
+        data['value'] = new_code;
+        console.log("data", data);
+        let test = await this.pouchdbService.updateDoc(data);
+        console.log("test", test);
+        resolve(code);
+        //console.log("new_code1", new_code);
+
+      }
     });
     //code = this.formatService.string_pad(4, code.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
   }

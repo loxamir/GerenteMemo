@@ -264,8 +264,8 @@ export class PouchdbService {
         list.forEach((item: any)=>{
           // let random: string = Math.random().toString(32).slice(11);
           // item.code = this.formatService.string_pad(4, sequenceDict[item.docType], "right", "0")+"-"+random;
-          item.code = this.getUUID();
-          item._id = item.docType+"."+item.code
+          // item.code = this.getUUID();
+          item._id = item.docType+"."+this.getUUID();
           sequenceDict[item.docType] += 1;
           if (item._return){
             delete item._return;
@@ -308,16 +308,16 @@ export class PouchdbService {
   createDoc(data){
     // let random: string = Math.random().toString(36).slice(11);
     if (!data['_id']){
-      let code = this.getUUID();
+      // let code = this.getUUID();
       // if (!data['code']){
       //   code = this.getUUID();
       // } else {
       //   code = data['code'];
       // }
-      if (!data['code']){
-        data['code'] = code;
-      }
-      data['_id'] = data['docType']+"."+code;
+      // if (!data['code']){
+      //   data['code'] = code;
+      // }
+      data['_id'] = data['docType']+"."+this.getUUID();;
       this.sequences[data.docType] += 1;
     } else {
       console.log("data com id", data);

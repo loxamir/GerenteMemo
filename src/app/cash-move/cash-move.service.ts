@@ -95,11 +95,11 @@ export class CashMoveService {
       cash.accountTo_name = docs[1].doc.name;
     }
     return new Promise((resolve, reject)=>{
-      this.configService.getSequence('cash_move').then((code) => {
-        cash['code'] = code;
-        cash['code'] = this.formatService.string_pad(4, code, "right", "0");
+      // this.configService.getSequence('cash_move').then((code) => {
+        // cash['code'] = code;
+        // cash['code'] = this.formatService.string_pad(4, code, "right", "0");
         if (!cash.origin_id){
-          cash.origin_id = "M"+code;
+          cash.origin_id = "M"+Date.now();
         }
         cash.amount = parseFloat(cash.amount);
         delete cash.cash;
@@ -115,7 +115,7 @@ export class CashMoveService {
           cash.id = data.id;
           resolve(cash);
         })
-      });
+      // });
     });
   }
 

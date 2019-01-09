@@ -11,7 +11,7 @@ import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 // import { ImagePicker } from '@ionic-native/image-picker';
 // import { Crop } from '@ionic-native/crop';
-// import { SaleService } from './sale.service';
+import { SaleService } from './sale.service';
 import { ContactListPage } from '../contact-list/contact-list.page';
 //import { SaleItemPage } from '../sale-item/sale-item';
 //import { CashMovePage } from '../cash/move/cash-move';
@@ -123,7 +123,7 @@ export class SalePage implements OnInit {
       // public imagePicker: ImagePicker,
       // public cropService: Crop,
       public platform: Platform,
-      // public saleService: SaleService,
+      public saleService: SaleService,
       public route: ActivatedRoute,
       public formBuilder: FormBuilder,
       // public app: App,
@@ -188,7 +188,7 @@ export class SalePage implements OnInit {
       });
               //this.loading.present();
       if (this._id){
-        this.getSale(this._id).then((data) => {
+        this.saleService.getSale(this._id).then((data) => {
           //console.log("data", data);
           this.saleForm.patchValue(data);
           //this.loading.dismiss();
@@ -297,10 +297,10 @@ export class SalePage implements OnInit {
 
     buttonSave() {
       if (this._id){
-        this.updateSale(this.saleForm.value);
+        this.saleService.updateSale(this.saleForm.value);
         this.saleForm.markAsPristine();
       } else {
-        this.createSale(this.saleForm.value).then(doc => {
+        this.saleService.createSale(this.saleForm.value).then(doc => {
           this.saleForm.patchValue({
             _id: doc['doc'].id,
             code: doc['sale'].code,
@@ -776,7 +776,7 @@ export class SalePage implements OnInit {
     removeQuotes(){
       this.saleForm.value.planned.forEach(planned => {
         //console.log("removed planned", planned);
-        this.deleteSale(planned);
+        this.saleService.deleteSale(planned);
       });
       this.saleForm.patchValue({
         'planned': [],
@@ -787,7 +787,7 @@ export class SalePage implements OnInit {
       this.pouchdbService.getRelated(
       "stock-move", "origin_id", this.saleForm.value._id).then((docs) => {
         docs.forEach(doc=>{
-          this.deleteSale(doc);
+          this.saleService.deleteSale(doc);
         })
       });
     }
@@ -1278,127 +1278,6 @@ export class SalePage implements OnInit {
       });
     }
 
-    getSale(doc_id): Promise<any> {
-      return new Promise((resolve, reject)=>{
-        this.unserializeSale(doc_id).then(viewData => {
-          resolve(viewData);
-        });
-      });
-    }
-
-    createSale(viewData){
-      return new Promise((resolve, reject)=>{
-        let sale = this.serializeSale(viewData);
-        if (sale.code != ''){
-          this.pouchdbService.createDoc(sale).then(doc => {
-            resolve({doc: doc, sale: sale});
-          });
-        } else {
-          // this.configService.getSequence('sale').then((code) => {
-          //   sale['code'] = code;
-            this.pouchdbService.createDoc(sale).then(doc => {
-              resolve({doc: doc, sale: sale});
-            });
-          // });
-        }
-
-      });
-    }
-
-    serializeSale(viewData){
-      let sale = Object.assign({}, viewData);
-      sale.lines = [];
-      sale.docType = 'sale';
-      // delete sale.payments;
-      delete sale.planned;
-      sale.contact_id = sale.contact._id;
-      delete sale.contact;
-      sale.project_id = sale.project && sale.project._id || "";
-      delete sale.project;
-      sale.pay_cond_id = sale.paymentCondition._id;
-      delete sale.paymentCondition;
-      sale.items.forEach(item => {
-        sale.lines.push({
-          product_id: item.product_id || item.product._id,
-          product_name: item.product.name || item.product_name,
-          quantity: item.quantity,
-          price: item.price,
-          cost: item.cost,
-        })
-        //item['product_id'] = item.product_id || item.product._id;
-      });
-      delete sale.items;
-      return sale;
-    }
-
-    serializeSaleMigrated(viewData){
-      let sale = Object.assign({}, viewData);
-      sale.docType = 'sale';
-      delete sale.planned;
-      sale.contact_id = sale.contact._id;
-      delete sale.contact;
-      sale.project_id = sale.project && sale.project._id || "";
-      delete sale.project;
-      sale.pay_cond_id = sale.paymentCondition._id;
-      delete sale.paymentCondition;
-      return sale;
-    }
-
-    unserializeSale(doc_id){
-      return new Promise((resolve, reject)=>{
-        this.pouchdbService.getDoc(doc_id).then(((pouchData: any) => {
-          let getList = [
-            pouchData['contact_id'],
-            pouchData['pay_cond_id']
-          ];
-          pouchData['lines'].forEach((item) => {
-            if (getList.indexOf(item['product_id'])==-1){
-              getList.push(item['product_id']);
-            }
-          });
-          this.pouchdbService.getList(getList).then((docs: any[])=>{
-            var doc_dict = {};
-            docs.forEach(row=>{
-              doc_dict[row.id] = row.doc;
-            })
-            pouchData.contact = doc_dict[pouchData.contact_id] || {};
-            pouchData.paymentCondition = doc_dict[pouchData.pay_cond_id] || {};
-            pouchData['items'] = [];
-            pouchData.lines.forEach((line: any)=>{
-              pouchData['items'].push({
-                'product': doc_dict[line.product_id],
-                'description': doc_dict[line.product_id].name,
-                'quantity': line.quantity,
-                'price': line.price,
-                'cost': line.cost || 0,
-              })
-            })
-
-            this.pouchdbService.getRelated(
-            "cash-move", "origin_id", doc_id).then((planned) => {
-              pouchData['planned'] = planned;
-              resolve(pouchData);
-            });
-          })
-        }));
-      });
-    }
-
-    updateSale(viewData){
-      let sale = this.serializeSale(viewData);
-      return this.pouchdbService.updateDoc(sale);
-    }
-
-    updateSaleMigrated(viewData){
-      let sale = this.serializeSaleMigrated(viewData);
-      return this.pouchdbService.updateDoc(sale);
-    }
-
-    deleteSale(sale){
-    //  if (sale.state == 'QUOTATION'){
-        return this.pouchdbService.deleteDoc(sale);
-    //  }
-    }
     goBack(){
       this.navCtrl.navigateBack('/sale-list');
     }

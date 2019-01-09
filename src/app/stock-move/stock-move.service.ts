@@ -63,9 +63,9 @@ export class StockMoveService {
         if (stock.product){
           stock.product_name = stock.product.name;
         }
-        this.configService.getSequence('stock_move').then((code) => {
+        // this.configService.getSequence('stock_move').then((code) => {
           // stock['code'] = code;
-          stock['code'] = this.formatService.string_pad(4, code, "right", "0");
+          // stock['code'] = this.formatService.string_pad(4, code, "right", "0");
           delete stock.stock;
           delete stock.product;
           delete stock.contact;
@@ -82,7 +82,7 @@ export class StockMoveService {
             }
             resolve(data);
           })
-        });
+        // });
       });
     });
   }
