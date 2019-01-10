@@ -5,7 +5,7 @@ const httpOptions = {
     'Content-Type':  'application/json',
   })
 };
-declare var Buffer: any;
+// declare var Buffer: any;
 /*
   Generated class for the RestProvider provider.
 
@@ -190,7 +190,7 @@ export class RestProvider {
           'https://couchdb.sistema.social/_users/org.couchdb.user:' + username,
           {
             // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
-            headers: new HttpHeaders().set('Authorization', "Basic " + new Buffer(username + ":" + old_passowrd).toString("base64"))
+            headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + old_passowrd))
           }
         ).subscribe((userData: any) => {
           console.log("userData", userData);
@@ -207,7 +207,7 @@ export class RestProvider {
             userData,
             {
               // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
-              headers: new HttpHeaders().set('Authorization', "Basic " + new Buffer(username + ":" + old_passowrd).toString("base64"))
+              headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + old_passowrd))
             }
           ).subscribe(data => {
             console.log("changed Password", data);
@@ -216,6 +216,48 @@ export class RestProvider {
             resolve(err);
             // console.log("erro", err);
           });
+        }, err => {
+          resolve(err);
+          // console.log(err);
+        });
+      });
+    // });
+  }
+
+  getUserDbList(username, password) {
+    // return new Promise(resolve => {
+      return new Promise(resolve => {
+        this.http.get(
+          'https://couchdb.sistema.social/_users/org.couchdb.user:' + username,
+          {
+            // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
+            headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + password))
+          }
+        ).subscribe((userData: any) => {
+          console.log("userData", userData);
+          resolve(userData.db_list);
+          // resolve(data);
+          // userData.password = new_password;
+          // delete userData._rev;
+          // let loginData = {
+          //   "name": username,
+          //   "password":password
+          // }
+          // console.log("loginData", loginData);
+          // this.http.put(
+          //   'https://couchdb.sistema.social/_users/org.couchdb.user:'+ username,
+          //   userData,
+          //   {
+          //     // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
+          //     headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + old_passowrd))
+          //   }
+          // ).subscribe(data => {
+          //   console.log("changed Password", data);
+          //   resolve(data);
+          // }, err => {
+          //   resolve(err);
+          //   // console.log("erro", err);
+          // });
         }, err => {
           resolve(err);
           // console.log(err);

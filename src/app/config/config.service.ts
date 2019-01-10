@@ -165,7 +165,7 @@ export class ConfigService {
         let user = this.getUser();
         // let code = data['value'];
         let data = await this.pouchdbService.getDoc('sequence'+'.'+docType+'.'+user);
-        console.log('code', code);
+        // console.log('code', code);
         let regex = /[0-9]+$/
         let string_end = current_code.match(regex).index;
         let number = current_code.match(regex)[0];

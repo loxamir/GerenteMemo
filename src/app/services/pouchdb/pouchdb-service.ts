@@ -14,7 +14,7 @@ import { FormatService } from '../format.service';
 // import * as PouchQuickSearch from 'pouchdb-quick-search';
 
 var server = "couchdb.sistema.social";
-var port = "5984";
+// var port = "5984";
 
 @Injectable({ providedIn: 'root' })
 export class PouchdbService {

@@ -25,7 +25,7 @@ export class LoginPage implements OnInit {
   languages: Array<LanguageModel>;
   show_create: boolean = false;
   selected_user: boolean = false;
-  databaseList: any[];
+  databaseList: [];
 
 
   helps: any;
@@ -51,14 +51,16 @@ export class LoginPage implements OnInit {
     public route: ActivatedRoute,
     public router: Router,
   ) {
-    // this.loading = this.loadingCtrl.create();
+
     this.languages = this.languageService.getLanguages();
 
     this.storage.get("username").then((username)=>{
       if (username){
-        // this.showDatabaseList();
-        // this.selectDatabase(username);
-        this.selected_user = true;
+        this.storage.get("password").then((password)=>{
+          this.showDatabaseList(username, password);
+          // this.selectDatabase(username);
+          this.selected_user = true;
+        })
       }
     })
     this.loginForm = new FormGroup({
@@ -77,6 +79,7 @@ export class LoginPage implements OnInit {
   }
 
   async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
     // this.router.events.subscribe((event: RouterEvent) => {
       // if (event instanceof NavigationEnd && event.url === '/login') {
       let username = await this.storage.get('username');
@@ -86,84 +89,84 @@ export class LoginPage implements OnInit {
       console.log("usernames", username);
       // }
     // });
-    this.setFilteredItems();
+    // this.setFilteredItems();
   }
 
-  setFilteredItems() {
-    let filter = null;
-    if (this.filter == "all"){
-      let filter = null;
-    } else {
-      let filter = this.filter;
-    }
-    this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
-        this.helps = helps;
-      // this.helps = helps;
-      this.page = 1;
-    });
-  }
+  // setFilteredItems() {
+  //   let filter = null;
+  //   if (this.filter == "all"){
+  //     let filter = null;
+  //   } else {
+  //     let filter = this.filter;
+  //   }
+  //   this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
+  //       this.helps = helps;
+  //     // this.helps = helps;
+  //     this.page = 1;
+  //   });
+  // }
 
-  doInfinite(infiniteScroll) {
-    setTimeout(() => {
-      this.getHelpsPage(this.searchTerm, this.page).then((helps: any[]) => {
-        // this.helps = helps
-        helps.forEach(help => {
-          this.helps.push(help);
-        });
-        this.page += 1;
-      });
-      infiniteScroll.target.complete();
-    }, 200);
-  }
-  doRefresh(refresher) {
-    setTimeout(() => {
-      this.getHelpsPage(this.searchTerm, 0).then((helps: any[]) => {
-        if (this.filter == 'all'){
-          this.helps = helps;
-        }
-        else if (this.filter == 'seller'){
-          this.helps = helps.filter(word => word.seller == true);
-        }
-        else if (this.filter == 'customer'){
-          this.helps = helps.filter(word => word.customer == true);
-        }
-        else if (this.filter == 'supplier'){
-          this.helps = helps.filter(word => word.supplier == true);
-        }
-        else if (this.filter == 'employee'){
-          this.helps = helps.filter(word => word.employee == true);
-        }
-        this.page = 1;
-      });
-      refresher.target.complete();
-    }, 500);
-  }
-
-  getHelpsPage(keyword, page, field=''){
-    return new Promise(resolve => {
-      // this.pouchdbService.searchDocTypeData('help', keyword, page, "document", field).then((helps: any[]) => {
-      //   resolve(helps);
-      // });
-      let list = [
-        {
-          name: "Ajyda"
-        },
-        {
-          name: "Ajuda"
-        },
-        {
-          name: "Ayuda"
-        }
-      ];
-    // let otro = list.filter(help => help['name'].toString().search(new RegExp(keyword, "i")) != -1);
-    let otro = list.filter(word=>word.name.toString().search(new RegExp(keyword, "i")) != -1)
-    console.log("list", list);
-    console.log("otro", otro);
-    console.log("keyword", keyword);
-    console.log("this.searchTerm", this.searchTerm);
-    resolve(otro);
-  });
-  }
+  // doInfinite(infiniteScroll) {
+  //   setTimeout(() => {
+  //     this.getHelpsPage(this.searchTerm, this.page).then((helps: any[]) => {
+  //       // this.helps = helps
+  //       helps.forEach(help => {
+  //         this.helps.push(help);
+  //       });
+  //       this.page += 1;
+  //     });
+  //     infiniteScroll.target.complete();
+  //   }, 200);
+  // }
+  // doRefresh(refresher) {
+  //   setTimeout(() => {
+  //     this.getHelpsPage(this.searchTerm, 0).then((helps: any[]) => {
+  //       if (this.filter == 'all'){
+  //         this.helps = helps;
+  //       }
+  //       else if (this.filter == 'seller'){
+  //         this.helps = helps.filter(word => word.seller == true);
+  //       }
+  //       else if (this.filter == 'customer'){
+  //         this.helps = helps.filter(word => word.customer == true);
+  //       }
+  //       else if (this.filter == 'supplier'){
+  //         this.helps = helps.filter(word => word.supplier == true);
+  //       }
+  //       else if (this.filter == 'employee'){
+  //         this.helps = helps.filter(word => word.employee == true);
+  //       }
+  //       this.page = 1;
+  //     });
+  //     refresher.target.complete();
+  //   }, 500);
+  // }
+  //
+  // getHelpsPage(keyword, page, field=''){
+  //   return new Promise(resolve => {
+  //     // this.pouchdbService.searchDocTypeData('help', keyword, page, "document", field).then((helps: any[]) => {
+  //     //   resolve(helps);
+  //     // });
+  //     let list = [
+  //       {
+  //         name: "Ajyda"
+  //       },
+  //       {
+  //         name: "Ajuda"
+  //       },
+  //       {
+  //         name: "Ayuda"
+  //       }
+  //     ];
+  //   // let otro = list.filter(help => help['name'].toString().search(new RegExp(keyword, "i")) != -1);
+  //   let otro = list.filter(word=>word.name.toString().search(new RegExp(keyword, "i")) != -1)
+  //   console.log("list", list);
+  //   console.log("otro", otro);
+  //   console.log("keyword", keyword);
+  //   console.log("this.searchTerm", this.searchTerm);
+  //   resolve(otro);
+  // });
+  // }
 
   validation_messages = {
     'password': [
@@ -184,17 +187,17 @@ export class LoginPage implements OnInit {
     ],
   };
 
-  showDemo (){
-    // this.navCtrl.push(TabsNavigationPage);
-    this.loginForm.patchValue({
-      "user": "base_memo_demo",
-    })
-    // this.appConfig.setDatabase("base");
-    // this.events.publish('get-user', {"user": "base"});
-    // this.events.publish('get-database', {});
-    // this.navCtrl.setRoot(TabsNavigationPage)
-    this.login();
-  }
+  // showDemo (){
+  //   // this.navCtrl.push(TabsNavigationPage);
+  //   this.loginForm.patchValue({
+  //     "user": "base_memo_demo",
+  //   })
+  //   // this.appConfig.setDatabase("base");
+  //   // this.events.publish('get-user', {"user": "base"});
+  //   // this.events.publish('get-database', {});
+  //   // this.navCtrl.setRoot(TabsNavigationPage)
+  //   this.login();
+  // }
 
   showCreate(){
     this.show_create = true;
@@ -205,7 +208,10 @@ export class LoginPage implements OnInit {
   }
 
   login (){
-    this.checkLogin(this.loginForm.value.user.toLowerCase(), this.loginForm.value.password).then(async (loginData: any)=>{
+    this.checkLogin(
+      this.loginForm.value.user.toLowerCase(),
+      this.loginForm.value.password
+    ).then(async (loginData: any)=>{
       console.log("LOGIN DATA", loginData);
       if (loginData.ok){
         this.doLogin();
@@ -220,23 +226,16 @@ export class LoginPage implements OnInit {
   }
 
   register (){
-    // if (typeof(this.loginForm.value.user[0])=='string'){
-    //   let toast = this.toastCtrl.create({
-    //     message: "El usuario debe empezar con una letra",
-    //     duration: 3000
-    //   });
-    //   toast.present();
-    // }
     console.log("values", this.loginForm.value);
     this.restProvider.checkDbExist(this.loginForm.value.user.toLowerCase()).then(async (dbexists: any)=>{
       console.log("dbexists", dbexists);
       if (dbexists.status=="404"){
-        // let toast = this.toastCtrl.create({
-        //   message: "Creando base",
-        //   duration: 3000
-        // });
-        // toast.present();
-        // this.loading.present();
+        let toast = await this.toastCtrl.create({
+          message: "Creando base",
+          duration: 3000
+        });
+        toast.present();
+        await this.loading.present();
         this.createLogin(this.loginForm.value).then(login => {
           setTimeout(() => {
             this.doLogin();
@@ -282,23 +281,28 @@ export class LoginPage implements OnInit {
     this.storage.set("password", this.loginForm.value.password.toLowerCase());
     this.events.publish('get-user', {"user": this.loginForm.value.user.toLowerCase()});
     this.selected_user = true;
-    // this.showDatabaseList();
+    this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
     // this.selectDatabase();
-    this.menuCtrl.enable(true);
+
+    this.menuCtrl.enable(false);
+    this.loading.dismiss();
 
   }
 
-  showDatabaseList(){
-    this.databaseList = ['moga', 'demo'];
+  async showDatabaseList(username, password){
+    let list: any = await this.restProvider.getUserDbList(username, password);
+    console.log("list", list);
+    this.databaseList = list;
   }
 
-  async selectDatabase(){
-    let username = await this.storage.get("username");
-      // this.loading.present();
+  async selectDatabase(database){
+    // let username = await this.storage.get("username");
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       // if (this.navParams.data.current_db){
       //   this.pouchdbService.getDisConnect();
       // }
-      await this.storage.set('database', username);
+      await this.storage.set('database', database);
       // this.appConfig.setDatabase(database.toLowerCase());
       // let toast = this.toastCtrl.create({
       //   message: "1/8 - Sincronizando Datos",
@@ -311,22 +315,26 @@ export class LoginPage implements OnInit {
 
       this.events.subscribe('end-sync', () => {
         // toast.dismiss();
-        let isFirst = false;
+        let isFirst = true;
         if(isFirst){
           this.initiateViews();
+          console.log("is first");
         } else {
+          console.log("is not first");
           // window.location.reload();
+          this.loading.dismiss();
         }
         // this.navCtrl.setRoot(TabsNavigationPage);
         // this.loading.dismiss();
       })
+      this.menuCtrl.enable(true);
       this.router.navigate(['/tabs/sale-list']);
     // }
   }
 
-  gotoHelp(){
-    this.router.navigate(['/help-list']);
-  }
+  // gotoHelp(){
+  //   this.router.navigate(['/help-list']);
+  // }
 
   async initiateViews(){
     let toast2 = await this.toastCtrl.create({
@@ -372,7 +380,7 @@ export class LoginPage implements OnInit {
     await this.pouchdbService.getView('stock/Fluxo');
     toast8.dismiss();
     this.events.publish('get-database', {});
-    // this.loading.dismiss();
+    this.loading.dismiss();
     // this.navCtrl.setRoot(TabsNavigationPage);
     // this.router.navigate(['/tabs/sale-list']);
   }

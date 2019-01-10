@@ -13,11 +13,6 @@ import { ActivatedRoute, Router, RouterEvent, NavigationEnd, } from '@angular/ro
 export class AppComponent implements OnInit {
   public appPages = [
     {
-      title: 'Inicio',
-      url: '/login',
-      icon: 'home'
-    },
-    {
       title: 'Operativo',
       url: '/tabs',
       icon: 'infinite'
@@ -41,6 +36,11 @@ export class AppComponent implements OnInit {
       title: 'Ajustes',
       url: '/config',
       icon: 'settings'
+    },
+    {
+      title: 'Salir',
+      url: '/login',
+      icon: 'exit'
     },
 ];
 

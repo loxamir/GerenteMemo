@@ -1,8 +1,8 @@
 <ion-header *ngIf="selected_user">
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
+    <!-- <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
-    </ion-buttons>
+    </ion-buttons> -->
     <!-- <ion-searchbar
       placeholder="Buscar Venta"
       [(ngModel)]="searchTerm"
@@ -26,7 +26,7 @@
 <ion-row>
   <ion-col></ion-col>
     <ion-col no-padding width-80>
-      <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="./assets/images/login2.png" />
+      <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="https://uc4e9eee448a32b18b91ddd91f59.previews.dropboxusercontent.com/p/orig/AAR0aR1hpQAjVQuS39cTZShW1KlkjqiIo0Q06IkVBswchC2msfUAEW90IQzyO2QHPKbyYhoVBWlNs1qEgvrH0G6ik-8mXIofaOwVEGlCwM8RXx8npNgMNQY-K9V__rimj3tsUiia4cNpMuCzKQ2w4L7u89QIXnViYCPuqmpEucRkVgGZPoLoVPWahf67fWOc8kMgEqkCZnrUa2S7MQnMcFnl_EpsUU8d4dwO6EJMKKTe72ISZ_iCUs45eRiRe5NaKNs/p.gif?size=1600x1200&size_mode=3" />
     </ion-col>
     <ion-col></ion-col>
   </ion-row>
@@ -114,30 +114,37 @@
       <ion-col></ion-col>
     </ion-row>
   </form>
-    <ion-row *ngIf="selected_user">
-      <ion-item class="database-list-item" *ngFor="let database of databaseList" (click)="selectDatabase(database)">
-        {{database}}
+
+
+
+
+
+    <div *ngIf="selected_user">
+      <h2>Empresas Disponibles</h2>
+      <ion-item *ngFor="let database of databaseList" (click)="selectDatabase(database.database)">
+        <!-- <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"/> -->
+        <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;width:15%" [src]="database.image" />
+        {{database.name}}
       </ion-item>
-    </ion-row>
+    </div>
 
     <!-- <ion-item *ngIf="selected_user" class="database-list-item" (click)="selectDatabase()">
       Entrar
     </ion-item> -->
-    <ion-button *ngIf="selected_user" style="width: 99%;" (click)="selectDatabase()">
+    <!-- <ion-button *ngIf="selected_user" style="width: 99%;" (click)="selectDatabase()">
       Entrar
-    </ion-button>
+    </ion-button> -->
     <!-- <ion-item *ngIf="selected_user" class="database-list-item" (click)="gotoHelp()">
       Ajuda
     </ion-item> -->
   <!-- </ion-row> -->
-  <ion-searchbar
+  <!-- <ion-searchbar
     *ngIf="selected_user"
     style="--background: white;"
     placeholder="Buscar Ayuda"
     [(ngModel)]="searchTerm"
     (ionInput)="setFilteredItems()">
   </ion-searchbar>
-    <!-- <ion-row> -->
 
     <ion-refresher *ngIf="selected_user" (ionRefresh)="doRefresh($event)">
       <ion-refresher-content></ion-refresher-content>
@@ -152,12 +159,6 @@
             <ion-row>
               <h3 class="item-title"><b>{{item.name}}</b></h3>
             </ion-row>
-            <!-- <ion-row>
-                <h3 class="item-title">Documento: {{item.document}}</h3>
-            </ion-row>
-            <ion-row>
-                <h3 class="item-title">{{item.address}}</h3>
-            </ion-row> -->
           </ion-col>
           <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;">
             <ion-icon (click)="openHelp(item)" name="arrow-forward"></ion-icon>
@@ -174,9 +175,9 @@
     </ion-list>
     <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+    </ion-infinite-scroll> -->
 
-    <a target="_blank" href="https://www.youtube.com/channel/UCfjFZyo8jvrx0ILRBTk2XRQ">
+    <!-- <a target="_blank" href="https://www.youtube.com/channel/UCfjFZyo8jvrx0ILRBTk2XRQ">
       <ion-fab vertical="bottom" horizontal="start" slot="fixed">
           <ion-fab-button color="primary">
               <ion-icon name="logo-youtube">
@@ -192,5 +193,23 @@
             </ion-icon>
         </ion-fab-button>
     </ion-fab>
+   -->
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <a target="_blank" href="https://www.youtube.com/channel/UCfjFZyo8jvrx0ILRBTk2XRQ">
+    <ion-button (click)="discard()" color="danger" class="discard-button">
+      <ion-icon name="logo-youtube" style="margin-right: 5px;"> </ion-icon>
+      Videos
+    </ion-button>
   </a>
+  </ion-fab>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <a target="_blank" href="https://wa.me/595986154975">
+    <ion-button  color="success" class="save-button">
+      <ion-icon name="logo-whatsapp" style="margin-right: 5px;"> </ion-icon>
+      Contacto
+    </ion-button>
+  </a>
+  </ion-fab>
+  <div style="height: 100px;">
+  </div>
 </ion-content>
