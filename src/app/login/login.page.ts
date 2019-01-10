@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, LoadingController, Events, ToastController, MenuController } from '@ionic/angular';
+import { LoadingController, Events, ToastController, MenuController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -36,7 +36,7 @@ export class LoginPage implements OnInit {
   filter: string = 'all';
 
   constructor(
-    public modal: ModalController,
+    // public modal: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -300,7 +300,7 @@ export class LoginPage implements OnInit {
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
       // if (this.navParams.data.current_db){
-      //   this.pouchdbService.getDisConnect();
+      // await this.pouchdbService.getDisConnect();
       // }
       await this.storage.set('database', database);
       // this.appConfig.setDatabase(database.toLowerCase());

@@ -31,8 +31,6 @@ function fun() {
   }, function(error, response, body) {
     console.log("body", body);
     body.forEach(topic => {
-
-
       let userData = {
         "name": topic.variables.user.value,
         "password": topic.variables.password.value,
@@ -40,6 +38,11 @@ function fun() {
         "email": topic.variables.email.value,
         "real_name": topic.variables.name.value,
         "roles": [],
+        "db_list": [{
+          "name": topic.variables.name.value,
+          "database": topic.variables.user.value,
+          "image": "./assets/images/login2.png"
+        }],
         "type": "user"
       }
       couchdb_request({
@@ -64,56 +67,100 @@ function fun() {
         }, function(error, response, replicate) {
           //Modify Company Profile
           couchdb_request({
-            url: couchdb_url + "/" + topic.variables.user.value + "/contact.myCompany",
-            method: "GET",
-
-          }, function(error, response, config) {
-
-            console.log("config", config);
-            let configjson = JSON.parse(config);
-            configjson.name = topic.variables.name.value;
-            configjson.email = topic.variables.email.value;
-            configjson.phone = topic.variables.mobile.value;
-            couchdb_request({
               url: couchdb_url + "/" + topic.variables.user.value + "/contact.myCompany",
-              method: "PUT",
-              json: true, // <--Very important!!!
-              body: configjson
-            }, function(error, response, update) {
-              console.log("update config", update);
+              method: "GET",
+            },
+            function(error, response, config) {
 
-              let userSet = {
-                "admins": {
-                  "names": [topic.variables.user.value],
-                  "roles": []
-                },
-                "members": {
-                  "names": [topic.variables.user.value],
-                  "roles": []
-                }
+              console.log("config", config);
+              let configjson = JSON.parse(config);
+              configjson.name = topic.variables.name.value;
+              configjson.email = topic.variables.email.value;
+              configjson.phone = topic.variables.mobile.value;
+              configjson.user = true;
+              configjson.user_details = {
+                "username": topic.variables.user.value,
+                "sale": true,
+                "purchase": true,
+                "finance": true,
+                "service": true,
+                "report": true,
+                "config": true,
+                "registered": true,
               }
+              let createList = [
+                {
+                  "_id": "sequence.product",
+                  "value": "0003"
+                },
+                {
+                  "_id": "sequence.user",
+                  "value": "02"
+                },
+                {
+                  "_id": "sequence.sale."+topic.variables.user.value,
+                  "value": "01-0001"
+                },
+                {
+                  "_id": "sequence.purchase."+topic.variables.user.value,
+                  "value": "01-0001"
+                },
+                {
+                  "_id": "sequence.service."+topic.variables.user.value,
+                  "value": "01-0001"
+                },
+                {
+                  "_id": "sequence.invoice."+topic.variables.user.value,
+                  "value": "001-001-0000001"
+                },
+                {
+                  "_id": "sequence.receipt."+topic.variables.user.value,
+                  "value": "01-0001"
+                },
+              ];
+              createList.push(configjson);
               couchdb_request({
-                url: "http://admin:ajv1439s@couchdb.sistema.social:5984/" + topic.variables.user.value + "/_security",
-                method: "PUT",
+                url: couchdb_url + "/" + topic.variables.user.value + "/_bulk_docs",
+                method: "POST",
                 json: true, // <--Very important!!!
-                body: userSet
-              }, function(error, response, userSeted) {
-                console.log("userSeted", userSeted);
-                // Complete the task
-                camunda_request({
-                  url: camunda_url + "/engine-rest/external-task/" + topic.id + "/complete",
-                  method: "POST",
-                  json: true, // <--Very important!!!
-                  body: {
-                    "workerId": "aWorkerId"
+                body: {docs: createList}
+              }, function(error, response, update) {
+                console.log("update config", update);
+
+                let userSet = {
+                  "admins": {
+                    "names": [topic.variables.user.value],
+                    "roles": []
+                  },
+                  "members": {
+                    "names": [topic.variables.user.value],
+                    "roles": []
                   }
-                }, function(error, response, completed) {
-                  console.log("completed", completed);
-                });
+                }
+                couchdb_request({
+                  url: "http://admin:ajv1439s@couchdb.sistema.social:5984/" + topic.variables.user.value + "/_security",
+                  method: "PUT",
+                  json: true, // <--Very important!!!
+                  body: userSet
+                }, function(error, response, userSeted) {
+                  console.log("userSeted", userSeted);
+
+                  // Complete the task
+                  camunda_request({
+                    url: camunda_url + "/engine-rest/external-task/" + topic.id + "/complete",
+                    method: "POST",
+                    json: true, // <--Very important!!!
+                    body: {
+                      "workerId": "aWorkerId"
+                    }
+                  }, function(error, response, completed) {
+                    console.log("completed", completed);
+                  });
+                })
               })
             })
-          })
         });
+        // console.log("teste2");
       });
     })
   });
