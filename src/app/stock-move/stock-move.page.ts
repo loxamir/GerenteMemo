@@ -198,16 +198,18 @@ export class StockMovePage implements OnInit {
     }
     if (this._id){
       this.stockMoveService.updateStockMove(this.stockMoveForm.value);
-      this.navCtrl.navigateBack('').then(() => {
+      this.navCtrl.navigateBack('/stock-move-list');
+      // .then(() => {
         this.events.publish('open-stock-move', this.stockMoveForm.value);
-      });
+      // });
     } else {
       this.stockMoveService.createStockMove(this.stockMoveForm.value).then(doc => {
         //console.log("the_doc", doc);
         this.stockMoveForm.value._id = doc['id'];
-        this.navCtrl.navigateBack('').then(() => {
+        this.navCtrl.navigateBack('/stock-move-list');
+        // .then(() => {
           this.events.publish('create-stock-move', this.stockMoveForm.value);
-        });
+        // });
       });
     }
   }

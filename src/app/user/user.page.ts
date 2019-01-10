@@ -6,6 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { ActivatedRoute, Router } from '@angular/router';
+import { ConfigService } from '../config/config.service';
+import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 @Component({
   selector: 'app-user',
@@ -29,6 +31,8 @@ export class UserPage implements OnInit {
     public navParams: NavParams,
     public alertCtrl: AlertController,
     public formBuilder: FormBuilder,
+    public configService: ConfigService,
+    public pouchdbService: PouchdbService,
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
@@ -39,17 +43,44 @@ export class UserPage implements OnInit {
   ngOnInit() {
     this.form = this.formBuilder.group({
       name: [this.navParams.data.name||''],
-      phone: [this.navParams.data.phone||''],
+      username: [this.navParams.data.username||''],
       sale: [this.navParams.data.sale||false],
       purchase: [this.navParams.data.purchase||false],
       finance: [this.navParams.data.finance||false],
       service: [this.navParams.data.service||false],
       report: [this.navParams.data.report||false],
       config: [this.navParams.data.config||false],
+      registered: [this.navParams.data.registered||false]
     });
   }
 
-  buttonSave(){
+  async buttonSave(){
+    if (this.form.value.registered==true){
+      console.log("Guardou");
+      this.form.value.registered = true;
+
+    }
+    else {
+      let user_code = await this.configService.getSequence('user');
+      let createList = [{
+          '_id': 'sequence.sale.'+this.form.value.username,
+          'value': user_code+'-0001',
+          'docType': 'sequence',
+        },
+        {
+          '_id': 'sequence.purchase.'+this.form.value.username,
+          'value': user_code+'-0001'
+        },
+        {
+          '_id': 'sequence.service.'+this.form.value.username,
+          'value': user_code+'-0001'
+        },
+        {
+          '_id': 'sequence.receipt.'+this.form.value.username,
+          'value': user_code+'-0001'
+      }]
+      this.pouchdbService.createDocList(createList);
+    }
     this.modalCtrl.dismiss(this.form.value);
   }
 

@@ -80,9 +80,10 @@ export class ProductCategoryPage implements OnInit {
       if (this.select){
         this.modalCtrl.dismiss();
       } else {
-        this.navCtrl.navigateBack('/product-category-list').then(() => {
+        this.navCtrl.navigateBack('/product-category-list');
+        // .then(() => {
           this.events.publish('open-category', this.categoryForm.value);
-        });
+        // });
       }
     } else {
       this.createCategory(this.categoryForm.value);
@@ -90,9 +91,10 @@ export class ProductCategoryPage implements OnInit {
         this.modalCtrl.dismiss();
         this.events.publish('create-category', this.categoryForm.value);
       } else {
-        this.navCtrl.navigateBack('/product-category-list').then(() => {
+        this.navCtrl.navigateBack('/product-category-list');
+        // .then(() => {
           this.events.publish('create-category', this.categoryForm.value);
-        });
+        // });
       }
     }
   }

@@ -123,9 +123,10 @@ export class CashPage implements OnInit {
       if (this._id){
         this.cashService.updateCash(this.cashForm.value);
         // this.navCtrl.navigateBack().then(() => {
-        this.navCtrl.navigateBack('/cash-list').then(() => {
+        this.navCtrl.navigateBack('/cash-list');
+        // .then(() => {
           this.events.publish('open-cash', this.cashForm.value);
-        });
+        // });
       } else {
         this.cashService.createCash(this.cashForm.value).then(doc => {
           //console.log("docss", doc);
@@ -133,9 +134,10 @@ export class CashPage implements OnInit {
             _id: doc['id'],
           });
           this._id = doc['id'];
-          this.navCtrl.navigateBack('/cash-list').then(() => {
+          this.navCtrl.navigateBack('/cash-list');
+          // .then(() => {
             this.events.publish('create-cash', this.cashForm.value);
-          });
+          // });
         });
       }
     }

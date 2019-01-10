@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController,  Events, PopoverController } from '@ionic/angular';
+import { NavController, LoadingController,  Events, PopoverController, ModalController } from '@ionic/angular';
 import { WarehousePage } from '../warehouse/warehouse.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
@@ -25,6 +25,7 @@ export class WarehouseListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public events: Events,
     public popoverCtrl: PopoverController,
+    public modalCtrl: ModalController,
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
@@ -114,6 +115,7 @@ export class WarehouseListPage implements OnInit {
     console.log("this.select", this.select);
     if (this.select){
       // this.navCtrl.navigateBack('').then(() => {
+        this.modalCtrl.dismiss();
         this.events.publish('select-warehouse', warehouse);
       // });
     } else {
@@ -124,9 +126,10 @@ export class WarehouseListPage implements OnInit {
   createWarehouse(){
     this.events.subscribe('create-warehouse', (data) => {
       if (this.select){
-        this.navCtrl.navigateBack('').then(() => {
+        this.navCtrl.navigateBack('/tabs/product-list');
+        // .then(() => {
           this.events.publish('select-warehouse', data);
-        });
+        // });
       }
       this.events.unsubscribe('create-warehouse');
       // this.doRefreshList();

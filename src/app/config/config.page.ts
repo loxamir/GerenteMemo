@@ -112,9 +112,10 @@ export class ConfigPage implements OnInit {
       this.modalCtrl.dismiss();
       this.events.publish('open-config', this.configForm.value);
     } else {
-      this.navCtrl.navigateBack('/tabs/sale-list').then(() => {
+      this.navCtrl.navigateBack('/tabs/sale-list');
+      // .then(() => {
         this.events.publish('open-config', this.configForm.value);
-      });
+      // });
     }
     //TODO: Restore this to work with multi-users
     // this.setDbUsers();
@@ -404,13 +405,14 @@ export class ConfigPage implements OnInit {
       // data => {
         if (data) {
           user["name"] = data.name;
-          user["phone"] = data.phone;
+          user["username"] = data.username;
           user["sale"] = data.sale;
           user["purchase"] = data.purchase;
           user["finance"] = data.finance;
           user["service"] = data.service;
           user["report"] = data.report;
           user["config"] = data.config;
+          user["registered"] = data.registered;
           console.log("data user", data);
           console.log("user user", user);
           // this.configForm.patchValue({

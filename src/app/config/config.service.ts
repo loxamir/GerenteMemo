@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { FormatService } from '../services/format.service';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class ConfigService {
 
   constructor(
     public pouchdbService: PouchdbService,
+    public storage: Storage,
     public formatService: FormatService,
   ) {}
 
@@ -65,11 +67,23 @@ export class ConfigService {
     });
   }
 
+  async getUser(){
+    let username = await this.storage.get('username');
+    return username;
+  }
+
   getSequence(docType): Promise<any> {
     return new Promise(async (resolve, reject)=>{
-      if (docType == 'product'){
-        this.getConfigDoc().then((data) => {
-          let code = data[docType+'_sequence'].toString();
+      if (docType == 'product' || docType == 'user'){
+
+        let sequence = await this.pouchdbService.getDoc(
+          'sequence'+'.'+docType
+        );
+        let code = sequence['value'];
+        // resolve(code['value']);
+
+        // this.getConfigDoc().then((data) => {
+          // let code = code['value'];
           //console.log("code", code);
           let regex = /[0-9]+$/
           let string_end = code.match(regex).index;
@@ -78,12 +92,14 @@ export class ConfigService {
           let prefix = code.substr(0, string_end);
           let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
           let new_code = prefix+pad_number;
-          data[docType+'_sequence'] = new_code;
-          this.pouchdbService.updateDoc(data);
+          sequence['value'] = new_code;
+          this.pouchdbService.updateDoc(sequence);
           resolve(code);
-        });
+        // });
       } else {
-        let data = await this.pouchdbService.getDoc('sequence'+'.'+'user'+'.'+docType);
+        let user = await this.getUser();
+        console.log("user", user);
+        let data = await this.pouchdbService.getDoc('sequence.'+docType+'.'+user);
         let code = data['value'];
         console.log('code', code);
         let regex = /[0-9]+$/
@@ -105,13 +121,16 @@ export class ConfigService {
 
   showNextSequence(docType): Promise<any> {
     return new Promise(async (resolve, reject)=>{
-      if (docType == 'product'){
-        this.getConfigDoc().then((data) => {
-          resolve(data[docType+'_sequence']);
-        });
-      } else {
+      if (docType == 'product' || docType == 'user'){
         let code = await this.pouchdbService.getDoc(
-          'sequence'+'.'+'user'+'.'+docType
+          'sequence'+'.'+docType
+        );
+        resolve(code['value']);
+      } else {
+        let user = await this.getUser();
+        console.log("user", user);
+        let code = await this.pouchdbService.getDoc(
+          'sequence'+'.'+user+'.'+docType
         );
         console.log('code', code);
         resolve(code['value']);
@@ -120,42 +139,45 @@ export class ConfigService {
     //code = this.formatService.string_pad(4, code.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
   }
 
-  setNextSequence(docType, new_code): Promise<any> {
+  setNextSequence(docType, current_code): Promise<any> {
     return new Promise(async (resolve, reject)=>{
 
-      if (docType == 'product'){
-        this.code = new_code.toString();
-        this.getConfigDoc().then((data) => {
+      if (docType == 'product' || docType == 'user'){
+        // this.code = current_code.toString();
+
+        let data = await this.pouchdbService.getDoc('sequence'+'.'+docType);
+        // this.getConfigDoc().then((data) => {
           //console.log("new_code", this.code);
-          let code = this.code;
+          // let code = this.code;
           let regex = /[0-9]+$/;
-          let string_end = code.match(regex).index;
+          let string_end = current_code.match(regex).index;
           //console.log("string_end", string_end);
-          let number = code.match(regex)[0];
+          let number = current_code.match(regex)[0];
           let next_number = parseFloat(number)+1;
-          let prefix = code.substr(0, string_end);
+          let prefix = current_code.substr(0, string_end);
           let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
           let new_code = prefix+pad_number;
-          data[docType+'_sequence'] = new_code;
+          data['value'] = new_code;
           this.pouchdbService.updateDoc(data);
-          resolve(new_code);
-        });
+          resolve(current_code);
+        // });
       } else {
-        let data = await this.pouchdbService.getDoc('sequence'+'.'+'user'+'.'+docType);
-        let code = data['value'];
+        let user = this.getUser();
+        // let code = data['value'];
+        let data = await this.pouchdbService.getDoc('sequence'+'.'+docType+'.'+user);
         console.log('code', code);
         let regex = /[0-9]+$/
-        let string_end = code.match(regex).index;
-        let number = code.match(regex)[0];
+        let string_end = current_code.match(regex).index;
+        let number = current_code.match(regex)[0];
         let next_number = parseFloat(number)+1;
-        let prefix = code.substr(0, string_end);
+        let prefix = current_code.substr(0, string_end);
         let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
         let new_code = prefix+pad_number;
         data['value'] = new_code;
         console.log("data", data);
         let test = await this.pouchdbService.updateDoc(data);
         console.log("test", test);
-        resolve(code);
+        resolve(current_code);
         //console.log("new_code1", new_code);
 
       }

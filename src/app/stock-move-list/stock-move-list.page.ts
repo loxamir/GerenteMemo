@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController,  Events, PopoverController } from '@ionic/angular';
+import { NavController, LoadingController,  Events, PopoverController, ModalController } from '@ionic/angular';
 // import { StockMovePage } from '../stock-move';
 import { ActivatedRoute, Router } from '@angular/router';
 import 'rxjs/Rx';
@@ -22,6 +22,7 @@ export class StockMoveListPage implements OnInit {
     public navCtrl: NavController,
     // public app: App,
     // public stockMoveListService: StockMoveListService,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public events: Events,
@@ -84,9 +85,11 @@ export class StockMoveListPage implements OnInit {
 
   selectStockMove(stockMove) {
     if (this.select){
-      this.navCtrl.navigateBack('').then(() => {
+      // this.navCtrl.navigateBack('/stock-move-list');
+      // .then(() => {
+        this.modalCtrl.dismiss();
         this.events.publish('select-stock-move', stockMove);
-      });
+      // });
     } else {
       this.openStockMove(stockMove);
     }
@@ -95,9 +98,10 @@ export class StockMoveListPage implements OnInit {
   createStockMove(){
     this.events.subscribe('create-stock-move', (data) => {
       if (this.select){
-        this.navCtrl.navigateBack('').then(() => {
-          this.events.publish('select-stock-move', data);
-        });
+        // this.navCtrl.navigateBack('').then(() => {
+        this.modalCtrl.dismiss();
+        this.events.publish('select-stock-move', data);
+        // });
       }
       this.events.unsubscribe('create-stock-move');
     })

@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 // import { RestProvider } from "../services/rest/rest";
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
+import { UserPage } from '../user/user.page';
 
 @Component({
   selector: 'app-contact',
@@ -93,6 +94,8 @@ export class ContactPage implements OnInit {
       supplier: new FormControl(this.supplier||false),
       seller: new FormControl(this.seller||false),
       employee: new FormControl(this.employee||false),
+      user: new FormControl(false),
+      user_details: new FormControl({}),
       salary: new FormControl(null),
       currency: new FormControl({}),
       hire_date: new FormControl(undefined),
@@ -121,6 +124,37 @@ export class ContactPage implements OnInit {
     }
   }
 
+  async editUser(user) {
+    // return new Promise(resolve => {
+      let profileModal = await this.modalCtrl.create({
+        component: UserPage,
+        componentProps: this.contactForm.value.user_details
+      });
+      await profileModal.present();
+      // let data: any = profileModal.onDidDismiss();
+      const { data } = await profileModal.onDidDismiss();
+      // data => {
+        if (data) {
+          user["name"] = data.name;
+          user["username"] = data.username;
+          user["sale"] = data.sale;
+          user["purchase"] = data.purchase;
+          user["finance"] = data.finance;
+          user["service"] = data.service;
+          user["report"] = data.report;
+          user["config"] = data.config;
+          user["registered"] = data.registered;
+          console.log("data user", data);
+          console.log("user user", user);
+          this.contactForm.patchValue({
+            user_details: user,
+          });
+          this.justSave();
+        }
+      // });
+    // });
+  }
+
   justSave() {
     if (this._id){
       this.updateContact(this.contactForm.value);
@@ -142,9 +176,10 @@ export class ContactPage implements OnInit {
       if (this.select){
         this.modalCtrl.dismiss();
       } else {
-        this.navCtrl.navigateBack('/contact-list').then(() => {
+        this.navCtrl.navigateBack('/contact-list');
+        // .then(() => {
           this.events.publish('open-contact', this.contactForm.value);
-        });
+        // });
       }
     } else {
       this.createContact(this.contactForm.value).then((doc: any) => {
@@ -158,9 +193,10 @@ export class ContactPage implements OnInit {
           this.events.publish('create-contact', this.contactForm.value);
           this.modalCtrl.dismiss();
         } else {
-          this.navCtrl.navigateBack('/contact-list').then(() => {
+          this.navCtrl.navigateBack('/contact-list');
+          // .then(() => {
             this.events.publish('create-contact', this.contactForm.value);
-          });
+          // });
         }
       });
     }

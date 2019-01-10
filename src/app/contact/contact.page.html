@@ -101,6 +101,19 @@
          <ion-label>{{'Funcionario' | translate}}</ion-label>
          <ion-toggle formControlName="employee"></ion-toggle>
       </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-item
+       no-padding
+       class="field-100">
+         <ion-label>{{'Usuario' | translate}}</ion-label>
+         <ion-toggle formControlName="user"></ion-toggle>
+      </ion-item>
+      <ion-col size="12" class="item-content" *ngIf="contactForm.value.user">
+        <ion-button (click)="editUser(contactForm.value.user_details)" class="button-100">Configurar Usuario</ion-button>
+      </ion-col>
+    </ion-row>
+      <ion-row>
       <ion-item
        no-padding
        *ngIf="contactForm.value.employee"

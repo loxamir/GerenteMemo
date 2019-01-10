@@ -243,36 +243,38 @@ export class PouchdbService {
     return new Promise((resolve, reject)=>{
       let returns = [];
       let processedList = [];
-      let docTypeDict = {};
-      list.forEach((item: any)=>{
-        if (docTypeDict[item.docType]){
-          docTypeDict[item.docType].push(item);
-        }
-        else {
-          docTypeDict[item.docType] = [item];
-        }
-      })
-      this.db.get("config.profile").then((config: any)=>{
-        let sequenceDict = {}
-        Object.keys(docTypeDict).forEach(key=>{
-          let docTypeSequence = key.replace("-", "_")+"_sequence";
-          sequenceDict[key] = parseFloat(config[docTypeSequence]);
-          config[docTypeSequence] = parseFloat(config[docTypeSequence]) + docTypeDict[key].length;
-        })
-        this.db.put(config);
+      // let docTypeDict = {};
+      // list.forEach((item: any)=>{
+      //   if (docTypeDict[item.docType]){
+      //     docTypeDict[item.docType].push(item);
+      //   }
+      //   else {
+      //     docTypeDict[item.docType] = [item];
+      //   }
+      // })
+      // this.db.get("config.profile").then((config: any)=>{
+        // let sequenceDict = {}
+        // Object.keys(docTypeDict).forEach(key=>{
+        //   let docTypeSequence = key.replace("-", "_")+"_sequence";
+        //   sequenceDict[key] = parseFloat(config[docTypeSequence]);
+        //   config[docTypeSequence] = parseFloat(config[docTypeSequence]) + docTypeDict[key].length;
+        // })
+        // this.db.put(config);
 
         list.forEach((item: any)=>{
           // let random: string = Math.random().toString(32).slice(11);
           // item.code = this.formatService.string_pad(4, sequenceDict[item.docType], "right", "0")+"-"+random;
           // item.code = this.getUUID();
-          item._id = item.docType+"."+this.getUUID();
-          sequenceDict[item.docType] += 1;
+          if (!item._id){
+            item._id = item.docType+"."+this.getUUID();
+          }
+          // sequenceDict[item.docType] += 1;
           if (item._return){
             delete item._return;
             returns.push(item);
           }
           processedList.push(item);
-        })
+        // })
         this.db.bulkDocs(processedList).then(createdDocs=>{
           resolve(returns);
         })

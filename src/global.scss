@@ -247,13 +247,13 @@ ion-button {
 //     // font-size:12px;
 //   }
 // }
-// @media screen and (max-width: 360px){
-//   ion-button {
-//     --padding-end:3px;
-//     --padding-start:3px;
-//     font-size:12px;
-//   }
-// }
+@media screen and (max-width: 360px){
+  ion-button {
+    --padding-end:3px;
+    --padding-start:3px;
+    font-size:12px;
+  }
+}
 @media screen and (max-width: 335px){
   ion-button {
     --padding-end:3px;

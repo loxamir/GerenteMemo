@@ -107,9 +107,10 @@ export class WarehousePage implements OnInit {
   buttonSave() {
     if (this._id){
       this.updateWarehouse(this.warehouseForm.value);
-      this.navCtrl.navigateBack('').then(() => {
+      this.navCtrl.navigateBack('/warehouse-list');
+      // .then(() => {
         this.events.publish('open-warehouse', this.warehouseForm.value);
-      });
+      // });
     } else {
       this.createWarehouse(this.warehouseForm.value).then(doc => {
         //console.log("docss", doc);
@@ -117,9 +118,10 @@ export class WarehousePage implements OnInit {
           _id: doc['id'],
         });
         this._id = doc['id'];
-        this.navCtrl.navigateBack('').then(() => {
+        this.navCtrl.navigateBack('/warehouse-list');
+        // .then(() => {
           this.events.publish('create-warehouse', this.warehouseForm.value);
-        });
+        // });
       });
     }
   }

@@ -156,13 +156,15 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.buttonSave();
         } else {
           if (this.opened){
-            // this.navCtrl.navigateBack('/tabs/product-list').then(() => {
+            this.navCtrl.navigateBack('/tabs/product-list');
+            // .then(() => {
               this.events.publish('open-product', this.productForm.value);
             // });
           } else {
-            this.navCtrl.navigateBack('/tabs/product-list').then(() => {
+            this.navCtrl.navigateBack('/tabs/product-list');
+            // .then(() => {
               this.events.publish('create-product', this.productForm.value);
-            });
+            // });
           }
         }
 
@@ -240,9 +242,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.modalCtrl.dismiss();
           this.events.publish('open-product', this.productForm.value);
         } else {
-          this.navCtrl.navigateBack('/tabs/product-list').then(() => {
+          this.navCtrl.navigateBack('/tabs/product-list');
+          // .then(() => {
             this.events.publish('open-product', this.productForm.value);
-          });
+          // });
         }
       } else {
         this.productService.createProduct(product).then(doc => {
@@ -256,9 +259,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             this.modalCtrl.dismiss();
             this.events.publish('create-product', this.productForm.value);
           } else {
-            this.navCtrl.navigateBack('/tabs/product-list').then(() => {
+            this.navCtrl.navigateBack('/tabs/product-list');
+            // .then(() => {
               this.events.publish('create-product', this.productForm.value);
-            });
+            // });
           }
         });
       }

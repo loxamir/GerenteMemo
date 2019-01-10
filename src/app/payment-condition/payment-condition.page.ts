@@ -181,9 +181,10 @@ export class PaymentConditionPage implements OnInit {
         if (this.select){
           this.modalCtrl.dismiss();
         } else {
-          this.navCtrl.navigateBack('payment-condition-list').then(() => {
+          this.navCtrl.navigateBack('payment-condition-list');
+          // .then(() => {
             this.events.publish('open-payment-condition', this.paymentConditionForm.value);
-          });
+          // });
         }
       } else {
         this.createPaymentCondition(this.paymentConditionForm.value).then((doc: any) => {
@@ -195,9 +196,10 @@ export class PaymentConditionPage implements OnInit {
           if (this.select){
             this.modalCtrl.dismiss();
           } else {
-            this.navCtrl.navigateBack('payment-condition-list').then(() => {
+            this.navCtrl.navigateBack('payment-condition-list');
+            // .then(() => {
               this.events.publish('create-payment-condition', this.paymentConditionForm.value);
-            });
+            // });
           }
         });
       }
