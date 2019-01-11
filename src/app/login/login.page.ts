@@ -99,7 +99,7 @@ export class LoginPage implements OnInit {
 
 
   generatePdf() {
-    const div = "<span>teste</span>te";
+    const div = document.getElementById("html2Pdf");
     const options = {background: "white", height: div.clientHeight, width: div.clientWidth};
 
     html2canvas(div, options).then((canvas) => {
