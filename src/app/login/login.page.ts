@@ -53,7 +53,8 @@ export class LoginPage implements OnInit {
   ) {
 
     this.languages = this.languageService.getLanguages();
-
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this.storage.get("username").then((username)=>{
       if (username){
         this.storage.get("password").then((password)=>{
