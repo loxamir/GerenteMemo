@@ -315,6 +315,7 @@ export class LoginPage implements OnInit {
       // }
 
       this.events.subscribe('end-sync', () => {
+        this.events.unsubscribe('end-sync');
         // toast.dismiss();
         let isFirst = true;
         if(isFirst){
@@ -326,7 +327,6 @@ export class LoginPage implements OnInit {
           this.loading.dismiss();
 
         }
-        this.events.unsubscribe('end-sync');
         // this.navCtrl.setRoot(TabsNavigationPage);
         // this.loading.dismiss();
       })
