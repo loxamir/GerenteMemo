@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { LoadingController, Events, ToastController, MenuController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -12,11 +12,16 @@ import { Storage } from '@ionic/storage';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from '../services/rest/rest';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
+import * as jsPDF from 'jspdf';
+import * as html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
+  providers: [
+  { provide: 'Window',  useValue: window }
+]
 })
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
@@ -37,6 +42,7 @@ export class LoginPage implements OnInit {
 
   constructor(
     // public modal: ModalController,
+    @Inject('Window') private window: Window,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -78,6 +84,48 @@ export class LoginPage implements OnInit {
       password: new FormControl('', Validators.required),
     });
   }
+
+  download() {
+
+      var doc = new jsPDF();
+      doc.text(20, 20, 'Hel<b>lo</b> world!');
+      doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
+      doc.addPage();
+      doc.text(20, 20, 'Do you like that?');
+
+      // Save the PDF
+      doc.save('Test.pdf');
+  }
+
+
+  generatePdf() {
+    const div = "<span>teste</span>te";
+    const options = {background: "white", height: div.clientHeight, width: div.clientWidth};
+
+    html2canvas(div, options).then((canvas) => {
+        //Initialize JSPDF
+        let doc = new jsPDF("p", "mm", "a4");
+        //Converting canvas to Image
+        let imgData = canvas.toDataURL("image/PNG");
+        //Add image Canvas to PDF
+        doc.addImage(imgData, 'PNG', 20, 20);
+
+        let pdfOutput = doc.output();
+        // using ArrayBuffer will allow you to put image inside PDF
+        let buffer = new ArrayBuffer(pdfOutput.length);
+        let array = new Uint8Array(buffer);
+        for (let i = 0; i < pdfOutput.length; i++) {
+            array[i] = pdfOutput.charCodeAt(i);
+        }
+
+        //Name of pdf
+        const fileName = "example.pdf";
+
+        // Make file
+        doc.save(fileName);
+
+    });
+}
 
   async ngOnInit() {
     this.loading = await this.loadingCtrl.create();
