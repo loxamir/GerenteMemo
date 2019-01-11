@@ -234,8 +234,10 @@ export class ConfigService {
           promise_ids.push(this.pouchdbService.getDoc(pouchData['input_product_id']));
           index += 1;
         }
+        console.log("Passed", pouchData);
         if (pouchData['warehouse_id']){
           warehouse_id = true;
+          console.log("warehouse_id", pouchData['warehouse_id']);
           promise_ids.push(this.pouchdbService.getDoc(pouchData['warehouse_id']));
           index += 1;
         }
@@ -264,6 +266,7 @@ export class ConfigService {
             pouchData['input_product'] = promise_data[6];
           }
           if (warehouse_id){
+            console.log("promise_data", promise_data[7])
             pouchData['warehouse'] = promise_data[7];
           }
           // pouchData['image'] = promise_data[8];

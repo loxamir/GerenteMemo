@@ -284,7 +284,7 @@ export class BalanceReportPage implements OnInit {
 
           let teste = this.groupByName(accountCategories, 'title_id', '');
           titles.forEach(title=>{
-            if (parseFloat(title.code)<5){
+            if (parseFloat(title.code)<=3){
               balance.push({
                 "name": title.name,
                 "code": title.code,

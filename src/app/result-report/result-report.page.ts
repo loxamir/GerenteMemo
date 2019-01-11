@@ -283,7 +283,7 @@ export class ResultReportPage implements OnInit {
 
           let teste = this.groupByName(accountCategories, 'title_id', '');
           titles.forEach(title=>{
-            if (parseFloat(title.code)>=5){
+            if (parseFloat(title.code)>=4){
               result.push({
                 "name": title.name,
                 "code": title.code,
