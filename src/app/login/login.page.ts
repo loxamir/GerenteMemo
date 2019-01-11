@@ -324,7 +324,9 @@ export class LoginPage implements OnInit {
           console.log("is not first");
           // window.location.reload();
           this.loading.dismiss();
+
         }
+        this.events.unsubscribe('end-sync');
         // this.navCtrl.setRoot(TabsNavigationPage);
         // this.loading.dismiss();
       })
