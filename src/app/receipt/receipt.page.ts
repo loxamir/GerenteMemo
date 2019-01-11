@@ -92,8 +92,8 @@ export class ReceiptPage implements OnInit {
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');
-      // this._id = this.route.snapshot.paramMap.get('_id');
-      // this.select = this.route.snapshot.paramMap.get('select');
+      this._id = this.route.snapshot.paramMap.get('_id');
+      this.select = this.route.snapshot.paramMap.get('select');
       // this.items =  this.route.snapshot.paramMap.get('items');
       this.avoidAlertMessage = false;
     }
@@ -1084,7 +1084,7 @@ export class ReceiptPage implements OnInit {
             this.modalCtrl.dismiss();
           } else {
             this.receiptForm.markAsPristine();
-            this.navCtrl.navigateBack('/tabs/receipt-list');
+            this.navCtrl.navigateBack('/receipt-list');
           }
         }
 }

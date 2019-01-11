@@ -35,8 +35,8 @@
           <h3 class="item-title">{{item.name | translate}}</h3>
         </ion-col>
         <ion-col no-padding width-65 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-          <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.total| number:'1.0'}}</h2>
-          <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.0'}}</h2>
+          <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.amount_paid| number:'1.0'}}</h2>
+          <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.amount_paid| number:'1.0'}}</h2>
         </ion-col>
       </ion-row>
       <ion-row no-padding>
