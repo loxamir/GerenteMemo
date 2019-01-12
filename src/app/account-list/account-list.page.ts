@@ -1,7 +1,9 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, ModalController, Events } from '@ionic/angular';
+import {
+  NavController, LoadingController, ModalController, Events
+ } from '@ionic/angular';
 import { AccountPage } from '../account/account.page';
 import 'rxjs/Rx';
 //import { AccountsModel } from './accounts.model';
@@ -92,7 +94,9 @@ export class AccountListPage implements OnInit {
         this.searchTerm, this.page, this.field, this.filter
       ).then((accounts: any[]) => {
         if (this.filter == 'transfer'){
-          accounts = accounts.filter(word=> word._id != this.route.snapshot.paramMap.get('accountFrom')['_id']);
+          accounts = accounts.filter(
+            word=> word._id != this.route.snapshot.paramMap.get(
+              'accountFrom')['_id']);
         }
         accounts.forEach(account => {
           this.accounts.push(account);
@@ -104,11 +108,14 @@ export class AccountListPage implements OnInit {
   }
 
   setFilteredItems() {
+    console.log("this.filter", this.filter);
     this.getAccounts(
       this.searchTerm, 0, this.field, this.filter
     ).then((accounts: any) => {
       if (this.filter == 'transfer'){
-        accounts = accounts.filter(word=> word._id != this.route.snapshot.paramMap.get('accountFrom')['_id']);
+        accounts = accounts.filter(
+          word=> word._id != this.route.snapshot.paramMap.get(
+            'accountFrom')['_id']);
       }
       this.accounts = accounts;
       this.page = 1;
@@ -184,7 +191,9 @@ export class AccountListPage implements OnInit {
   getAccounts(keyword, page, field, filter){
     return new Promise((resolve, reject)=>{
       ////console.log("getPlanned");
-      this.pouchdbService.searchDocTypeData('account', keyword, page, field, filter).then((accounts: any[]) => {
+      this.pouchdbService.searchDocTypeData(
+      'account', keyword, page, field, filter
+    ).then((accounts: any[]) => {
       // this.pouchdbService.searchDocTypeData('account', keyword, page=null, field='cash_in', filter=true).then((accounts: any[]) => {
       // this.pouchdbService.searchDocTypeData('account').then((accounts: any[]) => {
         console.log("real accounts", accounts);

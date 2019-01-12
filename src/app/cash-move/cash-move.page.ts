@@ -89,18 +89,7 @@ export class CashMovePage implements OnInit {
     // this.default_name = this.default_name');
     this.today = new Date();
     // console.log("dados nav", this.
-    if (this.accountTo && this.accountTo['_id'].split('.')[1]=='cash'){
-      // console.log("to cash");
-      this.to_cash = true;
-    }
-    if (this.accountFrom && this.accountFrom['_id'].split('.')[1]=='cash'){
-      // console.log("from cash");
-      this.from_cash = true;
-    }
-    if (this.transfer){
-      // console.log("from cash");
-      this.transfer = true;
-    }
+
   }
 
   ngOnInit() {
@@ -144,6 +133,18 @@ export class CashMovePage implements OnInit {
       currency_residual: new FormControl(this.currency_residual||0),
       _id: new FormControl(''),
     });
+    if (this.accountTo && this.accountTo['_id'].split('.')[1]=='cash'){
+      // console.log("to cash");
+      this.to_cash = true;
+    }
+    if (this.accountFrom && this.accountFrom['_id'].split('.')[1]=='cash'){
+      // console.log("from cash");
+      this.from_cash = true;
+    }
+    if (this.transfer){
+      // console.log("from cash");
+      this.transfer = true;
+    }
 
     if (this._id){
       this.cashMoveService.getCashMove(this._id).then((data) => {

@@ -207,7 +207,7 @@ export class CashPage implements OnInit {
         component: CashMovePage,
         componentProps: {
           "select": true,
-          "receivable": true,
+          "cash_in": true,
           "accountTo": this.cashForm.value,
         }
       });
@@ -233,7 +233,7 @@ export class CashPage implements OnInit {
         component: CashMovePage,
         componentProps: {
           "select": true,
-          "payable": true,
+          "cash_out": true,
           "accountFrom": this.cashForm.value,
         }
       });
