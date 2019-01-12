@@ -189,7 +189,42 @@
       </ion-row>
     </ion-card>
 
-
+    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+     (click)="showReportCashFlow()">
+      <ion-row>
+        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+          Fluxo de Caixa
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 15px;">
+        <ion-col
+        no-padding
+         class="report-50">
+          <h4 class="field-label">{{'Total de Recibido' | translate}}</h4>
+          <h4 class="field-value" style="color:green">$ {{cashflowIncome|number:'1.0-1'}}</h4>
+        </ion-col>
+        <ion-col
+        no-padding
+         class="report-50">
+          <h4 class="field-label">{{'Total de Pagado' | translate}}</h4>
+          <h4 class="field-value" style="color:red">$ {{cashflowExpense|number:'1.0-1'}}</h4>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col
+        no-padding
+         class="report-50">
+          <h4 class="field-label">{{'Resultado Liquido' | translate}}</h4>
+          <h4 class="field-value" style="color:green">$ {{cashflowIncome-cashflowExpense|number:'1.0-1'}}</h4>
+        </ion-col>
+        <ion-col
+        no-padding
+         class="report-50">
+          <h4 class="field-label">{{'Rentabilidad' | translate}}</h4>
+          <h4 class="field-value" style="color:green">{{100*cashflowIncome/cashflowExpense|number:'1.0-1'}}%</h4>
+        </ion-col>
+      </ion-row>
+    </ion-card>
 
     <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
      (click)="showReportPurchase()">
@@ -245,50 +280,7 @@
       </ion-row>
     </ion-card> -->
 
-    <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
-     (click)="showReportCashFlow()">
-      <ion-row>
-        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
-          Fluxo de Caixa
-        </ion-col>
-      </ion-row>
-      <!-- <ion-row>
-        <ion-col
-        no-padding
-         class="report-100" >
-          <h4 class="field-label">{{'TOTAL' | translate}}</h4>
-          <h4 class="field-value" style="color:green; font-size:30px;">$ {{purchased|number:'1.0-1'}}</h4>
-        </ion-col>
-      </ion-row> -->
-      <ion-row style="margin-top: 15px;">
-        <ion-col
-        no-padding
-         class="report-50">
-          <h4 class="field-label">{{'Total de Recibido' | translate}}</h4>
-          <h4 class="field-value" style="color:green">$ {{cashflowIncome|number:'1.0-1'}}</h4>
-        </ion-col>
-        <ion-col
-        no-padding
-         class="report-50">
-          <h4 class="field-label">{{'Total de Pagado' | translate}}</h4>
-          <h4 class="field-value" style="color:red">$ {{cashflowExpense|number:'1.0-1'}}</h4>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col
-        no-padding
-         class="report-50">
-          <h4 class="field-label">{{'Resultado Liquido' | translate}}</h4>
-          <h4 class="field-value" style="color:green">$ {{cashflowIncome-cashflowExpense|number:'1.0-1'}}</h4>
-        </ion-col>
-        <ion-col
-        no-padding
-         class="report-50">
-          <h4 class="field-label">{{'Rentabilidad' | translate}}</h4>
-          <h4 class="field-value" style="color:green">{{100*cashflowIncome/cashflowExpense|number:'1.0-1'}}%</h4>
-        </ion-col>
-      </ion-row>
-    </ion-card>
+
 
     <!-- <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
      (click)="showReportCashFlow()">

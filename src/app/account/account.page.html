@@ -25,6 +25,49 @@
       </div>
 
 
+      <ion-item
+       no-padding
+       (click)="selectCurrency()"
+       class="field-50">
+       <div class="field-many2one">
+         <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
+         <h4 class="field-value-max">{{accountForm.value.currency && accountForm.value.currency.name || 'Selecionar'}}</h4>
+       </div>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating">{{'Tipo' | translate}}</ion-label>
+        <ion-select formControlName="type"
+          cancelText="{{ 'CANCEL' | translate }}"
+          interface="popover"
+          okText="{{ 'OK' | translate }}">
+          <ion-select-option value="cash">Dinero</ion-select-option>
+          <ion-select-option value="bank">Banco</ion-select-option>
+          <ion-select-option value="check">Cheque</ion-select-option>
+          <ion-select-option value="expense">Despesa</ion-select-option>
+          <ion-select-option value="income">Ingreso</ion-select-option>
+          <ion-select-option value="payable">A Pagar</ion-select-option>
+          <ion-select-option value="receivable">A Cobrar</ion-select-option>
+          <ion-select-option value="other">Otro</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item
+       *ngIf="accountForm.value.type=='bank'"
+       no-padding
+       class="field-100">
+        <ion-label position="floating">{{'Banco' | translate}}</ion-label>
+        <ion-select formControlName="bank_name"
+
+          cancelText="{{ 'CANCEL' | translate }}"
+          okText="{{ 'OK' | translate }}"
+          interface="popover">
+          <ion-select-option value="itau">Banco Itau</ion-select-option>
+          <ion-select-option value="regional">Banco Regional</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+
 
       <ion-item class="field-50 "
       no-padding

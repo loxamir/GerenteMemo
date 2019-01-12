@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
     },
     {
       title: 'Informes',
-      url: '/report-tabs',
+      url: '/report-list',
       icon: 'stats'
     },
     // {
