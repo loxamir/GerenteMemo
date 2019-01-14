@@ -17,6 +17,10 @@ import { IonicStorageModule } from '@ionic/storage';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
+import { LOCALE_ID } from '@angular/core';
+import es from '@angular/common/locales/es';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(es);
 // Custom Imports
 import { ProductListPage } from './product-list/product-list.page';
 import { PaymentConditionListPage } from './payment-condition-list/payment-condition-list.page';
@@ -132,6 +136,7 @@ import { environment } from '../environments/environment';
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })],
   providers: [
+        { provide: LOCALE_ID, useValue: 'es-PY' },
     NativeStorage,
     File,
     StatusBar,

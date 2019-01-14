@@ -420,7 +420,7 @@ export class FormatService {
                   var extension = ".prt";
                   var dotmatrix_model = {
                     qty_lines: 20,
-                    line: `self.string_pad(5,"")+self.string_pad(10,parseFloat(line.quantity).toFixed(3))+" "+self.string_pad(67,line.description.substring(0,67))+" "+self.string_pad(8,parseFloat(line.price).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_00).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_05).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_10).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.breakLine(1)`+'\n',
+                    line: `self.string_pad(5,"")+self.string_pad(10,parseFloat(line.quantity).toFixed(0), "right")+" "+self.string_pad(67,line.description.substring(0,67))+" "+self.string_pad(8,parseFloat(line.price).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_00).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_05).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_10).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.breakLine(1)`+'\n',
                     content: `
 self.breakLine(4)+
 self.string_pad(125,"")+self.string_pad(15,order.code)+

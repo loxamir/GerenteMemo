@@ -47,12 +47,15 @@
             </ion-row>
              <ion-row no-padding class="content-row one-line">
                 <ion-col no-padding class="schedule-date" (click)="selectProduct(item)">
-                  <h3 class="item-title" *ngIf="item.type != 'service'">
+                  <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
+                      Codigo: <b style="  margin-left: 5px">{{item.code}}</b>
+                  </h3>
+                  <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
                       Stock: <b style="color: green;margin-left: 5px">{{item.stock}}</b>
                   </h3>
-                  <h3 style="font-size: 15px;font-weight: normal;">
+                  <!-- <h3 style="font-size: 15px;font-weight: normal;">
                       Codigo: <b style="margin-left: 5px">{{item.code}}</b>
-                  </h3>
+                  </h3> -->
                 </ion-col>
                 <ion-col no-padding size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
                   <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">$ {{item.price| number:'1.0'}}</h2>

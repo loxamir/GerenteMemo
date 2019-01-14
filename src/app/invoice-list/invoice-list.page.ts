@@ -7,6 +7,9 @@ import 'rxjs/Rx';
 // import { InvoicesPopover } from './invoices.popover';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
+import { LanguageModel } from "../services/language/language.model";
 
 @Component({
   selector: 'app-invoice-list',
@@ -19,6 +22,7 @@ export class InvoiceListPage implements OnInit {
   searchTerm: string = '';
   page = 0;
   select;
+  languages: Array<LanguageModel>;
 
   constructor(
     public navCtrl: NavController,
@@ -27,8 +31,13 @@ export class InvoiceListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public route: ActivatedRoute,
     public events: Events,
+    public translate: TranslateService,
+    public languageService: LanguageService,
   ) {
     //this.loading = //this.loadingCtrl.create();
+    this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select');
     this.events.subscribe('changed-invoice', (change)=>{
       this.handleChange(this.invoices, change);

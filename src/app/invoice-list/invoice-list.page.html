@@ -23,19 +23,23 @@
       <ion-item no-padding (click)="openInvoice(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
           <ion-row>
-            <ion-col no-padding width-20 class="schedule-date">
-              <h2 class="list-big-number">{{item.code || item.number}}</h2>
+            <ion-col>
+              <h3 class="item-title"><b>{{ item.code }}</b></h3>
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col>
-              <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
+            <ion-col no-padding width-20 class="schedule-date">
+              <!-- <h2 class="list-big-number">{{item.code || item.number}}</h2> -->
+              <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;">
+                <span style="margin-left: 5px">{{item.contact_name}}</span>
+              </h3>
             </ion-col>
           </ion-row>
      <ion-row no-padding class="content-row one-line">
         <ion-col no-padding width-35 class="schedule-date">
-          <h3 class="schedule-month">{{item.date|date: 'dd/MM/yyyy'}}</h3>
-          <h3 class="item-title">{{item.paymentCondition | translate}}</h3>
+          <!-- -->
+          <h3 class="schedule-month" style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;margin-left: 5px">{{item.date|date: 'dd/MM/yyyy'}}</h3>
+          <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;" class="item-title">{{item.paymentCondition | translate}}</h3>
         </ion-col>
         <ion-col no-padding width-65 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
           <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.total| number:'1.0'}}</h2>
