@@ -130,7 +130,7 @@ export class ConfigService {
         let user = await this.getUser();
         console.log("user", user);
         let code = await this.pouchdbService.getDoc(
-          'sequence'+'.'+user+'.'+docType
+          'sequence'+'.'+docType+'.'+user
         );
         console.log('code', code);
         resolve(code['value']);
