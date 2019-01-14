@@ -973,6 +973,7 @@ export class InvoicePage implements OnInit {
     }
 
     print() {
+      this.formatService.print_file(this.invoiceForm.value);
       // this.configService.getConfigDoc().then(async (data) => {
       //   let company_name = data.name || "";
       //   let company_ruc = data.doc || "";

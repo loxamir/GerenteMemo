@@ -190,29 +190,29 @@ export class FormatService {
   }//NumeroALetras()
 
   getMonth(month) {
-    if (month == '01'){
+    if (month == '01' || month == 0){
       return "Enero";
-    } else if (month == '02'){
+    } else if (month == '02' || month == 1){
       return "Febrero";
-    } else if (month == '03'){
+    } else if (month == '03' || month == 2){
       return "Marzo";
-    } else if (month == '04'){
+    } else if (month == '04' || month == 3){
       return "Abril";
-    } else if (month == '05'){
+    } else if (month == '05' || month == 4){
       return "Mayo";
-    } else if (month == '06'){
+    } else if (month == '06' || month == 5){
       return "Junio";
-    } else if (month == '07'){
+    } else if (month == '07' || month == 6){
       return "Julio";
-    } else if (month == '08'){
+    } else if (month == '08' || month == 7){
       return "Agosto";
-    } else if (month == '09'){
+    } else if (month == '09' || month == 8){
       return "Septiembre";
-    } else if (month == '10'){
+    } else if (month == '10' || month == 9){
       return "Octubre";
-    } else if (month == '11'){
+    } else if (month == '11' || month == 10){
       return "Noviembre";
-    } else if (month == '12'){
+    } else if (month == '12' || month == 11){
       return "Diciembre";
     }
   }
@@ -312,6 +312,265 @@ export class FormatService {
     var result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  breakLine(lines){
+    let count = 0;
+    let string = "";
+    while(count<lines){
+      string+="\n";
+      count+=1;
+    }
+    return string;
+  }
+
+
+
+
+  print_file(order) {
+    console.log("order", order);
+              // let order = '123';
+              // order._printed = true;
+              // var months = new Array();
+              // months[0] = "Enero";
+              // months[1] = "Febrero";
+              // months[2] = "Marzo";
+              // months[3] = "Abril";
+              // months[4] = "Mayo";
+              // months[5] = "Junio";
+              // months[6] = "Julio";
+              // months[7] = "Agosto";
+              // months[8] = "Septiembre";
+              // months[9] = "Octubre";
+              // months[10] = "Noviembre";
+              // months[11] = "Dicimbre";
+              // let invoice_data = order.export_for_printing();
+              let date = new Date(order.date);
+              let day = date.getDay();
+              let month = this.getMonth(date.getMonth());
+              let year = date.getFullYear();
+              let contado = "";
+              let credito = "";
+              let condicion = "Credito"
+              if(order.payment_term == 1){
+                  contado = "x";
+                  // credito = "";
+                  condicion = "Contado";
+              } else {
+                  // contado = "";
+                  credito = "x";
+                  condicion = "Credito";
+              }
+              console.log("month", date.getMonth());
+              // var discount_amount = 0;
+              // var original_price = 0;
+              // var lines_length = order.attributes.orderLines.length;
+              // price_list_id = parseInt(this.pos.config.pricelist_id[0]);
+              // for(var line=0; line<lines_length;line++){
+              //     let this_line = order.attributes.orderLines.models[line]
+              //     let line_price = this_line.price;
+              //     //line_pricelist = this.pos.pricelist_engine.compute_price(
+              //     //    this.pos.db, this_line.product, false, 1, price_list_id);
+              //     let line_pricelist = this_line.price;
+              //     let line_discount = (line_pricelist - line_price)*this_line.quantity;
+              //     original_price = original_price + line_pricelist*this_line.quantity;
+              //     if(line_discount > 0){
+              //         discount_amount = discount_amount + line_discount;
+              //     }
+              // }
+              // if (discount_amount > 0){
+              //     let discount_percent = 100*discount_amount/original_price;
+              // } else {
+              //     let discount_percent = 0;
+              // }
+              // if(config.to_invoice){
+              let name="123"
+                  var prefix = "factura_";
+                  var extension = ".prt";
+                  var dotmatrix_model = {
+                    qty_lines: 20,
+                    line: `self.string_pad(5,"")+self.string_pad(10,parseFloat(line.quantity).toFixed(3))+" "+self.string_pad(67,line.description.substring(0,67))+" "+self.string_pad(8,parseFloat(line.price).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_00).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_05).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_10).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.breakLine(1)`+'\n',
+                    content: `
+self.breakLine(4)+
+self.string_pad(125,"")+self.string_pad(15,name)+
+self.breakLine(4)+
+self.string_pad(20,'')+self.string_pad(2,day)+" de "+self.string_pad(2,month)+" de "+self.string_pad(90,year)+" "+self.string_pad(8,condicion)+
+self.breakLine(2)+
+self.string_pad(20,'')+self.string_pad(105,partner_name)+" "+self.string_pad(10,ruc)+
+self.breakLine(1)+
+self.string_pad(20,'')+self.string_pad(53,street)+" "+self.string_pad(15,phone)+
+self.breakLine(3)+
+lines+
+self.string_pad(93,'')+self.string_pad(15,subtotal_00, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(14,subtotal_05, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(14,subtotal_10, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
+self.breakLine(3)+
+self.string_pad(130,'')+self.string_pad(10,gross.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
+self.breakLine(1)+
+self.string_pad(5,'')+self.string_pad(120,amount_in_word_line)+
+self.breakLine(1)+
+self.string_pad(55,'')+self.string_pad(20,iva_05.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(10,iva_10.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(24,'')+self.string_pad(10,amount_tax.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
+self.breakLine(7)`
+                  }
+                  var partner_name = order.contact_name;
+                  var partner = order.contact;
+                  var ruc = partner.document;
+                  var street = partner.address;
+                  var phone = partner.phone;
+                  // let next_number = this.string_pad(order.pos.config.legal_padding,order.pos.config.legal_next_number - 1, "right", "0");
+                  // prefix = order.pos.config.legal_prefix.replace("%(year)s", year);
+                  // var name = prefix+next_number;
+              // } else if (order.payment_term == 1){
+              //     var prefix = "ticket_";
+              //     var extension = ".prl";
+              //     var dotmatrix_model = this.pos.dotmatrix_invoice[1];
+              //     var partner_name = invoice_data.client;
+              //     var partner = order.attributes.client;
+              //     var ruc = false;
+              //     var cedula = false;
+              //     if (partner) {
+              //         ruc = partner.ruc;
+              //         cedula = partner.cedula;
+              //         if (!ruc){
+              //             ruc = cedula;
+              //         }
+              //         var street = partner.address;
+              //         var phone = partner.phone;
+              //     }
+              //     next_number = string_pad(order.pos.config.ticket_padding, order.pos.config.ticket_next_number - 1, "right", "0");
+              //     prefix = order.pos.config.ticket_prefix.replace("%(year)s", year);
+              //     var name = prefix+next_number;
+              // } else {
+              //     var prefix = "ticket_";
+              //     var extension = ".prl";
+              //     var dotmatrix_model = this.pos.dotmatrix_invoice[2];
+              //     var partner_name = invoice_data.client;
+              //     var partner = order.attributes.client;
+              //     var ruc = partner.ruc;
+              //     var cedula = partner.cedula;
+              //     if (!ruc){
+              //         ruc = cedula;
+              //     }
+              //     var street = partner.address;
+              //     var phone = partner.phone;
+              //     next_number = string_pad(order.pos.config.ticket_padding, order.pos.config.ticket_next_number - 1, "right", "0");
+              //     prefix = order.pos.config.ticket_prefix.replace("%(year)s", year);
+              //     var name = prefix+next_number;
+              // }
+              // if (dotmatrix_model){
+                  var max_lines = dotmatrix_model.qty_lines;
+                  var lines_count = 0;
+                  var lines = "";
+                  var subtotal_10 = 0;
+                  var subtotal_05 = 0;
+                  var subtotal_00 = 0;
+                  var iva_10 = 0;
+                  var iva_05 = 0;
+                  // for (var item in order.items)
+                  let self = this;
+                  order.items.forEach((line: any)=>{
+                    // let line = order.items[item];
+                    let line_amount_00 = 0;
+                    let line_amount_05 = 0;
+                    let line_amount_10 = 0;
+
+                    // if (item.product.tax == "iva10"){
+                    //   iva10 = item.quantity*item.price;
+                    //   totalIva10 += iva10;
+                    // } else if (item.product.tax == "exenta"){
+                    //   exenta = item.quantity*item.price;
+                    //   totalExentas += exenta;
+                    // } else if (item.product.tax == "iva5"){
+                    //   iva5 = item.quantity*item.price;
+                    //   totalIva5 += iva5;
+                    // }
+
+                    //IVA Exento
+                    if(line.product.tax=='exenta'){
+                        line_amount_00 = line.quantity*line.price;
+                        subtotal_00 = subtotal_00 + line.subtotal;
+                    }
+                    //IVA 5%
+                    if(line.product.tax=='iva5'){
+                        line_amount_05 = line.quantity*line.price;
+                        subtotal_05 = subtotal_05 + line.quantity*line.price;
+                        iva_05 = iva_05 + line.quantity*line.price/21;
+                    }
+                    //IVA 10%
+                    if(line.product.tax=='iva10'){
+                        line_amount_10 = line.quantity*line.price;
+                        subtotal_10 = subtotal_10 + line.quantity*line.price;
+                        iva_10 = iva_10 + line.quantity*line.price/11;
+                    }
+                    // let default_code = line.product.code;
+                    console.log("dotmatrix_modelline", dotmatrix_model.line);
+
+                    let line_eval = eval(dotmatrix_model.line)
+                    lines = lines+line_eval;
+                    lines_count = lines_count + 1;
+                  });
+
+                  // }
+                  // if(config.to_invoice){
+                      while(lines_count < max_lines){
+                          lines = lines+"\n";
+                          lines_count = lines_count + 1;
+                      }
+                  // }
+                  let gross = order.total;
+                  // console.log(order);
+                  let amount_in_word_line = this.NumeroALetras(order.total, 'PYG');
+                  let amount_tax = iva_05 + iva_10;
+                  let invoice = eval(dotmatrix_model.content).replace("false", "");
+                  console.log("invoice", invoice);
+                  // var blob = new Blob([invoice], {type: "text/plain;charset=utf-8"});
+                  // saveAs(blob, prefix+next_number+extension);
+                  this.download("factura.txt", invoice);
+              // }
+          }
+
+
+
+
+download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
   }
 
 }
