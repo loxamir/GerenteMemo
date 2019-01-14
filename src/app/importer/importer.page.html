@@ -19,9 +19,11 @@
 
 <ion-content padding>
   <!-- <ion-scroll scrollX="true" scrollY="true" class="data-scroll"> -->
-    <ion-button (tap)="chooseFile()">
+  <input type="file" class="upload" (change)="changeListener($event.target.files)">
+
+    <!-- <ion-button (tap)="chooseFile()">
       Selecionar Archivo
-    </ion-button>
+    </ion-button> -->
     <ion-row>
       <ion-button (tap)="validate()" style="background: green;" *ngIf="csvData.length > 0">
         Validar

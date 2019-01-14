@@ -66,6 +66,7 @@
     "d3-scale": "^2.1.2",
     "d3-shape": "^1.2.2",
     "es6-promise-plugin": "^4.2.2",
+    "file-saver": "^2.0.0",
     "html2canvas": "^1.0.0-alpha.12",
     "marked": "^0.5.2",
     "papaparse": "^4.6.3",

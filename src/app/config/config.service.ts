@@ -162,8 +162,9 @@ export class ConfigService {
           resolve(current_code);
         // });
       } else {
-        let user = this.getUser();
+        let user = await this.getUser();
         // let code = data['value'];
+        // console.log("user", user);
         let data = await this.pouchdbService.getDoc('sequence'+'.'+docType+'.'+user);
         // console.log('code', code);
         let regex = /[0-9]+$/
@@ -174,9 +175,9 @@ export class ConfigService {
         let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
         let new_code = prefix+pad_number;
         data['value'] = new_code;
-        console.log("data", data);
+        // console.log("data", data);
         let test = await this.pouchdbService.updateDoc(data);
-        console.log("test", test);
+        // console.log("test", test);
         resolve(current_code);
         //console.log("new_code1", new_code);
 

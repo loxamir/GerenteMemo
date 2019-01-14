@@ -4,7 +4,7 @@ import * as papa from 'papaparse';
 import { Http } from '@angular/http';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { FilePath } from '@ionic-native/file-path';
-import { File } from '@ionic-native/file';
+// import { File } from '@ionic-native/file';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ProductService } from '../product/product.service';
 import { ProductCategoryService } from '../product-category/product-category.service';
@@ -38,7 +38,7 @@ export class ImporterPage implements OnInit {
     public http: Http,
     public fileChooser: FileChooser,
     public filePath: FilePath,
-    public file: File,
+    // public file: File,
     public pouchdbService: PouchdbService,
     public productService: ProductService,
     public categoryService: ProductCategoryService,
@@ -836,24 +836,44 @@ export class ImporterPage implements OnInit {
       .then(uri => {
         this.filePath.resolveNativePath(uri)
           .then(filePath => {
+
             let tmppath = filePath.split("/");
             let file = filePath.split("/")[tmppath.length-1];
             let path = filePath.split(file)[0];
             console.log("file, path", path, file);
-            this.file.readAsText(path, file).then(data => {
-              console.log("read file", data);
-              data.slice(0,-1);
-              console.log("read file2", data);
-              this.extractData(data);
-            }).catch(err => {
-              //console.log('Directory doesnt exist', JSON.stringify(err));
-            });
+            // this.file.readAsText(path, file).then(data => {
+            //   console.log("read file", data);
+            //   data.slice(0,-1);
+            //   console.log("read file2", data);
+            //   this.extractData(data);
+            // }).catch(err => {
+            //   //console.log('Directory doesnt exist', JSON.stringify(err));
+            // });
           })
           .catch(err => console.log(JSON.stringify(err)));
 
       })
       .catch(e => console.log(JSON.stringify(e)));
       // // this.viewCtrl.dismiss();
+  }
+
+
+  public changeListener(files: FileList){
+    console.log(files);
+    if(files && files.length > 0) {
+       let file : File = files.item(0);
+         console.log(file.name);
+         console.log(file.size);
+         console.log(file.type);
+         let reader: FileReader = new FileReader();
+         reader.readAsText(file);
+         reader.onload = (e) => {
+            let csv = reader.result;
+            csv.slice(0,-1);
+            this.extractData(csv);
+            console.log(csv);
+         }
+      }
   }
 
 }

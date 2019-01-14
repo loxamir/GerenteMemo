@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { File } from '@ionic-native/file';
+import { saveAs } from 'file-saver';
 let file = new File();
 
 @Injectable({ providedIn: 'root' })
@@ -422,7 +423,7 @@ export class FormatService {
                     line: `self.string_pad(5,"")+self.string_pad(10,parseFloat(line.quantity).toFixed(3))+" "+self.string_pad(67,line.description.substring(0,67))+" "+self.string_pad(8,parseFloat(line.price).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_00).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_05).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_10).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.breakLine(1)`+'\n',
                     content: `
 self.breakLine(4)+
-self.string_pad(125,"")+self.string_pad(15,name)+
+self.string_pad(125,"")+self.string_pad(15,order.code)+
 self.breakLine(4)+
 self.string_pad(20,'')+self.string_pad(2,day)+" de "+self.string_pad(2,month)+" de "+self.string_pad(90,year)+" "+self.string_pad(8,condicion)+
 self.breakLine(2)+
@@ -445,47 +446,6 @@ self.breakLine(7)`
                   var ruc = partner.document;
                   var street = partner.address;
                   var phone = partner.phone;
-                  // let next_number = this.string_pad(order.pos.config.legal_padding,order.pos.config.legal_next_number - 1, "right", "0");
-                  // prefix = order.pos.config.legal_prefix.replace("%(year)s", year);
-                  // var name = prefix+next_number;
-              // } else if (order.payment_term == 1){
-              //     var prefix = "ticket_";
-              //     var extension = ".prl";
-              //     var dotmatrix_model = this.pos.dotmatrix_invoice[1];
-              //     var partner_name = invoice_data.client;
-              //     var partner = order.attributes.client;
-              //     var ruc = false;
-              //     var cedula = false;
-              //     if (partner) {
-              //         ruc = partner.ruc;
-              //         cedula = partner.cedula;
-              //         if (!ruc){
-              //             ruc = cedula;
-              //         }
-              //         var street = partner.address;
-              //         var phone = partner.phone;
-              //     }
-              //     next_number = string_pad(order.pos.config.ticket_padding, order.pos.config.ticket_next_number - 1, "right", "0");
-              //     prefix = order.pos.config.ticket_prefix.replace("%(year)s", year);
-              //     var name = prefix+next_number;
-              // } else {
-              //     var prefix = "ticket_";
-              //     var extension = ".prl";
-              //     var dotmatrix_model = this.pos.dotmatrix_invoice[2];
-              //     var partner_name = invoice_data.client;
-              //     var partner = order.attributes.client;
-              //     var ruc = partner.ruc;
-              //     var cedula = partner.cedula;
-              //     if (!ruc){
-              //         ruc = cedula;
-              //     }
-              //     var street = partner.address;
-              //     var phone = partner.phone;
-              //     next_number = string_pad(order.pos.config.ticket_padding, order.pos.config.ticket_next_number - 1, "right", "0");
-              //     prefix = order.pos.config.ticket_prefix.replace("%(year)s", year);
-              //     var name = prefix+next_number;
-              // }
-              // if (dotmatrix_model){
                   var max_lines = dotmatrix_model.qty_lines;
                   var lines_count = 0;
                   var lines = "";
@@ -494,24 +454,11 @@ self.breakLine(7)`
                   var subtotal_00 = 0;
                   var iva_10 = 0;
                   var iva_05 = 0;
-                  // for (var item in order.items)
                   let self = this;
                   order.items.forEach((line: any)=>{
-                    // let line = order.items[item];
                     let line_amount_00 = 0;
                     let line_amount_05 = 0;
                     let line_amount_10 = 0;
-
-                    // if (item.product.tax == "iva10"){
-                    //   iva10 = item.quantity*item.price;
-                    //   totalIva10 += iva10;
-                    // } else if (item.product.tax == "exenta"){
-                    //   exenta = item.quantity*item.price;
-                    //   totalExentas += exenta;
-                    // } else if (item.product.tax == "iva5"){
-                    //   iva5 = item.quantity*item.price;
-                    //   totalIva5 += iva5;
-                    // }
 
                     //IVA Exento
                     if(line.product.tax=='exenta'){
@@ -530,9 +477,6 @@ self.breakLine(7)`
                         subtotal_10 = subtotal_10 + line.quantity*line.price;
                         iva_10 = iva_10 + line.quantity*line.price/11;
                     }
-                    // let default_code = line.product.code;
-                    console.log("dotmatrix_modelline", dotmatrix_model.line);
-
                     let line_eval = eval(dotmatrix_model.line)
                     lines = lines+line_eval;
                     lines_count = lines_count + 1;
@@ -550,27 +494,27 @@ self.breakLine(7)`
                   let amount_in_word_line = this.NumeroALetras(order.total, 'PYG');
                   let amount_tax = iva_05 + iva_10;
                   let invoice = eval(dotmatrix_model.content).replace("false", "");
-                  console.log("invoice", invoice);
-                  // var blob = new Blob([invoice], {type: "text/plain;charset=utf-8"});
-                  // saveAs(blob, prefix+next_number+extension);
-                  this.download("factura.txt", invoice);
+                  // console.log("invoice", invoice);
+                  var blob = new Blob([invoice], {type: "text/plain;charset=utf-8"});
+                  saveAs(blob, prefix+order.code+extension);
+                  // this.download("factura.txt", invoice);
               // }
           }
 
 
 
 
-download(filename, text) {
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    element.setAttribute('download', filename);
-
-    element.style.display = 'none';
-    document.body.appendChild(element);
-
-    element.click();
-
-    document.body.removeChild(element);
-  }
+// download(filename, text) {
+//     var element = document.createElement('a');
+//     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+//     element.setAttribute('download', filename);
+//
+//     element.style.display = 'none';
+//     document.body.appendChild(element);
+//
+//     element.click();
+//
+//     document.body.removeChild(element);
+//   }
 
 }

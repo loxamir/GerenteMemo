@@ -765,15 +765,21 @@ export class InvoicePage implements OnInit {
           {
             text: 'Imprimir',
             handler: data => {
+              console.log("imprimiv");
               if (this.invoiceForm.value.type == 'out'){
+                console.log("cliente");
                 this.configService.setNextSequence('invoice', data.code).then(dados => {
-                  //console.log("dados", dados);
+                  // console.log("imprimiv");
+                  console.log("dados", dados);
                   this.invoiceForm.patchValue({
                     code: data.code,
                     state: 'PRINTED',
                   });
+                  console.log("recomputeValues");
                   this.recomputeValues();
-                  this.printAndroid();
+                  console.log("formatService");
+                  // this.printAndroid();
+                  this.formatService.print_file(this.invoiceForm.value);
                   this.justSave();
                   // this.navCtrl.navigateBack();
                 });
@@ -784,6 +790,7 @@ export class InvoicePage implements OnInit {
                 });
                 this.recomputeValues();
                 // this.printAndroid();
+                this.formatService.print_file(this.invoiceForm.value);
                 this.justSave();
                 // this.navCtrl.navigateBack();
               }
