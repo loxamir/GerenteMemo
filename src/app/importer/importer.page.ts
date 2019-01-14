@@ -31,6 +31,7 @@ export class ImporterPage implements OnInit {
   // createList: any[] = [];
   error: boolean = true;
   loading: any;
+  docType;
 
   constructor(
     public navCtrl: NavController,
@@ -51,19 +52,21 @@ export class ImporterPage implements OnInit {
     public saleService: SaleService,
   ) {
     // this.readCsvData(); //To run on browser
+    this.docType = this.route.snapshot.paramMap.get('docType');
     //this.loading = //this.loadingCtrl.create();
   }
+
   private readCsvData() {
     let file = "";
-    if (this.route.snapshot.paramMap.get('docType') == 'sale'){
+    if (this.docType == 'sale'){
       file = 'assets/ventas.csv';
-    } else if (this.route.snapshot.paramMap.get('docType') == 'contact'){
+    } else if (this.docType == 'contact'){
       file = 'assets/contacts.csv';
-    } else if (this.route.snapshot.paramMap.get('docType') == 'product'){
+    } else if (this.docType == 'product'){
       file = 'assets/products.csv';
-    } else if (this.route.snapshot.paramMap.get('docType') == 'cash-move'){
+    } else if (this.docType == 'cash-move'){
       file = 'assets/contas.csv';
-    } else if (this.route.snapshot.paramMap.get('docType') == 'sale-line'){
+    } else if (this.docType == 'sale-line'){
       file = 'assets/lines.csv';
     }
     this.http.get(file)
@@ -100,6 +103,7 @@ export class ImporterPage implements OnInit {
     console.log("line", line,"row", row);
     this.errorMessage = this.csvError[line][row]['messages'];
   }
+
   validate(){
     console.log("Validate", this.csvData);
     this.errorMessage = [];
@@ -107,7 +111,7 @@ export class ImporterPage implements OnInit {
       for(let i=0;i<this.csvError.length;i++){
         this.csvError[lines][i] = {messages: []};
       }
-      if (this.route.snapshot.paramMap.get('docType') == 'product'){
+      if (this.docType == 'product'){
         this.checkExist('product', doc[0], 'code', lines, 0, "Error: Ya existe un Producto con el Codigo '"+doc[0]+"'");
         this.checkExist('product', doc[1], 'name', lines, 1, "Error: Ya existe un Producto con el Nombre '"+doc[1]+"'");
         this.checkDecimal(doc[2], lines, 2);
@@ -119,7 +123,7 @@ export class ImporterPage implements OnInit {
         this.checkType(doc[8], lines, 8);
         this.checkType(doc[8], lines, 8);
         this.checkTrue(lines, 9)
-      } else if (this.route.snapshot.paramMap.get('docType') == 'contact'){
+      } else if (this.docType == 'contact'){
         this.checkExist('contact', doc[0], 'code', lines, 0, "Error: Ya existe un Contato con el Codigo '"+doc[0]+"'");
         this.checkExist('contact', doc[1], 'name', lines, 1, "Error: Ya existe un Contato con el Nombre '"+doc[1]+"'");
         this.checkTrue(lines, 2) //phone
@@ -131,7 +135,7 @@ export class ImporterPage implements OnInit {
         this.checkBoolean(doc[8], lines, 8);
         this.checkBoolean(doc[9], lines, 9);
         this.checkTrue(lines, 10)
-      } else if (this.route.snapshot.paramMap.get('docType') == 'cash-move'){
+      } else if (this.docType == 'cash-move'){
         this.checkExist('contact', doc[0], 'name', lines, 0, "", "Error: No existe ningun Contato con el Nombre '"+doc[0]+"'", "green", "red");
         this.checkDecimal(doc[1], lines, 1);
         this.checkTrue(lines, 2) //phone
@@ -140,7 +144,7 @@ export class ImporterPage implements OnInit {
         this.checkExist('account', doc[5], 'name', lines, 5, "", "Error: No existe ninguna Cuenta con el Nombre  '"+doc[5]+"'", "green", "red");
         this.checkExist('account', doc[6], 'name', lines, 6, "", "Error: No existe ninguna Cuenta con el Nombre '"+doc[6]+"'", "green", "red");
         this.checkTrue(lines, 7)
-      } else if (this.route.snapshot.paramMap.get('docType') == 'sale'){
+      } else if (this.docType == 'sale'){
         this.checkExist('sale', doc[0], 'code', lines, 0, "Error: Ya existe una venta con el Codigo '"+doc[0]+"'");
         this.checkExist('contact', doc[1], 'name', lines, 1, "", "Error: No existe ningun Contato con el Nombre '"+doc[1]+"'", "green", "red");
         // this.checkExist('contact', doc[1], 'name', lines, 1, "Error: Ya existe un contato con el Nombre '"+doc[1]+"'");
@@ -154,7 +158,7 @@ export class ImporterPage implements OnInit {
         // this.checkBoolean(doc[8], lines, 8);
         // this.checkBoolean(doc[9], lines, 9);
         this.checkTrue(lines, 3)
-      } else if (this.route.snapshot.paramMap.get('docType') == 'sale-line'){
+      } else if (this.docType == 'sale-line'){
         this.checkExist('sale', doc[0], 'code', lines, 0, "", "Error: No existe ninguna Venta con el Codigo '"+doc[0]+"'", "green", "red");
         // this.checkExist('sale', doc[0], 'code', lines, 0, "Error: Ya existe una venta con el Codigo '"+doc[0]+"'");
         this.checkExist('product', doc[1], 'name', lines, 1, "", "Error: No existe ningun Producto con el Nombre '"+doc[1]+"'", "green", "red");
@@ -293,7 +297,7 @@ export class ImporterPage implements OnInit {
     //   if (a.indexOf(b) < 0 ) a.push(b);
     //   return a;
     // },[]);
-    if (this.route.snapshot.paramMap.get('docType') == 'product'){
+    if (this.docType == 'product'){
       // //this.loading.present();
       let promise_ids = [];
       this.createList.forEach(data=>{
@@ -350,7 +354,7 @@ export class ImporterPage implements OnInit {
           })
         })
       })
-    } else if (this.route.snapshot.paramMap.get('docType') == 'contact'){
+    } else if (this.docType == 'contact'){
       //this.loading.present();
 
       this.formatContacts(this.csvData).then((csv: any[])=>{
@@ -396,7 +400,7 @@ export class ImporterPage implements OnInit {
           alert.present();
         })
       })
-    } else if (this.route.snapshot.paramMap.get('docType') == 'cash-move'){
+    } else if (this.docType == 'cash-move'){
       // //this.loading.present();
       this.formatCashMoves(this.csvData).then((csv: any[])=>{
         console.log("csv", csv);
@@ -443,7 +447,7 @@ export class ImporterPage implements OnInit {
         })
         // console.log("count", count);
       })
-    } else if (this.route.snapshot.paramMap.get('docType') == 'sale'){
+    } else if (this.docType == 'sale'){
       // //this.loading.present();
       // console.log("read file", csvData);
       // this.parseCSVFile(this.csvData).then((csv: any[])=>{
@@ -493,7 +497,7 @@ export class ImporterPage implements OnInit {
           this.events.publish('import-sale');
         })
       })
-    } else if (this.route.snapshot.paramMap.get('docType') == 'sale-line'){
+    } else if (this.docType == 'sale-line'){
       // //this.loading.present();
       // console.log("read file", csvData);
       // this.parseCSVFile(this.csvData).then((csv: any[])=>{

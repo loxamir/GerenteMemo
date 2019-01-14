@@ -21,14 +21,14 @@
   <!-- <ion-scroll scrollX="true" scrollY="true" class="data-scroll"> -->
   <input type="file" class="upload" (change)="changeListener($event.target.files)">
 
-    <!-- <ion-button (tap)="chooseFile()">
+    <!-- <ion-button (click)="chooseFile()">
       Selecionar Archivo
     </ion-button> -->
     <ion-row>
-      <ion-button (tap)="validate()" style="background: green;" *ngIf="csvData.length > 0">
+      <ion-button (click)="validate()" style="background: green;" *ngIf="csvData.length > 0">
         Validar
       </ion-button>
-      <ion-button (tap)="import()" style="background: red;" *ngIf="csvData.length > 0">
+      <ion-button (click)="import()" style="background: red;" *ngIf="csvData.length > 0">
         Importar
       </ion-button>
     </ion-row>
@@ -42,7 +42,7 @@
         [class.green-background]="csvProperty[i][j] == 'green'"
         [class.yellow-background]="csvProperty[i][j] == 'yellow'"
         [class.clean-background]="csvProperty[i][j] == ''"
-        (tap)="seeHelp(i,j)">
+        (click)="seeHelp(i,j)">
           <ion-input type="text" [(ngModel)]="csvData[i][j]"></ion-input>
         </td>
       </tr>
