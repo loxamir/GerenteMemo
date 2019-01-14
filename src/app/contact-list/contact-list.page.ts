@@ -4,9 +4,10 @@ import { NavController, LoadingController, ModalController, Events, PopoverContr
 import { ContactPage } from '../contact/contact.page';
 import 'rxjs/Rx';
 // import { ContactsService } from './contacts.service';
-// import { ContactsPopover } from './contacts.popover';
+import { ContactListPopover } from './contact-list.popover';
 import { File } from '@ionic-native/file';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+
 
 @Component({
   selector: 'app-contact-list',
@@ -32,6 +33,7 @@ export class ContactListPage implements OnInit {
     public navCtrl: NavController,
     public events: Events,
     public pouchdbService: PouchdbService,
+    public popoverCtrl: PopoverController,
     public file: File,
   ) {
     // //this.loading = //this.loadingCtrl.create();
@@ -244,6 +246,15 @@ export class ContactListPage implements OnInit {
   //     ev: myEvent
   //   });
   // }
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: ContactListPopover,
+      event: myEvent,
+      componentProps: {popoverController: this.popoverCtrl}
+    });
+    popover.present();
+  }
 
   async openContact(contact) {
     this.events.subscribe('open-contact', (data) => {

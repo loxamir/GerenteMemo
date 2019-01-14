@@ -2,7 +2,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { NavController,  LoadingController,  Events, PopoverController } from '@ionic/angular';
-// import { CashMovePage } from '../cash-move';
+import { CashMoveListPopover } from './cash-move-list.popover';
 
 import 'rxjs/Rx';
 // import { CashMoveListService } from './cash-move-list.service';
@@ -28,7 +28,7 @@ export class CashMoveListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public route: ActivatedRoute,
     public events: Events,
-    // public popoverCtrl: PopoverController,
+    public popoverCtrl: PopoverController,
   ) {
   this.select = this.route.snapshot.paramMap.get('select');
   this.events.subscribe('changed-cash-move', (change)=>{
@@ -89,6 +89,16 @@ export class CashMoveListPage implements OnInit {
   //     }, 800);
   //   });
   // }
+
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: CashMoveListPopover,
+      event: myEvent,
+      componentProps: {popoverController: this.popoverCtrl}
+    });
+    popover.present();
+  }
 
   openCashMove(cashMove) {
     if (!this.select){

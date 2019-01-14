@@ -19,6 +19,7 @@ const routes: Routes = [
     component: CashMoveListPage
   }
 ];
+import { CashMoveListPopover } from './cash-move-list.popover';
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CashMoveListPage]
+  declarations: [CashMoveListPage, CashMoveListPopover],
+  entryComponents: [CashMoveListPopover]
 })
 export class CashMoveListPageModule {}

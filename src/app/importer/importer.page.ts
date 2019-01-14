@@ -53,35 +53,39 @@ export class ImporterPage implements OnInit {
   ) {
     // this.readCsvData(); //To run on browser
     this.docType = this.route.snapshot.paramMap.get('docType');
-    //this.loading = //this.loadingCtrl.create();
+    this.startLoading();
   }
 
-  private readCsvData() {
-    let file = "";
-    if (this.docType == 'sale'){
-      file = 'assets/ventas.csv';
-    } else if (this.docType == 'contact'){
-      file = 'assets/contacts.csv';
-    } else if (this.docType == 'product'){
-      file = 'assets/products.csv';
-    } else if (this.docType == 'cash-move'){
-      file = 'assets/contas.csv';
-    } else if (this.docType == 'sale-line'){
-      file = 'assets/lines.csv';
-    }
-    this.http.get(file)
-      .subscribe(
-      data => this.extractData(data['_body']),
-      err => this.handleError(err)
-      );
+  async startLoading(){
+    this.loading = await this.loadingCtrl.create();
   }
+
+  // private readCsvData() {
+  //   let file = "";
+  //   if (this.docType == 'sale'){
+  //     file = 'assets/ventas.csv';
+  //   } else if (this.docType == 'contact'){
+  //     file = 'assets/contacts.csv';
+  //   } else if (this.docType == 'product'){
+  //     file = 'assets/products.csv';
+  //   } else if (this.docType == 'cash-move'){
+  //     file = 'assets/contas.csv';
+  //   } else if (this.docType == 'sale-line'){
+  //     file = 'assets/lines.csv';
+  //   }
+  //   this.http.get(file)
+  //     .subscribe(
+  //     data => this.extractData(data['_body']),
+  //     err => this.handleError(err)
+  //     );
+  // }
 
   private extractData(res) {
-    console.log("RES", JSON.stringify(res));
     // let csvData = res['_body'] || ''; //To run on browser
     let csvData = res; //To run on android
     let parsedData = papa.parse(csvData).data;
-    console.log("parsedata1", parsedData);
+    console.log("RES", parsedData);
+    // console.log("parsedata1", parsedData);
     this.headerRow = parsedData[0];
 
     parsedData.splice(0, 1);
@@ -99,6 +103,7 @@ export class ImporterPage implements OnInit {
     });
     this.csvData = parse2;
   }
+
   seeHelp(line=null, row=null){
     console.log("line", line,"row", row);
     this.errorMessage = this.csvError[line][row]['messages'];
@@ -124,6 +129,7 @@ export class ImporterPage implements OnInit {
         this.checkType(doc[8], lines, 8);
         this.checkTrue(lines, 9)
       } else if (this.docType == 'contact'){
+        console.log("check contact");
         this.checkExist('contact', doc[0], 'code', lines, 0, "Error: Ya existe un Contato con el Codigo '"+doc[0]+"'");
         this.checkExist('contact', doc[1], 'name', lines, 1, "Error: Ya existe un Contato con el Nombre '"+doc[1]+"'");
         this.checkTrue(lines, 2) //phone
@@ -290,7 +296,7 @@ export class ImporterPage implements OnInit {
     // this.csvData.forEach(doc=>{
     //   console.log("Doc", doc);
     // })f
-    //this.loading.present();
+    this.loading.present();
     this.validate()
     // console.log("this.createList", this.createList);
     // var uniq = this.createList.reduce(function(a,b){
@@ -343,7 +349,7 @@ export class ImporterPage implements OnInit {
               }
             })
             // bigger_code
-            //this.loading.dismiss();
+            this.loading.dismiss();
             this.navCtrl.navigateBack('/tabs/product-list');
             const alert = await this.alertCtrl.create({
               header: 'Importación Exitosa!',
@@ -355,8 +361,8 @@ export class ImporterPage implements OnInit {
         })
       })
     } else if (this.docType == 'contact'){
-      //this.loading.present();
-
+      // this.loading.present();
+      console.log("contact");
       this.formatContacts(this.csvData).then((csv: any[])=>{
         let bigger_code:any = 0;
         let count = 1;
@@ -390,7 +396,7 @@ export class ImporterPage implements OnInit {
             }
           })
 
-          //this.loading.dismiss();
+          this.loading.dismiss();
           this.navCtrl.navigateBack('/contact-list');
           const alert = await this.alertCtrl.create({
             header: 'Importación Exitosa!',
@@ -401,7 +407,7 @@ export class ImporterPage implements OnInit {
         })
       })
     } else if (this.docType == 'cash-move'){
-      // //this.loading.present();
+      // this.loading.present();
       this.formatCashMoves(this.csvData).then((csv: any[])=>{
         console.log("csv", csv);
         let bigger_code:any = 0;
@@ -435,7 +441,7 @@ export class ImporterPage implements OnInit {
               this.pouchdbService.updateDoc(config);
             }
           })
-          //this.loading.dismiss();
+          this.loading.dismiss();
           this.events.publish('import-cash-move');
           this.navCtrl.navigateBack('/tabs/cash-list');
           const alert = await this.alertCtrl.create({
@@ -448,7 +454,7 @@ export class ImporterPage implements OnInit {
         // console.log("count", count);
       })
     } else if (this.docType == 'sale'){
-      // //this.loading.present();
+      // this.loading.present();
       // console.log("read file", csvData);
       // this.parseCSVFile(this.csvData).then((csv: any[])=>{
       this.formatSales(this.csvData).then((csv: any[])=>{
@@ -485,7 +491,7 @@ export class ImporterPage implements OnInit {
             }
           })
           // bigger_code
-          //this.loading.dismiss();
+          this.loading.dismiss();
           this.navCtrl.navigateBack('/tabs/sale-list');
           const alert = await this.alertCtrl.create({
             header: 'Importación Exitosa!',
@@ -498,7 +504,7 @@ export class ImporterPage implements OnInit {
         })
       })
     } else if (this.docType == 'sale-line'){
-      // //this.loading.present();
+      // this.loading.present();
       // console.log("read file", csvData);
       // this.parseCSVFile(this.csvData).then((csv: any[])=>{
       this.formatSaleLines(this.csvData).then((csv: any[])=>{
@@ -518,7 +524,7 @@ export class ImporterPage implements OnInit {
         Promise.all(promise2_ids).then(async data=>{
           console.log("FINISHED...");
           this.events.publish('import-sale');
-          //this.loading.dismiss();
+          this.loading.dismiss();
           this.navCtrl.navigateBack('/tabs/sale-list');
           const alert = await this.alertCtrl.create({
             header: 'Importación Exitosa!',
@@ -834,48 +840,48 @@ export class ImporterPage implements OnInit {
     console.log('ionViewDidLoad ImporterPage');
   }
 
-  chooseFile() {
-    console.log("choseFile");
-    this.fileChooser.open()
-      .then(uri => {
-        this.filePath.resolveNativePath(uri)
-          .then(filePath => {
-
-            let tmppath = filePath.split("/");
-            let file = filePath.split("/")[tmppath.length-1];
-            let path = filePath.split(file)[0];
-            console.log("file, path", path, file);
-            // this.file.readAsText(path, file).then(data => {
-            //   console.log("read file", data);
-            //   data.slice(0,-1);
-            //   console.log("read file2", data);
-            //   this.extractData(data);
-            // }).catch(err => {
-            //   //console.log('Directory doesnt exist', JSON.stringify(err));
-            // });
-          })
-          .catch(err => console.log(JSON.stringify(err)));
-
-      })
-      .catch(e => console.log(JSON.stringify(e)));
-      // // this.viewCtrl.dismiss();
-  }
+  // chooseFile() {
+  //   console.log("choseFile");
+  //   this.fileChooser.open()
+  //     .then(uri => {
+  //       this.filePath.resolveNativePath(uri)
+  //         .then(filePath => {
+  //
+  //           let tmppath = filePath.split("/");
+  //           let file = filePath.split("/")[tmppath.length-1];
+  //           let path = filePath.split(file)[0];
+  //           console.log("file, path", path, file);
+  //           // this.file.readAsText(path, file).then(data => {
+  //           //   console.log("read file", data);
+  //           //   data.slice(0,-1);
+  //           //   console.log("read file2", data);
+  //           //   this.extractData(data);
+  //           // }).catch(err => {
+  //           //   //console.log('Directory doesnt exist', JSON.stringify(err));
+  //           // });
+  //         })
+  //         .catch(err => console.log(JSON.stringify(err)));
+  //
+  //     })
+  //     .catch(e => console.log(JSON.stringify(e)));
+  //     // // this.viewCtrl.dismiss();
+  // }
 
 
   public changeListener(files: FileList){
-    console.log(files);
+    // console.log(files);
     if(files && files.length > 0) {
        let file : File = files.item(0);
-         console.log(file.name);
-         console.log(file.size);
-         console.log(file.type);
+         // console.log(file.name);
+         // console.log(file.size);
+         // console.log(file.type);
          let reader: FileReader = new FileReader();
          reader.readAsText(file);
          reader.onload = (e) => {
             let csv = reader.result;
-            csv.slice(0,-1);
+            // csv.slice(0,-1);
             this.extractData(csv);
-            console.log(csv);
+            // console.log(csv);
          }
       }
   }

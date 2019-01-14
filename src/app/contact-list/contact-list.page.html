@@ -9,11 +9,13 @@
       #searchBar
       (ionInput)="searchItems()">
     </ion-searchbar>
-    <!-- <ion-buttons slot="end">
-      <ion-button (tap)="presentPopover($event)">
+    <ion-buttons slot="end">
+      <ion-button icon-only
+        class="more-button"
+              (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
-    </ion-buttons> -->
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

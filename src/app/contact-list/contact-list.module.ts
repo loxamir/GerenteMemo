@@ -8,7 +8,7 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
 import { Routes, RouterModule } from '@angular/router';
-
+import { ContactListPopover} from './contact-list.popover';
 import { IonicModule } from '@ionic/angular';
 
 import { ContactListPage } from './contact-list.page';
@@ -35,6 +35,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ContactListPage]
+  declarations: [ContactListPage, ContactListPopover],
+  entryComponents: [ContactListPopover]
 })
 export class ContactListPageModule {}

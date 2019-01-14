@@ -309,6 +309,7 @@ export class PouchdbService {
 
   createDoc(data){
     // let random: string = Math.random().toString(36).slice(11);
+    console.log("data", data);
     if (!data['_id']){
       // let code = this.getUUID();
       // if (!data['code']){
