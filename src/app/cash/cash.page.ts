@@ -332,7 +332,7 @@ export class CashPage implements OnInit {
         this.modalCtrl.dismiss();
       } else {
         this.cashForm.markAsPristine();
-        this.navCtrl.navigateBack('/tabs/sale-list');
+        this.navCtrl.navigateBack('/tabs/cash-list');
       }
     }
 }

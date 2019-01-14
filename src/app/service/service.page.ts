@@ -2082,7 +2082,7 @@ export class ServicePage implements OnInit {
         this.modalCtrl.dismiss();
       } else {
         this.serviceForm.markAsPristine();
-        this.navCtrl.navigateBack('/tabs/sale-list');
+        this.navCtrl.navigateBack('/tabs/service-list');
       }
     }
 

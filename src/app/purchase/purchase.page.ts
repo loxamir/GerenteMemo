@@ -1249,7 +1249,7 @@ export class PurchasePage implements OnInit {
           this.modalCtrl.dismiss();
         } else {
           this.purchaseForm.markAsPristine();
-          this.navCtrl.navigateBack('/tabs/sale-list');
+          this.navCtrl.navigateBack('/tabs/purchase-list');
         }
       }
 
