@@ -3,6 +3,8 @@ import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ConfigService } from '../config/config.service';
+// import { StockMoveService } from '../stock-move/stock-move.service';
+// import { CashMoveService } from '../cash-move/cash-move.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,8 @@ export class ProductService {
     // public http: Http,
     public pouchdbService: PouchdbService,
     public configService: ConfigService,
+    // public cashMoveService: CashMoveService,
+    // public stockMoveService: StockMoveService,
   ) {}
 
   getProduct(doc_id): Promise<any> {
@@ -64,6 +68,9 @@ export class ProductService {
           resolve(this.pouchdbService.createDoc(product));
         });
       }
+      // if (product.stock > 0){
+      //   this.createInventoryAdjustment(product, product.stock);
+      // }
     });
   }
 
@@ -100,4 +107,50 @@ export class ProductService {
       this.updateProduct(product);
     });
   }
+
+  // createInventoryAdjustment(product_data, difference){
+  //   // if(product_data.stock != this.theoreticalStock){
+  //     this.configService.getConfigDoc().then((config: any)=>{
+  //       // let difference = (product_data.stock - theoreticalStock);
+  //       let warehouseFrom_id = 'warehouse.inventoryAdjust';
+  //       let warehouseTo_id  = config.warehouse_id;
+  //       let accountFrom_id = 'account.other.inventoryAdjust';
+  //       let accountTo_id  = 'account.other.stock';
+  //       if (difference < 0) {
+  //         warehouseFrom_id  = config.warehouse_id;
+  //         warehouseTo_id = 'warehouse.inventoryAdjust';
+  //         accountFrom_id = 'account.other.stock';
+  //         accountTo_id  = 'account.other.inventoryAdjust';
+  //       }
+  //       this.stockMoveService.createStockMove({
+  //         'name': "Ajuste "+product_data.code,
+  //         'quantity': Math.abs(difference),
+  //         'origin_id': product_data._id,
+  //         'contact_id': "contact.myCompany",
+  //         'product_id': product_data._id,
+  //         'date': new Date(),
+  //         'cost': product_data.cost*Math.abs(difference),
+  //         'warehouseFrom_id': warehouseFrom_id,
+  //         'warehouseTo_id': warehouseTo_id,
+  //       }).then(res => {
+  //         console.log("res", res);
+  //       });
+  //
+  //       this.cashMoveService.createCashMove({
+  //         'name': "Ajuste "+product_data.code,
+  //         'contact_id': "contact.myCompany",
+  //         'amount': product_data.cost*Math.abs(difference),
+  //         'origin_id': product_data._id,
+  //         // "project_id": product_data.project_id,
+  //         'date': new Date(),
+  //         'accountFrom_id': accountFrom_id,
+  //         'accountTo_id': accountTo_id,
+  //       }).then((plan: any) => {
+  //         //console.log("Plan", plan);
+  //         // data['_id'] = plan.id;
+  //         // this.saleForm.value.planned.push(data);
+  //       })
+  //     });
+  //   // }
+  // }
 }

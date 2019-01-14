@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController,  LoadingController, Events, AlertController } from '@ionic/angular';
 import * as papa from 'papaparse';
-import { Http } from '@angular/http';
-import { FileChooser } from '@ionic-native/file-chooser';
-import { FilePath } from '@ionic-native/file-path';
+// import { Http } from '@angular/http';
+// import { FileChooser } from '@ionic-native/file-chooser';
+// import { FilePath } from '@ionic-native/file-path';
 // import { File } from '@ionic-native/file';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ProductService } from '../product/product.service';
 import { ProductCategoryService } from '../product-category/product-category.service';
 import { ContactService } from '../contact/contact.service';
 import { CashMoveService } from '../cash-move/cash-move.service';
+import { StockMoveService } from '../stock-move/stock-move.service';
 import { FormatService } from '../services/format.service';
 import { SaleService } from '../sale/sale.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -36,15 +37,16 @@ export class ImporterPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public route: ActivatedRoute,
-    public http: Http,
-    public fileChooser: FileChooser,
-    public filePath: FilePath,
+    // public http: Http,
+    // public fileChooser: FileChooser,
+    // public filePath: FilePath,
     // public file: File,
     public pouchdbService: PouchdbService,
     public productService: ProductService,
     public categoryService: ProductCategoryService,
     public contactService: ContactService,
     public cashMoveService: CashMoveService,
+    public stockMoveService: StockMoveService,
     public loadingCtrl: LoadingController,
     public events: Events,
     public alertCtrl: AlertController,
@@ -320,16 +322,19 @@ export class ImporterPage implements OnInit {
           let bigger_code:any = 0;
           let promise2_ids = [];
           let count = 1;
-          csv.forEach(item => {
+          csv.forEach(async (item: any) => {
             count += 1;
             console.log("-- createProduct", item);
             if (parseInt(item.code)>bigger_code){
               bigger_code = item.code;
             }
-            promise2_ids.push(this.productService.createProduct(item));
+            let createdProduct = await this.productService.createProduct(item);
+            item._id = createdProduct['id'];
+            // console.log("item", item);
+            await this.stockMoveService.createInventoryAdjustment(item, item.stock);
           })
-          Promise.all(promise2_ids).then(async products=>{
-            this.pouchdbService.getDoc('config.profile').then((config: any)=>{
+          // Promise.all(promise2_ids).then(async products=>{
+            this.pouchdbService.getDoc('config.profile').then(async (config: any)=>{
               // console.log("config", bigger_code, config.product_sequence);
               if (parseInt(config.product_sequence) < (parseInt(bigger_code) + 1)){
 
@@ -347,7 +352,7 @@ export class ImporterPage implements OnInit {
                 // console.log("config2", new_code, config.product_sequence);
                 this.pouchdbService.updateDoc(config);
               }
-            })
+            // })
             // bigger_code
             this.loading.dismiss();
             this.navCtrl.navigateBack('/tabs/product-list');
