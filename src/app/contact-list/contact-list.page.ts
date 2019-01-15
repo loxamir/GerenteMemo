@@ -47,6 +47,8 @@ export class ContactListPage implements OnInit {
     this.events.subscribe('changed-contact', (change)=>{
       this.handleChange(this.contacts, change);
     })
+    var foo = { foo: true };
+    history.pushState(foo, "Anything", " ");
     // this.events.subscribe('got-database', ()=>{
     //   this.setFilteredItems();
     // })

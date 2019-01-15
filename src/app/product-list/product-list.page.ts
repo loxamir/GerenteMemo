@@ -49,6 +49,8 @@ export class ProductListPage implements OnInit {
     this.events.subscribe('got-database', ()=>{
       this.setFilteredItems();
     })
+    var foo = { foo: true };
+    history.pushState(foo, "Anything", " ");
   }
 
   saveAsCsv() {

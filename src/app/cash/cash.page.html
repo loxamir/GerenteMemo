@@ -221,8 +221,8 @@
 
 
 </form>
-<ion-row>
-  <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 10%;background: white;border-radius:10px;background: ">
+<ion-row *ngIf="!cashForm.value.moves.length">
+  <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
     <!-- <ion-row>
       <ion-col></ion-col>
       <ion-col no-padding>
@@ -242,11 +242,11 @@
     </ion-row>
   </ion-col>
 </ion-row>
-<ion-row>
+<!-- <ion-row>
   <ion-col size="12" style="text-align: center;margin-top: 54px;">
     <ion-icon name="arrow-round-down"  color="primary" style="font-size: 70px"></ion-icon>
   </ion-col>
-</ion-row>
+</ion-row> -->
 <!-- <ion-fab center bottom #fab> -->
 <ion-fab vertical="bottom" horizontal="center" slot="fixed"  #fab>
 <ion-fab-button><ion-icon name="add"></ion-icon></ion-fab-button>

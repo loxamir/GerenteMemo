@@ -53,6 +53,8 @@ export class ServiceTravelPage implements OnInit {
       this.translate.use('es');
       // this._id = this._id');
       // this.today = new Date().toISOString();
+      var foo = { foo: true };
+      history.pushState(foo, "Anything", " ");
     }
 
     ngOnInit() {

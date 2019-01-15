@@ -44,6 +44,8 @@ export class ServiceWorkPage implements OnInit {
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');
+      var foo = { foo: true };
+      history.pushState(foo, "Anything", " ");
       // this._id = this.route.snapshot.paramMap.get(_id);
     }
 

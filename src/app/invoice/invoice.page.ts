@@ -130,6 +130,8 @@ export class InvoicePage implements OnInit {
       this.select = this.route.snapshot.paramMap.get('select');
       this.type = this.route.snapshot.paramMap.get('type');
       this.avoidAlertMessage = false;
+      var foo = { foo: true };
+      history.pushState(foo, "Anything", " ");
     }
 
     // presentPopover(myEvent) {

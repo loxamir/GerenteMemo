@@ -36,6 +36,8 @@ export class CashListPage implements OnInit {
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
+    var foo = { foo: true };
+    history.pushState(foo, "Anything", " ");
   }
 
   ngOnInit() {

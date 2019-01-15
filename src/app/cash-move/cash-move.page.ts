@@ -83,7 +83,9 @@ export class CashMovePage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id =  this.route.snapshot.paramMap.get('_id');
-    this.select =  this.route.snapshot.paramMap.get('select');;
+    this.select =  this.route.snapshot.paramMap.get('select');
+    var foo = { foo: true };
+    history.pushState(foo, "Anything", " ");
     // this.cash_id = this.cash_id');
     // this.default_amount = this.default_amount');
     // this.default_name = this.default_name');

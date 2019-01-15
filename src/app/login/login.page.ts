@@ -339,9 +339,16 @@ export class LoginPage implements OnInit {
   }
 
   async showDatabaseList(username, password){
-    let list: any = await this.restProvider.getUserDbList(username, password);
-    console.log("list", list);
+    let list: any = await this.storage.get("dbList") || [];
     this.databaseList = list;
+    let listOnline: any = await this.restProvider.getUserDbList(
+      username, password);
+    console.log("listOnline", listOnline);
+    if (!listOnline.error){
+      console.log("yes list");
+      this.storage.set("dbList", listOnline);
+      this.databaseList = listOnline;
+    }
   }
 
   async selectDatabase(database){

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Platform, MenuController } from '@ionic/angular';
+import { Platform, MenuController, ModalController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
-import { ActivatedRoute, Router, RouterEvent, NavigationEnd, } from '@angular/router';
+import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -51,8 +51,10 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar,
     public router: Router,
     public menuCtrl: MenuController,
+    public modalCtrl: ModalController,
   ) {
     this.initializeApp();
+    this.backButtonListener();
   }
 
   initializeApp() {
@@ -62,6 +64,18 @@ export class AppComponent implements OnInit {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+  }
+
+  backButtonListener(): void {
+    window.onpopstate = async (evt) => {
+      // Close any active modals or overlays
+      console.log("close modal");
+          console.log("teste back");
+          const modal = await this.modalCtrl.getTop();
+          if (modal) {
+              modal.dismiss();
+          }
+    }
   }
 
   ngOnInit(){

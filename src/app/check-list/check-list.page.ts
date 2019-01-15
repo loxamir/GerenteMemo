@@ -33,6 +33,8 @@ export class CheckListPage implements OnInit {
   ) {
     //this.loading = //this.loadingCtrl.create();
     // this.select = this.navParams.get('select');
+    var foo = { foo: true };
+    history.pushState(foo, "Anything", " ");
     this.select = this.route.snapshot.paramMap.get('select');
   }
 

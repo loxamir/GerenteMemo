@@ -96,6 +96,8 @@ export class ReceiptPage implements OnInit {
       this.select = this.route.snapshot.paramMap.get('select');
       // this.items =  this.route.snapshot.paramMap.get('items');
       this.avoidAlertMessage = false;
+      var foo = { foo: true };
+      history.pushState(foo, "Anything", " ");
     }
 
     // ngAfterViewInit(){
