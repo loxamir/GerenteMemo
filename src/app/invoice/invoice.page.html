@@ -47,6 +47,7 @@
 </ion-header>
 
 <ion-content background="#ddd">
+    <ion-button (click)="generatePdf()">Imprimir </ion-button>
   <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
     <ion-row justify-content-center>
       <ion-item no-padding (click)="selectContact()" class="field-100">

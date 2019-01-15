@@ -12,16 +12,16 @@ import { Storage } from '@ionic/storage';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from '../services/rest/rest';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
-// import * as jsPDF from 'jspdf';
-// import * as html2canvas from 'html2canvas';
+import * as jsPDF from 'jspdf';
+import * as html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-  providers: [
-  { provide: 'Window',  useValue: window }
-]
+//   providers: [
+//   { provide: 'Window',  useValue: window }
+// ]
 })
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
@@ -42,7 +42,7 @@ export class LoginPage implements OnInit {
 
   constructor(
     // public modal: ModalController,
-    @Inject('Window') private window: Window,
+    // @Inject('Window') private window: Window,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -85,6 +85,9 @@ export class LoginPage implements OnInit {
     });
   }
 
+
+
+
 //   download() {
 //
 //       var doc = new jsPDF();
@@ -98,34 +101,7 @@ export class LoginPage implements OnInit {
 //   }
 //
 //
-//   generatePdf() {
-//     const div = document.getElementById("html2Pdf");
-//     const options = {background: "white", height: div.clientHeight, width: div.clientWidth};
-//
-//     html2canvas(div, options).then((canvas) => {
-//         //Initialize JSPDF
-//         let doc = new jsPDF("p", "mm", "a4");
-//         //Converting canvas to Image
-//         let imgData = canvas.toDataURL("image/PNG");
-//         //Add image Canvas to PDF
-//         doc.addImage(imgData, 'PNG', 20, 20);
-//
-//         let pdfOutput = doc.output();
-//         // using ArrayBuffer will allow you to put image inside PDF
-//         let buffer = new ArrayBuffer(pdfOutput.length);
-//         let array = new Uint8Array(buffer);
-//         for (let i = 0; i < pdfOutput.length; i++) {
-//             array[i] = pdfOutput.charCodeAt(i);
-//         }
-//
-//         //Name of pdf
-//         const fileName = "example.pdf";
-//
-//         // Make file
-//         doc.save(fileName);
-//
-//     });
-// }
+
 
   async ngOnInit() {
     this.loading = await this.loadingCtrl.create();

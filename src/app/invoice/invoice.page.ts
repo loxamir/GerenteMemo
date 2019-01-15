@@ -20,6 +20,8 @@ import { FormatService } from '../services/format.service';
 // import { InvoicePopover } from './invoice.popover';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
+import * as jsPDF from 'jspdf';
+import * as html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-invoice',
@@ -208,6 +210,55 @@ export class InvoicePage implements OnInit {
         //this.loading.dismiss();
       }
     }
+
+    generatePdf() {
+      const div = document.getElementById("htmltoimage");
+      const options = {background: "white", height: div.clientHeight, width: div.clientWidth};
+
+      html2canvas(div, options).then((canvas) => {
+          //Initialize JSPDF
+          let doc = new jsPDF("p", "mm", "a4");
+          //Converting canvas to Image
+          let imgData = canvas.toDataURL("image/PNG");
+          //Add image Canvas to PDF
+          doc.addImage(imgData, 'PNG', 20, 20);
+
+          let pdfOutput = doc.output();
+          // using ArrayBuffer will allow you to put image inside PDF
+          let buffer = new ArrayBuffer(pdfOutput.length);
+          let array = new Uint8Array(buffer);
+          for (let i = 0; i < pdfOutput.length; i++) {
+              array[i] = pdfOutput.charCodeAt(i);
+          }
+
+          //Name of pdf
+          const fileName = "example.pdf";
+
+          // Make file
+          doc.save(fileName);
+
+      });
+  }
+
+
+  downloadImage(){
+    const div = document.getElementById("htmltoimage");
+    const options = {background:"white",height :div.clientHeight , width : div.clientWidth  };
+
+
+    // let teste = document.getElementById("htmltoimage");
+    console.log("teste element", div);
+   html2canvas(div, options).then(canvas => {
+     console.log("canvas", canvas);
+    let a = document.createElement('a');
+    document.body.appendChild(a);
+    a.download = "test.png";
+    a.href =  canvas.toDataURL();
+    a.click();
+  });
+
+
+ }
 
     // async ionViewCanLeave() {
     //     if(this.invoiceForm.dirty && ! this.avoidAlertMessage) {
