@@ -18,7 +18,7 @@ import { LanguageModel } from "../services/language/language.model";
   styleUrls: ['./service-list.page.scss'],
 })
 export class ServiceListPage implements OnInit {
-  services: any;
+  services: any = [];
   loading: any;
   searchTerm: string = '';
   items = [];

@@ -18,7 +18,7 @@ import { LanguageModel } from "../services/language/language.model";
   styleUrls: ['./purchase-list.page.scss'],
 })
 export class PurchaseListPage implements OnInit {
-  purchases: any;
+  purchases: any = [];
   loading: any;
   searchTerm: string = '';
   page = 0;

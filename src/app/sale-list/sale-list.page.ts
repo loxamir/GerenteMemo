@@ -20,7 +20,7 @@ import { LanguageModel } from "../services/language/language.model";
   styleUrls: ['./sale-list.page.scss'],
 })
 export class SaleListPage implements OnInit {
-  sales: any;
+  sales: any = [];
   loading: any;
   searchTerm: string = '';
   page = 0;
