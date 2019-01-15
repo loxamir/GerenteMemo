@@ -47,29 +47,29 @@
 
     <ion-row *ngIf="!selected_user">
       <ion-col></ion-col>
-      <ion-item style="background:white;border-radius:10px;margin-bottom:10px;">
-        <ion-label position="floating">{{'USER' | translate}}</ion-label>
-        <ion-input type="text" formControlName="user" autocomplete='name'></ion-input>
-      </ion-item>
-      <div class="validation-errors" style="color: red;">
-        <ng-container *ngFor="let validation of validation_messages.user">
-          <div class="error-message" *ngIf="loginForm.get('user').hasError(validation.type) && (loginForm.get('user').dirty || loginForm.get('user').touched)">
-            {{ validation.message }}
-          </div>
-        </ng-container>
-      </div>
-      <ion-item style="background:white;border-radius:10px;margin-bottom:10px;">
-        <ion-label position="floating">{{'PASSWORD' | translate}}</ion-label>
-        <ion-input type="password" formControlName="password" autocomplete='name'></ion-input>
-      </ion-item>
-      <div class="validation-errors" style="color: red;">
-        <ng-container *ngFor="let validation of validation_messages.password">
-          <div class="error-message" *ngIf="loginForm.get('password').hasError(validation.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
-            {{ validation.message }}
-          </div>
-        </ng-container>
-      </div>
       <ion-col no-padding width-80>
+        <ion-item style="background:white;border-radius:10px;margin-bottom:10px;">
+          <ion-label position="floating">{{'USER' | translate}}</ion-label>
+          <ion-input type="text" formControlName="user" autocomplete='name'></ion-input>
+        </ion-item>
+        <div class="validation-errors" style="color: red;">
+          <ng-container *ngFor="let validation of validation_messages.user">
+            <div class="error-message" *ngIf="loginForm.get('user').hasError(validation.type) && (loginForm.get('user').dirty || loginForm.get('user').touched)">
+              {{ validation.message }}
+            </div>
+          </ng-container>
+        </div>
+        <ion-item style="background:white;border-radius:10px;margin-bottom:10px;">
+          <ion-label position="floating">{{'PASSWORD' | translate}}</ion-label>
+          <ion-input type="password" formControlName="password" autocomplete='name'></ion-input>
+        </ion-item>
+        <div class="validation-errors" style="color: red;">
+          <ng-container *ngFor="let validation of validation_messages.password">
+            <div class="error-message" *ngIf="loginForm.get('password').hasError(validation.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+              {{ validation.message }}
+            </div>
+          </ng-container>
+        </div>
         <!-- <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="./assets/images/login2.png" /> -->
         <ion-item *ngIf="show_create" style="background:white;border-radius:10px;margin-bottom:10px;">
           <ion-label position="floating">{{'NAME' | translate}}</ion-label>
@@ -94,6 +94,7 @@
             </div>
           </ng-container>
         </div>
+
         <ion-button class="print-invoice" (click)="login()" *ngIf="!show_create" style="border-radius:10px;width:100%">
           Entrar
         </ion-button>
