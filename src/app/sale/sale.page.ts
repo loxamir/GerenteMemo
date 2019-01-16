@@ -35,6 +35,9 @@ import { SalePopover } from './sale.popover';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
 declare var cordova:any;
+import * as jsPDF from 'jspdf';
+import * as html2canvas from 'html2canvas';
+
 
 @Component({
   selector: 'app-sale',
@@ -1222,7 +1225,7 @@ export class SalePage implements OnInit {
         let totalAmount = totalIva10 + totalIva5 + totalExentas;
         totalAmount = this.formatService.string_pad(16, totalAmount, "right");
 
-        let ticket='<div style="font-family: monospace;width: 251px;background: #fffae3;word-break: break-all;"><pre>'
+        let ticket='<div style="font-family: monospace;width: 310px;background: #fffae3;word-break: break-all;"><pre>'
         ticket += company_name+"\n";
         ticket += "Ruc: "+company_ruc+"\n";
         ticket += "Tel: "+company_phone+"\n";
@@ -1252,28 +1255,44 @@ export class SalePage implements OnInit {
 
         console.log("ticket", ticket);
 
+        const div = document.getElementById("htmltoimage");
+        div.innerHTML = ticket;
+        const options = {background:"white",height :div.clientHeight , width : 310  };
+
+
+        // let teste = document.getElementById("htmltoimage");
+        console.log("teste element", div);
+       html2canvas(div, options).then(canvas => {
+         console.log("canvas", canvas);
+        let a = document.createElement('a');
+        document.body.appendChild(a);
+        a.download = "Venta-"+this.saleForm.value.code+".png";
+        a.href =  canvas.toDataURL();
+        a.click();
+      });
+
 
         // Print to bluetooth printer
-        console.log("htmlTemplate", ticket);
-        cordova.plugins.pdf.htmlToPDF({
-          data: ticket,
-          documentSize: "A4",
-          landscape: "portrait",
-          type: "base64"
-        },
-        (sucess) => {
-            // To define the type of the Blob
-            //console.log("Ponto3");
-            var contentType = "application/pdf";
-            //console.log("share sucess");
-            // if cordova.file is not available use instead :
-            // var folderpath = "file:///storage/emulated/0/Download/";
-            var folderpath = cordova.file.externalRootDirectory + "Download/"; //you can select other folders
-            //console.log("folderpath", folderpath);
-            this.formatService.savebase64AsPDF(folderpath, "Presupuesto.pdf", sucess, contentType);
-            this.socialSharing.share("Presupuesto alcanza "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "Presupuesto "+code, folderpath+"Presupuesto.pdf")
-        },
-        (error) => console.log('error:', error));
+        // console.log("htmlTemplate", ticket);
+        // cordova.plugins.pdf.htmlToPDF({
+        //   data: ticket,
+        //   documentSize: "A4",
+        //   landscape: "portrait",
+        //   type: "base64"
+        // },
+        // (sucess) => {
+        //     // To define the type of the Blob
+        //     //console.log("Ponto3");
+        //     var contentType = "application/pdf";
+        //     //console.log("share sucess");
+        //     // if cordova.file is not available use instead :
+        //     // var folderpath = "file:///storage/emulated/0/Download/";
+        //     var folderpath = cordova.file.externalRootDirectory + "Download/"; //you can select other folders
+        //     //console.log("folderpath", folderpath);
+        //     this.formatService.savebase64AsPDF(folderpath, "Presupuesto.pdf", sucess, contentType);
+        //     this.socialSharing.share("Presupuesto alcanza "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "Presupuesto "+code, folderpath+"Presupuesto.pdf")
+        // },
+        // (error) => console.log('error:', error));
 
       });
     }

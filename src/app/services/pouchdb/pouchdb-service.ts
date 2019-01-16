@@ -3,7 +3,7 @@ import { Events } from '@ionic/angular';
 import PouchDB1 from 'pouchdb';
 // import PouchDBFind from 'pouchdb-find';
 declare var require: any;
-declare var Buffer: any;
+// declare var Buffer: any;
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import PouchdbUpsert from 'pouchdb-upsert';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
@@ -79,7 +79,7 @@ export class PouchdbService {
         data,
         {
           // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
-          headers: new HttpHeaders().set('Authorization', "Basic " + new Buffer('demo' + ":" + 'demo123').toString("base64"))
+          headers: new HttpHeaders().set('Authorization', "Basic " + btoa('demo' + ":" + 'demo123'))
         }
       ).subscribe(data => {
         console.log("changed Password", data);
@@ -108,9 +108,9 @@ export class PouchdbService {
           }
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
-          PouchDB.plugin(cordovaSqlitePlugin);
-          // this.db = new PouchDB(database);
-          this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+          // PouchDB.plugin(cordovaSqlitePlugin);
+          this.db = new PouchDB(database);
+          // this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
           console.log("database", database);
           self.events.publish('got-database');
           this.storage.get('password').then(password => {
