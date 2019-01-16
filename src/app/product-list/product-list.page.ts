@@ -15,7 +15,7 @@ import { ProductListPopover} from './product-list.popover';
   styleUrls: ['./product-list.page.scss'],
 })
 export class ProductListPage implements OnInit {
-  products: any;
+  products: any = [];
   loading: any;
   select;
   type: string = 'all';
