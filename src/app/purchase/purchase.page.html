@@ -1,7 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/purchase-list"></ion-back-button>
+      <!-- <ion-back-button defaultHref="/tabs/purchase-list"></ion-back-button> -->
+      <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/purchase-list')"></ion-back-button>
     </ion-buttons>
     <ion-title>
       {{ 'PURCHASE' | translate }}: {{purchaseForm.value.code}}
