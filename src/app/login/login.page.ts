@@ -348,7 +348,7 @@ export class LoginPage implements OnInit {
       this.events.subscribe('end-sync', () => {
         this.events.unsubscribe('end-sync');
         // toast.dismiss();
-        let isFirst = false;
+        let isFirst = true;
         if(isFirst){
           this.initiateViews();
           console.log("is first");

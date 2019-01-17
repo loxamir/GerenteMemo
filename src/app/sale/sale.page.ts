@@ -69,22 +69,24 @@ export class SalePage implements OnInit {
               }
             });
             if (found){
-              // this.saleForm.patchValue({
-              //   "items": this.saleForm.value.items,
-              // });
+              this.saleForm.patchValue({
+                "items": this.saleForm.value.items,
+              });
             } else {
-              // this.productService.getProductByCode(this.barcode).then(data => {
-              //   if (data){
-              //     this.saleForm.value.items.unshift({
-              //       'quantity': 1,
-              //       'product': data,
-              //       'price': data.price,
-              //       'cost': data.cost,
-              //     })
-              //     this.recomputeValues();
-              //     this.saleForm.markAsDirty();
-              //   }
-              // });
+              this.productService.getProductByCode(
+                this.barcode
+              ).then(data => {
+                if (data){
+                  this.saleForm.value.items.unshift({
+                    'quantity': 1,
+                    'product': data,
+                    'price': data.price,
+                    'cost': data.cost,
+                  })
+                  this.recomputeValues();
+                  this.saleForm.markAsDirty();
+                }
+              });
             }
 
             this.barcode = "";
