@@ -108,9 +108,9 @@ export class PouchdbService {
           }
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
-          // PouchDB.plugin(cordovaSqlitePlugin);
-          this.db = new PouchDB(database);
-          // this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+          PouchDB.plugin(cordovaSqlitePlugin);
+          // this.db = new PouchDB(database);
+          this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
           console.log("database", database);
           self.events.publish('got-database');
           this.storage.get('password').then(password => {

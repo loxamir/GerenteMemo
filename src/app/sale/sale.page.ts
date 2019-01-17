@@ -324,8 +324,10 @@ export class SalePage implements OnInit {
       this.translate.use(language_to_set);
     }
 
-    deleteItem(item){
+    async deleteItem(slidingItem, item){
       if (this.saleForm.value.state=='QUOTATION'){
+        console.log("delete item", item);
+        slidingItem.close();
         let index = this.saleForm.value.items.indexOf(item)
         this.saleForm.value.items.splice(index, 1);
         this.recomputeValues();
