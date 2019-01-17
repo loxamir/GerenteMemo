@@ -108,9 +108,9 @@ export class LoginPage implements OnInit {
     // this.router.events.subscribe((event: RouterEvent) => {
       // if (event instanceof NavigationEnd && event.url === '/login') {
       let username = await this.storage.get('username');
-      if (!username){
+      // if (!username){
         this.menuCtrl.enable(false);
-      }
+      // }
       console.log("usernames", username);
       // }
     // });
@@ -345,18 +345,15 @@ export class LoginPage implements OnInit {
       //   this.navCtrl.pop()
       // }
 
-      this.events.subscribe('end-sync', () => {
+      this.events.subscribe('end-sync', async () => {
         this.events.unsubscribe('end-sync');
         // toast.dismiss();
-        let isFirst = true;
-        if(isFirst){
-          this.initiateViews();
-          console.log("is first");
-        } else {
-          console.log("is not first");
-          // window.location.reload();
+        let viewExist = await this.storage.get('optimize-'+database);
+        if(viewExist){
           this.loading.dismiss();
-
+        } else {
+          this.initiateViews();
+          this.storage.set('optimize-'+database, true);
         }
         // this.navCtrl.setRoot(TabsNavigationPage);
         // this.loading.dismiss();

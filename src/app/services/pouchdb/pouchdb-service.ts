@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Events } from '@ionic/angular';
+import { Events, Platform } from '@ionic/angular';
 import PouchDB1 from 'pouchdb';
 // import PouchDBFind from 'pouchdb-find';
 declare var require: any;
@@ -20,24 +20,6 @@ var server = "couchdb.sistema.social";
 export class PouchdbService {
   db: any;
   remote: any;
-  // database = "demo";
-  // username = "demo";
-  sequences = {
-    "sale": 3001,
-    "cash-move": 3001,
-    "stock-move": 3001,
-    "invoice": 3001,
-    "receipt": 3001,
-    "service": 3001,
-    "warehouse": 3001,
-    "product": 3001,
-    "contact": 3001,
-    "account": 3001,
-    "payment-condition": 3001,
-    "purchase": 3001,
-    "category": 3001,
-    "accountCategory": 3001,
-  }
   docTypes = {};
 
   constructor(
@@ -45,31 +27,13 @@ export class PouchdbService {
     public zone: NgZone,
     public storage: Storage,
     // public appConfig: AppConfig,
+    public platform: Platform,
     public events: Events,
     public formatService: FormatService,
   ) {
-    this.getConnect();
-    this.events.subscribe('end-sync', () => {
-      this.getDoc('config.profile').then((config: any)=>{
-        this.sequences = {
-          "sale": parseInt(config.sale_sequence),
-          "cash-move": parseInt(config.cash_move_sequence),
-          "stock-move": parseInt(config.stock_move_sequence),
-          "invoice": parseInt(config.invoice_sequence),
-          "receipt": parseInt(config.receipt_sequence),
-          "service": parseInt(config.service_sequence),
-          "warehouse": parseInt(config.warehouse_sequence),
-          "product": parseInt(config.product_sequence),
-          "contact": parseInt(config.contact_sequence),
-          "account": parseInt(config.account_sequence),
-          "payment-condition": parseInt(config.payment_condition_sequence),
-          "purchase": parseInt(config.purchase_sequence),
-          "category": parseInt(config.category_sequence),
-          "accountCategory": parseInt(config.accountCategory_sequence),
-        }
-      })
-    })
-    // });
+    this.platform.ready().then(() => {
+      this.getConnect();
+    });
   }
 
   putSecurity(data){
