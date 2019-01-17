@@ -156,7 +156,7 @@
     <ion-list no-lines *ngIf="saleForm.value.items.length">
       <section>
       <h2 class="section-title">{{'Itenes de la Venta' | translate}}</h2>
-      <ion-item-sliding  class="list-item" *ngFor="let item of saleForm.value.items">
+      <ion-item-sliding  class="list-item" *ngFor="let item of saleForm.value.items" #slidingItem>
         <ion-item class="internal-item">
           <ion-card class="list-card">
             <ion-row (click)="openItem(item)" class="product-name-row">
@@ -204,10 +204,10 @@
         </ion-row>
       </ion-card>
       </ion-item>
-        <ion-item-options>
-          <ion-button icon-only color="primary" (click)="deleteItem(item)" *ngIf="saleForm.value.state!='QUOTATIONs'">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button>
+        <ion-item-options  side="end">
+          <ion-item-option (click)="deleteItem(slidingItem, item)"  *ngIf="saleForm.value.state=='QUOTATION'">
+            Borrar
+          </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </section>

@@ -201,7 +201,8 @@ export class SaleListPage implements OnInit {
     });
   }
 
-  deleteSale(sale){
+  deleteSale(slidingItem, sale){
+    slidingItem.close();
     return this.pouchdbService.deleteDoc(sale);
   }
 

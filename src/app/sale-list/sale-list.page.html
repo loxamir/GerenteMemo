@@ -23,7 +23,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
-    <ion-item-sliding *ngFor="let item of sales">
+    <ion-item-sliding *ngFor="let item of sales" #slidingItem>
       <ion-item no-padding (click)="openSale(item)">
         <ion-card class="list-card" no-padding>
           <ion-row>
@@ -62,10 +62,10 @@
       </ion-card>
 
     </ion-item>
-      <ion-item-options>
-        <ion-button icon-only color="primary" (click)="deleteSale(item)" *ngIf="item.state=='QUOTATION'">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
+      <ion-item-options  side="end">
+        <ion-item-option (click)="deleteSale(slidingItem, item)" *ngIf="item.state=='QUOTATION'">
+          Borrar
+        </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
