@@ -11,7 +11,7 @@
       placeholder="Buscar Producto"
       [(ngModel)]="searchTerm"
       #searchBar
-      (ionInput)="searchItems()">
+      (ionChange)="searchItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
       <ion-button *ngIf="!select" ion-button icon-only class="more-button"

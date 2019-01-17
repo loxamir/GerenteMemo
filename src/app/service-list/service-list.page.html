@@ -7,7 +7,7 @@
       placeholder="Buscar Servicio"
       [(ngModel)]="searchTerm"
       #searchbar
-      (ionInput)="searchItems()">
+      (ionChange)="searchItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
       <ion-button icon-only

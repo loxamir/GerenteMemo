@@ -7,7 +7,7 @@
       placeholder="Buscar Indicador"
       [(ngModel)]="searchTerm"
       #searchBar
-      (ionInput)="searchItems()">
+      (ionChange)="searchItems()">
     </ion-searchbar>
     <!-- <ion-buttons slot="end">
       <ion-button icon-only
