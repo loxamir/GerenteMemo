@@ -6,14 +6,11 @@
     <ion-title>
       Importador
     </ion-title>
-    <ion-buttons slot="end">
-      <!-- <ion-button icon-only (click)="chooseFile()">
-          <ion-icon name="paper"></ion-icon>
-        </ion-button> -->
+    <!-- <ion-buttons slot="end">
       <ion-button icon-only (click)="downloadCSV()">
           <ion-icon name="download"></ion-icon>
         </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 <ion-content padding>
@@ -40,7 +37,7 @@
         </ion-button>
       </ion-col>
       <ion-col (click)="editPage()">
-        {{ page }}
+        {{ page }}/{{ csvData.length-1 }}
       </ion-col>
       <ion-col>
         <ion-button (click)="nextPage()" *ngIf="page<csvData.length-1">

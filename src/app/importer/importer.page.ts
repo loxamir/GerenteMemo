@@ -33,7 +33,7 @@ export class ImporterPage implements OnInit {
   errorMessage: any[] = [];
   // csvError: any[] = [];
   // createList: any[] = [];
-  pageSize = 10;
+  pageSize = 40;
   page = 0;
   error: boolean = true;
   loading: any;
@@ -331,91 +331,6 @@ export class ImporterPage implements OnInit {
       }
     })
     })
-
-  }
-
-
-  validateField(page, line, row){
-    let doc= this.csvData[page][line][row];
-    let lines = line;
-    let counter = row;
-    if (this.docType == 'product'){
-      this.checkExist('product', doc[0], 'code', lines, counter, 0, "Error: Ya existe un Producto con el Codigo '"+doc[0]+"'");
-      this.checkExist('product', doc[1], 'name', lines, counter, 1, "Error: Ya existe un Producto con el Nombre '"+doc[1]+"'");
-      this.checkDecimal(doc[2], lines, counter, 2);
-      this.checkDecimal(doc[3], lines, counter, 3);
-      this.checkDecimal(doc[4], lines, counter, 4);
-      this.checkTax(doc[5], lines, counter, 5);
-      this.checkExist('category', doc[6], 'name', lines, counter, 6, "", "La Categoria '"+doc[6]+"' sera creada", "green", "yellow", true);
-      this.checkDecimal(doc[7], lines, counter, 7);
-      this.checkType(doc[8], lines, counter, 8);
-      this.checkType(doc[8], lines, counter, 8);
-      this.checkTrue(lines, counter, 9)
-    } else if (this.docType == 'contact'){
-      // console.log("check contact", doc);
-      if (row == 0){
-        this.checkExist('contact', doc[0], 'code', lines, counter, 0, "Error: Ya existe un Contato con el Codigo '"+doc[0]+"'");
-      }
-      if (row==1) {
-        this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe un Contato con el Nombre '"+doc[1]+"'");
-      }
-      if (row==2) {
-        this.checkTrue(lines, counter, 2) //phone
-      }
-      if (row==3) {
-        console.log("exists", doc[3])
-        this.checkExist('contact', doc[3], 'document', lines, counter, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
-      } else {
-        this.checkTrue(lines, counter, 4) //address
-        this.checkTrue(lines, counter, 5) //email
-        console.log("doc[6]", doc);
-        console.log("doc[6]", doc[6]);
-        this.checkBoolean(doc[6], lines, counter, 6);
-        this.checkBoolean(doc[7], lines, counter, 7);
-        this.checkBoolean(doc[8], lines, counter, 8);
-        this.checkBoolean(doc[9], lines, counter, 9);
-        this.checkTrue(lines, counter, 10)
-      }
-    } else if (this.docType == 'cash-move'){
-      this.checkExist('contact', doc[0], 'name', lines, counter, 0, "", "Error: No existe ningun Contato con el Nombre '"+doc[0]+"'", "green", "red");
-      this.checkDecimal(doc[1], lines, counter, 1);
-      this.checkTrue(lines, counter, 2) //phone
-      this.checkDate(doc[3], lines, counter, 3) //date
-      this.checkDate(doc[4], lines, counter, 4) //dateDue
-      this.checkExist('account', doc[5], 'name', lines, counter, 5, "", "Error: No existe ninguna Cuenta con el Nombre  '"+doc[5]+"'", "green", "red");
-      this.checkExist('account', doc[6], 'name', lines, counter, 6, "", "Error: No existe ninguna Cuenta con el Nombre '"+doc[6]+"'", "green", "red");
-      this.checkTrue(lines, counter, 7)
-    } else if (this.docType == 'sale'){
-      this.checkExist('sale', doc[0], 'code', lines, counter, 0, "Error: Ya existe una venta con el Codigo '"+doc[0]+"'");
-      this.checkExist('contact', doc[1], 'name', lines, counter, 1, "", "Error: No existe ningun Contato con el Nombre '"+doc[1]+"'", "green", "red");
-      // this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe un contato con el Nombre '"+doc[1]+"'");
-      this.checkExist('payment-condition', doc[2], 'name', lines, counter, 2, "", "Error: No existe ningun Condición de Pago con el Nombre '"+doc[2]+"'", "green", "red");
-      // this.checkTrue(lines, counter, 2) //phone
-      // this.checkExist('contact', doc[3], 'document', lines, counter, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
-      // this.checkTrue(lines, counter, 4) //address
-      // this.checkTrue(lines, counter, 5) //email
-      // this.checkBoolean(doc[6], lines, counter, 6);
-      // this.checkBoolean(doc[7], lines, counter, 7);
-      // this.checkBoolean(doc[8], lines, counter, 8);
-      // this.checkBoolean(doc[9], lines, counter, 9);
-      this.checkTrue(lines, counter, 3)
-    } else if (this.docType == 'sale-line'){
-      this.checkExist('sale', doc[0], 'code', lines, counter, 0, "", "Error: No existe ninguna Venta con el Codigo '"+doc[0]+"'", "green", "red");
-      // this.checkExist('sale', doc[0], 'code', lines, counter, 0, "Error: Ya existe una venta con el Codigo '"+doc[0]+"'");
-      this.checkExist('product', doc[1], 'name', lines, counter, 1, "", "Error: No existe ningun Producto con el Nombre '"+doc[1]+"'", "green", "red");
-      // this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe un contato con el Nombre '"+doc[1]+"'");
-      this.checkDecimal(doc[2], lines, counter, 2);
-      this.checkDecimal(doc[3], lines, counter, 3);
-      // this.checkExist('payment-condition', doc[2], 'name', lines, counter, 2, "", "Error: No existe ningun Condición de Pago con el Nombre '"+doc[2]+"'", "green", "red");
-      // this.checkTrue(lines, counter, 2) //phone
-      // this.checkExist('contact', doc[3], 'document', lines, counter, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
-      // this.checkTrue(lines, counter, 4) //address
-      // this.checkTrue(lines, counter, 5) //email
-      // this.checkBoolean(doc[6], lines, counter, 6);
-      // this.checkBoolean(doc[7], lines, counter, 7);
-      // this.checkBoolean(doc[9], lines, counter, 9);
-      // this.checkTrue(lines, counter, 3)
-    }
   }
 
   checkDate(keyword, line, page, row, messageTrue="", messageFalse="Formato no reconocido, use el formato '31/12/2018'",){
@@ -551,7 +466,7 @@ export class ImporterPage implements OnInit {
       console.log("before promise");
       Promise.all(promise_ids).then(categories=>{
         console.log("created categs", categories);
-        this.formatProducts(this.csvData).then((csv: any[])=>{
+        this.formatProducts(this.csvParsed).then((csv: any[])=>{
           let bigger_code:any = 0;
           let promise2_ids = [];
           let count = 1;
@@ -601,7 +516,7 @@ export class ImporterPage implements OnInit {
     } else if (this.docType == 'contact'){
       // this.loading.present();
       console.log("contact");
-      this.formatContacts(this.csvData).then((csv: any[])=>{
+      this.formatContacts(this.csvParsed).then((csv: any[])=>{
         let bigger_code:any = 0;
         let count = 1;
         let promise2_ids = [];
@@ -646,7 +561,7 @@ export class ImporterPage implements OnInit {
       })
     } else if (this.docType == 'cash-move'){
       // this.loading.present();
-      this.formatCashMoves(this.csvData).then((csv: any[])=>{
+      this.formatCashMoves(this.csvParsed).then((csv: any[])=>{
         console.log("csv", csv);
         let bigger_code:any = 0;
         let count = 1;
@@ -692,10 +607,7 @@ export class ImporterPage implements OnInit {
         // console.log("count", count);
       })
     } else if (this.docType == 'sale'){
-      // this.loading.present();
-      // console.log("read file", csvData);
-      // this.parseCSVFile(this.csvData).then((csv: any[])=>{
-      this.formatSales(this.csvData).then((csv: any[])=>{
+      this.formatSales(this.csvParsed).then((csv: any[])=>{
         let bigger_code:any = 0;
         let promise2_ids = [];
         console.log("csv", csv);
@@ -745,7 +657,7 @@ export class ImporterPage implements OnInit {
       // this.loading.present();
       // console.log("read file", csvData);
       // this.parseCSVFile(this.csvData).then((csv: any[])=>{
-      this.formatSaleLines(this.csvData).then((csv: any[])=>{
+      this.formatSaleLines(this.csvParsed).then((csv: any[])=>{
         let promise2_ids = [];
         Object.keys(csv).forEach(key => {
           promise2_ids.push(this.saleService.getSale('sale.'+key).then(doc=>{
