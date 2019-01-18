@@ -122,6 +122,7 @@ export class ImporterPage implements OnInit {
         }
         pageProperty.push(colors);
         pageError.push(messages);
+        line['line'] = index+2;
         this.csvData[page].push(line);
 
         if (counter == this.pageSize){
@@ -157,16 +158,16 @@ export class ImporterPage implements OnInit {
   //   this.seeHelp(page, line, row);
   // }
 
-  async editField(page, line, row){
+  async editPage(){
     // if (this.saleForm.value.state=='QUOTATION'){
       let prompt = await this.alertCtrl.create({
-        header: 'Ajustar Valor',
-        message: 'Cual es el valor correcto?',
+        header: 'Cambiar Pagina',
+        message: 'A cual pagina deseas ir?',
         inputs: [
           {
-            type: 'text',
+            type: 'number',
             name: 'value',
-            value: this.csvData[page][line][row]
+            value: this.page
         },
 
         ],
@@ -177,18 +178,16 @@ export class ImporterPage implements OnInit {
           {
             text: 'Confirmar',
             handler: data => {
-              this.csvData[page][line][row] = data.value;
-              this.validateField(page, line, row)
-              //Validate this field
-              // this.recomputeValues();
-              // this.saleForm.markAsDirty();
+              if (data.value > 0 && data.value < this.csvData.length){
+                this.page = parseInt(data.value);
+              }
             }
           }
         ]
       });
 
       prompt.present();
-      this.seeHelp(page, line, row);
+      // this.seeHelp(page, line, row);
     // }
   }
 

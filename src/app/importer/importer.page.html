@@ -18,42 +18,53 @@
 </ion-header>
 <ion-content padding>
   <!-- <ion-scroll scrollX="true" scrollY="true" class="data-scroll"> -->
+  <!-- <h2>
+    Elije un archivo csv basado en este ejemplo
+  </h2> -->
   <input type="file" class="upload" (change)="changeListener($event.target.files)">
     <!-- <ion-button (click)="chooseFile()">
       Selecionar Archivo
     </ion-button> -->
-    <ion-row>
-      <ion-button (click)="validate()" style="background: green;" *ngIf="csvData[page]">
+    <ion-row *ngIf="csvData[page]">
+      <ion-button (click)="validate()" color="success">
         Validar
       </ion-button>
-      <ion-button (click)="import()" style="background: red;" *ngIf="csvData[page]">
+      <ion-button (click)="import()" color="danger">
         Importar
       </ion-button>
+    </ion-row>
+    <ion-row *ngIf="csvData[page]">
       <ion-col>
-        <ion-button (click)="previousPage()" style="background: red;" *ngIf="csvData[page]">
+        <ion-button (click)="previousPage()" *ngIf="page>1">
           Anterior
         </ion-button>
       </ion-col>
-      <ion-col>
+      <ion-col (click)="editPage()">
         {{ page }}
       </ion-col>
       <ion-col>
-        <ion-button (click)="nextPage()" style="background: red;" *ngIf="csvData[page]">
+        <ion-button (click)="nextPage()" *ngIf="page<csvData.length-1">
           Proximo
         </ion-button>
       </ion-col>
     </ion-row>
-    <table border="1" class="data-table">
+    <table border="1" class="data-table" *ngIf="csvData[page]">
       <tr>
+        <td >
+          Linea
+        </td>
         <td *ngFor="let header of headerRow" text-center><b>{{ header }}</b></td>
       </tr>
       <tr *ngFor="let row of csvData[page]; let i = index">
+        <td>
+          {{row.line}}
+        </td>
         <td *ngFor="let data of row; let j = index;"
         [class.red-background]="pageProperty[page][i][j] == 'red'"
         [class.green-background]="pageProperty[page][i][j] == 'green'"
         [class.yellow-background]="pageProperty[page][i][j] == 'yellow'"
         [class.clean-background]="pageProperty[page][i][j] == ''"
-        (click)="editField(page, i, j)">
+        (click)="seeHelp(page,i,j)">
           <!-- <ion-input type="text" [(ngModel)]="csvData[page][i][j]"></ion-input> -->
           <!-- <ion-input *ngIf="activeField == [page,i,j]" type="text" [(ngModel)]="csvData[page][i][j]"></ion-input> -->
           <span >{{csvData[page][i][j]}}</span>
