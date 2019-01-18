@@ -22,17 +22,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ImporterPage implements OnInit {
   csvData: any[] = [];
-  csvProperty: any[] = [];
+  csvParsed: any[] = [];
+  // csvProperty: any[] = [];
+  pageProperty: any[] = [];
+  pageError: any[] = [];
   headerRow: any[] = [];
   exists = {};
   createList: any = [];
   create: any = {};
   errorMessage: any[] = [];
-  csvError: any[] = [];
+  // csvError: any[] = [];
   // createList: any[] = [];
+  pageSize = 10;
+  page = 0;
   error: boolean = true;
   loading: any;
   docType;
+  activeField = [];
 
   constructor(
     public navCtrl: NavController,
@@ -82,201 +88,429 @@ export class ImporterPage implements OnInit {
   //     );
   // }
 
+
   private extractData(res) {
     // let csvData = res['_body'] || ''; //To run on browser
+    this.loading.present();
     let csvData = res; //To run on android
     let parsedData = papa.parse(csvData).data;
-    console.log("RES", parsedData);
-    // console.log("parsedata1", parsedData);
     this.headerRow = parsedData[0];
-
     parsedData.splice(0, 1);
-    let parse2 = parsedData.slice(0, -1);
-    console.log("parsedata2", parse2);
-    parse2.forEach((line, index)=>{
-      let colors = [];
-      let messages = [];
-      for(let i=0;i<line.length;i++){
-        colors.push('')
-        messages.push({"messages": []})
+    // console.log("RES", parsedData);
+    // console.log("parsedata1", parsedData);
+    this.csvParsed = parsedData;
+    this.csvData = [];
+    this.pageProperty = [];
+    this.pageError = [];
+    this.page = 1;
+    let pageProperty = [];
+    let pageError = [];
+    let page = 1;
+    let counter = 0;
+    this.pageProperty[page] = [];
+    this.pageError[page] = [];
+    this.csvData[page] = [];
+    parsedData.forEach((line, index)=>{
+      if (line.length == parsedData[0].length){
+        console.log("line", line);
+        counter += 1;
+        let colors = [];
+        let messages = [];
+        for(let i=0;i<line.length;i++){
+          colors.push('')
+          messages.push({"messages": []})
+        }
+        pageProperty.push(colors);
+        pageError.push(messages);
+        this.csvData[page].push(line);
+
+        if (counter == this.pageSize){
+          counter = 0;
+          this.pageProperty[page] = pageProperty;
+          this.pageError[page] = pageError;
+          page += 1;
+          this.csvData[page] = [];
+          pageProperty = [];
+          pageError = [];
+        }
       }
-      this.csvProperty.push(colors);
-      this.csvError.push(messages);
+
     });
-    this.csvData = parse2;
+    if (counter > 0){
+      this.pageProperty[page] = pageProperty;
+      this.pageError[page] = pageError;
+    }
+
+    // this.createAtrributeSpace(this.csvParsed.slice(this.pageSize*(this.page - 1), this.pageSize*this.page));
+    this.loading.dismiss();
   }
 
-  seeHelp(line=null, row=null){
+  nextPage(){
+    this.page += 1;
+    console.log()
+    // this.createAtrributeSpace()
+    // this.createAtrributeSpace(this.csvParsed.slice(this.pageSize*(this.page - 1), this.pageSize*this.page));
+  }
+
+  // editField(page, line, row){
+  //   this.activeField = [page, line, row];
+  //   this.seeHelp(page, line, row);
+  // }
+
+  async editField(page, line, row){
+    // if (this.saleForm.value.state=='QUOTATION'){
+      let prompt = await this.alertCtrl.create({
+        header: 'Ajustar Valor',
+        message: 'Cual es el valor correcto?',
+        inputs: [
+          {
+            type: 'text',
+            name: 'value',
+            value: this.csvData[page][line][row]
+        },
+
+        ],
+        buttons: [
+          {
+            text: 'Cancel'
+          },
+          {
+            text: 'Confirmar',
+            handler: data => {
+              this.csvData[page][line][row] = data.value;
+              this.validateField(page, line, row)
+              //Validate this field
+              // this.recomputeValues();
+              // this.saleForm.markAsDirty();
+            }
+          }
+        ]
+      });
+
+      prompt.present();
+      this.seeHelp(page, line, row);
+    // }
+  }
+
+  previousPage(){
+    if (this.page>1){
+      this.page -= 1;
+      // this.createAtrributeSpace()
+      // this.createAtrributeSpace(this.csvParsed.slice(this.pageSize*(this.page - 1), this.pageSize*this.page));
+    }
+  }
+
+  // showPage(){
+  //   // let parse2 = parsedData.slice(0, -1);
+  //   // console.log("parsedata2", parse2);
+  //   this.pageError[this.page] = [];
+  //   this.pageProperty[this.page] = [];
+  //   parsedData.forEach((line, index)=>{
+  //     let colors = [];
+  //     let messages = [];
+  //     for(let i=0;i<line.length;i++){
+  //       colors.push('')
+  //       messages.push({"messages": []})
+  //     }
+  //     this.pageProperty[this.page] = colors;
+  //     this.pageError[this.page] = messages;
+  //   });
+  //   this.csvData = parsedData;
+  // }
+
+
+  // createAtrributeSpace(parsedData){
+  //   // let parse2 = parsedData.slice(0, -1);
+  //   // console.log("parsedata2", parse2);
+  //   this.pageError[this.page] = [];
+  //   this.pageProperty[this.page] = [];
+  //   parsedData.forEach((line, index)=>{
+  //     let colors = [];
+  //     let messages = [];
+  //     for(let i=0;i<line.length;i++){
+  //       colors.push('')
+  //       messages.push({"messages": []})
+  //     }
+  //     this.pageProperty[this.page] = colors;
+  //     this.pageError[this.page] = messages;
+  //   });
+  //   this.csvData = parsedData;
+  // }
+
+  seeHelp(page, line=null, row=null){
     console.log("line", line,"row", row);
-    this.errorMessage = this.csvError[line][row]['messages'];
+    this.errorMessage = this.pageError[page][line][row]['messages'];
   }
 
   validate(){
     console.log("Validate", this.csvData);
     this.errorMessage = [];
-    this.csvData.forEach((doc, lines)=>{
-      for(let i=0;i<this.csvError.length;i++){
-        this.csvError[lines][i] = {messages: []};
+    let counter = 0;
+    // let page = 1;
+    console.log("this.pageError[page]", this.pageError);
+
+    this.csvData.forEach(page=>{
+      counter += 1;
+    page.forEach((doc, lines)=>{
+      console.log("doc", doc);
+      // counter += 1;
+      // if (counter == this.pageSize){
+      //   // page += 1;
+      //   counter = 0;
+      //   // this.pageProperty.push(pageProperty);
+      //   // this.pageError.push(pageError);
+      // }
+      if (this.pageError[counter]){
+        for(let i=0;i<this.pageError[counter].length;i++){
+          this.pageError[counter][lines][i] = {messages: []};
+        }
       }
       if (this.docType == 'product'){
-        this.checkExist('product', doc[0], 'code', lines, 0, "Error: Ya existe un Producto con el Codigo '"+doc[0]+"'");
-        this.checkExist('product', doc[1], 'name', lines, 1, "Error: Ya existe un Producto con el Nombre '"+doc[1]+"'");
-        this.checkDecimal(doc[2], lines, 2);
-        this.checkDecimal(doc[3], lines, 3);
-        this.checkDecimal(doc[4], lines, 4);
-        this.checkTax(doc[5], lines, 5);
-        this.checkExist('category', doc[6], 'name', lines, 6, "", "La Categoria '"+doc[6]+"' sera creada", "green", "yellow", true);
-        this.checkDecimal(doc[7], lines, 7);
-        this.checkType(doc[8], lines, 8);
-        this.checkType(doc[8], lines, 8);
-        this.checkTrue(lines, 9)
+        this.checkExist('product', doc[0], 'code', lines, counter, 0, "Error: Ya existe un Producto con el Codigo '"+doc[0]+"'");
+        this.checkExist('product', doc[1], 'name', lines, counter, 1, "Error: Ya existe un Producto con el Nombre '"+doc[1]+"'");
+        this.checkDecimal(doc[2], lines, counter, 2);
+        this.checkDecimal(doc[3], lines, counter, 3);
+        this.checkDecimal(doc[4], lines, counter, 4);
+        this.checkTax(doc[5], lines, counter, 5);
+        this.checkExist('category', doc[6], 'name', lines, counter, 6, "", "La Categoria '"+doc[6]+"' sera creada", "green", "yellow", true);
+        this.checkDecimal(doc[7], lines, counter, 7);
+        this.checkType(doc[8], lines, counter, 8);
+        this.checkType(doc[8], lines, counter, 8);
+        this.checkTrue(lines, counter, 9)
       } else if (this.docType == 'contact'){
         console.log("check contact");
-        this.checkExist('contact', doc[0], 'code', lines, 0, "Error: Ya existe un Contato con el Codigo '"+doc[0]+"'");
-        this.checkExist('contact', doc[1], 'name', lines, 1, "Error: Ya existe un Contato con el Nombre '"+doc[1]+"'");
-        this.checkTrue(lines, 2) //phone
-        this.checkExist('contact', doc[3], 'document', lines, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
-        this.checkTrue(lines, 4) //address
-        this.checkTrue(lines, 5) //email
-        this.checkBoolean(doc[6], lines, 6);
-        this.checkBoolean(doc[7], lines, 7);
-        this.checkBoolean(doc[8], lines, 8);
-        this.checkBoolean(doc[9], lines, 9);
-        this.checkTrue(lines, 10)
+        this.checkExist('contact', doc[0], 'code', lines, counter, 0, "Error: Ya existe un Contato con el Codigo '"+doc[0]+"'");
+        this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe un Contato con el Nombre '"+doc[1]+"'");
+        this.checkTrue(lines, counter, 2) //phone
+        this.checkExist('contact', doc[3], 'document', lines, counter, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
+        this.checkTrue(lines, counter, 4) //address
+        this.checkTrue(lines, counter, 5) //email
+        this.checkBoolean(doc[6], lines, counter, 6);
+        this.checkBoolean(doc[7], lines, counter, 7);
+        this.checkBoolean(doc[8], lines, counter, 8);
+        this.checkBoolean(doc[9], lines, counter, 9);
+        this.checkTrue(lines, counter, 10)
       } else if (this.docType == 'cash-move'){
-        this.checkExist('contact', doc[0], 'name', lines, 0, "", "Error: No existe ningun Contato con el Nombre '"+doc[0]+"'", "green", "red");
-        this.checkDecimal(doc[1], lines, 1);
-        this.checkTrue(lines, 2) //phone
-        this.checkDate(doc[3], lines, 3) //date
-        this.checkDate(doc[4], lines, 4) //dateDue
-        this.checkExist('account', doc[5], 'name', lines, 5, "", "Error: No existe ninguna Cuenta con el Nombre  '"+doc[5]+"'", "green", "red");
-        this.checkExist('account', doc[6], 'name', lines, 6, "", "Error: No existe ninguna Cuenta con el Nombre '"+doc[6]+"'", "green", "red");
-        this.checkTrue(lines, 7)
+        this.checkExist('contact', doc[0], 'name', lines, counter, 0, "", "Error: No existe ningun Contato con el Nombre '"+doc[0]+"'", "green", "red");
+        this.checkDecimal(doc[1], lines, counter, 1);
+        this.checkTrue(lines, counter, 2) //phone
+        this.checkDate(doc[3], lines, counter, 3) //date
+        this.checkDate(doc[4], lines, counter, 4) //dateDue
+        this.checkExist('account', doc[5], 'name', lines, counter, 5, "", "Error: No existe ninguna Cuenta con el Nombre  '"+doc[5]+"'", "green", "red");
+        this.checkExist('account', doc[6], 'name', lines, counter, 6, "", "Error: No existe ninguna Cuenta con el Nombre '"+doc[6]+"'", "green", "red");
+        this.checkTrue(lines, counter, 7)
       } else if (this.docType == 'sale'){
-        this.checkExist('sale', doc[0], 'code', lines, 0, "Error: Ya existe una venta con el Codigo '"+doc[0]+"'");
-        this.checkExist('contact', doc[1], 'name', lines, 1, "", "Error: No existe ningun Contato con el Nombre '"+doc[1]+"'", "green", "red");
-        // this.checkExist('contact', doc[1], 'name', lines, 1, "Error: Ya existe un contato con el Nombre '"+doc[1]+"'");
-        this.checkExist('payment-condition', doc[2], 'name', lines, 2, "", "Error: No existe ningun Condición de Pago con el Nombre '"+doc[2]+"'", "green", "red");
-        // this.checkTrue(lines, 2) //phone
-        // this.checkExist('contact', doc[3], 'document', lines, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
-        // this.checkTrue(lines, 4) //address
-        // this.checkTrue(lines, 5) //email
-        // this.checkBoolean(doc[6], lines, 6);
-        // this.checkBoolean(doc[7], lines, 7);
-        // this.checkBoolean(doc[8], lines, 8);
-        // this.checkBoolean(doc[9], lines, 9);
-        this.checkTrue(lines, 3)
+        this.checkExist('sale', doc[0], 'code', lines, counter, 0, "Error: Ya existe una venta con el Codigo '"+doc[0]+"'");
+        this.checkExist('contact', doc[1], 'name', lines, counter, 1, "", "Error: No existe ningun Contato con el Nombre '"+doc[1]+"'", "green", "red");
+        // this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe un contato con el Nombre '"+doc[1]+"'");
+        this.checkExist('payment-condition', doc[2], 'name', lines, counter, 2, "", "Error: No existe ningun Condición de Pago con el Nombre '"+doc[2]+"'", "green", "red");
+        // this.checkTrue(lines, counter, 2) //phone
+        // this.checkExist('contact', doc[3], 'document', lines, counter, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
+        // this.checkTrue(lines, counter, 4) //address
+        // this.checkTrue(lines, counter, 5) //email
+        // this.checkBoolean(doc[6], lines, counter, 6);
+        // this.checkBoolean(doc[7], lines, counter, 7);
+        // this.checkBoolean(doc[8], lines, counter, 8);
+        // this.checkBoolean(doc[9], lines, counter, 9);
+        this.checkTrue(lines, counter, 3)
       } else if (this.docType == 'sale-line'){
-        this.checkExist('sale', doc[0], 'code', lines, 0, "", "Error: No existe ninguna Venta con el Codigo '"+doc[0]+"'", "green", "red");
-        // this.checkExist('sale', doc[0], 'code', lines, 0, "Error: Ya existe una venta con el Codigo '"+doc[0]+"'");
-        this.checkExist('product', doc[1], 'name', lines, 1, "", "Error: No existe ningun Producto con el Nombre '"+doc[1]+"'", "green", "red");
-        // this.checkExist('contact', doc[1], 'name', lines, 1, "Error: Ya existe un contato con el Nombre '"+doc[1]+"'");
-        this.checkDecimal(doc[2], lines, 2);
-        this.checkDecimal(doc[3], lines, 3);
-        // this.checkExist('payment-condition', doc[2], 'name', lines, 2, "", "Error: No existe ningun Condición de Pago con el Nombre '"+doc[2]+"'", "green", "red");
-        // this.checkTrue(lines, 2) //phone
-        // this.checkExist('contact', doc[3], 'document', lines, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
-        // this.checkTrue(lines, 4) //address
-        // this.checkTrue(lines, 5) //email
-        // this.checkBoolean(doc[6], lines, 6);
-        // this.checkBoolean(doc[7], lines, 7);
-        // this.checkBoolean(doc[9], lines, 9);
-        // this.checkTrue(lines, 3)
+        this.checkExist('sale', doc[0], 'code', lines, counter, 0, "", "Error: No existe ninguna Venta con el Codigo '"+doc[0]+"'", "green", "red");
+        // this.checkExist('sale', doc[0], 'code', lines, counter, 0, "Error: Ya existe una venta con el Codigo '"+doc[0]+"'");
+        this.checkExist('product', doc[1], 'name', lines, counter, 1, "", "Error: No existe ningun Producto con el Nombre '"+doc[1]+"'", "green", "red");
+        // this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe un contato con el Nombre '"+doc[1]+"'");
+        this.checkDecimal(doc[2], lines, counter, 2);
+        this.checkDecimal(doc[3], lines, counter, 3);
+        // this.checkExist('payment-condition', doc[2], 'name', lines, counter, 2, "", "Error: No existe ningun Condición de Pago con el Nombre '"+doc[2]+"'", "green", "red");
+        // this.checkTrue(lines, counter, 2) //phone
+        // this.checkExist('contact', doc[3], 'document', lines, counter, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
+        // this.checkTrue(lines, counter, 4) //address
+        // this.checkTrue(lines, counter, 5) //email
+        // this.checkBoolean(doc[6], lines, counter, 6);
+        // this.checkBoolean(doc[7], lines, counter, 7);
+        // this.checkBoolean(doc[9], lines, counter, 9);
+        // this.checkTrue(lines, counter, 3)
       }
     })
+    })
+
   }
 
-  checkDate(keyword, line, row, messageTrue="", messageFalse="Formato no reconocido, use el formato '31/12/2018'",){
+
+  validateField(page, line, row){
+    let doc= this.csvData[page][line][row];
+    let lines = line;
+    let counter = row;
+    if (this.docType == 'product'){
+      this.checkExist('product', doc[0], 'code', lines, counter, 0, "Error: Ya existe un Producto con el Codigo '"+doc[0]+"'");
+      this.checkExist('product', doc[1], 'name', lines, counter, 1, "Error: Ya existe un Producto con el Nombre '"+doc[1]+"'");
+      this.checkDecimal(doc[2], lines, counter, 2);
+      this.checkDecimal(doc[3], lines, counter, 3);
+      this.checkDecimal(doc[4], lines, counter, 4);
+      this.checkTax(doc[5], lines, counter, 5);
+      this.checkExist('category', doc[6], 'name', lines, counter, 6, "", "La Categoria '"+doc[6]+"' sera creada", "green", "yellow", true);
+      this.checkDecimal(doc[7], lines, counter, 7);
+      this.checkType(doc[8], lines, counter, 8);
+      this.checkType(doc[8], lines, counter, 8);
+      this.checkTrue(lines, counter, 9)
+    } else if (this.docType == 'contact'){
+      // console.log("check contact", doc);
+      if (row == 0){
+        this.checkExist('contact', doc[0], 'code', lines, counter, 0, "Error: Ya existe un Contato con el Codigo '"+doc[0]+"'");
+      }
+      if (row==1) {
+        this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe un Contato con el Nombre '"+doc[1]+"'");
+      }
+      if (row==2) {
+        this.checkTrue(lines, counter, 2) //phone
+      }
+      if (row==3) {
+        console.log("exists", doc[3])
+        this.checkExist('contact', doc[3], 'document', lines, counter, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
+      } else {
+        this.checkTrue(lines, counter, 4) //address
+        this.checkTrue(lines, counter, 5) //email
+        console.log("doc[6]", doc);
+        console.log("doc[6]", doc[6]);
+        this.checkBoolean(doc[6], lines, counter, 6);
+        this.checkBoolean(doc[7], lines, counter, 7);
+        this.checkBoolean(doc[8], lines, counter, 8);
+        this.checkBoolean(doc[9], lines, counter, 9);
+        this.checkTrue(lines, counter, 10)
+      }
+    } else if (this.docType == 'cash-move'){
+      this.checkExist('contact', doc[0], 'name', lines, counter, 0, "", "Error: No existe ningun Contato con el Nombre '"+doc[0]+"'", "green", "red");
+      this.checkDecimal(doc[1], lines, counter, 1);
+      this.checkTrue(lines, counter, 2) //phone
+      this.checkDate(doc[3], lines, counter, 3) //date
+      this.checkDate(doc[4], lines, counter, 4) //dateDue
+      this.checkExist('account', doc[5], 'name', lines, counter, 5, "", "Error: No existe ninguna Cuenta con el Nombre  '"+doc[5]+"'", "green", "red");
+      this.checkExist('account', doc[6], 'name', lines, counter, 6, "", "Error: No existe ninguna Cuenta con el Nombre '"+doc[6]+"'", "green", "red");
+      this.checkTrue(lines, counter, 7)
+    } else if (this.docType == 'sale'){
+      this.checkExist('sale', doc[0], 'code', lines, counter, 0, "Error: Ya existe una venta con el Codigo '"+doc[0]+"'");
+      this.checkExist('contact', doc[1], 'name', lines, counter, 1, "", "Error: No existe ningun Contato con el Nombre '"+doc[1]+"'", "green", "red");
+      // this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe un contato con el Nombre '"+doc[1]+"'");
+      this.checkExist('payment-condition', doc[2], 'name', lines, counter, 2, "", "Error: No existe ningun Condición de Pago con el Nombre '"+doc[2]+"'", "green", "red");
+      // this.checkTrue(lines, counter, 2) //phone
+      // this.checkExist('contact', doc[3], 'document', lines, counter, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
+      // this.checkTrue(lines, counter, 4) //address
+      // this.checkTrue(lines, counter, 5) //email
+      // this.checkBoolean(doc[6], lines, counter, 6);
+      // this.checkBoolean(doc[7], lines, counter, 7);
+      // this.checkBoolean(doc[8], lines, counter, 8);
+      // this.checkBoolean(doc[9], lines, counter, 9);
+      this.checkTrue(lines, counter, 3)
+    } else if (this.docType == 'sale-line'){
+      this.checkExist('sale', doc[0], 'code', lines, counter, 0, "", "Error: No existe ninguna Venta con el Codigo '"+doc[0]+"'", "green", "red");
+      // this.checkExist('sale', doc[0], 'code', lines, counter, 0, "Error: Ya existe una venta con el Codigo '"+doc[0]+"'");
+      this.checkExist('product', doc[1], 'name', lines, counter, 1, "", "Error: No existe ningun Producto con el Nombre '"+doc[1]+"'", "green", "red");
+      // this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe un contato con el Nombre '"+doc[1]+"'");
+      this.checkDecimal(doc[2], lines, counter, 2);
+      this.checkDecimal(doc[3], lines, counter, 3);
+      // this.checkExist('payment-condition', doc[2], 'name', lines, counter, 2, "", "Error: No existe ningun Condición de Pago con el Nombre '"+doc[2]+"'", "green", "red");
+      // this.checkTrue(lines, counter, 2) //phone
+      // this.checkExist('contact', doc[3], 'document', lines, counter, 3, "Error: Ya existe un Contato con el Documento '"+doc[3]+"'");
+      // this.checkTrue(lines, counter, 4) //address
+      // this.checkTrue(lines, counter, 5) //email
+      // this.checkBoolean(doc[6], lines, counter, 6);
+      // this.checkBoolean(doc[7], lines, counter, 7);
+      // this.checkBoolean(doc[9], lines, counter, 9);
+      // this.checkTrue(lines, counter, 3)
+    }
+  }
+
+  checkDate(keyword, line, page, row, messageTrue="", messageFalse="Formato no reconocido, use el formato '31/12/2018'",){
     // regex() /(0[1-9]|[12]\d|3[01])/(0[1-9]|1[0-2])/([12]\d{3})/
     if (keyword.match(/(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/([12]\d{3})/)){
-      this.csvProperty[line][row] = 'green';
+      this.pageProperty[page][line][row] = 'green';
       if (messageTrue){
-        this.csvError[line][row]['messages'].push(messageTrue);
+        this.pageError[page][line][row]['messages'].push(messageTrue);
       }
     } else {
-      this.csvProperty[line][row] = 'yellow';
+      this.pageProperty[page][line][row] = 'yellow';
       if (messageFalse){
-        this.csvError[line][row]['messages'].push(messageFalse);
+        this.pageError[page][line][row]['messages'].push(messageFalse);
       }
     }
   }
 
-  checkTrue(line, row){
-    this.csvProperty[line][row] = 'green';
+  checkTrue(line, page, row){
+    this.pageProperty[page][line][row] = 'green';
   }
 
-  checkBoolean(keyword, line, row, messageTrue="", messageFalse="Formato no reconocido, use '1' para Si y '0' para No", colorTrue='green', colorFalse='red'){
+  checkBoolean(keyword, line, page, row, messageTrue="", messageFalse="Formato no reconocido, use '1' para Si y '0' para No", colorTrue='green', colorFalse='red'){
+    console.log("keyword", keyword);
     if(keyword == '1' || keyword == '0' || keyword == ''){
-      this.csvProperty[line][row] = colorTrue;
+      this.pageProperty[page][line][row] = colorTrue;
       if (messageTrue){
-        this.csvError[line][row]['messages'].push(messageTrue);
+        this.pageError[page][line][row]['messages'].push(messageTrue);
       }
     } else {
-      this.csvProperty[line][row] = colorFalse;
+      this.pageProperty[page][line][row] = colorFalse;
       if (messageFalse){
-        this.csvError[line][row]['messages'].push(messageFalse);
+        this.pageError[page][line][row]['messages'].push(messageFalse);
       }
     }
   }
 
-  checkTax(keyword, line, row, messageTrue="", messageFalse="El Impuesto es invalido, use 'iva10', 'iva5' o 'iva0'", colorTrue='green', colorFalse='red'){
+  checkTax(keyword, line, page, row, messageTrue="", messageFalse="El Impuesto es invalido, use 'iva10', 'iva5' o 'iva0'", colorTrue='green', colorFalse='red'){
       if(keyword == 'iva10' || keyword == 'iva5' || keyword == 'iva0'){
-        this.csvProperty[line][row] = colorTrue;
+        this.pageProperty[page][line][row] = colorTrue;
         if (messageTrue){
-          this.csvError[line][row]['messages'].push(messageTrue);
+          this.pageError[page][line][row]['messages'].push(messageTrue);
         }
       } else {
-        this.csvProperty[line][row] = colorFalse;
+        this.pageProperty[page][line][row] = colorFalse;
         if (messageFalse){
-          this.csvError[line][row]['messages'].push(messageFalse);
+          this.pageError[page][line][row]['messages'].push(messageFalse);
         }
       }
   }
 
-  checkType(keyword, line, row, messageTrue="", messageFalse="El Tipo es invalido, use 'product', 'service' o 'consumible'", colorTrue='green', colorFalse='red'){
+  checkType(keyword, line, page, row, messageTrue="", messageFalse="El Tipo es invalido, use 'product', 'service' o 'consumible'", colorTrue='green', colorFalse='red'){
       if(keyword == 'product' || keyword == 'service' || keyword == 'consumible'){
-        this.csvProperty[line][row] = colorTrue;
+        this.pageProperty[page][line][row] = colorTrue;
         if (messageTrue){
-          this.csvError[line][row]['messages'].push(messageTrue);
+          this.pageError[page][line][row]['messages'].push(messageTrue);
         }
       } else {
-        this.csvProperty[line][row] = colorFalse;
+        this.pageProperty[page][line][row] = colorFalse;
         if (messageFalse){
-          this.csvError[line][row]['messages'].push(messageFalse);
+          this.pageError[page][line][row]['messages'].push(messageFalse);
         }
       }
   }
 
-  checkDecimal(keyword, line, row, messageTrue="", messageFalse="Formato no valido, utilize el formato '1234.00' o '1234'", colorTrue='green', colorFalse='red'){
+  checkDecimal(keyword, line, page, row, messageTrue="", messageFalse="Formato no valido, utilize el formato '1234.00' o '1234'", colorTrue='green', colorFalse='red'){
       // numeral('1,000')
       // console.log("numeral", numeral('1.234,56')._value, parseFloat);
       if(!isNaN(keyword)){
-        this.csvProperty[line][row] = colorTrue;
+        this.pageProperty[page][line][row] = colorTrue;
         if (messageTrue){
-          this.csvError[line][row]['messages'].push(messageTrue);
+          this.pageError[page][line][row]['messages'].push(messageTrue);
         }
       } else {
-        this.csvProperty[line][row] = colorFalse;
+        this.pageProperty[page][line][row] = colorFalse;
         if (messageFalse){
-          this.csvError[line][row]['messages'].push(messageFalse);
+          this.pageError[page][line][row]['messages'].push(messageFalse);
         }
       }
   }
 
-  checkExist(docType, keyword, field, line, row, messageTrue="", messageFalse="", colorTrue='red', colorFalse='green', create=false){
+  checkExist(docType, keyword, field, line, page, row, messageTrue="", messageFalse="", colorTrue='red', colorFalse='green', create=false){
     if (keyword == ''){
-      this.csvProperty[line][row] = colorFalse;
+      this.pageProperty[page][line][row] = colorFalse;
     } else {
       this.pouchdbService.searchDocField(docType, keyword, field).then((doca: any[])=>{
         if(doca.length!=0){
-          this.csvProperty[line][row] = colorTrue;
+          this.pageProperty[page][line][row] = colorTrue;
           if (messageTrue){
-            this.csvError[line][row]['messages'].push(messageTrue);
+            this.pageError[page][line][row]['messages'].push(messageTrue);
           }
         } else {
-          this.csvProperty[line][row] = colorFalse;
+          this.pageProperty[page][line][row] = colorFalse;
           if (messageFalse){
-            this.csvError[line][row]['messages'].push(messageFalse);
+            this.pageError[page][line][row]['messages'].push(messageFalse);
           }
           if (create){
             let data = {
@@ -837,9 +1071,9 @@ export class ImporterPage implements OnInit {
     console.log('something went wrong: ', err);
   }
 
-  trackByFn(index: any, item: any) {
-    return index;
-  }
+  // trackByFn(index: any, item: any) {
+  //   return index;
+  // }
 
   ngOnInit() {
     console.log('ionViewDidLoad ImporterPage');
