@@ -58,7 +58,6 @@ export class UserPage implements OnInit {
     if (this.form.value.registered==true){
       console.log("Guardou");
       this.form.value.registered = true;
-
     }
     else {
       let user_code = await this.configService.getSequence('user');
@@ -69,6 +68,10 @@ export class UserPage implements OnInit {
         },
         {
           '_id': 'sequence.purchase.'+this.form.value.username,
+          'value': user_code+'-0001'
+        },
+        {
+          '_id': 'sequence.invoice.'+this.form.value.username,
           'value': user_code+'-0001'
         },
         {

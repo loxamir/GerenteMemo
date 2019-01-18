@@ -1,20 +1,13 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Events, Platform } from '@ionic/angular';
 import PouchDB1 from 'pouchdb';
-// import PouchDBFind from 'pouchdb-find';
 declare var require: any;
-// declare var Buffer: any;
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import PouchdbUpsert from 'pouchdb-upsert';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { Storage } from '@ionic/storage';
-// import { AppConfig } from '../../app/app.config';
 import { FormatService } from '../format.service';
-// import * from 'pouchdb-quick-search';
-// import * as PouchQuickSearch from 'pouchdb-quick-search';
-
 var server = "couchdb.sistema.social";
-// var port = "5984";
 
 @Injectable({ providedIn: 'root' })
 export class PouchdbService {
@@ -26,7 +19,6 @@ export class PouchdbService {
     public http: HttpClient,
     public zone: NgZone,
     public storage: Storage,
-    // public appConfig: AppConfig,
     public platform: Platform,
     public events: Events,
     public formatService: FormatService,
@@ -42,19 +34,18 @@ export class PouchdbService {
         'https://couchdb.sistema.social/'+'demo'+'/_security',
         data,
         {
-          // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
-          headers: new HttpHeaders().set('Authorization', "Basic " + btoa('demo' + ":" + 'demo123'))
+          headers: new HttpHeaders().set(
+            'Authorization', "Basic " + btoa('demo' + ":" + 'demo123')
+          )
         }
       ).subscribe(data => {
         console.log("changed Password", data);
         resolve(data);
       }, err => {
         resolve(err);
-        // console.log("erro", err);
       });
     });
   }
-
 
   getConnect(){
     let self = this;
@@ -78,8 +69,6 @@ export class PouchdbService {
           console.log("database", database);
           self.events.publish('got-database');
           this.storage.get('password').then(password => {
-            // resolve(true);
-            console.log("password", password);
             this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
             let options = {
               live: true,
@@ -141,11 +130,13 @@ export class PouchdbService {
         start = undefined;
         end = undefined;
       }
-
-      let docs = this.docTypes[docType].filter(word => filter && word[filter] || ! filter && true)
-      .filter(word => field && word[field] && word[field].toString().search(new RegExp(keyword, "i")) != -1
-      || (word['name'] && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
-      || (word.code && word.code.toString().search(keyword) != -1))
+      let docs = this.docTypes[docType].filter(
+        word => filter && word[filter] || ! filter && true)
+      .filter(word => field && word[field]
+        && word[field].toString().search(new RegExp(keyword, "i")) != -1
+        || (word['name']
+        && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
+        || (word.code && word.code.toString().search(keyword) != -1))
       .sort(this.formatService.compare)
       .slice(start, end);
       console.log(docs)
@@ -188,8 +179,6 @@ export class PouchdbService {
 
   getDoc(doc_id) {
     return new Promise((resolve, reject)=>{
-      // console.log("doc:id", doc_id );
-      // console.log("typeof", typeof doc_id);
       if (typeof doc_id === "string"){
         resolve(this.db.get(doc_id));
       } else {
@@ -207,38 +196,15 @@ export class PouchdbService {
     return new Promise((resolve, reject)=>{
       let returns = [];
       let processedList = [];
-      // let docTypeDict = {};
-      // list.forEach((item: any)=>{
-      //   if (docTypeDict[item.docType]){
-      //     docTypeDict[item.docType].push(item);
-      //   }
-      //   else {
-      //     docTypeDict[item.docType] = [item];
-      //   }
-      // })
-      // this.db.get("config.profile").then((config: any)=>{
-        // let sequenceDict = {}
-        // Object.keys(docTypeDict).forEach(key=>{
-        //   let docTypeSequence = key.replace("-", "_")+"_sequence";
-        //   sequenceDict[key] = parseFloat(config[docTypeSequence]);
-        //   config[docTypeSequence] = parseFloat(config[docTypeSequence]) + docTypeDict[key].length;
-        // })
-        // this.db.put(config);
-
         list.forEach((item: any)=>{
-          // let random: string = Math.random().toString(32).slice(11);
-          // item.code = this.formatService.string_pad(4, sequenceDict[item.docType], "right", "0")+"-"+random;
-          // item.code = this.getUUID();
-          if (!item._id){
-            item._id = item.docType+"."+this.getUUID();
-          }
-          // sequenceDict[item.docType] += 1;
-          if (item._return){
-            delete item._return;
-            returns.push(item);
-          }
-          processedList.push(item);
-        // })
+        if (!item._id){
+          item._id = item.docType+"."+this.getUUID();
+        }
+        if (item._return){
+          delete item._return;
+          returns.push(item);
+        }
+        processedList.push(item);
         this.db.bulkDocs(processedList).then(createdDocs=>{
           resolve(returns);
         })
@@ -248,20 +214,7 @@ export class PouchdbService {
 
   updateDocList(list){
     return new Promise((resolve, reject)=>{
-      // let returns = [];
-      // let processedList = [];
-      // let docTypeDict = {};
-      // list.forEach((item: any)=>{
-      //   if (docTypeDict[item.docType]){
-      //     docTypeDict[item.docType].push(item);
-      //   }
-      //   else {
-      //     docTypeDict[item.docType] = [item];
-      //   }
-      // })
-      console.log("list", list);
       this.db.bulkDocs(list).then(createdDocs=>{
-        console.log("createdDocs", createdDocs);
         resolve(createdDocs);
       })
     })
@@ -272,22 +225,8 @@ export class PouchdbService {
   }
 
   createDoc(data){
-    // let random: string = Math.random().toString(36).slice(11);
-    console.log("data", data);
     if (!data['_id']){
-      // let code = this.getUUID();
-      // if (!data['code']){
-      //   code = this.getUUID();
-      // } else {
-      //   code = data['code'];
-      // }
-      // if (!data['code']){
-      //   data['code'] = code;
-      // }
       data['_id'] = data['docType']+"."+this.getUUID();;
-      this.sequences[data.docType] += 1;
-    } else {
-      console.log("data com id", data);
     }
     return new Promise((resolve, reject)=>{
       this.db.put(data).then(res=>{
@@ -300,13 +239,6 @@ export class PouchdbService {
 
   updateDoc(doc){
     return new Promise((resolve, reject)=>{
-      // delete doc._rev;
-      // this.db.put(doc).then(data=>{
-      //   console.log('dadadada', data);
-      //   resolve(data);
-      // }).catch(function (err) {
-      //   console.log("arrrrr", err)
-      // });
       this.db.upsert(doc._id, function () {
         return doc;
       }).then(function (res) {
@@ -325,7 +257,9 @@ export class PouchdbService {
   getRelated(docType, related, id): Promise<any> {
     return new Promise((resolve, reject)=>{
       this.getDocType(docType).then((docList: any[])=>{
-        resolve(docList.filter(word => word[related] == id).sort(this.formatService.compare));
+        resolve(docList.filter(
+          word => word[related] == id).sort(this.formatService.compare)
+        );
       })
     });
   }
@@ -338,13 +272,11 @@ export class PouchdbService {
           startkey: docType+".",
           endkey: docType+".z",
         }).then((res) => {
-          // console.log("getDocType", res);
           let docs = [];
           res.rows.forEach(row=>{
             docs.push(row.doc);
           })
           resolve(docs);
-
         }).catch((err) => {
           reject(err);
         })
@@ -353,7 +285,6 @@ export class PouchdbService {
 
   getList(list) {
     return new Promise((resolve, reject)=>{
-      // let self = this;
         this.db.allDocs({
           include_docs : true,
           keys: list
@@ -367,7 +298,6 @@ export class PouchdbService {
 
   getIntervalList(startkey, endkey) {
     return new Promise((resolve, reject)=>{
-      // let self = this;
         this.db.allDocs({
           include_docs : true,
           startkey: startkey,
@@ -389,20 +319,27 @@ export class PouchdbService {
         end = undefined;
       }
       if (this.docTypes[docType]){
-        let docs = this.docTypes[docType].filter(word => filter && word[filter] || ! filter && true)
-        .filter(word => field && word[field] && word[field].toString().search(new RegExp(keyword, "i")) != -1
-        || (word['name'] && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
-        || (word.code && word.code.toString().search(keyword) != -1))
+        let docs = this.docTypes[docType].filter(
+          word => filter && word[filter] || ! filter && true)
+        .filter(
+          word => field && word[field]
+          && word[field].toString().search(new RegExp(keyword, "i")) != -1
+          || (word['name']
+          && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
+          || (word.code && word.code.toString().search(keyword) != -1))
         .sort(this.formatService.compare)
         .slice(start, end);
         resolve(docs);
       } else {
         this.getDocType(docType).then((docList: any[])=>{
           this.docTypes[docType] = docList;
-          let docs = this.docTypes[docType].filter(word => filter && word[filter] || ! filter && true)
-          .filter(word => field && word[field] && word[field].toString().search(new RegExp(keyword, "i")) != -1
-          || (word['name'] && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
-          || (word.code && word.code.toString().search(keyword) != -1))
+          let docs = this.docTypes[docType].filter(
+            word => filter && word[filter] || ! filter && true)
+          .filter(word => field && word[field]
+            && word[field].toString().search(new RegExp(keyword, "i")) != -1
+            || (word['name']
+            && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
+            || (word.code && word.code.toString().search(keyword) != -1))
           .sort(this.formatService.compare)
           .slice(start, end);
           resolve(docs);
@@ -420,8 +357,10 @@ export class PouchdbService {
         end = undefined;
       }
       if (this.docTypes[docType]){
-        let docs = this.docTypes[docType].filter(word => field && word[field] == field_value)
-        .filter(word => (word['name'] && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
+        let docs = this.docTypes[docType].filter(
+          word => field && word[field] == field_value)
+        .filter(word => (word['name']
+        && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
         || (word.code && word.code.toString().search(keyword) != -1))
         .sort(this.formatService.compare)
         .slice(start, end);
@@ -429,8 +368,10 @@ export class PouchdbService {
       } else {
         this.getDocType(docType).then((docList: any[])=>{
           this.docTypes[docType] = docList;
-          let docs = this.docTypes[docType].filter(word => field && word[field] == field_value)
-          .filter(word => (word['name'] && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
+          let docs = this.docTypes[docType].filter(
+            word => field && word[field] == field_value)
+          .filter(word => (word['name']
+          && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
           || (word.code && word.code.toString().search(keyword) != -1))
           .sort(this.formatService.compare)
           .slice(start, end);
@@ -451,12 +392,14 @@ export class PouchdbService {
   }
 
   searchDocTypeAllData(docType, keyword="", page=null, field=null, filter=null) {
-    // console.log("dadossss", docType, keyword, page, field, filter);
     return new Promise((resolve, reject)=>{
       this.getDocType(docType).then((docList: any[])=>{
-        let docs = docList.filter(word => filter && word[filter] || ! filter && true)
-        .filter(word => field && word[field] && word[field].toString().search(new RegExp(keyword, "i")) != -1
-        || (word['name'] && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
+        let docs = docList.filter(
+          word => filter && word[filter] || ! filter && true)
+        .filter(word => field && word[field]
+          && word[field].toString().search(new RegExp(keyword, "i")) != -1
+        || (word['name']
+        && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
         || (word.code && word.code.toString().search(keyword) != -1))
         .sort(this.formatService.compare);
         resolve(docs);
@@ -464,13 +407,10 @@ export class PouchdbService {
     });
   }
 
-
-
   handleChangeData(change){
     let docType=change.id.split('.')[0];
     let docTypesChangedDoc = null;
     let docTypesChangedIndex = null;
-
     if (this.docTypes[docType]){
       this.docTypes[docType].forEach((doc, index) => {
         if(doc._id === change.id){
@@ -479,7 +419,6 @@ export class PouchdbService {
         }
       });
     }
-
     let self = this;
     this.zone.run(() => {
       //A document was deleted
@@ -509,14 +448,12 @@ export class PouchdbService {
   localHandleChangeData(list, change){
     let changedDoc = null;
     let changedIndex = null;
-
     list.forEach((doc, index) => {
       if(doc._id === change.id){
         changedDoc = doc;
         changedIndex = index;
       }
     });
-
     //A document was deleted
     if(change.deleted){
       list.splice(changedIndex, 1);
