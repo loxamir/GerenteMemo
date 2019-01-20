@@ -1268,11 +1268,26 @@ export class SalePage implements OnInit {
         console.log("teste element", div);
        html2canvas(div, options).then(canvas => {
          console.log("canvas", canvas);
-        let a = document.createElement('a');
-        document.body.appendChild(a);
-        a.download = "Venta-"+this.saleForm.value.code+".png";
-        a.href =  canvas.toDataURL();
-        a.click();
+        // let a = document.createElement('a');
+        // document.body.appendChild(a);
+        // a.download = "Venta-"+this.saleForm.value.code+".png";
+        // a.href =  canvas.toDataURL();
+        // a.click();
+
+
+        var contentType = "image/png";
+        //console.log("share sucess");
+        // if cordova.file is not available use instead :
+        // var folderpath = "file:///storage/emulated/0/Download/";
+        // var folderpath = cordova.file.externalRootDirectory + "Download/"; //you can select other folders
+        //console.log("folderpath", folderpath);
+        // this.formatService.savebase64AsPDF(
+        // canvas.toDataURL(), "Presupuesto.png", canvas, contentType);
+        this.socialSharing.share(
+          "Presupuesto alcanza "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+          "Presupuesto "+code,
+          canvas.toDataURL()
+        )
       });
 
 
