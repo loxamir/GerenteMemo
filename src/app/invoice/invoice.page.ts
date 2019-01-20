@@ -831,7 +831,7 @@ export class InvoicePage implements OnInit {
                   console.log("recomputeValues");
                   this.recomputeValues();
                   console.log("formatService");
-                  // this.printAndroid();
+                  this.printAndroid();
                   this.formatService.print_file(this.invoiceForm.value);
                   this.justSave();
                   // this.navCtrl.navigateBack();
@@ -842,7 +842,7 @@ export class InvoicePage implements OnInit {
                   state: 'RECEIVED',
                 });
                 this.recomputeValues();
-                // this.printAndroid();
+                this.printAndroid();
                 this.formatService.print_file(this.invoiceForm.value);
                 this.justSave();
                 // this.navCtrl.navigateBack();
@@ -880,7 +880,6 @@ export class InvoicePage implements OnInit {
                 state: 'RECEIVED',
               });
               this.recomputeValues();
-              // this.printAndroid();
               this.justSave();
               // this.navCtrl.navigateBack();
             }
@@ -1277,58 +1276,54 @@ export class InvoicePage implements OnInit {
                  result += '<div class="space"></div>';
                }
              }
-             console.log("html template", result);
-
-             // const toNodes = html =>
-             // new DOMParser().parseFromString(html, 'text/html').body.childNodes
-
-             let html = result;
-              let fragmentFromString = function (strHTML) {
-                return document.createRange().createContextualFragment(strHTML);
-              }
-              let fragment = fragmentFromString(html);
-              // document.body.appendChild(fragment);
-
-             const div = document.getElementById("htmltoimage");
-             // div.html(fragment);
-             div.innerHTML = html;
-             const hoptions = {background: "white", height: div.clientHeight, width: div.clientWidth};
-
-             html2canvas(div, hoptions).then((canvas) => {
-               // let a = document.createElement('a');
-               // document.body.appendChild(a);
-               // a.download = "test.png";
-               // a.href =  canvas.toDataURL();
-               // a.click();
-
-                 //Initialize JSPDF
-                 let doc = new jsPDF("p", "mm", "a4");
-                 //Converting canvas to Image
-                 let imgData = canvas.toDataURL("image/PNG");
-                 //Add image Canvas to PDF
-                 doc.addImage(imgData, 'PNG', 20, 20);
-
-                 let pdfOutput = doc.output();
-                 // using ArrayBuffer will allow you to put image inside PDF
-                 let buffer = new ArrayBuffer(pdfOutput.length);
-                 let array = new Uint8Array(buffer);
-                 for (let i = 0; i < pdfOutput.length; i++) {
-                     array[i] = pdfOutput.charCodeAt(i);
-                 }
-
-                 //Name of pdf
-                 const fileName = "example.pdf";
-
-                 // Make file
-                 doc.save(fileName);
-
-             });
-
-             // this.printer.print(result, options).then(onSuccess => {
-             //   //console.log("onSuccess2", onSuccess);
-             // }, onError => {
-             //   //console.log("onError2", onError);
+             // console.log("html template", result);
+             // let html = result;
+             //  let fragmentFromString = function (strHTML) {
+             //    return document.createRange().createContextualFragment(strHTML);
+             //  }
+             //  let fragment = fragmentFromString(html);
+             //  // document.body.appendChild(fragment);
+             //
+             // const div = document.getElementById("htmltoimage");
+             // // div.html(fragment);
+             // div.innerHTML = html;
+             // const hoptions = {background: "white", height: div.clientHeight, width: div.clientWidth};
+             //
+             // html2canvas(div, hoptions).then((canvas) => {
+             //   // let a = document.createElement('a');
+             //   // document.body.appendChild(a);
+             //   // a.download = "test.png";
+             //   // a.href =  canvas.toDataURL();
+             //   // a.click();
+             //
+             //     //Initialize JSPDF
+             //     let doc = new jsPDF("p", "mm", "a4");
+             //     //Converting canvas to Image
+             //     let imgData = canvas.toDataURL("image/PNG");
+             //     //Add image Canvas to PDF
+             //     doc.addImage(imgData, 'PNG', 20, 20);
+             //
+             //     let pdfOutput = doc.output();
+             //     // using ArrayBuffer will allow you to put image inside PDF
+             //     let buffer = new ArrayBuffer(pdfOutput.length);
+             //     let array = new Uint8Array(buffer);
+             //     for (let i = 0; i < pdfOutput.length; i++) {
+             //         array[i] = pdfOutput.charCodeAt(i);
+             //     }
+             //
+             //     //Name of pdf
+             //     const fileName = "example.pdf";
+             //
+             //     // Make file
+             //     doc.save(fileName);
+             //
              // });
+
+             this.printer.print(result, options).then(onSuccess => {
+               console.log("onPrintSuccess2", onSuccess);
+             }, onError => {
+               console.log("onPrintError2", onError);
+             });
            //})
       });
     }
