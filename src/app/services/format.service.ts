@@ -497,7 +497,7 @@ export class FormatService {
                   // console.log(order);
                   let amount_in_word_line = this.NumeroALetras(order.total, 'PYG');
                   let amount_tax = iva_05 + iva_10;
-                  let invoice = eval(dotmatrix_model.content).replace("false", "");
+                  let invoice = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a"+eval(dotmatrix_model.content).replace("false", "");
                   // console.log("invoice", invoice);
                   var blob = new Blob([invoice], {type: "text/plain;charset=utf-8"});
                   saveAs(blob, prefix+order.code+extension);
