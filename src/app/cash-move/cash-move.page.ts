@@ -86,7 +86,7 @@ export class CashMovePage implements OnInit {
     this.select =  this.route.snapshot.paramMap.get('select');
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
-    this.transfer = this.route.snapshot.paramMap.get('transfer');;
+    this.transfer = this.route.snapshot.paramMap.get('transfer') == 'true';
     // this.default_amount = this.default_amount');
     // this.default_name = this.default_name');
     this.today = new Date();
@@ -143,10 +143,10 @@ export class CashMovePage implements OnInit {
       // console.log("from cash");
       this.from_cash = true;
     }
-    // if (this.transfer){
-    //   // console.log("from cash");
-    //   this.transfer = true;
-    // }
+    if (this.transfer){
+      // console.log("from cash");
+      this.transfer = true;
+    }
 
     if (this._id){
       this.cashMoveService.getCashMove(this._id).then((data) => {
