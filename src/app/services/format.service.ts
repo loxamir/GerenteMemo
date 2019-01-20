@@ -358,8 +358,9 @@ export class FormatService {
 
 
 
-  print_file(order) {
+  print_file(order, dotmatrix_model) {
     console.log("order", order);
+    console.log("dotmatrix_model", dotmatrix_model);
               // let order = '123';
               // order._printed = true;
               // var months = new Array();
@@ -418,29 +419,30 @@ export class FormatService {
               let name="123"
                   var prefix = "factura_";
                   var extension = ".prt";
-                  var dotmatrix_model = {
-                    qty_lines: 20,
-                    line: `self.string_pad(5,"")+self.string_pad(10,parseFloat(line.quantity).toFixed(0), "right")+" "+self.string_pad(67,line.description.substring(0,67))+" "+self.string_pad(8,parseFloat(line.price).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_00).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_05).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_10).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.breakLine(1)`+'\n',
-                    content: `
-self.breakLine(4)+
-self.string_pad(125,"")+self.string_pad(15,order.code)+
-self.breakLine(4)+
-self.string_pad(20,'')+self.string_pad(2,day)+" de "+self.string_pad(2,month)+" de "+self.string_pad(90,year)+" "+self.string_pad(8,condicion)+
-self.breakLine(2)+
-self.string_pad(20,'')+self.string_pad(105,partner_name)+" "+self.string_pad(10,ruc)+
-self.breakLine(1)+
-self.string_pad(20,'')+self.string_pad(53,street)+" "+self.string_pad(15,phone)+
-self.breakLine(3)+
-lines+
-self.string_pad(93,'')+self.string_pad(15,subtotal_00, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(14,subtotal_05, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(14,subtotal_10, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
-self.breakLine(3)+
-self.string_pad(130,'')+self.string_pad(10,gross.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
-self.breakLine(1)+
-self.string_pad(5,'')+self.string_pad(120,amount_in_word_line)+
-self.breakLine(1)+
-self.string_pad(55,'')+self.string_pad(20,iva_05.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(10,iva_10.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(24,'')+self.string_pad(10,amount_tax.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
-self.breakLine(7)`
-                  }
+
+//                   var dotmatrix_model = {
+//                     qty_lines: 20,
+//                     line: `self.string_pad(5,"")+self.string_pad(10,parseFloat(line.quantity).toFixed(0), "right")+" "+self.string_pad(67,line.description.substring(0,67))+" "+self.string_pad(8,parseFloat(line.price).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_00).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_05).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_10).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.breakLine(1)`+'\n',
+//                     content: `
+// self.breakLine(4)+
+// self.string_pad(125,"")+self.string_pad(15,order.code)+
+// self.breakLine(4)+
+// self.string_pad(20,'')+self.string_pad(2,day)+" de "+self.string_pad(2,month)+" de "+self.string_pad(90,year)+" "+self.string_pad(8,condicion)+
+// self.breakLine(2)+
+// self.string_pad(20,'')+self.string_pad(105,partner_name)+" "+self.string_pad(10,ruc)+
+// self.breakLine(1)+
+// self.string_pad(20,'')+self.string_pad(53,street)+" "+self.string_pad(15,phone)+
+// self.breakLine(3)+
+// lines+
+// self.string_pad(93,'')+self.string_pad(15,subtotal_00, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(14,subtotal_05, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(14,subtotal_10, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
+// self.breakLine(3)+
+// self.string_pad(130,'')+self.string_pad(10,gross.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
+// self.breakLine(1)+
+// self.string_pad(5,'')+self.string_pad(120,amount_in_word_line)+
+// self.breakLine(1)+
+// self.string_pad(55,'')+self.string_pad(20,iva_05.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(10,iva_10.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(24,'')+self.string_pad(10,amount_tax.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
+// self.breakLine(7)`
+//                   }
                   var partner_name = order.contact_name;
                   var partner = order.contact;
                   var ruc = partner.document;
@@ -477,7 +479,9 @@ self.breakLine(7)`
                         subtotal_10 = subtotal_10 + line.quantity*line.price;
                         iva_10 = iva_10 + line.quantity*line.price/11;
                     }
-                    let line_eval = eval(dotmatrix_model.line)
+                    console.log("line", dotmatrix_model.line);
+                    let line_eval = eval(dotmatrix_model.line.toString())
+                    console.log("line_eval", line_eval);
                     lines = lines+line_eval;
                     lines_count = lines_count + 1;
                   });

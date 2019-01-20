@@ -822,7 +822,7 @@ export class InvoicePage implements OnInit {
               console.log("imprimiv");
               if (this.invoiceForm.value.type == 'out'){
                 console.log("cliente");
-                this.configService.setNextSequence('invoice', data.code).then(dados => {
+                this.configService.setNextSequence('invoice', data.code).then(async dados => {
                   // console.log("imprimiv");
                   console.log("dados", dados);
                   this.invoiceForm.patchValue({
@@ -835,7 +835,9 @@ export class InvoicePage implements OnInit {
                   if (this.platform.is('cordova')){
                     this.printAndroid();
                   } else {
-                    this.formatService.print_file(this.invoiceForm.value);
+                    let dotmatrix_model:any = await this.pouchdbService.getDoc('config.invoice');
+                    console.log("dotmatrix_model", dotmatrix_model);
+                    this.formatService.print_file(this.invoiceForm.value, dotmatrix_model);
                   }
                   this.justSave();
                   // this.navCtrl.navigateBack();
