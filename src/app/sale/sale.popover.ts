@@ -5,7 +5,6 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
   template: `
   <ion-list>
     <ion-item (click)="duplicate()">Duplicar</ion-item>
-    <ion-item (click)="share()">Compartir</ion-item>
     <ion-item (click)="cancel()">Cancelar</ion-item>
   </ion-list>
   `
@@ -38,11 +37,6 @@ export class SalePopover {
       toast.present();
       this.pop.dismiss();
       // this.viewCtrl.dismiss();
-    }
-
-    share(){
-      this.navParams.data.doc.share();
-      this.pop.dismiss();
     }
 
     cancel(){

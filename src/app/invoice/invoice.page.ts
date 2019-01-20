@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { NavController,  LoadingController, AlertController, Events, ToastController, ModalController, PopoverController } from '@ionic/angular';
+import { NavController, Platform, LoadingController, AlertController, Events, ToastController, ModalController, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { Printer, PrintOptions } from '@ionic-native/printer';
@@ -105,6 +105,7 @@ export class InvoicePage implements OnInit {
       public translate: TranslateService,
       public languageService: LanguageService,
       public modalCtrl: ModalController,
+      public platform: Platform,
       // public imagePicker: ImagePicker,
       // public cropService: Crop,
       // public platform: Platform,
@@ -831,8 +832,11 @@ export class InvoicePage implements OnInit {
                   console.log("recomputeValues");
                   this.recomputeValues();
                   console.log("formatService");
-                  this.printAndroid();
-                  this.formatService.print_file(this.invoiceForm.value);
+                  if (this.platform.is('cordova')){
+                    this.printAndroid();
+                  } else {
+                    this.formatService.print_file(this.invoiceForm.value);
+                  }
                   this.justSave();
                   // this.navCtrl.navigateBack();
                 });
@@ -842,8 +846,6 @@ export class InvoicePage implements OnInit {
                   state: 'RECEIVED',
                 });
                 this.recomputeValues();
-                this.printAndroid();
-                this.formatService.print_file(this.invoiceForm.value);
                 this.justSave();
                 // this.navCtrl.navigateBack();
               }

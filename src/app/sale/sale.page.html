@@ -80,19 +80,27 @@
       </ion-item>
     </ion-row>
     <ion-row>
-      <ion-col size="6" *ngIf="saleForm.value.state != 'QUOTATION' && saleForm.value.amount_unInvoiced == saleForm.value.total">
-        <ion-button class="button-100" (click)="addInvoice()">Crear Factura</ion-button>
+      <ion-col *ngIf="saleForm.value.state != 'QUOTATION' && saleForm.value.amount_unInvoiced == saleForm.value.total">
+        <ion-button class="button-100" (click)="addInvoice()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>Crear Factura</ion-button>
       </ion-col>
-      <ion-col size="6" *ngIf="saleForm.value.state == 'CONFIRMED'">
-        <ion-button class="button-100" (click)="beforeAddPayment()">Registrar Cobro</ion-button>
-      </ion-col>
-      <ion-col *ngIf="saleForm.value.state != 'QUOTATION'">
-        <ion-button class="button-100" color="success" (click)="print()">Imprimir Venta</ion-button>
-      </ion-col>
-      <ion-col size="12" *ngIf="saleForm.value.state == 'QUOTATION'">
-        <ion-button class="button-100" (click)="addItem()">+ Agregar Item</ion-button>
+      <ion-col *ngIf="saleForm.value.state == 'CONFIRMED'">
+        <ion-button class="button-100" (click)="beforeAddPayment()"><ion-icon name="cash" style="margin-right:10px;"></ion-icon>Registrar Cobro</ion-button>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col *ngIf="saleForm.value.items.length > 0">
+        <ion-button class="button-100" color="success" (click)="print()"><ion-icon name="print" style="margin-right:10px;"></ion-icon>Imprimir</ion-button>
+      </ion-col>
+      <ion-col *ngIf="saleForm.value.items.length > 0">
+        <ion-button class="button-100" color="success" (click)="share()"><ion-icon name="share" style="margin-right:10px;"></ion-icon>Compartir</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" *ngIf="saleForm.value.state == 'QUOTATION'">
+        <ion-button class="button-100" (click)="addItem()"><ion-icon name="add" style="margin-right:10px;"></ion-icon> Agregar Item</ion-button>
+      </ion-col>
+    </ion-row>
+
 
     <ion-list no-lines *ngIf="saleForm.value.invoices.length">
       <section>
@@ -100,22 +108,15 @@
       <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.invoices">
         <ion-item (click)="openInvoice(item)"  class="internal-item" style="background-color: #ddd;">
           <ion-card class="list-card">
-          <ion-row style="padding-top:10px; padding-bottom:10px;">
+          <ion-row style="padding-top:10px; padding-bottom:10px;height:50px;">
           <ion-col >
-            <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
             <h4 class="field-label">{{'NUMBER' | translate}}</h4>
-            <h4 class="field-value">{{item.code}}</h4>
+            <h4 class="field-value">{{item.number || item.code}}</h4>
           </ion-col>
           <ion-col >
-            <!-- <h2 class="item-title">Fatura: {{item.number}}</h2> -->
             <h4 class="field-label">{{'TAX' | translate}}</h4>
             <h4 class="field-value">$ {{item.tax|number:'1.0'}}</h4>
           </ion-col>
-          <ion-button class="relation-button"
-          [ngClass]="{following: !item.inverse_relation}"
-          ion-button clear icon-only item-right>
-            <ion-icon *ngIf="item.state=='CONFIRMED'" name="print"></ion-icon>
-          </ion-button>
           </ion-row>
           </ion-card>
         </ion-item>
@@ -130,7 +131,7 @@
       <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.payments">
         <ion-item  class="internal-item" (click)="openPayment(item)" style="background-color: #ddd;">
           <ion-card class="list-card">
-          <ion-row style="padding-top:10px; padding-bottom:10px;">
+          <ion-row style="padding-top:10px; padding-bottom:10px;height:50px;">
           <ion-col >
             <h4 class="field-label">{{'Fecha' | translate}}</h4>
             <h4 class="field-value">{{item.date|date: 'dd/MM/yyyy'}}</h4>
@@ -139,11 +140,11 @@
             <h4 class="field-label">{{'AMOUNT' | translate}}</h4>
             <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
           </ion-col>
-          <ion-button class="relation-button"
+          <!-- <ion-button class="relation-button"
           [ngClass]="{following: !item.inverse_relation}"
           ion-button clear icon-only item-right>
             <ion-icon *ngIf="item.state=='CONFIRMED'" name="print"></ion-icon>
-          </ion-button>
+          </ion-button> -->
           </ion-row>
           </ion-card>
         </ion-item>
