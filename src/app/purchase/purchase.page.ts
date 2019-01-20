@@ -183,13 +183,14 @@ export class PurchasePage implements OnInit {
           })
           this.recomputeValues();
           this.purchaseForm.markAsDirty();
-          let toast = await this.toastCtrl.create({
+          // let toast = await this.toastCtrl.create({
           // message: "entra ",
           // duration: 1000
-          });
-          toast.present();
+          // });
+          // toast.present();
           this.avoidAlertMessage = false;
           this.events.unsubscribe('create-product');
+          this.barcode = "";
         })
         console.log("barcode", barcode);
         let profileModal = await this.modalCtrl.create({
