@@ -68,7 +68,10 @@ export class AccountListPage implements OnInit {
 
   ngOnInit() {
     //this.loading.present();
-    if (this.show_cash_in){
+    if (this.transfer){
+      this.field = null;
+      this.filter = "transfer";
+    } else if (this.show_cash_in){
       this.field = null;
       this.filter = "cash_in";
     } else if (this.show_cash_out){
@@ -81,10 +84,6 @@ export class AccountListPage implements OnInit {
       this.field = null;
       this.filter = "payable";
     }
-    if (this.transfer){
-      this.field = null;
-      this.filter = "transfer";
-    }
     this.setFilteredItems();
   }
 
@@ -93,11 +92,6 @@ export class AccountListPage implements OnInit {
       this.getAccounts(
         this.searchTerm, this.page, this.field, this.filter
       ).then((accounts: any[]) => {
-        if (this.filter == 'transfer'){
-          accounts = accounts.filter(
-            word=> word._id != this.route.snapshot.paramMap.get(
-              'accountFrom')['_id']);
-        }
         accounts.forEach(account => {
           this.accounts.push(account);
         });
@@ -112,11 +106,6 @@ export class AccountListPage implements OnInit {
     this.getAccounts(
       this.searchTerm, 0, this.field, this.filter
     ).then((accounts: any) => {
-      if (this.filter == 'transfer'){
-        accounts = accounts.filter(
-          word=> word._id != this.route.snapshot.paramMap.get(
-            'accountFrom')['_id']);
-      }
       this.accounts = accounts;
       this.page = 1;
       //this.loading.dismiss();
@@ -194,6 +183,7 @@ export class AccountListPage implements OnInit {
       this.pouchdbService.searchDocTypeData(
       'account', keyword, page, field, filter
     ).then((accounts: any[]) => {
+      console.log("filter", filter);
       // this.pouchdbService.searchDocTypeData('account', keyword, page=null, field='cash_in', filter=true).then((accounts: any[]) => {
       // this.pouchdbService.searchDocTypeData('account').then((accounts: any[]) => {
         console.log("real accounts", accounts);

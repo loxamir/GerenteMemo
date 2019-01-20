@@ -84,7 +84,7 @@ export class AccountPage implements OnInit {
     }
     else {
       this.navCtrl.navigateBack('/account-list');
-    } 
+    }
   }
 
   setLanguage(lang: LanguageModel){
@@ -147,6 +147,17 @@ export class AccountPage implements OnInit {
     //console.log("try create", account);
     let account = Object.assign({}, viewData);
     account.docType = 'account';
+    account['code'] = account['code'] || this.pouchdbService.getUUID();
+     // = code;
+    if (account.type == 'cash'){
+      account._id = "account.cash."+account.code;
+    }
+    else if (account.type == 'bank'){
+      account._id = "account.bank."+account.code;
+    }
+    else if (account.type == 'check'){
+      account._id = "account.check."+account.code;
+    }
     account.category_id = account.category && account.category._id || account.category_id;
     delete account.category;
     return this.pouchdbService.createDoc(account);

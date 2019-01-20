@@ -87,7 +87,7 @@ export class CashService {
       //   });
       // } else {
         // this.configService.getSequence('account').then((code) => {
-          let code = this.pouchdbService.getUUID();
+          let code = cash['code'] || this.pouchdbService.getUUID();
           cash['code'] = code;
           if (cash.type == 'cash'){
             cash._id = "account.cash."+cash.code;

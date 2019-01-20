@@ -55,8 +55,10 @@ export class ProductService {
     return new Promise((resolve, reject)=>{
       let product = Object.assign({}, viewData);
       product.docType = 'product';
-      product.price = parseFloat(product.price || 0);
-      product.cost = parseFloat(product.cost || 0);
+      product.price = product.price && parseFloat(product.price) || 0;
+      product.cost = product.cost && parseFloat(product.cost) || 0;
+      product.stock = product.stock && parseFloat(product.stock) || 0;
+      product.stock_min = product.stock_min && parseFloat(product.stock_min) || 0;
       product.category_id = product.category && product.category._id || product.category_id;
       product.category_name = product.category && product.category.name || product.category_name;
       delete product.category;
@@ -77,8 +79,10 @@ export class ProductService {
   updateProduct(viewData){
     let product = Object.assign({}, viewData);
     product.docType = 'product';
-    product.price = parseFloat(product.price || 0);
-    product.cost = parseFloat(product.cost || 0);
+    product.price = product.price && parseFloat(product.price) || 0;
+    product.cost = product.cost && parseFloat(product.cost) || 0;
+    product.stock = product.stock && parseFloat(product.stock) || 0;
+    product.stock_min = product.stock_min && parseFloat(product.stock_min) || 0;
     if (product.category){
       product.category_id = product.category._id;
     }
