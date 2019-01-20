@@ -61,7 +61,11 @@ export class AppComponent implements OnInit {
     this.platform.ready().then(() => {
       // this.translate.setDefaultLang('es');
       // this.translate.use('es');
-      this.statusBar.styleDefault();
+      // this.statusBar.styleDefault();
+      this.statusBar.show()
+      // this.statusBar.overlaysWebView(true);
+      this.statusBar.styleLightContent()
+      this.statusBar.backgroundColorByHexString('#1652a0');
       this.splashScreen.hide();
     });
   }
