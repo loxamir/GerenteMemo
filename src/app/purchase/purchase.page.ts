@@ -46,12 +46,12 @@ export class PurchasePage implements OnInit {
       this.timeStamp = event.timeStamp;
       //console.log("key", event.key);
       if(event.which === 13){ //ignore returns
-            //console.log("enter", this.barcode);
-            let toast = await this.toastCtrl.create({
+            console.log("enter", this.barcode);
+            // let toast = await this.toastCtrl.create({
             // message: "enter "+this.barcode,
             // duration: 1000
-            });
-            toast.present();
+            // });
+            // toast.present();
             let found = false;
             this.purchaseForm.value.items.forEach(item => {
               if (item.product.barcode == this.barcode){
@@ -197,6 +197,7 @@ export class PurchasePage implements OnInit {
           componentProps: {
             "barcode": barcode,
             "stock": 0,
+            "select": true,
             // "cost": 0,
             "type": "product"
           }

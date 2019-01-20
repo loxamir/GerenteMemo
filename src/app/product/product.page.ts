@@ -29,6 +29,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
   @ViewChild('cost') cost;
   @ViewChild('type') type;
   @ViewChild('stock') stock;
+  @ViewChild('barcode') barcode;
 
     productForm: FormGroup;
     loading: any;
@@ -69,6 +70,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       if (this.route.snapshot.paramMap.get('_id')){
         this.opened = true;
       }
+      this.barcode = this.route.snapshot.paramMap.get('barcode');
+      this.cost = this.route.snapshot.paramMap.get('cost');
+      this.stock = this.route.snapshot.paramMap.get('stock');
       // if (this.route.snapshot.paramMap.get('cost') == undefined){
       //   this.route.snapshot.paramMap.get('cost') = '';
       // }
@@ -102,12 +106,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         // image: new FormControl(''),
         price: new FormControl(null, Validators.required),
         category: new FormControl({}),
-        cost: new FormControl(this.route.snapshot.paramMap.get('cost')||null),
+        cost: new FormControl(this.cost||null),
         code: new FormControl(''),
-        barcode: new FormControl(this.route.snapshot.paramMap.get('barcode')),
+        barcode: new FormControl(this.barcode),
         tax: new FormControl(this.route.snapshot.paramMap.get('iva')||'iva10'),
         type: new FormControl(this.route.snapshot.paramMap.get('type')||'product'),
-        stock: new FormControl(this.route.snapshot.paramMap.get('stock')||null),
+        stock: new FormControl(this.stock||null),
         stock_min: new FormControl(this.route.snapshot.paramMap.get('stock_min')),
         note: new FormControl(''),
         date: new FormControl(new Date().toJSON()),

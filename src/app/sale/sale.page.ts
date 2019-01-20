@@ -55,11 +55,11 @@ export class SalePage implements OnInit {
       //console.log("key", event.key);
       if(event.which === 13){ //ignore returns
             console.log("enter", this.barcode);
-            let toast = await this.toastCtrl.create({
+            // let toast = await this.toastCtrl.create({
             // message: "enter "+this.barcode,
             // duration: 1000
-            });
-            toast.present();
+            // });
+            // toast.present();
             let found = false;
             this.saleForm.value.items.forEach(item => {
               if (item.product.barcode == this.barcode){
