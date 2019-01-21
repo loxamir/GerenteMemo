@@ -56,7 +56,10 @@ export class SaleReportPage implements OnInit {
   today: any;
   _id: string;
   avoidAlertMessage: boolean;
-
+  items_product_total;
+  items_margin;
+  items_quantity;
+  total;
   languages: Array<LanguageModel>;
 
   title: string = 'D3.js with Ionic 2!';
@@ -607,11 +610,21 @@ export class SaleReportPage implements OnInit {
 
   recomputeValues() {
     let total = 0;
+    let items_product_total = 0;
+    let items_margin = 0;
+    let items_quantity = 0;
     // console.log("this.reportSaleForm.value.items", this.reportSaleForm.value.items);
     this.reportSaleForm.value.items.forEach((item) => {
       // console.log("item", item);
       total += parseFloat(item.total);
+      items_product_total += 1;
+      items_margin += parseFloat(item.margin);
+      items_quantity += parseFloat(item.quantity);
     });
+    this.items_product_total = items_product_total;
+    this.items_margin = items_margin;
+    this.items_quantity = items_quantity;
+    this.total = total;
     this.reportSaleForm.patchValue({
       "total": total,
     });
