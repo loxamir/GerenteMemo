@@ -26,12 +26,12 @@ export class ContactService {
           resolve({doc: doc, contact: contact});
         });
       } else {
-        this.configService.getSequence('contact').then((code) => {
-          contact['code'] = code;
+        // this.configService.getSequence('contact').then((code) => {
+          // contact['code'] = code;
           this.pouchdbService.createDoc(contact).then(doc => {
             resolve({doc: doc, contact: contact});
           });
-        });
+        // });
       }
     });
   }

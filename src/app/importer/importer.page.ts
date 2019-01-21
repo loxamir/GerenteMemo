@@ -529,25 +529,25 @@ export class ImporterPage implements OnInit {
           promise2_ids.push(this.contactService.createContact(item));
         })
         Promise.all(promise2_ids).then(async contacts=>{
-          this.pouchdbService.getDoc('config.profile').then((config: any)=>{
-            // console.log("config", bigger_code, config.contact_sequence);
-            if (parseInt(config.contact_sequence) < (parseInt(bigger_code) + 1)){
-
-              // let code = data[docType+'_sequence'].toString();
-              //console.log("code", code);
-              bigger_code = bigger_code.toString();
-              let regex = /[0-9]+$/
-              let string_end = bigger_code.match(regex).index;
-              let number = bigger_code.match(regex)[0];
-              let next_number = parseFloat(number)+1;
-              let prefix = bigger_code.substr(0, string_end);
-              let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
-              let new_code = prefix+pad_number;
-              config.contact_sequence = new_code;
-              // console.log("config2", new_code, config.contact_sequence);
-              this.pouchdbService.updateDoc(config);
-            }
-          })
+          // this.pouchdbService.getDoc('config.profile').then((config: any)=>{
+          //   // console.log("config", bigger_code, config.contact_sequence);
+          //   if (parseInt(config.contact_sequence) < (parseInt(bigger_code) + 1)){
+          //
+          //     // let code = data[docType+'_sequence'].toString();
+          //     //console.log("code", code);
+          //     bigger_code = bigger_code.toString();
+          //     let regex = /[0-9]+$/
+          //     let string_end = bigger_code.match(regex).index;
+          //     let number = bigger_code.match(regex)[0];
+          //     let next_number = parseFloat(number)+1;
+          //     let prefix = bigger_code.substr(0, string_end);
+          //     let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
+          //     let new_code = prefix+pad_number;
+          //     config.contact_sequence = new_code;
+          //     // console.log("config2", new_code, config.contact_sequence);
+          //     this.pouchdbService.updateDoc(config);
+          //   }
+          // })
 
           this.loading.dismiss();
           this.navCtrl.navigateBack('/contact-list');
