@@ -446,8 +446,8 @@ export class ImporterPage implements OnInit {
     // this.csvData.forEach(doc=>{
     //   console.log("Doc", doc);
     // })f
-    this.loading.present();
     this.validate()
+    this.loading.present();
     // console.log("this.createList", this.createList);
     // var uniq = this.createList.reduce(function(a,b){
     //   if (a.indexOf(b) < 0 ) a.push(b);
@@ -705,11 +705,13 @@ export class ImporterPage implements OnInit {
          obj = [];
      let promise_ids = [];
      let docs = [];
-
+     let longth = arr[0].length
      for(var j = 0; j < arr.length; j++){
-       var items = arr[j];
-       docs.push(items);
-       promise_ids.push(this.pouchdbService.searchDocField('category', items[6]));
+       if (arr[j].length==longth){
+         var items = arr[j];
+         docs.push(items);
+         promise_ids.push(this.pouchdbService.searchDocField('category', items[6]));
+       }
      }
      console.log("Promisse_IDS BEFORE");
      Promise.all(promise_ids).then(categories=>{
