@@ -14,7 +14,7 @@
 
       <ion-item class="field-100">
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-        <ion-input type="text" formControlName="name"></ion-input>
+        <ion-input #name type="text" formControlName="name"></ion-input>
       </ion-item>
       <div class="validation-errors">
         <ng-container *ngFor="let validation of validation_messages.name">
@@ -23,21 +23,11 @@
           </div>
         </ng-container>
       </div>
-
-
-      <ion-item
-       no-padding
-       class="field-50">
-       <div class="field-many2one">
-         <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-         <h4 class="field-value-max">{{accountForm.value.currency && accountForm.value.currency.name || 'Selecionar'}}</h4>
-       </div>
-      </ion-item>
       <ion-item
        no-padding
        class="field-50">
         <ion-label position="floating">{{'Tipo' | translate}}</ion-label>
-        <ion-select formControlName="type"
+        <ion-select #type formControlName="type"
           cancelText="{{ 'CANCEL' | translate }}"
           interface="popover"
           okText="{{ 'OK' | translate }}">
@@ -51,12 +41,22 @@
           <ion-select-option value="other">Otro</ion-select-option>
         </ion-select>
       </ion-item>
+
+      <ion-item
+       no-padding
+       class="field-50">
+       <div class="field-many2one">
+         <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
+         <h4 class="field-value-max">{{accountForm.value.currency && accountForm.value.currency.name || 'Selecionar'}}</h4>
+       </div>
+      </ion-item>
+
       <ion-item
        *ngIf="accountForm.value.type=='bank'"
        no-padding
        class="field-100">
         <ion-label position="floating">{{'Banco' | translate}}</ion-label>
-        <ion-select formControlName="bank_name"
+        <ion-select #bank_name formControlName="bank_name"
 
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}"
@@ -78,7 +78,7 @@
       </ion-item>
       <ion-item class="field-50">
         <ion-label position="floating">{{'CODE' | translate}}</ion-label>
-        <ion-input type="text" formControlName="code" autocomplete='name'></ion-input>
+        <ion-input type="text" #code formControlName="code" autocomplete='name'></ion-input>
       </ion-item>
 
       <ion-item
@@ -138,5 +138,10 @@
   </ion-fab>
   <div style="height: 100px;">
   </div>
-
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
+    <ion-button (click)="goNextStep()"  class="next-button">
+      <ion-icon name="fastforward"> </ion-icon>
+      Proximo
+    </ion-button>
+  </ion-fab>
 </ion-content>
