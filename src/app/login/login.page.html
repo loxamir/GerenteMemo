@@ -40,6 +40,7 @@
   </div>
   <ion-row *ngIf="selected_user">
     <ion-col style="text-align: right;">
+      <h4>Usuario: {{ username }}</h4>
       <a style="font-size:15px;" (click)="logout()">Salir</a>
       <!-- <a style="font-size:15px;" (click)="showLogin()">Hacer Login</a> -->
     </ion-col>

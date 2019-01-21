@@ -31,6 +31,7 @@ export class LoginPage implements OnInit {
   show_create: boolean = false;
   selected_user: boolean = false;
   databaseList: [];
+  username: '';
 
 
   helps: any;
@@ -62,6 +63,7 @@ export class LoginPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this.storage.get("username").then((username)=>{
+      this.username = username;
       if (username){
         this.storage.get("password").then((password)=>{
           this.showDatabaseList(username, password);
