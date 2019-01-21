@@ -1058,6 +1058,398 @@ export class SalePage implements OnInit {
     });
     }
 
+//     presprint(){
+// --------------------------------
+// Òga Productos de Limpieza
+// De Romilde Pieske Schwertner
+// Fabricación de Jabones, Deter-
+// gentes y Preparados de Limpieza
+// Barrio Alejandrino a2 cuadras
+// de la UNE.
+// Santa Rita Alto Parana Paraguay
+// Tel: 0984 885 153
+// RUC: 7655276-4
+// --------------------------------
+// Timbrado Nº 13184735
+// Inicio Vigencia: 15/01/2019
+// Fin de Vigencia: 31/01/2020
+// Factura Nº 001-001-1234567
+// --------------------------------
+// Condición de Pago: Contado
+// Nombre: Aline Schwertner Pieske
+// C.I. o RUC: 5899939-6
+// Dirección: Santa Rita
+// --------------------------------
+// Codigo Descripción
+// Cant |  Precio  | Subtotal | IVA
+// --------------------------------
+// 0001  Limpia Porcelanato 5L
+//    5  11.035.000 55.175.000  10%
+// --------------------------------
+// 0002  Limpia Porcelanato 5L
+//    5  11.035.000 55.175.000  10%
+// --------------------------------
+// 0003  Limpia Porcelanato 5L
+//    5  11.035.000 55.175.000  10%
+// --------------------------------
+// 0004  Otro Producto con iva dis
+//    1      10.000      10.000  5%
+// --------------------------------
+// 0005  Otro Producto con iva dis
+//    1      10.000      10.000  0%
+// --------------------------------
+// 0006  Limpia Porcelanato 5L
+//   5  11.035.000 55.175.000  10%
+// --------------------------------
+// 0007  Limpia Porcelanato 5L
+//   5  11.035.000 55.175.000  10%
+// --------------------------------
+// 0008  Limpia Porcelanato 5L
+//   5  11.035.000 55.175.000  10%
+// --------------------------------
+// 0009  Otro Producto con iva dis
+//   1      10.000      10.000  5%
+// --------------------------------
+// 0010  Otro Producto con iva dis
+//   1      10.000      10.000  0%
+// --------------------------------
+// TOTAL                    195.000
+// Total Gavadas 10%: 	     175.000
+// Total Gavadas  5%: 	      10.000
+// Total Gavadas  0%:        10.000
+//
+// LIQUIDACIÓN DE IVA
+// Total Gavadas 10%: 	      15.909
+// Total Gavadas  5%: 	         476
+// TOTAL IVA:                16.385
+//
+// Original: Cliente
+// --------------------------------
+//     }
+
+    async preprint() {
+      //First via
+          let ticket = "--------------------------------\n";
+          ticket += "Oga Productos de Limpieza\n";
+          ticket += "De Romilde Pieske Schwertner\n";
+          ticket += "Fabricación de Jabones, Deter-\n";
+          ticket += "gentes y Preparados de Limpieza\n";
+          ticket += "Barrio Alejandrino a2 cuadras\n";
+          ticket += "de la UNE.\n";
+          ticket += "Santa Rita Alto Parana Paraguay\n";
+          ticket += "Tel: 0984 885 153\n";
+          ticket += "RUC: 7655276-4\n";
+          ticket += "--------------------------------\n";
+          ticket += "Timbrado Nº 13184735\n";
+          ticket += "Inicio Vigencia: 15/01/2019\n";
+          ticket += "Fin de Vigencia: 31/01/2020\n";
+          ticket += "Factura Nº 001-001-1234567\n";
+          ticket += "--------------------------------\n";
+          ticket += "Condición de Pago:\n";
+          ticket += "Nombre:\n";
+          ticket += "C.I. o RUC:\n";
+          ticket += "Dirección:\n";
+          ticket += "--------------------------------\n";
+          ticket += "Codigo Descripción\n";
+          ticket += "Cant |  Precio  | Subtotal | IVA\n";
+          ticket += "--------------------------------\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "--------------------------------\n";
+          ticket += "TOTAL\n";
+          ticket += "Total Gavadas 10%:\n";
+          ticket += "Total Gavadas  5%:\n";
+          ticket += "Total Gavadas  0%:\n";
+          ticket += "\n";
+          ticket += "LIQUIDACIÓN DE IVA\n";
+          ticket += "Total Gavadas 10%:\n";
+          ticket += "Total Gavadas  5%:\n";
+          ticket += "TOTAL IVA:\n";
+          ticket += "\n";
+          ticket += "Original: Cliente\n";
+          ticket += "--------------------------------\n";
+          // Second via
+          ticket += "--------------------------------\n";
+          ticket += "Oga Productos de Limpieza\n";
+          ticket += "De Romilde Pieske Schwertner\n";
+          ticket += "Fabricación de Jabones, Deter-\n";
+          ticket += "gentes y Preparados de Limpieza\n";
+          ticket += "Barrio Alejandrino a2 cuadras\n";
+          ticket += "de la UNE.\n";
+          ticket += "Santa Rita Alto Parana Paraguay\n";
+          ticket += "Tel: 0984 885 153\n";
+          ticket += "RUC: 7655276-4\n";
+          ticket += "--------------------------------\n";
+          ticket += "Timbrado Nº 13184735\n";
+          ticket += "Inicio Vigencia: 15/01/2019\n";
+          ticket += "Fin de Vigencia: 31/01/2020\n";
+          ticket += "Factura Nº 001-001-1234567\n";
+          ticket += "--------------------------------\n";
+          ticket += "Condición de Pago:\n";
+          ticket += "Nombre:\n";
+          ticket += "C.I. o RUC:\n";
+          ticket += "Dirección:\n";
+          ticket += "--------------------------------\n";
+          ticket += "Codigo Descripción\n";
+          ticket += "Cant |  Precio  | Subtotal | IVA\n";
+          ticket += "--------------------------------\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "--------------------------------\n";
+          ticket += "TOTAL\n";
+          ticket += "Total Gavadas 10%:\n";
+          ticket += "Total Gavadas  5%:\n";
+          ticket += "Total Gavadas  0%:\n";
+          ticket += "\n";
+          ticket += "LIQUIDACIÓN DE IVA\n";
+          ticket += "Total Gavadas 10%:\n";
+          ticket += "Total Gavadas  5%:\n";
+          ticket += "TOTAL IVA:\n";
+          ticket += "\n";
+          ticket += "Duplicado: Archivo Tributario\n";
+          ticket += "--------------------------------\n";
+          console.log("ticket", ticket);
+
+          // Print to bluetooth printer
+          let toast = await this.toastCtrl.create({
+          message: "Imprimiendo...",
+          duration: 3000
+        });
+        toast.present();
+        this.bluetoothSerial.isEnabled().then(res => {
+          this.bluetoothSerial.list().then((data)=> {
+            this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+              this.bluetoothSerial.isConnected().then(res => {
+                // |---- 32 characteres ----|
+                this.bluetoothSerial.write(ticket);
+                this.bluetoothSerial.disconnect();
+              }).catch(res => {
+                //console.log("res1", res);
+              });
+            },error=>{
+              //console.log("error", error);
+            });
+          })
+        }).catch(res => {
+          //console.log("res", res);
+        });
+  }
+
+  async posprint() {
+let ticket = "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "                   Contado\n";
+ticket += "        Aline Schwertner Pieske\n";
+ticket += "            5899939-6\n";
+ticket += "          Santa Rita\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "0001  Limpia Porcelanato 5L\n";
+ticket += "   5  11.035.000 55.175.000  10%\n";
+ticket += "--------------------------------\n";
+ticket += "0002  Limpia Porcelanato 5L\n";
+ticket += "   5  11.035.000 55.175.000  10%\n";
+ticket += "--------------------------------\n";
+ticket += "0003  Limpia Porcelanato 5L\n";
+ticket += "   5  11.035.000 55.175.000  10%\n";
+ticket += "--------------------------------\n";
+ticket += "0004  Otro Producto con iva dist\n";
+ticket += "   1      10.000      10.000  5%\n";
+ticket += "--------------------------------\n";
+ticket += "0005  Otro Producto con iva dist\n";
+ticket += "   1      10.000      10.000  0%\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "                         195.000\n";
+ticket += "                         175.000\n";
+ticket += "                          10.000\n";
+ticket += "                          10.000\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "                          15.909\n";
+ticket += "                             476\n";
+ticket += "                          16.385\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "                   Contado\n";
+ticket += "        Aline Schwertner Pieske\n";
+ticket += "            5899939-6\n";
+ticket += "          Santa Rita\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "0001  Limpia Porcelanato 5L\n";
+ticket += "   5  11.035.000 55.175.000  10%\n";
+ticket += "--------------------------------\n";
+ticket += "0002  Limpia Porcelanato 5L\n";
+ticket += "   5  11.035.000 55.175.000  10%\n";
+ticket += "--------------------------------\n";
+ticket += "0003  Limpia Porcelanato 5L\n";
+ticket += "   5  11.035.000 55.175.000  10%\n";
+ticket += "--------------------------------\n";
+ticket += "0004  Otro Producto con iva dist\n";
+ticket += "   1      10.000      10.000  5%\n";
+ticket += "--------------------------------\n";
+ticket += "0005  Otro Producto con iva dist\n";
+ticket += "   1      10.000      10.000  0%\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "                         195.000\n";
+ticket += "                         175.000\n";
+ticket += "                          10.000\n";
+ticket += "                          10.000\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "                          15.909\n";
+ticket += "                             476\n";
+ticket += "                          16.385\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+
+        console.log("ticket", ticket);
+
+        // Print to bluetooth printer
+        let toast = await this.toastCtrl.create({
+        message: "Imprimiendo...",
+        duration: 3000
+      });
+      toast.present();
+      this.bluetoothSerial.isEnabled().then(res => {
+        this.bluetoothSerial.list().then((data)=> {
+          this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+            this.bluetoothSerial.isConnected().then(res => {
+              // |---- 32 characteres ----|
+              this.bluetoothSerial.write(ticket);
+              this.bluetoothSerial.disconnect();
+            }).catch(res => {
+              //console.log("res1", res);
+            });
+          },error=>{
+            //console.log("error", error);
+          });
+        })
+      }).catch(res => {
+        //console.log("res", res);
+      });
+}
+
     print() {
       if (this.platform.is('cordova')){
         this.configService.getConfigDoc().then(async (data) => {
@@ -1151,10 +1543,7 @@ export class SalePage implements OnInit {
           ticket += "\n";
           ticket += "\n";
           ticket += "\n";
-
-
           console.log("ticket", ticket);
-
 
           // Print to bluetooth printer
           let toast = await this.toastCtrl.create({
@@ -1183,7 +1572,7 @@ export class SalePage implements OnInit {
     } else {
       this.share();
     }
-    }
+  }
 
     share() {
       this.configService.getConfigDoc().then((data) => {

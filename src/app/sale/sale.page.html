@@ -51,7 +51,16 @@
 </ion-header>
 
 <ion-content background="#ddd">
+
   <form [formGroup]="saleForm" (ngSubmit)="onSubmit(saleForm.value)">
+    <ion-row>
+      <ion-col>
+        <ion-button class="button-100" (click)="preprint()">Pre Impressão</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button class="button-100" (click)="posprint()">Impressão Factura</ion-button>
+      </ion-col>
+    </ion-row>
     <ion-row justify-content-center>
       <ion-item no-padding (click)="selectContact()" class="field-100">
         <h4 class="field-label">{{'CLIENT' | translate}}</h4>
