@@ -744,7 +744,7 @@ export class SaleReportPage implements OnInit {
         return (d.enabled) ? d.total : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase
       }));
       tooltip.select('.label').html(d.name); // set current label
-      tooltip.select('.count').html('$' + d.total); // set current count
+      tooltip.select('.count').html('$' + d.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")); // set current count
       tooltip.style('display', 'block'); // set display
     });
 
@@ -879,7 +879,7 @@ export class SaleReportPage implements OnInit {
       }));
       var percent = Math.round(1000 * d.data.total / total) / 10; // calculate percent
       tooltip.select('.label').html(d.data.name); // set current label
-      tooltip.select('.count').html('$' + d.data.total); // set current count
+      tooltip.select('.count').html('$' + d.data.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")); // set current count
       tooltip.select('.percent').html(percent + '%'); // set percent calculated above
       tooltip.style('display', 'block'); // set display
     });
