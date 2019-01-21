@@ -230,11 +230,6 @@ export class ConfigService {
           promise_ids.push(this.pouchdbService.getDoc(pouchData['travel_product_id']));
           index += 1;
         }
-        if (pouchData['input_product_id']){
-          input_product_id = true;
-          promise_ids.push(this.pouchdbService.getDoc(pouchData['input_product_id']));
-          index += 1;
-        }
         console.log("Passed", pouchData);
         if (pouchData['warehouse_id']){
           warehouse_id = true;
@@ -263,12 +258,9 @@ export class ConfigService {
           if (travel_product_id){
             pouchData['travel_product'] = promise_data[5];
           }
-          if (input_product_id){
-            pouchData['input_product'] = promise_data[6];
-          }
           if (warehouse_id){
-            console.log("promise_data", promise_data[7])
-            pouchData['warehouse'] = promise_data[7];
+            console.log("promise_data", promise_data)
+            pouchData['warehouse'] = promise_data[6];
           }
           // pouchData['image'] = promise_data[8];
           resolve(pouchData);
