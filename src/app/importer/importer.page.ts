@@ -442,12 +442,12 @@ export class ImporterPage implements OnInit {
     }
   }
 
-  import(){
+  async import(){
     // this.csvData.forEach(doc=>{
     //   console.log("Doc", doc);
     // })f
     this.validate()
-    this.loading.present();
+    await this.loading.present();
     // console.log("this.createList", this.createList);
     // var uniq = this.createList.reduce(function(a,b){
     //   if (a.indexOf(b) < 0 ) a.push(b);
@@ -705,15 +705,13 @@ export class ImporterPage implements OnInit {
          obj = [];
      let promise_ids = [];
      let docs = [];
-     let longth = arr[0].length
      for(var j = 0; j < arr.length; j++){
-       if (arr[j].length==longth){
+       if (arr[j].length==arr[0].length){
          var items = arr[j];
          docs.push(items);
          promise_ids.push(this.pouchdbService.searchDocField('category', items[6]));
        }
      }
-     console.log("Promisse_IDS BEFORE");
      Promise.all(promise_ids).then(categories=>{
        docs.forEach((doc, index)=>{
          let value = categories[index];
@@ -751,8 +749,8 @@ export class ImporterPage implements OnInit {
         note,
         obj = [];
      for(var j = 0; j < arr.length; j++) {
+      if (arr[j].length==arr[0].length){
         var items = arr[j];
-
         obj.push({
            code: items[0],
            name: items[1],
@@ -766,6 +764,7 @@ export class ImporterPage implements OnInit {
            seller: this.resolveBoolean(items[9]),
            note: items[10],
         });
+      }
      }
      resolve(obj);
    });
@@ -786,8 +785,8 @@ export class ImporterPage implements OnInit {
       let promise_ids = [];
       let docs = [];
       for(var j = 0; j < arr.length; j++){
-        var items         = arr[j];
-
+        if (arr[j].length==arr[0].length){
+          var items         = arr[j];
           items[3] = new Date(items[3].split("/")[1]+"-"+items[3].split("/")[0]+"-"+items[3].split("/")[2]).toISOString();
           items[4] = new Date(items[4].split("/")[1]+"-"+items[4].split("/")[0]+"-"+items[4].split("/")[2]).toISOString();
           docs.push(items);
@@ -795,6 +794,7 @@ export class ImporterPage implements OnInit {
           promise_ids.push(this.pouchdbService.searchDocField('contact', items[0]));
           promise_ids.push(this.pouchdbService.searchDocField('account', items[5]));
           promise_ids.push(this.pouchdbService.searchDocField('account', items[6]));
+        }
       }
       console.log("Wait for promisses");
       Promise.all(promise_ids).then(contacts=>{
@@ -840,7 +840,8 @@ export class ImporterPage implements OnInit {
       let promise_ids = [];
       let docs = [];
       for(var j = 0; j < arr.length; j++){
-        var items         = arr[j];
+        if (arr[j].length==arr[0].length){
+          var items         = arr[j];
 
           // let date = items[3].split(' ')[0];
           // console.log("dat4e", JSON.stringify(items), JSON.stringify(date), date.split("/")[1]+"-"+date.split("/")[2]+"-"+date.split("/")[0]);
@@ -851,6 +852,7 @@ export class ImporterPage implements OnInit {
           promise_ids.push(this.pouchdbService.searchDocField('contact', items[1]));
           promise_ids.push(this.pouchdbService.searchDocField('payment-condition', items[2]));
           // promise_ids.push(this.pouchdbService.findDocs({name: items[2]}, []));
+        }
       }
       console.log("Wait for promisses");
       Promise.all(promise_ids).then(contacts=>{
@@ -903,17 +905,18 @@ export class ImporterPage implements OnInit {
       let promise_ids = [];
       let docs = [];
       for(var j = 0; j < arr.length; j++){
-        var items         = arr[j];
+        if (arr[j].length==arr[0].length){
+          var items         = arr[j];
 
-        // if(hasTitles === true && j === 0)
-        // {
-        //   // console.log("Title item", items);
-        //   // sale_code = items[0];
-        //   // product_name = items[1];
-        //   // price = items[2];
-        //   // quantity = items[3];
-        // }
-        // else {
+          // if(hasTitles === true && j === 0)
+          // {
+          //   // console.log("Title item", items);
+          //   // sale_code = items[0];
+          //   // product_name = items[1];
+          //   // price = items[2];
+          //   // quantity = items[3];
+          // }
+          // else {
           // let date = items[3].split(' ')[0];
           // items[3] = new Date(date.split("/")[1]+"-"+date.split("/")[2]+"-"+date.split("/")[0]).toISOString();
           docs.push(items);
@@ -921,7 +924,7 @@ export class ImporterPage implements OnInit {
           console.log("items", items[1]);
           promise_ids.push(this.pouchdbService.searchDocField('product', items[1]));
           // promise_ids.push(this.pouchdbService.findDocs({name: items[2]}, []));
-        // }
+        }
       }
       console.log("Wait for promisses");
       Promise.all(promise_ids).then(contacts=>{
