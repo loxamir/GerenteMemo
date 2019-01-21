@@ -10,6 +10,7 @@ import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 // import { AccountService } from './account.service';
 import { AccountCategoryListPage } from '../account-category-list/account-category-list.page';
+import { ConfigService } from '../config/config.service';
 
 @Component({
   selector: 'app-account',
@@ -31,6 +32,7 @@ export class AccountPage implements OnInit {
     public languageService: LanguageService,
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
+    public configService: ConfigService,
     public alertCtrl: AlertController,
     public formBuilder: FormBuilder,
     public events: Events,
@@ -143,20 +145,24 @@ export class AccountPage implements OnInit {
     });
   }
 
-  createAccount(viewData){
+  async createAccount(viewData){
     //console.log("try create", account);
     let account = Object.assign({}, viewData);
     account.docType = 'account';
-    account['code'] = account['code'] || this.pouchdbService.getUUID();
+    // account['code'] = account['code'] || this.pouchdbService.getUUID();
      // = code;
+
     if (account.type == 'cash'){
-      account._id = "account.cash."+account.code;
+      // account['code'] == account['code'] || ;
+      account._id = "account.cash."+await this.configService.getSequence('cash');
     }
     else if (account.type == 'bank'){
-      account._id = "account.bank."+account.code;
+      // account['code'] == account['code'] || await this.configService.getSequence('cash');
+      account._id = "account.bank."+await this.configService.getSequence('cash');
     }
     else if (account.type == 'check'){
-      account._id = "account.check."+account.code;
+      // account['code'] == account['code'] || await this.configService.getSequence('cash');
+      account._id = "account.check."+await this.configService.getSequence('cash');
     }
     account.category_id = account.category && account.category._id || account.category_id;
     delete account.category;

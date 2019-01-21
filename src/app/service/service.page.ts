@@ -110,7 +110,7 @@ export class ServicePage implements OnInit {
     _id: string;
     avoidAlertMessage: boolean;
     travel_product: object;
-    input_product: object;
+    // input_product: object;
     labor_product: object;
     languages: Array<LanguageModel>;
     show_works: boolean = false;
@@ -212,7 +212,7 @@ export class ServicePage implements OnInit {
       this.configService.getConfig().then((data) => {
         console.log("dddata", data);
         this.labor_product = data.labor_product;
-        this.input_product = data.input_product;
+        // this.input_product = data.input_product;
         this.travel_product = data.travel_product;
         if (this._id){
           this.getService(this._id).then((data) => {
@@ -850,18 +850,18 @@ export class ServicePage implements OnInit {
       }
 
 
-      let input_sum = {
-        'product': this.input_product,
-        'description': this.input_product['name'],
-        'price': 0,
-        'quantity': 1,
-      }
-      this.serviceForm.value.inputs.forEach(input=>{
-        input_sum['price'] += parseFloat(input['price'])*parseFloat(input['quantity']);
-      })
-      if (input_sum['price'] > 0){
-        items.push(input_sum);
-      }
+      // let input_sum = {
+      //   'product': this.input_product,
+      //   'description': this.input_product['name'],
+      //   'price': 0,
+      //   'quantity': 1,
+      // }
+      // this.serviceForm.value.inputs.forEach(input=>{
+      //   input_sum['price'] += parseFloat(input['price'])*parseFloat(input['quantity']);
+      // })
+      // if (input_sum['price'] > 0){
+      //   items.push(input_sum);
+      // }
       let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {

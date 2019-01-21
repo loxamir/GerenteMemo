@@ -19,6 +19,7 @@ import { AccountListPage } from '../account-list/account-list.page';
 import { FormatService } from "../services/format.service";
 import { ConfigService } from '../config/config.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AccountPage } from '../account/account.page';
 
 @Component({
   selector: 'app-cash',
@@ -117,6 +118,31 @@ export class CashPage implements OnInit {
         });
         profileModal.present();
       });
+    }
+
+    async editAccount() {
+      // return new Promise(async resolve => {
+        // this.avoidAlertMessage = true;
+        // this.events.unsubscribe('select-currency');
+        // this.events.subscribe('select-currency', (data) => {
+        //   this.cashForm.patchValue({
+        //     currency: data,
+        //     // currency_name: data.name,
+        //   });
+        //   this.cashForm.markAsDirty();
+        //   // this.avoidAlertMessage = false;
+        //   this.events.unsubscribe('select-currency');
+        //   resolve(true);
+        // })
+        let profileModal = await this.modalCtrl.create({
+          component: AccountPage,
+          componentProps: {
+            "select": true,
+            "_id": this.cashForm.value._id
+          }
+        });
+        profileModal.present();
+      // });
     }
 
     buttonSave() {

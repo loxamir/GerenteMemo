@@ -74,7 +74,7 @@ export class ConfigService {
 
   getSequence(docType): Promise<any> {
     return new Promise(async (resolve, reject)=>{
-      if (docType == 'product' || docType == 'user'){
+      if (docType == 'product' || docType == 'user' || docType == 'cash'){
 
         let sequence = await this.pouchdbService.getDoc(
           'sequence'+'.'+docType

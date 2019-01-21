@@ -86,8 +86,8 @@ export class CashService {
       //     resolve({doc: doc, cash: cash});
       //   });
       // } else {
-        // this.configService.getSequence('account').then((code) => {
-          let code = cash['code'] || this.pouchdbService.getUUID();
+        this.configService.getSequence('cash').then((code) => {
+          // let code = cash['code'];
           cash['code'] = code;
           if (cash.type == 'cash'){
             cash._id = "account.cash."+cash.code;
@@ -101,7 +101,7 @@ export class CashService {
           this.pouchdbService.createDoc(cash).then(doc => {
             resolve({doc: doc, cash: cash});
           });
-        // });
+        });
       // }
 
     });
