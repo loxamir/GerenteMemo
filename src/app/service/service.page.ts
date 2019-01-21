@@ -477,7 +477,7 @@ export class ServicePage implements OnInit {
           }
         }
       }
-      if (this.serviceForm.value.state == 'STARTED'){
+      else if (this.serviceForm.value.state == 'STARTED'){
         if(!this.serviceForm.value._id){
           this.buttonSave();
         }
@@ -557,10 +557,10 @@ export class ServicePage implements OnInit {
         }
         else {
           console.log("Confirm Service");
-          this.confirmService();
+          this.beforeConfirm();
         }
       } else if (this.serviceForm.value.production){
-        this.confirmService();
+        this.beforeConfirm();
       } else if (this.serviceForm.value.state == 'CONFIRMED'){
           this.beforeAddPayment();
       } else if (this.serviceForm.value.state == 'PAID'){
@@ -1574,9 +1574,11 @@ export class ServicePage implements OnInit {
                 });
               });
             }
-            let state = 'CONFIRMED';
+            let state;
             if (this.serviceForm.value.production){
-              let state = 'PRODUCED';
+              state = 'PRODUCED';
+            } else {
+              state = 'CONFIRMED';
             }
             this.pouchdbService.createDocList(createList).then((created: any)=>{
               this.serviceForm.patchValue({
@@ -2027,9 +2029,12 @@ export class ServicePage implements OnInit {
 
     showNextButton(){
       // console.log("stock",this.serviceForm.value.stock);
-      // if (this.serviceForm.value.client_request==null){
-        return true;
-      // }
+      if (this.serviceForm.value.state=='PAID'){
+        return false;
+      }
+      else if (this.serviceForm.value.state=='PRODUCED'){
+        return false;
+      }
       // else if (this.serviceForm.value.price==null){
       //   return true;
       // }
@@ -2039,9 +2044,9 @@ export class ServicePage implements OnInit {
       // else if (this.serviceForm.value.type=='product'&&this.serviceForm.value.stock==null){
       //   return true;
       // }
-      // else {
-      //   return false;
-      // }
+      else {
+        return true;
+      }
     }
     discard(){
       this.canDeactivate();
