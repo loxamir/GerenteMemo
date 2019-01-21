@@ -108,6 +108,10 @@ export class ConfigPage implements OnInit {
 
   buttonSave() {
     this.configService.updateConfig(this.configForm.value);
+    if (this.configForm.controls.product_sequence.dirty){
+      console.log("product sequence changed");
+      this.configService.setNextSequence('product', 1, this.configForm.value.product_sequence);
+    }
     if (this.select){
       this.modalCtrl.dismiss();
       this.events.publish('open-config', this.configForm.value);
