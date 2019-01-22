@@ -385,12 +385,12 @@ export class FormatService {
               let credito = "";
               let condicion = "Credito"
               if(order.paymentCondition == 'Contado'){
-                  contado = "x";
+                  contado = "XX";
                   // credito = "";
                   condicion = "Contado";
               } else {
                   // contado = "";
-                  credito = "x";
+                  credito = "XX";
                   condicion = "Credito";
               }
               console.log("month", date.getMonth());
