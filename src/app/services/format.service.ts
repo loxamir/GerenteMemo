@@ -384,7 +384,7 @@ export class FormatService {
               let contado = "";
               let credito = "";
               let condicion = "Credito"
-              if(order.payment_term == 1){
+              if(order.paymentCondition == 'Contado'){
                   contado = "x";
                   // credito = "";
                   condicion = "Contado";
