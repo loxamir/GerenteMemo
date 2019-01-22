@@ -837,7 +837,8 @@ export class InvoicePage implements OnInit {
                   } else {
                     let dotmatrix_model:any = await this.pouchdbService.getDoc('config.invoice');
                     console.log("dotmatrix_model", dotmatrix_model);
-                    this.formatService.print_file(this.invoiceForm.value, dotmatrix_model);
+                    let layout = await this.pouchdbService.getDoc('config.profile')
+                    this.formatService.print_file(this.invoiceForm.value, dotmatrix_model, layout['invoicePrint']);
                   }
                   this.justSave();
                   // this.navCtrl.navigateBack();
@@ -1361,5 +1362,6 @@ export class InvoicePage implements OnInit {
         profileModal.present();
       });
     }
+    
 
 }

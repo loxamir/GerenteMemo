@@ -11,6 +11,16 @@ export class FormatService {
           user_str = "";
       }
       user_str = user_str.toString()
+      if (order == 'center') {
+        let start: any = (qty - user_str.length)/2
+        start = parseInt(start);
+        let start_space = "";
+        for (let x=0;x<start;x++){
+          start+=complete;
+        }
+        order = "left";
+        user_str = start+user_str;
+      }
       while(user_str.length<qty){
           if (order == "left"){
               user_str = user_str + complete;
@@ -358,98 +368,98 @@ export class FormatService {
 
 
 
-  print_file(order, dotmatrix_model) {
-    console.log("order", order);
-    console.log("dotmatrix_model", dotmatrix_model);
-              // let order = '123';
-              // order._printed = true;
-              // var months = new Array();
-              // months[0] = "Enero";
-              // months[1] = "Febrero";
-              // months[2] = "Marzo";
-              // months[3] = "Abril";
-              // months[4] = "Mayo";
-              // months[5] = "Junio";
-              // months[6] = "Julio";
-              // months[7] = "Agosto";
-              // months[8] = "Septiembre";
-              // months[9] = "Octubre";
-              // months[10] = "Noviembre";
-              // months[11] = "Dicimbre";
-              // let invoice_data = order.export_for_printing();
-              let date = new Date(order.date);
-              let day = date.getDay();
-              let month = this.getMonth(date.getMonth());
-              let year = date.getFullYear();
-              let contado = "";
-              let credito = "";
-              let condicion = "Credito"
-              if(order.paymentCondition == 'Contado'){
-                  contado = "XX";
-                  // credito = "";
-                  condicion = "Contado";
-              } else {
-                  // contado = "";
-                  credito = "XX";
-                  condicion = "Credito";
-              }
-              console.log("month", date.getMonth());
-              // var discount_amount = 0;
-              // var original_price = 0;
-              // var lines_length = order.attributes.orderLines.length;
-              // price_list_id = parseInt(this.pos.config.pricelist_id[0]);
-              // for(var line=0; line<lines_length;line++){
-              //     let this_line = order.attributes.orderLines.models[line]
-              //     let line_price = this_line.price;
-              //     //line_pricelist = this.pos.pricelist_engine.compute_price(
-              //     //    this.pos.db, this_line.product, false, 1, price_list_id);
-              //     let line_pricelist = this_line.price;
-              //     let line_discount = (line_pricelist - line_price)*this_line.quantity;
-              //     original_price = original_price + line_pricelist*this_line.quantity;
-              //     if(line_discount > 0){
-              //         discount_amount = discount_amount + line_discount;
-              //     }
-              // }
-              // if (discount_amount > 0){
-              //     let discount_percent = 100*discount_amount/original_price;
-              // } else {
-              //     let discount_percent = 0;
-              // }
-              // if(config.to_invoice){
-              let name="123"
+  print_file(order, dotmatrix_model, layout=null) {
+//     console.log("order", order);
+//     console.log("dotmatrix_model", dotmatrix_model);
+//               // let order = '123';
+//               // order._printed = true;
+//               // var months = new Array();
+//               // months[0] = "Enero";
+//               // months[1] = "Febrero";
+//               // months[2] = "Marzo";
+//               // months[3] = "Abril";
+//               // months[4] = "Mayo";
+//               // months[5] = "Junio";
+//               // months[6] = "Julio";
+//               // months[7] = "Agosto";
+//               // months[8] = "Septiembre";
+//               // months[9] = "Octubre";
+//               // months[10] = "Noviembre";
+//               // months[11] = "Dicimbre";
+//               // let invoice_data = order.export_for_printing();
+//               let date = new Date(order.date);
+//               let day = date.getDay();
+//               let month = this.getMonth(date.getMonth());
+//               let year = date.getFullYear();
+//               let contado = "";
+//               let credito = "";
+//               let condicion = "Credito"
+//               if(order.paymentCondition == 'Contado'){
+//                   contado = "XX";
+//                   // credito = "";
+//                   condicion = "Contado";
+//               } else {
+//                   // contado = "";
+//                   credito = "XX";
+//                   condicion = "Credito";
+//               }
+//               console.log("month", date.getMonth());
+//               // var discount_amount = 0;
+//               // var original_price = 0;
+//               // var lines_length = order.attributes.orderLines.length;
+//               // price_list_id = parseInt(this.pos.config.pricelist_id[0]);
+//               // for(var line=0; line<lines_length;line++){
+//               //     let this_line = order.attributes.orderLines.models[line]
+//               //     let line_price = this_line.price;
+//               //     //line_pricelist = this.pos.pricelist_engine.compute_price(
+//               //     //    this.pos.db, this_line.product, false, 1, price_list_id);
+//               //     let line_pricelist = this_line.price;
+//               //     let line_discount = (line_pricelist - line_price)*this_line.quantity;
+//               //     original_price = original_price + line_pricelist*this_line.quantity;
+//               //     if(line_discount > 0){
+//               //         discount_amount = discount_amount + line_discount;
+//               //     }
+//               // }
+//               // if (discount_amount > 0){
+//               //     let discount_percent = 100*discount_amount/original_price;
+//               // } else {
+//               //     let discount_percent = 0;
+//               // }
+//               // if(config.to_invoice){
+//               let name="123"
                   var prefix = "factura_";
                   var extension = ".prt";
-
-//                   var dotmatrix_model = {
-//                     qty_lines: 20,
-//                     line: `self.string_pad(5,"")+self.string_pad(10,parseFloat(line.quantity).toFixed(0), "right")+" "+self.string_pad(67,line.description.substring(0,67))+" "+self.string_pad(8,parseFloat(line.price).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_00).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_05).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_10).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.breakLine(1)`+'\n',
-//                     content: `
-// self.breakLine(4)+
-// self.string_pad(125,"")+self.string_pad(15,order.code)+
-// self.breakLine(4)+
-// self.string_pad(20,'')+self.string_pad(2,day)+" de "+self.string_pad(2,month)+" de "+self.string_pad(90,year)+" "+self.string_pad(8,condicion)+
-// self.breakLine(2)+
-// self.string_pad(20,'')+self.string_pad(105,partner_name)+" "+self.string_pad(10,ruc)+
-// self.breakLine(1)+
-// self.string_pad(20,'')+self.string_pad(53,street)+" "+self.string_pad(15,phone)+
-// self.breakLine(3)+
-// lines+
-// self.string_pad(93,'')+self.string_pad(15,subtotal_00, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(14,subtotal_05, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(14,subtotal_10, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
-// self.breakLine(3)+
-// self.string_pad(130,'')+self.string_pad(10,gross.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
-// self.breakLine(1)+
-// self.string_pad(5,'')+self.string_pad(120,amount_in_word_line)+
-// self.breakLine(1)+
-// self.string_pad(55,'')+self.string_pad(20,iva_05.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(10,iva_10.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(24,'')+self.string_pad(10,amount_tax.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
-// self.breakLine(7)`
-//                   }
+//
+// //                   var dotmatrix_model = {
+// //                     qty_lines: 20,
+// //                     line: `self.string_pad(5,"")+self.string_pad(10,parseFloat(line.quantity).toFixed(0), "right")+" "+self.string_pad(67,line.description.substring(0,67))+" "+self.string_pad(8,parseFloat(line.price).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_00).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_05).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(15,parseFloat(line_amount_10).toFixed(0), "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.breakLine(1)`+'\n',
+// //                     content: `
+// // self.breakLine(4)+
+// // self.string_pad(125,"")+self.string_pad(15,order.code)+
+// // self.breakLine(4)+
+// // self.string_pad(20,'')+self.string_pad(2,day)+" de "+self.string_pad(2,month)+" de "+self.string_pad(90,year)+" "+self.string_pad(8,condicion)+
+// // self.breakLine(2)+
+// // self.string_pad(20,'')+self.string_pad(105,partner_name)+" "+self.string_pad(10,ruc)+
+// // self.breakLine(1)+
+// // self.string_pad(20,'')+self.string_pad(53,street)+" "+self.string_pad(15,phone)+
+// // self.breakLine(3)+
+// // lines+
+// // self.string_pad(93,'')+self.string_pad(15,subtotal_00, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(14,subtotal_05, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(14,subtotal_10, "right").replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
+// // self.breakLine(3)+
+// // self.string_pad(130,'')+self.string_pad(10,gross.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
+// // self.breakLine(1)+
+// // self.string_pad(5,'')+self.string_pad(120,amount_in_word_line)+
+// // self.breakLine(1)+
+// // self.string_pad(55,'')+self.string_pad(20,iva_05.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(10,iva_10.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(24,'')+self.string_pad(10,amount_tax.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
+// // self.breakLine(7)`
+// //                   }
                   var partner_name = order.contact_name;
                   var partner = order.contact;
                   var ruc = partner.document;
                   var street = partner.address;
                   var phone = partner.phone;
-                  var max_lines = dotmatrix_model.qty_lines;
-                  var lines_count = 0;
+                  var max_lines = layout.lines_limit;
+                  // var lines_count = 0;
                   var lines = "";
                   var subtotal_10 = 0;
                   var subtotal_05 = 0;
@@ -457,52 +467,341 @@ export class FormatService {
                   var iva_10 = 0;
                   var iva_05 = 0;
                   let self = this;
-                  order.items.forEach((line: any)=>{
-                    let line_amount_00 = 0;
-                    let line_amount_05 = 0;
-                    let line_amount_10 = 0;
-
-                    //IVA Exento
-                    if(line.product.tax=='exenta'){
-                        line_amount_00 = line.quantity*line.price;
-                        subtotal_00 = subtotal_00 + line.subtotal;
-                    }
-                    //IVA 5%
-                    if(line.product.tax=='iva5'){
-                        line_amount_05 = line.quantity*line.price;
-                        subtotal_05 = subtotal_05 + line.quantity*line.price;
-                        iva_05 = iva_05 + line.quantity*line.price/21;
-                    }
-                    //IVA 10%
-                    if(line.product.tax=='iva10'){
-                        line_amount_10 = line.quantity*line.price;
-                        subtotal_10 = subtotal_10 + line.quantity*line.price;
-                        iva_10 = iva_10 + line.quantity*line.price/11;
-                    }
-                    console.log("line", dotmatrix_model.line);
-                    let line_eval = eval(dotmatrix_model.line.toString())
-                    console.log("line_eval", line_eval);
-                    lines = lines+line_eval;
-                    lines_count = lines_count + 1;
-                  });
-
+                  // order.items.forEach((line: any)=>{
+                  //   let line_amount_00 = 0;
+                  //   let line_amount_05 = 0;
+                  //   let line_amount_10 = 0;
+                  //
+                  //   //IVA Exento
+                  //   if(line.product.tax=='exenta'){
+                  //       line_amount_00 = line.quantity*line.price;
+                  //       subtotal_00 = subtotal_00 + line.subtotal;
+                  //   }
+                  //   //IVA 5%
+                  //   if(line.product.tax=='iva5'){
+                  //       line_amount_05 = line.quantity*line.price;
+                  //       subtotal_05 = subtotal_05 + line.quantity*line.price;
+                  //       iva_05 = iva_05 + line.quantity*line.price/21;
+                  //   }
+                  //   //IVA 10%
+                  //   if(line.product.tax=='iva10'){
+                  //       line_amount_10 = line.quantity*line.price;
+                  //       subtotal_10 = subtotal_10 + line.quantity*line.price;
+                  //       iva_10 = iva_10 + line.quantity*line.price/11;
+                  //   }
+                  //   console.log("line", dotmatrix_model.line);
+                  //   let line_eval = eval(dotmatrix_model.line.toString())
+                  //   console.log("line_eval", line_eval);
+                  //   lines = lines+line_eval;
+                  //   lines_count = lines_count + 1;
+                  // });
+                  //
+                  // // }
+                  // // if(config.to_invoice){
+                  //     while(lines_count < max_lines){
+                  //         lines = lines+"\n";
+                  //         lines_count = lines_count + 1;
+                  //     }
                   // }
-                  // if(config.to_invoice){
-                      while(lines_count < max_lines){
-                          lines = lines+"\n";
-                          lines_count = lines_count + 1;
-                      }
-                  // }
-                  let gross = order.total;
-                  // console.log(order);
+//                   let gross = order.total;
+//                   // console.log(order);
                   let amount_in_word_line = this.NumeroALetras(order.total, 'PYG');
                   let amount_tax = iva_05 + iva_10;
-                  let invoice = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a"+eval(dotmatrix_model.content).replace("false", "");
-                  // console.log("invoice", invoice);
+//                   let invoice = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a"+eval(dotmatrix_model.content).replace("false", "");
+//                   // console.log("invoice", invoice);
+
+//Create matrix
+let page_printed = [];
+for (var y = 0; y < 43+layout.lines_limit; y++) {
+  page_printed[y] = [];
+  for (var x = 0; x < 160; x++) {
+    page_printed[y][x] = ' ';
+  }
+}
+
+
+//put invoice number
+let marginTop:any = layout.invoiceNumber_top/4.4;
+let marginLeft:any  = layout.invoiceNumber_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+let dataModel = order.code;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put date
+marginTop = layout.invoiceDate_top/4.4;
+marginLeft  = layout.invoiceDate_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = order.date;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put payment
+marginTop = layout.invoicePayment_top/4.4;
+marginLeft  = layout.invoicePayment_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = order.paymentCondition;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put client
+marginTop = layout.contactName_top/4.4;
+marginLeft  = layout.contactName_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = order.contact_name;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put ruc
+marginTop = layout.contactDocument_top/4.4;
+marginLeft  = layout.contactDocument_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = ruc;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put address
+marginTop = layout.contactAddress_top/4.4;
+marginLeft  = layout.contactAddress_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = street;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put phone
+marginTop = layout.contactPhone_top/4.4;
+marginLeft  = layout.contactPhone_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = phone;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+
+
+//put lines
+marginTop = layout.lines_top/4.4;
+// marginLeft  = 0;
+let linesMarginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = phone;
+// for (var x = 0; x < dataModel.toString().length; x++) {
+//   page_printed[marginTop][x] = dataModel.toString()[x];
+// }
+
+// for (var y = 0; y < dotmatrix_model.layout.lines_limit; y++) {
+//   page_printed[y] = [];
+//   for (var x = 0; x < 160; x++) {
+//     page_printed[y][x] = ' ';
+//   }
+// }
+
+order.items.forEach((line: any, index)=>{
+  let line_amount_00 = 0;
+  let line_amount_05 = 0;
+  let line_amount_10 = 0;
+
+  //IVA Exento
+  if(line.product.tax=='exenta'){
+      line_amount_00 = line.quantity*line.price;
+      subtotal_00 = subtotal_00 + line.subtotal;
+  }
+  //IVA 5%
+  if(line.product.tax=='iva5'){
+      line_amount_05 = line.quantity*line.price;
+      subtotal_05 = subtotal_05 + line.quantity*line.price;
+      iva_05 = iva_05 + line.quantity*line.price/21;
+  }
+  //IVA 10%
+  if(line.product.tax=='iva10'){
+      line_amount_10 = line.quantity*line.price;
+      subtotal_10 = subtotal_10 + line.quantity*line.price;
+      iva_10 = iva_10 + line.quantity*line.price/11;
+  }
+
+
+  // console.log("line", dotmatrix_model.line);
+  // let line_eval = eval(dotmatrix_model.line.toString())
+  // console.log("line_eval", line_eval);
+  // lines = lines+line_eval;
+
+  //put phone
+  // marginTop = layout.contactPhone_top/4.4;
+  let quantityWidth:any  = layout.linesQuantity_width/1.35;
+  quantityWidth = parseInt(quantityWidth);
+  marginLeft = 0;
+  dataModel = this.string_pad(quantityWidth, line.quantity, 'center');
+  for (var x = 0; x < dataModel.toString().length; x++) {
+    page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
+  }
+  marginLeft = parseInt(quantityWidth);
+  let linesProductName_width:any  = layout.linesProductName_width/1.35;
+  linesProductName_width = parseInt(linesProductName_width);
+  dataModel = line.description.substring(0,linesProductName_width);
+  for (var x = 0; x < dataModel.toString().length; x++) {
+    page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
+  }
+  marginLeft += linesProductName_width;
+
+  let linesPrice_width:any  = layout.linesPrice_width/1.35;
+  linesProductName_width = parseInt(linesPrice_width);
+  // dataModel = line.price;
+  dataModel = this.string_pad(linesPrice_width, line.price, 'right');
+  for (var x = 0; x < dataModel.toString().length; x++) {
+    page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
+  }
+  marginLeft += linesPrice_width;
+
+  let linesTax0_width:any  = layout.linesTax0_width/1.35;
+  linesTax0_width = parseInt(linesTax0_width);
+  // dataModel = line_amount_00;
+  dataModel = this.string_pad(linesTax0_width, line_amount_00, 'right');
+  for (var x = 0; x < dataModel.toString().length; x++) {
+    page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
+  }
+  marginLeft += parseInt(linesTax0_width);
+
+
+  let linesTax5_width:any  = layout.linesTax5_width/1.35;
+  linesTax5_width = parseInt(linesTax5_width);
+  // dataModel = line_amount_05;
+  dataModel = this.string_pad(linesTax5_width, line_amount_05, 'right');
+  for (var x = 0; x < dataModel.toString().length; x++) {
+    page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
+  }
+  marginLeft += parseInt(linesTax5_width);
+
+  let linesTax10_width:any  = layout.linesTax10_width/1.35;
+  linesTax10_width = parseInt(linesTax10_width);
+  // marginLeft += linesTax10_width;
+  // dataModel = line_amount_10;
+  dataModel = this.string_pad(linesTax10_width, line_amount_10, 'right');
+  for (var x = 0; x < dataModel.toString().length; x++) {
+    page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
+  }
+
+
+
+  // lines_count = lines_count + 1;
+});
+
+// }
+// if(config.to_invoice){
+    // while(lines_count < max_lines){
+    //     lines = lines+"\n";
+    //     lines_count = lines_count + 1;
+    // }
+
+
+
+
+
+//put exento
+marginTop = layout.subTotalTax0_top/4.4;
+marginLeft  = layout.subTotalTax0_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = subtotal_00;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put subtotal_05
+marginTop = layout.subTotalTax5_top/4.4;
+marginLeft  = layout.subTotalTax5_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = subtotal_05;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put subTotalTax10_width
+marginTop = layout.subTotalTax10_top/4.4;
+marginLeft  = layout.subTotalTax10_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = subtotal_10;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put total
+marginTop = layout.invoiceTotal_top/4.4;
+marginLeft  = layout.invoiceTotal_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = order.total;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put amount_in_word_line
+marginTop = layout.amountInWords_top/4.4;
+marginLeft  = layout.amountInWords_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = amount_in_word_line;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put iva_05
+marginTop = layout.totalTax5_top/4.4;
+marginLeft  = layout.totalTax5_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = iva_05;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put iva_10
+marginTop = layout.totalTax10_top/4.4;
+marginLeft  = layout.totalTax10_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = iva_10;
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+//put iva_total
+marginTop = layout.totalTax_top/4.4;
+marginLeft  = layout.totalTax_left/1.35;
+marginTop = parseInt(marginTop);
+marginLeft = parseInt(marginLeft);
+dataModel = amount_tax;
+console.log("marginTop", marginTop, "marginLeft", marginLeft, "amount_tax", amount_tax);
+for (var x = 0; x < dataModel.toString().length; x++) {
+  let b = marginLeft;
+  page_printed[marginTop][x+b] = dataModel.toString()[x];
+}
+
+let invoice = "";
+for (var y = 0; y < 43+layout.lines_limit; y++) {
+  for (var x = 0; x < 160; x++) {
+    invoice += page_printed[y][x];
+  }
+  invoice += "\n";
+}
                   var blob = new Blob([invoice], {type: "text/plain;charset=utf-8"});
                   saveAs(blob, prefix+order.code+extension);
-                  // this.download("factura.txt", invoice);
-              // }
+//                   // this.download("factura.txt", invoice);
+//               // }
           }
 
 
