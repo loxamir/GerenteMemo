@@ -443,7 +443,7 @@ export class FormatService {
 // self.string_pad(55,'')+self.string_pad(20,iva_05.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(10,iva_10.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+self.string_pad(24,'')+self.string_pad(10,amount_tax.toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")+
 // self.breakLine(7)`
 //                   }
-                  var partner_name = order.contact_name;
+                  var partner_name = order.contact.name_legal || order.contact.name;
                   var partner = order.contact;
                   var ruc = partner.document;
                   var street = partner.address;
