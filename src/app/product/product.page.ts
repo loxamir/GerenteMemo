@@ -235,6 +235,11 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
     buttonSave() {
       let product = Object.assign({}, this.productForm.value);
+      product.quantity = parseFloat(product.quantity) || 0;
+      product.cost = parseFloat(product.cost) || 0;
+      product.price = parseFloat(product.price) || 0;
+      product.stock_min = parseFloat(product.stock_min) || 0;
+      console.log("product", product);
       // if(this.productForm.value.stock != this.theoreticalStock){
         product.stock = this.theoreticalStock;
       // }
@@ -293,7 +298,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             'contact_id': "contact.myCompany",
             'product_id': this.productForm.value._id,
             'date': new Date(),
-            'cost': this.productForm.value.cost*Math.abs(difference),
+            'cost': (parseFloat(this.productForm.value.cost)||0)*Math.abs(difference),
             'warehouseFrom_id': warehouseFrom_id,
             'warehouseTo_id': warehouseTo_id,
           }).then(res => {
@@ -303,7 +308,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.cashMoveService.createCashMove({
             'name': "Ajuste "+this.productForm.value.code,
             'contact_id': "contact.myCompany",
-            'amount': this.productForm.value.cost*Math.abs(difference),
+            'amount': (parseFloat(this.productForm.value.cost)||0)*Math.abs(difference),
             'origin_id': this.productForm.value._id,
             // "project_id": this.productForm.value.project_id,
             'date': new Date(),
