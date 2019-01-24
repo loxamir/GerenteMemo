@@ -506,7 +506,7 @@ export class FormatService {
 //                   let gross = order.total;
 //                   // console.log(order);
                   let amount_in_word_line = this.NumeroALetras(order.total, 'PYG');
-                  let amount_tax = iva_05 + iva_10;
+
 //                   let invoice = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a"+eval(dotmatrix_model.content).replace("false", "");
 //                   // console.log("invoice", invoice);
 
@@ -535,7 +535,7 @@ marginTop = layout.invoiceDate_top/4.4;
 marginLeft  = layout.invoiceDate_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = order.date;
+dataModel = (new Date(order.date)).toLocaleDateString('es-PY');
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
   page_printed[marginTop][x+b] = dataModel.toString()[x];
@@ -644,7 +644,7 @@ order.items.forEach((line: any, index)=>{
   quantityWidth = parseInt(quantityWidth);
   marginLeft = 0;
   console.log("line.quantity", line.quantity);
-  dataModel = this.string_pad(quantityWidth, line.quantity.toString(), 'center');
+  dataModel = this.string_pad(quantityWidth, line.quantity.replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
   console.log("dataModel", dataModel);
   for (var x = 0; x < dataModel.toString().length; x++) {
     page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
@@ -661,7 +661,7 @@ order.items.forEach((line: any, index)=>{
   let linesPrice_width:any  = layout.linesPrice_width/1.35;
   linesPrice_width = parseInt(linesPrice_width);
   // dataModel = line.price;
-  dataModel = this.string_pad(linesPrice_width, line.price.toString(), 'right');
+  dataModel = this.string_pad(linesPrice_width, line.price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
   for (var x = 0; x < dataModel.toString().length; x++) {
     page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
   }
@@ -670,7 +670,7 @@ order.items.forEach((line: any, index)=>{
   let linesTax0_width:any  = layout.linesTax0_width/1.35;
   linesTax0_width = parseInt(linesTax0_width);
   // dataModel = line_amount_00;
-  dataModel = this.string_pad(linesTax0_width, line_amount_00.toString(), 'right');
+  dataModel = this.string_pad(linesTax0_width, line_amount_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
   for (var x = 0; x < dataModel.toString().length; x++) {
     page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
   }
@@ -680,7 +680,7 @@ order.items.forEach((line: any, index)=>{
   let linesTax5_width:any  = layout.linesTax5_width/1.35;
   linesTax5_width = parseInt(linesTax5_width);
   // dataModel = line_amount_05;
-  dataModel = this.string_pad(linesTax5_width, line_amount_05.toString(), 'right');
+  dataModel = this.string_pad(linesTax5_width, line_amount_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
   for (var x = 0; x < dataModel.toString().length; x++) {
     page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
   }
@@ -690,7 +690,7 @@ order.items.forEach((line: any, index)=>{
   linesTax10_width = parseInt(linesTax10_width);
   // marginLeft += linesTax10_width;
   // dataModel = line_amount_10;
-  dataModel = this.string_pad(linesTax10_width, line_amount_10.toString(), 'right');
+  dataModel = this.string_pad(linesTax10_width, line_amount_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
   for (var x = 0; x < dataModel.toString().length; x++) {
     page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
   }
@@ -699,6 +699,7 @@ order.items.forEach((line: any, index)=>{
 
   // lines_count = lines_count + 1;
 });
+
 
 // }
 // if(config.to_invoice){
@@ -716,7 +717,7 @@ marginTop = layout.subTotalTax0_top/4.4;
 marginLeft  = layout.subTotalTax0_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = subtotal_00;
+dataModel = subtotal_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
   page_printed[marginTop][x+b] = dataModel.toString()[x];
@@ -726,7 +727,7 @@ marginTop = layout.subTotalTax5_top/4.4;
 marginLeft  = layout.subTotalTax5_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = subtotal_05;
+dataModel = subtotal_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
   page_printed[marginTop][x+b] = dataModel.toString()[x];
@@ -736,7 +737,7 @@ marginTop = layout.subTotalTax10_top/4.4;
 marginLeft  = layout.subTotalTax10_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = subtotal_10;
+dataModel = subtotal_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
   page_printed[marginTop][x+b] = dataModel.toString()[x];
@@ -746,7 +747,7 @@ marginTop = layout.invoiceTotal_top/4.4;
 marginLeft  = layout.invoiceTotal_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = order.total;
+dataModel = order.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
   page_printed[marginTop][x+b] = dataModel.toString()[x];
@@ -766,7 +767,7 @@ marginTop = layout.totalTax5_top/4.4;
 marginLeft  = layout.totalTax5_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = iva_05;
+dataModel = parseInt(iva_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
   page_printed[marginTop][x+b] = dataModel.toString()[x];
@@ -776,7 +777,7 @@ marginTop = layout.totalTax10_top/4.4;
 marginLeft  = layout.totalTax10_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = iva_10;
+dataModel = parseInt(iva_10.toString()).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
   page_printed[marginTop][x+b] = dataModel.toString()[x];
@@ -786,7 +787,10 @@ marginTop = layout.totalTax_top/4.4;
 marginLeft  = layout.totalTax_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = amount_tax;
+let amount_tax = parseInt((iva_05 + iva_10).toString());
+
+// iva_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+dataModel = amount_tax.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 console.log("marginTop", marginTop, "marginLeft", marginLeft, "amount_tax", amount_tax);
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
