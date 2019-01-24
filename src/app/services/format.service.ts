@@ -16,10 +16,10 @@ export class FormatService {
         start = parseInt(start);
         let start_space = "";
         for (let x=0;x<start;x++){
-          start+=complete;
+          start_space+=complete;
         }
         order = "left";
-        user_str = start+user_str;
+        user_str = start_space+user_str;
       }
       while(user_str.length<qty){
           if (order == "left"){
@@ -565,7 +565,7 @@ marginTop = layout.contactDocument_top/4.4;
 marginLeft  = layout.contactDocument_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = ruc;
+dataModel = ruc || "";
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
   page_printed[marginTop][x+b] = dataModel.toString()[x];
@@ -575,7 +575,7 @@ marginTop = layout.contactAddress_top/4.4;
 marginLeft  = layout.contactAddress_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = street;
+dataModel = street || "";
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
   page_printed[marginTop][x+b] = dataModel.toString()[x];
@@ -585,7 +585,7 @@ marginTop = layout.contactPhone_top/4.4;
 marginLeft  = layout.contactPhone_left/1.35;
 marginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = phone;
+dataModel = phone || "";
 for (var x = 0; x < dataModel.toString().length; x++) {
   let b = marginLeft;
   page_printed[marginTop][x+b] = dataModel.toString()[x];
@@ -597,7 +597,7 @@ marginTop = layout.lines_top/4.4;
 // marginLeft  = 0;
 let linesMarginTop = parseInt(marginTop);
 marginLeft = parseInt(marginLeft);
-dataModel = phone;
+// dataModel = phone;
 // for (var x = 0; x < dataModel.toString().length; x++) {
 //   page_printed[marginTop][x] = dataModel.toString()[x];
 // }
@@ -643,11 +643,13 @@ order.items.forEach((line: any, index)=>{
   let quantityWidth:any  = layout.linesQuantity_width/1.35;
   quantityWidth = parseInt(quantityWidth);
   marginLeft = 0;
-  dataModel = this.string_pad(quantityWidth, line.quantity, 'center');
+  console.log("line.quantity", line.quantity);
+  dataModel = this.string_pad(quantityWidth, line.quantity.toString(), 'center');
+  console.log("dataModel", dataModel);
   for (var x = 0; x < dataModel.toString().length; x++) {
     page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
   }
-  marginLeft = parseInt(quantityWidth);
+  marginLeft += parseInt(quantityWidth);
   let linesProductName_width:any  = layout.linesProductName_width/1.35;
   linesProductName_width = parseInt(linesProductName_width);
   dataModel = line.description.substring(0,linesProductName_width);
@@ -657,9 +659,9 @@ order.items.forEach((line: any, index)=>{
   marginLeft += linesProductName_width;
 
   let linesPrice_width:any  = layout.linesPrice_width/1.35;
-  linesProductName_width = parseInt(linesPrice_width);
+  linesPrice_width = parseInt(linesPrice_width);
   // dataModel = line.price;
-  dataModel = this.string_pad(linesPrice_width, line.price, 'right');
+  dataModel = this.string_pad(linesPrice_width, line.price.toString(), 'right');
   for (var x = 0; x < dataModel.toString().length; x++) {
     page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
   }
@@ -668,7 +670,7 @@ order.items.forEach((line: any, index)=>{
   let linesTax0_width:any  = layout.linesTax0_width/1.35;
   linesTax0_width = parseInt(linesTax0_width);
   // dataModel = line_amount_00;
-  dataModel = this.string_pad(linesTax0_width, line_amount_00, 'right');
+  dataModel = this.string_pad(linesTax0_width, line_amount_00.toString(), 'right');
   for (var x = 0; x < dataModel.toString().length; x++) {
     page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
   }
@@ -678,7 +680,7 @@ order.items.forEach((line: any, index)=>{
   let linesTax5_width:any  = layout.linesTax5_width/1.35;
   linesTax5_width = parseInt(linesTax5_width);
   // dataModel = line_amount_05;
-  dataModel = this.string_pad(linesTax5_width, line_amount_05, 'right');
+  dataModel = this.string_pad(linesTax5_width, line_amount_05.toString(), 'right');
   for (var x = 0; x < dataModel.toString().length; x++) {
     page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
   }
@@ -688,7 +690,7 @@ order.items.forEach((line: any, index)=>{
   linesTax10_width = parseInt(linesTax10_width);
   // marginLeft += linesTax10_width;
   // dataModel = line_amount_10;
-  dataModel = this.string_pad(linesTax10_width, line_amount_10, 'right');
+  dataModel = this.string_pad(linesTax10_width, line_amount_10.toString(), 'right');
   for (var x = 0; x < dataModel.toString().length; x++) {
     page_printed[linesMarginTop+index][x+marginLeft] = dataModel.toString()[x];
   }
