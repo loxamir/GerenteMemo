@@ -47,18 +47,10 @@ export class ViewService {
         // console.log("viewww", view);
         // resolve(view);
         let promise_ids = []
-        view.forEach(item => {
-          // console.log("item.key[0]", item.key[item.key.length - 1]);
-          promise_ids.push(this.pouchdbService.getDoc(item.key[item.key.length - 1]));
+        view.forEach(async item => {
+          item.doc = await this.pouchdbService.getDoc(item.key[item.key.length - 1]);
         })
-        Promise.all(promise_ids).then(values => {
-          // console.log("values", values);
-          for(let i=0;i<values.length;i++){
-            view[i].doc = values[i];
-          }
-          // console.log("view", view);
-          resolve(view);
-        })
+        resolve(view);
       });
     });
   }

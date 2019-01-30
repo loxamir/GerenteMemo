@@ -45,8 +45,8 @@ export class ViewReportPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
     this.reportView = this.route.snapshot.paramMap.get('reportView') || this.reportView;
     this.level = parseInt(this.route.snapshot.paramMap.get('level')) || this.level;
-    this.startkey = this.route.snapshot.paramMap.get('startkey') || this.startkey;
-    this.endkey = this.route.snapshot.paramMap.get('endkey') || this.endkey;
+    this.startkey = (this.route.snapshot.paramMap.get('startkey') || '0').split(',') || this.startkey;
+    this.endkey = (this.route.snapshot.paramMap.get('endkey')|| 'z').split(',') || this.endkey;
     this.filter = this.route.snapshot.paramMap.get('filter') || this.filter;
     this.name = this.route.snapshot.paramMap.get('name')
     || this.route.snapshot.paramMap.get('reportView').split('/')[1]
@@ -68,23 +68,8 @@ export class ViewReportPage implements OnInit {
   }
 
   setFilteredItems() {
-    console.log('searchTerm', this.searchTerm);
-    console.log("this.reportView", this.reportView);
-    console.log('level', this.level);
-    console.log('startkey', this.startkey);
-    console.log('endkey', this.endkey);
     let startkey = this.startkey;
     let endkey = this.endkey;
-    if (this.level > 1){
-      startkey = [
-        this.startkey.split(',')[0],
-        this.startkey.split(',')[1]
-      ]
-      endkey = [
-        this.endkey.split(',')[0],
-        this.endkey.split(',')[1]
-      ]
-    }
     this.viewService.getView(
       this.searchTerm,
       this.reportView,

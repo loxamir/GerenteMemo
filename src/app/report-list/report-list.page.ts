@@ -1044,7 +1044,12 @@ export class ReportListPage implements OnInit {
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // // newRootNav.push(CashFlowPage, {'reportType': "received"});
     // newRootNav.push(ViewPage, {reportView: 'stock/Fluxo'});
-    this.navCtrl.navigateForward(['/view-report', {reportView: 'stock/Fluxo'}]);
+    this.navCtrl.navigateForward(['/view-report', {
+    'reportView': 'stock/Fluxo',
+    'startkey': [this.reportsForm.value.dateStart.split('T')[0], '0'],
+    'endkey': [this.reportsForm.value.dateEnd.split('T')[0], 'z'],
+    'level': 2
+  }]);
   }
 
   showReportResult(){

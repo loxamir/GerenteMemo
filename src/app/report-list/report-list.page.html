@@ -193,7 +193,7 @@
      (click)="showReportCashFlow()">
       <ion-row>
         <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
-          Fluxo de Caixa
+          Flujo de Caja
         </ion-col>
       </ion-row>
       <ion-row style="margin-top: 15px;">
@@ -256,67 +256,6 @@
         </ion-col>
       </ion-row>
     </ion-card>
-
-
-    <!-- <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
-     (click)="showReportPurchase()">
-      <ion-row>
-        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
-          Compras
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col width-40>
-          <ion-row>
-            <ion-col>
-              <div class="sale-margin-string">Total:</div>
-              <div class="cash-move-amount positive sale-margin-value">$ {{purchased|number:'1.0-1'}}</div>
-            </ion-col>
-          </ion-row>
-        </ion-col>
-        <ion-col>
-          <div id="purchaseChart" style="height:100px"></div>
-        </ion-col>
-      </ion-row>
-    </ion-card> -->
-
-
-
-    <!-- <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
-     (click)="showReportCashFlow()">
-      <ion-row>
-        <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
-          Fluxo de Caixa
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col width-50>
-          <ion-row>
-            <ion-col>
-              Total de Recibido:<div class="cash-move-amount positive" style="text-align: center">$ {{cashflowIncome|number:'1.0-1'}}</div>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              Total de Pagado:<div class="cash-move-amount negative" style="text-align: center">$ {{cashflowExpense|number:'1.0-1'}}</div>
-            </ion-col>
-          </ion-row>
-        </ion-col>
-        <ion-col width-50>
-          <ion-row>
-            <ion-col>
-              Resultado Liquido:<div class="cash-move-amount positive" style="text-align: center">$ {{cashflowIncome-cashflowExpense|number:'1.0-1'}}</div>
-            </ion-col>
-          </ion-row>
-
-          <ion-row>
-            <ion-col>
-              Rentabilidad:<div class="cash-move-amount positive" style="text-align: center">{{100*cashflowIncome/cashflowExpense|number:'1.0-1'}}%</div>
-            </ion-col>
-          </ion-row>
-        </ion-col>
-      </ion-row>
-    </ion-card> -->
 
     <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
      (click)="showReportToReceive()">
