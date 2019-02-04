@@ -31,6 +31,8 @@ import { InvoicePage } from './invoice/invoice.page';
 import { WarehouseListPage } from './warehouse-list/warehouse-list.page';
 import { AccountListPage } from './account-list/account-list.page';
 
+import { ClosePageModule } from './cash/close/close.module';
+
 import { TitlePageModule } from './title/title.module';
 import { TitleListPageModule } from './title-list/title-list.module';
 import { AccountPageModule } from './account/account.module';
@@ -101,6 +103,7 @@ import { environment } from '../environments/environment';
     PaymentConditionListPageModule,
     CurrencyListPageModule,
     TitleListPageModule,
+    ClosePageModule,
     ReceiptPageModule,
     TitlePageModule,
     AccountPageModule,

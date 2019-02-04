@@ -71,6 +71,7 @@ const routes: Routes = [
   { path: 'person-tabs', loadChildren: './person-tabs/person-tabs.module#PersonTabsPageModule' },
   { path: 'report-tabs', loadChildren: './report-tabs/report-tabs.module#ReportTabsPageModule' },
   { path: 'importer', loadChildren: './importer/importer.module#ImporterPageModule' },
+  { path: 'close', loadChildren: './cash/close/close.module#ClosePageModule' },
   // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 

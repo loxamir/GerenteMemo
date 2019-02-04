@@ -46,6 +46,11 @@
          <h4 class="field-value" style="color: green;">{{cashForm.value.balance|number:'1.0'}}</h4>
        </div>
       </ion-item>
+      <ion-item>
+        <ion-button (click)="closeCash()">
+          Cerrar
+        </ion-button>
+      </ion-item>
       <!-- <ion-item
        no-padding
        (click)="selectCurrency()"

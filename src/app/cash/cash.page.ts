@@ -21,6 +21,8 @@ import { ConfigService } from '../config/config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountPage } from '../account/account.page';
 
+import { ClosePage } from './close/close.page';
+
 @Component({
   selector: 'app-cash',
   templateUrl: './cash.page.html',
@@ -114,6 +116,30 @@ export class CashPage implements OnInit {
           component: CurrencyListPage,
           componentProps: {
             "select": true
+          }
+        });
+        profileModal.present();
+      });
+    }
+
+    closeCash() {
+      return new Promise(async resolve => {
+        // this.avoidAlertMessage = true;
+        // this.events.unsubscribe('select-currency');
+        // this.events.subscribe('select-currency', (data) => {
+        //   this.cashForm.patchValue({
+        //     currency: data,
+        //     // currency_name: data.name,
+        //   });
+        //   this.cashForm.markAsDirty();
+        //   // this.avoidAlertMessage = false;
+        //   this.events.unsubscribe('select-currency');
+        //   resolve(true);
+        // })
+        let profileModal = await this.modalCtrl.create({
+          component: ClosePage,
+          componentProps: {
+            "amount_theoretical": this.cashForm.value.balance
           }
         });
         profileModal.present();
