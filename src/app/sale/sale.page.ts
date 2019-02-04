@@ -781,9 +781,11 @@ export class SalePage implements OnInit {
     }
 
     removeQuotes(){
-      this.saleForm.value.planned.forEach(planned => {
-        //console.log("removed planned", planned);
-        this.saleService.deleteSale(planned);
+      this.pouchdbService.getRelated(
+      "cash-move", "origin_id", this.saleForm.value._id).then((docs) => {
+        docs.forEach(doc=>{
+          this.pouchdbService.deleteDoc(doc);
+        })
       });
       this.saleForm.patchValue({
         'planned': [],
