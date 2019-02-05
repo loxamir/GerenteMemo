@@ -156,7 +156,7 @@ export class PlannedListPage implements OnInit {
   async createPayment() {
     let paidPlanneds = [];
     this.plannedList.forEach(item => {
-      if (item.amount_paid > 0){
+      if (item.amount_paid != 0){
         paidPlanneds.push(item.doc);
       }
     })
