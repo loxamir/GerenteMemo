@@ -118,6 +118,11 @@ export class SalePage implements OnInit {
     avoidAlertMessage: boolean;
     select;
     languages: Array<LanguageModel>;
+    contact;
+    contact_name;
+    items;
+    origin_id;
+    return;
 
     constructor(
       public navCtrl: NavController,
@@ -158,13 +163,19 @@ export class SalePage implements OnInit {
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       this.avoidAlertMessage = false;
+
+      this.contact = this.route.snapshot.paramMap.get('contact');
+      this.contact_name = this.route.snapshot.paramMap.get('contact_name');
+      this.items = this.route.snapshot.paramMap.get('items');
+      this.origin_id = this.route.snapshot.paramMap.get('origin_id');
+      this.return = this.route.snapshot.paramMap.get('return');
     }
 
     ngOnInit() {
       //var today = new Date().toISOString();
       this.saleForm = this.formBuilder.group({
-        contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
-        contact_name: new FormControl(this.route.snapshot.paramMap.get('contact_name')||''),
+        contact: new FormControl(this.contact||{}, Validators.required),
+        contact_name: new FormControl(this.contact_name||''),
 
         // project: new FormControl(this.route.snapshot.paramMap.get('project||{}),
         // project_name: new FormControl(this.route.snapshot.paramMap.get('project_name||''),
@@ -172,13 +183,13 @@ export class SalePage implements OnInit {
         name: new FormControl(''),
         code: new FormControl(''),
         date: new FormControl(this.route.snapshot.paramMap.get('date')||this.today),
-        origin_id: new FormControl(this.route.snapshot.paramMap.get('origin_id')),
+        origin_id: new FormControl(this.origin_id),
         total: new FormControl(0),
         residual: new FormControl(0),
         note: new FormControl(''),
         state: new FormControl('QUOTATION'),
         // tab: new FormControl('products'),
-        items: new FormControl(this.route.snapshot.paramMap.get('items')||[], Validators.required),
+        items: new FormControl(this.items||[], Validators.required),
         payments: new FormControl([]),
         planned: new FormControl([]),
         paymentCondition: new FormControl({}),
@@ -200,6 +211,9 @@ export class SalePage implements OnInit {
         });
       } else {
         //this.loading.dismiss();
+      }
+      if (this.return){
+        this.recomputeValues();
       }
     }
 
@@ -223,6 +237,32 @@ export class SalePage implements OnInit {
         });
         profileModal.present();
       });
+    }
+
+  async saleReturn(){
+      let formValues = Object.assign({}, this.saleForm.value);
+      let items = [];
+      formValues.items.forEach((item: any)=>{
+        items.push({
+          'product_name': item.product_name,
+          'product': item.product,
+          'quantity': -item.quantity,
+          'price': item.price,
+          'cost': item.cost,
+        });
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: SalePage,
+        componentProps: {
+          "return": true,
+          "select": true,
+          "contact": this.saleForm.value.contact,
+          "contact_name": this.saleForm.value.contact_name,
+          "items": items,
+          "origin_id": this.saleForm.value._id,
+        }
+      });
+      profileModal.present();
     }
 
     // async ionViewCanLeave() {
@@ -260,6 +300,9 @@ export class SalePage implements OnInit {
     // }
 
     goNextStep() {
+      if(this.return){
+        this.buttonSave();
+      }
       if (this.saleForm.value.state == 'QUOTATION'){
         // if(!this.saleForm.value._id){
         //   this.buttonSave();
@@ -589,7 +632,7 @@ export class SalePage implements OnInit {
       this.recomputeTotal();
       this.recomputeUnInvoiced();
       this.recomputeResidual();
-      if (this.saleForm.value.total > 0 && this.saleForm.value.residual == 0){
+      if (this.saleForm.value.total != 0 && this.saleForm.value.residual == 0){
         this.saleForm.patchValue({
           state: "PAID",
         });
@@ -833,7 +876,7 @@ export class SalePage implements OnInit {
         });
         let plannedItems = [];
         this.saleForm.value.planned.forEach(planned => {
-          if (planned.amount_residual > 0){
+          if (planned.amount_residual && planned.amount_residual != 0){
             plannedItems.push(planned);
           }
         })

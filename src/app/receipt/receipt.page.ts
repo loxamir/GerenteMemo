@@ -870,7 +870,8 @@ export class ReceiptPage implements OnInit {
               "_id": this.receiptForm.value._id,
             });
             if (item_residual == 0){
-              sale.state = "PAID";
+              console.log("is Paid", sale._id);
+              sale['state'] = "PAID";
             }
             console.log("SALE RES", JSON.stringify(sale));
             this.pouchdbService.updateDoc(sale).then(res=>{

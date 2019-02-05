@@ -5,6 +5,7 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
   template: `
   <ion-list>
     <ion-item (click)="duplicate()">Duplicar</ion-item>
+    <ion-item (click)="return()">Devolver</ion-item>
     <ion-item (click)="cancel()">Cancelar</ion-item>
   </ion-list>
   `
@@ -41,6 +42,11 @@ export class SalePopover {
 
     cancel(){
       this.navParams.data.doc.saleCancel();
+      this.pop.dismiss();
+    }
+
+    return(){
+      this.navParams.data.doc.saleReturn();
       this.pop.dismiss();
     }
 }
