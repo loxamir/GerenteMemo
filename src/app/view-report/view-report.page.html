@@ -43,10 +43,10 @@
         <h2 class="list-big-number" style="color: green;">$ {{item.value|number:'1.0'}}</h2>
       </ion-col>
     </ion-row> -->
-    <ion-row no-padding class="content-row one-line" style="margin-left:0.3em" (press)="gotoDoc(item)">
-      <h3 class="item-title"><b>{{item.doc && item.doc.name}}</b></h3>
+    <ion-row no-padding class="content-row one-line" style="margin-left:0.3em">
+      <h3 class="item-title"><b>{{item.doc && item.doc.name || item.key && item.key[3]}}</b></h3>
     </ion-row>
-   <ion-row no-padding class="content-row one-line" (press)="gotoDoc(item)">
+   <ion-row no-padding class="content-row one-line">
       <ion-col no-padding width-30 >
         <!-- <h3 class="item-title" style="margin-left: 5px;">{{item.contact && item.contact.phone || ''}}</h3> -->
       </ion-col>
