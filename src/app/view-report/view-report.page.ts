@@ -24,7 +24,6 @@ export class ViewReportPage implements OnInit {
   select;
   searchTerm: string = '';
   name: string = "Depositos";
-  has_search = false;
   level: number = 1;
   startkey: any = ['0'];
   endkey: any = ['z'];
@@ -40,8 +39,6 @@ export class ViewReportPage implements OnInit {
     public route: ActivatedRoute,
     public events: Events,
   ) {
-    console.log("nav", this.route.snapshot.paramMap.get('reportView'));
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     this.reportView = this.route.snapshot.paramMap.get('reportView') || this.reportView;
     this.level = parseInt(this.route.snapshot.paramMap.get('level')) || this.level;
@@ -53,18 +50,10 @@ export class ViewReportPage implements OnInit {
     || 'Depositos';
   }
 
-  ngOnInit() {
-    //this.loading.present();
-
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
-  }
-
-  setSearch() {
-    if (this.has_search){
-      this.searchTerm = "";
-      this.setFilteredItems();
-    }
-    this.has_search = ! this.has_search;
   }
 
   setFilteredItems() {
@@ -83,7 +72,7 @@ export class ViewReportPage implements OnInit {
       } else {
         this.view = view;
       }
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -96,13 +85,6 @@ export class ViewReportPage implements OnInit {
     this.endkey = endkey;
     this.endkey.splice(this.endkey.length -1, 0, view.key[view.key.length - 1]);
     this.startkey.splice(this.startkey.length -1, 0, view.key[view.key.length - 1]);
-    console.log( "goto", {
-      'reportView': this.reportView,
-      'level': this.level+1,
-      'startkey': this.startkey,
-      'endkey': this.endkey,
-      'name': this.name+"/"+view.doc.name
-    });
     this.navCtrl.navigateForward(['/view-report', {
       'reportView': this.reportView,
       'level': this.level+1,
@@ -143,7 +125,6 @@ export class ViewReportPage implements OnInit {
       }
     });
     profileModal.present();
-    // this.navCtrl.navigateForward(AccountPage, {'_id': view.doc._id});
   }
 
 
@@ -155,7 +136,9 @@ export class ViewReportPage implements OnInit {
     this.navCtrl.navigateForward(['/view-report', {'_id': view._id}]);
   }
 
-  doRefreshList() {
+  async doRefreshList() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     setTimeout(() => {
       this.viewService.getView(
         this.searchTerm,
@@ -165,11 +148,14 @@ export class ViewReportPage implements OnInit {
         this.endkey
       ).then((view) => {
         this.view = view;
+        this.loading.dismiss();
       });
     }, 500);
   }
 
-  doRefresh(refresher) {
+  async doRefresh(refresher) {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     setTimeout(() => {
       this.viewService.getView(
         this.searchTerm,
@@ -179,18 +165,10 @@ export class ViewReportPage implements OnInit {
         this.endkey
       ).then((view) => {
         this.view = view;
+        this.loading.dismiss();
         refresher.target.complete();
       });
     }, 500);
-    ////console.log('Begin async operation', refresher);
-    // setTimeout(() => {
-    //   ////console.log('Async operation has ended');
-    //   this.productsService.getProductsPage(this.searchTerm, 0).then((products: any[]) => {
-    //     ////console.log("products", products);
-    //     this.products = products;
-    //     this.page = 0;
-    //   });
-    // }, 500);
   }
 
   deleteView(view){
@@ -198,9 +176,5 @@ export class ViewReportPage implements OnInit {
     this.view.splice(index, 1);
     this.viewService.deleteView(view);
   }
-
-  // ionViewWillLeave(){
-  //   console.log("I will leave", this.level, this.startkey, this.endkey)
-  // }
 
 }

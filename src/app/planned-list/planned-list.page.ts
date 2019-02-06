@@ -41,7 +41,6 @@ export class PlannedListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public alertCtrl: AlertController,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -100,15 +99,16 @@ export class PlannedListPage implements OnInit {
     })
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
 
   setFilteredItems() {
     if (this.contact_id){
       this.selectedContact();
-      //this.loading.dismiss();
+      this.loading.dismiss();
     } else {
       if (this.signal == "+"){
         this.plannedService.getReceivables(
@@ -117,7 +117,7 @@ export class PlannedListPage implements OnInit {
           console.log("plannedList", plannedList);
           this.plannedList = plannedList;
           this.recomputeValues();
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
         this.plannedService.getPayables(
@@ -125,7 +125,7 @@ export class PlannedListPage implements OnInit {
         ).then((plannedList: any[]) => {
           this.plannedList = plannedList;
           this.recomputeValues();
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       }
     }

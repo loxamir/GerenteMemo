@@ -155,7 +155,9 @@ export class SaleReportPage implements OnInit {
     }, {})
   }
 
-  getData() {
+  async getData() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     return new Promise(resolve => {
       if (this.reportSaleForm.value.reportType == 'sale') {
         this.pouchdbService.getView(
@@ -233,6 +235,7 @@ export class SaleReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
+            this.loading.dismiss();
             resolve(output);
           }
 
@@ -269,6 +272,7 @@ export class SaleReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
+            this.loading.dismiss();
             resolve(output);
           }
           else if (this.reportSaleForm.value.groupBy == 'payment') {
@@ -303,6 +307,7 @@ export class SaleReportPage implements OnInit {
               marker = !marker;
             total += parseFloat(item['total']);
           });
+          this.loading.dismiss();
           resolve(output);
         }
           else if (this.reportSaleForm.value.groupBy == 'contact') {
@@ -338,6 +343,7 @@ export class SaleReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
+            this.loading.dismiss();
             resolve(output);
           }
           else if (this.reportSaleForm.value.groupBy == 'date') {
@@ -373,6 +379,7 @@ export class SaleReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
+            this.loading.dismiss();
             resolve(output);
 
           }
@@ -410,6 +417,7 @@ export class SaleReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
+            this.loading.dismiss();
             resolve(output);
           }
         });

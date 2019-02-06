@@ -105,7 +105,7 @@ export class ResultReportPage implements OnInit {
     }, {})
   }
 
-  ngOnInit() {
+ async ngOnInit() {
     this.resultForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact')
       || {}, Validators.required),
@@ -140,6 +140,8 @@ export class ResultReportPage implements OnInit {
       invoices: new FormControl([]),
       _id: new FormControl(''),
     });
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.recomputeValues();
   }
 
@@ -225,6 +227,7 @@ export class ResultReportPage implements OnInit {
               }
             })
             this.result = result.reverse();
+            this.loading.dismiss();
           });
         });
       });

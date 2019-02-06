@@ -8,12 +8,9 @@
         {{ 'RESULT' | translate }}: {{resultForm.value.code}}
       </ion-row>
     </ion-title>
-
     <ion-buttons slot="end" >
     </ion-buttons>
   </ion-toolbar>
-
-
 </ion-header>
 
 <ion-content class="result-content" style="background: white;">
@@ -22,16 +19,6 @@
   </ion-refresher>
   <form class="sample-form validations-form" [formGroup]="resultForm" (ngSubmit)="onSubmit(resultForm.value)">
     <ion-row justify-content-center>
-      <!-- <ion-col width-10 class="field-label" no-padding>
-          <h4 class="field-label">{{'Desde' | translate }}</h4>
-      </ion-col>
-      <ion-col width-37 class="item-content" no-padding>
-          <ion-datetime class="result-date-start"
-            displayFormat="DD/MM/YYYY"
-            pickerFormat="DD/MM/YYYY"
-            formControlName="dateStart">
-            </ion-datetime>
-      </ion-col> -->
       <ion-item no-padding class="field-50">
         <h4 class="field-label">{{'Desde' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
@@ -49,17 +36,6 @@
         formControlName="dateEnd">
         </ion-datetime>
       </ion-item>
-      <!-- <ion-col width-15 class="field-label" no-padding>
-          <h4 class="field-label">{{'Hasta' | translate }}</h4>
-      </ion-col>
-      <ion-col width-38  no-padding>
-          <ion-datetime class="result-date-end"
-            displayFormat="DD/MM/YYYY"
-            pickerFormat="DD/MM/YYYY"
-            [max]="today.getFullYear()+5"
-            formControlName="dateEnd">
-            </ion-datetime>
-      </ion-col> -->
     </ion-row>
     <div>
       <ion-list no-lines>
@@ -84,22 +60,8 @@
           </div>
         </div>
       </ion-list>
-
-
     </div>
   </form>
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-      <ion-fab-button (click)="share()">
-          <ion-icon name="share">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button (click)="printAndroid()">
-          <ion-icon name="print">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab>
   <div style="height:100px;">
   </div>
 </ion-content>

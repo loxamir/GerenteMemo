@@ -9,9 +9,6 @@
       </ion-row>
     </ion-title>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only  (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -53,39 +50,6 @@
           <ion-select-option value="payment">Condición de Pago</ion-select-option>
         </ion-select>
       </ion-item>
-
-
-      <!-- <ion-card class="list-card" no-padding class="item-content" style="width: calc(100% - 20px);">
-        <ion-col no-padding *ngIf="reportPurchaseForm.value.reportType == 'purchase'">
-          <ion-label>{{'Agrupado Por' | translate }}</ion-label>
-          <ion-select class="paymentCondition" formControlName="groupBy" cancelText="{{ 'CANCEL' | translate }}" (ionChange)="goNextStep()" okText="{{ 'OK' | translate }}">
-            <ion-select-option value="date">Fecha</ion-select-option>
-            <ion-select-option value="product">Producto</ion-select-option>
-            <ion-select-option value="contact">Contato</ion-select-option>
-            <ion-select-option value="category">Categoria</ion-select-option>
-            <ion-select-option value="payment">Condición de Pago</ion-select-option>
-          </ion-select>
-        </ion-col>
-      </ion-card> -->
-
-      <!-- <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;height: 400px;">
-        <ion-row>
-          <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
-            Ventas por Producto
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <div id='tooltip' style="display: none"></div>
-            <svg width='320' height='260' id="svg" style="margin-top:100px;"></svg>
-          </ion-col>
-        </ion-row>
-      </ion-card> -->
-
-
-
-
-
 
       <ion-card class="list-card">
         <ion-list>
@@ -210,10 +174,8 @@
               </ion-row>
             </ion-list>
           </div>
-
           <div>
             <ion-list no-lines *ngIf="reportPurchaseForm.value.groupBy == 'date'">
-
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
                   Fecha
@@ -241,13 +203,6 @@
         </ion-list>
       </ion-card>
 
-
-
-
-
-
-
-
       <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;">
         <ion-row>
           <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
@@ -274,20 +229,7 @@
         </ion-row>
       </ion-card>
     </ion-row>
-
-    <div style="height: 100px">
-    </div>
   </form>
-  <!-- <ion-fab bottom left>
-    <ion-fab-button (click)="share()">
-          <ion-icon name="share">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="printAndroid()">
-          <ion-icon name="print">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab> -->
+  <div style="height: 100px">
+  </div>
 </ion-content>

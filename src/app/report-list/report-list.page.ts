@@ -89,7 +89,7 @@ export class ReportListPage implements OnInit {
     this.today = new Date().toISOString();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.reportsForm = this.formBuilder.group({
       dateStart: new FormControl(
         this.route.snapshot.paramMap.get('dateStart')
@@ -100,6 +100,8 @@ export class ReportListPage implements OnInit {
       sales: new FormControl(0),
       purchases: new FormControl(0),
     });
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     setTimeout(() => {
       this.recomputeValues();
     }, 500);
@@ -256,6 +258,7 @@ export class ReportListPage implements OnInit {
     this.computePurchaseValues();
     this.computeToPayValues();
     this.computeResultValues();
+    this.loading.dismiss();
   }
 
   compare(a, b, field) {
