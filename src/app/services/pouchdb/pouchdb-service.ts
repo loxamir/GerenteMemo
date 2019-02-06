@@ -7,7 +7,7 @@ import PouchdbUpsert from 'pouchdb-upsert';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { Storage } from '@ionic/storage';
 import { FormatService } from '../format.service';
-var server = "couchdb.sistema.social";
+var server = "couchdb.sistema.social:5984";
 
 @Injectable({ providedIn: 'root' })
 export class PouchdbService {
@@ -31,7 +31,7 @@ export class PouchdbService {
   putSecurity(data){
     return new Promise(resolve => {
       this.http.put(
-        'https://couchdb.sistema.social/'+'demo'+'/_security',
+        'http://'+server+'/'+'demo'+'/_security',
         data,
         {
           headers: new HttpHeaders().set(
@@ -69,7 +69,7 @@ export class PouchdbService {
           console.log("database", database);
           self.events.publish('got-database');
           this.storage.get('password').then(password => {
-            this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
+            this.remote = "http://"+username+":"+password+"@"+server+'/'+database;
             let options = {
               live: true,
               retry: true

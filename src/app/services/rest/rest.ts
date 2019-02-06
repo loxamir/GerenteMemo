@@ -14,7 +14,7 @@ const httpOptions = {
 */
 @Injectable({ providedIn: 'root' })
 export class RestProvider {
-  apiUrl = 'https://couchdb.sistema.social';
+  apiUrl = 'http://couchdb.sistema.social:5984';
 
   constructor(public http: HttpClient) {
     console.log('Hello RestProvider Provider');
@@ -144,7 +144,7 @@ export class RestProvider {
 
   checkDbExist(database) {
     return new Promise(resolve => {
-        this.http.get('https://couchdb.sistema.social/'+database).subscribe(data => {
+        this.http.get('http://couchdb.sistema.social/'+database).subscribe(data => {
         console.log("check exist", data);
         resolve(data);
       }, err => {
@@ -156,7 +156,7 @@ export class RestProvider {
 
   getRucName(ruc) {
     return new Promise(resolve => {
-        this.http.get('https://couchdb.sistema.social/ruc/'+ruc).subscribe(data => {
+        this.http.get('http://couchdb.sistema.social/ruc/'+ruc).subscribe(data => {
         console.log("RUC NAME", data);
         resolve(data);
       }, err => {
@@ -173,7 +173,7 @@ export class RestProvider {
         "password":password
       }
       console.log("loginData", loginData);
-      this.http.post('https://couchdb.sistema.social/_session', loginData).subscribe(data => {
+      this.http.post('http://couchdb.sistema.social:5984/_session', loginData).subscribe(data => {
         console.log("check login", data);
         resolve(data);
       }, err => {
@@ -187,7 +187,7 @@ export class RestProvider {
     // return new Promise(resolve => {
       return new Promise(resolve => {
         this.http.get(
-          'https://couchdb.sistema.social/_users/org.couchdb.user:' + username,
+          'http://couchdb.sistema.social:5984/_users/org.couchdb.user:' + username,
           {
             // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
             headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + old_passowrd))
@@ -203,7 +203,7 @@ export class RestProvider {
           // }
           // console.log("loginData", loginData);
           this.http.put(
-            'https://couchdb.sistema.social/_users/org.couchdb.user:'+ username,
+            'http://couchdb.sistema.social:5984/_users/org.couchdb.user:'+ username,
             userData,
             {
               // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
@@ -228,7 +228,7 @@ export class RestProvider {
     // return new Promise(resolve => {
       return new Promise(resolve => {
         this.http.get(
-          'https://couchdb.sistema.social/_users/org.couchdb.user:' + username,
+          'http://couchdb.sistema.social:5984/_users/org.couchdb.user:' + username,
           {
             // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
             headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + password))
@@ -245,7 +245,7 @@ export class RestProvider {
           // }
           // console.log("loginData", loginData);
           // this.http.put(
-          //   'https://couchdb.sistema.social/_users/org.couchdb.user:'+ username,
+          //   'http://couchdb.sistema.social:5984/_users/org.couchdb.user:'+ username,
           //   userData,
           //   {
           //     // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
