@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, PopoverController , Events, NavParams  } from '@ionic/angular';
-// import { ServicePage } from '../service';
-//import { DecimalPipe } from '@angular/common';
 import 'rxjs/Rx';
-// import { ServicesService } from './services.service';
-// import { ServicesPopover } from './services.popover';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ServiceListPopover} from './service-list.popover';
@@ -28,8 +24,6 @@ export class ServiceListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public app: App,
-    // public servicesService: ServicesService,
     public translate: TranslateService,
     public languageService: LanguageService,
     public loadingCtrl: LoadingController,
@@ -38,7 +32,6 @@ export class ServiceListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -58,7 +51,7 @@ export class ServiceListPage implements OnInit {
       console.log("services", services);
       this.services = services;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -88,13 +81,6 @@ export class ServiceListPage implements OnInit {
     }, 50);
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(ServicesPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
-
   async presentPopover(myEvent) {
     console.log("teste my event");
     let popover = await this.popoverCtrl.create({
@@ -105,81 +91,24 @@ export class ServiceListPage implements OnInit {
     popover.present();
   }
 
-  getMonth(month) {
-    if (month == '01'){
-      return "Enero";
-    } else if (month == '02'){
-      return "Febrero";
-    } else if (month == '03'){
-      return "Marzo";
-    } else if (month == '04'){
-      return "Abril";
-    } else if (month == '05'){
-      return "Mayo";
-    } else if (month == '06'){
-      return "Junio";
-    } else if (month == '07'){
-      return "Julio";
-    } else if (month == '08'){
-      return "Agosto";
-    } else if (month == '09'){
-      return "Septiembre";
-    } else if (month == '10'){
-      return "Octubre";
-    } else if (month == '11'){
-      return "Noviembre";
-    } else if (month == '12'){
-      return "Diciembre";
-    }
-  }
-
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
-  // startFilteredItems() {
-  //   this.servicesService.getServicesPage(this.searchTerm, 0).then((services) => {
-  //     this.services = services;
-  //     //this.loading.dismiss();
-  //     this.page = 1;
-  //   });
-  // }
 
   setFilteredItems() {
     this.getServicesPage(this.searchTerm, 0).then((services) => {
       this.services = services;
-      //this.loading.dismiss();
+      this.loading.dismiss();
       this.page = 1;
     });
-    // if (this.searchTerm == ""){
-    //   this.servicesService.getServicesPage(this.searchTerm, 0).then((services) => {
-    //     this.services = services;
-    //   });
-    // } else {
-    //   let selector = {
-    //     "$and": [
-    //       {
-    //         "$or": [
-    //           {code: { $regex: RegExp(this.searchTerm, "i") }},
-    //           {contact_name: { $regex: RegExp(this.searchTerm, "i") }},
-    //         ]
-    //       },
-    //       {docType: 'service'},
-    //     ]
-    //   }
-    //   let sort = [ {'_id' : 'desc'} ];
-    //   this.servicesService.searchServices(selector, sort).then((services) => {
-    //     this.services = services;
-    //   });
-    // }
   }
 
   openService(service) {
     this.events.subscribe('open-service', (data) => {
       this.events.unsubscribe('open-service');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push('/service', {'_id': service._id});
     this.navCtrl.navigateForward(['/service', {'_id': service._id}]);
   }
 
@@ -192,8 +121,6 @@ export class ServiceListPage implements OnInit {
       }
       this.events.unsubscribe('create-service');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(ServicePage, {});
     this.navCtrl.navigateForward(['/service', {}]);
     fab.close();
   }
@@ -207,10 +134,6 @@ export class ServiceListPage implements OnInit {
       }
       this.events.unsubscribe('create-service');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(ServicePage, {
-    //   'production': true,
-    // });
     this.navCtrl.navigateForward(['/service', {'production': true,}]);
     fab.close();
   }

@@ -36,7 +36,6 @@ export class ProductListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public file: File,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     this.operation = this.route.snapshot.paramMap.get('operation') || this.operation;
     this.type = this.route.snapshot.paramMap.get('type') || 'all';
@@ -89,8 +88,9 @@ export class ProductListPage implements OnInit {
     return csv
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
 
@@ -105,7 +105,7 @@ export class ProductListPage implements OnInit {
         this.products = products.filter(word => word.type == this.type);
       }
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -115,7 +115,7 @@ export class ProductListPage implements OnInit {
     ).then((items) => {
       this.products = items;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

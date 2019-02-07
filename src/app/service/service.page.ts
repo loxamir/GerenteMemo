@@ -4,39 +4,24 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { NavController,  LoadingController, AlertController, Events, ToastController, ModalController, PopoverController} from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-//import { DecimalPipe } from '@angular/common';
 import { Printer } from '@ionic-native/printer';
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
-// import { ServiceService } from './service.service';
 import { ContactListPage } from '../contact-list/contact-list.page';
-//import { ServiceItemPage } from '../service-item/service-item';
-//import { CashMovePage } from '../cash/move/cash-move';
 import { ProductService } from '../product/product.service';
-//import { ServicesPage } from '../services/services';
 import { ProductListPage } from '../product-list/product-list.page';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { ConfigService } from '../config/config.service';
-//import { NumeroALetras } from './legacy';
 import { HostListener } from '@angular/core';
-// import { SalePage } from '../sale/sale';
 import { FormatService } from '../services/format.service';
-
-// import { ServiceEquipmentPage } from './equipment/equipment';
-// import { ServiceInputPage } from './input/input.page';
 import { ServiceWorkPage } from './work/work.page';
 import { ServiceTravelPage } from './travel/travel.page';
-// import { PlannedService } from '../planned/planned.service';
 import { InvoicePage } from '../invoice/invoice.page';
 import { ReceiptPage } from '../receipt/receipt.page';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
-// import { StockMoveService } from '../stock/stock-move.service';
-// import { CashMoveService } from '../cash/move/cash-move.service';
 import { ServicePopover } from './service.popover';
 
 @Component({
@@ -110,7 +95,6 @@ export class ServicePage implements OnInit {
     _id: string;
     avoidAlertMessage: boolean;
     travel_product: object;
-    // input_product: object;
     labor_product: object;
     languages: Array<LanguageModel>;
     show_works: boolean = false;
@@ -125,9 +109,6 @@ export class ServicePage implements OnInit {
       public translate: TranslateService,
       public languageService: LanguageService,
       public modalCtrl: ModalController,
-      // public imagePicker: ImagePicker,
-      // public cropService: Crop,
-      // public platform: Platform,
       public route: ActivatedRoute,
       public formBuilder: FormBuilder,
       public alertCtrl: AlertController,
@@ -141,15 +122,10 @@ export class ServicePage implements OnInit {
       public modal: ModalController,
       public speechRecognition: SpeechRecognition,
       public tts: TextToSpeech,
-      // public plannedService: PlannedService,
-      // public cashMoveService: CashMoveService,
-      // public stockMoveService: StockMoveService,
       public pouchdbService: PouchdbService,
       public popoverCtrl: PopoverController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
-      // this.languages = this.languageService.getLanguages();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');
@@ -157,7 +133,7 @@ export class ServicePage implements OnInit {
       this.avoidAlertMessage = false;
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       this.serviceForm = this.formBuilder.group({
         contact: new FormControl('', Validators.required),
@@ -206,9 +182,8 @@ export class ServicePage implements OnInit {
         responsable: new FormControl({}),
         _id: new FormControl(''),
       });
-    // }
-    // ionViewDidLoad() {
-      //this.loading.present();
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.configService.getConfig().then((data) => {
         console.log("dddata", data);
         this.labor_product = data.labor_product;
@@ -219,10 +194,10 @@ export class ServicePage implements OnInit {
             //console.log("data", data);
             this.serviceForm.patchValue(data);
             this.recomputeValues();
-            //this.loading.dismiss();
+            this.loading.dismiss();
           });
         } else {
-          //this.loading.dismiss();
+          this.loading.dismiss();
           if (!this.serviceForm.value.production){
             setTimeout(() => {
               this.clientRequest.setFocus();
@@ -232,12 +207,6 @@ export class ServicePage implements OnInit {
       });
 
     }
-    // presentPopover(myEvent) {
-    //   let popover = this.popoverCtrl.create(ServicePopover, {doc: this});
-    //   popover.present({
-    //     ev: myEvent
-    //   });
-    // }
 
     async presentPopover(myEvent) {
       console.log("teste my event");
@@ -717,48 +686,6 @@ export class ServicePage implements OnInit {
       }
     }
 
-    // addPayment() {
-    //   this.avoidAlertMessage = true;
-    //     this.events.unsubscribe('create-receipt');
-    //     this.events.subscribe('create-receipt', (data) => {
-    //         this.serviceForm.value.payments.push({
-    //           'paid': data.paid,
-    //           'date': data.date,
-    //           'state': data.state,
-    //           '_id': data._id,
-    //         });
-    //       this.recomputeValues();
-    //       this.avoidAlertMessage = false;
-    //       this.buttonSave();
-    //       this.events.unsubscribe('create-receipt');
-    //     });
-    //     let plannedItems = [];
-    //     this.serviceForm.value.planned.forEach(planned => {
-    //       if (planned.state == 'WAIT'){
-    //         plannedItems.push(planned);
-    //       }
-    //     })
-    //     // let origin_ids = [];
-    //     if (this.serviceForm['invoices'] && this.serviceForm['invoices'].length == 1){
-    //       plannedItems = [plannedItems[0]];
-    //       // origin_ids = [this.serviceForm.value._id];
-    //     } else {
-    //       plannedItems = [plannedItems[0]];
-    //       // origin_ids = [this.serviceForm.value._id];
-    //     }
-    //     let profileModal = this.modalCtrl.create({ component:ReceiptPage, {
-    //       "addPayment": true,
-    //       "contact": this.serviceForm.value.contact,
-    //       "account_id": "account.income.service",
-    //       "name": "Servicio "+this.serviceForm.value.code,
-    //       "items": plannedItems,
-    //       "signal": "+",
-    //       // "origin_ids": origin_ids,
-    //     });
-    //     profileModal.present();
-    // }
-
-
       async addPayment() {
         this.avoidAlertMessage = true;
           this.events.unsubscribe('create-receipt');
@@ -804,10 +731,6 @@ export class ServicePage implements OnInit {
             profileModal.dismiss();
             this.events.unsubscribe('create-receipt');
           });
-
-
-            // plannedItems = [this.serviceForm.value.planned[this.serviceForm.value.planned.length - 1]];
-
           console.log("this.serviceForm.value.planned", this.serviceForm.value.planned);
           console.log("plannedItems", JSON.stringify(plannedItems));
 
@@ -849,19 +772,6 @@ export class ServicePage implements OnInit {
         items.push(travel_sum);
       }
 
-
-      // let input_sum = {
-      //   'product': this.input_product,
-      //   'description': this.input_product['name'],
-      //   'price': 0,
-      //   'quantity': 1,
-      // }
-      // this.serviceForm.value.inputs.forEach(input=>{
-      //   input_sum['price'] += parseFloat(input['price'])*parseFloat(input['quantity']);
-      // })
-      // if (input_sum['price'] > 0){
-      //   items.push(input_sum);
-      // }
       let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
@@ -987,9 +897,6 @@ export class ServicePage implements OnInit {
     recomputeInputs(){
       let inputs = 0;
       this.serviceForm.value.inputs.forEach((input) => {
-        // console.log("input", input);
-        // inputs += parseFloat(input.price)*parseFloat(input.quantity);
-        // console.log("inputs", inputs);
         if (this.serviceForm.value.production){
           // works += parseFloat(work.time)*parseFloat(this.labor_product['cost']);
           inputs += parseFloat(input.quantity)*parseFloat(input.cost|| 0);

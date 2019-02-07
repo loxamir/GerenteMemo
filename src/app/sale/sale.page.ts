@@ -155,7 +155,6 @@ export class SalePage implements OnInit {
       public socialSharing: SocialSharing,
       // public file: File,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
@@ -171,7 +170,7 @@ export class SalePage implements OnInit {
       this.return = this.route.snapshot.paramMap.get('return');
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       this.saleForm = this.formBuilder.group({
         contact: new FormControl(this.contact||{}, Validators.required),
@@ -202,15 +201,16 @@ export class SalePage implements OnInit {
         currency: new FormControl(this.route.snapshot.paramMap.get('currency')||{}),
         _id: new FormControl(''),
       });
-              //this.loading.present();
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if (this._id){
         this.saleService.getSale(this._id).then((data) => {
           //console.log("data", data);
           this.saleForm.patchValue(data);
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
       }
       if (this.return){
         this.recomputeValues();

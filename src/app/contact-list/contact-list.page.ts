@@ -16,7 +16,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 })
 export class ContactListPage implements OnInit {
   contacts: any;
-  // loading: any;
+  loading: any;
   select:any;
   searchTerm: string = '';
   page = 0;
@@ -35,6 +35,7 @@ export class ContactListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public popoverCtrl: PopoverController,
     public file: File,
+    public loadingCtrl: LoadingController,
   ) {
     // //this.loading = //this.loadingCtrl.create();
     // this._id = this.route.snapshot.paramMap.get('_id');
@@ -54,16 +55,11 @@ export class ContactListPage implements OnInit {
     // })
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
-
-  // gotoContact(){
-  //   console.log("gotoContact");
-  //   // this.router.navigate(['contact', {id: 123}]);
-  //   this.setFilteredItems();
-  // }
-
 
   setFilteredItems() {
     console.log("tes1");
@@ -97,7 +93,7 @@ export class ContactListPage implements OnInit {
 
       // this.contacts = contacts;
       // this.page = 1;
-      // //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -137,7 +133,7 @@ export class ContactListPage implements OnInit {
       console.log("contacts", sales);
       this.contacts = sales;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -180,11 +176,6 @@ export class ContactListPage implements OnInit {
     });
     return csv
   }
-
-  // ionViewDidLoad() {
-  //   //this.loading.present();
-  //   this.setFilteredItems();
-  // }
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {

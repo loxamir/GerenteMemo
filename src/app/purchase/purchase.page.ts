@@ -155,7 +155,6 @@ export class PurchasePage implements OnInit {
       public modalCtrl: ModalController,
       public popoverCtrl: PopoverController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
@@ -207,7 +206,7 @@ export class PurchasePage implements OnInit {
       }
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       this.purchaseForm = this.formBuilder.group({
         contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
@@ -238,18 +237,16 @@ export class PurchasePage implements OnInit {
         seller_name: new FormControl(this.route.snapshot.paramMap.get('seller_name')||''),
         _id: new FormControl(''),
       });
-    // }
-    //
-    // ionViewDidLoad() {
-      //this.loading.present();
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if (this._id){
         this.getPurchase(this._id).then((data) => {
           //console.log("data", data);
           this.purchaseForm.patchValue(data);
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
       }
     }
 

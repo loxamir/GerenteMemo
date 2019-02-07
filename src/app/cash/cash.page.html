@@ -40,17 +40,15 @@
       </ion-col> -->
       <ion-item
        no-padding
-       class="field-100">
-       <div class="field-many2one">
+       class="field-50">
          <h4 class="field-label">{{'CURRENT_BALANCE' | translate }}</h4>
          <h4 class="field-value" style="color: green;">{{cashForm.value.balance|number:'1.0'}}</h4>
-       </div>
       </ion-item>
-      <!-- <ion-item>
-        <ion-button (click)="closeCash()">
+      <ion-item class="field-50">
+        <ion-button (click)="closeCash()" style="width: 100%;">
           Cerrar
         </ion-button>
-      </ion-item> -->
+      </ion-item>
       <!-- <ion-item
        no-padding
        (click)="selectCurrency()"

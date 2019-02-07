@@ -86,7 +86,6 @@ export class ReceiptPage implements OnInit {
       public events:Events,
       // public modal: ModalController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       console.log("route", this.route);
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
@@ -104,7 +103,7 @@ export class ReceiptPage implements OnInit {
     //   console.log("after", this.route.snapshot.paramMap.get('items'));
     // }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       setTimeout(() => {
         if(this.receiptForm.value.state == "DRAFT"){
@@ -144,6 +143,8 @@ export class ReceiptPage implements OnInit {
         exchange_rate: new FormControl(this.exchange_rate||'1'),
         _id: new FormControl(''),
       });
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.recomputeValues();
         this.configService.getConfig().then(async config => {
           this.receiptForm.patchValue({
@@ -156,17 +157,12 @@ export class ReceiptPage implements OnInit {
             this.receiptService.getReceipt(this._id).then((data) => {
               //console.log("data", data);
               this.receiptForm.patchValue(data);
-              //this.loading.dismiss();
+              this.loading.dismiss();
             });
           } else {
-            //this.loading.dismiss();
+            this.loading.dismiss();
           }
         });
-    // }
-    //
-    // ionViewDidLoad() {
-      //this.loading.present();
-
     }
 
     goNextStep() {

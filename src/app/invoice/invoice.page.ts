@@ -124,7 +124,6 @@ export class InvoicePage implements OnInit {
       public events:Events,
       // public popoverCtrl: PopoverController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
@@ -144,7 +143,7 @@ export class InvoicePage implements OnInit {
     //   });
     // }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       //console.log("this.route.snapshot.paramMap.get('origin_ids", this.route.snapshot.paramMap.get('contact);
       let items = [];
@@ -185,6 +184,8 @@ export class InvoicePage implements OnInit {
         origin_id: new FormControl(this.origin_id||''),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
       });
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.recomputeValues();
       //this.loading.present();
       // console.log("id", this._id);
@@ -205,10 +206,10 @@ export class InvoicePage implements OnInit {
         this.getInvoice(this._id).then((data) => {
           console.log("data invoice", data);
           this.invoiceForm.patchValue(data);
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
       }
     }
 

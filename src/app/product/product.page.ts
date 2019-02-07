@@ -96,7 +96,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       // }
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       setTimeout(() => {
         this.name.setFocus();
         this.productForm.markAsPristine();
@@ -118,15 +118,18 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         unity: new FormControl(this.route.snapshot.paramMap.get('unity')||'un'),
         _id: new FormControl(''),
       });
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if (this._id){
         this.productService.getProduct(this._id).then((data) => {
           this.productForm.patchValue(data);
           this.theoreticalStock = data.stock;
           this.productForm.markAsPristine();
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
         this.getDefaultCategory();
+        this.loading.dismiss();
       }
     }
 

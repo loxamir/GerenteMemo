@@ -34,7 +34,6 @@ export class InvoiceListPage implements OnInit {
     public translate: TranslateService,
     public languageService: LanguageService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -51,7 +50,7 @@ export class InvoiceListPage implements OnInit {
       console.log("sinvoice", invoices);
       this.invoices = invoices;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -76,15 +75,9 @@ export class InvoiceListPage implements OnInit {
     }, 200);
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(InvoicesPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
-
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
 
@@ -94,7 +87,7 @@ export class InvoiceListPage implements OnInit {
     ).then((invoices) => {
       this.invoices = invoices;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

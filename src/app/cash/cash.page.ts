@@ -68,7 +68,7 @@ export class CashPage implements OnInit {
       })
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       this.cashForm = this.formBuilder.group({
         name: new FormControl('', Validators.required),
         balance: new FormControl(0),
@@ -86,15 +86,16 @@ export class CashPage implements OnInit {
         // default: new FormControl(false),
         _id: new FormControl(''),
       });
-      //this.loading.present();
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if (this._id){
         this.cashService.getCash(this._id).then((data) => {
           this.cashForm.patchValue(data);
           this.recomputeValues();
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
       }
     }
 
@@ -139,7 +140,9 @@ export class CashPage implements OnInit {
         let profileModal = await this.modalCtrl.create({
           component: ClosePage,
           componentProps: {
-            "amount_theoretical": this.cashForm.value.balance
+            "amount_theoretical": this.cashForm.value.balance,
+            "cash_id": this.cashForm.value._id,
+            "accountMoves": this.cashForm.value.moves
           }
         });
         profileModal.present();
