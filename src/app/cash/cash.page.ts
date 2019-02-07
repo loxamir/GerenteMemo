@@ -139,10 +139,12 @@ export class CashPage implements OnInit {
         //   this.events.unsubscribe('select-currency');
         //   resolve(true);
         // })
+        console.log("closes", this.cashForm.value.closes);
         let profileModal = await this.modalCtrl.create({
           component: ClosePage,
           componentProps: {
             "select": true,
+            "amount_open": this.cashForm.value.closes[0].amount_physical|| 0,
             "amount_theoretical": this.cashForm.value.balance,
             "cash_id": this.cashForm.value._id,
             "accountMoves": this.cashForm.value.moves

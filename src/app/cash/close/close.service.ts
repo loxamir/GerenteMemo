@@ -12,8 +12,17 @@ export class CloseService {
     public configService: ConfigService,
   ) { }
 
-  getClose(doc_id): Promise<any> {
-    return this.pouchdbService.getDoc(doc_id);
+  async getClose(doc_id): Promise<any> {
+    return new Promise(async (resolve, reject)=>{
+      let close:any = await this.pouchdbService.getDoc(doc_id);
+      close.accountMoves = await this.pouchdbService.getList(close.accountMoves);
+      let moveList = [];
+      close.accountMoves.forEach((accountMove: any) => {
+        moveList.push(accountMove.doc);
+      })
+      close.accountMoves = moveList;
+      resolve(close);
+    })
   }
 
   createClose(close){

@@ -119,21 +119,21 @@
       </ion-row>
     </ion-col>
     <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-      <h2 *ngIf="item.accountFrom_id != _id" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.0'}}</h2>
-      <h2 *ngIf="item.accountTo_id != _id" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.0'}}</h2>
+      <h2 *ngIf="item.accountFrom_id != cash_id" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.0'}}</h2>
+      <h2 *ngIf="item.accountTo_id != cash_id" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.0'}}</h2>
     </ion-col>
   </ion-row>
-  <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
-    <ion-col *ngIf="item.accountFrom_id != _id" no-padding style="text-align: center;border-radius: 4px;">
+  <ion-row no-padding [class.paid]="item.accountFrom_id != cash_id" [class.due]="item.accountFrom_id == _id">
+    <ion-col *ngIf="item.accountFrom_id != cash_id" no-padding style="text-align: center;border-radius: 4px;">
       {{ item.accountFrom_name | translate}}
     </ion-col>
-    <ion-col *ngIf="item.accountFrom_id != _id" no-padding size="2" class="item-icon">
+    <ion-col *ngIf="item.accountFrom_id != cash_id" no-padding size="2" class="item-icon">
       <ion-icon name="arrow-round-up" color="success"></ion-icon>
     </ion-col>
-    <ion-col *ngIf="item.accountTo_id != _id" no-padding style="text-align: center;border-radius: 4px;">
+    <ion-col *ngIf="item.accountTo_id != cash_id" no-padding style="text-align: center;border-radius: 4px;">
       {{ item.accountTo_name | translate}}
     </ion-col>
-    <ion-col *ngIf="item.accountTo_id != _id" no-padding size="2" class="item-icon">
+    <ion-col *ngIf="item.accountTo_id != cash_id" no-padding size="2" class="item-icon">
       <ion-icon name="arrow-round-down"></ion-icon>
     </ion-col>
   </ion-row>

@@ -5,7 +5,7 @@ import { LanguageService } from "../../services/language/language.service";
 import { LanguageModel } from "../../services/language/language.model";
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormatService } from "../../services/format.service";
-import { ModalController, Events } from '@ionic/angular';
+import { ModalController, Events, LoadingController } from '@ionic/angular';
 import { CloseService } from "./close.service";
 import { PouchdbService } from '../../services/pouchdb/pouchdb-service';
 
@@ -21,6 +21,7 @@ export class ClosePage implements OnInit {
   @Input() cash_id;
   @Input() _id;
   @Input() select;
+  @Input() amount_open;
 
   closeForm: FormGroup;
   loading: any;
@@ -32,6 +33,7 @@ export class ClosePage implements OnInit {
     public route: ActivatedRoute,
     public formatService: FormatService,
     public modalCtrl: ModalController,
+    public loadingCtrl: LoadingController,
     public closeService: CloseService,
     public events: Events,
     public pouchdbService: PouchdbService,
@@ -41,16 +43,17 @@ export class ClosePage implements OnInit {
     this.cash_id = this.route.snapshot.paramMap.get('cash_id');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
+    this.amount_open = this.route.snapshot.paramMap.get('amount_open');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.closeForm = this.formBuilder.group({
       name: new FormControl(''),
       date: new FormControl(new Date()),
       amount_theoretical: new FormControl(this.amount_theoretical),
       amount_physical: new FormControl(),
       amount_difference: new FormControl(0),
-      amount_open: new FormControl(0),
+      amount_open: new FormControl(this.amount_open || 1),
       amount_close: new FormControl(0),
       amount_income: new FormControl(0),
       amount_expense: new FormControl(0),
@@ -58,29 +61,45 @@ export class ClosePage implements OnInit {
       accountMoves: new FormControl(this.accountMoves||[]),
       _id: new FormControl(''),
     });
-    setTimeout(() => {
-      this.input.setFocus();
-    }, 200);
-    let amount_income = 0;
-    let amount_expense = 0;
-    this.accountMoves.forEach((accountMove: any)=>{
-      if (accountMove.accountFrom_id == this.cash_id){
-        amount_expense += accountMove.amount;
-      }
-      if (accountMove.accountTo_id == this.cash_id){
-        amount_income += accountMove.amount;
-      }
-    })
-    // this.closeForm.value.amount_open = 0;
-    // this.closeForm.value.amount_close = this.amount_theoretical;
-    // this.closeForm.value.amount_income = amount_income;
-    // this.closeForm.value.amount_expense = amount_expense;
-    this.closeForm.patchValue({
-      amount_open: 0,
-      amount_close: this.closeForm.value.amount_physical-0,
-      amount_income: amount_income,
-      amount_expense: amount_expense,
-    })
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
+    if (this._id){
+      this.closeService.getClose(this._id).then((data) => {
+        // console.log("data", data);
+        this.closeForm.patchValue(data);
+        this.cash_id = data.cash_id;
+        this.amount_theoretical = data.amount_theoretical;
+        this.closeForm.controls.amount_physical.disable();
+        // this.recomputeValues();
+        this.loading.dismiss();
+      });
+    } else {
+      setTimeout(() => {
+        this.input.setFocus();
+      }, 200);
+      let amount_income = 0;
+      let amount_expense = 0;
+      this.accountMoves.forEach((accountMove: any)=>{
+        if (accountMove.accountFrom_id == this.cash_id){
+          amount_expense += accountMove.amount;
+        }
+        if (accountMove.accountTo_id == this.cash_id){
+          amount_income += accountMove.amount;
+        }
+      })
+      // this.closeForm.value.amount_open = 0;
+      // this.closeForm.value.amount_close = this.amount_theoretical;
+      // this.closeForm.value.amount_income = amount_income;
+      // this.closeForm.value.amount_expense = amount_expense;
+      this.closeForm.patchValue({
+        amount_open: this.amount_open,
+        amount_close: this.closeForm.value.amount_physical-this.amount_open,
+        amount_income: amount_income,
+        amount_expense: amount_expense,
+      })
+      this.loading.dismiss();
+    }
+
   }
 
   buttonSave() {
