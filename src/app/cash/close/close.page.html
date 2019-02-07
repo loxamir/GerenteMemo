@@ -14,6 +14,7 @@
       {{'Monto Real' | translate}}
     </ion-label>
     <ion-input #input type="number"
+    [disabled]="_id"
     formControlName="amount_physical"></ion-input>
   </ion-item>
   <ion-item
@@ -35,8 +36,11 @@
      <h4 class="field-label">
        {{'Differencia de Caja' | translate }}
      </h4>
-     <h4 class="field-value" style="color: green;">
-       {{closeForm.value.amount_physical - amount_theoretical|number:'1.0'}}
+     <h4 class="field-value" style="color: green;" *ngIf="closeForm.value.amount_physical - closeForm.value.amount_theoretical > 0">
+       +{{closeForm.value.amount_physical - closeForm.value.amount_theoretical|number:'1.0'}}
+     </h4>
+     <h4 class="field-value" style="color: red;" *ngIf="closeForm.value.amount_physical - closeForm.value.amount_theoretical <= 0">
+       {{closeForm.value.amount_physical - closeForm.value.amount_theoretical|number:'1.0'}}
      </h4>
    </div>
   </ion-item>
@@ -83,8 +87,11 @@
      <h4 class="field-label">
        {{'Variación' | translate }}
      </h4>
-     <h4 class="field-value" style="color: green;">
+     <h4 class="field-value" style="color: green;" *ngIf="(closeForm.value.amount_physical || 0)-closeForm.value.amount_open > 0">
        +{{(closeForm.value.amount_physical || 0)-closeForm.value.amount_open|number:'1.0'}}
+     </h4>
+     <h4 class="field-value" style="color: red;" *ngIf="(closeForm.value.amount_physical || 0)-closeForm.value.amount_open <= 0">
+       {{(closeForm.value.amount_physical || 0)-closeForm.value.amount_open|number:'1.0'}}
      </h4>
    </div>
   </ion-item>

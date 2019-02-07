@@ -22,6 +22,7 @@ export class ClosePage implements OnInit {
   @Input() _id;
   @Input() select;
   @Input() amount_open;
+  @Input() amount_physical;
 
   closeForm: FormGroup;
   loading: any;
@@ -65,11 +66,12 @@ export class ClosePage implements OnInit {
     await this.loading.present();
     if (this._id){
       this.closeService.getClose(this._id).then((data) => {
-        // console.log("data", data);
+        console.log("data", data);
         this.closeForm.patchValue(data);
         this.cash_id = data.cash_id;
         this.amount_theoretical = data.amount_theoretical;
-        this.closeForm.controls.amount_physical.disable();
+        this.amount_physical = data.amount_physical;
+        // this.closeForm.controls.amount_physical.disable();
         // this.recomputeValues();
         this.loading.dismiss();
       });
