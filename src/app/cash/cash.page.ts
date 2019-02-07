@@ -75,6 +75,7 @@ export class CashPage implements OnInit {
         currency: new FormControl({}),
         // currency_name: new FormControl(''),
         moves: new FormControl([]),
+        closes: new FormControl([]),
         checks: new FormControl([]),
         waiting: new FormControl([]),
         bank_name: new FormControl(''),
@@ -90,6 +91,7 @@ export class CashPage implements OnInit {
       await this.loading.present();
       if (this._id){
         this.cashService.getCash(this._id).then((data) => {
+          // console.log("data", data);
           this.cashForm.patchValue(data);
           this.recomputeValues();
           this.loading.dismiss();
@@ -140,9 +142,23 @@ export class CashPage implements OnInit {
         let profileModal = await this.modalCtrl.create({
           component: ClosePage,
           componentProps: {
+            "select": true,
             "amount_theoretical": this.cashForm.value.balance,
             "cash_id": this.cashForm.value._id,
             "accountMoves": this.cashForm.value.moves
+          }
+        });
+        profileModal.present();
+      });
+    }
+
+    openClose(item) {
+      return new Promise(async resolve => {
+        let profileModal = await this.modalCtrl.create({
+          component: ClosePage,
+          componentProps: {
+            "select": true,
+            "_id": item._id
           }
         });
         profileModal.present();

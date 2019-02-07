@@ -5,6 +5,9 @@ import { LanguageService } from "../../services/language/language.service";
 import { LanguageModel } from "../../services/language/language.model";
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormatService } from "../../services/format.service";
+import { ModalController, Events } from '@ionic/angular';
+import { CloseService } from "./close.service";
+import { PouchdbService } from '../../services/pouchdb/pouchdb-service';
 
 @Component({
   selector: 'app-close',
@@ -16,6 +19,8 @@ export class ClosePage implements OnInit {
   @Input() amount_theoretical;
   @Input() accountMoves;
   @Input() cash_id;
+  @Input() _id;
+  @Input() select;
 
   closeForm: FormGroup;
   loading: any;
@@ -26,15 +31,22 @@ export class ClosePage implements OnInit {
     public translate: TranslateService,
     public route: ActivatedRoute,
     public formatService: FormatService,
+    public modalCtrl: ModalController,
+    public closeService: CloseService,
+    public events: Events,
+    public pouchdbService: PouchdbService,
   ) {
     this.amount_theoretical = this.route.snapshot.paramMap.get('amount_theoretical');
     this.accountMoves = this.route.snapshot.paramMap.get('accountMoves');
     this.cash_id = this.route.snapshot.paramMap.get('cash_id');
+    this._id = this.route.snapshot.paramMap.get('_id');
+    this.select = this.route.snapshot.paramMap.get('select');
   }
 
   ngOnInit() {
     this.closeForm = this.formBuilder.group({
       name: new FormControl(''),
+      date: new FormControl(new Date()),
       amount_theoretical: new FormControl(this.amount_theoretical),
       amount_physical: new FormControl(),
       amount_difference: new FormControl(0),
@@ -69,6 +81,70 @@ export class ClosePage implements OnInit {
       amount_income: amount_income,
       amount_expense: amount_expense,
     })
+  }
+
+  buttonSave() {
+    return new Promise((resolve, reject)=>{
+      if (this._id){
+        resolve(this._id);
+        if (this.select){
+          this.modalCtrl.dismiss();
+        }
+      } else {
+        this.closeService.createClose(this.closeForm.value).then((doc: any) => {
+          console.log("create close", doc);
+          this._id = doc.doc.id;
+          this.events.publish('create-close', this.closeForm.value);
+          resolve(this._id);
+          if (this.select){
+            this.modalCtrl.dismiss();
+          }
+        });
+      }
+    });
+  }
+
+  goNextStep(){
+    if (!this.closeForm.value.amount_physical){
+      this.input.setFocus();
+    } else {
+      this.closeConfirm();
+    }
+  }
+
+  async closeConfirm(){
+    this.accountMoves = [];
+    let accountMoves2 = [];
+    // this.closeForm.value.accountMoves.forEach(async accountMove => {
+    await this.asyncForEach(this.closeForm.value.accountMoves, async (accountMove: any)=>{
+      let accountMoved = await this.pouchdbService.getDoc(accountMove._id)
+      this.accountMoves.push(accountMoved);
+      accountMoves2.push(accountMove._id);
+      // accountMove = accountMove._id;
+    });
+    this.closeForm.patchValue({
+      accountMoves: accountMoves2,
+    })
+    await this.buttonSave();
+    this.changeAccountMovesState();
+  }
+
+  async changeAccountMovesState(){
+    let cashMoves = [];
+    this.accountMoves.forEach(async accountMove => {
+      // Update account move
+      accountMove.close_id = this._id;
+      await this.pouchdbService.updateDoc(accountMove);
+    });
+    this.closeForm.patchValue({
+      accountMoveIds: cashMoves
+    })
+  }
+
+  async asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
   }
 
 }

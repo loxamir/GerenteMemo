@@ -27,17 +27,6 @@
   <form class="sample-form validations-form" [formGroup]="cashForm" (ngSubmit)="onSubmit(cashForm.value)">
 
     <ion-row>
-      <!-- <ion-item
-       no-padding
-       class="field-50">
-        <ion-label position="floating" style="font-size:14px">{{'NAME' | translate}}</ion-label>
-        <ion-input #input type="text"
-        formControlName="name"></ion-input>
-      </ion-item> -->
-
-      <!-- <ion-col style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;">
-        {{'CURRENT_BALANCE' | translate }}<div class="warehouse-move-amount" style="text-align: center"> {{cashForm.value.balance|number:'1.0'}}</div>
-      </ion-col> -->
       <ion-item
        no-padding
        class="field-50">
@@ -49,45 +38,7 @@
           Cerrar
         </ion-button>
       </ion-item>
-      <!-- <ion-item
-       no-padding
-       (click)="selectCurrency()"
-       class="field-50">
-       <div class="field-many2one">
-         <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-         <h4 class="field-value-max">{{cashForm.value.currency && cashForm.value.currency.name || 'Selecionar'}}</h4>
-       </div>
-      </ion-item>
-      <ion-item
-       no-padding
-       class="field-50">
-        <ion-label position="floating">{{'Tipo' | translate}}</ion-label>
-        <ion-select formControlName="type"
-          cancelText="{{ 'CANCEL' | translate }}"
-          interface="popover"
-          okText="{{ 'OK' | translate }}">
-          <ion-select-option value="cash">Dinero</ion-select-option>
-          <ion-select-option value="bank">Banco</ion-select-option>
-          <ion-select-option value="check">Cheque</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item
-       *ngIf="cashForm.value.type=='bank'"
-       no-padding
-       class="field-100">
-        <ion-label position="floating">{{'Banco' | translate}}</ion-label>
-        <ion-select formControlName="bank_name"
-
-          cancelText="{{ 'CANCEL' | translate }}"
-          okText="{{ 'OK' | translate }}"
-          interface="popover">
-          <ion-select-option value="itau">Banco Itau</ion-select-option>
-          <ion-select-option value="regional">Banco Regional</ion-select-option>
-        </ion-select>
-      </ion-item> -->
     </ion-row>
-
-
 
 <ion-segment formControlName="section" class="cash-segment">
   <ion-segment-button value="moves">
@@ -101,7 +52,6 @@
 
 <div [ngSwitch]="cashForm.value.section" class="forms-wrapper">
   <div *ngSwitchCase="'moves'" class="post-example-view">
-
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of cashForm.value.moves && cashForm.value.moves.sort(this.formatService.compare) || []">
       <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
@@ -142,12 +92,6 @@
           <ion-icon name="arrow-round-down"></ion-icon>
         </ion-col>
       </ion-row>
-
-      <!-- <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
-        <ion-col no-padding style="text-align: center;border-radius: 4px;">
-          {{ item.state}}
-        </ion-col>
-      </ion-row> -->
       </ion-card>
     </ion-item>
         <ion-item-options>
@@ -157,7 +101,34 @@
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
-<ion-row style="height:15px;">
+
+
+
+    <ion-list no-lines>
+      <ion-item-sliding class="list-item" *ngFor="let ite of cashForm.value.closes || []">
+      <ion-item no-padding (click)="openClose(ite)" style="margin-bottom: 0px; margin-top:0px;">
+        <ion-card class="list-card" style="border-radius: 5px;">
+          <ion-row no-padding class="content-row one-line">
+             <ion-col size="6" no-padding>
+               Cierre <h3 class="item-title"><b>{{ ite.date|date: 'dd/MM/yyyy' }}</b></h3>
+             </ion-col>
+             <ion-col no-padding size="6" style="text-align: right;">
+               Valor<h3 class="item-title"><b>{{ ite.amount_physical }}</b></h3>
+             </ion-col>
+           </ion-row>
+      </ion-card>
+    </ion-item>
+        <!-- <ion-item-options>
+          <ion-button icon-only color="primary" (click)="deleteCashMove(item)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-item-options> -->
+      </ion-item-sliding>
+    </ion-list>
+
+
+
+<ion-row style="height:100px;">
 </ion-row>
   </div>
   <div *ngSwitchCase="'waiting'" class="post-example-view">
@@ -216,9 +187,6 @@
 <ion-row style="height:15px;">
 </ion-row>
   </div>
-  <!-- <div *ngSwitchCase="'emited'" class="post-example-view">
-    <h2>Emited</h2>
-  </div> -->
 </div>
 
 
@@ -227,13 +195,6 @@
 </form>
 <ion-row *ngIf="!cashForm.value.moves.length">
   <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
-    <!-- <ion-row>
-      <ion-col></ion-col>
-      <ion-col no-padding>
-        <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="https://uc345e667ca43908d75a8cf2bc88.previews.dropboxusercontent.com/p/thumb/AATLtAiIK4RGYT7yj71W0syFKYCjVG3wSwkU69o92pa__72jG9r98BSj985Ul8Pj2LoK26vXBFn4pCZjlqzaCeHC8XwjeySykvxU3My3458ojVjEbPWBJAs26kZJJ7PZm3EU6Ylc-7lt78hU_Lbg-gIJ0UEprS2thP1e3kiLpwevJvK00WuzaXKljqO_Y11BgrnwGIn7bnaSnXo5ZdITcSpiqBe-RGM2ABYCL3VBDbNU2qBCZAUsJJg2Bfj-c5FlH_nyAs34o_75eLZ01YS4G37G/p.png?size=1600x1200&size_mode=3"/>
-      </ion-col>
-      <ion-col></ion-col>
-    </ion-row> -->
     <ion-row>
       <ion-col>
         <h1>Aún no tienes nada registrado</h1>
@@ -246,12 +207,6 @@
     </ion-row>
   </ion-col>
 </ion-row>
-<!-- <ion-row>
-  <ion-col size="12" style="text-align: center;margin-top: 54px;">
-    <ion-icon name="arrow-round-down"  color="primary" style="font-size: 70px"></ion-icon>
-  </ion-col>
-</ion-row> -->
-<!-- <ion-fab center bottom #fab> -->
 <ion-fab vertical="bottom" horizontal="center" slot="fixed"  #fab>
 <ion-fab-button><ion-icon name="add"></ion-icon></ion-fab-button>
 <ion-fab-list side="top">
@@ -260,18 +215,6 @@
 <div style="background: #FF5722;color: white;margin-top: -5px;">Transferencia</div><ion-button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addTransfer(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
 </ion-fab-list>
 </ion-fab>
-
-<!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-  <ion-button (click)="goNextStep()"  class="next-button">
-    <ion-icon name="fastforward"> </ion-icon>
-    Proximo
-  </ion-button>
-  <ion-fab-list side="top">
-  <div style="background: #4CAF50;color: white;margin-top: -5px;">Entrada</div><ion-button style="background: #4CAF50;color: white;margin-bottom: 5px;" ion-fab (click)="addIncome(fab)"><ion-icon name="arrow-round-down"></ion-icon></ion-button>
-  <div style="background: #FF5722;color: white;margin-top: -5px;">Salida</div><ion-button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addExpense(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
-  <div style="background: #FF5722;color: white;margin-top: -5px;">Transferencia</div><ion-button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addTransfer(fab)"><ion-icon name="swap"></ion-icon></ion-button>
-  </ion-fab-list>
-</ion-fab> -->
 
 <ion-fab vertical="bottom" horizontal="start" slot="fixed">
   <ion-button (click)="discard()" color="danger" class="discard-button">

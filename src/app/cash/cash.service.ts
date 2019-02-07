@@ -51,16 +51,23 @@ export class CashService {
           for(let i=0;i<pts.length;i++){
             if (cashMoves[i].state == 'WAITING'){
               cash.waiting.unshift(cashMoves[i]);
-            } else {
+            } else if (!cashMoves[i].close_id) {
               cash.moves.unshift(cashMoves[i]);
             }
             // console.log(cashMoves[i].value);
           }
           // console.log("PTS2", cash);
           // let receivables = pts.filter(word => word['contact_name'] && word['contact_name'].toString().search(new RegExp(keyword, "i")) != -1);
-          this.pouchdbService.getDoc(cash.currency_id).then(currency=>{
+          this.pouchdbService.getDoc(cash.currency_id).then(async currency=>{
             cash.currency = currency;
-            resolve(cash);
+            this.pouchdbService.getRelated(
+            "close", "cash_id", doc_id).then((planned) => {
+              console.log("planned", planned);
+              cash.closes = planned;
+              // resolve(pouchData);
+              console.log("cash", cash);
+              resolve(cash);
+            });
           })
         })
       });
