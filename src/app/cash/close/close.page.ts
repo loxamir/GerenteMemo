@@ -227,8 +227,12 @@ export class ClosePage implements OnInit {
     this.closeForm.value.accountMoves.forEach(move=>{
       content += move.contact_name+" - "+move.name+" - "+move.amount+"\n";
     })
-    let filename = "Cierre_"+date+".txt";
+    let filename = "Cierre_"+date+".prt";
     this.formatService.printMatrix(content, filename);
+  }
+
+  hideCashMoves(){
+
   }
 
 }

@@ -145,6 +145,7 @@ export class CashService {
   }
 
   localHandleChangeData(moves, waiting, change){
+    console.log("lslolo", change);
     let changedDoc = null;
     let changedState = false;
     let changedIndex = null;
@@ -207,5 +208,51 @@ export class CashService {
           list.unshift(change.doc);
         }
       }
+      console.log("change.doc", change.doc);
+      if (change.doc.close_id){
+        console.log("changed with close_id");
+        list.splice(changedIndex, 1);
+      }
+  }
+
+
+
+
+  handleSumatoryChange(sumatory, cashForm, change){
+    console.log("handleSumatoryChange", sumatory, change)
+    if (change.doc._rev[0] == '1'){
+      if (change.doc.accountTo_id == cashForm.value._id){
+        sumatory += change.doc.amount
+      }
+      if (change.doc.accountFrom_id == cashForm.value._id){
+        sumatory -= change.doc.amount
+      }
+      cashForm.patchValue({
+        balance: sumatory
+      })
+    }
+    // return sumatory
+
+    //
+    // let  list = moves;
+    //
+    //
+    //   //A document was deleted
+    //   if(change.deleted){
+    //     list.splice(changedIndex, 1);
+    //   } else if(changedState){
+    //     list.splice(changedIndex, 1);
+    //     changedState = false;
+    //   }
+    //   else {
+    //     //A document was updated
+    //     if(changedDoc){
+    //       list[changedIndex] = change.doc;
+    //     }
+    //     //A document was added
+    //     else {
+    //       list.unshift(change.doc);
+    //     }
+    //   }
   }
 }
