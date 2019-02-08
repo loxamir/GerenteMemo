@@ -52,7 +52,7 @@ export class ClosePage implements OnInit {
       name: new FormControl(''),
       date: new FormControl(new Date()),
       amount_theoretical: new FormControl(this.amount_theoretical),
-      amount_physical: new FormControl(),
+      amount_physical: new FormControl(this.amount_theoretical),
       amount_difference: new FormControl(0),
       amount_open: new FormControl(this.amount_open || 1),
       amount_close: new FormControl(0),
@@ -66,7 +66,6 @@ export class ClosePage implements OnInit {
     await this.loading.present();
     if (this._id){
       this.closeService.getClose(this._id).then((data) => {
-        console.log("data", data);
         this.closeForm.patchValue(data);
         this.cash_id = data.cash_id;
         this.amount_theoretical = data.amount_theoretical;
@@ -113,7 +112,6 @@ export class ClosePage implements OnInit {
         }
       } else {
         this.closeService.createClose(this.closeForm.value).then((doc: any) => {
-          console.log("create close", doc);
           this._id = doc.doc.id;
           this.events.publish('create-close', this.closeForm.value);
           resolve(this._id);
@@ -135,19 +133,22 @@ export class ClosePage implements OnInit {
 
   async closeConfirm(){
     this.accountMoves = [];
-    let accountMoves2 = [];
     // this.closeForm.value.accountMoves.forEach(async accountMove => {
-    await this.asyncForEach(this.closeForm.value.accountMoves, async (accountMove: any)=>{
+    let accountMoves2 = [];
+    await this.createCashAdjust();
+    let data = this.closeForm.value.accountMoves;
+    await this.asyncForEach(data, async (accountMove: any)=>{
+      accountMoves2.push(accountMove._id);
       let accountMoved = await this.pouchdbService.getDoc(accountMove._id)
       this.accountMoves.push(accountMoved);
-      accountMoves2.push(accountMove._id);
       // accountMove = accountMove._id;
     });
-    this.closeForm.patchValue({
+    await this.closeForm.patchValue({
       accountMoves: accountMoves2,
     })
     await this.buttonSave();
-    this.changeAccountMovesState();
+    await this.changeAccountMovesState();
+
   }
 
   async changeAccountMovesState(){
@@ -157,9 +158,54 @@ export class ClosePage implements OnInit {
       accountMove.close_id = this._id;
       await this.pouchdbService.updateDoc(accountMove);
     });
-    this.closeForm.patchValue({
-      accountMoveIds: cashMoves
+  }
+
+  async createCashAdjust(){
+    return new Promise(async (resolve, reject)=>{
+    let amount = this.closeForm.value.amount_physical - this.closeForm.value.amount_theoretical
+    if (amount == 0){
+      resolve(false);
+      return;
+    }
+    let accountFrom = '';
+    let accountTo = '';
+    if (amount > 0){
+      accountFrom = 'account.income.positiveDifference';
+      accountTo = this.closeForm.value.cash_id;
+    }
+    if (amount < 0){
+      accountFrom = this.closeForm.value.cash_id;
+      accountTo = 'account.income.positiveDifference';
+    }
+    let docList:any = await this.pouchdbService.getList([
+      'contact.myCompany',
+      accountFrom,
+      accountTo
+    ]);
+    let docDict = {}
+    docList.forEach(item=>{
+      docDict[item.id] = item;
     })
+    let cashMove = await this.pouchdbService.createDocList([{
+      'name': "Ajuste por Diferencia",
+      'contact_id': 'contact.myCompany',
+      'contact_name': docDict['contact.myCompany'].doc.name,
+      'amount': amount,
+      'origin_id': this.closeForm.value._id,
+      'date': new Date(),
+      'accountFrom_id': accountFrom,
+      'accountFrom_name': docDict[accountFrom].doc.name,
+      'accountTo_id': accountTo,
+      'accountTo_name': docDict[accountTo].doc.name,
+      'docType': "cash-move",
+      '_return': true,
+    }])
+    this.closeForm.value.accountMoves.unshift(cashMove[0]);
+    this.closeForm.patchValue({
+      accountMoves: this.closeForm.value.accountMoves
+    })
+    resolve(cashMove);
+  })
   }
 
   async asyncForEach(array, callback) {

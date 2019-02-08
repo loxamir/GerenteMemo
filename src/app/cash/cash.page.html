@@ -109,11 +109,11 @@
       <ion-item no-padding (click)="openClose(ite)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
           <ion-row no-padding class="content-row one-line">
-             <ion-col size="6" no-padding>
-               Cierre <h3 class="item-title"><b>{{ ite.date|date: 'dd/MM/yyyy' }}</b></h3>
+             <ion-col size="7" no-padding>
+               Cierre <h3 class="item-title"><b>{{ ite.date|date: 'dd/MM/yyyy HH:mm' }}</b></h3>
              </ion-col>
-             <ion-col no-padding size="6" style="text-align: right;">
-               Valor<h3 class="item-title"><b>{{ ite.amount_physical }}</b></h3>
+             <ion-col no-padding size="5" style="text-align: right;">
+               Valor<h3 class="item-title"><b>{{ ite.amount_physical| number:'1.0' }}</b></h3>
              </ion-col>
            </ion-row>
       </ion-card>
