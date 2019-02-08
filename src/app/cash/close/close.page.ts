@@ -214,4 +214,21 @@ export class ClosePage implements OnInit {
     }
   }
 
+  print(){
+    let date = this.closeForm.value.date.split('T')[0];
+    let content = "Cierre de Caja";
+    content += "Fecha: "+date+"\n";
+    content += "Monto Inicial: "+this.closeForm.value.amount_open+"\n";
+    content += "Monto Recebido: "+this.closeForm.value.amount_income+"\n";
+    content += "Monto Entregado: "+this.closeForm.value.amount_expense+"\n";
+    content += "Monto Final: "+this.closeForm.value.amount_physical+"\n";
+    content += "Variación: "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open)+"\n";
+    content += "---------| Movimentos |---------\n";
+    this.closeForm.value.accountMoves.forEach(move=>{
+      content += move.contact_name+" - "+move.name+" - "+move.amount+"\n";
+    })
+    let filename = "Cierre_"+date+".txt";
+    this.formatService.printMatrix(content, filename);
+  }
+
 }

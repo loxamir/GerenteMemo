@@ -5,7 +5,6 @@
         {{ 'RECEIPT' | translate }}: {{receiptForm.value.name}}
       </ion-row>
     </ion-title>
-
     <ion-buttons slot="end">
     </ion-buttons>
   </ion-toolbar>
@@ -60,8 +59,6 @@
         </div>
       </ion-item>
     </ion-card>
-
-
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.payments">
         <ion-item style="background-color: #ddd;width: 110%;margin-left: -21px;">
@@ -83,12 +80,9 @@
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
-
-
-
     <ion-row>
       <ion-col class="item-content" *ngIf="receiptForm.value.state == 'CONFIRMED'">
-        <ion-button class="button-100" color="success" (click)="print()">Imprimir Recibo</ion-button>
+        <ion-button class="button-100" color="success" (click)="print()"><ion-icon name="print" style="margin-right:10px;"></ion-icon>Imprimir Recibo</ion-button>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="receiptForm.value.state == 'CONFIRMED' && receiptForm.value.amount_unInvoiced > 0">
@@ -100,7 +94,6 @@
         <ion-button style="background-color: #278c2c" class="print-receipt" (click)="createInvoice()">Crear Factura</ion-button>
       </ion-col>
     </ion-row>
-
     <ion-list no-lines *ngIf="receiptForm.value.invoices.length">
       <section>
         <h2 class="section-title">{{'INVOICE' | translate}}</h2>
