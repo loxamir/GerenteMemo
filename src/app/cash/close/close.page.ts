@@ -218,14 +218,16 @@ export class ClosePage implements OnInit {
     let date = this.closeForm.value.date.split('T')[0];
     let content = "Cierre de Caja";
     content += "Fecha: "+date+"\n";
-    content += "Monto Inicial: "+this.closeForm.value.amount_open+"\n";
-    content += "Monto Recebido: "+this.closeForm.value.amount_income+"\n";
-    content += "Monto Entregado: "+this.closeForm.value.amount_expense+"\n";
-    content += "Monto Final: "+this.closeForm.value.amount_physical+"\n";
-    content += "Variación: "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open)+"\n";
+    content += "Monto Inicial: $ "+this.closeForm.value.amount_open.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+    content += "Monto Recebido: $ "+this.closeForm.value.amount_income.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+    content += "Monto Entregado: $ "+this.closeForm.value.amount_expense.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+    content += "Monto Final: $ "+this.closeForm.value.amount_physical.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+    content += "Variación: $ "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
     content += "---------| Movimentos |---------\n";
+    content += this.formatService.string_pad(60, "| Movimentos |", 'center', '-')+"\n";
+    content += this.formatService.string_pad(20, "Contacto")+" - "+this.formatService.string_pad(30, "Descripcion")+" - "+this.formatService.string_pad(10,"Valor", 'right')+"\n";
     this.closeForm.value.accountMoves.forEach(move=>{
-      content += move.contact_name+" - "+move.name+" - "+move.amount+"\n";
+      content += this.formatService.string_pad(20, move.contact_name)+" - "+this.formatService.string_pad(30, move.name)+" - "+this.formatService.string_pad(10, move.amount, 'right')+"\n";
     })
     let filename = "Cierre_"+date+".prt";
     this.formatService.printMatrix(content, filename);
