@@ -18,6 +18,19 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-row>
+    <ion-item
+     no-padding
+     class="field-50">
+       <h4 class="field-label">{{'CURRENT_BALANCE' | translate }}</h4>
+       <h4 class="field-value" style="color: green;">{{cashForm.value.balance|number:'1.0'}}</h4>
+    </ion-item>
+    <ion-item class="field-50">
+      <ion-button (click)="closeCash()" style="width: 100%;">
+        Cerrar
+      </ion-button>
+    </ion-item>
+  </ion-row>
 </ion-header>
 
 <ion-content class="list-mini-content">
@@ -26,21 +39,9 @@
   </ion-refresher>
   <form class="sample-form validations-form" [formGroup]="cashForm" (ngSubmit)="onSubmit(cashForm.value)">
 
-    <ion-row>
-      <ion-item
-       no-padding
-       class="field-50">
-         <h4 class="field-label">{{'CURRENT_BALANCE' | translate }}</h4>
-         <h4 class="field-value" style="color: green;">{{cashForm.value.balance|number:'1.0'}}</h4>
-      </ion-item>
-      <ion-item class="field-50">
-        <ion-button (click)="closeCash()" style="width: 100%;">
-          Cerrar
-        </ion-button>
-      </ion-item>
-    </ion-row>
 
-<ion-segment formControlName="section" class="cash-segment">
+
+<ion-segment formControlName="section" class="cash-segment" *ngIf="cashForm.value.type == 'bank'">
   <ion-segment-button value="moves">
     Confirmado
   </ion-segment-button>
@@ -52,7 +53,10 @@
 
 <div [ngSwitch]="cashForm.value.section" class="forms-wrapper">
   <div *ngSwitchCase="'moves'" class="post-example-view">
-    <ion-list no-lines>
+    <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="cashForm.value.moves.length">
+      Lanzamientos desde ultimo cierre
+    </h2>
+    <!-- <ion-list no-lines> -->
       <ion-item-sliding class="list-item" *ngFor="let item of cashForm.value.moves && cashForm.value.moves.sort(this.formatService.compare) || []">
       <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
@@ -100,11 +104,14 @@
           </ion-button>
         </ion-item-options>
       </ion-item-sliding>
-    </ion-list>
+    <!-- </ion-list> -->
 
 
 
-    <ion-list no-lines>
+    <!-- <ion-list no-lines> -->
+      <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="cashForm.value.closes.length">
+        Cierres Anteriores
+      </h2>
       <ion-item-sliding class="list-item" *ngFor="let ite of cashForm.value.closes || []">
       <ion-item no-padding (click)="openClose(ite)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
@@ -113,7 +120,7 @@
                Cierre <h3 class="item-title"><b>{{ ite.date|date: 'dd/MM/yyyy HH:mm' }}</b></h3>
              </ion-col>
              <ion-col no-padding size="5" style="text-align: right;">
-               Valor<h3 class="item-title"><b>{{ ite.amount_physical| number:'1.0' }}</b></h3>
+               Valor<h3 class="item-title"><b style="color: green">{{ ite.amount_physical| number:'1.0' }}</b></h3>
              </ion-col>
            </ion-row>
       </ion-card>
@@ -124,7 +131,7 @@
           </ion-button>
         </ion-item-options> -->
       </ion-item-sliding>
-    </ion-list>
+    <!-- </ion-list> -->
 
 
 
@@ -193,7 +200,7 @@
 
 
 </form>
-<ion-row *ngIf="!cashForm.value.moves.length">
+<ion-row *ngIf="!cashForm.value.moves.length && !cashForm.value.closes.length">
   <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
     <ion-row>
       <ion-col>

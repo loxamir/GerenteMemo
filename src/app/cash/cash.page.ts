@@ -62,9 +62,30 @@ export class CashPage implements OnInit {
       this.translate.setDefaultLang('es');
       this.translate.use('es');
       this.events.subscribe('changed-cash-move', (change)=>{
+        this.events.unsubscribe('changed-cash-move');
+        console.log("changed-cash-move", change);
         this.cashService.handleChange(this.cashForm.value.moves, change);
         this.cashService.localHandleChangeData(
         this.cashForm.value.moves, this.cashForm.value.waiting, change);
+        this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
+      })
+      this.events.subscribe('changed-close', (change)=>{
+        console.log("changeddd", change);
+        this.events.unsubscribe('changed-close');
+        if (change.doc.cash_id == this._id){
+          this.cashForm.value.closes.unshift(change.doc);
+          this.cashForm.patchValue({
+            moves: [],
+            closes: this.cashForm.value.closes
+          })
+        }
+        // console.log("close-cash", change);
+        // this.cashForm.value.moves.for
+        // console.log("change.doc", change.doc);
+        // if (change.doc.close_id){
+        //   console.log("changed with close_id");
+        //   list.splice(changedIndex, 1);
+        // }
       })
     }
 
