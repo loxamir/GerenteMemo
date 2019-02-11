@@ -145,13 +145,6 @@ export class ProductListPage implements OnInit {
     }, 50);
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(ProductsPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
-
   async presentPopover(myEvent) {
     console.log("teste my event");
     let popover = await this.popoverCtrl.create({

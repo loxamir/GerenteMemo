@@ -237,7 +237,7 @@ export class ImporterPage implements OnInit {
   // }
 
   seeHelp(page, line=null, row=null){
-    console.log("line", line,"row", row);
+    // console.log("line help", line,"row", row);
     this.errorMessage = this.pageError[page][line][row]['messages'];
   }
 
@@ -328,6 +328,19 @@ export class ImporterPage implements OnInit {
         // this.checkBoolean(doc[7], lines, counter, 7);
         // this.checkBoolean(doc[9], lines, counter, 9);
         // this.checkTrue(lines, counter, 3)
+      } else if (this.docType == 'account'){
+        console.log("check account");
+        this.checkExist('account', doc[0], '_id', lines, counter, 0, "Error: Ya existe una Cuenta con el ID '"+doc[0]+"'");
+        this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe una Cuenta con el Nombre '"+doc[1]+"'");
+        this.checkExist('account', doc[2], 'code', lines, counter, 2, "Error: Ya existe un Cuenta con el Codigo '"+doc[2]+"'");
+        this.checkExist('accountCategory', doc[3], '_id', lines, counter, 3, "", "La Categoria '"+doc[3]+"' sera creada", "green", "yellow", true);
+        this.checkTrue(lines, counter, 4); //type
+        this.checkBoolean(doc[5], lines, counter, 5);
+        this.checkBoolean(doc[6], lines, counter, 6);
+        this.checkBoolean(doc[7], lines, counter, 7);
+        this.checkBoolean(doc[8], lines, counter, 8);
+        this.checkBoolean(doc[9], lines, counter, 9);
+        this.checkTrue(lines, counter, 10); //note
       }
     })
     })
@@ -353,8 +366,8 @@ export class ImporterPage implements OnInit {
   }
 
   checkBoolean(keyword, line, page, row, messageTrue="", messageFalse="Formato no reconocido, use '1' para Si y '0' para No", colorTrue='green', colorFalse='red'){
-    console.log("keyword", keyword);
-    if(keyword == '1' || keyword == '0' || keyword == ''){
+    // console.log("keyword", keyword);
+    if(keyword == '1' || keyword == '0' || keyword == 'TRUE' || keyword == 1 || keyword == 'FALSE' || keyword == 0){
       this.pageProperty[page][line][row] = colorTrue;
       if (messageTrue){
         this.pageError[page][line][row]['messages'].push(messageTrue);
@@ -686,6 +699,33 @@ export class ImporterPage implements OnInit {
           // this.events.publish('import-sale');
         })
       })
+    } else if (this.docType == 'account'){
+      // this.loading.present();
+      console.log("account");
+      this.formatAccounts(this.csvParsed).then((csv: any[])=>{
+        // let bigger_code:any = 0;
+        let count = 1;
+        let promise2_ids = [];
+        csv.forEach(item => {
+          count += 1;
+          console.log("-- createContact", item);
+          // if (parseInt(item.code)>bigger_code){
+          //   bigger_code = item.code;
+          // }
+          promise2_ids.push(this.pouchdbService.createDoc(item));
+
+        })
+        Promise.all(promise2_ids).then(async contacts=>{
+          this.loading.dismiss();
+          this.navCtrl.navigateBack('/account-list');
+          const alert = await this.alertCtrl.create({
+            header: 'Importación Exitosa!',
+            message: 'Tus Cuentas han sido importadas con exito!',
+            buttons: ['OK, Gracias']
+          });
+          alert.present();
+        })
+      })
     }
   }
 
@@ -762,6 +802,42 @@ export class ImporterPage implements OnInit {
            supplier: this.resolveBoolean(items[7]),
            employee: this.resolveBoolean(items[8]),
            seller: this.resolveBoolean(items[9]),
+           note: items[10],
+        });
+      }
+     }
+     resolve(obj);
+   });
+  }
+
+  formatAccounts(arr){
+    return new Promise((resolve, reject)=>{
+    let code,
+        name,
+        document,
+        phone,
+        address,
+        email,
+        customer,
+        supplier,
+        employee,
+        seller,
+        note,
+        obj = [];
+     for(var j = 0; j < arr.length; j++) {
+      if (arr[j].length==arr[0].length){
+        var items = arr[j];
+        obj.push({
+           _id: items[0],
+           name: items[1],
+           code: items[2],
+           category_id: items[3],
+           type: items[4],
+           cash_out: this.resolveBoolean(items[5]),
+           cash_in: this.resolveBoolean(items[6]),
+           transfer: this.resolveBoolean(items[7]),
+           payable: this.resolveBoolean(items[8]),
+           receivable: this.resolveBoolean(items[9]),
            note: items[10],
         });
       }
@@ -960,10 +1036,22 @@ export class ImporterPage implements OnInit {
   }
 
   resolveBoolean(value){
-    if (1){
+    if (value == 1
+      || value == 'TRUE'
+      || value == '1'
+      || value == true
+    ){
       return true;
-    } else {
+    }  else if (
+      value == ''
+      || value == '0'
+      || value == 0
+      || value == 'FALSE'
+      || value == false
+    ){
       return false;
+    } else {
+      return true;
     }
   }
 
@@ -991,8 +1079,11 @@ export class ImporterPage implements OnInit {
   //   return index;
   // }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     console.log('ionViewDidLoad ImporterPage');
+    this.loading.dismiss();
   }
 
   // chooseFile() {

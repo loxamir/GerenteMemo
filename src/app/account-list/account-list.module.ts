@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { AccountListPage } from './account-list.page';
+import { AccountListPopover} from './account-list.popover';
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -35,6 +36,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AccountListPage]
+  declarations: [AccountListPage, AccountListPopover],
+  entryComponents: [AccountListPopover]
 })
 export class AccountListPageModule {}
