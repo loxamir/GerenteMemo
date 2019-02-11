@@ -31,7 +31,7 @@ export class PouchdbService {
   putSecurity(data){
     return new Promise(resolve => {
       this.http.put(
-        'http://'+server+'/'+'demo'+'/_security',
+        'https://'+server+'/'+'demo'+'/_security',
         data,
         {
           headers: new HttpHeaders().set(
