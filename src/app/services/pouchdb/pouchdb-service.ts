@@ -7,7 +7,7 @@ import PouchdbUpsert from 'pouchdb-upsert';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { Storage } from '@ionic/storage';
 import { FormatService } from '../format.service';
-var server = "couchdb.sistema.social:5984";
+var server = "database.sistemamemo.com";
 
 @Injectable({ providedIn: 'root' })
 export class PouchdbService {
