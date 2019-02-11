@@ -6,20 +6,31 @@ let file = new File();
 @Injectable({ providedIn: 'root' })
 export class FormatService {
 
-  string_pad(qty, user_str, order = "left", complete = " ") {
-    if (!user_str) {
-      user_str = "";
-    }
-    user_str = user_str.toString()
-    while (user_str.length < qty) {
-      if (order == "left") {
-        user_str = user_str + complete;
-      } else {
-        user_str = complete + user_str;
+  string_pad(qty, user_str, order="left", complete=" "){
+      if (!user_str){
+          user_str = "";
       }
-    }
-    return user_str;
+      user_str = user_str.toString()
+      if (order == 'center') {
+        let start: any = (qty - user_str.length)/2
+        start = parseInt(start);
+        let start_space = "";
+        for (let x=0;x<start;x++){
+          start_space+=complete;
+        }
+        order = "left";
+        user_str = start_space+user_str;
+      }
+      while(user_str.length<qty){
+          if (order == "left"){
+              user_str = user_str + complete;
+          } else {
+              user_str = complete + user_str;
+          }
+      }
+      return user_str;
   }
+
 
   Unidades(num) {
 
@@ -219,7 +230,7 @@ export class FormatService {
 
     var byteCharacters = atob(b64Data);
     var byteArrays = [];
-    
+
     for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
       var slice = byteCharacters.slice(offset, offset + sliceSize);
       var byteNumbers = new Array(slice.length);

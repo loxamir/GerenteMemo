@@ -130,6 +130,7 @@ export class CashMovePage implements OnInit {
       maturity: new FormControl(''),
       is_check: new FormControl(false),
       is_other_currency:  new FormControl(false),
+      close_id: new FormControl(),
       currency: new FormControl(this.currency||{}),
       currency_amount: new FormControl(this.currency_amount||0),
       currency_residual: new FormControl(this.currency_residual||0),

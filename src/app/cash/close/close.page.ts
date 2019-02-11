@@ -190,7 +190,7 @@ export class ClosePage implements OnInit {
       'name': "Ajuste por Diferencia",
       'contact_id': 'contact.myCompany',
       'contact_name': docDict['contact.myCompany'].doc.name,
-      'amount': amount,
+      'amount': Math.abs(amount),
       'origin_id': this.closeForm.value._id,
       'date': new Date(),
       'accountFrom_id': accountFrom,
@@ -223,11 +223,12 @@ export class ClosePage implements OnInit {
     content += "Monto Entregado: $ "+this.closeForm.value.amount_expense.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
     content += "Monto Final: $ "+this.closeForm.value.amount_physical.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
     content += "Variación: $ "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-    content += "---------| Movimentos |---------\n";
+    // content += "---------| Movimentos |---------\n";
     content += this.formatService.string_pad(60, "| Movimentos |", 'center', '-')+"\n";
-    content += this.formatService.string_pad(20, "Contacto")+" - "+this.formatService.string_pad(30, "Descripcion")+" - "+this.formatService.string_pad(10,"Valor", 'right')+"\n";
+    content += this.formatService.string_pad(20, "Contacto")+this.formatService.string_pad(30, "Descripcion")+this.formatService.string_pad(10,"Valor", 'right')+"\n";
+    content += this.formatService.string_pad(60, "", 'center', '-')+"\n";
     this.closeForm.value.accountMoves.forEach(move=>{
-      content += this.formatService.string_pad(20, move.contact_name)+" - "+this.formatService.string_pad(30, move.name)+" - "+this.formatService.string_pad(10, move.amount, 'right')+"\n";
+      content += this.formatService.string_pad(20, move.contact_name)+this.formatService.string_pad(30, move.name)+this.formatService.string_pad(10, move.amount, 'right')+"\n";
     })
     let filename = "Cierre_"+date+".prt";
     this.formatService.printMatrix(content, filename);

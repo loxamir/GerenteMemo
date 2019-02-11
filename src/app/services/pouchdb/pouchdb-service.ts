@@ -69,7 +69,7 @@ export class PouchdbService {
           console.log("database", database);
           self.events.publish('got-database');
           this.storage.get('password').then(password => {
-            this.remote = "http://"+username+":"+password+"@"+server+'/'+database;
+            this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
             let options = {
               live: true,
               retry: true
