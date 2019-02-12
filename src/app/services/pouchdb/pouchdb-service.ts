@@ -122,9 +122,13 @@ export class PouchdbService {
     this.events.publish('database-disconnect');
   }
 
-  searchDocs(docType, keyword="", page=null, field=undefined, filter=undefined){
+  searchDocs(
+    docType, keyword="", page=null, field=undefined, filter=undefined,
+    sort='date', direction='decrease'
+  ){
     return new Promise((resolve, reject)=>{
       let start = page*15;
+      let self = this;
       let end = (page+1)*15;
       if (page == null){
         start = undefined;
@@ -137,7 +141,9 @@ export class PouchdbService {
         || (word['name']
         && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
         || (word.code && word.code.toString().search(keyword) != -1))
-      .sort(this.formatService.compare)
+      .sort(function(a, b) {
+        return self.formatService.compareField(a, b, sort, direction);
+      })
       .slice(start, end);
       console.log(docs)
       resolve(docs);
@@ -310,7 +316,10 @@ export class PouchdbService {
     });
   }
 
-  searchDocTypeData(docType, keyword="", page=null, field=null, filter=null) {
+  searchDocTypeData(
+    docType, keyword="", page=null, field=null, filter=null, sort='date',
+    direction='decrease'
+  ) {
     return new Promise((resolve, reject)=>{
       let start = page*15;
       let end = (page+1)*15;
@@ -318,6 +327,7 @@ export class PouchdbService {
         start = undefined;
         end = undefined;
       }
+      let self = this;
       if (this.docTypes[docType]){
         let docs = this.docTypes[docType].filter(
           word => filter && word[filter] || ! filter && true)
@@ -327,8 +337,15 @@ export class PouchdbService {
           || (word['name']
           && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
           || (word.code && word.code.toString().search(keyword) != -1))
-        .sort(this.formatService.compare)
+        .sort(function(a, b) {
+          return self.formatService.compareField(a, b, sort, direction);
+        })
         .slice(start, end);
+        // console.log("lista 1", docs);
+        // let lista2 = docs.sort(function(a, b) {
+        //   return self.formatService.compareField(a, b, 'name', 'increase');
+        // })
+        // console.log("lista 2", lista2);
         resolve(docs);
       } else {
         this.getDocType(docType).then((docList: any[])=>{
@@ -340,7 +357,9 @@ export class PouchdbService {
             || (word['name']
             && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
             || (word.code && word.code.toString().search(keyword) != -1))
-          .sort(this.formatService.compare)
+          .sort(function(a, b) {
+            return self.formatService.compareField(a, b, sort, direction);
+          })
           .slice(start, end);
           resolve(docs);
         })
@@ -348,8 +367,12 @@ export class PouchdbService {
     });
   }
 
-  searchDocTypeDataField(docType, keyword="", page=null, field=null, field_value="") {
+  searchDocTypeDataField(
+    docType, keyword="", page=null, field=null, field_value="", sort='date',
+    direction='decrease'
+  ) {
     return new Promise((resolve, reject)=>{
+      let self = this;
       let start = page*15;
       let end = (page+1)*15;
       if (page == null){
@@ -362,7 +385,9 @@ export class PouchdbService {
         .filter(word => (word['name']
         && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
         || (word.code && word.code.toString().search(keyword) != -1))
-        .sort(this.formatService.compare)
+        .sort(function(a, b) {
+          return self.formatService.compareField(a, b, sort, direction);
+        })
         .slice(start, end);
         resolve(docs);
       } else {
@@ -373,7 +398,9 @@ export class PouchdbService {
           .filter(word => (word['name']
           && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
           || (word.code && word.code.toString().search(keyword) != -1))
-          .sort(this.formatService.compare)
+          .sort(function(a, b) {
+            return self.formatService.compareField(a, b, sort, direction);
+          })
           .slice(start, end);
           resolve(docs);
         })

@@ -100,7 +100,7 @@ export class ContactListPage implements OnInit {
   getContactsPage(keyword, page, field=''){
     return new Promise(resolve => {
       this.pouchdbService.searchDocTypeData(
-        'contact', keyword, page, "document", field
+        'contact', keyword, page, "document", field, 'name', 'increase'
       ).then((contacts: any[]) => {
         resolve(contacts);
       });
@@ -113,7 +113,10 @@ export class ContactListPage implements OnInit {
       'contact',
       keyword,
       page,
-      "document"
+      "document",
+      undefined,
+      'name',
+      'increase'
     ).then((sales) => {
         resolve(sales);
       })

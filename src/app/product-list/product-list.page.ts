@@ -226,9 +226,9 @@ export class ProductListPage implements OnInit {
     return new Promise((resolve, reject)=>{
       let promise_ids = [];
       if (type=='all') {
-        promise_ids.push(this.pouchdbService.searchDocTypeData('product', keyword, page));
+        promise_ids.push(this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase'));
       } else {
-        promise_ids.push(this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'type', type));
+        promise_ids.push(this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'type', type, 'name', 'increase'));
       }
       promise_ids.push(this.pouchdbService.getView('stock/Depositos', 2));
       Promise.all(promise_ids).then((resList: any[]) => {
@@ -254,7 +254,11 @@ export class ProductListPage implements OnInit {
     this.pouchdbService.searchDocs(
       'product',
       keyword,
-      page
+      page,
+      undefined,
+      undefined,
+      'name',
+      'increase'
     ).then((items) => {
         resolve(items);
       })
