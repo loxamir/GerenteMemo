@@ -134,21 +134,21 @@ export class ReportListPage implements OnInit {
         if (item.key[1].split('.')[1] == 'cash'
           || item.key[1].split('.')[1] == 'bank'
           || item.key[1].split('.')[1] == 'check') {
-          if (result[index].value != 0) {
+          if (result[index].value > 0) {
             cashflowIncome += result[index].value;
           } else {
             cashflowExpense -= result[index].value;
           }
         }
         if (item.key[1].split('.')[1] == 'income') {
-          if (result[index].value != 0) {
+          if (result[index].value > 0) {
             resultIncome -= result[index].value;
           } else {
             resultIncome += result[index].value;
           }
         }
         if (item.key[1].split('.')[1] == 'expense') {
-          if (result[index].value != 0) {
+          if (result[index].value > 0) {
             resultExpense += result[index].value;
           } else {
             resultExpense -= result[index].value;

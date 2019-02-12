@@ -61,12 +61,12 @@ export class ImporterPage implements OnInit {
   ) {
     // this.readCsvData(); //To run on browser
     this.docType = this.route.snapshot.paramMap.get('docType');
-    this.startLoading();
+    // this.startLoading();
   }
 
-  async startLoading(){
-    this.loading = await this.loadingCtrl.create();
-  }
+  // async startLoading(){
+  //   this.loading = await this.loadingCtrl.create();
+  // }
 
   // private readCsvData() {
   //   let file = "";
@@ -91,7 +91,7 @@ export class ImporterPage implements OnInit {
 
   private extractData(res) {
     // let csvData = res['_body'] || ''; //To run on browser
-    this.loading.present();
+    // this.loading.present();
     let csvData = res; //To run on android
     let parsedData = papa.parse(csvData).data;
     this.headerRow = parsedData[0];
@@ -143,7 +143,7 @@ export class ImporterPage implements OnInit {
     }
 
     // this.createAtrributeSpace(this.csvParsed.slice(this.pageSize*(this.page - 1), this.pageSize*this.page));
-    this.loading.dismiss();
+    // this.loading.dismiss();
   }
 
   nextPage(){
@@ -459,8 +459,9 @@ export class ImporterPage implements OnInit {
     // this.csvData.forEach(doc=>{
     //   console.log("Doc", doc);
     // })f
-    this.validate()
+    this.loading = await this.loadingCtrl.create();
     await this.loading.present();
+    this.validate();
     // console.log("this.createList", this.createList);
     // var uniq = this.createList.reduce(function(a,b){
     //   if (a.indexOf(b) < 0 ) a.push(b);
@@ -755,6 +756,7 @@ export class ImporterPage implements OnInit {
      Promise.all(promise_ids).then(categories=>{
        docs.forEach((doc, index)=>{
          let value = categories[index];
+         console.log("categories[index]", categories);
          obj.push({
             code: doc[0],
             name: doc[1],
@@ -1080,10 +1082,8 @@ export class ImporterPage implements OnInit {
   // }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
-    await this.loading.present();
     console.log('ionViewDidLoad ImporterPage');
-    this.loading.dismiss();
+    // this.loading.dismiss();
   }
 
   // chooseFile() {

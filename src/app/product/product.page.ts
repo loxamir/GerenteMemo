@@ -286,13 +286,13 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           let difference = (this.productForm.value.stock - this.theoreticalStock);
           let warehouseFrom_id = 'warehouse.inventoryAdjust';
           let warehouseTo_id  = config.warehouse_id;
-          let accountFrom_id = 'account.other.inventoryAdjust';
+          let accountFrom_id = 'account.income.positiveInventory';
           let accountTo_id  = 'account.other.stock';
           if (difference < 0) {
             warehouseFrom_id  = config.warehouse_id;
             warehouseTo_id = 'warehouse.inventoryAdjust';
             accountFrom_id = 'account.other.stock';
-            accountTo_id  = 'account.other.inventoryAdjust';
+            accountTo_id  = 'account.expense.negativeInventory';
           }
           this.stockMoveService.createStockMove({
             'name': "Ajuste "+this.productForm.value.code,
