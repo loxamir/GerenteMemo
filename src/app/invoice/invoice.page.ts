@@ -198,9 +198,6 @@ export class InvoicePage implements OnInit {
       // } else {
       //   //this.loading.dismiss();
       // }
-    }
-
-    ngAfterViewInit(){
       console.log("id", this._id);
       if (this._id){
         this.getInvoice(this._id).then((data) => {
