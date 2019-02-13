@@ -1,274 +1,201 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/report-tabs/short-report"></ion-back-button>
+    </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'Fluxo de Caixa' | translate }}: {{cashflowForm.value.code}}
+        {{ 'Flujo de Caja' | translate }}: {{cashFlowForm.value.code}}
       </ion-row>
     </ion-title>
-
-    <ion-buttons slot="end" >
-      <!-- <ion-button icon-only
-              (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
+    <ion-buttons slot="end">
     </ion-buttons>
   </ion-toolbar>
-
-
 </ion-header>
 
-<ion-content class="cashflow-content" style="background: white;">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-  <form class="sample-form validations-form" [formGroup]="cashflowForm" (ngSubmit)="onSubmit(cashflowForm.value)">
+<ion-content class="report-content" style="background-color: #ddd">
+  <form class="sample-form validations-form" [formGroup]="cashFlowForm" (ngSubmit)="onSubmit(cashFlowForm.value)">
     <ion-row justify-content-center>
-      <ion-col width-10 class="field-label" no-padding>
-          <h4 class="field-label">{{'Desde' | translate }}</h4>
-      </ion-col>
-      <ion-col width-37 class="item-content" no-padding>
-          <!-- <h4 class="field-value">{{cashflowForm.value.contact.name || '01/05/2018'}}</h4> -->
-          <ion-datetime class="cashflow-date-start"
-            displayFormat="DD/MM/YYYY"
-            pickerFormat="DD/MM/YYYY"
-            formControlName="dateStart">
-            </ion-datetime>
-      </ion-col>
-      <ion-col width-15 class="field-label" no-padding>
-          <h4 class="field-label">{{'Hasta' | translate }}</h4>
-      </ion-col>
-      <ion-col width-38  no-padding>
-          <ion-datetime class="cashflow-date-end"
-            displayFormat="DD/MM/YYYY"
-            pickerFormat="DD/MM/YYYY"
-            formControlName="dateEnd">
-            </ion-datetime>
-      </ion-col>
-    </ion-row>
-    <div>
-      <ion-list no-lines>
-        <div *ngFor="let title of cashflow">
-          <ion-row style="background: #d9edf7; color: black;font-weight: bold;">
-            <ion-col width-70 (click)=openTitle(title)>
-              {{ title.code + ' - ' + title.name }}
-            </ion-col>
-            <ion-col width-30 style="text-align: right;color: #0a880a;">
-              {{title.balance|number:'1.0-1'}}
-            </ion-col>
-          </ion-row>
-          <div *ngFor="let category of title.categories">
-            <ion-row>
-              <ion-col width-60 (click)="openCategory(category)">
-                {{category.code + ' - ' + category.name}}
-              </ion-col>
-              <ion-col width-40 style="text-align: right;color: #0a880a;">
-                {{category.balance|number:'1.0-1'}}
-              </ion-col>
-            </ion-row>
-            <!-- <div *ngFor="let account of category.accounts">
-              <ion-row style="margin-left:50px">
-                <ion-col width-60>
-                  {{account.code + ' - ' + account.name}}
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'Desde' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        (ionChange)="goNextStep()"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="dateStart">
+        </ion-datetime>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'Hasta' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        (ionChange)="goNextStep()"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="dateEnd">
+        </ion-datetime>
+      </ion-item>
+      <ion-item
+      no-padding
+      class="field-100">
+        <ion-label>{{'Agrupado Por' | translate}}</ion-label>
+        <ion-select #groupBy formControlName="groupBy"
+          (ionChange)="goNextStep()"
+          cancelText="{{ 'CANCEL' | translate }}"
+          okText="{{ 'OK' | translate }}">
+          <ion-select-option value="date">Fecha</ion-select-option>
+          <ion-select-option value="contact">Contato</ion-select-option>
+          <ion-select-option value="account">Cuenta</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-card class="list-card">
+        <ion-list>
+          <div *ngIf="cashFlowForm.value.groupBy == 'account'">
+            <!-- <div *ngIf="cashFlowForm.value.reportType == 'cashFlow'"> -->
+              <ion-list no-lines>
+                <ion-row class="report-title">
+                  <ion-col size="4" (click)="orderByName()">
+                    Cuenta
+                  </ion-col>
+                  <ion-col style="text-align: right" (click)="orderByIncome()">
+                    Entradas
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" (click)="orderByExpense()">
+                    Salidas
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
+                    Total
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngFor="let item of cashFlowForm.value.items">
+                  <ion-col size="4" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.income|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.expense|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+                <ion-row style="font-weight: bold;">
+                  <ion-col  width-40>
+                    TOTAL
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right">
+                    {{items_income|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right">
+                    {{items_expense|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right">
+                    {{total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+              </ion-list>
+            <!-- </div> -->
+          </div>
+          <div>
+            <ion-list no-lines *ngIf="cashFlowForm.value.groupBy == 'contact'">
+              <ion-row class="report-title">
+                <ion-col size="4" (click)="orderByName()">
+                  Contato
                 </ion-col>
-                <ion-col width-40 style="text-align: right;color: #0a880a;">
-                  {{account.balance|number:'1.0-1'}}
+                <ion-col style="text-align: right" (click)="orderByIncome()">
+                  Entradas
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByExpense()">
+                  Salidas
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
+                  Total
                 </ion-col>
               </ion-row>
-            </div> -->
+              <ion-row *ngFor="let item of cashFlowForm.value.items">
+                <ion-col size="4" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.name}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.income|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.expense|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+              <ion-row style="font-weight: bold;">
+                <ion-col  width-40>
+                  TOTAL
+                </ion-col>
+                <ion-col width-20 style="text-align: right">
+                  {{items_income|number:'1.0'}}
+                </ion-col>
+                <ion-col width-15 style="text-align: right">
+                  {{items_expense|number:'1.0'}}
+                </ion-col>
+                <ion-col width-25 style="text-align: right">
+                  {{total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+            </ion-list>
           </div>
-        </div>
-
-        <!-- <ion-row>
-          <ion-col width-60>
-            Ventas de Productos
-          </ion-col>
-          <ion-col width-40 style="text-align: right;color: #0a880a;">
-            {{sold|number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col width-60>
-            Venta de Servicios
-          </ion-col>
-          <ion-col width-40 style="text-align: right;color: #0a880a;">
-            {{service|number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col width-60>
-            Devoluciones
-          </ion-col>
-          <ion-col width-40 style="text-align: right;color: #ed493c;">
-            {{return |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col width-60>
-            Impuesto sobre Ventas
-          </ion-col>
-          <ion-col width-40 style="text-align: right;color: #ed493c;">
-            {{saleTax |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-
-        <ion-row style="background: #d9edf7; color: black;font-weight: bold;">
-          <ion-col width-70>
-            (=) Receta Liquida
-          </ion-col>
-          <ion-col width-30 style="text-align: right;color: #0a880a;">
-            {{sold+service+return+saleTax |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col width-100>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col width-60>
-            Costo de Mercaderia Vendida
-          </ion-col>
-          <ion-col width-40 style="text-align: right;color: #ed493c;">
-            {{cmv |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col width-100>
-          </ion-col>
-        </ion-row>
-        <ion-row style="background: #d9edf7; color: black;font-weight: bold;">
-          <ion-col width-70>
-            (=) Resultado Bruto
-          </ion-col>
-          <ion-col width-30 style="text-align: right;color: #0a880a;">
-            {{sold+service+return+saleTax-cmv |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col width-100>
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col width-60>
-            Gastos Administrativos
-          </ion-col>
-          <ion-col width-40 style="text-align: right;color: #ed493c;">
-            {{admin |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col width-100>
-          </ion-col>
-        </ion-row>
-        <ion-row style="background: #d9edf7; color: black;font-weight: bold;">
-          <ion-col width-70>
-            (=) Lucro Bruto
-          </ion-col>
-          <ion-col width-30 style="text-align: right;color: #0a880a;">
-            {{sold+service+return+saleTax-cmv+admin |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col width-60>
-            Gastos Financieros
-          </ion-col>
-          <ion-col width-40 style="text-align: right;color: #ed493c;">
-            {{incomeFinance |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col width-60>
-            Ingresos Finacieros
-          </ion-col>
-          <ion-col width-40 style="text-align: right;color: #ed493c;">
-            {{expenseFinance |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col width-60>
-            Depreciaciones
-          </ion-col>
-          <ion-col width-40 style="text-align: right;color: #ed493c;">
-            {{depre |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col width-60>
-            Otros
-          </ion-col>
-          <ion-col width-40 style="text-align: right;color: #ed493c;">
-            {{other |number:'1.0-1'}}
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col width-100>
-          </ion-col>
-        </ion-row>
-        <ion-row style="background: #d9edf7; color: black;font-weight: bold;">
-          <ion-col width-70>
-            (=) Lucro Liquido
-          </ion-col>
-          <ion-col width-30 style="text-align: right;color: #0a880a;">
-            {{sold+service+return+saleTax-cmv+admin+other-depre-expenseFinance+incomeFinance |number:'1.0-1'}}
-          </ion-col>
-        </ion-row> -->
-
-        <!-- <ion-row>
-          <ion-col width-100>
-          </ion-col>
-        </ion-row>
-        <ion-row style="background: #d9edf7; color: black;font-weight: bold;">
-          <ion-col width-70>
-            (-) Prolabore
-          </ion-col>
-          <ion-col width-30 style="text-align: right;color: #ed493c;">
-            -10.000
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col width-100>
-          </ion-col>
-        </ion-row>
-        <ion-row style="background: #d9edf7; color: black;font-weight: bold;">
-          <ion-col width-70>
-            (=) Resultado Liquido
-          </ion-col>
-          <ion-col width-30 style="text-align: right;color: #0a880a;">
-            20.000
-          </ion-col>
-        </ion-row>-->
-        <ion-row>
-          <ion-col width-100 style="height: 60px">
-          </ion-col>
-        </ion-row>
-      </ion-list>
 
 
+          <div>
+            <ion-list no-lines *ngIf="cashFlowForm.value.groupBy == 'date'">
+
+              <ion-row class="report-title">
+                <ion-col size="4" (click)="orderByName()">
+                  Fecha
+                </ion-col>
+                <ion-col style="text-align: right" (click)="orderByIncome()">
+                  Entradas
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByExpense()">
+                  Salidas
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let item of cashFlowForm.value.items">
+                <ion-col size="4" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.name}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.income|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.expense|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+              <ion-row style="font-weight: bold;">
+                <ion-col  width-40>
+                  TOTAL
+                </ion-col>
+                <ion-col width-20 style="text-align: right">
+                  {{items_income|number:'1.0'}}
+                </ion-col>
+                <ion-col width-15 style="text-align: right">
+                  {{items_expense|number:'1.0'}}
+                </ion-col>
+                <ion-col width-25 style="text-align: right">
+                  {{total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+            </ion-list>
+          </div>
+        </ion-list>
+      </ion-card>
+    </ion-row>
+    <div style="height: 100px">
     </div>
   </form>
-  <ion-fab bottom left>
-      <ion-fab-button (click)="share()">
-          <ion-icon name="share">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab>
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="recomputeValues()">
-          <ion-icon name="arrow-round-forward">
-          </ion-icon>
-      </ion-button>
-  </ion-fab> -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button (click)="printAndroid()">
-          <ion-icon name="print">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab>
 </ion-content>

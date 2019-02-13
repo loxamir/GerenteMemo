@@ -152,11 +152,11 @@ export class ReportListPage implements OnInit {
           console.log("resultIncome", resultIncome);
         }
         if (item.key[1].split('.')[1] == 'expense') {
-          if (result[index].value > 0) {
+          // if (result[index].value > 0) {
+          //   resultExpense += result[index].value;
+          // } else {
             resultExpense += result[index].value;
-          } else {
-            resultExpense -= result[index].value;
-          }
+          // }
         }
       })
       this.resultIncome = resultIncome;
@@ -354,11 +354,9 @@ export class ReportListPage implements OnInit {
   }
 
   showReportCashFlow() {
-    this.navCtrl.navigateForward(['/view-report', {
-      'reportView': 'stock/Fluxo',
+    this.navCtrl.navigateForward(['/cash-flow', {
       'startkey': [this.reportsForm.value.dateStart.split('T')[0], '0'],
-      'endkey': [this.reportsForm.value.dateEnd.split('T')[0], 'z'],
-      'level': 2
+      'endkey': [this.reportsForm.value.dateEnd.split('T')[0], 'z']
     }]);
   }
 
