@@ -237,7 +237,7 @@ export class CashFlowPage implements OnInit {
               items[result[cashFlowLine.key[0]]] = {
                 'name': items[result[cashFlowLine.key[0]]].name,
                 'income': items[result[cashFlowLine.key[0]]].income + income,
-                'expense': items[result[cashFlowLine.key[0]]].expense - expense,
+                'expense': items[result[cashFlowLine.key[0]]].expense + expense,
                 'total': items[result[cashFlowLine.key[0]]].total + cashFlowLine.value,
               };
             } else {
@@ -284,7 +284,7 @@ export class CashFlowPage implements OnInit {
               items[result[cashFlowLine.key[1]]] = {
                 'name': items[result[cashFlowLine.key[1]]].name,
                 'income': items[result[cashFlowLine.key[1]]].income + income,
-                'expense': items[result[cashFlowLine.key[1]]].expense - expense,
+                'expense': items[result[cashFlowLine.key[1]]].expense + expense,
                 'total': items[result[cashFlowLine.key[1]]].total + cashFlowLine.value,
               };
             } else {
