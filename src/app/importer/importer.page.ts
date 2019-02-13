@@ -14,6 +14,7 @@ import { StockMoveService } from '../stock-move/stock-move.service';
 import { FormatService } from '../services/format.service';
 import { SaleService } from '../sale/sale.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RestProvider } from "../services/rest/rest";
 
 @Component({
   selector: 'app-importer',
@@ -58,6 +59,7 @@ export class ImporterPage implements OnInit {
     public alertCtrl: AlertController,
     public formatService: FormatService,
     public saleService: SaleService,
+    public restProvider: RestProvider,
   ) {
     // this.readCsvData(); //To run on browser
     this.docType = this.route.snapshot.paramMap.get('docType');
@@ -496,9 +498,9 @@ export class ImporterPage implements OnInit {
             await this.stockMoveService.createInventoryAdjustment(item, item.stock);
           })
           // Promise.all(promise2_ids).then(async products=>{
-            this.pouchdbService.getDoc('config.profile').then(async (config: any)=>{
+            this.pouchdbService.getDoc('sequence.product').then(async (productSequence: any)=>{
               // console.log("config", bigger_code, config.product_sequence);
-              if (parseInt(config.product_sequence) < (parseInt(bigger_code) + 1)){
+              if (parseInt(productSequence.value) < (parseInt(bigger_code) + 1)){
 
                 // let code = data[docType+'_sequence'].toString();
                 //console.log("code", code);
@@ -510,9 +512,9 @@ export class ImporterPage implements OnInit {
                 let prefix = bigger_code.substr(0, string_end);
                 let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
                 let new_code = prefix+pad_number;
-                config.product_sequence = new_code;
+                productSequence.value = new_code;
                 // console.log("config2", new_code, config.product_sequence);
-                this.pouchdbService.updateDoc(config);
+                this.pouchdbService.updateDoc(productSequence);
               }
             // })
             // bigger_code
@@ -534,9 +536,19 @@ export class ImporterPage implements OnInit {
         let bigger_code:any = 0;
         let count = 1;
         let promise2_ids = [];
-        csv.forEach(item => {
+        csv.forEach(async (item: any) => {
           count += 1;
           console.log("-- createContact", item);
+          if (item.document){
+            if (item.document[item.document.length-2]=='-'){
+              let data:any = await this.restProvider.getRucName(item.document);
+              if (data.name!='HttpErrorResponse'){
+                item.name_legal = data.name;
+                // contactList.push(contact);
+              }
+            }
+            // })
+          }
           if (parseInt(item.code)>bigger_code){
             bigger_code = item.code;
           }
@@ -562,15 +574,34 @@ export class ImporterPage implements OnInit {
           //     this.pouchdbService.updateDoc(config);
           //   }
           // })
+          this.pouchdbService.getDoc('sequence.contact').then(async (contactSequence: any)=>{
+            // console.log("config", bigger_code, config.product_sequence);
+            if (parseInt(contactSequence.value) < (parseInt(bigger_code) + 1)){
 
-          this.loading.dismiss();
-          this.navCtrl.navigateBack('/contact-list');
-          const alert = await this.alertCtrl.create({
-            header: 'Importación Exitosa!',
-            message: 'Tus Contatos han sido importados con exito!',
-            buttons: ['OK, Gracias']
-          });
-          alert.present();
+              // let code = data[docType+'_sequence'].toString();
+              //console.log("code", code);
+              bigger_code = bigger_code.toString();
+              let regex = /[0-9]+$/
+              let string_end = bigger_code.match(regex).index;
+              let number = bigger_code.match(regex)[0];
+              let next_number = parseFloat(number)+1;
+              let prefix = bigger_code.substr(0, string_end);
+              let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
+              let new_code = prefix+pad_number;
+              contactSequence.value = new_code;
+              // console.log("config2", new_code, config.product_sequence);
+              this.pouchdbService.updateDoc(contactSequence);
+            }
+
+            this.loading.dismiss();
+            this.navCtrl.navigateBack('/contact-list');
+            const alert = await this.alertCtrl.create({
+              header: 'Importación Exitosa!',
+              message: 'Tus Contatos han sido importados con exito!',
+              buttons: ['OK, Gracias']
+            });
+            alert.present();
+          })
         })
       })
     } else if (this.docType == 'cash-move'){

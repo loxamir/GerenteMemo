@@ -301,9 +301,19 @@ export class ContactPage implements OnInit {
     this.restProvider.getRucName(this.contactForm.value.document).then((data: any)=>{
       console.log("data", data);
       if (data.name!='HttpErrorResponse'){
-        this.contactForm.patchValue({
+        let dict = {
           'name_legal': data.name,
-        })
+        }
+        if (!this.contactForm.value.name || this.contactForm.value.name == ''){
+          let firstname = data.name.split(', ')[1] || '';
+          let lastname = data.name.split(', ')[0];
+          if (firstname){
+            dict['name'] = firstname +" "+ lastname;
+          } else {
+            dict['name'] = lastname;
+          }
+        }
+        this.contactForm.patchValue(dict)
       }
     })
   }
