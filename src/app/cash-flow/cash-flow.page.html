@@ -59,10 +59,10 @@
                   <ion-col style="text-align: right" (click)="orderByIncome()">
                     Entradas
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" (click)="orderByExpense()">
+                  <ion-col style="text-align: right" (click)="orderByExpense()">
                     Salidas
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
+                  <ion-col style="text-align: right" (click)="orderByTotal()">
                     Total
                   </ion-col>
                 </ion-row>
@@ -70,27 +70,27 @@
                   <ion-col size="4" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.name}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.income|number:'1.0'}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.expense|number:'1.0'}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.total|number:'1.0'}}
                   </ion-col>
                 </ion-row>
                 <ion-row style="font-weight: bold;">
-                  <ion-col  width-40>
+                  <ion-col size="4">
                     TOTAL
                   </ion-col>
-                  <ion-col width-20 style="text-align: right">
+                  <ion-col style="text-align: right">
                     {{items_income|number:'1.0'}}
                   </ion-col>
-                  <ion-col width-15 style="text-align: right">
+                  <ion-col  style="text-align: right">
                     {{items_expense|number:'1.0'}}
                   </ion-col>
-                  <ion-col width-25 style="text-align: right">
+                  <ion-col  style="text-align: right">
                     {{total|number:'1.0'}}
                   </ion-col>
                 </ion-row>
@@ -106,10 +106,10 @@
                 <ion-col style="text-align: right" (click)="orderByIncome()">
                   Entradas
                 </ion-col>
-                <ion-col width-20 style="text-align: right" (click)="orderByExpense()">
+                <ion-col style="text-align: right" (click)="orderByExpense()">
                   Salidas
                 </ion-col>
-                <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
+                <ion-col style="text-align: right" (click)="orderByTotal()">
                   Total
                 </ion-col>
               </ion-row>
@@ -117,27 +117,27 @@
                 <ion-col size="4" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.name}}
                 </ion-col>
-                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.income|number:'1.0'}}
                 </ion-col>
-                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.expense|number:'1.0'}}
                 </ion-col>
-                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.total|number:'1.0'}}
                 </ion-col>
               </ion-row>
               <ion-row style="font-weight: bold;">
-                <ion-col  width-40>
+                <ion-col size="4">
                   TOTAL
                 </ion-col>
-                <ion-col width-20 style="text-align: right">
+                <ion-col style="text-align: right">
                   {{items_income|number:'1.0'}}
                 </ion-col>
-                <ion-col width-15 style="text-align: right">
+                <ion-col  style="text-align: right">
                   {{items_expense|number:'1.0'}}
                 </ion-col>
-                <ion-col width-25 style="text-align: right">
+                <ion-col  style="text-align: right">
                   {{total|number:'1.0'}}
                 </ion-col>
               </ion-row>
@@ -155,10 +155,10 @@
                 <ion-col style="text-align: right" (click)="orderByIncome()">
                   Entradas
                 </ion-col>
-                <ion-col width-20 style="text-align: right" (click)="orderByExpense()">
+                <ion-col style="text-align: right" (click)="orderByExpense()">
                   Salidas
                 </ion-col>
-                <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
+                <ion-col style="text-align: right" (click)="orderByTotal()">
                   Total
                 </ion-col>
               </ion-row>
@@ -166,27 +166,27 @@
                 <ion-col size="4" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.name}}
                 </ion-col>
-                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.income|number:'1.0'}}
                 </ion-col>
-                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.expense|number:'1.0'}}
                 </ion-col>
-                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.total|number:'1.0'}}
                 </ion-col>
               </ion-row>
               <ion-row style="font-weight: bold;">
-                <ion-col  width-40>
+                <ion-col size="4">
                   TOTAL
                 </ion-col>
-                <ion-col width-20 style="text-align: right">
+                <ion-col style="text-align: right">
                   {{items_income|number:'1.0'}}
                 </ion-col>
-                <ion-col width-15 style="text-align: right">
+                <ion-col  style="text-align: right">
                   {{items_expense|number:'1.0'}}
                 </ion-col>
-                <ion-col width-25 style="text-align: right">
+                <ion-col  style="text-align: right">
                   {{total|number:'1.0'}}
                 </ion-col>
               </ion-row>
