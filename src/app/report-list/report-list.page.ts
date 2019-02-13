@@ -322,7 +322,7 @@ export class ReportListPage implements OnInit {
   }
 
   showReportToPay() {
-    this.navCtrl.navigateForward(['/planned-list', {
+    this.navCtrl.navigateForward(['/payable-report', {
       "signal": "-",
       'dateStart': this.reportsForm.value.dateStart,
       'dateEnd': this.reportsForm.value.dateEnd,
@@ -330,7 +330,7 @@ export class ReportListPage implements OnInit {
   }
 
   showReportToReceive() {
-    this.navCtrl.navigateForward(['/planned-list', {
+    this.navCtrl.navigateForward(['/receivable-report', {
       "signal": "+",
       'dateStart': this.reportsForm.value.dateStart,
       'dateEnd': this.reportsForm.value.dateEnd,

@@ -1,0 +1,205 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/report-list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <ion-row>
+        {{ 'Contas a Pagar' | translate }}: {{payableReportForm.value.code}}
+      </ion-row>
+    </ion-title>
+    <ion-buttons slot="end">
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="report-content" style="background-color: #ddd">
+  <form class="sample-form validations-form" [formGroup]="payableReportForm" (ngSubmit)="onSubmit(payableReportForm.value)">
+    <ion-row justify-content-center>
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'Desde' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        (ionChange)="goNextStep()"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="dateStart">
+        </ion-datetime>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'Hasta' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        (ionChange)="goNextStep()"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="dateEnd">
+        </ion-datetime>
+      </ion-item>
+      <ion-item
+      no-padding
+      class="field-50">
+        <ion-label>{{'Agrupado Por' | translate}}</ion-label>
+        <ion-select #groupBy formControlName="groupBy"
+          (ionChange)="goNextStep()"
+          cancelText="{{ 'CANCEL' | translate }}"
+          okText="{{ 'OK' | translate }}">
+          <ion-select-option value="date">Fecha</ion-select-option>
+          <ion-select-option value="contact">Contato</ion-select-option>
+          <ion-select-option value="account">Cuenta</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item no-padding (click)="selectContact()" class="field-50">
+        <h4 class="field-label">{{'Contato' | translate}}</h4>
+        <h4 class="field-value">{{payableReportForm.value.contact && payableReportForm.value.contact.name || 'Selecionar'}}</h4>
+      </ion-item>
+      <ion-card class="list-card">
+        <ion-list>
+          <div *ngIf="payableReportForm.value.groupBy == 'account'">
+            <!-- <div *ngIf="payableReportForm.value.reportType == 'cashFlow'"> -->
+              <ion-list no-lines>
+                <ion-row class="report-title">
+                  <ion-col size="4" (click)="orderByName()">
+                    Cuenta
+                  </ion-col>
+                  <ion-col style="text-align: right" (click)="orderByIncome()">
+                    Entradas
+                  </ion-col>
+                  <ion-col style="text-align: right" (click)="orderByExpense()">
+                    Salidas
+                  </ion-col>
+                  <ion-col style="text-align: right" (click)="orderByTotal()">
+                    Total
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngFor="let item of payableReportForm.value.items">
+                  <ion-col size="4" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.income|number:'1.0'}}
+                  </ion-col>
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.expense|number:'1.0'}}
+                  </ion-col>
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+                <ion-row style="font-weight: bold;">
+                  <ion-col size="4">
+                    TOTAL
+                  </ion-col>
+                  <ion-col style="text-align: right">
+                    {{items_income|number:'1.0'}}
+                  </ion-col>
+                  <ion-col  style="text-align: right">
+                    {{items_expense|number:'1.0'}}
+                  </ion-col>
+                  <ion-col  style="text-align: right">
+                    {{total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+              </ion-list>
+            <!-- </div> -->
+          </div>
+          <div>
+            <ion-list no-lines *ngIf="payableReportForm.value.groupBy == 'contact'">
+              <ion-row class="report-title">
+                <ion-col size="4" (click)="orderByName()">
+                  Contato
+                </ion-col>
+                <ion-col style="text-align: right" (click)="orderByIncome()">
+                  Entradas
+                </ion-col>
+                <ion-col style="text-align: right" (click)="orderByExpense()">
+                  Salidas
+                </ion-col>
+                <ion-col style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let item of payableReportForm.value.items">
+                <ion-col size="4" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.name}}
+                </ion-col>
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.income|number:'1.0'}}
+                </ion-col>
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.expense|number:'1.0'}}
+                </ion-col>
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+              <ion-row style="font-weight: bold;">
+                <ion-col size="4">
+                  TOTAL
+                </ion-col>
+                <ion-col style="text-align: right">
+                  {{items_income|number:'1.0'}}
+                </ion-col>
+                <ion-col  style="text-align: right">
+                  {{items_expense|number:'1.0'}}
+                </ion-col>
+                <ion-col  style="text-align: right">
+                  {{total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+            </ion-list>
+          </div>
+
+
+          <div>
+            <ion-list no-lines *ngIf="payableReportForm.value.groupBy == 'date'">
+
+              <ion-row class="report-title">
+                <ion-col size="4" (click)="orderByName()">
+                  Fecha de Vencimiento
+                </ion-col>
+                <ion-col style="text-align: right" (click)="orderByIncome()">
+                  Entradas
+                </ion-col>
+                <ion-col style="text-align: right" (click)="orderByExpense()">
+                  Salidas
+                </ion-col>
+                <ion-col style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let item of payableReportForm.value.items">
+                <ion-col size="4" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.name}}
+                </ion-col>
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.income|number:'1.0'}}
+                </ion-col>
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.expense|number:'1.0'}}
+                </ion-col>
+                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+              <ion-row style="font-weight: bold;">
+                <ion-col size="4">
+                  TOTAL
+                </ion-col>
+                <ion-col style="text-align: right">
+                  {{items_income|number:'1.0'}}
+                </ion-col>
+                <ion-col  style="text-align: right">
+                  {{items_expense|number:'1.0'}}
+                </ion-col>
+                <ion-col  style="text-align: right">
+                  {{total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+            </ion-list>
+          </div>
+        </ion-list>
+      </ion-card>
+    </ion-row>
+    <div style="height: 100px">
+    </div>
+  </form>
+</ion-content>
