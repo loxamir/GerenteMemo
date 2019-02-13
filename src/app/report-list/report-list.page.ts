@@ -141,11 +141,15 @@ export class ReportListPage implements OnInit {
           }
         }
         if (item.key[1].split('.')[1] == 'income') {
-          if (result[index].value > 0) {
+
+          // if (result[index].value > 0) {
+            console.log("value+", result[index]);
             resultIncome -= result[index].value;
-          } else {
-            resultIncome += result[index].value;
-          }
+          // } else {
+          //   console.log("value-", result[index]);
+            // resultIncome += result[index].value;
+          // }
+          console.log("resultIncome", resultIncome);
         }
         if (item.key[1].split('.')[1] == 'expense') {
           if (result[index].value > 0) {

@@ -184,14 +184,14 @@ export class SaleReportPage implements OnInit {
                 items[result[saleLine.key[9]]] = {
                   'name': items[result[saleLine.key[9]]].name,
                   'quantity': items[result[saleLine.key[9]]].quantity + parseFloat(saleLine.key[4]),
-                  'margin': items[result[saleLine.key[9]]].margin + saleLine.key[3],
+                  'margin': items[result[saleLine.key[9]]].margin + parseFloat(saleLine.key[3]),
                   'total': items[result[saleLine.key[9]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
                 };
               } else {
                 items.push({
                   'name': saleLine.key[9],
                   'quantity': parseFloat(saleLine.key[4]),
-                  'margin': saleLine.key[3],
+                  'margin': parseFloat(saleLine.key[3]),
                   'total': parseFloat(saleLine.key[4])*saleLine.key[5],
                 });
                 getList.push(saleLine.key[9]);
@@ -247,14 +247,14 @@ export class SaleReportPage implements OnInit {
                 items[result[saleLine.key[1]]] = {
                   'name': items[result[saleLine.key[1]]].name,
                   'quantity': items[result[saleLine.key[1]]].quantity + parseFloat(saleLine.key[4]),
-                  'margin': items[result[saleLine.key[1]]].margin + saleLine.key[3],
+                  'margin': items[result[saleLine.key[1]]].margin + parseFloat(saleLine.key[3]),
                   'total': items[result[saleLine.key[1]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
                 };
               } else {
                 items.push({
                   'name': saleLine.key[1],
                   'quantity': parseFloat(saleLine.key[4]),
-                  'margin': saleLine.key[3],
+                  'margin': parseFloat(saleLine.key[3]),
                   'total': parseFloat(saleLine.key[4])*saleLine.key[5],
                 });
                 result[saleLine.key[1]] = items.length-1;
