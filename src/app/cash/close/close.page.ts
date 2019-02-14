@@ -5,7 +5,8 @@ import { LanguageService } from "../../services/language/language.service";
 import { LanguageModel } from "../../services/language/language.model";
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormatService } from "../../services/format.service";
-import { ModalController, Events, LoadingController } from '@ionic/angular';
+import { ModalController, Events, LoadingController, NavController,
+  AlertController } from '@ionic/angular';
 import { CloseService } from "./close.service";
 import { PouchdbService } from '../../services/pouchdb/pouchdb-service';
 
@@ -29,6 +30,8 @@ export class ClosePage implements OnInit {
   languages: Array<LanguageModel>;
 
   constructor(
+    public navCtrl: NavController,
+    public alertCtrl: AlertController,
     public formBuilder: FormBuilder,
     public translate: TranslateService,
     public route: ActivatedRoute,
@@ -236,6 +239,49 @@ export class ClosePage implements OnInit {
 
   hideCashMoves(){
 
+  }
+
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.closeForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      // this.contactForm.markAsPristine();
+      this.navCtrl.navigateBack('/cash-list');
+    }
   }
 
 }
