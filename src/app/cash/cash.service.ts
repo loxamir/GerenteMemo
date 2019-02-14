@@ -21,9 +21,9 @@ export class CashService {
       ////console.log("getPlanned");
       let payableList = [];
       this.pouchdbService.getView(
-        'stock/Caixas', 2,
-        [doc_id, '0'],
-        [doc_id, 'z']
+        'stock/Caixas', 5,
+        [doc_id, null],
+        [doc_id, "0"]
       ).then((planneds: any[]) => {
         // console.log("Caixas", planneds);
         let promise_ids = [];
@@ -31,10 +31,11 @@ export class CashService {
         let balance = 0;
         planneds.forEach(item => {
           // if (item.value != 0){
-            pts.push(item);
-            // console.log("ites", item);
-            promise_ids.push(this.cashMoveService.getCashMove(item.key[1]));
-            balance += parseFloat(item.value);
+            if (!item.key[2] || item.key[3] == doc_id){
+              pts.push(item);
+              promise_ids.push(this.cashMoveService.getCashMove(item.key[4]));
+              balance += parseFloat(item.value);
+            }
           // }
         })
         promise_ids.push(this.pouchdbService.getDoc(doc_id));
@@ -51,7 +52,7 @@ export class CashService {
           for(let i=0;i<pts.length;i++){
             if (cashMoves[i].state == 'WAITING'){
               cash.waiting.unshift(cashMoves[i]);
-            } else if (!cashMoves[i].close_id) {
+            } else {
               cash.moves.unshift(cashMoves[i]);
             }
             // console.log(cashMoves[i].value);

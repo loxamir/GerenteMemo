@@ -158,7 +158,33 @@ export class ClosePage implements OnInit {
     let cashMoves = [];
     this.accountMoves.forEach(async accountMove => {
       // Update account move
-      accountMove.close_id = this._id;
+      if (accountMove.close_id){
+        accountMove.close2_id = this._id;
+        accountMove.both = undefined;
+        accountMove.closed = true;
+      } else if (
+        accountMove.accountTo_id != this.closeForm.value.cash_id
+        &&
+        accountMove.accountTo_id.split('.')[1] == 'cash'
+        || accountMove.accountTo_id.split('.')[1] == 'bank'
+        || accountMove.accountTo_id.split('.')[1] == 'check'
+      ){
+        accountMove.close_id = this._id;
+        accountMove.both = accountMove.accountTo_id;
+      } else if (
+        accountMove.accountFrom_id != this.closeForm.value.cash_id
+        &&
+        accountMove.accountFrom_id.split('.')[1] == 'cash'
+        || accountMove.accountFrom_id.split('.')[1] == 'bank'
+        || accountMove.accountFrom_id.split('.')[1] == 'check'
+      ){
+        accountMove.close_id = this._id;
+        accountMove.both = accountMove.accountFrom_id;
+      }
+       else {
+        accountMove.close_id = this._id;
+        accountMove.closed = true;
+      }
       await this.pouchdbService.updateDoc(accountMove);
     });
   }
