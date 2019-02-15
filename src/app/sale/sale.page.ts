@@ -299,14 +299,14 @@ export class SalePage implements OnInit {
     //     this.navCtrl.navigateBack('/sale-list');
     // }
 
-    goNextStep() {
+    async goNextStep() {
       if(this.return){
-        this.buttonSave();
+        await this.buttonSave();
+      }
+      if(!this.saleForm.value._id){
+        await this.buttonSave();
       }
       if (this.saleForm.value.state == 'QUOTATION'){
-        if(!this.saleForm.value._id){
-          this.buttonSave();
-        }
         this.confirmSale();
       } else if (this.saleForm.value.state == 'CONFIRMED'){
           this.beforeAddPayment();
@@ -344,19 +344,23 @@ export class SalePage implements OnInit {
 
 
     buttonSave() {
-      if (this._id){
-        this.saleService.updateSale(this.saleForm.value);
-        this.saleForm.markAsPristine();
-      } else {
-        this.saleService.createSale(this.saleForm.value).then(doc => {
-          this.saleForm.patchValue({
-            _id: doc['doc'].id,
-            code: doc['sale'].code,
-          });
-          this._id = doc['doc'].id;
+      return new Promise(resolve => {
+        if (this._id){
+          this.saleService.updateSale(this.saleForm.value);
           this.saleForm.markAsPristine();
-        });
-      }
+          resolve(true);
+        } else {
+          this.saleService.createSale(this.saleForm.value).then(doc => {
+            this.saleForm.patchValue({
+              _id: doc['doc'].id,
+              code: doc['sale'].code,
+            });
+            this._id = doc['doc'].id;
+            this.saleForm.markAsPristine();
+            resolve(true);
+          });
+        }
+      })
     }
 
     setLanguage(lang: LanguageModel){
@@ -712,17 +716,6 @@ export class SalePage implements OnInit {
             this.saleForm.value.items.forEach(async (item) => {
               let product_id = item.product_id || item.product._id;
               let product_name = item.product_name || item.product.name;
-              if (item.quantity < 0){
-                let product = await this.productService.getProduct(product_id);
-                let old_stock = product.stock || 0;
-                let old_cost = product.cost || 0;
-                this.productService.updateStockAndCost(
-                  product_id,
-                  Math.abs(item.quantity),
-                  item.cost,
-                  old_stock,
-                  old_cost);
-              }
               createList.push({
                 'name': "Venta "+this.saleForm.value.code,
                 'quantity': parseFloat(item.quantity),
@@ -752,6 +745,17 @@ export class SalePage implements OnInit {
                 'accountTo_name': docDict['account.expense.soldGoodCost'].doc.name,
                 'docType': "cash-move",
               })
+              if (item.quantity < 0){
+                let product = await this.productService.getProduct(product_id);
+                let old_stock = product.stock || 0;
+                let old_cost = product.cost || 0;
+                await this.productService.updateStockAndCost(
+                  product_id,
+                  Math.abs(item.quantity),
+                  item.cost,
+                  old_stock,
+                  old_cost);
+              }
             });
             this.saleForm.value.paymentCondition.items.forEach(item => {
               let dateDue = this.formatService.addDays(this.today, item.days);
@@ -785,7 +789,7 @@ export class SalePage implements OnInit {
               }
               createList.push(cashMoveTemplate);
             });
-
+            console.log("createList", createList);
             this.pouchdbService.createDocList(createList).then((created: any)=>{
               this.saleForm.patchValue({
                 state: 'CONFIRMED',

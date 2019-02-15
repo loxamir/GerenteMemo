@@ -101,7 +101,6 @@ export class ProductCategoryPage implements OnInit {
 
   discard(){
     this.canDeactivate();
-    // this.navCtrl.navigateBack('/tabs/product-list');
   }
 
   async canDeactivate() {

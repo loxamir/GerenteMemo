@@ -519,7 +519,7 @@ export class ImporterPage implements OnInit {
             // })
             // bigger_code
             this.loading.dismiss();
-            this.navCtrl.navigateBack('/tabs/product-list');
+            this.navCtrl.navigateBack('/product-list');
             const alert = await this.alertCtrl.create({
               header: 'Importación Exitosa!',
               message: 'Tus Productos han sido importados con exito!',

@@ -147,7 +147,7 @@ export class InvoiceConfigPage implements OnInit {
       this.modalCtrl.dismiss();
     } else {
       this.invoiceForm.markAsPristine();
-      this.navCtrl.navigateBack('/tabs/product-list');
+      this.navCtrl.navigateBack('/product-list');
     }
   }
 }
