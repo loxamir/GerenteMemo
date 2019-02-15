@@ -304,9 +304,9 @@ export class SalePage implements OnInit {
         this.buttonSave();
       }
       if (this.saleForm.value.state == 'QUOTATION'){
-        // if(!this.saleForm.value._id){
-        //   this.buttonSave();
-        // }
+        if(!this.saleForm.value._id){
+          this.buttonSave();
+        }
         this.confirmSale();
       } else if (this.saleForm.value.state == 'CONFIRMED'){
           this.beforeAddPayment();
@@ -375,6 +375,7 @@ export class SalePage implements OnInit {
         slidingItem.close();
         let index = this.saleForm.value.items.indexOf(item)
         this.saleForm.value.items.splice(index, 1);
+        this.saleForm.markAsDirty();
         this.recomputeValues();
       }
     }
@@ -708,9 +709,20 @@ export class SalePage implements OnInit {
               docDict[item.id] = item;
             })
 
-            this.saleForm.value.items.forEach((item) => {
+            this.saleForm.value.items.forEach(async (item) => {
               let product_id = item.product_id || item.product._id;
               let product_name = item.product_name || item.product.name;
+              if (item.quantity < 0){
+                let product = await this.productService.getProduct(product_id);
+                let old_stock = product.stock || 0;
+                let old_cost = product.cost || 0;
+                this.productService.updateStockAndCost(
+                  product_id,
+                  Math.abs(item.quantity),
+                  item.cost,
+                  old_stock,
+                  old_cost);
+              }
               createList.push({
                 'name': "Venta "+this.saleForm.value.code,
                 'quantity': parseFloat(item.quantity),
