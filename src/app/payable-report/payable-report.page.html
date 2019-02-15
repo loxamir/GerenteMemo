@@ -37,8 +37,10 @@
       <ion-item
       no-padding
       class="field-50">
-        <ion-label>{{'Agrupado Por' | translate}}</ion-label>
+        <ion-label  position="floating">{{'Agrupado Por' | translate}}</ion-label>
         <ion-select #groupBy formControlName="groupBy"
+          style="text-align: center;"
+          interface="popover"
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
@@ -48,8 +50,10 @@
         </ion-select>
       </ion-item>
       <ion-item no-padding (click)="selectContact()" class="field-50">
-        <h4 class="field-label">{{'Contato' | translate}}</h4>
-        <h4 class="field-value">{{payableReportForm.value.contact && payableReportForm.value.contact.name || 'Selecionar'}}</h4>
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Contato' | translate}}</h4>
+          <h4 class="field-value">{{payableReportForm.value.contact && payableReportForm.value.contact.name || 'Selecionar'}}</h4>
+        </div>
       </ion-item>
       <ion-card class="list-card">
         <ion-list>

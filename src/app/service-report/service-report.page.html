@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'Compras' | translate }}: {{reportPurchaseForm.value.code}}
+        {{ 'Servicios' | translate }}: {{reportServiceForm.value.code}}
       </ion-row>
     </ion-title>
     <ion-buttons slot="end">
@@ -14,7 +14,7 @@
 </ion-header>
 
 <ion-content class="report-content" style="background-color: #ddd">
-  <form class="sample-form validations-form" [formGroup]="reportPurchaseForm" (ngSubmit)="onSubmit(reportPurchaseForm.value)">
+  <form class="sample-form validations-form" [formGroup]="reportServiceForm" (ngSubmit)="onSubmit(reportServiceForm.value)">
     <ion-row justify-content-center>
       <ion-item no-padding class="field-50">
         <h4 class="field-label">{{'Desde' | translate }}</h4>
@@ -35,7 +35,7 @@
         </ion-datetime>
       </ion-item>
       <ion-item
-      *ngIf="reportPurchaseForm.value.reportType == 'purchase'"
+      *ngIf="reportServiceForm.value.reportType == 'service'"
       no-padding
       class="field-100">
         <ion-label  position="floating">{{'Agrupado Por' | translate}}</ion-label>
@@ -50,13 +50,13 @@
           <ion-select-option value="contact">Contato</ion-select-option>
           <ion-select-option value="category">Categoria</ion-select-option>
           <ion-select-option value="payment">Condición de Pago</ion-select-option>
+          <ion-select-option value="seller">Vendedor</ion-select-option>
         </ion-select>
       </ion-item>
-
       <ion-card class="list-card">
         <ion-list>
-          <div *ngIf="reportPurchaseForm.value.groupBy == 'product'">
-            <div *ngIf="reportPurchaseForm.value.reportType == 'purchase'">
+          <div *ngIf="reportServiceForm.value.groupBy == 'product'">
+            <div *ngIf="reportServiceForm.value.reportType == 'service'">
               <ion-list no-lines>
                 <ion-row class="report-title">
                   <ion-col width-40 (click)="orderByName()">
@@ -72,7 +72,7 @@
                     Total
                   </ion-col>
                 </ion-row>
-                <ion-row *ngFor="let item of reportPurchaseForm.value.items">
+                <ion-row *ngFor="let item of reportServiceForm.value.items">
                   <ion-col width-40 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.name}}
                   </ion-col>
@@ -84,17 +84,31 @@
                   </ion-col>
                   <ion-col width-25 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+                <ion-row style="font-weight: bold;">
+                  <ion-col  width-40>
+                    TOTAL
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right">
+                    {{items_margin|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right">
+                    {{items_quantity|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right">
+                    {{total|number:'1.0'}}
                   </ion-col>
                 </ion-row>
               </ion-list>
             </div>
           </div>
-          <div *ngIf="reportPurchaseForm.value.groupBy == 'category'">
-            <div *ngIf="reportPurchaseForm.value.reportType == 'purchase'">
+          <div *ngIf="reportServiceForm.value.groupBy == 'category'">
+            <div *ngIf="reportServiceForm.value.reportType == 'service'">
               <ion-list no-lines>
                 <ion-row class="report-title">
                   <ion-col width-40 (click)="orderByName()">
-                    Producto
+                    Categoria
                   </ion-col>
                   <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
                     Margen
@@ -106,7 +120,7 @@
                     Total
                   </ion-col>
                 </ion-row>
-                <ion-row *ngFor="let item of reportPurchaseForm.value.items">
+                <ion-row *ngFor="let item of reportServiceForm.value.items">
                   <ion-col width-40 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.name}}
                   </ion-col>
@@ -118,13 +132,27 @@
                   </ion-col>
                   <ion-col width-25 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+                <ion-row style="font-weight: bold;">
+                  <ion-col  width-40>
+                    TOTAL
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right">
+                    {{items_margin|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right">
+                    {{items_quantity|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right">
+                    {{total|number:'1.0'}}
                   </ion-col>
                 </ion-row>
               </ion-list>
             </div>
           </div>
           <div>
-            <ion-list no-lines *ngIf="reportPurchaseForm.value.groupBy == 'contact'">
+            <ion-list no-lines *ngIf="reportServiceForm.value.groupBy == 'contact'">
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
                   Cliente
@@ -136,7 +164,46 @@
                   Total
                 </ion-col>
               </ion-row>
-              <ion-row *ngFor="let item of reportPurchaseForm.value.items">
+              <ion-row *ngFor="let item of reportServiceForm.value.items">
+                <ion-col width-60 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.name}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.margin|number:'1.0'}}
+                </ion-col>
+
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+              <ion-row style="font-weight: bold;">
+                <ion-col  width-40>
+                  TOTAL
+                </ion-col>
+                <ion-col width-20 style="text-align: right">
+                  {{items_margin|number:'1.0'}}
+                </ion-col>
+                <!-- <ion-col width-15 style="text-align: right">
+                  {{items_quantity|number:'1.0'}}
+                </ion-col> -->
+                <ion-col width-25 style="text-align: right">
+                  {{total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+            </ion-list>
+            <ion-list no-lines *ngIf="reportServiceForm.value.groupBy == 'seller'">
+              <ion-row class="report-title">
+                <ion-col width-60 (click)="orderByName()">
+                  Vendedor
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
+                  Margen
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let item of reportServiceForm.value.items">
                 <ion-col width-60 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.name}}
                 </ion-col>
@@ -147,11 +214,25 @@
                   {{item.total|number:'1.0'}}
                 </ion-col>
               </ion-row>
+              <ion-row style="font-weight: bold;">
+                <ion-col  width-40>
+                  TOTAL
+                </ion-col>
+                <ion-col width-20 style="text-align: right">
+                  {{items_margin|number:'1.0'}}
+                </ion-col>
+                <!-- <ion-col width-15 style="text-align: right">
+                  {{items_quantity|number:'1.0'}}
+                </ion-col> -->
+                <ion-col width-25 style="text-align: right">
+                  {{total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
             </ion-list>
           </div>
 
           <div>
-            <ion-list no-lines *ngIf="reportPurchaseForm.value.groupBy == 'payment'">
+            <ion-list no-lines *ngIf="reportServiceForm.value.groupBy == 'payment'">
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
                   Condicion de Pago
@@ -163,7 +244,7 @@
                   Total
                 </ion-col>
               </ion-row>
-              <ion-row *ngFor="let item of reportPurchaseForm.value.items">
+              <ion-row *ngFor="let item of reportServiceForm.value.items">
                 <ion-col width-60 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.name}}
                 </ion-col>
@@ -174,10 +255,26 @@
                   {{item.total|number:'1.0'}}
                 </ion-col>
               </ion-row>
+              <ion-row style="font-weight: bold;">
+                <ion-col  width-40>
+                  TOTAL
+                </ion-col>
+                <ion-col width-20 style="text-align: right">
+                  {{items_margin|number:'1.0'}}
+                </ion-col>
+                <!-- <ion-col width-15 style="text-align: right">
+                  {{items_quantity|number:'1.0'}}
+                </ion-col> -->
+                <ion-col width-25 style="text-align: right">
+                  {{total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
             </ion-list>
           </div>
+
           <div>
-            <ion-list no-lines *ngIf="reportPurchaseForm.value.groupBy == 'date'">
+            <ion-list no-lines *ngIf="reportServiceForm.value.groupBy == 'date'">
+
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
                   Fecha
@@ -189,7 +286,7 @@
                   Total
                 </ion-col>
               </ion-row>
-              <ion-row *ngFor="let item of reportPurchaseForm.value.items">
+              <ion-row *ngFor="let item of reportServiceForm.value.items">
                 <ion-col width-60 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.name}}
                 </ion-col>
@@ -200,6 +297,20 @@
                   {{item.total|number:'1.0'}}
                 </ion-col>
               </ion-row>
+              <ion-row style="font-weight: bold;">
+                <ion-col  width-40>
+                  TOTAL
+                </ion-col>
+                <ion-col width-20 style="text-align: right">
+                  {{items_margin|number:'1.0'}}
+                </ion-col>
+                <!-- <ion-col width-15 style="text-align: right">
+                  {{items_quantity|number:'1.0'}}
+                </ion-col> -->
+                <ion-col width-25 style="text-align: right">
+                  {{total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
             </ion-list>
           </div>
         </ion-list>
@@ -207,31 +318,21 @@
 
       <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;">
         <ion-row>
-          <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
-            Compras por Producto
-          </ion-col>
-        </ion-row>
-        <ion-row>
           <ion-col>
-            <div id="barChart" style="width: calc(100% - 20px);margin-bottom: -13%;margin-top: -25%;height: 472px;">
+            <div id="barChart" style="width: calc(100% - 20px);margin-bottom: 0%;height: 390px;">
             </div>
           </ion-col>
         </ion-row>
       </ion-card>
       <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;">
         <ion-row>
-          <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
-            Compras por Producto
-          </ion-col>
-        </ion-row>
-        <ion-row>
           <ion-col>
-            <div id="chart" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;height:200px"></div>
+            <div id="chart" style="width: calc(100% - 20px);margin-bottom: 2%;height:200px"></div>
           </ion-col>
         </ion-row>
       </ion-card>
     </ion-row>
+    <div style="height: 100px">
+    </div>
   </form>
-  <div style="height: 100px">
-  </div>
 </ion-content>

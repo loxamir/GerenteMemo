@@ -76,6 +76,8 @@ const routes: Routes = [
   { path: 'payable-report', loadChildren: './payable-report/payable-report.module#PayableReportPageModule' },
   { path: 'production', loadChildren: './production/production.module#ProductionPageModule' },
   { path: 'production-list', loadChildren: './production-list/production-list.module#ProductionListPageModule' },
+  { path: 'production-report', loadChildren: './production-report/production-report.module#ProductionReportPageModule' },
+  { path: 'service-report', loadChildren: './service-report/service-report.module#ServiceReportPageModule' },
   // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 

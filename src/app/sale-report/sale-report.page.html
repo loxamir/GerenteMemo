@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'REPORT' | translate }}: {{reportSaleForm.value.code}}
+        {{ 'Ventas' | translate }}: {{reportSaleForm.value.code}}
       </ion-row>
     </ion-title>
     <ion-buttons slot="end">
@@ -38,8 +38,10 @@
       *ngIf="reportSaleForm.value.reportType == 'sale'"
       no-padding
       class="field-100">
-        <ion-label>{{'Agrupado Por' | translate}}</ion-label>
+        <ion-label  position="floating">{{'Agrupado Por' | translate}}</ion-label>
         <ion-select #groupBy formControlName="groupBy"
+          style="text-align: center;"
+          interface="popover"
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">

@@ -36,6 +36,13 @@ export class ReportListPage implements OnInit {
   has_search = false;
   select;
   today: any;
+
+  service_sold = 0;
+  service_margin = 0;
+  service_margin_percent = 0;
+  service_cash = 0;
+  service_credit = 0;
+
   sold = 0;
   sale_margin = 0;
   sale_margin_percent = 0;
@@ -199,6 +206,41 @@ export class ReportListPage implements OnInit {
       this.sale_credit = credit_payment;
     });
   }
+
+  computeServiceValues() {
+    let self = this;
+    this.pouchdbService.getView(
+      'Informes/ServicioDiario',
+      4,
+      [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
+      [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
+      true,
+      true,
+      undefined,
+      undefined,
+      false
+    ).then((sales: any[]) => {
+      let sold = 0;
+      let sale_margin = 0;
+      let cash_payment = 0;
+      let credit_payment = 0;
+      sales.forEach(sale => {
+        sold += parseFloat(sale.value);
+        if (sale.key[1] == "payment-condition.cash") {
+          cash_payment += parseFloat(sale.value);
+        } else {
+          credit_payment += parseFloat(sale.value);
+        }
+        sale_margin += sale.key[3];
+      });
+      this.service_sold = sold;
+      this.service_margin = sale_margin;
+      this.service_margin_percent = (sale_margin / sold) * 100;
+      this.service_cash = cash_payment;
+      this.service_credit = credit_payment;
+    });
+  }
+
   computeToReceiveValues() {
     this.pouchdbService.getView(
       'stock/A Cobrar', 0,
@@ -258,6 +300,7 @@ export class ReportListPage implements OnInit {
 
   recomputeValues() {
     this.computeSaleValues();
+    this.computeServiceValues();
     this.computeToReceiveValues();
     this.computePurchaseValues();
     this.computeToPayValues();
@@ -302,6 +345,22 @@ export class ReportListPage implements OnInit {
   showReportSale() {
     this.navCtrl.navigateForward(['/sale-report', {
       'reportType': "sale",
+      'dateStart': this.reportsForm.value.dateStart,
+      'dateEnd': this.reportsForm.value.dateEnd,
+    }]);
+  }
+
+  showReportService() {
+    this.navCtrl.navigateForward(['/service-report', {
+      'reportType': "service",
+      'dateStart': this.reportsForm.value.dateStart,
+      'dateEnd': this.reportsForm.value.dateEnd,
+    }]);
+  }
+
+  showReportProduction() {
+    this.navCtrl.navigateForward(['/production-report', {
+      'reportType': "production",
       'dateStart': this.reportsForm.value.dateStart,
       'dateEnd': this.reportsForm.value.dateEnd,
     }]);

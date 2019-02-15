@@ -129,6 +129,66 @@
 
       <ion-card class="list-card"
       style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      (click)="showReportService()">
+        <ion-row>
+          <ion-col
+          style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+            Servicios Prestados
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col no-padding class="report-100" style="margin-top: 15px;">
+            <h4 class="field-label">{{'TOTAL' | translate}}</h4>
+            <h4 class="field-value" style="color:green; font-size:30px;">
+              $ {{service_sold|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Al Contado' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              $ {{service_cash|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'A Credito' | translate}}</h4>
+            <h4 class="field-value" style="color:red">
+              $ {{service_credit|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Ganancia' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              $ {{service_margin|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Margem' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              {{service_margin_percent|number:'1.0-1'}} %
+            </h4>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+
+      <!-- <ion-card class="list-card"
+      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      (click)="showReportService()">
+        <ion-row>
+          <ion-col
+          style="text-align: center; font-size:20px;border-bottom:1px solid #ddd;height:50px;">
+            Servicios
+          </ion-col>
+        </ion-row>
+      </ion-card> -->
+
+
+
+      <ion-card class="list-card"
+      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportCashFlow()">
         <ion-row>
           <ion-col
@@ -263,6 +323,17 @@
           <ion-col
           style="text-align: center; font-size:20px;border-bottom:1px solid #ddd;height:50px;">
             Balance
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      
+      <ion-card class="list-card"
+      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      (click)="showReportProduction()">
+        <ion-row>
+          <ion-col
+          style="text-align: center; font-size:20px;border-bottom:1px solid #ddd;height:50px;">
+            Producciones
           </ion-col>
         </ion-row>
       </ion-card>
