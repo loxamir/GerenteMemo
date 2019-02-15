@@ -294,7 +294,7 @@ export class PayableReportPage implements OnInit {
 
               if (result.hasOwnProperty(cashFlowLine.key[2])) {
                 // console.log("items[result[cashFlowLine.key[1]]]", items[result[cashFlowLine.key[1]]]);
-                items[result[cashFlowLine.key[1]]] = {
+                items[result[cashFlowLine.key[2]]] = {
                   'name': items[result[cashFlowLine.key[2]]].name,
                   'income': items[result[cashFlowLine.key[2]]].income + income,
                   'expense': items[result[cashFlowLine.key[2]]].expense + expense,
