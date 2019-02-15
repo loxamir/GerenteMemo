@@ -3,18 +3,18 @@ import { NavController, LoadingController, PopoverController , Events, NavParams
 import 'rxjs/Rx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ServiceListPopover} from './service-list.popover';
+import { ProductionListPopover} from './production-list.popover';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 
 @Component({
-  selector: 'app-service-list',
-  templateUrl: './service-list.page.html',
-  styleUrls: ['./service-list.page.scss'],
+  selector: 'app-production-list',
+  templateUrl: './production-list.page.html',
+  styleUrls: ['./production-list.page.scss'],
 })
-export class ServiceListPage implements OnInit {
-  services: any = [];
+export class ProductionListPage implements OnInit {
+  productions: any = [];
   loading: any;
   searchTerm: string = '';
   items = [];
@@ -36,8 +36,8 @@ export class ServiceListPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select')  ;
-    this.events.subscribe('changed-service', (change)=>{
-      this.handleChange(this.services, change);
+    this.events.subscribe('changed-production', (change)=>{
+      this.handleChange(this.productions, change);
     })
     this.events.subscribe('got-database', ()=>{
       this.setFilteredItems();
@@ -47,9 +47,9 @@ export class ServiceListPage implements OnInit {
   searchItems() {
     this.searchItemsS(
       this.searchTerm, 0
-    ).then((services) => {
-      console.log("services", services);
-      this.services = services;
+    ).then((productions) => {
+      console.log("productions", productions);
+      this.productions = productions;
       this.page = 1;
       this.loading.dismiss();
     });
@@ -57,11 +57,11 @@ export class ServiceListPage implements OnInit {
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
-      this.getServicesPage(
+      this.getProductionsPage(
         this.searchTerm, this.page
-      ).then((services: any[]) => {
-        services.forEach(service => {
-          this.services.push(service);
+      ).then((productions: any[]) => {
+        productions.forEach(production => {
+          this.productions.push(production);
         });
         this.page += 1;
       });
@@ -71,10 +71,10 @@ export class ServiceListPage implements OnInit {
 
   doRefresh(refresher) {
     setTimeout(() => {
-      this.getServicesPage(
+      this.getProductionsPage(
         this.searchTerm, 0
-      ).then((services: any[]) => {
-        this.services = services;
+      ).then((productions: any[]) => {
+        this.productions = productions;
         this.page = 1;
       });
       refresher.target.complete();
@@ -84,7 +84,7 @@ export class ServiceListPage implements OnInit {
   async presentPopover(myEvent) {
     console.log("teste my event");
     let popover = await this.popoverCtrl.create({
-      component: ServiceListPopover,
+      component: ProductionListPopover,
       event: myEvent,
       componentProps: {popoverController: this.popoverCtrl}
     });
@@ -98,52 +98,38 @@ export class ServiceListPage implements OnInit {
   }
 
   setFilteredItems() {
-    this.getServicesPage(this.searchTerm, 0).then((services) => {
-      this.services = services;
+    this.getProductionsPage(this.searchTerm, 0).then((productions) => {
+      this.productions = productions;
       this.loading.dismiss();
       this.page = 1;
     });
   }
 
-  openService(service) {
-    this.events.subscribe('open-service', (data) => {
-      this.events.unsubscribe('open-service');
+  openProduction(production) {
+    this.events.subscribe('open-production', (data) => {
+      this.events.unsubscribe('open-production');
     })
-    this.navCtrl.navigateForward(['/service', {'_id': service._id}]);
+    this.navCtrl.navigateForward(['/production', {'_id': production._id}]);
   }
 
-  createService(){
-    this.events.subscribe('create-service', (data) => {
+  createProduction(){
+    this.events.subscribe('create-production', (data) => {
       if (this.select){
         // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('select-service', data);
+          this.events.publish('select-production', data);
         // });
       }
-      this.events.unsubscribe('create-service');
+      this.events.unsubscribe('create-production');
     })
-    this.navCtrl.navigateForward(['/service', {}]);
-    // fab.close();
+    this.navCtrl.navigateForward(['/production', {'production': true,}]);
   }
 
-  // createProduction(fab){
-  //   this.events.subscribe('create-service', (data) => {
-  //     if (this.select){
-  //       // this.navCtrl.navigateBack().then(() => {
-  //         this.events.publish('select-service', data);
-  //       // });
-  //     }
-  //     this.events.unsubscribe('create-service');
-  //   })
-  //   this.navCtrl.navigateForward(['/service', {'production': true,}]);
-  //   fab.close();
-  // }
-
-  getServicesPage(keyword, page){
+  getProductionsPage(keyword, page){
     return new Promise(resolve => {
       this.pouchdbService.searchDocTypeData(
-        'service', keyword, page, "contact_name"
-      ).then((services: any[]) => {
-        resolve(services);
+        'production', keyword, page, "contact_name"
+      ).then((productions: any[]) => {
+        resolve(productions);
       });
     });
   }
@@ -152,19 +138,19 @@ export class ServiceListPage implements OnInit {
     this.pouchdbService.localHandleChangeData(list, change)
   }
 
-  deleteService(service){
-    return this.pouchdbService.deleteDoc(service);
+  deleteProduction(production){
+    return this.pouchdbService.deleteDoc(production);
   }
 
   searchItemsS(keyword, page) {
     return new Promise(resolve => {
     this.pouchdbService.searchDocs(
-      'service',
+      'production',
       keyword,
       page,
       "contact_name"
-    ).then((services) => {
-        resolve(services);
+    ).then((productions) => {
+        resolve(productions);
       })
     })
   }

@@ -4,7 +4,7 @@
         <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Servicio"
+      placeholder="Buscar Producción"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionChange)="searchItems()">
@@ -23,9 +23,9 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
-    <ion-item-sliding class="list-item"  *ngFor="let item of services">
+    <ion-item-sliding class="list-item"  *ngFor="let item of productions">
       <ion-item no-padding>
-        <ion-card class="list-card" style="border-radius: 5px;" (click)="openService(item)">
+        <ion-card class="list-card" style="border-radius: 5px;" (click)="openProduction(item)">
           <ion-row>
             <ion-col no-padding>
               <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
@@ -67,7 +67,7 @@
 
     </ion-item>
       <ion-item-options>
-        <ion-button icon-only color="primary" (click)="deleteService(item)" *ngIf="item.state=='QUOTATION'">
+        <ion-button icon-only color="primary" (click)="deleteProduction(item)" *ngIf="item.state=='QUOTATION'">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-item-options>
@@ -79,7 +79,7 @@
   <ion-row style="height:15px;">
 
   </ion-row>
-  <ion-row *ngIf="!services.length">
+  <ion-row *ngIf="!productions.length">
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
       <!-- <ion-row>
         <ion-col></ion-col>
@@ -90,12 +90,12 @@
       </ion-row> -->
       <ion-row>
         <ion-col>
-          <h1>Sin trabajos registrados</h1>
+          <h1>Sin Producciones registradas</h1>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
-          <h4>Para crear Servicios pulsa el botón más</h4>
+          <h4>Para crear Producciones, pulsa el botón más</h4>
         </ion-col>
       </ion-row>
     </ion-col>
@@ -108,12 +108,11 @@
       <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed"  #fab>
     <ion-fab-button><ion-icon name="add"></ion-icon></ion-fab-button>
     <ion-fab-list side="top">
-      <div style="background: #FF5722;color: white;margin-top: -5px;">Servicio</div><ion-button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="createService(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
     <div style="background: #4CAF50;color: white;margin-top: -5px;">Producción</div><ion-button style="background: #4CAF50;color: white;margin-bottom: 5px;" ion-fab (click)="createProduction(fab)"><ion-icon name="arrow-round-down"></ion-icon></ion-button>
     </ion-fab-list>
   </ion-fab> -->
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createService()" color="primary">
+      <ion-fab-button (click)="createProduction()" color="primary">
           <ion-icon name="add">
           </ion-icon>
       </ion-fab-button>
