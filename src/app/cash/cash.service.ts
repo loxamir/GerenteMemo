@@ -18,36 +18,28 @@ export class CashService {
 
   getCash(doc_id): Promise<any> {
     return new Promise((resolve, reject)=>{
-      ////console.log("getPlanned");
       let payableList = [];
       this.pouchdbService.getView(
         'stock/Caixas', 5,
         [doc_id, null],
         [doc_id, "0"]
-      ).then((planneds: any[]) => {
-        // console.log("Caixas", planneds);
+      ).then(async (planneds: any[]) => {
         let promise_ids = [];
         let pts = [];
-        let balance = 0;
+        let balance: any = await this.pouchdbService.getView(
+          'stock/Caixas', 1, [doc_id, null], [doc_id, "z"]);
         planneds.forEach(item => {
-          // if (item.value != 0){
-            if (!item.key[2] || item.key[3] == doc_id){
-              pts.push(item);
-              promise_ids.push(this.cashMoveService.getCashMove(item.key[4]));
-              balance += parseFloat(item.value);
-            }
-          // }
+          if (!item.key[2] || item.key[3] == doc_id){
+            pts.push(item);
+            promise_ids.push(this.cashMoveService.getCashMove(item.key[4]));
+          }
         })
         promise_ids.push(this.pouchdbService.getDoc(doc_id));
         Promise.all(promise_ids).then(cashMoves => {
-          // resolve(pts);
-          // console.log("cashMoves", cashMoves);
-          // let cash = ;
           let cash = Object.assign({}, cashMoves[cashMoves.length-1]);
           cash.moves = [];
-          cash.balance = balance;
+          cash.balance = balance[0] && balance[0].value || 0;
           cash.account = cashMoves[cashMoves.length-1];
-          // cash.name
           cash.waiting = [];
           for(let i=0;i<pts.length;i++){
             if (cashMoves[i].state == 'WAITING'){
@@ -55,18 +47,12 @@ export class CashService {
             } else {
               cash.moves.unshift(cashMoves[i]);
             }
-            // console.log(cashMoves[i].value);
           }
-          // console.log("PTS2", cash);
-          // let receivables = pts.filter(word => word['contact_name'] && word['contact_name'].toString().search(new RegExp(keyword, "i")) != -1);
           this.pouchdbService.getDoc(cash.currency_id).then(async currency=>{
             cash.currency = currency;
             this.pouchdbService.getRelated(
             "close", "cash_id", doc_id).then((planned) => {
-              console.log("planned", planned);
               cash.closes = planned;
-              // resolve(pouchData);
-              console.log("cash", cash);
               resolve(cash);
             });
           })
@@ -80,22 +66,7 @@ export class CashService {
     delete cash.moves;
     delete cash.cash;
     return new Promise((resolve, reject)=>{
-      // if (cash.code && cash.code != ''){
-      //   this.pouchdbService.createDoc(cash).then(doc => {
-      //     if (cash.type == 'cash'){
-      //       cash._id = "account.cash."+cash.code;
-      //     }
-      //     else if (cash.type == 'bank'){
-      //       cash._id = "account.bank."+cash.code;
-      //     }
-      //     else if (cash.type == 'check'){
-      //       cash._id = "account.check."+cash.code;
-      //     }
-      //     resolve({doc: doc, cash: cash});
-      //   });
-      // } else {
         this.configService.getSequence('cash').then((code) => {
-          // let code = cash['code'];
           cash['code'] = code;
           if (cash.type == 'cash'){
             cash._id = "account.cash."+cash.code;
@@ -216,11 +187,7 @@ export class CashService {
       }
   }
 
-
-
-
   handleSumatoryChange(sumatory, cashForm, change){
-    console.log("handleSumatoryChange", sumatory, change)
     if (change.doc._rev[0] == '1'){
       if (change.doc.accountTo_id == cashForm.value._id){
         sumatory += change.doc.amount
@@ -232,28 +199,5 @@ export class CashService {
         balance: sumatory
       })
     }
-    // return sumatory
-
-    //
-    // let  list = moves;
-    //
-    //
-    //   //A document was deleted
-    //   if(change.deleted){
-    //     list.splice(changedIndex, 1);
-    //   } else if(changedState){
-    //     list.splice(changedIndex, 1);
-    //     changedState = false;
-    //   }
-    //   else {
-    //     //A document was updated
-    //     if(changedDoc){
-    //       list[changedIndex] = change.doc;
-    //     }
-    //     //A document was added
-    //     else {
-    //       list.unshift(change.doc);
-    //     }
-    //   }
   }
 }

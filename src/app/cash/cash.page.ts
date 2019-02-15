@@ -61,8 +61,8 @@ export class CashPage implements OnInit {
       this.select = this.route.snapshot.paramMap.get('select');
       this.translate.setDefaultLang('es');
       this.translate.use('es');
+      this.events.unsubscribe('changed-cash-move');
       this.events.subscribe('changed-cash-move', (change)=>{
-        this.events.unsubscribe('changed-cash-move');
         console.log("changed-cash-move", change);
         this.cashService.handleChange(this.cashForm.value.moves, change);
         this.cashService.localHandleChangeData(
