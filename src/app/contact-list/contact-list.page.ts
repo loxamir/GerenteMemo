@@ -15,6 +15,8 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   styleUrls: ['./contact-list.page.scss'],
 })
 export class ContactListPage implements OnInit {
+  @ViewChild('searchBar') searchBar;
+
   contacts: any;
   loading: any;
   select:any;
@@ -59,6 +61,11 @@ export class ContactListPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     this.setFilteredItems();
+    setTimeout(() => {
+      if(this.select){
+        this.searchBar.setFocus();
+      }
+    }, 500);
   }
 
   setFilteredItems() {

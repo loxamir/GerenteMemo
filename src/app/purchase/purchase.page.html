@@ -158,7 +158,7 @@
         <ion-item class="internal-item">
           <ion-card class="list-card">
             <ion-row (click)="openItem(item)" class="product-name-row">
-              {{item.product && item.product.name}}
+              {{item.product && item.product.code}} - {{item.product && item.product.name}}
             </ion-row>
         <ion-row>
           <ion-col size="6" style="white-space: normal;">

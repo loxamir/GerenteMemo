@@ -15,6 +15,8 @@ import { ProductListPopover} from './product-list.popover';
   styleUrls: ['./product-list.page.scss'],
 })
 export class ProductListPage implements OnInit {
+  @ViewChild('searchBar') searchBar;
+
   products: any = [];
   loading: any;
   select;
@@ -92,6 +94,11 @@ export class ProductListPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     this.setFilteredItems();
+    setTimeout(() => {
+      if(this.select){
+        this.searchBar.setFocus();
+      }
+    }, 500);
   }
 
   setFilteredItems() {

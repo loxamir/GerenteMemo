@@ -109,7 +109,7 @@ export class ReceiptPage implements OnInit {
         if(this.receiptForm.value.state == "DRAFT"){
           this.amount_paid.setFocus();
         }
-      }, 200);
+      }, 500);
       this.receiptForm = this.formBuilder.group({
         contact: new FormControl(this.contact||{}, Validators.required),
         // account_id: new FormControl(this.route.snapshot.paramMap.get('account_id')||""),
@@ -166,7 +166,7 @@ export class ReceiptPage implements OnInit {
     }
 
     goNextStep() {
-      if (this.receiptForm.value.amount_paid==null){
+      if (!this.receiptForm.value.amount_paid){
         this.amount_paid.setFocus();
       }
       else if (this.receiptForm.value.state == 'DRAFT'){
