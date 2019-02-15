@@ -62,8 +62,6 @@ export class ReportListPage implements OnInit {
   ToPayDefault = 0;
   paid = 0;
   service_total = 0;
-  service_margin = 0;
-  service_margin_percent = 0;
   receivedTable = [];
   cashflowIncome = 0;
   cashflowExpense = 0;
