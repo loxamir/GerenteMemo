@@ -165,18 +165,18 @@ export class ClosePage implements OnInit {
       } else if (
         accountMove.accountTo_id != this.closeForm.value.cash_id
         &&
-        accountMove.accountTo_id.split('.')[1] == 'cash'
+        (accountMove.accountTo_id.split('.')[1] == 'cash'
         || accountMove.accountTo_id.split('.')[1] == 'bank'
-        || accountMove.accountTo_id.split('.')[1] == 'check'
+        || accountMove.accountTo_id.split('.')[1] == 'check')
       ){
         accountMove.close_id = this._id;
         accountMove.both = accountMove.accountTo_id;
       } else if (
         accountMove.accountFrom_id != this.closeForm.value.cash_id
         &&
-        accountMove.accountFrom_id.split('.')[1] == 'cash'
+        (accountMove.accountFrom_id.split('.')[1] == 'cash'
         || accountMove.accountFrom_id.split('.')[1] == 'bank'
-        || accountMove.accountFrom_id.split('.')[1] == 'check'
+        || accountMove.accountFrom_id.split('.')[1] == 'check')
       ){
         accountMove.close_id = this._id;
         accountMove.both = accountMove.accountFrom_id;
