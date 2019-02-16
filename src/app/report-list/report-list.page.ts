@@ -126,7 +126,7 @@ export class ReportListPage implements OnInit {
   computeResultValues() {
     this.pouchdbService.getView(
       'stock/ResultadoDiario',
-      3,
+      4,
       [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
       [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"]
     ).then((result: any[]) => {
@@ -136,25 +136,37 @@ export class ReportListPage implements OnInit {
       let cashflowIncome = 0;
       let cashflowExpense = 0;
       result.forEach((item, index) => {
-        if (item.key[1].split('.')[1] == 'cash'
-          || item.key[1].split('.')[1] == 'bank'
-          || item.key[1].split('.')[1] == 'check') {
-          if (result[index].value > 0) {
-            cashflowIncome += result[index].value;
-          } else {
-            cashflowExpense -= result[index].value;
+        if (!
+          ((
+            item.key[1].split('.')[1] == 'cash'
+            || item.key[1].split('.')[1] == 'bank'
+            || item.key[1].split('.')[1] == 'check'
+          ) && (
+            item.key[3].split('.')[1] == 'cash'
+            || item.key[3].split('.')[1] == 'bank'
+            || item.key[3].split('.')[1] == 'check'
+          ))
+        ) {
+          if (item.key[1].split('.')[1] == 'cash'
+            || item.key[1].split('.')[1] == 'bank'
+            || item.key[1].split('.')[1] == 'check') {
+            if (result[index].value > 0) {
+              cashflowIncome += result[index].value;
+            } else {
+              cashflowExpense -= result[index].value;
+            }
           }
         }
         if (item.key[1].split('.')[1] == 'income') {
 
           // if (result[index].value > 0) {
-            console.log("value+", result[index]);
+            // console.log("value+", result[index]);
             resultIncome -= result[index].value;
           // } else {
           //   console.log("value-", result[index]);
             // resultIncome += result[index].value;
           // }
-          console.log("resultIncome", resultIncome);
+          // console.log("resultIncome", resultIncome);
         }
         if (item.key[1].split('.')[1] == 'expense') {
           // if (result[index].value > 0) {
