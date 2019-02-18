@@ -34,7 +34,7 @@
         $ {{amountTotal|number:'1.0'}}
       </div>
     </ion-col>
-    <ion-col width-50 *ngIf="amountPaid" class="field-100">
+    <ion-col width-50 *ngIf="amountPaid || createReceipt" class="field-100">
       {{'TO_PAY' | translate }}
       <div class="cash-move-amount positive" style="text-align: center">
         $ {{amountPaid|number:'1.0'}}
@@ -93,7 +93,7 @@
 
   <div style="height:100px">
   </div>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="amountPaid || createReceipt">
       <ion-fab-button (click)="createPayment()" >
           <ion-icon name="cash">
           </ion-icon>

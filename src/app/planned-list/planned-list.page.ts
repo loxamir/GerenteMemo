@@ -22,6 +22,7 @@ export class PlannedListPage implements OnInit {
   searchTerm: string = '';
   amountTotal: number;
   amountPaid: number;
+  createReceipt = false;
   contact = {};
   contact_id = "";
   today: any;
@@ -143,14 +144,17 @@ export class PlannedListPage implements OnInit {
   recomputeValues(){
     let total = 0;
     let payment = 0;
+    let createReceipt = false;
     this.plannedList.forEach((item) => {
       if (item.amount_paid){
         payment = payment + parseFloat(item.amount_paid);
+        createReceipt = true;
       }
       total = total + parseFloat(item.value);
     });
     this.amountTotal = total;
     this.amountPaid = payment;
+    this.createReceipt = createReceipt;
   }
 
   async createPayment() {
