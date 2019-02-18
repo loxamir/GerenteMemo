@@ -754,8 +754,14 @@ export class ReceiptPage implements OnInit {
       "paid": this.receiptForm.value.paid-this.receiptForm.value.change,
     });
     let promise_ids = [];
+    let credit = 0;
+    this.receiptForm.value.items.forEach(ite=>{
+      if (ite.amount_residual<0){
+        credit += Math.abs(ite.amount_residual)
+      }
+    })
 
-    let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change;
+    let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change + credit;
     this.receiptForm.value.payments.forEach((item) => {
       let payments = [];
       let toCreateCashMoves = {};
@@ -853,7 +859,7 @@ export class ReceiptPage implements OnInit {
       let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change;
       // let amount_invoiced = amount_paid;
       let promise_ids2 = [];
-      this.receiptForm.value.items.forEach((item1, index) => {
+      this.receiptForm.value.items.forEach(async (item1, index) => {
         let item_paid = 0;
         let item_residual = 0;
         if (amount_paid > item1.amount_residual){
@@ -875,7 +881,7 @@ export class ReceiptPage implements OnInit {
         // console.log("ORIGIN", item1.origin_id.split('.')[0]);
         if (item1.origin_id.split('.')[0] == 'sale'){
           // console.log("findSale");
-          this.pouchdbService.getDoc(item1.origin_id).then((sale: any)=>{
+          let sale:any = await this.pouchdbService.getDoc(item1.origin_id);
             // console.log("sALE", JSON.stringify(sale))
             sale.residual = item1.amount_residual;
             // console.log("item_residual2", item_residual);
@@ -890,10 +896,7 @@ export class ReceiptPage implements OnInit {
               sale['state'] = "PAID";
             }
             // console.log("SALE RES", JSON.stringify(sale));
-            this.pouchdbService.updateDoc(sale).then(res=>{
-              // console.log("RES", JSON.stringify(res));
-            })
-          })
+            await this.pouchdbService.updateDoc(sale);
         }
         else if (item1.origin_id.split('.')[0] == 'purchase'){
           this.pouchdbService.getDoc(item1.origin_id).then((purchase: any)=>{
