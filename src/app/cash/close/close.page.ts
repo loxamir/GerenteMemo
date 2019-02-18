@@ -68,6 +68,9 @@ export class ClosePage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     if (this._id){
+      setTimeout(() => {
+        this.closeForm.markAsPristine();
+      }, 200);
       this.closeService.getClose(this._id).then((data) => {
         this.closeForm.patchValue(data);
         this.cash_id = data.cash_id;
@@ -80,6 +83,7 @@ export class ClosePage implements OnInit {
     } else {
       setTimeout(() => {
         this.input.setFocus();
+        this.closeForm.markAsPristine();
       }, 200);
       let amount_income = 0;
       let amount_expense = 0;
