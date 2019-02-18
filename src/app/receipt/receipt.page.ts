@@ -167,7 +167,11 @@ export class ReceiptPage implements OnInit {
     }
 
     goNextStep() {
-      if (!this.receiptForm.value.amount_paid){
+      if (this.receiptForm.value.amount_paid==null){
+        this.amount_paid.setFocus();
+      } else if (this.receiptForm.value.amount_paid.toString() == "0" && this.receiptForm.value.total.toString() == "0"){
+        this.confirmReceipt();
+      } else if (!this.receiptForm.value.amount_paid){
         this.amount_paid.setFocus();
       }
       else if (this.receiptForm.value.state == 'DRAFT'){
