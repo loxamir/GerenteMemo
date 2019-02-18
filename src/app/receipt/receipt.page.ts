@@ -856,7 +856,7 @@ export class ReceiptPage implements OnInit {
     });
     Promise.all(promise_ids).then((promise_data) => {
       // console.log("promise_data",promise_data);
-      let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change;
+      let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change + credit;
       // let amount_invoiced = amount_paid;
       let promise_ids2 = [];
       this.receiptForm.value.items.forEach(async (item1, index) => {
