@@ -392,4 +392,10 @@ export class FormatService {
     var blob = new Blob([invoice], { type: "text/plain;charset=utf-8" });
     saveAs(blob, filename);
   }
+
+  async asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
 }

@@ -140,7 +140,7 @@ export class ClosePage implements OnInit {
     let accountMoves2 = [];
     await this.createCashAdjust();
     let data = this.closeForm.value.accountMoves;
-    await this.asyncForEach(data, async (accountMove: any)=>{
+    await this.formatService.asyncForEach(data, async (accountMove: any)=>{
       accountMoves2.push(accountMove._id);
       let accountMoved = await this.pouchdbService.getDoc(accountMove._id)
       this.accountMoves.push(accountMoved);
@@ -235,12 +235,6 @@ export class ClosePage implements OnInit {
     })
     resolve(cashMove);
   })
-  }
-
-  async asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
   }
 
   print(){
