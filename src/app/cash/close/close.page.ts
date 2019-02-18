@@ -191,7 +191,7 @@ export class ClosePage implements OnInit {
 
   async createCashAdjust(){
     return new Promise(async (resolve, reject)=>{
-    let amount = this.closeForm.value.amount_physical - this.closeForm.value.amount_theoretical
+    let amount = this.closeForm.value.amount_physical - this.closeForm.value.amount_theoretical;
     if (amount == 0){
       resolve(false);
       return;
@@ -204,7 +204,7 @@ export class ClosePage implements OnInit {
     }
     if (amount < 0){
       accountFrom = this.closeForm.value.cash_id;
-      accountTo = 'account.income.positiveDifference';
+      accountTo = 'account.expense.negativeDifference';
     }
     let docList:any = await this.pouchdbService.getList([
       'contact.myCompany',
