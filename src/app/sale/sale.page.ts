@@ -746,9 +746,9 @@ export class SalePage implements OnInit {
                 'docType': "cash-move",
               })
               if (item.quantity < 0){
-                let product = await this.productService.getProduct(product_id);
-                let old_stock = product.stock || 0;
-                let old_cost = product.cost || 0;
+                // let product = await this.productService.getProduct(product_id);
+                let old_stock = item.product.stock || 0;
+                let old_cost = item.product.cost || 0;
                 await this.productService.updateStockAndCost(
                   product_id,
                   Math.abs(item.quantity),
