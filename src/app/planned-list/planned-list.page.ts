@@ -58,7 +58,7 @@ export class PlannedListPage implements OnInit {
     this.events.subscribe('changed-cash-move', (change)=>{
       this.plannedService.handleChange(this.plannedList || [], change);
     })
-    this.today = new Date();
+    this.today = new Date().toJSON();
   }
 
   createReceivableMove(){
