@@ -808,7 +808,7 @@ export class PurchasePage implements OnInit {
                 //this.purchaseForm.value.step = 'chooseInvoice';
               });
               this.purchaseForm.patchValue({
-                 state: 'CANCELED',
+                 state: 'QUOTATION',
               });
               this.removeQuotes();
               this.removeStockMoves();
