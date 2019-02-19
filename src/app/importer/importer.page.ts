@@ -534,11 +534,11 @@ export class ImporterPage implements OnInit {
     } else if (this.docType == 'contact'){
       // this.loading.present();
       console.log("contact");
-      this.formatContacts(this.csvParsed).then((csv: any[])=>{
+      this.formatContacts(this.csvParsed).then(async (csv: any[])=>{
         let bigger_code:any = 0;
         let count = 1;
         let promise2_ids = [];
-        csv.forEach(async (item: any) => {
+        await this.formatService.asyncForEach(csv, async (item: any)=>{
           count += 1;
           console.log("-- createContact", item);
           if (item.document){
@@ -608,12 +608,12 @@ export class ImporterPage implements OnInit {
       })
     } else if (this.docType == 'cash-move'){
       // this.loading.present();
-      this.formatCashMoves(this.csvParsed).then((csv: any[])=>{
+      this.formatCashMoves(this.csvParsed).then(async (csv: any[])=>{
         console.log("csv", csv);
         let bigger_code:any = 0;
         let count = 1;
         let promise2_ids = [];
-        csv.forEach((item: any) => {
+        await this.formatService.asyncForEach(csv, async (item: any)=>{
           console.log("createCashMove -", item);
           count += 1;
           if (parseInt(item.code)>bigger_code){
@@ -654,12 +654,12 @@ export class ImporterPage implements OnInit {
         // console.log("count", count);
       })
     } else if (this.docType == 'sale'){
-      this.formatSales(this.csvParsed).then((csv: any[])=>{
+      this.formatSales(this.csvParsed).then(async (csv: any[])=>{
         let bigger_code:any = 0;
         let promise2_ids = [];
         console.log("csv", csv);
         let count = 1;
-        csv.forEach((item: any) => {
+        await this.formatService.asyncForEach(csv, async (item: any)=>{
           console.log("createSale -", JSON.stringify(item));
           count += 1;
           if (parseInt(item.code)>bigger_code){
@@ -704,9 +704,9 @@ export class ImporterPage implements OnInit {
       // this.loading.present();
       // console.log("read file", csvData);
       // this.parseCSVFile(this.csvData).then((csv: any[])=>{
-      this.formatSaleLines(this.csvParsed).then((csv: any[])=>{
+      this.formatSaleLines(this.csvParsed).then(async (csv: any[])=>{
         let promise2_ids = [];
-        Object.keys(csv).forEach(key => {
+        await this.formatService.asyncForEach(Object.keys(csv), async (key: any)=>{
           promise2_ids.push(this.saleService.getSale('sale.'+key).then(doc=>{
             console.log("key", key, "doc", csv[key]['items']);
             // if (doc){
@@ -736,11 +736,11 @@ export class ImporterPage implements OnInit {
     } else if (this.docType == 'account'){
       // this.loading.present();
       console.log("account");
-      this.formatAccounts(this.csvParsed).then((csv: any[])=>{
+      this.formatAccounts(this.csvParsed).then(async (csv: any[])=>{
         // let bigger_code:any = 0;
         let count = 1;
         let promise2_ids = [];
-        csv.forEach(item => {
+        await this.formatService.asyncForEach(csv, async (item: any)=>{
           count += 1;
           console.log("-- createContact", item);
           // if (parseInt(item.code)>bigger_code){
