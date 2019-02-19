@@ -4,21 +4,9 @@
     <ion-searchbar
       placeholder="Buscar Condicion de Pago"
       [(ngModel)]="searchTerm"
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only color="royal" *ngIf="!has_search"
-        (tap)="setSearch()">
-        <ion-icon name="search"></ion-icon>
-      </ion-button>
-      <ion-button icon-only color="royal" *ngIf="has_search"
-        (tap)="setSearch()">
-        <ion-icon name="close"></ion-icon>
-      </ion-button> -->
-      <!-- <ion-button icon-only color="royal"
-              (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

@@ -6,7 +6,7 @@
     <ion-searchbar
       placeholder="Movimentos de Stock"
       [(ngModel)]="searchTerm"
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
     </ion-buttons>

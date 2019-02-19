@@ -7,7 +7,7 @@
     <ion-searchbar
       placeholder="Buscar Movimiento"
       [(ngModel)]="searchTerm"
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
       <ion-button icon-only

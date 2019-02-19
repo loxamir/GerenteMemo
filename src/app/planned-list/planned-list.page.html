@@ -8,14 +8,14 @@
       placeholder="Buscar Contas a Cobrar"
       [(ngModel)]="searchTerm"
       #searchbar
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-searchbar
       *ngIf="this.signal=='-'"
       placeholder="Buscar Contas a Pagar"
       [(ngModel)]="searchTerm"
       #searchbar
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
   </ion-toolbar>
   <ion-row justify-content-center>
