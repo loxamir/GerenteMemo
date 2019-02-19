@@ -34,6 +34,7 @@ export class ImporterPage implements OnInit {
   errorMessage: any[] = [];
   // csvError: any[] = [];
   // createList: any[] = [];
+  validated = false;
   pageSize = 40;
   page = 0;
   error: boolean = true;
@@ -143,7 +144,7 @@ export class ImporterPage implements OnInit {
       this.pageProperty[page] = pageProperty;
       this.pageError[page] = pageError;
     }
-
+    this.validated = false;
     // this.createAtrributeSpace(this.csvParsed.slice(this.pageSize*(this.page - 1), this.pageSize*this.page));
     // this.loading.dismiss();
   }
@@ -346,6 +347,7 @@ export class ImporterPage implements OnInit {
       }
     })
     })
+    this.validated = true;
   }
 
   checkDate(keyword, line, page, row, messageTrue="", messageFalse="Formato no reconocido, use el formato '31/12/2018'",){
@@ -463,7 +465,7 @@ export class ImporterPage implements OnInit {
     // })f
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
-    this.validate();
+    // this.validate();
     // console.log("this.createList", this.createList);
     // var uniq = this.createList.reduce(function(a,b){
     //   if (a.indexOf(b) < 0 ) a.push(b);
@@ -796,6 +798,7 @@ export class ImporterPage implements OnInit {
             stock: doc[4],
             tax: doc[5],
             category_id: categories[index][0]._id,
+            category_name: categories[index][0].name,
             stock_min: doc[7],
             type: doc[8],
             note: doc[9],
