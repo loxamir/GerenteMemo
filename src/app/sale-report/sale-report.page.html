@@ -160,6 +160,9 @@
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
                   Margen
                 </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Cant.
+                </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
                   Total
                 </ion-col>
@@ -171,7 +174,9 @@
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.margin|number:'1.0'}}
                 </ion-col>
-
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.quantity|number:'1.0'}}
+                </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.total|number:'1.0'}}
                 </ion-col>
@@ -183,9 +188,9 @@
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.0'}}
                 </ion-col>
-                <!-- <ion-col width-15 style="text-align: right">
+                <ion-col width-15 style="text-align: right">
                   {{items_quantity|number:'1.0'}}
-                </ion-col> -->
+                </ion-col>
                 <ion-col width-25 style="text-align: right">
                   {{total|number:'1.0'}}
                 </ion-col>
@@ -199,6 +204,9 @@
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
                   Margen
                 </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Cant.
+                </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
                   Total
                 </ion-col>
@@ -211,6 +219,9 @@
                   {{item.margin|number:'1.0'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.quantity|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.total|number:'1.0'}}
                 </ion-col>
               </ion-row>
@@ -221,9 +232,9 @@
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.0'}}
                 </ion-col>
-                <!-- <ion-col width-15 style="text-align: right">
+                <ion-col width-15 style="text-align: right">
                   {{items_quantity|number:'1.0'}}
-                </ion-col> -->
+                </ion-col>
                 <ion-col width-25 style="text-align: right">
                   {{total|number:'1.0'}}
                 </ion-col>
@@ -240,6 +251,9 @@
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
                   Margen
                 </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Cant.
+                </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
                   Total
                 </ion-col>
@@ -252,6 +266,9 @@
                   {{item.margin|number:'1.0'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.quantity|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.total|number:'1.0'}}
                 </ion-col>
               </ion-row>
@@ -262,9 +279,9 @@
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.0'}}
                 </ion-col>
-                <!-- <ion-col width-15 style="text-align: right">
+                <ion-col width-15 style="text-align: right">
                   {{items_quantity|number:'1.0'}}
-                </ion-col> -->
+                </ion-col>
                 <ion-col width-25 style="text-align: right">
                   {{total|number:'1.0'}}
                 </ion-col>
@@ -282,6 +299,9 @@
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
                   Margen
                 </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Cant.
+                </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
                   Total
                 </ion-col>
@@ -294,6 +314,9 @@
                   {{item.margin|number:'1.0'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.quantity|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.total|number:'1.0'}}
                 </ion-col>
               </ion-row>
@@ -304,9 +327,9 @@
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.0'}}
                 </ion-col>
-                <!-- <ion-col width-15 style="text-align: right">
+                <ion-col width-15 style="text-align: right">
                   {{items_quantity|number:'1.0'}}
-                </ion-col> -->
+                </ion-col>
                 <ion-col width-25 style="text-align: right">
                   {{total|number:'1.0'}}
                 </ion-col>

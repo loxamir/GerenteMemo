@@ -51,6 +51,11 @@ export class PurchaseReportPage implements OnInit {
   y: any;
   g: any;
 
+  items_product_total = 0;
+  items_margin = 0;
+  items_quantity = 0;
+  total = 0;
+
   line: d3Shape.Line<[number, number]>;
   constructor(
     public navCtrl: NavController,
@@ -476,10 +481,27 @@ export class PurchaseReportPage implements OnInit {
   }
 
   recomputeValues() {
+    // let total = 0;
+    // this.reportPurchaseForm.value.items.forEach((item) => {
+    //   total += parseFloat(item.total);
+    // });
+    // this.reportPurchaseForm.patchValue({
+    //   "total": total,
+    // });
     let total = 0;
+    let items_product_total = 0;
+    let items_margin = 0;
+    let items_quantity = 0;
     this.reportPurchaseForm.value.items.forEach((item) => {
       total += parseFloat(item.total);
+      items_product_total += 1;
+      items_margin += parseFloat(item.margin);
+      items_quantity += parseFloat(item.quantity);
     });
+    this.items_product_total = items_product_total;
+    this.items_margin = items_margin;
+    this.items_quantity = items_quantity;
+    this.total = total;
     this.reportPurchaseForm.patchValue({
       "total": total,
     });
