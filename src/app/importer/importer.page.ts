@@ -484,11 +484,11 @@ export class ImporterPage implements OnInit {
       console.log("before promise");
       Promise.all(promise_ids).then(categories=>{
         console.log("created categs", categories);
-        this.formatProducts(this.csvParsed).then((csv: any[])=>{
+        this.formatProducts(this.csvParsed).then(async (csv: any[])=>{
           let bigger_code:any = 0;
           let promise2_ids = [];
           let count = 1;
-          csv.forEach(async (item: any) => {
+          await this.formatService.asyncForEach(csv, async (item: any)=>{
             count += 1;
             console.log("-- createProduct", item);
             if (parseInt(item.code)>bigger_code){
