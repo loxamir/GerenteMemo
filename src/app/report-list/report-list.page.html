@@ -261,6 +261,53 @@
 
       <ion-card class="list-card"
       style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      (click)="showReportProduction()">
+        <ion-row>
+          <ion-col
+          style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+            Producciones
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col no-padding class="report-100" style="margin-top: 15px;">
+            <h4 class="field-label">{{'Valor Estimado' | translate}}</h4>
+            <h4 class="field-value" style="color:green; font-size:30px;">
+              $ {{produced|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Materiales Consumidos' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              $ {{production_material|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Mano de Obra Consumida' | translate}}</h4>
+            <h4 class="field-value" style="color:red">
+              $ {{production_labour|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Costo de Producción' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              $ {{production_cost|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Valor Agregado' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              {{production_cost_percent|number:'1.0-1'}} %
+            </h4>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+
+      <ion-card class="list-card"
+      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportToReceive()">
         <ion-row>
           <ion-col
@@ -326,8 +373,8 @@
           </ion-col>
         </ion-row>
       </ion-card>
-      
-      <ion-card class="list-card"
+
+      <!-- <ion-card class="list-card"
       style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportProduction()">
         <ion-row>
@@ -336,7 +383,10 @@
             Producciones
           </ion-col>
         </ion-row>
-      </ion-card>
+      </ion-card> -->
+
+
+
     </ion-list>
     <div style="height: 100px">
     </div>

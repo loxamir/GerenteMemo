@@ -163,7 +163,7 @@ export class ProductionReportPage implements OnInit {
 
       if (this.reportProductionForm.value.groupBy == 'product') {
         this.pouchdbService.getView(
-          'Informes/ProductosProducidos',
+          'Informes/ProduccionDiaria',
           11,
           [this.reportProductionForm.value.dateStart.split("T")[0], "0", "0"],
           [this.reportProductionForm.value.dateEnd.split("T")[0], "z", "z"],
@@ -215,7 +215,7 @@ export class ProductionReportPage implements OnInit {
     }
     else if (this.reportProductionForm.value.groupBy == 'date') {
       this.pouchdbService.getView(
-        'Informes/ProductosProducidos',
+        'Informes/ProduccionDiaria',
         11,
         [this.reportProductionForm.value.dateStart.split("T")[0], "0", "0"],
         [this.reportProductionForm.value.dateEnd.split("T")[0], "z", "z"],

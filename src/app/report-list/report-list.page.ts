@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, LoadingController, PopoverController, Events, NavParams } from '@ionic/angular';
+import { NavController, LoadingController, PopoverController, NavParams } from '@ionic/angular';
 import { ReportPage } from '../report/report.page';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ResultReportPage } from '../result-report/result-report.page';
@@ -42,7 +42,11 @@ export class ReportListPage implements OnInit {
   service_margin_percent = 0;
   service_cash = 0;
   service_credit = 0;
-
+  produced = 0;
+  production_material = 0;
+  production_labour = 0;
+  production_cost = 0;
+  production_cost_percent = 0;
   sold = 0;
   sale_margin = 0;
   sale_margin_percent = 0;
@@ -78,7 +82,6 @@ export class ReportListPage implements OnInit {
     public reportsService: ReportListService,
     public loadingCtrl: LoadingController,
     public popoverCtrl: PopoverController,
-    public events: Events,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public translate: TranslateService,
@@ -107,9 +110,9 @@ export class ReportListPage implements OnInit {
     });
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
-    setTimeout(() => {
-      this.recomputeValues();
-    }, 500);
+    // setTimeout(() => {
+    //   this.recomputeValues();
+    // }, 500);
     this.setFilteredItems();
   }
 
@@ -251,6 +254,39 @@ export class ReportListPage implements OnInit {
     });
   }
 
+  computeProductionValues() {
+    let self = this;
+    this.pouchdbService.getView(
+      'Informes/ProduccionDiaria',
+      10,
+      [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
+      [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
+      true,
+      true,
+      undefined,
+      undefined,
+      false
+    ).then((sales: any[]) => {
+      console.log("produciones", sales);
+      let produced = 0;
+      let production_material = 0;
+      let production_labour = 0;
+      let production_cost = 0;
+      let production_cost_percent = 0;
+      sales.forEach(sale => {
+        produced += parseFloat(sale.key[4]);
+        production_material += parseFloat(sale.key[5]);
+        production_labour += parseFloat(sale.key[6]);
+        production_cost += parseFloat(sale.value);
+      });
+      this.produced = produced;
+      this.production_material = production_material;
+      this.production_labour = production_labour;
+      this.production_cost = production_cost;
+      this.production_cost_percent = (produced / production_cost - 1) * 100;
+    });
+  }
+
   computeToReceiveValues() {
     this.pouchdbService.getView(
       'stock/A Cobrar', 0,
@@ -311,6 +347,7 @@ export class ReportListPage implements OnInit {
   recomputeValues() {
     this.computeSaleValues();
     this.computeServiceValues();
+    this.computeProductionValues();
     this.computeToReceiveValues();
     this.computePurchaseValues();
     this.computeToPayValues();
