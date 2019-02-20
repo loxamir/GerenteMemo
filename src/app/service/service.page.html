@@ -136,17 +136,17 @@
           </ion-item>
 
         </ion-row>
-        <ion-row
+        <!-- <ion-row
           *ngIf="!serviceForm.value.production"
            style="background: white;border: 1px solid #ddd">
-          <ion-col>
-            <ion-item  style="--background: white">
+          <ion-col> -->
+            <ion-item  class="field-100">
               <ion-label position="stacked">{{ 'CLIENT_REQUEST' | translate }}</ion-label>
               <ion-textarea #clrequest formControlName="client_request"
                 rows="3">
               </ion-textarea>
             </ion-item>
-          </ion-col>
+          <!-- </ion-col>
           <ion-col size="2" color="primary">
             <ion-button icon-only  style="height: 100%;margin-top: 0px;"
             color="primary"
@@ -154,7 +154,7 @@
               <ion-icon name="mic"></ion-icon>
             </ion-button>
           </ion-col>
-        </ion-row>
+        </ion-row> -->
           <ion-row>
           <ion-item
            no-padding

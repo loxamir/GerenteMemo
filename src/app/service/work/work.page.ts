@@ -54,7 +54,7 @@ export class ServiceWorkPage implements OnInit {
         description: new FormControl(this.description||null),
         date: new FormControl(this.date||new Date().toISOString()),
         time: new FormControl(this.time||null),
-        // note: new FormControl(this.navParams.datanote||''),
+        note: new FormControl(''),
         responsible: new FormControl(this.route.snapshot.paramMap.get('responsible')||''),
       });
     // }
