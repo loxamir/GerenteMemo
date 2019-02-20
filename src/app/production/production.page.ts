@@ -223,7 +223,7 @@ export class ProductionPage implements OnInit {
 
 
     async openItem(item) {
-      if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+      if (this.productionForm.value.state!='CONFIRMED'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
         let profileModal = await this.modalCtrl.create({
@@ -272,7 +272,7 @@ export class ProductionPage implements OnInit {
       });
       let state = this.productionForm.value.state;
       if (this.productionForm.value.total > 0 && residual == 0){
-          state = "PAID";
+        state = "PAID";
       }
       this.productionForm.patchValue({
         residual: residual,
@@ -854,16 +854,15 @@ export class ProductionPage implements OnInit {
       this.translate.use(language_to_set);
     }
 
-    // recomputeTotal(){
-    //   // if (this.productionForm.value.state=='QUOTATION'){
-    //     let total = this.productionForm.value.travel_amount +
-    //       this.productionForm.value.work_amount +
-    //       this.productionForm.value.input_amount;
-    //     this.productionForm.patchValue({
-    //       total: total,
-    //     });
-    //   // }
-    // }
+    recomputeTotal(){
+      // if (this.productionForm.value.state=='QUOTATION'){
+        let total = this.productionForm.value.work_amount +
+          this.productionForm.value.input_amount;
+        this.productionForm.patchValue({
+          total: total,
+        });
+      // }
+    }
     //
     // recomputeTravels(){
     //   let travels = 0;
@@ -954,7 +953,7 @@ export class ProductionPage implements OnInit {
     }
 
     async editWorkPrice(item){
-      if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+      if (this.productionForm.value.state!='CONFIRMED'){
         let prompt = await this.alertCtrl.create({
           header: 'Precio del servicio por hora',
           message: 'Cual es el precio del la hora?',
@@ -1018,7 +1017,7 @@ export class ProductionPage implements OnInit {
     // }
     //
     // async editTravelPrice(item){
-    //   if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+    //   if (this.productionForm.value.state!='CONFIRMED'){
     //     let prompt = await this.alertCtrl.create({
     //       header: 'Precio del Viatico por km',
     //       message: 'Cual es el precio de este del viatico por km?',
@@ -1141,7 +1140,7 @@ export class ProductionPage implements OnInit {
       // }
     }
     sumWork(item) {
-      if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+      if (this.productionForm.value.state!='CONFIRMED'){
         item.time = parseFloat(item.time)+1;
         this.recomputeValues();
         this.productionForm.markAsDirty();
@@ -1149,7 +1148,7 @@ export class ProductionPage implements OnInit {
     }
 
     remWork(item) {
-      if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+      if (this.productionForm.value.state!='CONFIRMED'){
         item.time = parseFloat(item.time)-1;
         this.recomputeValues();
         this.productionForm.markAsDirty();
@@ -1157,7 +1156,7 @@ export class ProductionPage implements OnInit {
     }
     //
     // sumTravel(item) {
-    //   if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+    //   if (this.productionForm.value.state!='CONFIRMED'){
     //     item.distance = parseFloat(item.distance)+1;
     //     this.recomputeValues();
     //     this.productionForm.markAsDirty();
@@ -1165,7 +1164,7 @@ export class ProductionPage implements OnInit {
     // }
     //
     // remTravel(item) {
-    //   if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+    //   if (this.productionForm.value.state!='CONFIRMED'){
     //     item.distance = parseFloat(item.distance)-1;
     //     this.recomputeValues();
     //     this.productionForm.markAsDirty();
@@ -1173,7 +1172,7 @@ export class ProductionPage implements OnInit {
     // }
 
     sumItem(item) {
-      if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+      if (this.productionForm.value.state!='CONFIRMED'){
         item.quantity = parseFloat(item.quantity)+1;
         this.recomputeValues();
         this.productionForm.markAsDirty();
@@ -1181,7 +1180,7 @@ export class ProductionPage implements OnInit {
     }
 
     remItem(item) {
-      if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+      if (this.productionForm.value.state!='CONFIRMED'){
         item.quantity = parseFloat(item.quantity)-1;
         this.recomputeValues();
         this.productionForm.markAsDirty();
@@ -1189,7 +1188,7 @@ export class ProductionPage implements OnInit {
     }
 
     async editItemPrice(item){
-      if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+      if (this.productionForm.value.state!='CONFIRMED'){
         let prompt = await this.alertCtrl.create({
           header: 'Precio del Producto',
           message: 'Cual es el precio de este producto?',
@@ -1221,7 +1220,7 @@ export class ProductionPage implements OnInit {
     }
 
     async editItemQuantity(item){
-      if (this.productionForm.value.state!='CONFIRMED' && this.productionForm.value.state!='PRODUCED'){
+      if (this.productionForm.value.state!='CONFIRMED'){
         let prompt = await this.alertCtrl.create({
           header: 'Cantidad del Producto',
           message: 'Cual es el Cantidad de este producto?',
@@ -1325,7 +1324,7 @@ export class ProductionPage implements OnInit {
       // this.recomputeTravels();
       this.recomputeWorks();
       this.recomputeInputs();
-      // this.recomputeTotal();
+      this.recomputeTotal();
       this.recomputeResidual();
     }
 
@@ -1483,7 +1482,7 @@ export class ProductionPage implements OnInit {
             }
             let state;
             if (this.productionForm.value.production){
-              state = 'PRODUCED';
+              state = 'CONFIRMED';
             } else {
               state = 'CONFIRMED';
             }
@@ -1939,7 +1938,7 @@ export class ProductionPage implements OnInit {
       if (this.productionForm.value.state=='PAID'){
         return false;
       }
-      else if (this.productionForm.value.state=='PRODUCED'){
+      else if (this.productionForm.value.state=='CONFIRMED'){
         return false;
       }
       // else if (this.productionForm.value.price==null){

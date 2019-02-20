@@ -24,23 +24,13 @@
 
   <ion-row>
     <ion-item
-    no-padding
-        *ngIf="!productionForm.value.production"
-     class="summary-50">
-      <h4 class="field-label">{{'TOTAL' | translate}}</h4>
-      <h4 class="field-value" style="color:blue">$ {{productionForm.value.total|number:'1.0'}}</h4>
-    </ion-item>
-
-    <ion-item
-    no-padding
-        *ngIf="productionForm.value.production"
+     no-padding
      class="summary-100">
       <h4 class="field-label">{{'TOTAL' | translate}}</h4>
       <h4 class="field-value" style="color:blue">$ {{productionForm.value.total|number:'1.0'}}</h4>
     </ion-item>
 
     <ion-item
-    *ngIf="!productionForm.value.production"
     no-padding
      class="summary-50">
       <h4 class="field-label">{{'Cobrar' | translate}}</h4>
@@ -55,7 +45,7 @@
     </ion-item> -->
   </ion-row>
   <ion-row class="state-header">
-    <ion-col size="4" *ngIf="(productionForm.value.state == 'QUOTATION' || productionForm.value.state == 'PRODUCED') || productionForm.value.production">
+    <ion-col size="4" *ngIf="(productionForm.value.state == 'QUOTATION' || productionForm.value.state == 'CONFIRMED') || productionForm.value.production">
       <div class="clicked arron">
         <span class="state-label">
           Nuevo
@@ -67,12 +57,12 @@
         <span class="state-label">Agendado</span>
       </div>
     </ion-col>
-    <ion-col size="4" *ngIf="(productionForm.value.state == 'STARTED' || productionForm.value.state == 'CONFIRMED' || productionForm.value.state == 'PAID' || productionForm.value.state == 'PRODUCED') || productionForm.value.production">
+    <ion-col size="4" *ngIf="(productionForm.value.state == 'STARTED' || productionForm.value.state == 'CONFIRMED' || productionForm.value.state == 'PAID' || productionForm.value.state == 'CONFIRMED') || productionForm.value.production">
       <div
       [class.arrow]="productionForm.value.production"
       [class.arron]="!productionForm.value.production"
-      [class.unclicked]="productionForm.value.state!='STARTED' && productionForm.value.state!='PRODUCED' && productionForm.value.state!='PAID'"
-      [class.clicked]="productionForm.value.state=='STARTED' || productionForm.value.state=='PRODUCED' || productionForm.value.state=='PAID'">
+      [class.unclicked]="productionForm.value.state!='STARTED' && productionForm.value.state!='CONFIRMED' && productionForm.value.state!='PAID'"
+      [class.clicked]="productionForm.value.state=='STARTED' || productionForm.value.state=='CONFIRMED' || productionForm.value.state=='PAID'">
         <span class="state-label">Iniciado</span>
       </div>
     </ion-col>
@@ -87,8 +77,8 @@
     <ion-col size="4" *ngIf="productionForm.value.production">
       <div
       class="arrow"
-      [class.unclicked]="productionForm.value.state!='PRODUCED'"
-      [class.clicked]="productionForm.value.state=='PRODUCED'">
+      [class.unclicked]="productionForm.value.state!='CONFIRMED'"
+      [class.clicked]="productionForm.value.state=='CONFIRMED'">
         <span class="state-label">Producido</span>
       </div>
     </ion-col>
@@ -120,14 +110,14 @@
           (click)="selectProduct()"
           *ngIf="productionForm.value.production"
            class="field-100">
-            <h4 class="field-label">{{'PRODUCED_PRODUCT' | translate}}</h4>
+            <h4 class="field-label">{{'CONFIRMED_PRODUCT' | translate}}</h4>
             <h4 class="field-value">{{productionForm.value.product && productionForm.value.product.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item
            no-padding
            *ngIf="productionForm.value.production"
            class="field-100">
-            <ion-label position="floating" style="font-size:14px">{{'PRODUCED_QUANTITY' | translate }}</ion-label>
+            <ion-label position="floating" style="font-size:14px">{{'CONFIRMED_QUANTITY' | translate }}</ion-label>
             <ion-input #input type="number"
             formControlName="quantity"></ion-input>
           </ion-item>
@@ -257,7 +247,7 @@
               </ion-icon>
             </ion-col>
             <ion-col size="9" (click)="showWorks()">
-              <h4 class="section-title">{{'SERVICES_DONE' | translate}}</h4>
+              <h4 class="section-title">{{'Trabajos Realizados' | translate}}</h4>
               <h4 class="field-value" style="margin-top:0px;">$ {{productionForm.value.work_amount|number:'1.0'}}</h4>
             </ion-col>
             <!-- <ion-col size="2" color="primary"
