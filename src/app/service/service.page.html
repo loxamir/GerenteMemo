@@ -541,7 +541,10 @@
           </ion-card>
           <ion-row>
             <ion-col>
-              <ion-button class="button-100" color="success" (click)="print()"><ion-icon name="print" style="margin-right:10px;"></ion-icon>Imprimir</ion-button>
+              <ion-button class="button-100"
+              color="success"
+              (click)="print()">
+              <ion-icon name="print" style="margin-right:10px;"></ion-icon>Imprimir OS</ion-button>
             </ion-col>
             <ion-col>
               <ion-button class="button-100" color="success" (click)="share()"><ion-icon name="share" style="margin-right:10px;"></ion-icon>Compartir</ion-button>
@@ -565,13 +568,13 @@
             </ion-col>
 
 
-            <ion-col size="6"
+            <!-- <ion-col size="6"
             *ngIf="serviceForm.value.state == 'CONFIRMED' && ! serviceForm.value.production">
               <ion-button class="button-100"
               (click)="print()">
                 Imprimir OS
               </ion-button>
-            </ion-col>
+            </ion-col> -->
             <ion-col size="6"
             *ngIf="serviceForm.value.state == 'CONFIRMED' && ! serviceForm.value.production">
               <ion-button class="button-100"
