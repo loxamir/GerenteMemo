@@ -786,9 +786,6 @@ export class InvoicePage implements OnInit {
     setNumber(){
       if (this.invoiceForm.value.type == 'in'){
         this.informNumberSupplier("001-001-000");
-        if (this.select){
-          this.modalCtrl.dismiss();
-        }
       } else if (this.invoiceForm.value.code){
         this.informNumber(this.invoiceForm.value.code);
       } else {
@@ -875,7 +872,7 @@ export class InvoicePage implements OnInit {
             text: 'Cancel'
           },
           {
-            text: 'Imprimir',
+            text: 'Confirmar',
             handler: data => {
               this.invoiceForm.patchValue({
                 code: data.code,
@@ -883,6 +880,9 @@ export class InvoicePage implements OnInit {
               });
               this.recomputeValues();
               this.justSave();
+              if (this.select){
+                this.modalCtrl.dismiss();
+              }
               // this.navCtrl.navigateBack();
             }
           }
