@@ -63,6 +63,7 @@ import { CheckListPageModule } from './check-list/check-list.module';
 import { CheckPageModule } from './check/check.module';
 import { PaymentConditionPageModule } from './payment-condition/payment-condition.module';
 import { ServiceWorkPageModule } from './service/work/work.module';
+import { ProductionWorkPageModule } from './production/work/work.module';
 import { ServiceTravelPageModule } from './service/travel/travel.module';
 
 import { UserPageModule } from './user/user.module';
@@ -125,6 +126,7 @@ import { environment } from '../environments/environment';
     PaymentConditionPageModule,
     CheckListPageModule,
     ServiceWorkPageModule,
+    ProductionWorkPageModule,
     ServiceTravelPageModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),
