@@ -110,14 +110,14 @@
           (click)="selectProduct()"
           *ngIf="productionForm.value.production"
            class="field-100">
-            <h4 class="field-label">{{'CONFIRMED_PRODUCT' | translate}}</h4>
+            <h4 class="field-label">{{'PRODUCED_PRODUCT' | translate}}</h4>
             <h4 class="field-value">{{productionForm.value.product && productionForm.value.product.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item
            no-padding
            *ngIf="productionForm.value.production"
            class="field-100">
-            <ion-label position="floating" style="font-size:14px">{{'CONFIRMED_QUANTITY' | translate }}</ion-label>
+            <ion-label position="floating" style="font-size:14px">{{'PRODUCED_QUANTITY' | translate }}</ion-label>
             <ion-input #input type="number"
             formControlName="quantity"></ion-input>
           </ion-item>
