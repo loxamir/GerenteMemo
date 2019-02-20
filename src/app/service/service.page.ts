@@ -2019,7 +2019,7 @@ export class ServicePage implements OnInit {
       service.inputs.forEach(input => {
         service.lines.push({
           product_id: input.product_id || input.product._id,
-          product_name: input.product._id || input.product_name,
+          product_name: input.product.name || input.product_name,
           description: input.description,
           quantity: input.quantity,
           price: input.price,
