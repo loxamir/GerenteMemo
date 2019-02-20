@@ -472,7 +472,7 @@ export class ServiceReportPage implements OnInit {
     this.goNextStep();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     //var today = new Date().toISOString();
     this.reportServiceForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
@@ -487,14 +487,16 @@ export class ServiceReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     if (this._id) {
       this.reportService.getReport(this._id).then((data) => {
         //console.log("data", data);
         this.reportServiceForm.patchValue(data);
-        //this.loading.dismiss();
+        this.loading.dismiss();
       });
     } else {
-      //this.loading.dismiss();
+      this.loading.dismiss();
     }
     // if (this.route.snapshot.paramMap.get('compute){
     this.goNextStep();
