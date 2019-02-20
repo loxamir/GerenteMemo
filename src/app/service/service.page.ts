@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { NavController,  LoadingController, AlertController, Events, ToastController, ModalController, PopoverController} from '@ionic/angular';
+import { NavController, Platform, LoadingController, AlertController, Events, ToastController, ModalController, PopoverController} from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { Printer } from '@ionic-native/printer';
@@ -23,6 +23,8 @@ import { InvoicePage } from '../invoice/invoice.page';
 import { ReceiptPage } from '../receipt/receipt.page';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 import { ServicePopover } from './service.popover';
+import { SocialSharing } from '@ionic-native/social-sharing';
+import * as html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-service',
@@ -104,6 +106,8 @@ export class ServicePage implements OnInit {
     ignore_travels: boolean = false;
 
     constructor(
+      public socialSharing: SocialSharing,
+      public platform: Platform,
       public navCtrl: NavController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
@@ -1630,159 +1634,354 @@ export class ServicePage implements OnInit {
     }
 
     print() {
-      this.configService.getConfigDoc().then( async (data) => {
-        let company_name = data.name || "";
-        let company_ruc = data.doc || "";
-        let company_phone = data.phone || "";
-        //let number = this.serviceForm.value.invoice || "";
-        let date = this.serviceForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
-        date = date[2]+"/"+date[1]+"/"+date[0]
-        // let project = this.serviceForm.value.project.name || "";
-        let contact_name = this.serviceForm.value.contact.name || "";
-        let code = this.serviceForm.value.code || "";
-        let doc = this.serviceForm.value.contact.document || "";
-        //let direction = this.serviceForm.value.contact.city || "";
-        //let phone = this.serviceForm.value.contact.phone || "";
-        let lines = ""
-        lines += "--------------------------------\n";
-        lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      if (this.platform.is('cordova')){
+        this.configService.getConfigDoc().then( async (data) => {
+          let company_name = data.name || "";
+          let company_ruc = data.doc || "";
+          let company_phone = data.phone || "";
+          //let number = this.serviceForm.value.invoice || "";
+          let date = this.serviceForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+          date = date[2]+"/"+date[1]+"/"+date[0]
+          // let project = this.serviceForm.value.project.name || "";
+          let contact_name = this.serviceForm.value.contact.name || "";
+          let code = this.serviceForm.value.code || "";
+          let doc = this.serviceForm.value.contact.document || "";
+          //let direction = this.serviceForm.value.contact.city || "";
+          //let phone = this.serviceForm.value.contact.phone || "";
+          let lines = ""
+          lines += "--------------------------------\n";
+          lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
 
-        lines += "--------------------------------\n";
-        lines += "Cod.  Cant.   Precio   Sub-total\n";
-        let totalExentas = 0;
-        let totalIva5 = 0;
-        let totalIva10 = 0;
-        this.serviceForm.value.inputs.forEach(item => {
-          let code = item.product.code;
-          let quantity = item.quantity;
-          //  let productName = item.product.name;
-          let price = item.price;
-          let subtotal = quantity*price;
-          let exenta = 0;
-          let iva5 = 0;
-          let iva10 = 0;
-          if (item.product.tax == "iva10"){
-            iva10 = item.quantity*item.price;
-            totalIva10 += iva10;
-          } else if (item.product.tax == "exenta"){
-            exenta = item.quantity*item.price;
-            totalExentas += exenta;
-          } else if (item.product.tax == "iva5"){
-            iva5 = item.quantity*item.price;
-            totalIva5 += iva5;
-          }
-          code = this.formatService.string_pad(6, code.toString());
-          quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-          price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          let product_name = this.formatService.string_pad(32, item.product.name);
-          lines += code+quantity+price+subtotal+"\n"+product_name+"\n";
-        });
-        let work_lines = "";
-        // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-        work_lines += "--------------------------------\n";
-        work_lines += "SERVICIOS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-        // work_lines += "Tiempo    Precio       Sub-total\n";
-        this.serviceForm.value.works.forEach(item => {
-
-          let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
-          let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          let work_description = item.description.toString();
+          lines += "--------------------------------\n";
+          lines += "Cod.  Cant.   Precio   Sub-total\n";
+          let totalExentas = 0;
+          let totalIva5 = 0;
+          let totalIva10 = 0;
+          this.serviceForm.value.inputs.forEach(item => {
+            let code = item.product.code;
+            let quantity = item.quantity;
+            //  let productName = item.product.name;
+            let price = item.price;
+            let subtotal = quantity*price;
+            let exenta = 0;
+            let iva5 = 0;
+            let iva10 = 0;
+            if (item.product.tax == "iva10"){
+              iva10 = item.quantity*item.price;
+              totalIva10 += iva10;
+            } else if (item.product.tax == "exenta"){
+              exenta = item.quantity*item.price;
+              totalExentas += exenta;
+            } else if (item.product.tax == "iva5"){
+              iva5 = item.quantity*item.price;
+              totalIva5 += iva5;
+            }
+            code = this.formatService.string_pad(6, code.toString());
+            quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+            price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            let product_name = this.formatService.string_pad(32, item.product.name);
+            lines += code+quantity+price+subtotal+"\n"+product_name+"\n";
+          });
+          let work_lines = "";
+          // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
           work_lines += "--------------------------------\n";
-          work_lines += work_description+"\n";
-          work_lines += "Tiempo      Precio     Sub-total\n";
-          work_lines += quantity+price+subtotal+"\n"
-        });
+          work_lines += "SERVICIOS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          // work_lines += "Tiempo    Precio       Sub-total\n";
+          this.serviceForm.value.works.forEach(item => {
 
-        let travel_lines = "";
+            let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
+            let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            let work_description = item.description.toString();
+            work_lines += "--------------------------------\n";
+            work_lines += work_description+"\n";
+            work_lines += "Tiempo      Precio     Sub-total\n";
+            work_lines += quantity+price+subtotal+"\n"
+          });
+
+          let travel_lines = "";
+          travel_lines += "--------------------------------\n";
+          travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+
+          travel_lines += "--------------------------------\n";
+          travel_lines += "Distancia   Precio     Sub-total\n";
+          this.serviceForm.value.travels.forEach(item => {
+            let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
+            let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            travel_lines += quantity+price+subtotal+"\n";
+          });
+
+
+          let totalAmount = this.serviceForm.value.total;
+          totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+          let ticket=""
+          ticket += company_name+"\n";
+          // ticket += "Ruc: "+company_ruc+"\n";
+          ticket += "Tel: "+company_phone+"\n";
+          ticket += "\n";
+          ticket += "ORDEN DE SERVICIO "+code+"\n";
+          ticket += "Fecha: "+date+"\n";
+          ticket += "Cliente: "+contact_name+"\n";
+          ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
+          // ticket += "Ruc: "+doc+"\n";
+          // ticket += "\n";
+          // ticket += "Local: "+project+"\n";
+          ticket += "\n";
+          ticket += work_lines;
+          ticket += lines;
+          ticket += travel_lines;
+          ticket += "--------------------------------\n";
+          ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          ticket += "--------------------------------\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "--------------------------------\n";
+          ticket += "Firma del tecnico\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "--------------------------------\n";
+          ticket += "Firma del cliente: "+contact_name+"\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+
+
+          console.log("\n"+ticket);
+
+
+          //console.log("ticket", ticket);
+
+
+          // Print to bluetooth printer
+          let toast = await this.toastCtrl.create({
+          message: "Start ",
+          duration: 3000
+          });
+          toast.present();
+          this.bluetoothSerial.isEnabled().then(res => {
+            this.bluetoothSerial.list().then((data)=> {
+              this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+                this.bluetoothSerial.isConnected().then(res => {
+                  // |---- 32 characteres ----|
+                  this.bluetoothSerial.write(ticket);
+                  this.bluetoothSerial.disconnect();
+                }).catch(res => {
+                    //console.log("res1", res);
+                });
+             },error=>{
+               //console.log("error", error);
+             });
+           })
+          }).catch(res => {
+            //console.log("res", res);
+          });
+        });
+      } else {
+        this.share();
+      }
+    }
+
+
+  share() {
+    this.configService.getConfigDoc().then( async (data) => {
+      let company_name = data.name || "";
+      let company_ruc = data.doc || "";
+      let company_phone = data.phone || "";
+      //let number = this.serviceForm.value.invoice || "";
+      let date = this.serviceForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+      date = date[2]+"/"+date[1]+"/"+date[0]
+      // let project = this.serviceForm.value.project.name || "";
+      let contact_name = this.serviceForm.value.contact.name || "";
+      let code = this.serviceForm.value.code || "";
+      let doc = this.serviceForm.value.contact.document || "";
+      //let direction = this.serviceForm.value.contact.city || "";
+      //let phone = this.serviceForm.value.contact.phone || "";
+      let lines = ""
+      lines += "--------------------------------\n";
+      lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+
+      lines += "--------------------------------\n";
+      lines += "Cod.  Cant.   Precio   Sub-total\n";
+      let totalExentas = 0;
+      let totalIva5 = 0;
+      let totalIva10 = 0;
+      this.serviceForm.value.inputs.forEach(item => {
+        let code = item.product.code;
+        let quantity = item.quantity;
+        //  let productName = item.product.name;
+        let price = item.price;
+        let subtotal = quantity*price;
+        let exenta = 0;
+        let iva5 = 0;
+        let iva10 = 0;
+        if (item.product.tax == "iva10"){
+          iva10 = item.quantity*item.price;
+          totalIva10 += iva10;
+        } else if (item.product.tax == "exenta"){
+          exenta = item.quantity*item.price;
+          totalExentas += exenta;
+        } else if (item.product.tax == "iva5"){
+          iva5 = item.quantity*item.price;
+          totalIva5 += iva5;
+        }
+        code = this.formatService.string_pad(6, code.toString());
+        quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+        price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        let product_name = this.formatService.string_pad(32, item.product.name);
+        lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+      });
+      let work_lines = "";
+      // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      work_lines += "--------------------------------\n";
+      work_lines += "SERVICIOS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      // work_lines += "Tiempo    Precio       Sub-total\n";
+      this.serviceForm.value.works.forEach(item => {
+
+        let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
+        let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        let work_description = item.description.toString();
+        work_lines += "--------------------------------\n";
+        work_lines += work_description+"\n";
+        work_lines += "Tiempo      Precio     Sub-total\n";
+        work_lines += quantity+price+subtotal+"\n"
+      });
+
+      let travel_lines = "";
+      if (this.serviceForm.value.travels.length>0){
         travel_lines += "--------------------------------\n";
         travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-
         travel_lines += "--------------------------------\n";
         travel_lines += "Distancia   Precio     Sub-total\n";
-        this.serviceForm.value.travels.forEach(item => {
-          let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
-          let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          travel_lines += quantity+price+subtotal+"\n";
-        });
-
-
-        let totalAmount = this.serviceForm.value.total;
-        totalAmount = this.formatService.string_pad(16, totalAmount, "right");
-        let ticket=""
-        ticket += company_name+"\n";
-        // ticket += "Ruc: "+company_ruc+"\n";
-        ticket += "Tel: "+company_phone+"\n";
-        ticket += "\n";
-        ticket += "ORDEN DE SERVICIO "+code+"\n";
-        ticket += "Fecha: "+date+"\n";
-        ticket += "Cliente: "+contact_name+"\n";
-        ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
-        // ticket += "Ruc: "+doc+"\n";
-        // ticket += "\n";
-        // ticket += "Local: "+project+"\n";
-        ticket += "\n";
-        ticket += work_lines;
-        ticket += lines;
-        ticket += travel_lines;
-        ticket += "--------------------------------\n";
-        ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-        ticket += "--------------------------------\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "--------------------------------\n";
-        ticket += "Firma del tecnico\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "--------------------------------\n";
-        ticket += "Firma del cliente: "+contact_name+"\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-
-
-        console.log("\n"+ticket);
-
-
-        //console.log("ticket", ticket);
-
-
-        // Print to bluetooth printer
-        let toast = await this.toastCtrl.create({
-        message: "Start ",
-        duration: 3000
-        });
-        toast.present();
-        this.bluetoothSerial.isEnabled().then(res => {
-          this.bluetoothSerial.list().then((data)=> {
-            this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
-              this.bluetoothSerial.isConnected().then(res => {
-                // |---- 32 characteres ----|
-                this.bluetoothSerial.write(ticket);
-                this.bluetoothSerial.disconnect();
-              }).catch(res => {
-                  //console.log("res1", res);
-              });
-           },error=>{
-             //console.log("error", error);
-           });
-         })
-        }).catch(res => {
-          //console.log("res", res);
-        });
+      }
+      this.serviceForm.value.travels.forEach(item => {
+        let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
+        let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        travel_lines += quantity+price+subtotal+"\n";
       });
-    }
+
+
+      let totalAmount = this.serviceForm.value.total;
+      totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+      let ticket='<div style="font-family: monospace;width: 310px;background: #fffae3;word-break: break-all;"><pre>';
+      ticket += company_name+"\n";
+      // ticket += "Ruc: "+company_ruc+"\n";
+      ticket += "Tel: "+company_phone+"\n";
+      ticket += "\n";
+      ticket += "ORDEN DE SERVICIO "+code+"\n";
+      ticket += "Fecha: "+date+"\n";
+      ticket += "Cliente: "+contact_name+"\n";
+      ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
+      // ticket += "Ruc: "+doc+"\n";
+      // ticket += "\n";
+      // ticket += "Local: "+project+"\n";
+      ticket += "\n";
+      ticket += work_lines;
+      ticket += lines;
+      ticket += travel_lines;
+      ticket += "--------------------------------\n";
+      ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      ticket += "--------------------------------\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "--------------------------------\n";
+      // ticket += "Firma del tecnico\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "--------------------------------\n";
+      // ticket += "Firma del cliente: "+contact_name+"\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      ticket += "\n</pre></div>";
+
+
+      console.log("\n"+ticket);
+
+
+      //console.log("ticket", ticket);
+
+
+      // Print to bluetooth printer
+      // let toast = await this.toastCtrl.create({
+      // message: "Start ",
+      // duration: 3000
+      // });
+      // toast.present();
+      // this.bluetoothSerial.isEnabled().then(res => {
+      //   this.bluetoothSerial.list().then((data)=> {
+      //     this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+      //       this.bluetoothSerial.isConnected().then(res => {
+      //         // |---- 32 characteres ----|
+      //         this.bluetoothSerial.write(ticket);
+      //         this.bluetoothSerial.disconnect();
+      //       }).catch(res => {
+      //           //console.log("res1", res);
+      //       });
+      //    },error=>{
+      //      //console.log("error", error);
+      //    });
+      //  })
+      // }).catch(res => {
+      //   //console.log("res", res);
+      // });
+      const div = document.getElementById("htmltoimage");
+      div.innerHTML = ticket;
+      const options = {background:"white",height :div.clientHeight , width : 310  };
+
+
+      // let teste = document.getElementById("htmltoimage");
+      // console.log("teste element", div);
+     html2canvas(div, options).then(canvas => {
+       // console.log("canvas", canvas);
+       if (this.platform.is('cordova')){
+         var contentType = "image/png";
+         this.socialSharing.share(
+           "Valor Total "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+           "Servicio "+code,
+           canvas.toDataURL()
+         )
+       } else {
+         let a = document.createElement('a');
+         document.body.appendChild(a);
+         a.download = "Servicio-"+code+".png";
+         a.href =  canvas.toDataURL();
+         a.click();
+       }
+
+
+      //console.log("share sucess");
+      // if cordova.file is not available use instead :
+      // var folderpath = "file:///storage/emulated/0/Download/";
+      // var folderpath = cordova.file.externalRootDirectory + "Download/"; //you can select other folders
+      //console.log("folderpath", folderpath);
+      // this.formatService.savebase64AsPDF(
+      // canvas.toDataURL(), "Presupuesto.png", canvas, contentType);
+    });
+    });
+  }
 
     getService(doc_id): Promise<any> {
       return new Promise((resolve, reject)=>{

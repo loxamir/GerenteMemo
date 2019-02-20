@@ -34,8 +34,8 @@ import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { SalePopover } from './sale.popover';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
-declare var cordova:any;
-import * as jsPDF from 'jspdf';
+// declare var cordova:any;
+// import * as jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
 
 
@@ -1289,7 +1289,7 @@ export class SalePage implements OnInit {
           price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
           subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
           let product_name = this.formatService.string_pad(32, item.product.name);
-          lines += code+quantity+price+subtotal+"\n"+product_name+"\n";
+          lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
         });
         let totalAmount = totalIva10 + totalIva5 + totalExentas;
         totalAmount = this.formatService.string_pad(16, totalAmount, "right");

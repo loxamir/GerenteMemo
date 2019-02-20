@@ -391,7 +391,7 @@
               <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
                 <ion-card class="internal-card">
                   <ion-row (click)="openItem(item)" class="product-name-row">
-                    {{item.product && item.product.name}}
+                    {{item.product && item.product.code}} - {{item.product && item.product.name}}
                   </ion-row>
               <ion-row>
                 <ion-col size="6" style="white-space: normal;">
@@ -539,7 +539,14 @@
               </ion-item-sliding>
             </ion-list>
           </ion-card>
-
+          <ion-row>
+            <ion-col>
+              <ion-button class="button-100" color="success" (click)="print()"><ion-icon name="print" style="margin-right:10px;"></ion-icon>Imprimir</ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button class="button-100" color="success" (click)="share()"><ion-icon name="share" style="margin-right:10px;"></ion-icon>Compartir</ion-button>
+            </ion-col>
+          </ion-row>
           <ion-row>
             <ion-col
              class="item-content"
@@ -579,7 +586,7 @@
              && ! serviceForm.value.invoices.length">
               <ion-button class="button-100"
               (click)="addInvoice()">
-                Crear Fatura
+                Crear Factura
               </ion-button>
             </ion-col>
             <ion-col *ngIf="serviceForm.value.state == 'STARTED'">
@@ -589,6 +596,7 @@
               </ion-button>
             </ion-col>
           </ion-row>
+
 
 
 
