@@ -159,10 +159,119 @@ export class ProductionReportPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     return new Promise(resolve => {
-      if (this.reportProductionForm.value.reportType == 'production') {
+
+
+      if (this.reportProductionForm.value.groupBy == 'product') {
+        this.pouchdbService.getView(
+          'Informes/ProductosProducidos',
+          11,
+          [this.reportProductionForm.value.dateStart.split("T")[0], "0", "0"],
+          [this.reportProductionForm.value.dateEnd.split("T")[0], "z", "z"],
+          true,
+          true,
+          undefined,
+          undefined,
+          false
+        ).then(async (productions: any[]) => {
+          console.log("ProductosProducidos lines", productions);
+          let items = [];
+          let promise_ids = [];
+          let result = {};
+        items = [];
+        productions.forEach(productionLine => {
+          if (result.hasOwnProperty(productionLine.key[1])) {
+            // console.log("items[result[productionLine.key[1]]]", items[result[productionLine.key[1]]]);
+            items[result[productionLine.key[1]]] = {
+              'name': items[result[productionLine.key[1]]].name,
+              'quantity': items[result[productionLine.key[1]]].quantity + parseFloat(productionLine.key[3]),
+              'margin': items[result[productionLine.key[1]]].margin + parseFloat(productionLine.key[4]),
+              'total': items[result[productionLine.key[1]]].total + productionLine.value,
+            };
+          } else {
+            items.push({
+              'name': productionLine.key[1],
+              'quantity': parseFloat(productionLine.key[3]),
+              'margin': parseFloat(productionLine.key[4]),
+              'total': productionLine.value,
+            });
+            result[productionLine.key[1]] = items.length-1;
+          }
+        });
+
+        let self = this;
+        let output = items.sort(function(a, b) {
+          return self.compare(a, b, self.reportProductionForm.value.orderBy);
+        })
+        let marker = false;
+        let total = 0;
+        output.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+          total += parseFloat(item['total']);
+        });
+        this.loading.dismiss();
+        resolve(output);
+      })
+    }
+    else if (this.reportProductionForm.value.groupBy == 'date') {
+      this.pouchdbService.getView(
+        'Informes/ProductosProducidos',
+        11,
+        [this.reportProductionForm.value.dateStart.split("T")[0], "0", "0"],
+        [this.reportProductionForm.value.dateEnd.split("T")[0], "z", "z"],
+        true,
+        true,
+        undefined,
+        undefined,
+        false
+      ).then(async (productions: any[]) => {
+        console.log("ProductosProducidos lines", productions);
+        let items = [];
+        let promise_ids = [];
+        let result = {};
+      items = [];
+      productions.forEach(productionLine => {
+        if (result.hasOwnProperty(productionLine.key[0])) {
+          // console.log("items[result[productionLine.key[1]]]", items[result[productionLine.key[1]]]);
+          items[result[productionLine.key[0]]] = {
+            'name': items[result[productionLine.key[0]]].name,
+            'quantity': items[result[productionLine.key[0]]].quantity + parseFloat(productionLine.key[3]),
+            'margin': items[result[productionLine.key[0]]].margin + productionLine.key[4],
+            'total': items[result[productionLine.key[0]]].total + productionLine.value,
+          };
+        } else {
+          items.push({
+            'name': productionLine.key[0],
+            'quantity': parseFloat(productionLine.key[3]),
+            'margin': productionLine.key[4],
+            'total': productionLine.value,
+          });
+          result[productionLine.key[0]] = items.length-1;
+        }
+      });
+
+      let self = this;
+      let output = items.sort(function(a, b) {
+        return self.compare(a, b, self.reportProductionForm.value.orderBy);
+      })
+      let marker = false;
+      let total = 0;
+      output.forEach(item => {
+        item['marker'] = marker,
+          marker = !marker;
+        total += parseFloat(item['total']);
+      });
+      this.loading.dismiss();
+      resolve(output);
+
+    })
+}
+
+
+      else if (this.reportProductionForm.value.reportType == 'production') {
         this.pouchdbService.getView(
           'Informes/ProduccionProductoDiario',
-          10,
+          11,
           [this.reportProductionForm.value.dateStart.split("T")[0], "0", "0"],
           [this.reportProductionForm.value.dateEnd.split("T")[0], "z", "z"],
           true,
@@ -239,7 +348,7 @@ export class ProductionReportPage implements OnInit {
             resolve(output);
           }
 
-          else if (this.reportProductionForm.value.groupBy == 'product') {
+          else if (this.reportProductionForm.value.groupBy == 'component') {
             items = [];
             productions.forEach(productionLine => {
               if (result.hasOwnProperty(productionLine.key[1])) {
@@ -258,151 +367,6 @@ export class ProductionReportPage implements OnInit {
                   'total': parseFloat(productionLine.key[4])*productionLine.key[5],
                 });
                 result[productionLine.key[1]] = items.length-1;
-              }
-            });
-
-            let self = this;
-            let output = items.sort(function(a, b) {
-              return self.compare(a, b, self.reportProductionForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            this.loading.dismiss();
-            resolve(output);
-          }
-          else if (this.reportProductionForm.value.groupBy == 'payment') {
-          items = [];
-          productions.forEach(productionLine => {
-            if (result.hasOwnProperty(productionLine.key[7])) {
-              items[result[productionLine.key[7]]] = {
-                'name': items[result[productionLine.key[7]]].name,
-                'quantity': items[result[productionLine.key[7]]].quantity + parseFloat(productionLine.key[4]),
-                'margin': items[result[productionLine.key[7]]].margin + productionLine.key[3],
-                'total': items[result[productionLine.key[7]]].total + parseFloat(productionLine.key[4])*productionLine.key[5],
-              };
-            } else {
-              items.push({
-                'name': productionLine.key[7],
-                'quantity': parseFloat(productionLine.key[4]),
-                'margin': productionLine.key[3],
-                'total': parseFloat(productionLine.key[4])*productionLine.key[5],
-              });
-              result[productionLine.key[7]] = items.length-1;
-            }
-          });
-
-          let self = this;
-          let output = items.sort(function(a, b) {
-            return self.compare(a, b, self.reportProductionForm.value.orderBy);
-          })
-          let marker = false;
-          let total = 0;
-          output.forEach(item => {
-            item['marker'] = marker,
-              marker = !marker;
-            total += parseFloat(item['total']);
-          });
-          this.loading.dismiss();
-          resolve(output);
-        }
-          else if (this.reportProductionForm.value.groupBy == 'contact') {
-            items = [];
-            productions.forEach(productionLine => {
-              if (result.hasOwnProperty(productionLine.key[2])) {
-                // console.log("items[result[productionLine.key[1]]]", items[result[productionLine.key[1]]]);
-                items[result[productionLine.key[2]]] = {
-                  'name': items[result[productionLine.key[2]]].name,
-                  'quantity': items[result[productionLine.key[2]]].quantity + parseFloat(productionLine.key[4]),
-                  'margin': items[result[productionLine.key[2]]].margin + productionLine.key[3],
-                  'total': items[result[productionLine.key[2]]].total + parseFloat(productionLine.key[4])*productionLine.key[5],
-                };
-              } else {
-                items.push({
-                  'name': productionLine.key[2],
-                  'quantity': parseFloat(productionLine.key[4]),
-                  'margin': productionLine.key[3],
-                  'total': parseFloat(productionLine.key[4])*productionLine.key[5],
-                });
-                result[productionLine.key[2]] = items.length-1;
-              }
-            });
-
-            let self = this;
-            let output = items.sort(function(a, b) {
-              return self.compare(a, b, self.reportProductionForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            this.loading.dismiss();
-            resolve(output);
-          }
-          else if (this.reportProductionForm.value.groupBy == 'date') {
-            items = [];
-            productions.forEach(productionLine => {
-              if (result.hasOwnProperty(productionLine.key[0])) {
-                // console.log("items[result[productionLine.key[1]]]", items[result[productionLine.key[1]]]);
-                items[result[productionLine.key[0]]] = {
-                  'name': items[result[productionLine.key[0]]].name,
-                  'quantity': items[result[productionLine.key[0]]].quantity + parseFloat(productionLine.key[4]),
-                  'margin': items[result[productionLine.key[0]]].margin + productionLine.key[3],
-                  'total': items[result[productionLine.key[0]]].total + parseFloat(productionLine.key[4])*productionLine.key[5],
-                };
-              } else {
-                items.push({
-                  'name': productionLine.key[0],
-                  'quantity': parseFloat(productionLine.key[4]),
-                  'margin': productionLine.key[3],
-                  'total': parseFloat(productionLine.key[4])*productionLine.key[5],
-                });
-                result[productionLine.key[0]] = items.length-1;
-              }
-            });
-
-            let self = this;
-            let output = items.sort(function(a, b) {
-              return self.compare(a, b, self.reportProductionForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            this.loading.dismiss();
-            resolve(output);
-
-          }
-
-          else if (this.reportProductionForm.value.groupBy == 'seller') {
-            items = [];
-            productions.forEach(productionLine => {
-              if (result.hasOwnProperty(productionLine.key[8])) {
-                // console.log("items[result[productionLine.key[1]]]", items[result[productionLine.key[1]]]);
-                items[result[productionLine.key[8]]] = {
-                  'name': items[result[productionLine.key[8]]].name,
-                  'quantity': items[result[productionLine.key[8]]].quantity + parseFloat(productionLine.key[4]),
-                  'margin': items[result[productionLine.key[8]]].margin + productionLine.key[3],
-                  'total': items[result[productionLine.key[8]]].total + parseFloat(productionLine.key[4])*productionLine.key[5],
-                };
-              } else {
-                items.push({
-                  'name': productionLine.key[8],
-                  'quantity': parseFloat(productionLine.key[4]),
-                  'margin': productionLine.key[3],
-                  'total': parseFloat(productionLine.key[4])*productionLine.key[5],
-                });
-                result[productionLine.key[8]] = items.length-1;
               }
             });
 

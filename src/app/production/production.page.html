@@ -25,17 +25,17 @@
   <ion-row>
     <ion-item
      no-padding
-     class="summary-100">
+     class="summary-50">
       <h4 class="field-label">{{'TOTAL' | translate}}</h4>
       <h4 class="field-value" style="color:blue">$ {{productionForm.value.total|number:'1.0'}}</h4>
     </ion-item>
 
-    <!-- <ion-item
+    <ion-item
     no-padding
      class="summary-50">
-      <h4 class="field-label">{{'Cobrar' | translate}}</h4>
-      <h4 class="field-value" style="color:red">$ {{productionForm.value.residual|number:'1.0'}}</h4>
-    </ion-item> -->
+      <h4 class="field-label">{{'Valor Agregado' | translate}}</h4>
+      <h4 class="field-value" style="color:green">$ {{productionForm.value.price*productionForm.value.quantity-productionForm.value.total|number:'1.0'}}</h4>
+    </ion-item>
     <!-- <ion-item
     *ngIf="productionForm.value.production"
     no-padding
