@@ -74,7 +74,7 @@
           <ion-select-option value="iva0">Exento</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item no-padding (click)="selectCategory()" class="field-100">
+      <ion-item no-padding #category (click)="selectCategory()" class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">{{'CATEGORY' | translate}}</h4>
           <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'Selecionar'}}</h4>
