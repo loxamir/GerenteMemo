@@ -275,10 +275,11 @@ export class ImporterPage implements OnInit {
         this.checkDecimal(doc[4], lines, counter, 4);
         this.checkTax(doc[5], lines, counter, 5);
         this.checkExist('category', doc[6], 'name', lines, counter, 6, "", "La Categoria '"+doc[6]+"' sera creada", "green", "yellow", true);
-        this.checkDecimal(doc[7], lines, counter, 7);
-        this.checkType(doc[8], lines, counter, 8);
-        this.checkType(doc[8], lines, counter, 8);
-        this.checkTrue(lines, counter, 9)
+        this.checkExist('brand', doc[7], 'name', lines, counter, 7, "", "La Marca '"+doc[7]+"' sera creada", "green", "yellow", true);
+        this.checkDecimal(doc[8], lines, counter, 8);
+        this.checkType(doc[9], lines, counter, 9);
+        // this.checkType(doc[8], lines, counter, 10);
+        this.checkTrue(lines, counter, 10)
       } else if (this.docType == 'contact'){
         console.log("check contact");
         this.checkExist('contact', doc[0], 'code', lines, counter, 0, "Error: Ya existe un Contato con el Codigo '"+doc[0]+"'");
@@ -478,6 +479,12 @@ export class ImporterPage implements OnInit {
         if (data.docType == 'category'){
           promise_ids.push(this.categoryService.createCategory({
             "name": data.name,
+          }))
+        }
+        else if (data.docType == 'brand'){
+          promise_ids.push(this.pouchdbService.createDoc({
+            "name": data.name,
+            "docType": 'brand'
           }))
         }
       })
@@ -773,6 +780,7 @@ export class ImporterPage implements OnInit {
         stock,
         tax,
         category_id,
+        brand_id,
         stock_min,
         type,
         note,
@@ -784,9 +792,15 @@ export class ImporterPage implements OnInit {
          var items = arr[j];
          docs.push(items);
          promise_ids.push(this.pouchdbService.searchDocField('category', items[6]));
+         promise_ids.push(this.pouchdbService.searchDocField('brand', items[7]));
        }
      }
      Promise.all(promise_ids).then(categories=>{
+       var doc_dict = {};
+       console.log("my cats", categories);
+       categories.forEach(row=>{
+         doc_dict[row[0].docType+':'+row[0].name] = row[0];
+       })
        docs.forEach((doc, index)=>{
          let value = categories[index];
          console.log("categories[index]", categories);
@@ -797,11 +811,13 @@ export class ImporterPage implements OnInit {
             cost: doc[3],
             stock: doc[4],
             tax: doc[5],
-            category_id: categories[index][0]._id,
-            category_name: categories[index][0].name,
-            stock_min: doc[7],
-            type: doc[8],
-            note: doc[9],
+            category_id: doc_dict['category:'+doc[6]]._id,
+            category_name: doc_dict['category:'+doc[6]].name,
+            brand_id: doc_dict['brand:'+doc[7]]._id,
+            brand_name: doc_dict['brand:'+doc[7]].name,
+            stock_min: doc[8],
+            type: doc[9],
+            note: doc[10],
          });
        })
        console.log("obj", obj);
