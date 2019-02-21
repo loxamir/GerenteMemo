@@ -45,6 +45,7 @@
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
+          <ion-select-option value="service">Servicio Prestado</ion-select-option>
           <ion-select-option value="product">Producto</ion-select-option>
           <ion-select-option value="category">Categoria</ion-select-option>
           <ion-select-option value="brand">Marca</ion-select-option>
@@ -57,6 +58,54 @@
       <ion-card class="list-card">
         <ion-list>
           <div *ngIf="reportServiceForm.value.groupBy == 'product'">
+            <div *ngIf="reportServiceForm.value.reportType == 'service'">
+              <ion-list no-lines>
+                <ion-row class="report-title">
+                  <ion-col width-40 (click)="orderByName()">
+                    Producto
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
+                    Margen
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                    Cant.
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
+                    Total
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngFor="let item of reportServiceForm.value.items">
+                  <ion-col width-40 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.margin|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.quantity}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+                <ion-row class="report-title">
+                  <ion-col  width-40>
+                    TOTAL
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right">
+                    {{items_margin|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right">
+                    {{items_quantity|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right">
+                    {{total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+              </ion-list>
+            </div>
+          </div>
+          <div *ngIf="reportServiceForm.value.groupBy == 'service'">
             <div *ngIf="reportServiceForm.value.reportType == 'service'">
               <ion-list no-lines>
                 <ion-row class="report-title">

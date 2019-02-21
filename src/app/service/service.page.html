@@ -114,16 +114,15 @@
           no-padding
           (click)="selectContact()"
           *ngIf="!serviceForm.value.production"
-           class="field-100">
+           class="field-50">
             <h4 class="field-label">{{'CLIENT' | translate}}</h4>
             <h4 class="field-value">{{serviceForm.value.contact && serviceForm.value.contact.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item
           no-padding
           (click)="selectProduct()"
-          *ngIf="serviceForm.value.production"
-           class="field-100">
-            <h4 class="field-label">{{'PRODUCED_PRODUCT' | translate}}</h4>
+           class="field-50">
+            <h4 class="field-label">{{'Servicio Prestado' | translate}}</h4>
             <h4 class="field-value">{{serviceForm.value.product && serviceForm.value.product.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item

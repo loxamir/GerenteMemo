@@ -159,7 +159,59 @@ export class ServiceReportPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     return new Promise(resolve => {
-      if (this.reportServiceForm.value.reportType == 'service') {
+      if (this.reportServiceForm.value.groupBy == 'service') {
+        this.pouchdbService.getView(
+          'Informes/ServicioDiario',
+          11,
+          [this.reportServiceForm.value.dateStart.split("T")[0], "0", "0"],
+          [this.reportServiceForm.value.dateEnd.split("T")[0], "z", "z"],
+          true,
+          true,
+          undefined,
+          undefined,
+          false
+        ).then(async (services: any[]) => {
+          console.log("Servicios lines", services);
+          let items = [];
+          let promise_ids = [];
+          let result = {};
+        items = [];
+        services.forEach(serviceLine => {
+          if (result.hasOwnProperty(serviceLine.key[5])) {
+            // console.log("items[result[serviceLine.key[1]]]", items[result[serviceLine.key[1]]]);
+            items[result[serviceLine.key[5]]] = {
+              'name': items[result[serviceLine.key[5]]].name,
+              'quantity': items[result[serviceLine.key[5]]].quantity + parseFloat(serviceLine.key[4]),
+              'margin': items[result[serviceLine.key[5]]].margin + parseFloat(serviceLine.key[3]),
+              'total': items[result[serviceLine.key[5]]].total + serviceLine.value,
+            };
+          } else {
+            items.push({
+              'name': serviceLine.key[5],
+              'quantity': parseFloat(serviceLine.key[4]),
+              'margin': parseFloat(serviceLine.key[3]),
+              'total': serviceLine.value,
+            });
+            result[serviceLine.key[5]] = items.length-1;
+          }
+        });
+
+        let self = this;
+        let output = items.sort(function(a, b) {
+          return self.compare(a, b, self.reportServiceForm.value.orderBy);
+        })
+        let marker = false;
+        let total = 0;
+        output.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+          total += parseFloat(item['total']);
+        });
+        this.loading.dismiss();
+        resolve(output);
+      })
+    }
+      else if (this.reportServiceForm.value.reportType == 'service') {
         this.pouchdbService.getView(
           'Informes/ServicioProductoDiario',
           10,
@@ -544,7 +596,7 @@ export class ServiceReportPage implements OnInit {
       total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'product'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'service'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
