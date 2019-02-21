@@ -42,6 +42,7 @@ import { CashListPage } from './cash-list/cash-list.page';
 
 
 import { ProductCategoryListPageModule } from './product-category-list/product-category-list.module';
+import { BrandListPageModule } from './brand-list/brand-list.module';
 import { ProductListPageModule } from './product-list/product-list.module';
 import { PaymentConditionListPageModule } from './payment-condition-list/payment-condition-list.module';
 import { ContactListPageModule } from './contact-list/contact-list.module';
@@ -56,6 +57,7 @@ import { CashMovePageModule } from './cash-move/cash-move.module';
 import { LoginPageModule } from './login/login.module';
 
 import { ProductCategoryPageModule } from './product-category/product-category.module';
+import { BrandPageModule } from './brand/brand.module';
 import { ContactPageModule } from './contact/contact.module';
 import { ProductPageModule } from './product/product.module';
 
@@ -98,6 +100,7 @@ import { environment } from '../environments/environment';
     LoginPageModule,
     ContactPageModule,
     CashMovePageModule,
+    BrandListPageModule,
     ProductCategoryListPageModule,
     AccountCategoryListPageModule,
     ProductListPageModule,
@@ -123,6 +126,7 @@ import { environment } from '../environments/environment';
     ReactiveFormsModule,
     ProductPageModule,
     ProductCategoryPageModule,
+    BrandPageModule,
     PaymentConditionPageModule,
     CheckListPageModule,
     ServiceWorkPageModule,

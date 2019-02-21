@@ -78,6 +78,8 @@ const routes: Routes = [
   { path: 'production-list', loadChildren: './production-list/production-list.module#ProductionListPageModule' },
   { path: 'production-report', loadChildren: './production-report/production-report.module#ProductionReportPageModule' },
   { path: 'service-report', loadChildren: './service-report/service-report.module#ServiceReportPageModule' },
+  { path: 'brand-list', loadChildren: './brand-list/brand-list.module#BrandListPageModule' },
+  { path: 'brand', loadChildren: './brand/brand.module#BrandPageModule' },
   // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 

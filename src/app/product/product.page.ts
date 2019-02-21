@@ -10,6 +10,7 @@ import { LanguageModel } from "../services/language/language.model";
 import { ProductService } from './product.service';
 // import { Base64 } from '@ionic-native/base64';
 import { ProductCategoryListPage } from '../product-category-list/product-category-list.page';
+import { BrandListPage } from '../brand-list/brand-list.page';
 // import { Camera, CameraOptions } from '@ionic-native/camera';
 import { StockMoveService } from '../stock-move/stock-move.service';
 import { CashMoveService } from '../cash-move/cash-move.service';
@@ -31,6 +32,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
   @ViewChild('stock') stock;
   @ViewChild('barcode') barcode;
 
+  @ViewChild('category') category;
+  @ViewChild('brand') brand;
+  @ViewChild('tax')tax;
     productForm: FormGroup;
     loading: any;
     _id: string;
@@ -106,6 +110,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         // image: new FormControl(''),
         price: new FormControl(null, Validators.required),
         category: new FormControl({}),
+        brand: new FormControl({}),
         cost: new FormControl(this.cost||null),
         code: new FormControl(''),
         barcode: new FormControl(this.barcode),
@@ -387,6 +392,31 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.productForm.markAsDirty();
           // this.avoidAlertMessage = false;
           this.events.unsubscribe('select-category');
+          profileModal.dismiss();
+          // resolve(true);
+        })
+      });
+    }
+
+    selectBrand() {
+      return new Promise(async resolve => {
+        // this.avoidAlertMessage = true;
+        let profileModal = await this.modalCtrl.create({
+          component: BrandListPage,
+          componentProps: {
+            "select": true,
+          }
+        });
+        await profileModal.present();
+        this.events.unsubscribe('select-brand');
+        this.events.subscribe('select-brand', (data) => {
+          this.productForm.patchValue({
+            brand: data,
+            brand_name: data.name,
+          });
+          this.productForm.markAsDirty();
+          // this.avoidAlertMessage = false;
+          this.events.unsubscribe('select-brand');
           profileModal.dismiss();
           // resolve(true);
         })
