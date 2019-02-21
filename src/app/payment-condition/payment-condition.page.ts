@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController,  ModalController, LoadingController,  Events, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
@@ -21,7 +21,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   styleUrls: ['./payment-condition.page.scss'],
 })
 export class PaymentConditionPage implements OnInit {
-
+    @ViewChild('nameField') nameField;
     paymentConditionForm: FormGroup;
     loading: any;
     languages: Array<LanguageModel>;
@@ -51,9 +51,12 @@ export class PaymentConditionPage implements OnInit {
       this.select = this.route.snapshot.paramMap.get('select');
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+      setTimeout(() => {
+        this.nameField.setFocus();
+      }, 500);
       this.paymentConditionForm = this.formBuilder.group({
-        name: new FormControl('', Validators.required),
+        name: new FormControl(),
         sale_rate: new FormControl(1),
         purchase_rate: new FormControl(1),
         accountTo: new FormControl({}),
@@ -70,6 +73,15 @@ export class PaymentConditionPage implements OnInit {
           //this.loading.dismiss();
         });
       } else {
+        let accountTo:any = (await this.pouchdbService.getDoc("account.receivable.credit") || {});
+        let accountFrom: any = (await this.pouchdbService.getDoc("account.payable.credit")) || {};
+        this.paymentConditionForm.patchValue({
+          accountTo: accountTo,
+          accountTo_id: accountTo._id,
+          accountFrom: accountFrom,
+          accountFrom_id: accountFrom._id,
+        })
+        console.log("accountTo", accountTo);
         //this.loading.dismiss();
       }
     }
@@ -131,11 +143,39 @@ export class PaymentConditionPage implements OnInit {
 
 
 
-    addItem(){
-      this.paymentConditionForm.value.items.push({
-        'days': 5,
-        'percent': 10,
-      })
+    async addItem(){
+      let prompt = await this.alertCtrl.create({
+        header: 'Cuota',
+        message: 'Cantidad de dias y porcentaje de la cuota?',
+        inputs: [
+          {
+            type: 'number',
+            name: 'days',
+            placeholder: 'Dias'
+          },{
+            placeholder: 'Porcentage',
+            type: 'number',
+            name: 'percent'
+          },
+        ],
+        buttons: [
+          {
+            text: 'Cancelar'
+          },
+          {
+            text: 'Confirmar',
+            handler: data => {
+              this.paymentConditionForm.value.items.push({
+                'days': data.days,
+                'percent': data.percent,
+              })
+            }
+          }
+        ]
+      });
+
+      prompt.present();
+
     }
 
     deleteItem(item){
@@ -145,14 +185,16 @@ export class PaymentConditionPage implements OnInit {
 
     async editItem(item){
       let prompt = await this.alertCtrl.create({
-        header: 'Precio del Producto',
-        message: 'Cual es el precio de este producto?',
+        header: 'Condicion de Pago',
+        message: 'Cantidad de dias y porcentaje de la cuota?',
         inputs: [
           {
             type: 'number',
             name: 'days',
+            placeholder: 'Dias',
             value: item.days
           },{
+            placeholder: 'Porcentage',
             type: 'number',
             name: 'percent',
             value: item.percent
@@ -160,7 +202,7 @@ export class PaymentConditionPage implements OnInit {
         ],
         buttons: [
           {
-            text: 'Cancel'
+            text: 'Cancelar'
           },
           {
             text: 'Confirmar',
@@ -256,6 +298,70 @@ export class PaymentConditionPage implements OnInit {
 
     deletePaymentCondition(paymentCondition) {
       return this.pouchdbService.deleteDoc(paymentCondition);
+    }
+
+    goNextStep() {
+      if (this.paymentConditionForm.value.name==null || this.paymentConditionForm.value.name==''){
+        this.nameField.setFocus();
+      } else if (!this.paymentConditionForm.value.items.length){
+        this.addItem();
+      }
+    }
+
+    showNextButton(){
+      // console.log("stock",this.paymentConditionForm.value.stock);
+      if (this.paymentConditionForm.value.name==null || this.paymentConditionForm.value.name==''){
+        return true;
+      }
+      else if (!this.paymentConditionForm.value.items.length){
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    discard(){
+      this.canDeactivate();
+    }
+    async canDeactivate() {
+        if(this.paymentConditionForm.dirty) {
+            let alertPopup = await this.alertCtrl.create({
+                header: 'Descartar',
+                message: '¿Deseas salir sin guardar?',
+                buttons: [{
+                        text: 'Si',
+                        handler: () => {
+                            // alertPopup.dismiss().then(() => {
+                                this.exitPage();
+                            // });
+                        }
+                    },
+                    {
+                        text: 'No',
+                        handler: () => {
+                            // need to do something if the user stays?
+                        }
+                    }]
+            });
+
+            // Show the alert
+            alertPopup.present();
+
+            // Return false to avoid the page to be popped up
+            return false;
+        } else {
+          this.exitPage();
+        }
+    }
+
+    private exitPage() {
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
+        // this.paymentConditionForm.markAsPristine();
+        this.navCtrl.navigateBack('/payment-condition-list');
+      }
     }
 
 }
