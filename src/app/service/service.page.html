@@ -58,7 +58,7 @@
     </ion-item> -->
   </ion-row>
   <ion-row class="state-header">
-    <ion-col size="4" *ngIf="(serviceForm.value.state == 'QUOTATION' || serviceForm.value.state == 'PRODUCED') || serviceForm.value.production">
+    <ion-col size="4" *ngIf="(serviceForm.value.state == 'DRAFT' || serviceForm.value.state == 'PRODUCED') || serviceForm.value.production">
       <div class="clicked arron">
         <span class="state-label">
           Nuevo
@@ -341,7 +341,7 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeWork(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
+                <ion-button icon-only color="primary" (click)="removeWork(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
                   <ion-icon name="trash"></ion-icon>
                 </ion-button>
               </ion-item-options>
@@ -445,7 +445,7 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeInput(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
+                <ion-button icon-only color="primary" (click)="removeInput(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
                   <ion-icon name="trash"></ion-icon>
                 </ion-button>
               </ion-item-options>
@@ -532,7 +532,7 @@
               </ion-card>
               </ion-item>
                 <ion-item-options>
-                  <ion-button icon-only color="primary" (click)="removeTravel(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
+                  <ion-button icon-only color="primary" (click)="removeTravel(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
                     <ion-icon name="trash"></ion-icon>
                   </ion-button>
                 </ion-item-options>
@@ -553,14 +553,14 @@
           <ion-row>
             <ion-col
              class="item-content"
-             *ngIf="serviceForm.value.state == 'QUOTATION' || serviceForm.value.state == 'SCHEDULED'">
+             *ngIf="serviceForm.value.state == 'DRAFT' || serviceForm.value.state == 'SCHEDULED'">
               <ion-button class="button-100"
                (click)="setStarted()">
                Iniciar
               </ion-button>
             </ion-col>
             <ion-col class="item-content"
-             *ngIf="serviceForm.value.state == 'QUOTATION'">
+             *ngIf="serviceForm.value.state == 'DRAFT'">
               <ion-button class="button-100"
                (click)="setSchedule()">
                Agendar

@@ -23,7 +23,7 @@ export class ProductionPopover {
     async duplicate(){
       this.navParams.data.doc._id = '';
       this.navParams.data.doc.productionForm.patchValue({
-        state: 'QUOTATION',
+        state: 'DRAFT',
         _id: '',
         code: '',
         planned: [],

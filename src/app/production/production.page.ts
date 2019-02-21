@@ -148,7 +148,7 @@ export class ProductionPage implements OnInit {
         work_amount: new FormControl(0),
         quantity: new FormControl(1),
         note: new FormControl(''),
-        state: new FormControl('QUOTATION'),
+        state: new FormControl('DRAFT'),
         // tab: new FormControl('production'),
         works: new FormControl([]),
         results: new FormControl([]),
@@ -425,7 +425,7 @@ export class ProductionPage implements OnInit {
     // }
 
     async goNextStep() {
-      if (this.productionForm.value.state == 'QUOTATION' || this.productionForm.value.state == 'SCHEDULED'){
+      if (this.productionForm.value.state == 'DRAFT' || this.productionForm.value.state == 'SCHEDULED'){
         console.log("set Focus");
         if (this.productionForm.value.client_request == '' && !this.productionForm.value.production){
           this.clientRequest.setFocus();
@@ -605,7 +605,7 @@ export class ProductionPage implements OnInit {
     }
 
     async editDescription(item){
-      if (this.productionForm.value.state=='QUOTATION'){
+      if (this.productionForm.value.state=='DRAFT'){
         let prompt = await this.alertCtrl.create({
           header: 'Description de la linea',
           message: 'Cual es la mejor description para esta linea?',
@@ -677,7 +677,7 @@ export class ProductionPage implements OnInit {
     }
 
     beforeAddPayment(){
-      if (this.productionForm.value.state == "QUOTATION"){
+      if (this.productionForm.value.state == "DRAFT"){
         // this.afterConfirm().then(data => {
           this.addPayment();
         // });
@@ -855,7 +855,7 @@ export class ProductionPage implements OnInit {
     }
 
     recomputeTotal(){
-      // if (this.productionForm.value.state=='QUOTATION'){
+      // if (this.productionForm.value.state=='DRAFT'){
         let total = this.productionForm.value.work_amount +
           this.productionForm.value.input_amount;
         this.productionForm.patchValue({
@@ -910,7 +910,7 @@ export class ProductionPage implements OnInit {
     }
 
     async addWork(){
-      // if (this.productionForm.value.state=='QUOTATION'){
+      // if (this.productionForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component: ProductionWorkPage,
           componentProps: {}
@@ -932,7 +932,7 @@ export class ProductionPage implements OnInit {
     }
 
     async editWork(item){
-      // if (this.productionForm.value.state=='QUOTATION'){
+      // if (this.productionForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component: ProductionWorkPage,
           componentProps: item
@@ -985,7 +985,7 @@ export class ProductionPage implements OnInit {
     }
 
     removeWork(item){
-      // if (this.productionForm.value.state=='QUOTATION'){
+      // if (this.productionForm.value.state=='DRAFT'){
         let index = this.productionForm.value.works.indexOf(item)
         this.productionForm.value.works.splice(index, 1);
         this.recomputeValues();
@@ -995,7 +995,7 @@ export class ProductionPage implements OnInit {
 
 
     // async addTravel(){
-    //   // if (this.productionForm.value.state=='QUOTATION'){
+    //   // if (this.productionForm.value.state=='DRAFT'){
     //     let profileModal = await this.modalCtrl.create({
     //       component: ServiceTravelPage,
     //       componentProps: {}
@@ -1049,7 +1049,7 @@ export class ProductionPage implements OnInit {
     // }
     //
     // async editTravel(item){
-    //   // if (this.productionForm.value.state=='QUOTATION'){
+    //   // if (this.productionForm.value.state=='DRAFT'){
     //     let profileModal = await this.modalCtrl.create({
     //       component:ServiceTravelPage,
     //       componentProps: item
@@ -1068,7 +1068,7 @@ export class ProductionPage implements OnInit {
     // }
     //
     // removeTravel(item){
-    //   // if (this.productionForm.value.state=='QUOTATION'){
+    //   // if (this.productionForm.value.state=='DRAFT'){
     //     let index = this.productionForm.value.travels.indexOf(item)
     //     this.productionForm.value.travels.splice(index, 1);
     //     this.recomputeValues();
@@ -1077,7 +1077,7 @@ export class ProductionPage implements OnInit {
     // }
 
     async addInput(){
-      // if (this.productionForm.value.state=='QUOTATION'){
+      // if (this.productionForm.value.state=='DRAFT'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
         let profileModal = await this.modalCtrl.create({
@@ -1112,7 +1112,7 @@ export class ProductionPage implements OnInit {
     }
 
     // editInput(item){
-    //   // if (this.productionForm.value.state=='QUOTATION'){
+    //   // if (this.productionForm.value.state=='DRAFT'){
     //     let profileModal = this.modalCtrl.create({ component:ServiceInputPage, item);
     //     let data: any profileModal.onDidDismiss();
     //       //console.log("ITEM", data);
@@ -1132,7 +1132,7 @@ export class ProductionPage implements OnInit {
     // }
 
     removeInput(item){
-      // if (this.productionForm.value.state=='QUOTATION'){
+      // if (this.productionForm.value.state=='DRAFT'){
         let index = this.productionForm.value.inputs.indexOf(item)
         this.productionForm.value.inputs.splice(index, 1);
         this.recomputeValues();
@@ -1252,7 +1252,7 @@ export class ProductionPage implements OnInit {
     }
 
     async editQuantity(){
-      if (this.productionForm.value.state=='QUOTATION'){
+      if (this.productionForm.value.state=='DRAFT'){
         let prompt = await this.alertCtrl.create({
           header: 'Cantidad del Producto',
           message: 'Cual es el Cantidad de este producto?',
@@ -1286,7 +1286,7 @@ export class ProductionPage implements OnInit {
     }
 
     async editPrice(){
-      if (this.productionForm.value.state=='QUOTATION'){
+      if (this.productionForm.value.state=='DRAFT'){
         let prompt = await this.alertCtrl.create({
           header: 'Valor total esperado',
           message: 'Cual es el Cantidad de este producto?',
@@ -1928,7 +1928,7 @@ export class ProductionPage implements OnInit {
     }
 
     deleteProduction(production){
-    //  if (production.state == 'QUOTATION'){
+    //  if (production.state == 'DRAFT'){
         return this.pouchdbService.deleteDoc(production);
     //  }
     }

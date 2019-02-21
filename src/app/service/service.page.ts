@@ -152,7 +152,7 @@ export class ServicePage implements OnInit {
         work_amount: new FormControl(0),
         quantity: new FormControl(1),
         note: new FormControl(''),
-        state: new FormControl('QUOTATION'),
+        state: new FormControl('DRAFT'),
         // tab: new FormControl('service'),
         works: new FormControl([]),
         results: new FormControl([]),
@@ -429,7 +429,7 @@ export class ServicePage implements OnInit {
     // }
 
     async goNextStep() {
-      if (this.serviceForm.value.state == 'QUOTATION' || this.serviceForm.value.state == 'SCHEDULED'){
+      if (this.serviceForm.value.state == 'DRAFT' || this.serviceForm.value.state == 'SCHEDULED'){
         console.log("set Focus");
         if (this.serviceForm.value.client_request == '' && !this.serviceForm.value.production){
           this.clientRequest.setFocus();
@@ -609,7 +609,7 @@ export class ServicePage implements OnInit {
     }
 
     async editDescription(item){
-      if (this.serviceForm.value.state=='QUOTATION'){
+      if (this.serviceForm.value.state=='DRAFT'){
         let prompt = await this.alertCtrl.create({
           header: 'Description de la linea',
           message: 'Cual es la mejor description para esta linea?',
@@ -681,7 +681,7 @@ export class ServicePage implements OnInit {
     }
 
     beforeAddPayment(){
-      if (this.serviceForm.value.state == "QUOTATION"){
+      if (this.serviceForm.value.state == "DRAFT"){
         // this.afterConfirm().then(data => {
           this.addPayment();
         // });
@@ -859,7 +859,7 @@ export class ServicePage implements OnInit {
     }
 
     recomputeTotal(){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let total = this.serviceForm.value.travel_amount +
           this.serviceForm.value.work_amount +
           this.serviceForm.value.input_amount;
@@ -915,7 +915,7 @@ export class ServicePage implements OnInit {
     }
 
     async addWork(){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component: ServiceWorkPage,
           componentProps: {}
@@ -937,7 +937,7 @@ export class ServicePage implements OnInit {
     }
 
     async editWork(item){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component: ServiceWorkPage,
           componentProps: item
@@ -990,7 +990,7 @@ export class ServicePage implements OnInit {
     }
 
     removeWork(item){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let index = this.serviceForm.value.works.indexOf(item)
         this.serviceForm.value.works.splice(index, 1);
         this.recomputeValues();
@@ -1000,7 +1000,7 @@ export class ServicePage implements OnInit {
 
 
     async addTravel(){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component: ServiceTravelPage,
           componentProps: {}
@@ -1054,7 +1054,7 @@ export class ServicePage implements OnInit {
     }
 
     async editTravel(item){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component:ServiceTravelPage,
           componentProps: item
@@ -1073,7 +1073,7 @@ export class ServicePage implements OnInit {
     }
 
     removeTravel(item){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let index = this.serviceForm.value.travels.indexOf(item)
         this.serviceForm.value.travels.splice(index, 1);
         this.recomputeValues();
@@ -1082,7 +1082,7 @@ export class ServicePage implements OnInit {
     }
 
     async addInput(){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
         let profileModal = await this.modalCtrl.create({
@@ -1117,7 +1117,7 @@ export class ServicePage implements OnInit {
     }
 
     // editInput(item){
-    //   // if (this.serviceForm.value.state=='QUOTATION'){
+    //   // if (this.serviceForm.value.state=='DRAFT'){
     //     let profileModal = this.modalCtrl.create({ component:ServiceInputPage, item);
     //     let data: any profileModal.onDidDismiss();
     //       //console.log("ITEM", data);
@@ -1137,7 +1137,7 @@ export class ServicePage implements OnInit {
     // }
 
     removeInput(item){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let index = this.serviceForm.value.inputs.indexOf(item)
         this.serviceForm.value.inputs.splice(index, 1);
         this.recomputeValues();
@@ -1257,7 +1257,7 @@ export class ServicePage implements OnInit {
     }
 
     async editQuantity(){
-      if (this.serviceForm.value.state=='QUOTATION'){
+      if (this.serviceForm.value.state=='DRAFT'){
         let prompt = await this.alertCtrl.create({
           header: 'Cantidad del Producto',
           message: 'Cual es el Cantidad de este producto?',
@@ -1291,7 +1291,7 @@ export class ServicePage implements OnInit {
     }
 
     async editPrice(){
-      if (this.serviceForm.value.state=='QUOTATION'){
+      if (this.serviceForm.value.state=='DRAFT'){
         let prompt = await this.alertCtrl.create({
           header: 'Valor total esperado',
           message: 'Cual es el Cantidad de este producto?',
@@ -2128,7 +2128,7 @@ export class ServicePage implements OnInit {
     }
 
     deleteService(service){
-    //  if (service.state == 'QUOTATION'){
+    //  if (service.state == 'DRAFT'){
         return this.pouchdbService.deleteDoc(service);
     //  }
     }

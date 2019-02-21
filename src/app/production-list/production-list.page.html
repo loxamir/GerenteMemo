@@ -54,7 +54,7 @@
       </ion-row>
       <ion-row no-padding>
         <ion-col no-padding style="text-align: center;"
-        [class.quotation]="item.state=='QUOTATION'"
+        [class.draft]="item.state=='DRAFT'"
         [class.started]="item.state=='STARTED'"
         [class.quotation]="item.state=='SCHEDULED'"
         [class.confirmed]="item.state=='CONFIRMED'"
@@ -67,7 +67,7 @@
 
     </ion-item>
       <ion-item-options>
-        <ion-button icon-only color="primary" (click)="deleteProduction(item)" *ngIf="item.state=='QUOTATION'">
+        <ion-button icon-only color="primary" (click)="deleteProduction(item)" *ngIf="item.state=='DRAFT'">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-item-options>
