@@ -45,11 +45,12 @@
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
-          <ion-select-option value="date">Fecha</ion-select-option>
           <ion-select-option value="product">Producto</ion-select-option>
-          <ion-select-option value="contact">Contato</ion-select-option>
           <ion-select-option value="category">Categoria</ion-select-option>
+          <ion-select-option value="brand">Marca</ion-select-option>
+          <ion-select-option value="contact">Contato</ion-select-option>
           <ion-select-option value="payment">Condición de Pago</ion-select-option>
+          <ion-select-option value="date">Fecha</ion-select-option>
         </ion-select>
       </ion-item>
 
@@ -104,6 +105,54 @@
             </div>
           </div>
           <div *ngIf="reportPurchaseForm.value.groupBy == 'category'">
+            <div *ngIf="reportPurchaseForm.value.reportType == 'purchase'">
+              <ion-list no-lines>
+                <ion-row class="report-title">
+                  <ion-col width-40 (click)="orderByName()">
+                    Producto
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
+                    Promedio
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                    Cantidad
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
+                    Total
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngFor="let item of reportPurchaseForm.value.items">
+                  <ion-col width-40 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.name}}
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.total/item.quantity|number:'1.0-2'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.quantity}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                    {{item.total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+                <ion-row class="report-title">
+                  <ion-col  width-40>
+                    TOTAL
+                  </ion-col>
+                  <ion-col width-20 style="text-align: right">
+                    {{total/items_quantity|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-15 style="text-align: right">
+                    {{items_quantity|number:'1.0'}}
+                  </ion-col>
+                  <ion-col width-25 style="text-align: right">
+                    {{total|number:'1.0'}}
+                  </ion-col>
+                </ion-row>
+              </ion-list>
+            </div>
+          </div>
+          <div *ngIf="reportPurchaseForm.value.groupBy == 'brand'">
             <div *ngIf="reportPurchaseForm.value.reportType == 'purchase'">
               <ion-list no-lines>
                 <ion-row class="report-title">

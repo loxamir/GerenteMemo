@@ -231,7 +231,64 @@ export class PurchaseReportPage implements OnInit {
             this.loading.dismiss();
             resolve(output);
           }
+          else if (this.reportPurchaseForm.value.groupBy == 'brand') {
+            items = [];
+            let getList = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[9])) {
+                items[result[saleLine.key[9]]] = {
+                  'name': items[result[saleLine.key[9]]].name,
+                  'quantity': items[result[saleLine.key[9]]].quantity + parseFloat(saleLine.key[4]),
+                  'total': items[result[saleLine.key[9]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[9],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                getList.push(saleLine.key[9]);
+                result[saleLine.key[9]] = items.length-1;
+              }
+            });
 
+            let products: any = await this.pouchdbService.getList(getList);
+            var doc_dict = {};
+            products.forEach(row=>{
+              doc_dict[row.id] = row.doc;
+            })
+            let brands = {};
+            let litems = [];
+            items.forEach(item=>{
+              if (brands.hasOwnProperty(doc_dict[item.name].brand_name)) {
+                litems[brands[doc_dict[item.name].brand_name]] = {
+                  'name': doc_dict[item.name].brand_name,
+                  'quantity': litems[brands[doc_dict[item.name].brand_name]].quantity + parseFloat(item.quantity),
+                  'total': litems[brands[doc_dict[item.name].brand_name]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item.name].brand_name,
+                  'quantity': item.quantity,
+                  'total': item.total,
+                });
+                brands[doc_dict[item.name].brand_name] = litems.length-1;
+              }
+            })
+            let self = this;
+            let output = litems.sort(function(a, b) {
+              return self.compare(a, b, self.reportPurchaseForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
           else if (this.reportPurchaseForm.value.groupBy == 'product') {
             items = [];
             sales.forEach(saleLine => {
@@ -430,7 +487,7 @@ export class PurchaseReportPage implements OnInit {
       total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'date'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'product'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),

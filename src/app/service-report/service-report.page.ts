@@ -238,7 +238,69 @@ export class ServiceReportPage implements OnInit {
             this.loading.dismiss();
             resolve(output);
           }
+          else if (this.reportServiceForm.value.groupBy == 'brand') {
+            items = [];
+            let getList = [];
+            services.forEach(serviceLine => {
+              if (result.hasOwnProperty(serviceLine.key[9])) {
+                // console.log("items[result[serviceLine.key[1]]]", items[result[serviceLine.key[1]]]);
+                items[result[serviceLine.key[9]]] = {
+                  'name': items[result[serviceLine.key[9]]].name,
+                  'quantity': items[result[serviceLine.key[9]]].quantity + parseFloat(serviceLine.key[4]),
+                  'margin': items[result[serviceLine.key[9]]].margin + parseFloat(serviceLine.key[3]),
+                  'total': items[result[serviceLine.key[9]]].total + parseFloat(serviceLine.key[4])*serviceLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': serviceLine.key[9],
+                  'quantity': parseFloat(serviceLine.key[4]),
+                  'margin': parseFloat(serviceLine.key[3]),
+                  'total': parseFloat(serviceLine.key[4])*serviceLine.key[5],
+                });
+                getList.push(serviceLine.key[9]);
+                result[serviceLine.key[9]] = items.length-1;
+              }
+            });
 
+            let products: any = await this.pouchdbService.getList(getList);
+            var doc_dict = {};
+            products.forEach(row=>{
+              doc_dict[row.id] = row.doc;
+            })
+            let brands = {};
+            let litems = [];
+            items.forEach(item=>{
+              if (brands.hasOwnProperty(doc_dict[item.name].brand_name)) {
+                litems[brands[doc_dict[item.name].brand_name]] = {
+                  'name': doc_dict[item.name].brand_name,
+                  'quantity': litems[brands[doc_dict[item.name].brand_name]].quantity + parseFloat(item.quantity),
+                  'margin': litems[brands[doc_dict[item.name].brand_name]].margin + item.margin,
+                  'total': litems[brands[doc_dict[item.name].brand_name]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item.name].brand_name,
+                  'quantity': item.quantity,
+                  'margin': item.margin,
+                  'total': item.total,
+                });
+                brands[doc_dict[item.name].brand_name] = litems.length-1;
+              }
+            })
+            let self = this;
+            let output = litems.sort(function(a, b) {
+              return self.compare(a, b, self.reportServiceForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
           else if (this.reportServiceForm.value.groupBy == 'product') {
             items = [];
             services.forEach(serviceLine => {
@@ -482,7 +544,7 @@ export class ServiceReportPage implements OnInit {
       total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'date'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'product'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),

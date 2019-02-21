@@ -347,7 +347,69 @@ export class ProductionReportPage implements OnInit {
             this.loading.dismiss();
             resolve(output);
           }
+          else if (this.reportProductionForm.value.groupBy == 'brand') {
+            items = [];
+            let getList = [];
+            productions.forEach(productionLine => {
+              if (result.hasOwnProperty(productionLine.key[9])) {
+                // console.log("items[result[productionLine.key[1]]]", items[result[productionLine.key[1]]]);
+                items[result[productionLine.key[9]]] = {
+                  'name': items[result[productionLine.key[9]]].name,
+                  'quantity': items[result[productionLine.key[9]]].quantity + parseFloat(productionLine.key[4]),
+                  'margin': items[result[productionLine.key[9]]].margin + parseFloat(productionLine.key[3]),
+                  'total': items[result[productionLine.key[9]]].total + parseFloat(productionLine.key[4])*productionLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': productionLine.key[9],
+                  'quantity': parseFloat(productionLine.key[4]),
+                  'margin': parseFloat(productionLine.key[3]),
+                  'total': parseFloat(productionLine.key[4])*productionLine.key[5],
+                });
+                getList.push(productionLine.key[9]);
+                result[productionLine.key[9]] = items.length-1;
+              }
+            });
 
+            let products: any = await this.pouchdbService.getList(getList);
+            var doc_dict = {};
+            products.forEach(row=>{
+              doc_dict[row.id] = row.doc;
+            })
+            let brands = {};
+            let litems = [];
+            items.forEach(item=>{
+              if (brands.hasOwnProperty(doc_dict[item.name].brand_name)) {
+                litems[brands[doc_dict[item.name].brand_name]] = {
+                  'name': doc_dict[item.name].brand_name,
+                  'quantity': litems[brands[doc_dict[item.name].brand_name]].quantity + parseFloat(item.quantity),
+                  'margin': litems[brands[doc_dict[item.name].brand_name]].margin + item.margin,
+                  'total': litems[brands[doc_dict[item.name].brand_name]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item.name].brand_name,
+                  'quantity': item.quantity,
+                  'margin': item.margin,
+                  'total': item.total,
+                });
+                brands[doc_dict[item.name].brand_name] = litems.length-1;
+              }
+            })
+            let self = this;
+            let output = litems.sort(function(a, b) {
+              return self.compare(a, b, self.reportProductionForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
           else if (this.reportProductionForm.value.groupBy == 'component') {
             items = [];
             productions.forEach(productionLine => {
