@@ -294,14 +294,14 @@ export class ProductionReportPage implements OnInit {
                   'name': items[result[productionLine.key[9]]].name,
                   'quantity': items[result[productionLine.key[9]]].quantity + parseFloat(productionLine.key[4]),
                   'margin': items[result[productionLine.key[9]]].margin + parseFloat(productionLine.key[3]),
-                  'total': items[result[productionLine.key[9]]].total + parseFloat(productionLine.key[4])*productionLine.key[5],
+                  'total': items[result[productionLine.key[9]]].total + parseFloat(productionLine.key[4])*productionLine.key[6],
                 };
               } else {
                 items.push({
                   'name': productionLine.key[9],
                   'quantity': parseFloat(productionLine.key[4]),
                   'margin': parseFloat(productionLine.key[3]),
-                  'total': parseFloat(productionLine.key[4])*productionLine.key[5],
+                  'total': parseFloat(productionLine.key[4])*productionLine.key[6],
                 });
                 getList.push(productionLine.key[9]);
                 result[productionLine.key[9]] = items.length-1;
@@ -357,14 +357,14 @@ export class ProductionReportPage implements OnInit {
                   'name': items[result[productionLine.key[9]]].name,
                   'quantity': items[result[productionLine.key[9]]].quantity + parseFloat(productionLine.key[4]),
                   'margin': items[result[productionLine.key[9]]].margin + parseFloat(productionLine.key[3]),
-                  'total': items[result[productionLine.key[9]]].total + parseFloat(productionLine.key[4])*productionLine.key[5],
+                  'total': items[result[productionLine.key[9]]].total + parseFloat(productionLine.key[4])*productionLine.key[6],
                 };
               } else {
                 items.push({
                   'name': productionLine.key[9],
                   'quantity': parseFloat(productionLine.key[4]),
                   'margin': parseFloat(productionLine.key[3]),
-                  'total': parseFloat(productionLine.key[4])*productionLine.key[5],
+                  'total': parseFloat(productionLine.key[4])*productionLine.key[6],
                 });
                 getList.push(productionLine.key[9]);
                 result[productionLine.key[9]] = items.length-1;
@@ -419,14 +419,14 @@ export class ProductionReportPage implements OnInit {
                   'name': items[result[productionLine.key[1]]].name,
                   'quantity': items[result[productionLine.key[1]]].quantity + parseFloat(productionLine.key[4]),
                   'margin': items[result[productionLine.key[1]]].margin + parseFloat(productionLine.key[3]),
-                  'total': items[result[productionLine.key[1]]].total + parseFloat(productionLine.key[4])*productionLine.key[5],
+                  'total': items[result[productionLine.key[1]]].total + parseFloat(productionLine.key[4])*productionLine.key[6],
                 };
               } else {
                 items.push({
                   'name': productionLine.key[1],
                   'quantity': parseFloat(productionLine.key[4]),
                   'margin': parseFloat(productionLine.key[3]),
-                  'total': parseFloat(productionLine.key[4])*productionLine.key[5],
+                  'total': parseFloat(productionLine.key[4])*productionLine.key[6],
                 });
                 result[productionLine.key[1]] = items.length-1;
               }
