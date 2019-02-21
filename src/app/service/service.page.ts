@@ -623,7 +623,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -972,7 +972,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1036,7 +1036,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1207,7 +1207,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1239,7 +1239,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1271,7 +1271,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1305,7 +1305,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1508,8 +1508,8 @@ export class ServicePage implements OnInit {
 
     async serviceCancel(){
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas Cancelar el Servicio?',
-        message: 'Al cancelar el Servicio todos los registros asociados serán borrados',
+        header: 'Estas seguro que deseas Desconfirmar el Servicio?',
+        message: 'Al Desconfirmar el Servicio todos los registros asociados serán borrados',
         buttons: [
           {
             text: 'No',
@@ -1521,7 +1521,7 @@ export class ServicePage implements OnInit {
             text: 'Si',
             handler: data => {
               this.serviceForm.patchValue({
-                 state: 'CANCELED',
+                 state: 'DRAFT',
               });
               this.removeQuotes();
               this.removeStockMoves();

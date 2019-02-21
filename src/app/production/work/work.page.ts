@@ -61,7 +61,7 @@ export class ProductionWorkPage implements OnInit {
     //
     // ionViewDidLoad(){
       setTimeout(() => {
-        this.descriptionField.setFocus();
+        this.timeField.setFocus();
       }, 200);
     }
 
@@ -116,11 +116,7 @@ export class ProductionWorkPage implements OnInit {
       //   if (this.workForm.value.client_request == ''){
       //     this.clientRequest.setFocus();
       //   }
-      if (this.workForm.value.description==null){
-        this.descriptionField.setFocus();
-        return;
-      }
-      else if (this.workForm.value.time==null){
+      if (this.workForm.value.time==null){
         this.timeField.setFocus();
         return;
       }
@@ -129,10 +125,7 @@ export class ProductionWorkPage implements OnInit {
 
     showNextButton(){
       // console.log("stock",this.workForm.value.stock);
-      if (this.workForm.value.description==null){
-        return true;
-      }
-      else if (this.workForm.value.time==null){
+      if (this.workForm.value.time==null){
         return true;
       }
       // else if (this.workForm.value.cost==null){

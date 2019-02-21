@@ -282,8 +282,7 @@ export class ProductionPage implements OnInit {
 
 
     setSchedule() {
-      if (this.productionForm.value.production){
-        if (Object.keys(this.productionForm.value.contact).length === 0){
+        if (Object.keys(this.productionForm.value.product).length === 0){
           this.selectProduct().then(()=>{
             this.productionForm.patchValue({
               'state': "SCHEDULED",
@@ -296,21 +295,6 @@ export class ProductionPage implements OnInit {
           });
           this.buttonSave();
         }
-      } else {
-        if (Object.keys(this.productionForm.value.contact).length === 0){
-          this.selectContact().then(()=>{
-            this.productionForm.patchValue({
-              'state': "SCHEDULED",
-            });
-            this.buttonSave();
-          });
-        } else {
-          this.productionForm.patchValue({
-            'state': "SCHEDULED",
-          });
-          this.buttonSave();
-        }
-      }
     }
     setStarted() {
       if (this.productionForm.value.production){
@@ -450,10 +434,7 @@ export class ProductionPage implements OnInit {
         if(!this.productionForm.value._id){
           this.buttonSave();
         }
-        if (this.productionForm.value.works.length==0){
-          this.addWork();
-        }
-        else if (this.productionForm.value.inputs.length==0 && ! this.ignore_inputs){
+        if (! this.ignore_inputs){
           console.log("ignore_inputs");
           let prompt = await this.alertCtrl.create({
             header: 'Productos Consumidos',
@@ -498,8 +479,10 @@ export class ProductionPage implements OnInit {
               }
             ]
           });
-
           prompt.present();
+        }
+        else if (this.productionForm.value.works.length==0){
+          this.addWork();
         }
         // else if (this.productionForm.value.travels.length==0 && ! this.ignore_travels && !this.productionForm.value.production){
         //   console.log("ignore_travels");
@@ -619,7 +602,7 @@ export class ProductionPage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -967,7 +950,7 @@ export class ProductionPage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1031,7 +1014,7 @@ export class ProductionPage implements OnInit {
     //       ],
     //       buttons: [
     //         {
-    //           text: 'Cancel'
+    //           text: 'Cancelar'
     //         },
     //         {
     //           text: 'Confirmar',
@@ -1202,7 +1185,7 @@ export class ProductionPage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1234,7 +1217,7 @@ export class ProductionPage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1266,7 +1249,7 @@ export class ProductionPage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1300,7 +1283,7 @@ export class ProductionPage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1503,8 +1486,8 @@ export class ProductionPage implements OnInit {
 
     async productionCancel(){
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas Cancelar el Servicio?',
-        message: 'Al cancelar el Servicio todos los registros asociados serán borrados',
+        header: 'Estas seguro que deseas Desconfirmar el Servicio?',
+        message: 'Al Desconfirmar el Servicio todos los registros asociados serán borrados',
         buttons: [
           {
             text: 'No',
@@ -1516,7 +1499,7 @@ export class ProductionPage implements OnInit {
             text: 'Si',
             handler: data => {
               this.productionForm.patchValue({
-                 state: 'CANCELED',
+                 state: 'DRAFT',
               });
               this.removeQuotes();
               this.removeStockMoves();
