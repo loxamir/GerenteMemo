@@ -26,7 +26,7 @@
     <ion-item
      no-padding
      class="summary-50">
-      <h4 class="field-label">{{'TOTAL' | translate}}</h4>
+      <h4 class="field-label">{{'TOTAL_COST' | translate}}</h4>
       <h4 class="field-value" style="color:blue">$ {{productionForm.value.total|number:'1.0'}}</h4>
     </ion-item>
 
@@ -111,7 +111,7 @@
           *ngIf="productionForm.value.production"
            class="field-100">
             <h4 class="field-label">{{'PRODUCED_PRODUCT' | translate}}</h4>
-            <h4 class="field-value">{{(productionForm.value.product && productionForm.value.product.code)+' - ' || ''}}{{productionForm.value.product && productionForm.value.product.name || 'Selecionar'}}</h4>
+            <h4 class="field-value">{{(productionForm.value.product && productionForm.value.product.code) || ''}} - {{productionForm.value.product && productionForm.value.product.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item
            no-padding

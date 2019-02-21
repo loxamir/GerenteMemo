@@ -283,7 +283,7 @@ export class ReportListPage implements OnInit {
       this.production_material = production_material;
       this.production_labour = production_labour;
       this.production_cost = production_cost;
-      this.production_cost_percent = (produced / production_cost - 1) * 100;
+      this.production_cost_percent = (produced / production_cost) * 100;
     });
   }
 
