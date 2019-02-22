@@ -942,7 +942,9 @@ export class ImporterPage implements OnInit {
             date_due: doc[4],
             name: doc[2],
             accountFrom_id: contacts[counter+1][0]._id,
+            accountFrom_name: contacts[counter+1][0].name,
             accountTo_id: contacts[counter+2][0]._id,
+            accountTo_name: contacts[counter+2][0].name,
             note: doc[7],
           });
           counter += 3;
