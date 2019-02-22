@@ -1326,7 +1326,7 @@ export class ProductionPage implements OnInit {
     async productionConfirm(){
       let totalCost = this.productionForm.value.total;
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas confirmar el servicio?',
+        header: 'Estas seguro que deseas confirmar la Producción?',
         message: 'Si la confirmas no podras cambiar los productos ni el cliente',
         buttons: [
           {
@@ -1377,7 +1377,7 @@ export class ProductionPage implements OnInit {
               let product_name = item.product && item.product.name;
               createList.push({
                 'docType': "stock-move",
-                'name': "Servicio "+this.productionForm.value.code,
+                'name': "Producción "+this.productionForm.value.code,
                 'quantity': parseFloat(item.quantity),
                 'origin_id': this.productionForm.value._id,
                 'contact_id': this.productionForm.value.contact._id,
@@ -1394,7 +1394,7 @@ export class ProductionPage implements OnInit {
               if (! this.productionForm.value.production){
                 createList.push({
                   'docType': "cash-move",
-                  'name': "Servicio "+this.productionForm.value.code,
+                  'name': "Producción "+this.productionForm.value.code,
                   'contact_id': this.productionForm.value.contact._id,
                   'contact_name': this.productionForm.value.contact.name,
                   'amount': item.quantity*(item.product.cost || 0),
@@ -1416,7 +1416,7 @@ export class ProductionPage implements OnInit {
               let unit_cost = this.productionForm.value.input_amount/this.productionForm.value.quantity;
               createList.push({
                 'docType': "stock-move",
-                'name': "Servicio "+this.productionForm.value.code,
+                'name': "Producción "+this.productionForm.value.code,
                 'quantity': parseFloat(this.productionForm.value.quantity),
                 'origin_id': this.productionForm.value._id,
                 'contact_id': this.productionForm.value.contact._id,
@@ -1446,7 +1446,7 @@ export class ProductionPage implements OnInit {
                   '_return': true,
                   'docType': "cash-move",
                   'date': new Date(),
-                  'name': "Servicio "+this.productionForm.value.code,
+                  'name': "Producción "+this.productionForm.value.code,
                   'contact_id': this.productionForm.value.contact._id,
                   'contact_name': this.productionForm.value.contact.name,
                   'amount': amount,
@@ -1486,8 +1486,8 @@ export class ProductionPage implements OnInit {
 
     async productionCancel(){
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas Desconfirmar el Servicio?',
-        message: 'Al Desconfirmar el Servicio todos los registros asociados serán borrados',
+        header: 'Estas seguro que deseas Desconfirmar la Producción?',
+        message: 'Al Desconfirmar la Producción todos los registros asociados serán borrados',
         buttons: [
           {
             text: 'No',
@@ -1663,7 +1663,7 @@ export class ProductionPage implements OnInit {
         let work_lines = "";
         // this.formatService.string_pad(9, this.productionForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
         work_lines += "--------------------------------\n";
-        work_lines += "SERVICIOS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.productionForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+        work_lines += "ProducciónS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.productionForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
         // work_lines += "Tiempo    Precio       Sub-total\n";
         this.productionForm.value.works.forEach(item => {
 
@@ -1698,7 +1698,7 @@ export class ProductionPage implements OnInit {
         // ticket += "Ruc: "+company_ruc+"\n";
         ticket += "Tel: "+company_phone+"\n";
         ticket += "\n";
-        ticket += "ORDEN DE SERVICIO "+code+"\n";
+        ticket += "ORDEN DE Producción "+code+"\n";
         ticket += "Fecha: "+date+"\n";
         ticket += "Cliente: "+contact_name+"\n";
         ticket += "Solicitud: "+this.productionForm.value.client_request+"\n";
