@@ -280,7 +280,7 @@ export class ReportListPage implements OnInit {
         undefined,
         false
       ).then((sales: any[]) => {
-        console.log("produciones", sales);
+        // console.log("produciones", sales);
         let produced = 0;
         let production_material = 0;
         let production_labour = 0;
@@ -316,7 +316,7 @@ export class ReportListPage implements OnInit {
         undefined,
         false
       ).then(async (products: any[]) => {
-        console.log("Stock", products);
+        // console.log("Stock", products);
         let stocked_cost = 0;
         let stocked_price = 0;
         let stocked_quantity = 0;

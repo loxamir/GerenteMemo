@@ -242,11 +242,14 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       }
     }
     buttonSave() {
+      this.productForm.patchValue({
+          stock: parseFloat(this.productForm.value.stock) || 0,
+          cost: parseFloat(this.productForm.value.cost) || 0,
+          price: parseFloat(this.productForm.value.price) || 0,
+          stock_min: parseFloat(this.productForm.value.stock_min) || 0,
+      })
+
       let product = Object.assign({}, this.productForm.value);
-      product.quantity = parseFloat(product.quantity) || 0;
-      product.cost = parseFloat(product.cost) || 0;
-      product.price = parseFloat(product.price) || 0;
-      product.stock_min = parseFloat(product.stock_min) || 0;
       console.log("product", product);
       // if(this.productForm.value.stock != this.theoreticalStock){
         product.stock = this.theoreticalStock;
@@ -265,10 +268,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           // });
         }
       } else {
-        this.productService.createProduct(product).then(doc => {
           //console.log("docss", doc);
+        this.productService.createProduct(product).then(async (doc: any) => {
+          let produ:any = await this.pouchdbService.getDoc(doc['id'])
           this.productForm.patchValue({
             _id: doc['id'],
+            code: produ.code
           });
           this._id = doc['id'];
           this.createInventoryAdjustment();
