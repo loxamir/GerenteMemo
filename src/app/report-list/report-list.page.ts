@@ -111,15 +111,12 @@ export class ReportListPage implements OnInit {
       dateEnd: new FormControl(
         this.route.snapshot.paramMap.get('dateEnd')
         || this.getEndOfMonth()),
-      sales: new FormControl(0),
-      purchases: new FormControl(0),
+      // sales: new FormControl(0),
+      // purchases: new FormControl(0),
     });
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
-    // setTimeout(() => {
-    //   this.recomputeValues();
-    // }, 500);
-    this.setFilteredItems();
+    this.recomputeValues();
   }
 
   getFirstDateOfMonth() {
@@ -133,272 +130,296 @@ export class ReportListPage implements OnInit {
   }
 
   computeResultValues() {
-    this.pouchdbService.getView(
-      'stock/ResultadoDiario',
-      4,
-      [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
-      [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"]
-    ).then((result: any[]) => {
-      let prom = [];
-      let resultIncome = 0;
-      let resultExpense = 0;
-      let cashflowIncome = 0;
-      let cashflowExpense = 0;
-      result.forEach((item, index) => {
-        if (!
-          ((
-            item.key[1].split('.')[1] == 'cash'
-            || item.key[1].split('.')[1] == 'bank'
-            || item.key[1].split('.')[1] == 'check'
-          ) && (
-            item.key[3].split('.')[1] == 'cash'
-            || item.key[3].split('.')[1] == 'bank'
-            || item.key[3].split('.')[1] == 'check'
-          ))
-        ) {
-          if (item.key[1].split('.')[1] == 'cash'
-            || item.key[1].split('.')[1] == 'bank'
-            || item.key[1].split('.')[1] == 'check') {
-            if (result[index].value > 0) {
-              cashflowIncome += result[index].value;
-            } else {
-              cashflowExpense -= result[index].value;
+    return new Promise((resolve, reject)=>{
+      this.pouchdbService.getView(
+        'stock/ResultadoDiario',
+        4,
+        [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
+        [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"]
+      ).then((result: any[]) => {
+        let prom = [];
+        let resultIncome = 0;
+        let resultExpense = 0;
+        let cashflowIncome = 0;
+        let cashflowExpense = 0;
+        result.forEach((item, index) => {
+          if (!
+            ((
+              item.key[1].split('.')[1] == 'cash'
+              || item.key[1].split('.')[1] == 'bank'
+              || item.key[1].split('.')[1] == 'check'
+            ) && (
+              item.key[3].split('.')[1] == 'cash'
+              || item.key[3].split('.')[1] == 'bank'
+              || item.key[3].split('.')[1] == 'check'
+            ))
+          ) {
+            if (item.key[1].split('.')[1] == 'cash'
+              || item.key[1].split('.')[1] == 'bank'
+              || item.key[1].split('.')[1] == 'check') {
+              if (result[index].value > 0) {
+                cashflowIncome += result[index].value;
+              } else {
+                cashflowExpense -= result[index].value;
+              }
             }
           }
-        }
-        if (item.key[1].split('.')[1] == 'income') {
+          if (item.key[1].split('.')[1] == 'income') {
 
-          // if (result[index].value > 0) {
-            // console.log("value+", result[index]);
-            resultIncome -= result[index].value;
-          // } else {
-          //   console.log("value-", result[index]);
-            // resultIncome += result[index].value;
-          // }
-          // console.log("resultIncome", resultIncome);
-        }
-        if (item.key[1].split('.')[1] == 'expense') {
-          // if (result[index].value > 0) {
-          //   resultExpense += result[index].value;
-          // } else {
-            resultExpense += result[index].value;
-          // }
-        }
+            // if (result[index].value > 0) {
+              // console.log("value+", result[index]);
+              resultIncome -= result[index].value;
+            // } else {
+            //   console.log("value-", result[index]);
+              // resultIncome += result[index].value;
+            // }
+            // console.log("resultIncome", resultIncome);
+          }
+          if (item.key[1].split('.')[1] == 'expense') {
+            // if (result[index].value > 0) {
+            //   resultExpense += result[index].value;
+            // } else {
+              resultExpense += result[index].value;
+            // }
+          }
+        })
+        this.resultIncome = resultIncome;
+        this.resultExpense = resultExpense;
+        this.cashflowIncome = cashflowIncome;
+        this.cashflowExpense = cashflowExpense;
+        resolve(true);
       })
-      this.resultIncome = resultIncome;
-      this.resultExpense = resultExpense;
-      this.cashflowIncome = cashflowIncome;
-      this.cashflowExpense = cashflowExpense;
     })
   }
 
   computeSaleValues() {
     let self = this;
-    this.pouchdbService.getView(
-      'Informes/VentaDiaria',
-      4,
-      [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
-      [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
-      true,
-      true,
-      undefined,
-      undefined,
-      false
-    ).then((sales: any[]) => {
-      let sold = 0;
-      let sale_margin = 0;
-      let cash_payment = 0;
-      let credit_payment = 0;
-      sales.forEach(sale => {
-        sold += parseFloat(sale.value);
-        if (sale.key[1] == "payment-condition.cash") {
-          cash_payment += parseFloat(sale.value);
-        } else {
-          credit_payment += parseFloat(sale.value);
-        }
-        sale_margin += sale.key[3];
+    return new Promise((resolve, reject)=>{
+      this.pouchdbService.getView(
+        'Informes/VentaDiaria',
+        4,
+        [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
+        [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
+        true,
+        true,
+        undefined,
+        undefined,
+        false
+      ).then((sales: any[]) => {
+        let sold = 0;
+        let sale_margin = 0;
+        let cash_payment = 0;
+        let credit_payment = 0;
+        sales.forEach(sale => {
+          sold += parseFloat(sale.value);
+          if (sale.key[1] == "payment-condition.cash") {
+            cash_payment += parseFloat(sale.value);
+          } else {
+            credit_payment += parseFloat(sale.value);
+          }
+          sale_margin += sale.key[3];
+        });
+        this.sold = sold;
+        this.sale_margin = sale_margin;
+        this.sale_margin_percent = (sale_margin / sold) * 100;
+        this.sale_cash = cash_payment;
+        this.sale_credit = credit_payment;
+        resolve(true);
       });
-      this.sold = sold;
-      this.sale_margin = sale_margin;
-      this.sale_margin_percent = (sale_margin / sold) * 100;
-      this.sale_cash = cash_payment;
-      this.sale_credit = credit_payment;
-    });
+    })
   }
 
   computeServiceValues() {
     let self = this;
-    this.pouchdbService.getView(
-      'Informes/ServicioDiario',
-      4,
-      [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
-      [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
-      true,
-      true,
-      undefined,
-      undefined,
-      false
-    ).then((sales: any[]) => {
-      let sold = 0;
-      let sale_margin = 0;
-      let cash_payment = 0;
-      let credit_payment = 0;
-      sales.forEach(sale => {
-        sold += parseFloat(sale.value);
-        if (sale.key[1] == "payment-condition.cash") {
-          cash_payment += parseFloat(sale.value);
-        } else {
-          credit_payment += parseFloat(sale.value);
-        }
-        sale_margin += sale.key[3];
+    return new Promise((resolve, reject)=>{
+      this.pouchdbService.getView(
+        'Informes/ServicioDiario',
+        4,
+        [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
+        [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
+        true,
+        true,
+        undefined,
+        undefined,
+        false
+      ).then((sales: any[]) => {
+        let sold = 0;
+        let sale_margin = 0;
+        let cash_payment = 0;
+        let credit_payment = 0;
+        sales.forEach(sale => {
+          sold += parseFloat(sale.value);
+          if (sale.key[1] == "payment-condition.cash") {
+            cash_payment += parseFloat(sale.value);
+          } else {
+            credit_payment += parseFloat(sale.value);
+          }
+          sale_margin += sale.key[3];
+        });
+        this.service_sold = sold;
+        this.service_margin = sale_margin;
+        this.service_margin_percent = (sale_margin / sold) * 100;
+        this.service_cash = cash_payment;
+        this.service_credit = credit_payment;
+        resolve(true);
       });
-      this.service_sold = sold;
-      this.service_margin = sale_margin;
-      this.service_margin_percent = (sale_margin / sold) * 100;
-      this.service_cash = cash_payment;
-      this.service_credit = credit_payment;
-    });
+    })
   }
 
   computeProductionValues() {
-    let self = this;
-    this.pouchdbService.getView(
-      'Informes/ProduccionDiaria',
-      10,
-      [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
-      [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
-      true,
-      true,
-      undefined,
-      undefined,
-      false
-    ).then((sales: any[]) => {
-      console.log("produciones", sales);
-      let produced = 0;
-      let production_material = 0;
-      let production_labour = 0;
-      let production_cost = 0;
-      let production_cost_percent = 0;
-      sales.forEach(sale => {
-        produced += parseFloat(sale.key[4]);
-        production_material += parseFloat(sale.key[5]);
-        production_labour += parseFloat(sale.key[6]);
-        production_cost += parseFloat(sale.value);
+    return new Promise((resolve, reject)=>{
+      let self = this;
+      this.pouchdbService.getView(
+        'Informes/ProduccionDiaria',
+        10,
+        [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
+        [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
+        true,
+        true,
+        undefined,
+        undefined,
+        false
+      ).then((sales: any[]) => {
+        console.log("produciones", sales);
+        let produced = 0;
+        let production_material = 0;
+        let production_labour = 0;
+        let production_cost = 0;
+        let production_cost_percent = 0;
+        sales.forEach(sale => {
+          produced += parseFloat(sale.key[4]);
+          production_material += parseFloat(sale.key[5]);
+          production_labour += parseFloat(sale.key[6]);
+          production_cost += parseFloat(sale.value);
+        });
+        this.produced = produced;
+        this.production_material = production_material;
+        this.production_labour = production_labour;
+        this.production_cost = production_cost;
+        this.production_cost_percent = (produced / production_cost) * 100;
+        resolve(true);
       });
-      this.produced = produced;
-      this.production_material = production_material;
-      this.production_labour = production_labour;
-      this.production_cost = production_cost;
-      this.production_cost_percent = (produced / production_cost) * 100;
-    });
+    })
   }
 
   computeStockValues() {
-    let self = this;
-    this.pouchdbService.getView(
-      'stock/Depositos',
-      10,
-      ["warehouse.physical.my" ,"0", "0"],
-      ["warehouse.physical.my", "z", "z"],
-      true,
-      true,
-      undefined,
-      undefined,
-      false
-    ).then(async (products: any[]) => {
-      console.log("Stock", products);
-      let stocked_cost = 0;
-      let stocked_price = 0;
-      let stocked_quantity = 0;
-      let getList = [];
-      products.forEach(sale => {
-        getList.push(sale.key[1])
+    return new Promise((resolve, reject)=>{
+      let self = this;
+      this.pouchdbService.getView(
+        'stock/Depositos',
+        10,
+        ["warehouse.physical.my" ,"0", "0"],
+        ["warehouse.physical.my", "z", "z"],
+        true,
+        true,
+        undefined,
+        undefined,
+        false
+      ).then(async (products: any[]) => {
+        console.log("Stock", products);
+        let stocked_cost = 0;
+        let stocked_price = 0;
+        let stocked_quantity = 0;
+        let getList = [];
+        products.forEach(sale => {
+          getList.push(sale.key[1])
+        });
+        let productList:any = await this.pouchdbService.getList(getList);
+        var doc_dict = {};
+        productList.forEach(row=>{
+          doc_dict[row.id] = row.doc;
+        })
+        products.forEach(product => {
+          if (doc_dict[product.key[1]] && product.value > 0){
+            stocked_quantity += parseFloat(product.value);
+            stocked_cost += product.value * doc_dict[product.key[1]].cost;
+            stocked_price += product.value * doc_dict[product.key[1]].price;;
+          }
+        })
+        this.stocked_quantity = stocked_quantity;
+        this.stocked_cost = stocked_cost;
+        this.stocked_price = stocked_price;
+        resolve(true);
       });
-      let productList:any = await this.pouchdbService.getList(getList);
-      var doc_dict = {};
-      productList.forEach(row=>{
-        doc_dict[row.id] = row.doc;
-      })
-      products.forEach(product => {
-        if (doc_dict[product.key[1]] && product.value > 0){
-          stocked_quantity += parseFloat(product.value);
-          stocked_cost += product.value * doc_dict[product.key[1]].cost;
-          stocked_price += product.value * doc_dict[product.key[1]].price;;
-        }
-      })
-      this.stocked_quantity = stocked_quantity;
-      this.stocked_cost = stocked_cost;
-      this.stocked_price = stocked_price;
-    });
+    })
   }
 
   computeToReceiveValues() {
-    this.pouchdbService.getView(
-      'stock/A Cobrar', 0,
-      ['0', '0'],
-      ['z', 'z']
-    ).then((view: any[]) => {
-      let total = 0;
-      view.forEach(data => {
-        total += data.value;
+    return new Promise((resolve, reject)=>{
+      this.pouchdbService.getView(
+        'stock/A Cobrar', 0,
+        ['0', '0'],
+        ['z', 'z']
+      ).then((view: any[]) => {
+        let total = 0;
+        view.forEach(data => {
+          total += data.value;
+        });
+        this.toReceive = total;
+        resolve(true);
       });
-      this.toReceive = total;
-    });
+    })
   }
 
   computePurchaseValues() {
-    this.pouchdbService.getView(
-      'Informes/CompraDiaria',
-      3,
-      [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
-      [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
-      true,
-      true,
-      undefined,
-      undefined,
-      false
-    ).then((sales: any[]) => {
-      let sold = 0;
-      let cash_payment = 0;
-      let credit_payment = 0;
-      sales.forEach(sale => {
-        sold += parseFloat(sale.value);
-        if (sale.key[1] == "payment-condition.cash") {
-          cash_payment += parseFloat(sale.value);
-        } else {
-          credit_payment += parseFloat(sale.value);
-        }
+    return new Promise((resolve, reject)=>{
+      this.pouchdbService.getView(
+        'Informes/CompraDiaria',
+        3,
+        [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
+        [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
+        true,
+        true,
+        undefined,
+        undefined,
+        false
+      ).then((sales: any[]) => {
+        let sold = 0;
+        let cash_payment = 0;
+        let credit_payment = 0;
+        sales.forEach(sale => {
+          sold += parseFloat(sale.value);
+          if (sale.key[1] == "payment-condition.cash") {
+            cash_payment += parseFloat(sale.value);
+          } else {
+            credit_payment += parseFloat(sale.value);
+          }
+        });
+        this.purchased = sold;
+        this.purchase_cash = cash_payment;
+        this.purchase_credit = credit_payment;
+        resolve(true);
       });
-      this.purchased = sold;
-      this.purchase_cash = cash_payment;
-      this.purchase_credit = credit_payment;
-    });
+    })
   }
 
   computeToPayValues() {
-    this.pouchdbService.getView(
-      'stock/A Pagar', 0,
-      ['0', '0'],
-      ['z', 'z']
-    ).then((view: any[]) => {
-      let total = 0;
-      view.forEach(data => {
-        total += data.value;
+    return new Promise((resolve, reject)=>{
+      this.pouchdbService.getView(
+        'stock/A Pagar', 0,
+        ['0', '0'],
+        ['z', 'z']
+      ).then((view: any[]) => {
+        let total = 0;
+        view.forEach(data => {
+          total += data.value;
+        });
+        this.ToPay = total;
+        resolve(true);
       });
-      this.ToPay = total;
-    });
+    })
   }
 
-  recomputeValues() {
-    this.computeSaleValues();
-    this.computeServiceValues();
-    this.computeProductionValues();
-    this.computeStockValues();
-    this.computeToReceiveValues();
-    this.computePurchaseValues();
-    this.computeToPayValues();
-    this.computeResultValues();
-    this.loading.dismiss();
+  async recomputeValues() {
+    await this.computeSaleValues();
+    await this.computeServiceValues();
+    await this.computeProductionValues();
+    await this.computeStockValues();
+    await this.computeToReceiveValues();
+    await this.computePurchaseValues();
+    await this.computeToPayValues();
+    await this.computeResultValues();
+    await this.loading.dismiss();
   }
 
   compare(a, b, field) {
@@ -413,15 +434,15 @@ export class ReportListPage implements OnInit {
     return 0;
   }
 
-  setFilteredItems() {
-    this.reportsService.getReportsPage(
-      this.searchTerm, this.page
-    ).then((reports) => {
-      this.reports = reports;
-      this.page = 0;
-      this.recomputeValues();
-    });
-  }
+  // setFilteredItems() {
+  //   this.reportsService.getReportsPage(
+  //     this.searchTerm, this.page
+  //   ).then((reports) => {
+  //     this.reports = reports;
+  //     this.page = 0;
+  //     this.recomputeValues();
+  //   });
+  // }
 
   doRefreshList() {
     setTimeout(() => {
