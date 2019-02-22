@@ -246,7 +246,7 @@ export class ServicePage implements OnInit {
           this.recomputeValues();
           this.avoidAlertMessage = false;
           this.serviceForm.markAsDirty();
-          this.buttonSave();
+          // this.buttonSave();
           profileModal.dismiss();
           this.events.unsubscribe('select-product');
         })
@@ -451,9 +451,9 @@ export class ServicePage implements OnInit {
         }
       }
       else if (this.serviceForm.value.state == 'STARTED'){
-        if(!this.serviceForm.value._id){
-          this.buttonSave();
-        }
+        // if(!this.serviceForm.value._id){
+        //   this.buttonSave();
+        // }
         if (this.serviceForm.value.works.length==0){
           this.addWork();
         }
@@ -930,7 +930,7 @@ export class ServicePage implements OnInit {
             this.recomputeValues();
             this.serviceForm.markAsDirty();
             this.show_works=true;
-            this.buttonSave();
+            // this.buttonSave();
           }
         // });
       // }
@@ -951,7 +951,7 @@ export class ServicePage implements OnInit {
             })
             this.recomputeValues();
             this.serviceForm.markAsDirty();
-            this.buttonSave();
+            // this.buttonSave();
           }
         // });
       // }
@@ -1015,7 +1015,7 @@ export class ServicePage implements OnInit {
             this.recomputeValues();
             this.show_travels=true;
             this.serviceForm.markAsDirty();
-            this.buttonSave();
+            // this.buttonSave();
           }
         // });
       // }
@@ -1108,7 +1108,7 @@ export class ServicePage implements OnInit {
             this.serviceForm.markAsDirty();
             this.avoidAlertMessage = false;
             this.show_inputs=true;
-            this.buttonSave();
+            // this.buttonSave();
             profileModal.dismiss();
             this.events.unsubscribe('select-product');
           }

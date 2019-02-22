@@ -303,9 +303,9 @@ export class SalePage implements OnInit {
       if(this.return){
         await this.buttonSave();
       }
-      if(!this.saleForm.value._id){
-        await this.buttonSave();
-      }
+      // if(!this.saleForm.value._id){
+      //   await this.buttonSave();
+      // }
       if (this.saleForm.value.state == 'QUOTATION'){
         this.confirmSale();
       } else if (this.saleForm.value.state == 'CONFIRMED'){
@@ -431,9 +431,9 @@ export class SalePage implements OnInit {
     }
 
     async addItem(){
-      if(!this.saleForm.value._id){
-        this.buttonSave();
-      }
+      // if(!this.saleForm.value._id){
+      //   this.buttonSave();
+      // }
       let self = this;
       if (this.saleForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;

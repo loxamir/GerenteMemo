@@ -242,7 +242,7 @@ export class ProductionPage implements OnInit {
           this.recomputeValues();
           this.avoidAlertMessage = false;
           this.productionForm.markAsDirty();
-          this.buttonSave();
+          // this.buttonSave();
           profileModal.dismiss();
           this.events.unsubscribe('select-product');
         })
@@ -431,9 +431,9 @@ export class ProductionPage implements OnInit {
         }
       }
       else if (this.productionForm.value.state == 'STARTED'){
-        if(!this.productionForm.value._id){
-          this.buttonSave();
-        }
+        // if(!this.productionForm.value._id){
+        //   this.buttonSave();
+        // }
         if (! this.ignore_inputs){
           console.log("ignore_inputs");
           let prompt = await this.alertCtrl.create({
@@ -908,7 +908,7 @@ export class ProductionPage implements OnInit {
             this.recomputeValues();
             this.productionForm.markAsDirty();
             this.show_works=true;
-            this.buttonSave();
+            // this.buttonSave();
           }
         // });
       // }
@@ -929,7 +929,7 @@ export class ProductionPage implements OnInit {
             })
             this.recomputeValues();
             this.productionForm.markAsDirty();
-            this.buttonSave();
+            // this.buttonSave();
           }
         // });
       // }
@@ -1086,7 +1086,7 @@ export class ProductionPage implements OnInit {
             this.productionForm.markAsDirty();
             this.avoidAlertMessage = false;
             this.show_inputs=true;
-            this.buttonSave();
+            // this.buttonSave();
             profileModal.dismiss();
             this.events.unsubscribe('select-product');
           }

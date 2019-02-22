@@ -490,9 +490,9 @@ export class PurchasePage implements OnInit {
     }
 
     async addItem(){
-      if(!this.purchaseForm.value._id){
-        this.buttonSave();
-      }
+      // if(!this.purchaseForm.value._id){
+      //   this.buttonSave();
+      // }
       if (this.purchaseForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
