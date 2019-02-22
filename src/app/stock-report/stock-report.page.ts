@@ -283,7 +283,7 @@ export class StockReportPage implements OnInit {
                 if (brands.hasOwnProperty(doc_dict[item._id].category_name)) {
                   litems[brands[doc_dict[item._id].category_name]] = {
                     'name': doc_dict[item._id].category_name,
-                    'quantity': litems[brands[doc_dict[item._id].category_name]].quantity,
+                    'quantity': litems[brands[doc_dict[item._id].category_name]].quantity + item.quantity,
                     'margin': litems[brands[doc_dict[item._id].category_name]].margin + item.quantity*doc_dict[item._id].price,
                     'total': litems[brands[doc_dict[item._id].category_name]].total + item.quantity*doc_dict[item._id].cost,
                   };
@@ -414,7 +414,7 @@ export class StockReportPage implements OnInit {
                   if (brands.hasOwnProperty(doc_dict[item._id].brand_name)) {
                     litems[brands[doc_dict[item._id].brand_name]] = {
                       'name': doc_dict[item._id].brand_name,
-                      'quantity': litems[brands[doc_dict[item._id].brand_name]].quantity,
+                      'quantity': litems[brands[doc_dict[item._id].brand_name]].quantity + item.quantity,
                       'margin': litems[brands[doc_dict[item._id].brand_name]].margin + item.quantity*doc_dict[item._id].price,
                       'total': litems[brands[doc_dict[item._id].brand_name]].total + item.quantity*doc_dict[item._id].cost,
                     };
