@@ -308,6 +308,53 @@
 
       <ion-card class="list-card"
       style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      (click)="showReportStock()">
+        <ion-row>
+          <ion-col
+          style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+            Stock
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col no-padding class="report-100" style="margin-top: 15px;">
+            <h4 class="field-label">{{'Costo Total' | translate}}</h4>
+            <h4 class="field-value" style="color:green; font-size:30px;">
+              $ {{stocked_cost|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Valor Potencial' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              $ {{stocked_price|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Cantidad de Items' | translate}}</h4>
+            <h4 class="field-value" style="color:red">
+              $ {{stocked_quantity|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+        </ion-row>
+        <!-- <ion-row>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Costo de Producción' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              $ {{production_cost|number:'1.0-1'}}
+            </h4>
+          </ion-col>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Valor Agregado' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              {{production_cost_percent|number:'1.0-1'}} %
+            </h4>
+          </ion-col>
+        </ion-row> -->
+      </ion-card>
+
+      <ion-card class="list-card"
+      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportToReceive()">
         <ion-row>
           <ion-col

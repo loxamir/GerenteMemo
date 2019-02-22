@@ -20,6 +20,7 @@ import * as d3 from 'd3';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
+import { FormatService } from '../services/format.service';
 
 @Component({
   selector: 'app-report-list',
@@ -36,6 +37,10 @@ export class ReportListPage implements OnInit {
   has_search = false;
   select;
   today: any;
+
+  stocked_cost = 0;
+  stocked_price = 0;
+  stocked_quantity = 0;
 
   service_sold = 0;
   service_margin = 0;
@@ -89,6 +94,7 @@ export class ReportListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public productService: ProductService,
     public reportService: ReportService,
+    public formatService: FormatService,
   ) {
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
@@ -287,6 +293,45 @@ export class ReportListPage implements OnInit {
     });
   }
 
+  computeStockValues() {
+    let self = this;
+    this.pouchdbService.getView(
+      'stock/Depositos',
+      10,
+      ["warehouse.physical.my" ,"0", "0"],
+      ["warehouse.physical.my", "z", "z"],
+      true,
+      true,
+      undefined,
+      undefined,
+      false
+    ).then(async (products: any[]) => {
+      console.log("Stock", products);
+      let stocked_cost = 0;
+      let stocked_price = 0;
+      let stocked_quantity = 0;
+      let getList = [];
+      products.forEach(sale => {
+        getList.push(sale.key[1])
+      });
+      let productList:any = await this.pouchdbService.getList(getList);
+      var doc_dict = {};
+      productList.forEach(row=>{
+        doc_dict[row.id] = row.doc;
+      })
+      products.forEach(product => {
+        if (doc_dict[product.key[1]] && product.value > 0){
+          stocked_quantity += parseFloat(product.value);
+          stocked_cost += product.value * doc_dict[product.key[1]].cost;
+          stocked_price += product.value * doc_dict[product.key[1]].price;;
+        }
+      })
+      this.stocked_quantity = stocked_quantity;
+      this.stocked_cost = stocked_cost;
+      this.stocked_price = stocked_price;
+    });
+  }
+
   computeToReceiveValues() {
     this.pouchdbService.getView(
       'stock/A Cobrar', 0,
@@ -348,6 +393,7 @@ export class ReportListPage implements OnInit {
     this.computeSaleValues();
     this.computeServiceValues();
     this.computeProductionValues();
+    this.computeStockValues();
     this.computeToReceiveValues();
     this.computePurchaseValues();
     this.computeToPayValues();
@@ -408,6 +454,14 @@ export class ReportListPage implements OnInit {
   showReportProduction() {
     this.navCtrl.navigateForward(['/production-report', {
       'reportType': "production",
+      'dateStart': this.reportsForm.value.dateStart,
+      'dateEnd': this.reportsForm.value.dateEnd,
+    }]);
+  }
+
+  showReportStock() {
+    this.navCtrl.navigateForward(['/stock-report', {
+      'reportType': "stock",
       'dateStart': this.reportsForm.value.dateStart,
       'dateEnd': this.reportsForm.value.dateEnd,
     }]);
