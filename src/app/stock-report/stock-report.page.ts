@@ -179,23 +179,25 @@ export class StockReportPage implements OnInit {
             items = [];
             let getList = [];
             stocks.forEach(stockLine => {
-              if (result.hasOwnProperty(stockLine.key[1])) {
-                // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
-                items[result[stockLine.key[1]]] = {
-                  'name': items[result[stockLine.key[1]]].name,
-                  'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
-                  '_id': stockLine.key[1],
-                  // 'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
-                };
-              } else {
-                items.push({
-                  'name': stockLine.key[3],
-                  'quantity': parseFloat(stockLine.value),
-                  '_id': stockLine.key[1],
-                  // 'total': parseFloat(stockLine.key[4])*stockLine.key[6],
-                });
-                getList.push(stockLine.key[1]);
-                result[stockLine.key[1]] = items.length-1;
+              if (stockLine.value > 0){
+                if (result.hasOwnProperty(stockLine.key[1])) {
+                  // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
+                  items[result[stockLine.key[1]]] = {
+                    'name': items[result[stockLine.key[1]]].name,
+                    'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
+                    '_id': stockLine.key[1],
+                    // 'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
+                  };
+                } else {
+                  items.push({
+                    'name': stockLine.key[3],
+                    'quantity': parseFloat(stockLine.value),
+                    '_id': stockLine.key[1],
+                    // 'total': parseFloat(stockLine.key[4])*stockLine.key[6],
+                  });
+                  getList.push(stockLine.key[1]);
+                  result[stockLine.key[1]] = items.length-1;
+                }
               }
             });
 
@@ -247,23 +249,25 @@ export class StockReportPage implements OnInit {
             items = [];
             let getList = [];
             stocks.forEach(stockLine => {
-              if (result.hasOwnProperty(stockLine.key[1])) {
-                // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
-                items[result[stockLine.key[1]]] = {
-                  'name': items[result[stockLine.key[1]]].name,
-                  'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
-                  '_id': stockLine.key[1],
-                  // 'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
-                };
-              } else {
-                items.push({
-                  'name': stockLine.key[3],
-                  'quantity': parseFloat(stockLine.value),
-                  '_id': stockLine.key[1],
-                  // 'total': parseFloat(stockLine.key[4])*stockLine.key[6],
-                });
-                getList.push(stockLine.key[1]);
-                result[stockLine.key[1]] = items.length-1;
+              if (stockLine.value > 0){
+                if (result.hasOwnProperty(stockLine.key[1])) {
+                  // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
+                  items[result[stockLine.key[1]]] = {
+                    'name': items[result[stockLine.key[1]]].name,
+                    'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
+                    '_id': stockLine.key[1],
+                    // 'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
+                  };
+                } else {
+                  items.push({
+                    'name': stockLine.key[3],
+                    'quantity': parseFloat(stockLine.value),
+                    '_id': stockLine.key[1],
+                    // 'total': parseFloat(stockLine.key[4])*stockLine.key[6],
+                  });
+                  getList.push(stockLine.key[1]);
+                  result[stockLine.key[1]] = items.length-1;
+                }
               }
             });
 
@@ -376,9 +380,10 @@ export class StockReportPage implements OnInit {
               items = [];
               let getList = [];
               stocks.forEach(stockLine => {
-                if (result.hasOwnProperty(stockLine.key[1])) {
-                  // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
-                  items[result[stockLine.key[1]]] = {
+                if (stockLine.value > 0){
+                  if (result.hasOwnProperty(stockLine.key[1])) {
+                    // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
+                    items[result[stockLine.key[1]]] = {
                     'name': items[result[stockLine.key[1]]].name,
                     'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
                     '_id': stockLine.key[1],
@@ -393,6 +398,7 @@ export class StockReportPage implements OnInit {
                   });
                   getList.push(stockLine.key[1]);
                   result[stockLine.key[1]] = items.length-1;
+                }
                 }
               });
 

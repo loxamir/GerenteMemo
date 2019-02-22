@@ -107,9 +107,9 @@
                   <ion-col width-40 (click)="orderByName()">
                     Categoria
                   </ion-col>
-                  <!-- <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                    Margen
-                  </ion-col> -->
+                  <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
+                    Potencial
+                  </ion-col>
                   <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
                     Cantidad
                   </ion-col>
@@ -121,9 +121,9 @@
                   <ion-col width-40 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.name}}
                   </ion-col>
-                  <!-- <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.margin|number:'1.0'}}
-                  </ion-col> -->
+                  </ion-col>
                   <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.quantity}}
                   </ion-col>
@@ -135,9 +135,9 @@
                   <ion-col  width-40>
                     TOTAL
                   </ion-col>
-                  <!-- <ion-col width-20 style="text-align: right">
+                  <ion-col width-20 style="text-align: right">
                     {{items_margin|number:'1.0'}}
-                  </ion-col> -->
+                  </ion-col>
                   <ion-col width-15 style="text-align: right">
                     {{items_quantity|number:'1.0'}}
                   </ion-col>
@@ -155,9 +155,9 @@
                   <ion-col width-40 (click)="orderByName()">
                     Categoria
                   </ion-col>
-                  <!-- <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
+                  <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
                     Margen
-                  </ion-col> -->
+                  </ion-col>
                   <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
                     Cantidad
                   </ion-col>
@@ -169,9 +169,9 @@
                   <ion-col width-40 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.name}}
                   </ion-col>
-                  <!-- <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.margin|number:'1.0'}}
-                  </ion-col> -->
+                  </ion-col>
                   <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.quantity}}
                   </ion-col>
@@ -183,9 +183,9 @@
                   <ion-col  width-40>
                     TOTAL
                   </ion-col>
-                  <!-- <ion-col width-20 style="text-align: right">
+                  <ion-col width-20 style="text-align: right">
                     {{items_margin|number:'1.0'}}
-                  </ion-col> -->
+                  </ion-col>
                   <ion-col width-15 style="text-align: right">
                     {{items_quantity|number:'1.0'}}
                   </ion-col>
