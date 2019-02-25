@@ -36,11 +36,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'product-list',
+        path: 'production-list',
         children: [
           {
             path: '',
-            loadChildren: '../product-list/product-list.module#ProductListPageModule'
+            loadChildren: '../production-list/production-list.module#ProductionListPageModule'
           }
         ]
       },

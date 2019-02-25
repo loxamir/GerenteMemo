@@ -10,6 +10,7 @@ import { LanguageModel } from "../services/language/language.model";
 import { ProductService } from './product.service';
 // import { Base64 } from '@ionic-native/base64';
 import { ProductCategoryListPage } from '../product-category-list/product-category-list.page';
+import { BrandListPage } from '../brand-list/brand-list.page';
 // import { Camera, CameraOptions } from '@ionic-native/camera';
 import { StockMoveService } from '../stock-move/stock-move.service';
 import { CashMoveService } from '../cash-move/cash-move.service';
@@ -31,6 +32,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
   @ViewChild('stock') stock;
   @ViewChild('barcode') barcode;
 
+  @ViewChild('category') category;
+  @ViewChild('brand') brand;
+  @ViewChild('tax')tax;
     productForm: FormGroup;
     loading: any;
     _id: string;
@@ -96,7 +100,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       // }
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       setTimeout(() => {
         this.name.setFocus();
         this.productForm.markAsPristine();
@@ -106,6 +110,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         // image: new FormControl(''),
         price: new FormControl(null, Validators.required),
         category: new FormControl({}),
+        brand: new FormControl({}),
         cost: new FormControl(this.cost||null),
         code: new FormControl(''),
         barcode: new FormControl(this.barcode),
@@ -118,15 +123,18 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         unity: new FormControl(this.route.snapshot.paramMap.get('unity')||'un'),
         _id: new FormControl(''),
       });
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if (this._id){
         this.productService.getProduct(this._id).then((data) => {
           this.productForm.patchValue(data);
           this.theoreticalStock = data.stock;
           this.productForm.markAsPristine();
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
         this.getDefaultCategory();
+        this.loading.dismiss();
       }
     }
 
@@ -160,12 +168,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.buttonSave();
         } else {
           if (this.opened){
-            this.navCtrl.navigateBack('/tabs/product-list');
+            this.navCtrl.navigateBack('/product-list');
             // .then(() => {
               this.events.publish('open-product', this.productForm.value);
             // });
           } else {
-            this.navCtrl.navigateBack('/tabs/product-list');
+            this.navCtrl.navigateBack('/product-list');
             // .then(() => {
               this.events.publish('create-product', this.productForm.value);
             // });
@@ -234,7 +242,15 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       }
     }
     buttonSave() {
+      this.productForm.patchValue({
+          stock: parseFloat(this.productForm.value.stock) || 0,
+          cost: parseFloat(this.productForm.value.cost) || 0,
+          price: parseFloat(this.productForm.value.price) || 0,
+          stock_min: parseFloat(this.productForm.value.stock_min) || 0,
+      })
+
       let product = Object.assign({}, this.productForm.value);
+      console.log("product", product);
       // if(this.productForm.value.stock != this.theoreticalStock){
         product.stock = this.theoreticalStock;
       // }
@@ -246,16 +262,18 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.modalCtrl.dismiss();
           this.events.publish('open-product', this.productForm.value);
         } else {
-          this.navCtrl.navigateBack('/tabs/product-list');
+          this.navCtrl.navigateBack('/product-list');
           // .then(() => {
             this.events.publish('open-product', this.productForm.value);
           // });
         }
       } else {
-        this.productService.createProduct(product).then(doc => {
           //console.log("docss", doc);
+        this.productService.createProduct(product).then(async (doc: any) => {
+          let produ:any = await this.pouchdbService.getDoc(doc['id'])
           this.productForm.patchValue({
             _id: doc['id'],
+            code: produ.code
           });
           this._id = doc['id'];
           this.createInventoryAdjustment();
@@ -263,7 +281,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             this.modalCtrl.dismiss();
             this.events.publish('create-product', this.productForm.value);
           } else {
-            this.navCtrl.navigateBack('/tabs/product-list');
+            this.navCtrl.navigateBack('/product-list');
             // .then(() => {
               this.events.publish('create-product', this.productForm.value);
             // });
@@ -278,13 +296,13 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           let difference = (this.productForm.value.stock - this.theoreticalStock);
           let warehouseFrom_id = 'warehouse.inventoryAdjust';
           let warehouseTo_id  = config.warehouse_id;
-          let accountFrom_id = 'account.other.inventoryAdjust';
+          let accountFrom_id = 'account.income.positiveInventory';
           let accountTo_id  = 'account.other.stock';
           if (difference < 0) {
             warehouseFrom_id  = config.warehouse_id;
             warehouseTo_id = 'warehouse.inventoryAdjust';
             accountFrom_id = 'account.other.stock';
-            accountTo_id  = 'account.other.inventoryAdjust';
+            accountTo_id  = 'account.expense.negativeInventory';
           }
           this.stockMoveService.createStockMove({
             'name': "Ajuste "+this.productForm.value.code,
@@ -293,7 +311,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             'contact_id': "contact.myCompany",
             'product_id': this.productForm.value._id,
             'date': new Date(),
-            'cost': this.productForm.value.cost*Math.abs(difference),
+            'cost': (parseFloat(this.productForm.value.cost)||0)*Math.abs(difference),
             'warehouseFrom_id': warehouseFrom_id,
             'warehouseTo_id': warehouseTo_id,
           }).then(res => {
@@ -303,7 +321,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.cashMoveService.createCashMove({
             'name': "Ajuste "+this.productForm.value.code,
             'contact_id': "contact.myCompany",
-            'amount': this.productForm.value.cost*Math.abs(difference),
+            'amount': (parseFloat(this.productForm.value.cost)||0)*Math.abs(difference),
             'origin_id': this.productForm.value._id,
             // "project_id": this.productForm.value.project_id,
             'date': new Date(),
@@ -385,6 +403,31 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       });
     }
 
+    selectBrand() {
+      return new Promise(async resolve => {
+        // this.avoidAlertMessage = true;
+        let profileModal = await this.modalCtrl.create({
+          component: BrandListPage,
+          componentProps: {
+            "select": true,
+          }
+        });
+        await profileModal.present();
+        this.events.unsubscribe('select-brand');
+        this.events.subscribe('select-brand', (data) => {
+          this.productForm.patchValue({
+            brand: data,
+            brand_name: data.name,
+          });
+          this.productForm.markAsDirty();
+          // this.avoidAlertMessage = false;
+          this.events.unsubscribe('select-brand');
+          profileModal.dismiss();
+          // resolve(true);
+        })
+      });
+    }
+
     showNextButton(){
       // console.log("stock",this.productForm.value.stock);
       if (this.productForm.value.name==null){
@@ -442,7 +485,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.modalCtrl.dismiss();
       } else {
         this.productForm.markAsPristine();
-        this.navCtrl.navigateBack('/tabs/product-list');
+        this.navCtrl.navigateBack('/product-list');
       }
     }
 

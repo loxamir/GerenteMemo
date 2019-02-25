@@ -80,7 +80,7 @@ export class PurchaseListPage implements OnInit {
       console.log("purchases", purchases);
       this.purchases = purchases;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -113,8 +113,9 @@ export class PurchaseListPage implements OnInit {
     popover.present();
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
 
@@ -124,7 +125,7 @@ export class PurchaseListPage implements OnInit {
     ).then((purchases) => {
       this.purchases = purchases;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

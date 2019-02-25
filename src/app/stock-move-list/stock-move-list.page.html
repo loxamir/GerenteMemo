@@ -1,12 +1,12 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/product-list"></ion-back-button>
+      <ion-back-button defaultHref="/product-list"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
       placeholder="Movimentos de Stock"
       [(ngModel)]="searchTerm"
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
     </ion-buttons>

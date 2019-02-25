@@ -40,8 +40,9 @@ export class CashListPage implements OnInit {
     history.pushState(foo, "Anything", " ");
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
     this.events.subscribe('changed-cash-move', (change)=>{
       this.handleViewChange(this.cashList, change);
@@ -83,7 +84,7 @@ export class CashListPage implements OnInit {
     ).then((cashList) => {
       this.cashList = cashList;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

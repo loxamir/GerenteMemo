@@ -124,7 +124,6 @@ export class InvoicePage implements OnInit {
       public events:Events,
       // public popoverCtrl: PopoverController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
@@ -144,7 +143,7 @@ export class InvoicePage implements OnInit {
     //   });
     // }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       //console.log("this.route.snapshot.paramMap.get('origin_ids", this.route.snapshot.paramMap.get('contact);
       let items = [];
@@ -185,6 +184,8 @@ export class InvoicePage implements OnInit {
         origin_id: new FormControl(this.origin_id||''),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
       });
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.recomputeValues();
       //this.loading.present();
       // console.log("id", this._id);
@@ -197,18 +198,15 @@ export class InvoicePage implements OnInit {
       // } else {
       //   //this.loading.dismiss();
       // }
-    }
-
-    ngAfterViewInit(){
       console.log("id", this._id);
       if (this._id){
         this.getInvoice(this._id).then((data) => {
           console.log("data invoice", data);
           this.invoiceForm.patchValue(data);
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
       }
     }
 
@@ -788,9 +786,6 @@ export class InvoicePage implements OnInit {
     setNumber(){
       if (this.invoiceForm.value.type == 'in'){
         this.informNumberSupplier("001-001-000");
-        if (this.select){
-          this.modalCtrl.dismiss();
-        }
       } else if (this.invoiceForm.value.code){
         this.informNumber(this.invoiceForm.value.code);
       } else {
@@ -838,7 +833,7 @@ export class InvoicePage implements OnInit {
                     let dotmatrix_model:any = await this.pouchdbService.getDoc('config.invoice');
                     console.log("dotmatrix_model", dotmatrix_model);
                     let layout = await this.pouchdbService.getDoc('config.profile')
-                    this.formatService.print_file(this.invoiceForm.value, dotmatrix_model, layout['invoicePrint']);
+                    this.formatService.printInvoice(this.invoiceForm.value, dotmatrix_model, layout['invoicePrint']);
                   }
                   this.justSave();
                   // this.navCtrl.navigateBack();
@@ -878,7 +873,7 @@ export class InvoicePage implements OnInit {
             text: 'Cancel'
           },
           {
-            text: 'Imprimir',
+            text: 'Confirmar',
             handler: data => {
               this.invoiceForm.patchValue({
                 code: data.code,
@@ -886,6 +881,9 @@ export class InvoicePage implements OnInit {
               });
               this.recomputeValues();
               this.justSave();
+              if (this.select){
+                this.modalCtrl.dismiss();
+              }
               // this.navCtrl.navigateBack();
             }
           }
@@ -1362,6 +1360,6 @@ export class InvoicePage implements OnInit {
         profileModal.present();
       });
     }
-    
+
 
 }

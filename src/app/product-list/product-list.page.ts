@@ -15,6 +15,8 @@ import { ProductListPopover} from './product-list.popover';
   styleUrls: ['./product-list.page.scss'],
 })
 export class ProductListPage implements OnInit {
+  @ViewChild('searchBar') searchBar;
+
   products: any = [];
   loading: any;
   select;
@@ -36,7 +38,6 @@ export class ProductListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public file: File,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     this.operation = this.route.snapshot.paramMap.get('operation') || this.operation;
     this.type = this.route.snapshot.paramMap.get('type') || 'all';
@@ -89,9 +90,15 @@ export class ProductListPage implements OnInit {
     return csv
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
+    setTimeout(() => {
+      if(this.select){
+        this.searchBar.setFocus();
+      }
+    }, 500);
   }
 
   setFilteredItems() {
@@ -105,7 +112,7 @@ export class ProductListPage implements OnInit {
         this.products = products.filter(word => word.type == this.type);
       }
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -115,7 +122,7 @@ export class ProductListPage implements OnInit {
     ).then((items) => {
       this.products = items;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -144,13 +151,6 @@ export class ProductListPage implements OnInit {
       refresher.target.complete();
     }, 50);
   }
-
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(ProductsPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
 
   async presentPopover(myEvent) {
     console.log("teste my event");
@@ -233,9 +233,9 @@ export class ProductListPage implements OnInit {
     return new Promise((resolve, reject)=>{
       let promise_ids = [];
       if (type=='all') {
-        promise_ids.push(this.pouchdbService.searchDocTypeData('product', keyword, page));
+        promise_ids.push(this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase'));
       } else {
-        promise_ids.push(this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'type', type));
+        promise_ids.push(this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'type', type, 'name', 'increase'));
       }
       promise_ids.push(this.pouchdbService.getView('stock/Depositos', 2));
       Promise.all(promise_ids).then((resList: any[]) => {
@@ -261,7 +261,11 @@ export class ProductListPage implements OnInit {
     this.pouchdbService.searchDocs(
       'product',
       keyword,
-      page
+      page,
+      undefined,
+      undefined,
+      'name',
+      'increase'
     ).then((items) => {
         resolve(items);
       })

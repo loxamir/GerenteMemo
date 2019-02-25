@@ -1,0 +1,120 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-searchbar
+      placeholder="Buscar Producción"
+      [(ngModel)]="searchTerm"
+      #searchbar
+      (ionChange)="searchItems()">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button icon-only
+              (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="list-mini-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list no-lines>
+    <ion-item-sliding class="list-item"  *ngFor="let item of productions">
+      <ion-item no-padding>
+        <ion-card class="list-card" style="border-radius: 5px;" (click)="openProduction(item)">
+          <ion-row>
+            <ion-col no-padding>
+              <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
+            </ion-col>
+          </ion-row>
+     <ion-row no-padding class="content-row one-line">
+        <ion-col no-padding width-35 class="schedule-date">
+          <h3 class="schedule-month" style="font-size:15px;margin-left:5px;">{{item.date|date: 'dd/MM/yyyy'}}</h3>
+          <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;">
+            <span style="margin-left: 5px">{{item.code}}</span>
+          </h3>
+          <h3 class="item-title" style="font-size:15px;">{{item.payment_name | translate}}</h3>
+        </ion-col>
+        <ion-col no-padding width-65 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+          <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.total| number:'1.0'}}</h2>
+          <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.0'}}</h2>
+          <div *ngIf="item.residual != 0 && item.state!='CANCELED'" style="color: red;">
+            $ {{ item.residual | number:'1.0' }}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row no-padding>
+        <ion-col class="item-content" style="white-space: normal;">
+          {{item.client_request}}
+        </ion-col>
+      </ion-row>
+      <ion-row no-padding>
+        <ion-col no-padding style="text-align: center;"
+        [class.draft]="item.state=='DRAFT'"
+        [class.started]="item.state=='STARTED'"
+        [class.scheduled]="item.state=='SCHEDULED'"
+        [class.confirmed]="item.state=='CONFIRMED'"
+        [class.paid]="item.state=='PAID'||item.state=='PRODUCED'"
+        [class.cancel]="item.state=='CANCELED'">
+            {{ item.state | translate }}
+        </ion-col>
+      </ion-row>
+      </ion-card>
+
+    </ion-item>
+      <ion-item-options>
+        <ion-button icon-only color="primary" (click)="deleteProduction(item)" *ngIf="item.state=='DRAFT'">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-row style="height:15px;">
+
+  </ion-row>
+  <ion-row *ngIf="!productions.length">
+    <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
+      <!-- <ion-row>
+        <ion-col></ion-col>
+        <ion-col no-padding>
+          <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="https://uc345e667ca43908d75a8cf2bc88.previews.dropboxusercontent.com/p/thumb/AATLtAiIK4RGYT7yj71W0syFKYCjVG3wSwkU69o92pa__72jG9r98BSj985Ul8Pj2LoK26vXBFn4pCZjlqzaCeHC8XwjeySykvxU3My3458ojVjEbPWBJAs26kZJJ7PZm3EU6Ylc-7lt78hU_Lbg-gIJ0UEprS2thP1e3kiLpwevJvK00WuzaXKljqO_Y11BgrnwGIn7bnaSnXo5ZdITcSpiqBe-RGM2ABYCL3VBDbNU2qBCZAUsJJg2Bfj-c5FlH_nyAs34o_75eLZ01YS4G37G/p.png?size=1600x1200&size_mode=3"/>
+        </ion-col>
+        <ion-col></ion-col>
+      </ion-row> -->
+      <ion-row>
+        <ion-col>
+          <h1>Sin Producciones registradas</h1>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <h4>Para crear Producciones, pulsa el botón más</h4>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+  <!-- <ion-row>
+    <ion-col size="12" style="text-align: center;margin-top: 54px;">
+      <ion-icon name="arrow-round-down"  color="primary" style="font-size: 70px"></ion-icon>
+    </ion-col>
+  </ion-row> -->
+      <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed"  #fab>
+    <ion-fab-button><ion-icon name="add"></ion-icon></ion-fab-button>
+    <ion-fab-list side="top">
+    <div style="background: #4CAF50;color: white;margin-top: -5px;">Producción</div><ion-button style="background: #4CAF50;color: white;margin-bottom: 5px;" ion-fab (click)="createProduction(fab)"><ion-icon name="arrow-round-down"></ion-icon></ion-button>
+    </ion-fab-list>
+  </ion-fab> -->
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      <ion-fab-button (click)="createProduction()" color="primary">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
+  </ion-fab>
+</ion-content>

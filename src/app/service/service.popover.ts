@@ -23,7 +23,7 @@ export class ServicePopover {
     async duplicate(){
       this.navParams.data.doc._id = '';
       this.navParams.data.doc.serviceForm.patchValue({
-        state: 'QUOTATION',
+        state: 'DRAFT',
         _id: '',
         code: '',
         planned: [],

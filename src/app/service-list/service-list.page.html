@@ -54,9 +54,9 @@
       </ion-row>
       <ion-row no-padding>
         <ion-col no-padding style="text-align: center;"
-        [class.quotation]="item.state=='QUOTATION'"
+        [class.draft]="item.state=='DRAFT'"
         [class.started]="item.state=='STARTED'"
-        [class.quotation]="item.state=='SCHEDULED'"
+        [class.scheduled]="item.state=='SCHEDULED'"
         [class.confirmed]="item.state=='CONFIRMED'"
         [class.paid]="item.state=='PAID'||item.state=='PRODUCED'"
         [class.cancel]="item.state=='CANCELED'">
@@ -67,7 +67,7 @@
 
     </ion-item>
       <ion-item-options>
-        <ion-button icon-only color="primary" (click)="deleteService(item)" *ngIf="item.state=='QUOTATION'">
+        <ion-button icon-only color="primary" (click)="deleteService(item)" *ngIf="item.state=='DRAFT'">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-item-options>
@@ -95,7 +95,7 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <h4>Para crear Servicios o Producciones, pulsa el botón más</h4>
+          <h4>Para crear Servicios pulsa el botón más</h4>
         </ion-col>
       </ion-row>
     </ion-col>
@@ -105,11 +105,17 @@
       <ion-icon name="arrow-round-down"  color="primary" style="font-size: 70px"></ion-icon>
     </ion-col>
   </ion-row> -->
-      <ion-fab vertical="bottom" horizontal="center" slot="fixed"  #fab>
+      <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed"  #fab>
     <ion-fab-button><ion-icon name="add"></ion-icon></ion-fab-button>
     <ion-fab-list side="top">
       <div style="background: #FF5722;color: white;margin-top: -5px;">Servicio</div><ion-button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="createService(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
     <div style="background: #4CAF50;color: white;margin-top: -5px;">Producción</div><ion-button style="background: #4CAF50;color: white;margin-bottom: 5px;" ion-fab (click)="createProduction(fab)"><ion-icon name="arrow-round-down"></ion-icon></ion-button>
     </ion-fab-list>
+  </ion-fab> -->
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      <ion-fab-button (click)="createService()" color="primary">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
   </ion-fab>
 </ion-content>

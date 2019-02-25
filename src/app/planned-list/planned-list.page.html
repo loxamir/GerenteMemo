@@ -8,14 +8,14 @@
       placeholder="Buscar Contas a Cobrar"
       [(ngModel)]="searchTerm"
       #searchbar
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-searchbar
       *ngIf="this.signal=='-'"
       placeholder="Buscar Contas a Pagar"
       [(ngModel)]="searchTerm"
       #searchbar
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
   </ion-toolbar>
   <ion-row justify-content-center>
@@ -34,7 +34,7 @@
         $ {{amountTotal|number:'1.0'}}
       </div>
     </ion-col>
-    <ion-col width-50 *ngIf="amountPaid" class="field-100">
+    <ion-col width-50 *ngIf="amountPaid || createReceipt" class="field-100">
       {{'TO_PAY' | translate }}
       <div class="cash-move-amount positive" style="text-align: center">
         $ {{amountPaid|number:'1.0'}}
@@ -62,7 +62,10 @@
             </ion-col>
           </ion-row>
       <ion-row no-padding>
-        <ion-col no-padding style="text-align: center;border-radius: 4px;" class="paid">
+        <ion-col no-padding style="text-align: center;border-radius: 4px;"
+        [class.due]="item.doc.dateDue.split('T')[0]<today.split('T')[0]"
+        [class.quotation]="item.doc.dateDue.split('T')[0]>today.split('T')[0]"
+        [class.confirmed]="item.doc.dateDue.split('T')[0]==today.split('T')[0]">
             {{item.doc && ( item.doc.accountFrom && item.doc.accountFrom.name || item.doc.accountTo && item.doc.accountTo.name) | translate}}
         </ion-col>
       </ion-row>
@@ -93,7 +96,7 @@
 
   <div style="height:100px">
   </div>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="amountPaid">
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="amountPaid || createReceipt">
       <ion-fab-button (click)="createPayment()" >
           <ion-icon name="cash">
           </ion-icon>

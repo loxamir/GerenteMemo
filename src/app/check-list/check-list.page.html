@@ -8,7 +8,7 @@
       placeholder="Buscar Cheque"
       [(ngModel)]="searchTerm"
       #searchbar
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
     </ion-buttons>

@@ -21,6 +21,8 @@ import { ConfigService } from '../config/config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountPage } from '../account/account.page';
 
+import { ClosePage } from './close/close.page';
+
 @Component({
   selector: 'app-cash',
   templateUrl: './cash.page.html',
@@ -59,20 +61,42 @@ export class CashPage implements OnInit {
       this.select = this.route.snapshot.paramMap.get('select');
       this.translate.setDefaultLang('es');
       this.translate.use('es');
+      this.events.unsubscribe('changed-cash-move');
       this.events.subscribe('changed-cash-move', (change)=>{
+        console.log("changed-cash-move", change);
         this.cashService.handleChange(this.cashForm.value.moves, change);
         this.cashService.localHandleChangeData(
         this.cashForm.value.moves, this.cashForm.value.waiting, change);
+        this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
+      })
+      this.events.subscribe('changed-close', (change)=>{
+        console.log("changeddd", change);
+        this.events.unsubscribe('changed-close');
+        if (change.doc.cash_id == this._id){
+          this.cashForm.value.closes.unshift(change.doc);
+          this.cashForm.patchValue({
+            moves: [],
+            closes: this.cashForm.value.closes
+          })
+        }
+        // console.log("close-cash", change);
+        // this.cashForm.value.moves.for
+        // console.log("change.doc", change.doc);
+        // if (change.doc.close_id){
+        //   console.log("changed with close_id");
+        //   list.splice(changedIndex, 1);
+        // }
       })
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       this.cashForm = this.formBuilder.group({
         name: new FormControl('', Validators.required),
         balance: new FormControl(0),
         currency: new FormControl({}),
         // currency_name: new FormControl(''),
         moves: new FormControl([]),
+        closes: new FormControl([]),
         checks: new FormControl([]),
         waiting: new FormControl([]),
         bank_name: new FormControl(''),
@@ -84,15 +108,17 @@ export class CashPage implements OnInit {
         // default: new FormControl(false),
         _id: new FormControl(''),
       });
-      //this.loading.present();
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if (this._id){
         this.cashService.getCash(this._id).then((data) => {
+          // console.log("data", data);
           this.cashForm.patchValue(data);
           this.recomputeValues();
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
       }
     }
 
@@ -114,6 +140,48 @@ export class CashPage implements OnInit {
           component: CurrencyListPage,
           componentProps: {
             "select": true
+          }
+        });
+        profileModal.present();
+      });
+    }
+
+    closeCash() {
+      return new Promise(async resolve => {
+        // this.avoidAlertMessage = true;
+        // this.events.unsubscribe('select-currency');
+        // this.events.subscribe('select-currency', (data) => {
+        //   this.cashForm.patchValue({
+        //     currency: data,
+        //     // currency_name: data.name,
+        //   });
+        //   this.cashForm.markAsDirty();
+        //   // this.avoidAlertMessage = false;
+        //   this.events.unsubscribe('select-currency');
+        //   resolve(true);
+        // })
+        console.log("closes", this.cashForm.value.closes);
+        let profileModal = await this.modalCtrl.create({
+          component: ClosePage,
+          componentProps: {
+            "select": true,
+            "amount_open": this.cashForm.value.closes[0] && this.cashForm.value.closes[0].amount_physical|| 0,
+            "amount_theoretical": this.cashForm.value.balance,
+            "cash_id": this.cashForm.value._id,
+            "accountMoves": this.cashForm.value.moves
+          }
+        });
+        profileModal.present();
+      });
+    }
+
+    openClose(item) {
+      return new Promise(async resolve => {
+        let profileModal = await this.modalCtrl.create({
+          component: ClosePage,
+          componentProps: {
+            "select": true,
+            "_id": item._id
           }
         });
         profileModal.present();

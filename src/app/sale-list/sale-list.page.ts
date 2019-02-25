@@ -82,8 +82,10 @@ export class SaleListPage implements OnInit {
     popover.present();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     //this.loading.present();
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
 
@@ -93,7 +95,7 @@ export class SaleListPage implements OnInit {
     ).then((sales) => {
       this.sales = sales;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -103,7 +105,7 @@ export class SaleListPage implements OnInit {
     ).then((sales) => {
       this.sales = sales;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

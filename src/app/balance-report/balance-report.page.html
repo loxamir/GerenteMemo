@@ -1,23 +1,16 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/report-tabs/short-report"></ion-back-button>
+      <ion-back-button defaultHref="/report-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
       <ion-row>
         {{ 'BALANCE' | translate }}: {{balanceForm.value.code}}
       </ion-row>
     </ion-title>
-
     <ion-buttons slot="end" >
-      <!-- <ion-button icon-only
-              (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
-
-
 </ion-header>
 
 <ion-content class="balance-content" style="background: white;">
@@ -68,28 +61,8 @@
           </div>
         </div>
       </ion-list>
-
-
     </div>
   </form>
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-      <ion-fab-button (click)="share()">
-          <ion-icon name="share">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab>
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="recomputeValues()">
-          <ion-icon name="arrow-round-forward">
-          </ion-icon>
-      </ion-button>
-  </ion-fab> -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button (click)="printAndroid()">
-          <ion-icon name="print">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab>
   <div style="height: 100px;">
   </div>
 </ion-content>

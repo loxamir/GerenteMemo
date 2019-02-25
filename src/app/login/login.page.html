@@ -145,7 +145,7 @@
     style="--background: white;"
     placeholder="Buscar Ayuda"
     [(ngModel)]="searchTerm"
-    (ionInput)="setFilteredItems()">
+    (ionChange)="setFilteredItems()">
   </ion-searchbar>
 
     <ion-refresher *ngIf="selected_user" (ionRefresh)="doRefresh($event)">

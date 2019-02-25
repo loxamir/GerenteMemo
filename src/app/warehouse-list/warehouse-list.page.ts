@@ -126,7 +126,7 @@ export class WarehouseListPage implements OnInit {
   createWarehouse(){
     this.events.subscribe('create-warehouse', (data) => {
       if (this.select){
-        this.navCtrl.navigateBack('/tabs/product-list');
+        this.navCtrl.navigateBack('/product-list');
         // .then(() => {
           this.events.publish('select-warehouse', data);
         // });

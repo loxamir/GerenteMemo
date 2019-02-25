@@ -14,6 +14,7 @@ import { StockMoveService } from '../stock-move/stock-move.service';
 import { FormatService } from '../services/format.service';
 import { SaleService } from '../sale/sale.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RestProvider } from "../services/rest/rest";
 
 @Component({
   selector: 'app-importer',
@@ -33,6 +34,7 @@ export class ImporterPage implements OnInit {
   errorMessage: any[] = [];
   // csvError: any[] = [];
   // createList: any[] = [];
+  validated = false;
   pageSize = 40;
   page = 0;
   error: boolean = true;
@@ -58,15 +60,16 @@ export class ImporterPage implements OnInit {
     public alertCtrl: AlertController,
     public formatService: FormatService,
     public saleService: SaleService,
+    public restProvider: RestProvider,
   ) {
     // this.readCsvData(); //To run on browser
     this.docType = this.route.snapshot.paramMap.get('docType');
-    this.startLoading();
+    // this.startLoading();
   }
 
-  async startLoading(){
-    this.loading = await this.loadingCtrl.create();
-  }
+  // async startLoading(){
+  //   this.loading = await this.loadingCtrl.create();
+  // }
 
   // private readCsvData() {
   //   let file = "";
@@ -91,7 +94,7 @@ export class ImporterPage implements OnInit {
 
   private extractData(res) {
     // let csvData = res['_body'] || ''; //To run on browser
-    this.loading.present();
+    // this.loading.present();
     let csvData = res; //To run on android
     let parsedData = papa.parse(csvData).data;
     this.headerRow = parsedData[0];
@@ -141,9 +144,9 @@ export class ImporterPage implements OnInit {
       this.pageProperty[page] = pageProperty;
       this.pageError[page] = pageError;
     }
-
+    this.validated = false;
     // this.createAtrributeSpace(this.csvParsed.slice(this.pageSize*(this.page - 1), this.pageSize*this.page));
-    this.loading.dismiss();
+    // this.loading.dismiss();
   }
 
   nextPage(){
@@ -237,7 +240,7 @@ export class ImporterPage implements OnInit {
   // }
 
   seeHelp(page, line=null, row=null){
-    console.log("line", line,"row", row);
+    // console.log("line help", line,"row", row);
     this.errorMessage = this.pageError[page][line][row]['messages'];
   }
 
@@ -272,10 +275,11 @@ export class ImporterPage implements OnInit {
         this.checkDecimal(doc[4], lines, counter, 4);
         this.checkTax(doc[5], lines, counter, 5);
         this.checkExist('category', doc[6], 'name', lines, counter, 6, "", "La Categoria '"+doc[6]+"' sera creada", "green", "yellow", true);
-        this.checkDecimal(doc[7], lines, counter, 7);
-        this.checkType(doc[8], lines, counter, 8);
-        this.checkType(doc[8], lines, counter, 8);
-        this.checkTrue(lines, counter, 9)
+        this.checkExist('brand', doc[7], 'name', lines, counter, 7, "", "La Marca '"+doc[7]+"' sera creada", "green", "yellow", true);
+        this.checkDecimal(doc[8], lines, counter, 8);
+        this.checkType(doc[9], lines, counter, 9);
+        // this.checkType(doc[8], lines, counter, 10);
+        this.checkTrue(lines, counter, 10)
       } else if (this.docType == 'contact'){
         console.log("check contact");
         this.checkExist('contact', doc[0], 'code', lines, counter, 0, "Error: Ya existe un Contato con el Codigo '"+doc[0]+"'");
@@ -328,9 +332,23 @@ export class ImporterPage implements OnInit {
         // this.checkBoolean(doc[7], lines, counter, 7);
         // this.checkBoolean(doc[9], lines, counter, 9);
         // this.checkTrue(lines, counter, 3)
+      } else if (this.docType == 'account'){
+        console.log("check account");
+        this.checkExist('account', doc[0], '_id', lines, counter, 0, "Error: Ya existe una Cuenta con el ID '"+doc[0]+"'");
+        this.checkExist('contact', doc[1], 'name', lines, counter, 1, "Error: Ya existe una Cuenta con el Nombre '"+doc[1]+"'");
+        this.checkExist('account', doc[2], 'code', lines, counter, 2, "Error: Ya existe un Cuenta con el Codigo '"+doc[2]+"'");
+        this.checkExist('accountCategory', doc[3], '_id', lines, counter, 3, "", "La Categoria '"+doc[3]+"' sera creada", "green", "yellow", true);
+        this.checkTrue(lines, counter, 4); //type
+        this.checkBoolean(doc[5], lines, counter, 5);
+        this.checkBoolean(doc[6], lines, counter, 6);
+        this.checkBoolean(doc[7], lines, counter, 7);
+        this.checkBoolean(doc[8], lines, counter, 8);
+        this.checkBoolean(doc[9], lines, counter, 9);
+        this.checkTrue(lines, counter, 10); //note
       }
     })
     })
+    this.validated = true;
   }
 
   checkDate(keyword, line, page, row, messageTrue="", messageFalse="Formato no reconocido, use el formato '31/12/2018'",){
@@ -353,8 +371,8 @@ export class ImporterPage implements OnInit {
   }
 
   checkBoolean(keyword, line, page, row, messageTrue="", messageFalse="Formato no reconocido, use '1' para Si y '0' para No", colorTrue='green', colorFalse='red'){
-    console.log("keyword", keyword);
-    if(keyword == '1' || keyword == '0' || keyword == ''){
+    // console.log("keyword", keyword);
+    if(keyword == '1' || keyword == '0' || keyword == 'TRUE' || keyword == 1 || keyword == 'FALSE' || keyword == 0){
       this.pageProperty[page][line][row] = colorTrue;
       if (messageTrue){
         this.pageError[page][line][row]['messages'].push(messageTrue);
@@ -446,8 +464,9 @@ export class ImporterPage implements OnInit {
     // this.csvData.forEach(doc=>{
     //   console.log("Doc", doc);
     // })f
-    this.validate()
+    this.loading = await this.loadingCtrl.create();
     await this.loading.present();
+    // this.validate();
     // console.log("this.createList", this.createList);
     // var uniq = this.createList.reduce(function(a,b){
     //   if (a.indexOf(b) < 0 ) a.push(b);
@@ -462,15 +481,21 @@ export class ImporterPage implements OnInit {
             "name": data.name,
           }))
         }
+        else if (data.docType == 'brand'){
+          promise_ids.push(this.pouchdbService.createDoc({
+            "name": data.name,
+            "docType": 'brand'
+          }))
+        }
       })
       console.log("before promise");
       Promise.all(promise_ids).then(categories=>{
         console.log("created categs", categories);
-        this.formatProducts(this.csvParsed).then((csv: any[])=>{
+        this.formatProducts(this.csvParsed).then(async (csv: any[])=>{
           let bigger_code:any = 0;
           let promise2_ids = [];
           let count = 1;
-          csv.forEach(async (item: any) => {
+          await this.formatService.asyncForEach(csv, async (item: any)=>{
             count += 1;
             console.log("-- createProduct", item);
             if (parseInt(item.code)>bigger_code){
@@ -482,9 +507,9 @@ export class ImporterPage implements OnInit {
             await this.stockMoveService.createInventoryAdjustment(item, item.stock);
           })
           // Promise.all(promise2_ids).then(async products=>{
-            this.pouchdbService.getDoc('config.profile').then(async (config: any)=>{
+            this.pouchdbService.getDoc('sequence.product').then(async (productSequence: any)=>{
               // console.log("config", bigger_code, config.product_sequence);
-              if (parseInt(config.product_sequence) < (parseInt(bigger_code) + 1)){
+              if (parseInt(productSequence.value) < (parseInt(bigger_code) + 1)){
 
                 // let code = data[docType+'_sequence'].toString();
                 //console.log("code", code);
@@ -496,14 +521,14 @@ export class ImporterPage implements OnInit {
                 let prefix = bigger_code.substr(0, string_end);
                 let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
                 let new_code = prefix+pad_number;
-                config.product_sequence = new_code;
+                productSequence.value = new_code;
                 // console.log("config2", new_code, config.product_sequence);
-                this.pouchdbService.updateDoc(config);
+                this.pouchdbService.updateDoc(productSequence);
               }
             // })
             // bigger_code
             this.loading.dismiss();
-            this.navCtrl.navigateBack('/tabs/product-list');
+            this.navCtrl.navigateBack('/product-list');
             const alert = await this.alertCtrl.create({
               header: 'Importación Exitosa!',
               message: 'Tus Productos han sido importados con exito!',
@@ -516,13 +541,23 @@ export class ImporterPage implements OnInit {
     } else if (this.docType == 'contact'){
       // this.loading.present();
       console.log("contact");
-      this.formatContacts(this.csvParsed).then((csv: any[])=>{
+      this.formatContacts(this.csvParsed).then(async (csv: any[])=>{
         let bigger_code:any = 0;
         let count = 1;
         let promise2_ids = [];
-        csv.forEach(item => {
+        await this.formatService.asyncForEach(csv, async (item: any)=>{
           count += 1;
           console.log("-- createContact", item);
+          if (item.document){
+            if (item.document[item.document.length-2]=='-'){
+              let data:any = await this.restProvider.getRucName(item.document);
+              if (data.name!='HttpErrorResponse'){
+                item.name_legal = data.name;
+                // contactList.push(contact);
+              }
+            }
+            // })
+          }
           if (parseInt(item.code)>bigger_code){
             bigger_code = item.code;
           }
@@ -548,25 +583,44 @@ export class ImporterPage implements OnInit {
           //     this.pouchdbService.updateDoc(config);
           //   }
           // })
+          this.pouchdbService.getDoc('sequence.contact').then(async (contactSequence: any)=>{
+            // console.log("config", bigger_code, config.product_sequence);
+            if (parseInt(contactSequence.value) < (parseInt(bigger_code) + 1)){
 
-          this.loading.dismiss();
-          this.navCtrl.navigateBack('/contact-list');
-          const alert = await this.alertCtrl.create({
-            header: 'Importación Exitosa!',
-            message: 'Tus Contatos han sido importados con exito!',
-            buttons: ['OK, Gracias']
-          });
-          alert.present();
+              // let code = data[docType+'_sequence'].toString();
+              //console.log("code", code);
+              bigger_code = bigger_code.toString();
+              let regex = /[0-9]+$/
+              let string_end = bigger_code.match(regex).index;
+              let number = bigger_code.match(regex)[0];
+              let next_number = parseFloat(number)+1;
+              let prefix = bigger_code.substr(0, string_end);
+              let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
+              let new_code = prefix+pad_number;
+              contactSequence.value = new_code;
+              // console.log("config2", new_code, config.product_sequence);
+              this.pouchdbService.updateDoc(contactSequence);
+            }
+
+            this.loading.dismiss();
+            this.navCtrl.navigateBack('/contact-list');
+            const alert = await this.alertCtrl.create({
+              header: 'Importación Exitosa!',
+              message: 'Tus Contatos han sido importados con exito!',
+              buttons: ['OK, Gracias']
+            });
+            alert.present();
+          })
         })
       })
     } else if (this.docType == 'cash-move'){
       // this.loading.present();
-      this.formatCashMoves(this.csvParsed).then((csv: any[])=>{
+      this.formatCashMoves(this.csvParsed).then(async (csv: any[])=>{
         console.log("csv", csv);
         let bigger_code:any = 0;
         let count = 1;
         let promise2_ids = [];
-        csv.forEach((item: any) => {
+        await this.formatService.asyncForEach(csv, async (item: any)=>{
           console.log("createCashMove -", item);
           count += 1;
           if (parseInt(item.code)>bigger_code){
@@ -607,12 +661,12 @@ export class ImporterPage implements OnInit {
         // console.log("count", count);
       })
     } else if (this.docType == 'sale'){
-      this.formatSales(this.csvParsed).then((csv: any[])=>{
+      this.formatSales(this.csvParsed).then(async (csv: any[])=>{
         let bigger_code:any = 0;
         let promise2_ids = [];
         console.log("csv", csv);
         let count = 1;
-        csv.forEach((item: any) => {
+        await this.formatService.asyncForEach(csv, async (item: any)=>{
           console.log("createSale -", JSON.stringify(item));
           count += 1;
           if (parseInt(item.code)>bigger_code){
@@ -657,9 +711,9 @@ export class ImporterPage implements OnInit {
       // this.loading.present();
       // console.log("read file", csvData);
       // this.parseCSVFile(this.csvData).then((csv: any[])=>{
-      this.formatSaleLines(this.csvParsed).then((csv: any[])=>{
+      this.formatSaleLines(this.csvParsed).then(async (csv: any[])=>{
         let promise2_ids = [];
-        Object.keys(csv).forEach(key => {
+        await this.formatService.asyncForEach(Object.keys(csv), async (key: any)=>{
           promise2_ids.push(this.saleService.getSale('sale.'+key).then(doc=>{
             console.log("key", key, "doc", csv[key]['items']);
             // if (doc){
@@ -686,6 +740,33 @@ export class ImporterPage implements OnInit {
           // this.events.publish('import-sale');
         })
       })
+    } else if (this.docType == 'account'){
+      // this.loading.present();
+      console.log("account");
+      this.formatAccounts(this.csvParsed).then(async (csv: any[])=>{
+        // let bigger_code:any = 0;
+        let count = 1;
+        let promise2_ids = [];
+        await this.formatService.asyncForEach(csv, async (item: any)=>{
+          count += 1;
+          console.log("-- createContact", item);
+          // if (parseInt(item.code)>bigger_code){
+          //   bigger_code = item.code;
+          // }
+          promise2_ids.push(this.pouchdbService.createDoc(item));
+
+        })
+        Promise.all(promise2_ids).then(async contacts=>{
+          this.loading.dismiss();
+          this.navCtrl.navigateBack('/account-list');
+          const alert = await this.alertCtrl.create({
+            header: 'Importación Exitosa!',
+            message: 'Tus Cuentas han sido importadas con exito!',
+            buttons: ['OK, Gracias']
+          });
+          alert.present();
+        })
+      })
     }
   }
 
@@ -699,6 +780,7 @@ export class ImporterPage implements OnInit {
         stock,
         tax,
         category_id,
+        brand_id,
         stock_min,
         type,
         note,
@@ -710,11 +792,18 @@ export class ImporterPage implements OnInit {
          var items = arr[j];
          docs.push(items);
          promise_ids.push(this.pouchdbService.searchDocField('category', items[6]));
+         promise_ids.push(this.pouchdbService.searchDocField('brand', items[7]));
        }
      }
      Promise.all(promise_ids).then(categories=>{
+       var doc_dict = {};
+       console.log("my cats", categories);
+       categories.forEach(row=>{
+         doc_dict[row[0].docType+':'+row[0].name] = row[0];
+       })
        docs.forEach((doc, index)=>{
          let value = categories[index];
+         console.log("categories[index]", categories);
          obj.push({
             code: doc[0],
             name: doc[1],
@@ -722,10 +811,13 @@ export class ImporterPage implements OnInit {
             cost: doc[3],
             stock: doc[4],
             tax: doc[5],
-            category_id: categories[index][0]._id,
-            stock_min: doc[7],
-            type: doc[8],
-            note: doc[9],
+            category_id: doc_dict['category:'+doc[6]]._id,
+            category_name: doc_dict['category:'+doc[6]].name,
+            brand_id: doc_dict['brand:'+doc[7]]._id,
+            brand_name: doc_dict['brand:'+doc[7]].name,
+            stock_min: doc[8],
+            type: doc[9],
+            note: doc[10],
          });
        })
        console.log("obj", obj);
@@ -770,13 +862,49 @@ export class ImporterPage implements OnInit {
    });
   }
 
+  formatAccounts(arr){
+    return new Promise((resolve, reject)=>{
+    let code,
+        name,
+        document,
+        phone,
+        address,
+        email,
+        customer,
+        supplier,
+        employee,
+        seller,
+        note,
+        obj = [];
+     for(var j = 0; j < arr.length; j++) {
+      if (arr[j].length==arr[0].length){
+        var items = arr[j];
+        obj.push({
+           _id: items[0],
+           name: items[1],
+           code: items[2],
+           category_id: items[3],
+           type: items[4],
+           cash_out: this.resolveBoolean(items[5]),
+           cash_in: this.resolveBoolean(items[6]),
+           transfer: this.resolveBoolean(items[7]),
+           payable: this.resolveBoolean(items[8]),
+           receivable: this.resolveBoolean(items[9]),
+           note: items[10],
+        });
+      }
+     }
+     resolve(obj);
+   });
+  }
+
   formatCashMoves(arr){
     return new Promise((resolve, reject)=>{
       let contact_id,
       amount,
       origin_id,
       date,
-      date_due,
+      dateDue,
       note,
       accountFrom_id,
       accountTo_id,
@@ -811,10 +939,12 @@ export class ImporterPage implements OnInit {
             amount_unInvoiced: parseFloat(doc[1].replace(".000", "000")),
             origin_id: doc[2],
             date: doc[3],
-            date_due: doc[4],
+            dateDue: doc[4],
             name: doc[2],
             accountFrom_id: contacts[counter+1][0]._id,
+            accountFrom_name: contacts[counter+1][0].name,
             accountTo_id: contacts[counter+2][0]._id,
+            accountTo_name: contacts[counter+2][0].name,
             note: doc[7],
           });
           counter += 3;
@@ -831,7 +961,7 @@ export class ImporterPage implements OnInit {
       amount,
       origin_id,
       date,
-      date_due,
+      dateDue,
       note,
       accountFrom_id,
       accountTo_id,
@@ -896,7 +1026,7 @@ export class ImporterPage implements OnInit {
       amount,
       origin_id,
       date,
-      date_due,
+      dateDue,
       note,
       accountFrom_id,
       accountTo_id,
@@ -960,10 +1090,22 @@ export class ImporterPage implements OnInit {
   }
 
   resolveBoolean(value){
-    if (1){
+    if (value == 1
+      || value == 'TRUE'
+      || value == '1'
+      || value == true
+    ){
       return true;
-    } else {
+    }  else if (
+      value == ''
+      || value == '0'
+      || value == 0
+      || value == 'FALSE'
+      || value == false
+    ){
       return false;
+    } else {
+      return true;
     }
   }
 
@@ -991,8 +1133,9 @@ export class ImporterPage implements OnInit {
   //   return index;
   // }
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log('ionViewDidLoad ImporterPage');
+    // this.loading.dismiss();
   }
 
   // chooseFile() {

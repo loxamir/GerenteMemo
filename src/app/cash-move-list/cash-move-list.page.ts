@@ -56,8 +56,9 @@ export class CashMoveListPage implements OnInit {
     this.pouchdbService.localHandleChangeData(list, change)
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
 
@@ -74,7 +75,7 @@ export class CashMoveListPage implements OnInit {
     ).then((cashMoveList) => {
       this.cashMoveList = cashMoveList;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

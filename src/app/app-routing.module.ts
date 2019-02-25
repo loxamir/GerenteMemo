@@ -71,6 +71,16 @@ const routes: Routes = [
   { path: 'person-tabs', loadChildren: './person-tabs/person-tabs.module#PersonTabsPageModule' },
   { path: 'report-tabs', loadChildren: './report-tabs/report-tabs.module#ReportTabsPageModule' },
   { path: 'importer', loadChildren: './importer/importer.module#ImporterPageModule' },
+  { path: 'close', loadChildren: './cash/close/close.module#ClosePageModule' },
+  { path: 'receivable-report', loadChildren: './receivable-report/receivable-report.module#ReceivableReportPageModule' },
+  { path: 'payable-report', loadChildren: './payable-report/payable-report.module#PayableReportPageModule' },
+  { path: 'production', loadChildren: './production/production.module#ProductionPageModule' },
+  { path: 'production-list', loadChildren: './production-list/production-list.module#ProductionListPageModule' },
+  { path: 'production-report', loadChildren: './production-report/production-report.module#ProductionReportPageModule' },
+  { path: 'service-report', loadChildren: './service-report/service-report.module#ServiceReportPageModule' },
+  { path: 'brand-list', loadChildren: './brand-list/brand-list.module#BrandListPageModule' },
+  { path: 'brand', loadChildren: './brand/brand.module#BrandPageModule' },
+  { path: 'stock-report', loadChildren: './stock-report/stock-report.module#StockReportPageModule' },
   // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 

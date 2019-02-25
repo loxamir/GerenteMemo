@@ -34,8 +34,8 @@ import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { SalePopover } from './sale.popover';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
-declare var cordova:any;
-import * as jsPDF from 'jspdf';
+// declare var cordova:any;
+// import * as jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
 
 
@@ -118,6 +118,11 @@ export class SalePage implements OnInit {
     avoidAlertMessage: boolean;
     select;
     languages: Array<LanguageModel>;
+    contact;
+    contact_name;
+    items;
+    origin_id;
+    return;
 
     constructor(
       public navCtrl: NavController,
@@ -150,7 +155,6 @@ export class SalePage implements OnInit {
       public socialSharing: SocialSharing,
       // public file: File,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
@@ -158,13 +162,19 @@ export class SalePage implements OnInit {
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       this.avoidAlertMessage = false;
+
+      this.contact = this.route.snapshot.paramMap.get('contact');
+      this.contact_name = this.route.snapshot.paramMap.get('contact_name');
+      this.items = this.route.snapshot.paramMap.get('items');
+      this.origin_id = this.route.snapshot.paramMap.get('origin_id');
+      this.return = this.route.snapshot.paramMap.get('return');
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       this.saleForm = this.formBuilder.group({
-        contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
-        contact_name: new FormControl(this.route.snapshot.paramMap.get('contact_name')||''),
+        contact: new FormControl(this.contact||{}, Validators.required),
+        contact_name: new FormControl(this.contact_name||''),
 
         // project: new FormControl(this.route.snapshot.paramMap.get('project||{}),
         // project_name: new FormControl(this.route.snapshot.paramMap.get('project_name||''),
@@ -172,13 +182,13 @@ export class SalePage implements OnInit {
         name: new FormControl(''),
         code: new FormControl(''),
         date: new FormControl(this.route.snapshot.paramMap.get('date')||this.today),
-        origin_id: new FormControl(this.route.snapshot.paramMap.get('origin_id')),
+        origin_id: new FormControl(this.origin_id),
         total: new FormControl(0),
         residual: new FormControl(0),
         note: new FormControl(''),
         state: new FormControl('QUOTATION'),
         // tab: new FormControl('products'),
-        items: new FormControl(this.route.snapshot.paramMap.get('items')||[], Validators.required),
+        items: new FormControl(this.items||[], Validators.required),
         payments: new FormControl([]),
         planned: new FormControl([]),
         paymentCondition: new FormControl({}),
@@ -191,15 +201,19 @@ export class SalePage implements OnInit {
         currency: new FormControl(this.route.snapshot.paramMap.get('currency')||{}),
         _id: new FormControl(''),
       });
-              //this.loading.present();
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if (this._id){
         this.saleService.getSale(this._id).then((data) => {
           //console.log("data", data);
           this.saleForm.patchValue(data);
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
+      }
+      if (this.return){
+        this.recomputeValues();
       }
     }
 
@@ -223,6 +237,32 @@ export class SalePage implements OnInit {
         });
         profileModal.present();
       });
+    }
+
+  async saleReturn(){
+      let formValues = Object.assign({}, this.saleForm.value);
+      let items = [];
+      formValues.items.forEach((item: any)=>{
+        items.push({
+          'product_name': item.product_name,
+          'product': item.product,
+          'quantity': -item.quantity,
+          'price': item.price,
+          'cost': item.cost,
+        });
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: SalePage,
+        componentProps: {
+          "return": true,
+          "select": true,
+          "contact": this.saleForm.value.contact,
+          "contact_name": this.saleForm.value.contact_name,
+          "items": items,
+          "origin_id": this.saleForm.value._id,
+        }
+      });
+      profileModal.present();
     }
 
     // async ionViewCanLeave() {
@@ -259,11 +299,14 @@ export class SalePage implements OnInit {
     //     this.navCtrl.navigateBack('/sale-list');
     // }
 
-    goNextStep() {
+    async goNextStep() {
+      if(this.return){
+        await this.buttonSave();
+      }
+      // if(!this.saleForm.value._id){
+      //   await this.buttonSave();
+      // }
       if (this.saleForm.value.state == 'QUOTATION'){
-        // if(!this.saleForm.value._id){
-        //   this.buttonSave();
-        // }
         this.confirmSale();
       } else if (this.saleForm.value.state == 'CONFIRMED'){
           this.beforeAddPayment();
@@ -301,19 +344,23 @@ export class SalePage implements OnInit {
 
 
     buttonSave() {
-      if (this._id){
-        this.saleService.updateSale(this.saleForm.value);
-        this.saleForm.markAsPristine();
-      } else {
-        this.saleService.createSale(this.saleForm.value).then(doc => {
-          this.saleForm.patchValue({
-            _id: doc['doc'].id,
-            code: doc['sale'].code,
-          });
-          this._id = doc['doc'].id;
+      return new Promise(resolve => {
+        if (this._id){
+          this.saleService.updateSale(this.saleForm.value);
           this.saleForm.markAsPristine();
-        });
-      }
+          resolve(true);
+        } else {
+          this.saleService.createSale(this.saleForm.value).then(doc => {
+            this.saleForm.patchValue({
+              _id: doc['doc'].id,
+              code: doc['sale'].code,
+            });
+            this._id = doc['doc'].id;
+            this.saleForm.markAsPristine();
+            resolve(true);
+          });
+        }
+      })
     }
 
     setLanguage(lang: LanguageModel){
@@ -332,6 +379,7 @@ export class SalePage implements OnInit {
         slidingItem.close();
         let index = this.saleForm.value.items.indexOf(item)
         this.saleForm.value.items.splice(index, 1);
+        this.saleForm.markAsDirty();
         this.recomputeValues();
       }
     }
@@ -383,9 +431,9 @@ export class SalePage implements OnInit {
     }
 
     async addItem(){
-      if(!this.saleForm.value._id){
-        this.buttonSave();
-      }
+      // if(!this.saleForm.value._id){
+      //   this.buttonSave();
+      // }
       let self = this;
       if (this.saleForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
@@ -589,7 +637,7 @@ export class SalePage implements OnInit {
       this.recomputeTotal();
       this.recomputeUnInvoiced();
       this.recomputeResidual();
-      if (this.saleForm.value.total > 0 && this.saleForm.value.residual == 0){
+      if (this.saleForm.value.total != 0 && this.saleForm.value.residual == 0){
         this.saleForm.patchValue({
           state: "PAID",
         });
@@ -665,7 +713,7 @@ export class SalePage implements OnInit {
               docDict[item.id] = item;
             })
 
-            this.saleForm.value.items.forEach((item) => {
+            this.saleForm.value.items.forEach(async (item) => {
               let product_id = item.product_id || item.product._id;
               let product_name = item.product_name || item.product.name;
               createList.push({
@@ -697,6 +745,17 @@ export class SalePage implements OnInit {
                 'accountTo_name': docDict['account.expense.soldGoodCost'].doc.name,
                 'docType': "cash-move",
               })
+              if (item.quantity < 0){
+                // let product = await this.productService.getProduct(product_id);
+                let old_stock = item.product.stock || 0;
+                let old_cost = item.product.cost || 0;
+                await this.productService.updateStockAndCost(
+                  product_id,
+                  Math.abs(item.quantity),
+                  item.cost,
+                  old_stock,
+                  old_cost);
+              }
             });
             this.saleForm.value.paymentCondition.items.forEach(item => {
               let dateDue = this.formatService.addDays(this.today, item.days);
@@ -730,7 +789,7 @@ export class SalePage implements OnInit {
               }
               createList.push(cashMoveTemplate);
             });
-
+            console.log("createList", createList);
             this.pouchdbService.createDocList(createList).then((created: any)=>{
               this.saleForm.patchValue({
                 state: 'CONFIRMED',
@@ -781,9 +840,11 @@ export class SalePage implements OnInit {
     }
 
     removeQuotes(){
-      this.saleForm.value.planned.forEach(planned => {
-        //console.log("removed planned", planned);
-        this.saleService.deleteSale(planned);
+      this.pouchdbService.getRelated(
+      "cash-move", "origin_id", this.saleForm.value._id).then((docs) => {
+        docs.forEach(doc=>{
+          this.pouchdbService.deleteDoc(doc);
+        })
       });
       this.saleForm.patchValue({
         'planned': [],
@@ -831,7 +892,7 @@ export class SalePage implements OnInit {
         });
         let plannedItems = [];
         this.saleForm.value.planned.forEach(planned => {
-          if (planned.amount_residual > 0){
+          if (planned.amount_residual && planned.amount_residual != 0){
             plannedItems.push(planned);
           }
         })
@@ -1228,7 +1289,7 @@ export class SalePage implements OnInit {
           price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
           subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
           let product_name = this.formatService.string_pad(32, item.product.name);
-          lines += code+quantity+price+subtotal+"\n"+product_name+"\n";
+          lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
         });
         let totalAmount = totalIva10 + totalIva5 + totalExentas;
         totalAmount = this.formatService.string_pad(16, totalAmount, "right");

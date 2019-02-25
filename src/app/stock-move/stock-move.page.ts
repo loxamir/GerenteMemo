@@ -52,7 +52,6 @@ export class StockMovePage implements OnInit {
     // public configService: ConfigService,
     public pouchdbService: PouchdbService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.translate.setDefaultLang('es');
@@ -62,7 +61,7 @@ export class StockMovePage implements OnInit {
     // this.default_name = this.route.snapshot.paramMap.get('default_name');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     var today = new Date().toISOString();
 
     setTimeout(() => {
@@ -95,10 +94,12 @@ export class StockMovePage implements OnInit {
       contact_id: new FormControl(this.route.snapshot.paramMap.get('contact_id')),
       _id: new FormControl(''),
     });
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     if (this._id){
       this.stockMoveService.getStockMove(this._id).then((data) => {
         this.stockMoveForm.patchValue(data);
-        //this.loading.dismiss();
+        this.loading.dismiss();
       });
     } else {
       this.stockMoveForm.markAsDirty();
@@ -128,7 +129,7 @@ export class StockMovePage implements OnInit {
         //
         // });
       }
-      //this.loading.dismiss();
+      this.loading.dismiss();
     }
   }
 

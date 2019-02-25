@@ -310,7 +310,7 @@ export class LoginPage implements OnInit {
     this.selected_user = true;
     this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
     // this.selectDatabase();
-
+    this.username = this.loginForm.value.user.toLowerCase();
     this.menuCtrl.enable(false);
     this.loading.dismiss();
 
@@ -322,7 +322,7 @@ export class LoginPage implements OnInit {
     let listOnline: any = await this.restProvider.getUserDbList(
       username, password);
     console.log("listOnline", listOnline);
-    if (!listOnline.error){
+    if (listOnline.ok != false){
       console.log("yes list");
       this.storage.set("dbList", listOnline);
       this.databaseList = listOnline;

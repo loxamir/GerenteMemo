@@ -28,6 +28,11 @@ export class AppComponent implements OnInit {
     //   icon: 'help-circle'
     // },
     {
+      title: 'Productos',
+      url: '/product-list',
+      icon: 'cube'
+    },
+    {
       title: 'Personas',
       url: '/contact-list',
       icon: 'contacts'

@@ -22,6 +22,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { InvoiceConfigPage } from '../invoice-config/invoice-config.page';
 import { UserPage } from '../user/user.page';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RestProvider } from "../services/rest/rest";
 
 @Component({
   selector: 'app-config',
@@ -53,9 +54,9 @@ export class ConfigPage implements OnInit {
     public storage: Storage,
     public alertCtrl: AlertController,
     // public camera: Camera,
+    public restProvider: RestProvider,
     public pouchdbService: PouchdbService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -63,7 +64,7 @@ export class ConfigPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.configForm = this.formBuilder.group({
       name: ['', Validators.required],
       image: [''],
@@ -99,10 +100,11 @@ export class ConfigPage implements OnInit {
       users: [],
       _id: [''],
     });
-    //this.loading.present();
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.configService.getConfig().then((data) => {
       this.configForm.patchValue(data);
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -472,4 +474,48 @@ export class ConfigPage implements OnInit {
     }
   }
 
+  // async setLegalName(){
+  //   let contacts:any = await this.pouchdbService.getDocType('contact');
+  //   let contactList = []
+  //   contacts.forEach((contact: any)=>{
+  //     if (contact.document){
+  //       this.restProvider.getRucName(contact.document).then((data: any)=>{
+  //         if (data.name!='HttpErrorResponse'){
+  //           contact.legal_name = data.name;
+  //           contactList.push(contact);
+  //         }
+  //       })
+  //     }
+  //   })
+  //   this.pouchdbService.updateDocList(contactList);
+  // }
+
+
+  async setLegalName(){
+    let contacts:any = await this.pouchdbService.getDocType('contact');
+    let contactList = []
+    const start = async () => {
+      await this.asyncForEach(contacts, async (contact: any)=>{
+        if (contact.document){
+          if (contact.document[contact.document.length-2]=='-'){
+            let data:any = await this.restProvider.getRucName(contact.document);
+            if (data.name!='HttpErrorResponse'){
+              contact.name_legal = data.name;
+              contactList.push(contact);
+            }
+          }
+          // })
+        }
+      })
+      console.log("contactList", contactList);
+      this.pouchdbService.updateDocList(contactList);
+    }
+    start();
+  }
+
+  async asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
 }

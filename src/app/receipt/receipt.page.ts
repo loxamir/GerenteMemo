@@ -86,8 +86,7 @@ export class ReceiptPage implements OnInit {
       public events:Events,
       // public modal: ModalController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
-      console.log("route", this.route);
+      // console.log("route", this.route);
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
@@ -104,13 +103,13 @@ export class ReceiptPage implements OnInit {
     //   console.log("after", this.route.snapshot.paramMap.get('items'));
     // }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       setTimeout(() => {
         if(this.receiptForm.value.state == "DRAFT"){
           this.amount_paid.setFocus();
         }
-      }, 200);
+      }, 500);
       this.receiptForm = this.formBuilder.group({
         contact: new FormControl(this.contact||{}, Validators.required),
         // account_id: new FormControl(this.route.snapshot.paramMap.get('account_id')||""),
@@ -126,6 +125,7 @@ export class ReceiptPage implements OnInit {
         note: new FormControl(''),
         state: new FormControl('DRAFT'),
         items: new FormControl(this.items||[], Validators.required),
+        items_details: new FormControl([]),
         origin_id: new FormControl(this.origin_id||''),
         payments: new FormControl([]),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids')||[]),
@@ -144,6 +144,8 @@ export class ReceiptPage implements OnInit {
         exchange_rate: new FormControl(this.exchange_rate||'1'),
         _id: new FormControl(''),
       });
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.recomputeValues();
         this.configService.getConfig().then(async config => {
           this.receiptForm.patchValue({
@@ -156,21 +158,20 @@ export class ReceiptPage implements OnInit {
             this.receiptService.getReceipt(this._id).then((data) => {
               //console.log("data", data);
               this.receiptForm.patchValue(data);
-              //this.loading.dismiss();
+              this.loading.dismiss();
             });
           } else {
-            //this.loading.dismiss();
+            this.loading.dismiss();
           }
         });
-    // }
-    //
-    // ionViewDidLoad() {
-      //this.loading.present();
-
     }
 
     goNextStep() {
       if (this.receiptForm.value.amount_paid==null){
+        this.amount_paid.setFocus();
+      } else if (this.receiptForm.value.amount_paid.toString() == "0" && this.receiptForm.value.total.toString() == "0"){
+        this.confirmReceipt();
+      } else if (!this.receiptForm.value.amount_paid){
         this.amount_paid.setFocus();
       }
       else if (this.receiptForm.value.state == 'DRAFT'){
@@ -196,7 +197,7 @@ export class ReceiptPage implements OnInit {
           });
           this.avoidAlertMessage = false;
           this.buttonSave();
-          console.log("toInvoice", data);
+          // console.log("toInvoice", data);
           let toInvoice = data.total;
           this.receiptForm.value.items.forEach(cashMove=>{
             // let cashMove = this.receiptForm.value.items[0];
@@ -225,7 +226,7 @@ export class ReceiptPage implements OnInit {
                   'state': data.state,
                   '_id': data._id,
                 });
-                console.log("SALE NEW UNINVOICE", cashMove.amount_unInvoiced);
+                // console.log("SALE NEW UNINVOICE", cashMove.amount_unInvoiced);
                 this.pouchdbService.updateDoc(sale);
               });
             }
@@ -240,7 +241,7 @@ export class ReceiptPage implements OnInit {
                   'state': data.state,
                   '_id': data._id,
                 });
-                console.log("SALE NEW UNINVOICE", cashMove.amount_unInvoiced);
+                // console.log("SALE NEW UNINVOICE", cashMove.amount_unInvoiced);
                 this.pouchdbService.updateDoc(purchase);
               });
             }
@@ -255,7 +256,7 @@ export class ReceiptPage implements OnInit {
                   'state': data.state,
                   '_id': data._id,
                 });
-                console.log("SALE NEW UNINVOICE", cashMove.amount_unInvoiced);
+                // console.log("SALE NEW UNINVOICE", cashMove.amount_unInvoiced);
                 this.pouchdbService.updateDoc(service);
               });
             }
@@ -431,7 +432,7 @@ export class ReceiptPage implements OnInit {
     recomputeTotal(){
       if (this.receiptForm.value.state=='DRAFT'){
         let total = 0;
-        console.log("items", this.receiptForm.value.items);
+        // console.log("items", this.receiptForm.value.items);
         let amount_unInvoiced = 0;
         this.receiptForm.value.items.forEach((item: any) => {
           if (item.currency_amount && this.receiptForm.value.cash_paid.currency){
@@ -733,26 +734,44 @@ export class ReceiptPage implements OnInit {
       prompt.present();
     }
 
-    afterConfirm(){
+  afterConfirm(){
+    let details = {};
+    this.receiptForm.value.items.forEach(variable => {
+      details[variable._id] = {
+        _id: variable._id,
+        name: variable.name,
+        date: variable.date,
+        amount_dued: variable.amount_residual,
+        amount_paid: 0,
+      }
+    });
+    // console.log("details", details);
     this.receiptForm.value.payments.push({
       'amount': this.receiptForm.value.amount_paid-this.receiptForm.value.change,
       'date': this.today,
       'cash': this.receiptForm.value.cash_paid,
       'state': 'done',
+      // 'items_details': details,
     });
     this.receiptForm.patchValue({
       "change": 0,
       "paid": this.receiptForm.value.paid-this.receiptForm.value.change,
     });
     let promise_ids = [];
+    let credit = 0;
+    this.receiptForm.value.items.forEach(ite=>{
+      if (ite.amount_residual<0){
+        credit += Math.abs(ite.amount_residual)
+      }
+    })
 
-    let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change;
+    let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change + credit;
     this.receiptForm.value.payments.forEach((item) => {
       let payments = [];
       let toCreateCashMoves = {};
       let paymentAccount = {};
       this.receiptForm.value.items.forEach(ite=>{
-        console.log("ite", ite);
+        // console.log("ite", ite);
         let item_paid = 0;
         let item_residual = 0;
         if (amount_paid > ite.amount_residual){
@@ -764,6 +783,7 @@ export class ReceiptPage implements OnInit {
           item_residual = ite.amount_residual - amount_paid;
           amount_paid = 0;
         }
+        details[ite._id]['amount_paid'] += item_paid;
         payments.push({"_id": ite._id, "amount": item_paid});
         if (paymentAccount.hasOwnProperty(ite.accountTo_id)) {
           paymentAccount[ite.accountTo_id]['payments'].push({
@@ -829,15 +849,21 @@ export class ReceiptPage implements OnInit {
         });
       }
     });
+    let details2 = [];
+    Object.keys(details).forEach((detail: any) =>{
+      details2.push(details[detail]);
+    })
+    // console.log("details2", details2);
     this.receiptForm.patchValue({
-      state: 'CONFIRMED',
+      'state': 'CONFIRMED',
+      'items_details': details2,
     });
     Promise.all(promise_ids).then((promise_data) => {
-      console.log("promise_data",promise_data);
-      let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change;
+      // console.log("promise_data",promise_data);
+      let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change + credit;
       // let amount_invoiced = amount_paid;
       let promise_ids2 = [];
-      this.receiptForm.value.items.forEach((item1, index) => {
+      this.receiptForm.value.items.forEach(async (item1, index) => {
         let item_paid = 0;
         let item_residual = 0;
         if (amount_paid > item1.amount_residual){
@@ -855,14 +881,14 @@ export class ReceiptPage implements OnInit {
           "amount": item_paid
         });
         promise_ids2.push(this.pouchdbService.updateDoc(item1));
-        console.log("item_residual1", item1.origin_id, item_residual);
-        console.log("ORIGIN", item1.origin_id.split('.')[0]);
+        // console.log("item_residual1", item1.origin_id, item_residual);
+        // console.log("ORIGIN", item1.origin_id.split('.')[0]);
         if (item1.origin_id.split('.')[0] == 'sale'){
-          console.log("findSale");
-          this.pouchdbService.getDoc(item1.origin_id).then((sale: any)=>{
-            console.log("sALE", JSON.stringify(sale))
+          // console.log("findSale");
+          let sale:any = await this.pouchdbService.getDoc(item1.origin_id);
+            // console.log("sALE", JSON.stringify(sale))
             sale.residual = item1.amount_residual;
-            console.log("item_residual2", item_residual);
+            // console.log("item_residual2", item_residual);
             sale.payments.push({
               "paid": item_paid,
               "date": this.receiptForm.value.date,
@@ -870,18 +896,16 @@ export class ReceiptPage implements OnInit {
               "_id": this.receiptForm.value._id,
             });
             if (item_residual == 0){
-              sale.state = "PAID";
+              // console.log("is Paid", sale._id);
+              sale['state'] = "PAID";
             }
-            console.log("SALE RES", JSON.stringify(sale));
-            this.pouchdbService.updateDoc(sale).then(res=>{
-              console.log("RES", JSON.stringify(res));
-            })
-          })
+            // console.log("SALE RES", JSON.stringify(sale));
+            await this.pouchdbService.updateDoc(sale);
         }
         else if (item1.origin_id.split('.')[0] == 'purchase'){
           this.pouchdbService.getDoc(item1.origin_id).then((purchase: any)=>{
             purchase.residual = item1.amount_residual;
-            console.log("item_residual2", item_residual);
+            // console.log("item_residual2", item_residual);
             purchase.payments.push({
               "paid": item_paid,
               "date": this.receiptForm.value.date,
@@ -1032,6 +1056,50 @@ export class ReceiptPage implements OnInit {
              //console.log("res", res);
         });
       });
+    }
+
+
+    async printMatrix(){
+      let date = this.receiptForm.value.date.split('T')[0];
+      let content = "Recibo";
+      content += "Fecha: "+date+"\n";
+      content += "Monto Total: $ "+this.receiptForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+      content += "Monto Recebido: $ "+this.receiptForm.value.payments[0].amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+      content += "Monto Vuelto: $ "+this.receiptForm.value.change.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+      // content += "---------| Movimentos |---------\n";
+      content += this.formatService.string_pad(44, "| Movimentos |", 'center', '-')+"\n";
+      content += this.formatService.string_pad(20, "Documento")+this.formatService.string_pad(12,"Pendiente", 'right')+this.formatService.string_pad(12,"Recibido", 'right')+"\n";
+      content += this.formatService.string_pad(44, "", 'center', '-')+"\n";
+      // this.receiptForm.value.items_details.forEach(async (move: any)=>{
+      let new_items_details = [];
+      await this.formatService.asyncForEach(this.receiptForm.value.items_details, async (move: any)=>{
+        let moveOriginal = await this.pouchdbService.getDoc(move._id);
+        if (moveOriginal['invoices'].length > 0){
+          let invoice: any = await this.pouchdbService.getDoc(moveOriginal['invoices'][0]._id);
+          move.name = invoice.code;
+          new_items_details.push(move);
+        }
+        content += this.formatService.string_pad(20, move.name)+
+        this.formatService.string_pad(
+          12,
+          move.amount_dued.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
+          "."), 'right'
+        )+
+        this.formatService.string_pad(
+          12,
+          move.amount_paid.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+          'right'
+        )+
+        "\n";
+      })
+      if (new_items_details){
+        this.receiptForm.patchValue({
+          items_details: new_items_details,
+        })
+        this.justSave();
+      }
+      let filename = "Receipt_"+this.receiptForm.value.code+".prt";
+      this.formatService.printMatrix(content, filename);
     }
 
 
