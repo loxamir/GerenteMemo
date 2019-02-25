@@ -45,33 +45,90 @@
 
           <h2 class="section-title">{{'Fecha' | translate}}</h2>
           <ion-row>
+            <ion-item class="field-100">
+              <ion-label position="floating">{{'Formato' | translate}}</ion-label>
+              <ion-select
+              formControlName="invoiceDateType"
+              cancelText="{{ 'CANCEL' | translate }}"
+              okText="{{ 'OK' | translate }}"
+              interface="popover">
+                <ion-select-option value="normal">31/12/1999</ion-select-option>
+                <ion-select-option value="separate">31 de Diciembre de 1999</ion-select-option>
+              </ion-select>
+            </ion-item>
             <ion-item class="field-50">
               <ion-label position="floating">{{'Topo' | translate}}</ion-label>
               <ion-input type="number" formControlName="invoiceDate_top"></ion-input>
             </ion-item>
             <ion-item class="field-50">
-              <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+              <ion-label position="floating"
+              *ngIf="invoiceForm.value.invoiceDateType == 'normal'"
+              >{{'Izquierda' | translate}}</ion-label>
+              <ion-label position="floating"
+              *ngIf="invoiceForm.value.invoiceDateType == 'separate'"
+              >{{'Izquierda Dia' | translate}}</ion-label>
               <ion-input type="number" formControlName="invoiceDate_left"></ion-input>
             </ion-item>
-</ion-row>
-
-            <h2 class="section-title">{{'Condicion de Pago' | translate}}</h2>
-
-              <ion-row><ion-item class="field-33">
-                <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                <ion-input type="number" formControlName="invoicePayment_top"></ion-input>
-              </ion-item>
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                <ion-input type="number" formControlName="invoicePayment_left"></ion-input>
-              </ion-item>
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                <ion-input type="number" formControlName="invoicePayment_width"></ion-input>
-              </ion-item>
-</ion-row>
-              <h2 class="section-title">{{'Documento del Cliente' | translate}}</h2>
-<ion-row>
+            <ion-item class="field-50"
+            *ngIf="invoiceForm.value.invoiceDateType == 'separate'">
+              <ion-label position="floating">{{'Izquierda Mes' | translate}}</ion-label>
+              <ion-input type="number" formControlName="invoiceMonth_left"></ion-input>
+            </ion-item>
+            <ion-item class="field-50"
+            *ngIf="invoiceForm.value.invoiceDateType == 'separate'">
+              <ion-label position="floating">{{'Izquierda Año' | translate}}</ion-label>
+              <ion-input type="number" formControlName="invoiceYear_left"></ion-input>
+            </ion-item>
+          </ion-row>
+          <h2 class="section-title">{{'Condicion de Pago' | translate}}</h2>
+          <ion-row>
+            <ion-item class="field-100">
+              <ion-label position="floating">{{'Formato' | translate}}</ion-label>
+              <ion-select
+              formControlName="invoicePaymentType"
+              cancelText="{{ 'CANCEL' | translate }}"
+              okText="{{ 'OK' | translate }}"
+              interface="popover">
+                <ion-select-option value="XX">Marcar con XX</ion-select-option>
+                <ion-select-option value="name">Escribir Credito o Contado</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item class="field-50">
+              <ion-label position="floating"
+              *ngIf="invoiceForm.value.invoicePaymentType == 'name'"
+              >{{'Topo' | translate}}</ion-label>
+              <ion-label position="floating"
+              *ngIf="invoiceForm.value.invoicePaymentType == 'XX'"
+              >{{'Topo Contado' | translate}}</ion-label>
+              <ion-input type="number" formControlName="invoicePayment_top"></ion-input>
+            </ion-item>
+            <ion-item class="field-50">
+              <ion-label position="floating"
+              *ngIf="invoiceForm.value.invoicePaymentType == 'name'"
+              >{{'Izquierda' | translate}}</ion-label>
+              <ion-label position="floating"
+              *ngIf="invoiceForm.value.invoicePaymentType == 'XX'"
+              >{{'Izquierda Contado' | translate}}</ion-label>
+              <ion-input type="number" formControlName="invoicePayment_left"></ion-input>
+            </ion-item>
+            <ion-item class="field-50"
+            *ngIf="invoiceForm.value.invoicePaymentType == 'XX'">
+              <ion-label position="floating">{{'Credito Topo' | translate}}</ion-label>
+              <ion-input type="number" formControlName="invoicePaymentCredit_top"></ion-input>
+            </ion-item>
+            <ion-item class="field-50"
+            *ngIf="invoiceForm.value.invoicePaymentType == 'XX'">
+              <ion-label position="floating">{{'Credito Izquierda' | translate}}</ion-label>
+              <ion-input type="number" formControlName="invoicePaymentCredit_left"></ion-input>
+            </ion-item>
+            <ion-item class="field-100"
+              *ngIf="invoiceForm.value.invoicePaymentType == 'name'">
+              <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+              <ion-input type="number" formControlName="invoicePayment_width"></ion-input>
+            </ion-item>
+            </ion-row>
+            <h2 class="section-title">{{'Documento del Cliente' | translate}}</h2>
+            <ion-row>
                 <ion-item class="field-33">
                   <ion-label position="floating">{{'Topo' | translate}}</ion-label>
                   <ion-input type="number" formControlName="contactDocument_top"></ion-input>

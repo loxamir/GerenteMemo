@@ -353,8 +353,8 @@ export class ConfigPage implements OnInit {
     // this.pouchdbService.duplicateDb();
   }
 
-  configInvoicePrint() {
-    return new Promise(async resolve => {
+  async configInvoicePrint() {
+    // return new Promise(async resolve => {
       console.log("invoice", {"teste": "ok"});
       let profileModal = await this.modalCtrl.create({
         component: InvoiceConfigPage,
@@ -365,7 +365,9 @@ export class ConfigPage implements OnInit {
       // await profileModal.onDidDismiss(data => {
         if (data) {
           Object.keys(data).forEach(key=>{
-            data[key] = parseFloat(data[key]);
+            if (key != 'invoiceDateType' && key != 'invoicePaymentType'){
+              data[key] = parseFloat(data[key]);
+            }
           })
           this.configForm.patchValue({
             invoicePrint: data,
@@ -374,7 +376,7 @@ export class ConfigPage implements OnInit {
         }
       // });
 
-    });
+    // });
   }
 
   addUser() {

@@ -316,7 +316,7 @@ export class FormatService {
   }
 
   printInvoice(order, dotmatrix_model, layout = null) {
-    var prefix = "factura_";
+    var prefix = "Factura_";
     var extension = ".prt";
     var partner_name = order.contact_name;
     var partner = order.contact;
@@ -356,24 +356,81 @@ export class FormatService {
       page_printed[marginTop][x + b] = dataModel.toString()[x];
     }
     //put date
-    marginTop = layout.invoiceDate_top / 4.4;
-    marginLeft = layout.invoiceDate_left / 1.35;
-    marginTop = parseInt(marginTop);
-    marginLeft = parseInt(marginLeft);
-    dataModel = (new Date(order.date)).toLocaleDateString('es-PY');
-    for (var x = 0; x < dataModel.toString().length; x++) {
-      let b = marginLeft;
-      page_printed[marginTop][x + b] = dataModel.toString()[x];
+    if (layout.invoiceDateType == 'normal'){
+      marginTop = layout.invoiceDate_top / 4.4;
+      marginLeft = layout.invoiceDate_left / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      dataModel = (new Date(order.date)).toLocaleDateString('es-PY');
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        let b = marginLeft;
+        page_printed[marginTop][x + b] = dataModel.toString()[x];
+      }
+    } else {
+      //Put Day
+      marginTop = layout.invoiceDate_top / 4.4;
+      marginLeft = layout.invoiceDate_left / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      dataModel = (new Date(order.date)).toLocaleDateString('es-PY').split('/')[0];
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        let b = marginLeft;
+        page_printed[marginTop][x + b] = dataModel.toString()[x];
+      }
+
+      //Put Month
+      // marginTop = layout.invoiceMonth_top / 4.4;
+      marginLeft = layout.invoiceMonth_left / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      dataModel = this.getMonth((new Date(order.date)).toLocaleDateString('es-PY').split('/')[1]);
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        let b = marginLeft;
+        page_printed[marginTop][x + b] = dataModel.toString()[x];
+      }
+
+      //Put Year
+      // marginTop = layout.invoiceYear_top / 4.4;
+      marginLeft = layout.invoiceYear_left / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      dataModel = (new Date(order.date)).toLocaleDateString('es-PY').split('/')[2];
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        let b = marginLeft;
+        page_printed[marginTop][x + b] = dataModel.toString()[x];
+      }
     }
     //put payment
-    marginTop = layout.invoicePayment_top / 4.4;
-    marginLeft = layout.invoicePayment_left / 1.35;
-    marginTop = parseInt(marginTop);
-    marginLeft = parseInt(marginLeft);
-    dataModel = order.paymentCondition;
-    for (var x = 0; x < dataModel.toString().length; x++) {
-      let b = marginLeft;
-      page_printed[marginTop][x + b] = dataModel.toString()[x];
+    if (layout.invoicePaymentType == 'name'){
+      marginTop = layout.invoicePayment_top / 4.4;
+      marginLeft = layout.invoicePayment_left / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      dataModel = order.paymentCondition;
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        let b = marginLeft;
+        page_printed[marginTop][x + b] = dataModel.toString()[x];
+      }
+    } else if (order.paymentCondition._id == 'payment-condition.cash') {
+      marginTop = layout.invoicePayment_top / 4.4;
+      marginLeft = layout.invoicePayment_left / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      dataModel = "XX";
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        let b = marginLeft;
+        page_printed[marginTop][x + b] = dataModel.toString()[x];
+      }
+    } else {
+      marginTop = layout.invoicePaymentCredit_top / 4.4;
+      marginLeft = layout.invoicePaymentCredit_left / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      dataModel = "XX";
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        let b = marginLeft;
+        page_printed[marginTop][x + b] = dataModel.toString()[x];
+      }
     }
     //put client
     marginTop = layout.contactName_top / 4.4;
@@ -585,7 +642,7 @@ export class FormatService {
       page_printed[marginTop][x + b] = dataModel.toString()[x];
     }
 
-    let invoice = "";
+    let invoice = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a";
     for (var y = 0; y < 43 + layout.lines_limit; y++) {
       for (var x = 0; x < 160; x++) {
         invoice += page_printed[y][x];
