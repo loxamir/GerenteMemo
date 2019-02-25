@@ -176,50 +176,59 @@
 
 
 
-                    <h2 class="section-title">{{'Lineas del a Factura' | translate}}</h2>
+                    <h2 class="section-title">{{'Lineas de la Factura' | translate}}</h2>
 <ion-row>
-                    <ion-item class="field-33">
-                      <ion-label position="floating">{{'Alto del bloque de Lineas(mm)' | translate}}</ion-label>
+                  <ion-item class="field-50">
+                    <ion-label position="floating">{{'Cantidad' | translate}}</ion-label>
+                    <ion-input type="number" formControlName="lines_limit"></ion-input>
+                  </ion-item>
+                    <ion-item class="field-50">
+                      <ion-label position="floating">{{'Alto' | translate}}</ion-label>
                       <ion-input type="number" formControlName="lines_height"></ion-input>
                     </ion-item>
-                    <ion-item class="field-33">
-                      <ion-label position="floating">{{'Ancho del bloque de Lineas(mm)' | translate}}</ion-label>
+                    <ion-item class="field-50">
+                      <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
                       <ion-input type="number" formControlName="lines_width"></ion-input>
                     </ion-item>
 
-                    <ion-item class="field-33">
+                    <ion-item class="field-50">
                       <ion-label position="floating">{{'Topo' | translate}}</ion-label>
                       <ion-input type="number" formControlName="lines_top"></ion-input>
                     </ion-item>
-</ion-row>
-<ion-row>
-                      <ion-item class="field-33">
-                        <ion-label position="floating">{{'Ancho de la Cantidad(mm)' | translate}}</ion-label>
+                    </ion-row>
+                    <h2 class="section-title">{{'Anchos de campos en la Linea' | translate}}</h2>
+                    <ion-row>
+                      <ion-item class="field-50">
+                        <ion-label position="floating">{{'Código' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="linesCode_width"></ion-input>
+                      </ion-item>
+                      <ion-item class="field-50">
+                        <ion-label position="floating">{{'Cantidad' | translate}}</ion-label>
                         <ion-input type="number" formControlName="linesQuantity_width"></ion-input>
                       </ion-item>
 
-                      <ion-item class="field-33">
-                        <ion-label position="floating">{{'Ancho de Nombre del Producto(mm)' | translate}}</ion-label>
+                      <ion-item class="field-50">
+                        <ion-label position="floating">{{'Descripción' | translate}}</ion-label>
                         <ion-input type="number" formControlName="linesProductName_width"></ion-input>
                       </ion-item>
 
-                      <ion-item class="field-33">
-                        <ion-label position="floating">{{'Ancho del Precio(mm)' | translate}}</ion-label>
+                      <ion-item class="field-50">
+                        <ion-label position="floating">{{'Precio' | translate}}</ion-label>
                         <ion-input type="number" formControlName="linesPrice_width"></ion-input>
                       </ion-item>
 
                       <ion-item class="field-33">
-                        <ion-label position="floating">{{'Ancho de Exentas(mm)' | translate}}</ion-label>
+                        <ion-label position="floating">{{'Exentas' | translate}}</ion-label>
                         <ion-input type="number" formControlName="linesTax0_width"></ion-input>
                       </ion-item>
 
                       <ion-item class="field-33">
-                        <ion-label position="floating">{{'Ancho de IVA 5%(mm)' | translate}}</ion-label>
+                        <ion-label position="floating">{{'IVA 5%' | translate}}</ion-label>
                         <ion-input type="number" formControlName="linesTax5_width"></ion-input>
                       </ion-item>
 
                       <ion-item class="field-33">
-                        <ion-label position="floating">{{'Ancho de IVA 10%(mm)' | translate}}</ion-label>
+                        <ion-label position="floating">{{'IVA 10%' | translate}}</ion-label>
                         <ion-input type="number" formControlName="linesTax10_width"></ion-input>
                       </ion-item>
 
@@ -359,35 +368,31 @@
 
             <h2 class="section-title">{{'Configuraciones' | translate}}</h2>
 <ion-row>
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Limite de Lineas(mm)' | translate}}</ion-label>
-                <ion-input type="number" formControlName="lines_limit"></ion-input>
-              </ion-item>
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Cantidad de Vias(mm)' | translate}}</ion-label>
+              <ion-item class="field-50">
+                <ion-label position="floating">{{'Cantidad de Vias' | translate}}</ion-label>
                 <ion-input type="number" formControlName="copy_count"></ion-input>
               </ion-item>
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Espacio entre Vias(mm)' | translate}}</ion-label>
+              <ion-item class="field-50">
+                <ion-label position="floating">{{'Alto de la Factura' | translate}}</ion-label>
+                <ion-input type="number" formControlName="invoice_height"></ion-input>
+              </ion-item>
+              <ion-item class="field-100">
+                <ion-label position="floating">{{'Espacio entre Vias' | translate}}</ion-label>
                 <ion-input type="number" formControlName="copy_height"></ion-input>
               </ion-item>
 
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Alto de una Factura(mm)' | translate}}</ion-label>
-                <ion-input type="number" formControlName="invoice_height"></ion-input>
-              </ion-item>
 
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Margin Superior(mm)' | translate}}</ion-label>
+              <ion-item class="field-50">
+                <ion-label position="floating">{{'Margin Superior' | translate}}</ion-label>
                 <ion-input type="number" formControlName="marginTop_config"></ion-input>
               </ion-item>
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Margin Izquierda(mm)' | translate}}</ion-label>
+              <ion-item class="field-50">
+                <ion-label position="floating">{{'Margin Izquierda' | translate}}</ion-label>
                 <ion-input type="number" formControlName="marginLeft_config"></ion-input>
               </ion-item>
 
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Factor de Correccion de la Impressora(mm)' | translate}}</ion-label>
+              <ion-item class="field-100">
+                <ion-label position="floating">{{'Factor de Correccion de la Impressora' | translate}}</ion-label>
                 <ion-input type="number" formControlName="printerFactor_config"></ion-input>
               </ion-item>
 
@@ -401,6 +406,13 @@
     (click)="buttonSave()">
     {{ 'SAVE' | translate }}
   </ion-button> -->
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+    <ion-button (click)="printTest()"  class="next-button">
+      <ion-icon name="print"> </ion-icon>
+      Imprimir
+    </ion-button>
+  </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger">

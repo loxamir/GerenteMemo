@@ -315,7 +315,7 @@ export class FormatService {
     return string;
   }
 
-  printInvoice(order, dotmatrix_model, layout = null) {
+  printInvoice(order, layout = null) {
     var prefix = "Factura_";
     var extension = ".prt";
     var partner_name = order.contact_name;
@@ -411,7 +411,7 @@ export class FormatService {
         let b = marginLeft;
         page_printed[marginTop][x + b] = dataModel.toString()[x];
       }
-    } else if (order.paymentCondition._id == 'payment-condition.cash') {
+    } else if (order.paymentCondition == 'Contado') {
       marginTop = layout.invoicePayment_top / 4.4;
       marginLeft = layout.invoicePayment_left / 1.35;
       marginTop = parseInt(marginTop);
@@ -486,28 +486,37 @@ export class FormatService {
       let line_amount_10 = 0;
 
       //IVA Exento
-      if (line.product.tax == 'exenta') {
+      if (line.product.tax == 'iva0') {
         line_amount_00 = line.quantity * line.price;
-        subtotal_00 = subtotal_00 + line.subtotal;
+        subtotal_00 += line_amount_00;
       }
       //IVA 5%
       if (line.product.tax == 'iva5') {
         line_amount_05 = line.quantity * line.price;
-        subtotal_05 = subtotal_05 + line.quantity * line.price;
-        iva_05 = iva_05 + line.quantity * line.price / 21;
+        subtotal_05 += line_amount_05;
+        iva_05 += line_amount_05 / 21;
       }
       //IVA 10%
       if (line.product.tax == 'iva10') {
         line_amount_10 = line.quantity * line.price;
-        subtotal_10 = subtotal_10 + line.quantity * line.price;
-        iva_10 = iva_10 + line.quantity * line.price / 11;
+        subtotal_10 += line_amount_10;
+        iva_10 = iva_10 + line_amount_10 / 11;
       }
 
-      //put phone
+      //put code
+      let codeWidth: any = layout.linesCode_width / 1.35;
+      codeWidth = parseInt(codeWidth);
+      marginLeft = 0;
+      dataModel = this.string_pad(codeWidth, line.product.code, 'center');
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        page_printed[linesMarginTop + index][x + marginLeft] = dataModel.toString()[x];
+      }
+      marginLeft += parseInt(codeWidth);
+
       // marginTop = layout.contactPhone_top/4.4;
       let quantityWidth: any = layout.linesQuantity_width / 1.35;
       quantityWidth = parseInt(quantityWidth);
-      marginLeft = 0;
+      // marginLeft = 0;
       dataModel = this.string_pad(quantityWidth, line.quantity.replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
       for (var x = 0; x < dataModel.toString().length; x++) {
         page_printed[linesMarginTop + index][x + marginLeft] = dataModel.toString()[x];
@@ -614,7 +623,7 @@ export class FormatService {
     marginLeft = layout.totalTax5_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = parseInt(iva_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    dataModel = iva_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -624,7 +633,7 @@ export class FormatService {
     marginLeft = layout.totalTax10_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = parseInt(iva_10.toString()).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = parseInt(iva_10.toString()).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -694,7 +703,7 @@ export class FormatService {
       let line_amount_10 = 0;
 
       //IVA Exento
-      if (line.product.tax == 'exenta') {
+      if (line.product.tax == 'iva0') {
         line_amount_00 = line.quantity * line.price;
         subtotal_00 = subtotal_00 + line.subtotal;
       }

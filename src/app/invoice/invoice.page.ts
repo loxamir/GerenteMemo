@@ -1081,15 +1081,15 @@ export class InvoicePage implements OnInit {
             let quantity = item.quantity;
             let productName = item.description || item.product.name;
             let price = item.price;
-            let exenta = 0;
+            let iva0 = 0;
             let iva5 = 0;
             let iva10 = 0;
             if (item.product.tax == "iva10"){
               iva10 = item.quantity*item.price;
               totalIva10 += iva10;
-            } else if (item.product.tax == "exenta"){
-              exenta = item.quantity*item.price;
-              totalExentas += exenta;
+            } else if (item.product.tax == "iva0"){
+              iva0 = item.quantity*item.price;
+              totalExentas += iva0;
             } else if (item.product.tax == "iva5"){
               iva5 = item.quantity*item.price;
               totalIva5 += iva5;
@@ -1104,7 +1104,7 @@ export class InvoicePage implements OnInit {
                 `+price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
               </div>
               <div class="lines-tax0">
-                `+exenta.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+                `+iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
               </div>
               <div class="lines-tax5">
                 `+iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
