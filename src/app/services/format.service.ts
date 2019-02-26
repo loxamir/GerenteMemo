@@ -517,7 +517,7 @@ export class FormatService {
       let quantityWidth: any = layout.linesQuantity_width / 1.35;
       quantityWidth = parseInt(quantityWidth);
       // marginLeft = 0;
-      dataModel = this.string_pad(quantityWidth, line.quantity.replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
+      dataModel = this.string_pad(quantityWidth, line.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
       for (var x = 0; x < dataModel.toString().length; x++) {
         page_printed[linesMarginTop + index][x + marginLeft] = dataModel.toString()[x];
       }
