@@ -406,23 +406,26 @@ export class PurchasePage implements OnInit {
 
     buttonSave() {
       console.log("buttonSave");
-      if (this._id){
-        this.updatePurchase(this.purchaseForm.value);
-        // this.events.publish('open-purchase', this.purchaseForm.value);
-        this.purchaseForm.markAsPristine();
-      } else {
-        this.createPurchase(this.purchaseForm.value).then(doc => {
-          console.log("docss", doc);
-          this.purchaseForm.patchValue({
-            _id: doc['doc'].id,
-            code: doc['purchase'].code,
-          });
-          this._id = doc['doc'].id;
-          console.log("this.purchaseForm", this.purchaseForm.value);
-          // this.events.publish('create-purchase', this.purchaseForm.value);
+      return new Promise(resolve => {
+        if (this._id){
+          this.updatePurchase(this.purchaseForm.value);
+          // this.events.publish('open-purchase', this.purchaseForm.value);
           this.purchaseForm.markAsPristine();
-        });
-      }
+        } else {
+          this.createPurchase(this.purchaseForm.value).then(doc => {
+            console.log("docss", doc);
+            this.purchaseForm.patchValue({
+              _id: doc['doc'].id,
+              code: doc['purchase'].code,
+            });
+            this._id = doc['doc'].id;
+            console.log("this.purchaseForm", this.purchaseForm.value);
+            // this.events.publish('create-purchase', this.purchaseForm.value);
+            this.purchaseForm.markAsPristine();
+            resolve(true);
+          });
+        }
+      });
     }
 
     setLanguage(lang: LanguageModel){
@@ -688,8 +691,11 @@ export class PurchasePage implements OnInit {
     }
 
     afterConfirm(){
-      return new Promise(resolve => {
+      return new Promise(async resolve => {
         let createList = [];
+        if(!this.purchaseForm.value._id){
+          await this.buttonSave();
+        }
         this.configService.getConfigDoc().then((config: any)=>{
 
           this.pouchdbService.getList([
@@ -771,14 +777,14 @@ export class PurchasePage implements OnInit {
               });
             });
 
-            this.pouchdbService.createDocList(createList).then((created: any)=>{
+            this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.purchaseForm.patchValue({
                 state: 'CONFIRMED',
                 amount_unInvoiced: this.purchaseForm.value.total,
                 planned: created,
               });
               console.log("Purchase created", created);
-              this.buttonSave();
+              await this.buttonSave();
               resolve(true);
             })
           })
