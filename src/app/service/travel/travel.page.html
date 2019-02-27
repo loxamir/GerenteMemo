@@ -18,6 +18,12 @@
 <ion-content>
   <form class="sample-form validations-form" [formGroup]="travelForm">
     <ion-item class="field-100">
+      <!-- <ion-item style="background-color: white"> -->
+        <ion-label position="floating">{{'DISTANCE_KM' | translate}}</ion-label>
+        <ion-input #distance type="number" formControlName="distance" (ionChange)="onChangeDistance()"></ion-input>
+      <!-- </ion-item> -->
+    </ion-item>
+    <ion-item class="field-100">
       <!-- <ion-row>
         <ion-col>
           <ion-item  style="background-color: white"> -->
@@ -36,12 +42,7 @@
         </ion-col> -->
       <!-- </ion-row> -->
     </ion-item>
-    <ion-item class="field-100">
-      <!-- <ion-item style="background-color: white"> -->
-        <ion-label position="floating">{{'DISTANCE_KM' | translate}}</ion-label>
-        <ion-input #distance type="number" formControlName="distance" (ionChange)="onChangeDistance()"></ion-input>
-      <!-- </ion-item> -->
-    </ion-item>
+
 
     <ion-item class="field-100"
     no-padding

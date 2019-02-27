@@ -74,7 +74,7 @@ export class ServiceTravelPage implements OnInit {
     //
     // ionViewDidLoad(){
       setTimeout(() => {
-        this.descriptionField.setFocus();
+        this.distanceField.setFocus();
       }, 200);
     }
 
@@ -151,12 +151,12 @@ export class ServiceTravelPage implements OnInit {
       //   if (this.travelForm.value.client_request == ''){
       //     this.clientRequest.setFocus();
       //   }
-      if (this.travelForm.value.description==null){
-        this.descriptionField.setFocus();
+      if (this.travelForm.value.distance==null){
+        this.distanceField.setFocus();
         return;
       }
-      else if (this.travelForm.value.distance==null){
-        this.distanceField.setFocus();
+      else if (this.travelForm.value.description==null){
+        this.descriptionField.setFocus();
         return;
       }
     }

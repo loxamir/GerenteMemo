@@ -743,23 +743,15 @@ export class ServicePage implements OnInit {
     async addInvoice() {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('create-invoice');
-      let items = []
-      let work_sum = {
-        'product': this.labor_product,
-        'description': this.labor_product['name'],
-        'price': 0,
-        'quantity': 0,
-      }
-      let labor_total = 0;
-      this.serviceForm.value.works.forEach(work=>{
-        labor_total += parseFloat(work['time']) * parseFloat(work['price'])
-        work_sum['quantity'] += parseFloat(work['time']);
-      })
-      if (work_sum['quantity'] > 0){
-        work_sum.price = labor_total/work_sum['quantity'];
-        items.push(work_sum);
-      }
-
+      let items = [];
+      this.serviceForm.value.inputs.forEach(input=>{
+        items.push({
+          'product': input.product,
+          'description': input.description,
+          'price': parseFloat(input.price),
+          'quantity': parseFloat(input.quantity),
+        })
+      });
       let travel_sum = {
         'product': this.travel_product,
         'description': this.travel_product['name'],
@@ -773,7 +765,22 @@ export class ServicePage implements OnInit {
       })
       if (travel_sum['quantity'] > 0){
         travel_sum.price = travel_total/travel_sum['quantity'];
-        items.push(travel_sum);
+        items.unshift(travel_sum);
+      }
+      let work_sum = {
+        'product': this.labor_product,
+        'description': this.labor_product['name'],
+        'price': 0,
+        'quantity': 0,
+      }
+      let labor_total = 0;
+      this.serviceForm.value.works.forEach(work=>{
+        labor_total += parseFloat(work['time']) * parseFloat(work['price'])
+        work_sum['quantity'] += parseFloat(work['time']);
+      })
+      if (work_sum['quantity'] > 0){
+        work_sum.price = labor_total/work_sum['quantity'];
+        items.unshift(work_sum);
       }
 
       let profileModal = await this.modalCtrl.create({
