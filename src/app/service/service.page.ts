@@ -797,7 +797,7 @@ export class ServicePage implements OnInit {
       await profileModal.present();
       this.events.subscribe('create-invoice', (data) => {
           this.serviceForm.value.invoices.push({
-            'number': data.number,
+            'code': data.code,
             'date': data.date,
             'residual': data.residual,
             'total': data.total,
