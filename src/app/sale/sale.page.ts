@@ -697,7 +697,10 @@ export class SalePage implements OnInit {
     }
 
     afterConfirm(){
-      return new Promise(resolve => {
+      return new Promise(async resolve => {
+        if(!this.saleForm.value._id){
+          await this.buttonSave();
+        }
         let createList = [];
         this.configService.getConfigDoc().then((config: any)=>{
           this.pouchdbService.getList([
