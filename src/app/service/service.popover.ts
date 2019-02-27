@@ -5,8 +5,8 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
   template: `
   <ion-list>
     <ion-item (click)="duplicate()">Duplicar</ion-item>
-    <ion-item (click)="share()">Compartir</ion-item>
-    <ion-item (click)="cancel()">Cancelar</ion-item>
+    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.serviceForm.value.state=='CONFIRMED' && navParams.data.doc.serviceForm.value.date.split('T')[0]==today.split('T')[0]">Desconfirmar</ion-item>
+    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.serviceForm.value.state=='SCHEDULED' || navParams.data.doc.serviceForm.value.state=='STARTED'">Volver a Borrador</ion-item>
   </ion-list>
   `
 })
