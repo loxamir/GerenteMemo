@@ -74,33 +74,25 @@
       <div
       [class.arrow]="serviceForm.value.production"
       [class.arron]="!serviceForm.value.production"
-      [class.unclicked]="serviceForm.value.state!='STARTED' && serviceForm.value.state!='PRODUCED' && serviceForm.value.state!='PAID'"
-      [class.clicked]="serviceForm.value.state=='STARTED' || serviceForm.value.state=='PRODUCED' || serviceForm.value.state=='PAID'">
+      [class.unclicked]="serviceForm.value.state=='SCHEDULED'"
+      [class.clicked]="serviceForm.value.state=='STARTED' || serviceForm.value.state=='CONFIRMED' || serviceForm.value.state=='PAID'">
         <span class="state-label">Iniciado</span>
       </div>
     </ion-col>
-    <ion-col size="4" *ngIf="!serviceForm.value.production">
+    <ion-col size="4">
       <div
         class="arrow"
        [class.unclicked]="serviceForm.value.state!='CONFIRMED' && serviceForm.value.state!='PAID'"
        [class.clicked]="serviceForm.value.state=='CONFIRMED' || serviceForm.value.state=='PAID'">
-        <span class="state-label">Realizado</span>
+        <span class="state-label">Confirmado</span>
       </div>
     </ion-col>
-    <ion-col size="4" *ngIf="serviceForm.value.production">
-      <div
-      class="arrow"
-      [class.unclicked]="serviceForm.value.state!='PRODUCED'"
-      [class.clicked]="serviceForm.value.state=='PRODUCED'">
-        <span class="state-label">Producido</span>
-      </div>
-    </ion-col>
-    <ion-col size="4" *ngIf="!serviceForm.value.production">
+    <ion-col size="4">
       <div
         class="arrow"
        [class.unclicked]="serviceForm.value.state!='PAID'"
        [class.clicked]="serviceForm.value.state=='PAID'">
-        <span class="state-label">Cobrado</span>
+        <span class="state-label">Pagado</span>
       </div>
     </ion-col>
   </ion-row>
