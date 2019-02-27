@@ -12,13 +12,14 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
 })
 export class ServicePopover {
   pop: PopoverController;
-
+  today;
   constructor(
     public navParams: NavParams,
     public navCtrl: NavController,
     public toastCtrl: ToastController,
   ) {
     this.pop = navParams.get('popoverController');
+    this.today = new Date().toISOString();
   }
     async duplicate(){
       this.navParams.data.doc._id = '';

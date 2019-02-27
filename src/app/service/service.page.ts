@@ -1514,9 +1514,13 @@ export class ServicePage implements OnInit {
     }
 
     async serviceCancel(){
+      let name = "Desconfirmar";
+      if (this.serviceForm.value.state != 'CONFIRMED'){
+        name = "Volver a Borrador";
+      }
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas Desconfirmar el Servicio?',
-        message: 'Al Desconfirmar el Servicio todos los registros asociados serán borrados',
+        header: 'Estas seguro que deseas '+name+' el Servicio?',
+        message: 'Al '+name+' el Servicio todos los registros asociados serán borrados',
         buttons: [
           {
             text: 'No',
