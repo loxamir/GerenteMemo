@@ -709,7 +709,7 @@ export class ServicePage implements OnInit {
               "project_id": this.serviceForm.value.project_id
               || this.serviceForm.value.project
               && this.serviceForm.value.project._id,
-              "name": "Venta "+this.serviceForm.value.code,
+              "name": "Servicio "+this.serviceForm.value.code,
               "accountFrom_id": this.serviceForm.value.paymentCondition.accountTo_id,
               "items": plannedItems,
               "origin_id": this.serviceForm.value._id,

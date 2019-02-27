@@ -688,7 +688,7 @@ export class ProductionPage implements OnInit {
               "project_id": this.productionForm.value.project_id
               || this.productionForm.value.project
               && this.productionForm.value.project._id,
-              "name": "Venta "+this.productionForm.value.code,
+              "name": "Producción "+this.productionForm.value.code,
               "accountFrom_id": this.productionForm.value.paymentCondition.accountTo_id,
               "items": plannedItems,
               "origin_id": this.productionForm.value._id,
