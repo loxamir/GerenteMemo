@@ -47,6 +47,9 @@ export class CashListPage implements OnInit {
     this.events.subscribe('changed-cash-move', (change)=>{
       this.handleViewChange(this.cashList, change);
     })
+    this.events.subscribe('refresh-cash-list', (change)=>{
+      this.handleViewChange(this.cashList, change);
+    })
     this.events.subscribe('changed-account', (change)=>{
       // this.cashListService.handleChange(this.cashList, change);
       this.setFilteredItems();

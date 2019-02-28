@@ -35,6 +35,7 @@ export class CashPage implements OnInit {
     loading: any;
     languages: Array<LanguageModel>;
     @Input() _id: string;
+    changes = {};
 
     constructor(
       public navCtrl: NavController,
@@ -63,11 +64,15 @@ export class CashPage implements OnInit {
       this.translate.use('es');
       this.events.unsubscribe('changed-cash-move');
       this.events.subscribe('changed-cash-move', (change)=>{
-        console.log("changed-cash-move", change);
-        this.cashService.handleChange(this.cashForm.value.moves, change);
-        this.cashService.localHandleChangeData(
-        this.cashForm.value.moves, this.cashForm.value.waiting, change);
-        this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
+        if (!this.changes.hasOwnProperty(change.seq)){
+          console.log("changed-cash-move", change);
+          this.cashService.handleChange(this.cashForm.value.moves, change);
+          this.cashService.localHandleChangeData(
+            this.cashForm.value.moves, this.cashForm.value.waiting, change);
+          this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
+          this.events.publish('refresh-cash-list', change);
+          this.changes[change.seq] = true;
+        }
       })
       this.events.subscribe('changed-close', (change)=>{
         console.log("changeddd", change);
@@ -428,5 +433,13 @@ export class CashPage implements OnInit {
         this.cashForm.markAsPristine();
         this.navCtrl.navigateBack('/tabs/cash-list');
       }
+    }
+
+
+    deleteCashMove(item){
+      this.cashMoveService.deleteCashMove(item);
+
+      // this.cashForm.value.items.slice(item, 1);
+      // this.cashForm.value.balance -= item.amount;
     }
 }
