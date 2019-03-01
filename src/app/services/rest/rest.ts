@@ -167,6 +167,18 @@ export class RestProvider {
     });
   }
 
+  getDatabaseDoc(database, doc_id) {
+    return new Promise(resolve => {
+        this.http.get(this.databaseUrl+'/'+database+'/'+doc_id).subscribe(data => {
+        console.log("DOC NAME", data);
+        resolve(data);
+      }, err => {
+        resolve(err);
+        // console.log(err);
+      });
+    });
+  }
+
   checkLogin(username, password) {
     return new Promise(resolve => {
       let loginData = {
