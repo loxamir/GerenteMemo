@@ -116,22 +116,23 @@ export class LoginPage implements OnInit {
       console.log("usernames", username);
       // }
     // });
-    // this.setFilteredItems();
+    this.setFilteredItems();
   }
 
-  // setFilteredItems() {
-  //   let filter = null;
-  //   if (this.filter == "all"){
-  //     let filter = null;
-  //   } else {
-  //     let filter = this.filter;
-  //   }
-  //   this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
-  //       this.helps = helps;
-  //     // this.helps = helps;
-  //     this.page = 1;
-  //   });
-  // }
+  setFilteredItems() {
+    let filter = null;
+    if (this.filter == "all"){
+      let filter = null;
+    } else {
+      let filter = this.filter;
+    }
+    this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
+        console.log("helps", helps);
+        this.helps = helps;
+      // this.helps = helps;
+      this.page = 1;
+    });
+  }
 
   // doInfinite(infiniteScroll) {
   //   setTimeout(() => {
@@ -169,31 +170,49 @@ export class LoginPage implements OnInit {
   //   }, 500);
   // }
   //
-  // getHelpsPage(keyword, page, field=''){
-  //   return new Promise(resolve => {
-  //     // this.pouchdbService.searchDocTypeData('help', keyword, page, "document", field).then((helps: any[]) => {
-  //     //   resolve(helps);
-  //     // });
-  //     let list = [
-  //       {
-  //         name: "Ajyda"
-  //       },
-  //       {
-  //         name: "Ajuda"
-  //       },
-  //       {
-  //         name: "Ayuda"
-  //       }
-  //     ];
-  //   // let otro = list.filter(help => help['name'].toString().search(new RegExp(keyword, "i")) != -1);
-  //   let otro = list.filter(word=>word.name.toString().search(new RegExp(keyword, "i")) != -1)
-  //   console.log("list", list);
-  //   console.log("otro", otro);
-  //   console.log("keyword", keyword);
-  //   console.log("this.searchTerm", this.searchTerm);
-  //   resolve(otro);
-  // });
-  // }
+  getHelpsPage(keyword, page, field=''){
+    console.log("getHelpsPage(",keyword, page, field);
+    return new Promise(resolve => {
+      // this.pouchdbService.searchDocTypeData('help', keyword, page, "document", field).then((helps: any[]) => {
+      //   console.log("helps", helps);
+      //   resolve(helps);
+      // });
+      let list = [
+        {
+          "name": "Como Crear Nuevo Contacto",
+          youtubeCode: "cMMWurKDecg",
+        },
+        {
+          "name": "Como Crear un Registro de Caja",
+          youtubeCode: "xX3tyZYzqi4",
+        },
+        {
+          name: "Como Crear Nuevo Producto",
+          youtubeCode: "nG02vx4sQos",
+        },
+        {
+          name: "Como Crear una Compra al Contado",
+          youtubeCode: "Ot13AxANq2s",
+        },
+        {
+          name: "Como Crear una Compra a Credito",
+          youtubeCode: "24_dpHb9xHI",
+        },
+        {
+          name: "Como Crear una Venta al Contado",
+          youtubeCode: "c41qtU8Pl7k",
+        },
+
+      ];
+    // let otro = list.filter(help => help['name'].toString().search(new RegExp(keyword, "i")) != -1);
+    let otro = list.filter(word=>word.name.toString().search(new RegExp(keyword, "i")) != -1)
+    console.log("list", list);
+    console.log("otro", otro);
+    console.log("keyword", keyword);
+    console.log("this.searchTerm", this.searchTerm);
+    resolve(otro);
+  });
+  }
 
   validation_messages = {
     'password': [

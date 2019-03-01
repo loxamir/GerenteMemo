@@ -413,3 +413,52 @@ ion-segment-button {
 .modal-wrapper.sc-ion-modal-md {
   border-radius: 6px;
 }
+
+.help-name {
+  white-space: pre-wrap;
+}
+
+.thumnails{
+  overflow-x: scroll;
+  overflow-y: hidden;
+  .list-thumbnail{
+    height: 100%;
+    .img-thumb{
+      display: inline-block;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 3px;
+      width: 200px;
+      height: 200px;
+    }
+    .selected-img{
+      border: 2px solid red;
+    }
+  }
+}
+
+@media only screen and (max-width: 500px){
+  .thumnails{
+    overflow-x: scroll;
+    overflow-y: hidden;
+    .list-thumbnail{
+      height: 100%;
+      white-space: nowrap;
+      .img-thumb{
+        display: inline-block;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 3px;
+        width: 200px;
+        height: 200px;
+      }
+      .selected-img{
+        border: 2px solid red;
+      }
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
