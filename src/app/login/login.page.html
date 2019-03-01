@@ -14,19 +14,18 @@
       Bien Venido {{ username }}
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button icon-only
-        class="more-button"
-              (click)="logout()">
-        <ion-icon name="log-out"></ion-icon>
+      <ion-button icon-only (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div style="display:table-cell; vertical-align:middle; text-align:center">
-    <img style="background: #f6f5f5;border-radius:10px;width: 300px;padding-left: 5%;padding-right: 5%;padding-top: 5%;padding-bottom: 5%;" src="./assets/images/logo.png"/>
-  </div>
+  <!-- <div style="display:table-cell; vertical-align:middle; text-align:center"> -->
+    <img src="./assets/images/logo.png"
+    class="center"/>
+  <!-- </div> -->
 
   <form [formGroup]="loginForm">
 
@@ -122,13 +121,14 @@
 
     <div *ngIf="selected_user">
       <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 20px;">Empresas</h2>
-      <ion-item *ngFor="let database of databaseList" (click)="selectDatabase(database.database)">
+      <ion-item *ngFor="let database of databaseList" (click)="selectDatabase(database.database)"
+      style="--background: white;">
         <!-- <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"/> -->
         <!-- <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;width:15%" [src]="database.image" /> -->
         {{database.name}}
       </ion-item>
     </div>
-<h2 class="section-title" style="width: 100%; text-align: left;margin-top: 20px;">{{'Primeros Passos' | translate}}</h2>
+<h2 class="section-title" style="width: 100%; text-align: left;margin-top: 40px;">{{'Primeros Passos' | translate}}</h2>
     <div class="thumnails">
       <div class="list-thumbnail">
         <div class="img-thumb"

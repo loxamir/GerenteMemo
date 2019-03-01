@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { LoadingController, Events, ToastController, MenuController } from '@ionic/angular';
+import { LoadingController, Events, ToastController, MenuController, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -14,6 +14,7 @@ import { RestProvider } from '../services/rest/rest';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
 import * as jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
+import { LoginPopover } from './login.popover';
 
 @Component({
   selector: 'app-login',
@@ -50,6 +51,7 @@ export class LoginPage implements OnInit {
     public formBuilder: FormBuilder,
     public storage: Storage,
     public events: Events,
+    public popoverCtrl: PopoverController,
     // public appConfig: AppConfig,
     public menuCtrl: MenuController,
     public pouchdbService: PouchdbService,
@@ -206,12 +208,25 @@ export class LoginPage implements OnInit {
       ];
     // let otro = list.filter(help => help['name'].toString().search(new RegExp(keyword, "i")) != -1);
     let otro = list.filter(word=>word.name.toString().search(new RegExp(keyword, "i")) != -1)
-    console.log("list", list);
-    console.log("otro", otro);
-    console.log("keyword", keyword);
-    console.log("this.searchTerm", this.searchTerm);
+    // console.log("list", list);
+    // console.log("otro", otro);
+    // console.log("keyword", keyword);
+    // console.log("this.searchTerm", this.searchTerm);
     resolve(otro);
   });
+  }
+
+  async presentPopover(myEvent) {
+    // console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: LoginPopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
   }
 
   validation_messages = {
