@@ -185,7 +185,7 @@ export class RestProvider {
         "name": username,
         "password":password
       }
-      console.log("loginData", loginData);
+      // console.log("loginData", loginData);
       this.http.post(this.databaseUrl+'/_session', loginData).subscribe(data => {
         console.log("check login", data);
         resolve(data);
