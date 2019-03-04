@@ -1,6 +1,6 @@
 {
-  "name": "app",
-  "short_name": "app",
+  "name": "Sistema Memo",
+  "short_name": "Sistema Memo",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
