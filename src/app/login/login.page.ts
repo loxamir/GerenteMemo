@@ -7,8 +7,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { Storage } from '@ionic/storage';
-// import { TabsNavigationPage } from '../tabs-navigation/tabs-navigation';
-// import { AppConfig } from '../../app/app.config';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from '../services/rest/rest';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
@@ -20,9 +18,6 @@ import { LoginPopover } from './login.popover';
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-//   providers: [
-//   { provide: 'Window',  useValue: window }
-// ]
 })
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
@@ -88,24 +83,6 @@ export class LoginPage implements OnInit {
       password: new FormControl('', Validators.required),
     });
   }
-
-
-
-
-//   download() {
-//
-//       var doc = new jsPDF();
-//       doc.text(20, 20, 'Hel<b>lo</b> world!');
-//       doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
-//       doc.addPage();
-//       doc.text(20, 20, 'Do you like that?');
-//
-//       // Save the PDF
-//       doc.save('Test.pdf');
-//   }
-//
-//
-
 
   async ngOnInit() {
     this.loading = await this.loadingCtrl.create();
@@ -273,7 +250,7 @@ export class LoginPage implements OnInit {
       this.loginForm.value.user.toLowerCase(),
       this.loginForm.value.password
     ).then(async (loginData: any)=>{
-      console.log("LOGIN DATA", loginData);
+      // console.log("LOGIN DATA", loginData);
       if (loginData.ok){
         this.doLogin();
       } else {
@@ -317,7 +294,7 @@ export class LoginPage implements OnInit {
       this.loginForm.value.user.toLowerCase(),
       this.loginForm.value.password
     ).then(async (loginData: any)=>{
-      console.log("LOGIN DATA", loginData);
+      // console.log("LOGIN DATA", loginData);
       if (loginData.ok){
         this.restProvider.changePassword(
           this.loginForm.value.user.toLowerCase(),
@@ -339,7 +316,7 @@ export class LoginPage implements OnInit {
 
   async doLogin(){
     await this.storage.set('username', this.loginForm.value.user.toLowerCase());
-    this.storage.set("password", this.loginForm.value.password.toLowerCase());
+    this.storage.set("password", this.loginForm.value.password);
     this.events.publish('get-user', {"user": this.loginForm.value.user.toLowerCase()});
     this.selected_user = true;
     this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
