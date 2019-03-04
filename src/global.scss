@@ -424,12 +424,12 @@ ion-segment-button {
   .list-thumbnail{
     height: 100%;
     .img-thumb{
-      display: inline-block;
+      display: inline-flex;
       border: 1px solid #ddd;
       border-radius: 4px;
       padding: 3px;
       width: 200px;
-      height: 200px;
+      height: 100%;
     }
     .selected-img{
       border: 2px solid red;
@@ -437,7 +437,7 @@ ion-segment-button {
   }
 }
 
-@media only screen and (max-width: 500px){
+@media (pointer: coarse) {
   .thumnails{
     overflow-x: scroll;
     overflow-y: hidden;
@@ -445,12 +445,12 @@ ion-segment-button {
       height: 100%;
       white-space: nowrap;
       .img-thumb{
-        display: inline-block;
+        display: inline-flex;
         border: 1px solid #ddd;
         border-radius: 4px;
         padding: 3px;
         width: 200px;
-        height: 200px;
+        height: 100%;
       }
       .selected-img{
         border: 2px solid red;
@@ -464,6 +464,7 @@ ion-segment-button {
 }
 
 .center {
+  margin-top: 20px;
   display: block;
   margin-left: auto;
   margin-right: auto;
