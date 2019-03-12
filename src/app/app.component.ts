@@ -22,11 +22,11 @@ export class AppComponent implements OnInit {
       url: '/report-list',
       icon: 'stats'
     },
-    // {
-    //   title: 'Ayuda',
-    //   url: '/help-list',
-    //   icon: 'help-circle'
-    // },
+    {
+      title: 'Agro',
+      url: '/agro-tabs',
+      icon: 'leaf'
+    },
     {
       title: 'Productos',
       url: '/product-list',

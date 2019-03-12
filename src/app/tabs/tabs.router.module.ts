@@ -55,7 +55,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/tabs/sale-list',
+        redirectTo: '/tabs',
         pathMatch: 'full'
       }
     ]

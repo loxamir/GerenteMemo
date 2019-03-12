@@ -67,10 +67,14 @@ import { PaymentConditionPageModule } from './payment-condition/payment-conditio
 import { ServiceWorkPageModule } from './service/work/work.module';
 import { ProductionWorkPageModule } from './production/work/work.module';
 import { ServiceTravelPageModule } from './service/travel/travel.module';
-
+import { WorkPageModule } from './work/work.module';
+import { WorksPageModule } from './works/works.module';
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { ActivitysPageModule } from './activitys/activitys.module';
+import { ActivityPageModule } from './activity/activity.module';
+import { FieldPageModule } from './field/field.module';
 import { environment } from '../environments/environment';
 
 @NgModule({
@@ -115,8 +119,12 @@ import { environment } from '../environments/environment';
     InvoicePageModule,
     WarehouseListPageModule,
     AccountListPageModule,
+    ActivitysPageModule,
+    ActivityPageModule,
     CurrencyPageModule,
     CashListPageModule,
+    WorkPageModule,
+    WorksPageModule,
     UserPageModule,
     CheckPageModule,
     InvoiceConfigPageModule,
@@ -125,6 +133,7 @@ import { environment } from '../environments/environment';
     ContactListPageModule,
     ReactiveFormsModule,
     ProductPageModule,
+    FieldPageModule,
     ProductCategoryPageModule,
     BrandPageModule,
     PaymentConditionPageModule,

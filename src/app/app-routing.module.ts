@@ -81,6 +81,21 @@ const routes: Routes = [
   { path: 'brand-list', loadChildren: './brand-list/brand-list.module#BrandListPageModule' },
   { path: 'brand', loadChildren: './brand/brand.module#BrandPageModule' },
   { path: 'stock-report', loadChildren: './stock-report/stock-report.module#StockReportPageModule' },
+  { path: 'agro-tabs', loadChildren: './agro-tabs/agro-tabs.module#AgroTabsPageModule' },
+  { path: 'animal', loadChildren: './animal/animal.module#AnimalPageModule' },
+  { path: 'area', loadChildren: './area/area.module#AreaPageModule' },
+  { path: 'areas', loadChildren: './areas/areas.module#AreasPageModule' },
+  { path: 'animals', loadChildren: './animals/animals.module#AnimalsPageModule' },
+  { path: 'machine', loadChildren: './machine/machine.module#MachinePageModule' },
+  { path: 'machines', loadChildren: './machines/machines.module#MachinesPageModule' },
+  { path: 'crop', loadChildren: './crop/crop.module#CropPageModule' },
+  { path: 'crops', loadChildren: './crops/crops.module#CropsPageModule' },
+  { path: 'work', loadChildren: './work/work.module#WorkPageModule' },
+  { path: 'works', loadChildren: './works/works.module#WorksPageModule' },
+  { path: 'activity', loadChildren: './activity/activity.module#ActivityPageModule' },
+  { path: 'activitys', loadChildren: './activitys/activitys.module#ActivitysPageModule' },
+  { path: 'field', loadChildren: './field/field.module#FieldPageModule' },
+  { path: 'project', loadChildren: './project/project.module#ProjectPageModule' },
   // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 

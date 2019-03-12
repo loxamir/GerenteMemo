@@ -1,0 +1,121 @@
+<ion-header>
+  <ion-toolbar color="primary">
+     <ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+        </ion-button>
+    <!-- <ion-title *ngIf="!has_search">{{ 'TASKS' | translate}}</ion-title> -->
+    <ion-searchbar
+      placeholder="Buscar Tarea"
+      [(ngModel)]="searchTerm"
+      (ionInput)="searchItems()">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+      <!-- <ion-button icon-only  *ngIf="!has_search"
+        (tap)="setSearch()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <ion-button icon-only  *ngIf="has_search"
+        (tap)="setSearch()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button> -->
+      <!-- <ion-button icon-only
+              (tap)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button> -->
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="list-mini-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <!-- <ion-list no-lines>
+    <ion-item-sliding class="list-item" *ngFor="let item of works">
+      <ion-item no-padding (click)="openWork(item)">
+        <ion-card class="list-card">
+     <ion-row no-padding class="content-row one-line">
+        <ion-col no-padding width-18 class="schedule-date">
+          <h3 class="schedule-month">{{item.date|date: 'dd/MM/yyyy'}}</h3>
+        </ion-col>
+        <ion-col no-padding width-72 class="item-content">
+          <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
+          <ion-row no-padding>
+            <ion-col no-padding>
+              <h3 class="item-title">Total: $ {{ item.total | number:'1.0' }}</h3>
+            </ion-col>
+            <ion-col no-padding style="text-align: center;border-radius: 4px;"
+            [class.scheduled]="item.state=='SCHEDULED'"
+            [class.started]="item.state=='STARTED'"
+            [class.confirmed]="item.state=='CONFIRMED'"
+            [class.quotation]="item.state=='QUOTATION'"
+            [class.paid]="item.state=='PAID'">
+                {{ item.state | translate }}
+            </ion-col>
+          </ion-row>
+          <ion-row no-padding>
+            <ion-col no-padding>
+              <h3 class="item-title">Falta: $ {{ item.residual | number:'1.0' }}</h3>
+            </ion-col>
+            <ion-col no-padding>
+              <h3 class="item-title" style="margin-left: 5px;"> Plazo: {{item.project_name | translate}}</h3> {{item.code && item.code.toString()}}
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;">
+          <ion-icon name="arrow-forward"></ion-icon>
+        </ion-col>
+      </ion-row>
+</ion-card>
+    </ion-item>
+      <ion-item-options>
+        <ion-button icon-only color="primary" (click)="deleteWork(item)" *ngIf="item.state!='QUOTATIONs'">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list> -->
+
+  <ion-list no-lines>
+    <ion-item-sliding class="list-item" *ngFor="let item of works">
+    <ion-item no-padding (click)="openWork(item)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-card class="list-card" style="border-radius: 5px;">
+   <ion-row no-padding class="content-row one-line">
+      <ion-col no-padding width-25 class="schedule-date">
+        <h2 class="list-big-number">{{item.activity_name}}</h2>
+        <h3 class="schedule-month">{{item.date|date: 'dd/MM/yyyy'}}</h3>
+        <h4 class="schedule-time">Costo: $ {{item.cost}}</h4>
+      </ion-col>
+      <ion-col no-padding width-35  >
+        <ion-row no-padding>
+          <ion-col class="item-content" style="white-space: normal;">
+            {{item.name}}
+          </ion-col>
+        </ion-row>
+
+      </ion-col>
+      <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        <h2 *ngIf="item.cost > 0" class="list-big-number" style="color: green;">{{item.area| number:'1.0'}} ha</h2>
+        <h2 *ngIf="item.cost <= 0" class="list-big-number" style="color: red;">{{item.area| number:'1.0'}} ha</h2>
+      </ion-col>
+    </ion-row>
+    </ion-card>
+  </ion-item>
+
+      <ion-item-options>
+        <ion-button icon-only color="primary" (click)="deleteWork(item)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      <ion-fab-button (click)="createWork()">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
+  </ion-fab>
+</ion-content>
