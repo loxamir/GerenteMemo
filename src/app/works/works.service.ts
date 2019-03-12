@@ -11,7 +11,10 @@ export class WorksService {
   getWorksPage(keyword, page){
     return new Promise(resolve => {
       this.pouchdbService.searchDocTypeData(
-        'work', keyword, page, "contact_name"
+        'work',
+        keyword,
+        page,
+        "activity_name"
       ).then((works: any[]) => {
         resolve(works);
       });

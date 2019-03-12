@@ -27,7 +27,7 @@ export class ActivityPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -45,7 +45,7 @@ export class ActivityPage implements OnInit {
     this._id = this.route.snapshot.paramMap.get('_id');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.activityForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       // type: new FormControl('integer'),
@@ -62,20 +62,21 @@ export class ActivityPage implements OnInit {
       employee: new FormControl(false),
       _id: new FormControl(''),
     });
-    //this.loading.present();
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     if (this._id){
       this.activityService.getActivity(this._id).then((data) => {
         this.activityForm.patchValue(data);
-        //this.loading.dismiss();
+        this.loading.dismiss();
       });
     } else {
-      //this.loading.dismiss();
+      this.loading.dismiss();
     }
   }
 
   async addField(){
     // if (this.activityForm.value.state=='QUOTATION'){
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: FieldPage,
         componentProps: {}
       });
@@ -93,7 +94,7 @@ export class ActivityPage implements OnInit {
   }
   async editField(item){
     // if (this.activityForm.value.state=='QUOTATION'){
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: FieldPage,
         componentProps: item
       });

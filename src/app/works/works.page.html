@@ -1,27 +1,14 @@
 <ion-header>
   <ion-toolbar color="primary">
-     <ion-button menuToggle>
-          <ion-icon name="menu"></ion-icon>
-        </ion-button>
-    <!-- <ion-title *ngIf="!has_search">{{ 'TASKS' | translate}}</ion-title> -->
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-searchbar
       placeholder="Buscar Tarea"
       [(ngModel)]="searchTerm"
-      (ionInput)="searchItems()">
+      (ionChange)="searchItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only  *ngIf="!has_search"
-        (tap)="setSearch()">
-        <ion-icon name="search"></ion-icon>
-      </ion-button>
-      <ion-button icon-only  *ngIf="has_search"
-        (tap)="setSearch()">
-        <ion-icon name="close"></ion-icon>
-      </ion-button> -->
-      <!-- <ion-button icon-only
-              (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -112,8 +99,9 @@
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
+
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createWork()">
+      <ion-fab-button (click)="createWork()" color="primary">
           <ion-icon name="add">
           </ion-icon>
       </ion-fab-button>

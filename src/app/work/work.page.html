@@ -1,4 +1,4 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar color="primary">
     <ion-title>
       <ion-row>
@@ -15,8 +15,23 @@
         {{ 'SAVE' | translate }}
       </ion-button>
     </ion-buttons>
+  </ion-toolbar> -->
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/agro-tabs/work-list"></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="!return">
+      {{ 'TASK' | translate }}: {{saleForm.value.code}}
+    </ion-title>
+    <ion-buttons slot="end">
+      <!-- <ion-button icon-only (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button> -->
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 
 <ion-content class="work-content" style="background-color: #ddd">
 

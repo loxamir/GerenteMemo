@@ -55,7 +55,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/agro-tabs',
+        redirectTo: '/agro-tabs/work-list',
         pathMatch: 'full'
       }
     ]

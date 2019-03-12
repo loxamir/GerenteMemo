@@ -36,8 +36,10 @@ export class ActivitysPage implements OnInit {
     })
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     //this.loading.present();
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
 
@@ -47,7 +49,7 @@ export class ActivitysPage implements OnInit {
     ).then((activitys: any[]) => {
       this.activitys = activitys;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

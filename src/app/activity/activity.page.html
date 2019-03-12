@@ -1,4 +1,4 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar color="primary">
     <ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
@@ -10,7 +10,17 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+</ion-header> -->
+
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/activitys"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'ACTIVITY_INFORMATION' | translate }}</ion-title>
+  </ion-toolbar>
 </ion-header>
+
 
 <ion-content class="activity-content">
   <form class="sample-form validations-form" [formGroup]="activityForm"  (ngSubmit)="onSubmit(activityForm.value)">

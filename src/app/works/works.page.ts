@@ -34,7 +34,6 @@ export class WorksPage implements OnInit {
     public events:Events,
     public route: ActivatedRoute,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     this.events.subscribe('changed-work', (change)=>{
       this.worksService.handleChange(this.works, change);
@@ -44,9 +43,10 @@ export class WorksPage implements OnInit {
     })
   }
 
-  ngOnInit(){
-      //this.loading.present();
-      this.setFilteredItems();
+  async ngOnInit(){
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
+    this.setFilteredItems();
   }
 
   searchItems() {
@@ -61,26 +61,28 @@ export class WorksPage implements OnInit {
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
-      this.worksService.getWorksPage(
-        this.searchTerm, this.page
-      ).then((works: any[]) => {
-        works.forEach(work => {
-          this.works.push(work);
-        });
-        this.page += 1;
-      });
+      // this.worksService.getWorksPage(
+      //   this.searchTerm, this.page
+      // ).then((works: any[]) => {
+      //   works.forEach(work => {
+      //     this.works.push(work);
+      //   });
+      //   this.page += 1;
+      // });
+      this.setFilteredItems();
       infiniteScroll.target.complete();
     }, 50);
   }
 
   doRefresh(refresher) {
     setTimeout(() => {
-      this.worksService.getWorksPage(
-        this.searchTerm, 0
-      ).then((works: any[]) => {
-        this.works = works;
-        this.page = 1;
-      });
+      // this.worksService.getWorksPage(
+      //   this.searchTerm, 0
+      // ).then((works: any[]) => {
+      //   this.works = works;
+      //   this.page = 1;
+      // });
+      this.setFilteredItems();
       refresher.target.complete();
     }, 200);
   }
@@ -89,9 +91,10 @@ export class WorksPage implements OnInit {
     this.worksService.getWorksPage(
       this.searchTerm, 0
     ).then((works) => {
+      console.log("works", works);
       this.works = works;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

@@ -60,7 +60,7 @@ export class WorkPage implements OnInit {
     public formatService: FormatService,
     public pouchdbService: PouchdbService,
     public events: Events,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     // public speechRecognition: SpeechRecognition,
     // public tts: TextToSpeech,
     public stockMoveService: StockMoveService,
@@ -112,7 +112,7 @@ export class WorkPage implements OnInit {
     })
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.workForm = this.formBuilder.group({
       name: new FormControl(''),
       activity: new FormControl(this.activity||{}),
@@ -125,8 +125,9 @@ export class WorkPage implements OnInit {
       cost: new FormControl(0),
       _id: new FormControl(''),
     });
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     let self = this;
-    //this.loading.present();
       if (this._id) {
         this.workService.getWork(this._id).then((data) => {
           data.fields.forEach(field => {
@@ -140,10 +141,10 @@ export class WorkPage implements OnInit {
             this.selectActivity();
           }
           this.recomputeFields();
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
         if (Object.keys(this.workForm.value.activity).length === 0
         && !self.activity) {
           this.selectActivity();
@@ -225,7 +226,7 @@ export class WorkPage implements OnInit {
         this.setActivity(data);
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: ActivitysPage,
         componentProps: {
           "select": true,
@@ -316,7 +317,7 @@ export class WorkPage implements OnInit {
 
   async showModal(page, context={}){
     context['select'] = true;
-    let profileModal = await this.modal.create({
+    let profileModal = await this.modalCtrl.create({
       component: page,
       componentProps: context
     });
@@ -335,7 +336,7 @@ export class WorkPage implements OnInit {
     context["list"] = true;
     context["activity"] = activity;
     context["open"] = true;
-    let profileModal = await this.modal.create({
+    let profileModal = await this.modalCtrl.create({
       component: WorkPage,
       componentProps: context
     });
@@ -361,7 +362,7 @@ export class WorkPage implements OnInit {
     let context = this.workForm.value[field_name][item];
     context["list"] = true;
     context["activity"] = activity;
-    let profileModal = await this.modal.create({
+    let profileModal = await this.modalCtrl.create({
       component:WorkPage,
       componentProps: context
     });
