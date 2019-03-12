@@ -22,28 +22,11 @@
 </ion-header>
 
 <ion-content>
-  <!-- <div style="display:table-cell; vertical-align:middle; text-align:center"> -->
     <img src="./assets/images/logo.png"
+    alt="Sistema Memo"
     class="center"/>
-  <!-- </div> -->
 
   <form [formGroup]="loginForm">
-
-
-  <!-- <div *ngIf="selected_user" style="height:50px;">
-    <ion-row >
-      <ion-col>
-        <h2 class="section-title" style="width: 100%; text-align: center;">{{'Bien Venido al Sistema Memo' | translate}}</h2>
-      </ion-col>
-    </ion-row>
-  </div> -->
-  <!-- <ion-row *ngIf="selected_user">
-    <ion-col style="text-align: right;">
-      <h4>Usuario: {{ username }}</h4>
-      <a style="font-size:15px;" (click)="logout()">Salir</a>
-    </ion-col>
-  </ion-row> -->
-
     <ion-row *ngIf="!selected_user">
       <ion-col></ion-col>
       <ion-col no-padding width-80>
@@ -122,8 +105,6 @@
       <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 20px;">Empresas</h2>
       <ion-item *ngFor="let database of databaseList" (click)="selectDatabase(database.database)"
       style="--background: white;">
-        <!-- <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"/> -->
-        <!-- <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;width:15%" [src]="database.image" /> -->
         {{database.name}}
       </ion-item>
     </div>
@@ -133,8 +114,8 @@
         <div class="img-thumb"
         [class.selected-img]="false"
         *ngFor="let x of helps">
-            <a [href]="'https://www.youtube.com/watch?feature=player_embedded&v='+x.doc.youtubeCode" target="_blank">
-             <img [src]="'https://img.youtube.com/vi/'+x.doc.youtubeCode+'/0.jpg'"/>
+            <a [href]="'https://www.youtube.com/watch?feature=player_embedded&v='+x.doc.youtubeCode" target="_blank" rel="noopener">
+             <img [src]="'https://img.youtube.com/vi/'+x.doc.youtubeCode+'/0.jpg'" [alt]="x.doc.name"/>
              <span class="help-name">
                {{ x.doc.name }}
              </span>
@@ -143,7 +124,7 @@
       </div>
     </div>
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-    <a target="_blank" href="https://www.youtube.com/channel/UCfjFZyo8jvrx0ILRBTk2XRQ">
+    <a target="_blank" href="https://www.youtube.com/channel/UCfjFZyo8jvrx0ILRBTk2XRQ" rel="noopener">
     <ion-button style="--color: white; --background: white;">
       <ion-icon name="logo-youtube" style="margin-right: 5px;color: red;"> </ion-icon>
 
@@ -152,7 +133,7 @@
   </a>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <a target="_blank" href="https://wa.me/595986154975">
+    <a target="_blank" href="https://wa.me/595986154975" rel="noopener">
     <ion-button style="--color: white; --background: white;">
       <ion-icon name="logo-whatsapp" style="margin-right: 5px;color: green;"> </ion-icon>
       <span style="color: black;font-weight: bold;">Contacto</span>
