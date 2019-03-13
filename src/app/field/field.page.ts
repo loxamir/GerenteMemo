@@ -50,6 +50,8 @@ export class FieldPage implements OnInit {
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.name = this.route.snapshot.paramMap.get('name');
     this.type = this.route.snapshot.paramMap.get('type');

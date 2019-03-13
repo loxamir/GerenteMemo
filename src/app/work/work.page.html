@@ -83,11 +83,12 @@
             <ion-list style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name].length > 0">
               <h2 class="section-title" style="color:#1c61f3;background: white;border: 1px solid;border-top-left-radius: 5px;border-top-right-radius: 5px;">{{ field.label || field.name | translate}}</h2>
               <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
-                <ion-item (click)="editFieldItem(field.name, i)" class="internal-item" style="--background: white;">
-                  <ion-row style="width: 100%">
+                <ion-item class="internal-item" style="--background: white;">
+                  <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
                     <ion-col *ngFor="let atribute of field.attributes;">
-                      <h4 class="field-label">{{atribute.label}}</h4>
-                      <h4 class="user-name">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
+                      <h4 class="field-label" style="margin-top: 0px;">{{atribute.label}}</h4>
+                      <!-- <h4 class="user-name">{{ atribute.name }}</h4> -->
+                      <h4 class="user-name"  style="margin-bottom: 0px;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
                     </ion-col>
                   </ion-row>
                 </ion-item>

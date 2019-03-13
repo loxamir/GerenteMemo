@@ -73,6 +73,8 @@ export class WorkPage implements OnInit {
     //this.loading = //this.loadingCtrl.create();
     this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.list = eval(this.route.snapshot.paramMap.get('list'));
     this.activity = this.route.snapshot.paramMap.get('activity');
@@ -86,6 +88,9 @@ export class WorkPage implements OnInit {
     Object.keys(this.fields).forEach((field: any)=>{
       this.workForm.value[field] = this.fields[field] || this.workForm.value[field];
     })
+    if (this.select){
+      this.modalCtrl.dismiss(this.workForm.value);
+    }
     // this.viewCtrl.dismiss(this.workForm.value);
   }
 
@@ -348,9 +353,9 @@ export class WorkPage implements OnInit {
       componentProps: context
     });
     profileModal.onDidDismiss().then(data => {
-      console.log("dat12a", data);
-      if (data) {
-        field.push(data);
+      console.log("dat12a", data.data);
+      if (data.data) {
+        field.push(data.data);
         this.workForm.markAsDirty();
         this.recomputeFields();
       }
@@ -375,9 +380,9 @@ export class WorkPage implements OnInit {
       componentProps: context
     });
     profileModal.onDidDismiss().then(data => {
-      console.log("dat13a", data);
-      if (data) {
-        field[item] = data;
+      console.log("dat13a", data.data);
+      if (data.data) {
+        field[item] = data.data;
         this.workForm.markAsDirty();
       }
       this.recomputeFields();
@@ -394,22 +399,23 @@ export class WorkPage implements OnInit {
     console.log("set Focus");
     let done = true;
     for (let field of this.workForm.value.fields) {
-      if (field.type == 'float'
-      || field.type == 'integer'
-      || field.type == 'string'){
-        console.log("field.name", field.name);
-        let element = this.elementRef.nativeElement.querySelector(
-          '#teste'
-        );
-        console.log("element", element);
-        if (element.value=="0" || element.value==""){
-          // this.renderer.invokeElementMethod(element, 'focus', []);
-          element.select();
-          done = false;
-          break;
-        }
-      }
-      else if (field.type == 'date'){
+      // if (field.type == 'float'
+      // || field.type == 'integer'
+      // || field.type == 'string'){
+      //   console.log("field.name", field.name);
+      //   let element = this.elementRef.nativeElement.querySelector(
+      //     '#teste'
+      //   );
+      //   console.log("element", element);
+      //   if (element.value=="0" || element.value==""){
+      //     // this.renderer.invokeElementMethod(element, 'focus', []);
+      //     element.select();
+      //     done = false;
+      //     break;
+      //   }
+      // }
+      // else
+      if (field.type == 'date'){
 
       }
       else if (field.type == 'boolean'){
@@ -436,9 +442,7 @@ export class WorkPage implements OnInit {
       }
     }
     if (done && this.list) {
-      if (this.select){
-        this.modalCtrl.dismiss()
-      }
+
       this.dismissData()
     }
   }

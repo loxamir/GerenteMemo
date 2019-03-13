@@ -17,7 +17,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/activitys"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ 'ACTIVITY_INFORMATION' | translate }}</ion-title>
+    <ion-title>{{ 'ACTIVITY' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -25,19 +25,19 @@
 <ion-content class="activity-content">
   <form class="sample-form validations-form" [formGroup]="activityForm"  (ngSubmit)="onSubmit(activityForm.value)">
     <section class="form-section">
-      <ion-item>
+      <ion-item class="field-100">
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input type="text" formControlName="name" autocomplete='name'></ion-input>
       </ion-item>
-      <div class="validation-errors">
+      <!-- <div class="validation-errors">
         <ng-container *ngFor="let validation of validation_messages.name">
           <div class="error-message" *ngIf="activityForm.get('name').hasError(validation.type) && (activityForm.get('name').dirty || activityForm.get('name').touched)">
             {{ validation.message }}
           </div>
         </ng-container>
-      </div>
+      </div> -->
 
-      <ion-card class="list-card">
+      <!-- <ion-card class="list-card">
         <ion-row>
           <ion-col (click)="showFields()">
             <ion-icon name="arrow-dropdown"
@@ -48,40 +48,46 @@
             <h4 class="section-title">{{'Campos' | translate}}</h4>
             <h4 class="field-value">$ {{activityForm.value.input_amount|number:'1.0'}}</h4>
           </ion-col>
-          <ion-col width-40 class="item-content">
-            <ion-button class="print-invoice"
-            (click)="addField()">
+          <ion-col width-40 class="item-content"> -->
+          <ion-item>
+            <ion-button class="button-100"
+              (click)="addField()">
               Agregar Campo
             </ion-button>
-          </ion-col>
+          </ion-item>
+          <!-- </ion-col>
         </ion-row>
-      </ion-card>
+      </ion-card> -->
         <ion-list *ngIf="activityForm.value.fields.length">
-          <section>
+          <!-- <section> -->
           <!-- <h2 class="section-title">{{'MATERIALS' | translate}}</h2> -->
-            <ion-item-sliding no-padding class="list-item" *ngFor="let item of activityForm.value.fields">
+            <ion-item-sliding no-padding *ngFor="let item of activityForm.value.fields">
               <ion-item no-padding
-               style="background-color: #ddd"
+                class="field-100"
                (click)="editField(item)">
-                <ion-card class="list-card">
-              <ion-row no-padding class="content-row one-line">
-                <ion-col no-padding width-40 class="item-content" style="white-space: normal;">
-                  <h4 class="field-label">Titulo</h4>{{item.sequence}}
+                <!-- <ion-card class="list-card"> -->
+              <ion-row style="width:100%">
+                <!-- <ion-col no-padding width-40 style="white-space: normal;">
+                  <h4 class="field-label">Titulo</h4>
+                  <h4 class="user-name">{{item.label}}</h4>
+                </ion-col> -->
+                <!-- <ion-col no-padding width-15 style="white-space: normal;">
+                  <h4 class="field-label">Sequencia</h4>
+                  <h4 class="user-name">{{item.sequence}}</h4>
+                </ion-col> -->
+                <ion-col no-padding>
+                  <h4 class="field-label"style="margin-top: 0px;">Nombre</h4>
+                  <h4 class="user-name" style="margin-bottom: 0px;">{{item.name}}</h4>
                 </ion-col>
-                <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
-                  <h4 class="field-label">Sequencia</h4>{{item.label}}
+                <ion-col no-padding>
+                  <h4 class="field-label" style="margin-top: 0px;">Tipo</h4>
+                  <h4 class="user-name" style="margin-bottom: 0px;">{{item.type}}</h4>
                 </ion-col>
-                <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
-                  <h4 class="field-label">Nombre</h4> {{item.name}}
-                </ion-col>
-                <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
-                  <h4 class="field-label">Tipo</h4>{{item.type}}
-                </ion-col>
-                <!-- <ion-col no-padding width-15 class="item-content" style="white-space: normal;">
+                <!-- <ion-col no-padding width-15 style="white-space: normal;">
                   <h4 class="field-label">SubTotal</h4>{{item.quantity*item.price}}
                 </ion-col> -->
               </ion-row>
-            </ion-card>
+            <!-- </ion-card> -->
             </ion-item>
               <ion-item-options>
                 <ion-button icon-only color="primary"
@@ -90,49 +96,12 @@
                 </ion-button>
               </ion-item-options>
             </ion-item-sliding>
-          </section>
+            <ion-item class="field-100">
+              <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+              <ion-textarea rows="2" formControlName="note"></ion-textarea>
+            </ion-item>
         </ion-list>
 
-      <!-- <ion-item>
-        <ion-label position="floating">{{'DOCUMENT' | translate}}</ion-label>
-        <ion-input type="text" formControlName="document" autocomplete='name'></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
-        <ion-input type="text" formControlName="address" autocomplete='name'></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
-        <ion-input type="text" formControlName="phone" autocomplete='name'></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">{{'EMAIL' | translate}}</ion-label>
-        <ion-input type="text" formControlName="email" autocomplete='name'></ion-input>
-      </ion-item>
-      <ion-item class="switcher-item">
-        <ion-label>{{'Cliente' | translate}}</ion-label>
-        <ion-toggle formControlName="customer"></ion-toggle>
-      </ion-item>
-      <ion-item class="switcher-item">
-        <ion-label>{{'Proveedor' | translate}}</ion-label>
-        <ion-toggle formControlName="supplier"></ion-toggle>
-      </ion-item>
-      <ion-item class="switcher-item">
-        <ion-label>{{'Vendedor' | translate}}</ion-label>
-        <ion-toggle formControlName="seller"></ion-toggle>
-      </ion-item>
-      <ion-item class="switcher-item">
-        <ion-label>{{'Funcionario' | translate}}</ion-label>
-        <ion-toggle formControlName="employee"></ion-toggle>
-      </ion-item> -->
-
-      <ion-item>
-        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
-        <ion-textarea rows="7" formControlName="note"></ion-textarea>
-      </ion-item>
 
     </section>
 

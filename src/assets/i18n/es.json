@@ -299,5 +299,13 @@
   "PRODUCT_SEQUENCE": "Sequencia Producto",
   "BRAND": "Marca",
   "TOTAL_COST": "Costo Total",
+  "ACTIVITY": "Actividad",
+  "FIELD": "Campo",
+  "LABEL": "Etiqueta",
+  "INVISIBLE": "Invisible",
+  "READONLY": "Solo Lectura",
+  "CLASS": "Classe",
+  "WIDTH": "Ancho",
+  "SEQUENCE": "Sequencia",
   "RESULT": "Resultado"
 }
