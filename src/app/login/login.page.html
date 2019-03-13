@@ -105,7 +105,12 @@
       <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 20px;">Empresas</h2>
       <ion-item *ngFor="let database of databaseList" (click)="selectDatabase(database.database)"
       style="--background: white;">
-        {{database.name}}
+        <ion-col>
+          {{database.name}}
+        </ion-col>
+        <ion-col size="6">
+          <ion-button class="button-100" color="success">Entrar</ion-button>
+        </ion-col>
       </ion-item>
     </div>
 <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 40px;">{{'Primeros Passos' | translate}}</h2>
