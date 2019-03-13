@@ -1,33 +1,12 @@
-<!-- <ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>
-      <ion-row>
-        {{ 'TASK' | translate }}: {{workForm.value.code}}
-      </ion-row>
-      <ion-row style="font-size: 12px;">
-        {{ 'STATE' | translate }}: {{ workForm.value.state | translate }}
-      </ion-row>
-    </ion-title>
-    <ion-buttons slot="end">
-      <ion-button
-       (click)="buttonSave()"
-       [hidden]="(!workForm.dirty || list)">
-        {{ 'SAVE' | translate }}
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar> -->
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/agro-tabs/work-list"></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="!return">
-      {{ 'TASK' | translate }}: {{saleForm.value.code}}
+    <ion-title>
+      {{ 'TASK' | translate }}: {{workForm.value.code}}
     </ion-title>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only (click)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -49,7 +28,7 @@
         </ion-col>
       </ion-card>
     </ion-row>
-    <ion-list no-lines>
+    <ion-list no-lines id="teste">
       <section>
         <ion-row>
           <ion-item-sliding class="list-item" *ngFor="let field of filterFields(workForm.value.fields)" [style.width]="field.class == 'half-width' ? '50%' : '100%'">

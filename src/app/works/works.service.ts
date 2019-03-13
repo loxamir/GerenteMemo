@@ -24,7 +24,7 @@ export class WorksService {
   searchItems(keyword, page) {
     return new Promise(resolve => {
     this.pouchdbService.searchDocs(
-      'work', keyword, page, "contact_name"
+      'work', keyword, page, "activity_name"
     ).then((sales) => {
         resolve(sales);
       })

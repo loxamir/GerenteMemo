@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
     {
       title: 'Agro',
       url: '/agro-tabs',
-      icon: 'leaf'
+      icon: 'ios-leaf'
     },
     {
       title: 'Productos',

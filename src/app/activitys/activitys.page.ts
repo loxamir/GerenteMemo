@@ -23,7 +23,7 @@ export class ActivitysPage implements OnInit {
     public activitysService: ActivitysService,
     public loadingCtrl: LoadingController,
 
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public route: ActivatedRoute,
     public events: Events,
     public popoverCtrl: PopoverController,
@@ -102,12 +102,14 @@ export class ActivitysPage implements OnInit {
       this.events.unsubscribe('open-activity');
     })
     // this.navCtrl.navigateForward(ActivityPage, {'_id': activity._id});
+
     this.navCtrl.navigateForward(['/activity', {'_id': activity._id}]);
   }
 
   selectActivity(activity) {
     if (this.select){
       // this.navCtrl.navigateBack().then(() => {
+        this.modalCtrl.dismiss();
         this.events.publish('select-activity', activity);
       // });
     } else {
@@ -119,6 +121,7 @@ export class ActivitysPage implements OnInit {
     this.events.subscribe('create-activity', (data) => {
       if (this.select){
         // this.navCtrl.navigateBack().then(() => {
+          this.modalCtrl.dismiss();
           this.events.publish('select-activity', data);
         // });
       }

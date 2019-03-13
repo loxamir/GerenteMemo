@@ -41,6 +41,8 @@ export class WorkPage implements OnInit {
   fields: any = {};
   list: boolean = false;
   activity;
+  workData;
+  select;
 
   constructor(
     public navCtrl: NavController,
@@ -75,6 +77,9 @@ export class WorkPage implements OnInit {
     this.list = eval(this.route.snapshot.paramMap.get('list'));
     this.activity = this.route.snapshot.paramMap.get('activity');
     this.avoidAlertMessage = false;
+    this.workData = this.route.snapshot.data;
+    console.log("paramaps", this.route.snapshot);
+    this.select = this.route.snapshot.paramMap.get('select');
   }
 
   dismissData(){
@@ -244,6 +249,7 @@ export class WorkPage implements OnInit {
       return self.formatService.compareField(a, b, 'sequence');
     }) || [];
     data_fields.forEach(field => {
+
       if (field.type == "boolean") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||false));
       } else if (field.type == "float") {
@@ -336,6 +342,7 @@ export class WorkPage implements OnInit {
     context["list"] = true;
     context["activity"] = activity;
     context["open"] = true;
+    context["select"] = true;
     let profileModal = await this.modalCtrl.create({
       component: WorkPage,
       componentProps: context
@@ -362,6 +369,7 @@ export class WorkPage implements OnInit {
     let context = this.workForm.value[field_name][item];
     context["list"] = true;
     context["activity"] = activity;
+    context["select"] = true;
     let profileModal = await this.modalCtrl.create({
       component:WorkPage,
       componentProps: context
@@ -389,9 +397,11 @@ export class WorkPage implements OnInit {
       if (field.type == 'float'
       || field.type == 'integer'
       || field.type == 'string'){
+        console.log("field.name", field.name);
         let element = this.elementRef.nativeElement.querySelector(
-          '#'+field.name+' input'
+          '#teste'
         );
+        console.log("element", element);
         if (element.value=="0" || element.value==""){
           // this.renderer.invokeElementMethod(element, 'focus', []);
           element.select();
@@ -426,6 +436,9 @@ export class WorkPage implements OnInit {
       }
     }
     if (done && this.list) {
+      if (this.select){
+        this.modalCtrl.dismiss()
+      }
       this.dismissData()
     }
   }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, PopoverController , Events, NavParams  } from '@ionic/angular';
+import { NavController, LoadingController, PopoverController , Events,
+   NavParams, ModalController  } from '@ionic/angular';
 // import { WorkPage } from '../work';
 //import { DecimalPipe } from '@angular/common';
 import 'rxjs/Rx';
@@ -27,7 +28,7 @@ export class WorksPage implements OnInit {
   // return total;
   constructor(
     public navCtrl: NavController,
-    // public app: App,
+    public modalCtrl: ModalController,
     public worksService: WorksService,
     public loadingCtrl: LoadingController,
     public popoverCtrl: PopoverController,
@@ -110,11 +111,12 @@ export class WorksPage implements OnInit {
 
   createWork(){
     this.events.subscribe('create-work', (data) => {
-      // if (this.select){
-      //   this.navCtrl.navigateBack().then(() => {
-      //     this.events.publish('select-work', data);
-      //   });
-      // }
+      if (this.select){
+        // this.navCtrl.navigateBack().then(() => {
+          this.modalCtrl.dismiss();
+          this.events.publish('select-work', data);
+        // });
+      }
       this.events.unsubscribe('create-work');
     })
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
