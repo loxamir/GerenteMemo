@@ -33,7 +33,7 @@
       <section>
         <ion-row>
           <ion-item-sliding class="list-item" *ngFor="let field of filterFields(workForm.value.fields)" [style.width]="field.class == 'half-width' ? '50%' : '100%'">
-            <ion-item style="background-color: #fff;border: 1px solid #ddd;height: 50px;" class="switcher-item" *ngIf="field.type == 'boolean'">
+            <ion-item class="field-100" *ngIf="field.type == 'boolean'">
               <ion-label>{{field.label || field.name}}</ion-label>
               <ion-toggle [formControlName]="field.name"></ion-toggle>
             </ion-item>
@@ -43,7 +43,8 @@
                   {{ field.label || field.name }}
                 </ion-button>
             </ion-item>
-            <ion-item style="background-color: #fff;border: 1px solid #ddd;height: 50px;"
+            <ion-item
+            class="field-100"
             *ngIf="field.type == 'integer'"
             (ionChange)="recomputeFields()">
               <ion-label position="floating">{{field.label || field.name}}</ion-label>
@@ -53,7 +54,7 @@
               text-center>
               </ion-input>
             </ion-item>
-            <ion-item style="background-color: #fff;border: 1px solid #ddd;height: 50px;"
+            <ion-item class="field-100"
             *ngIf="field.type == 'float'">
               <ion-label position="floating">{{field.label || field.name}}</ion-label>
               <ion-input type="number"
@@ -64,23 +65,23 @@
               (ionChange)="recomputeFields()">
               </ion-input>
             </ion-item>
-            <ion-item style="background-color: #fff;border: 1px solid #ddd;height: 50px;" *ngIf="field.type == 'string'">
+            <ion-item class="field-100" *ngIf="field.type == 'string'">
               <ion-label position="floating">{{field.label || field.name}}</ion-label>
               <ion-input type="text" [formControlName]="field.name" text-center>
               </ion-input>
             </ion-item>
-            <ion-item *ngIf="field.type == 'formula'" style="background-color: white;border: 1px solid #ddd;height: 50px;">
+            <ion-item *ngIf="field.type == 'formula'" class="field-100">
               <h4 class="field-label">{{field.label || field.name}}</h4>
               <h4 class="field-value" style="color: gray">{{ fields[field.name] }}</h4>
             </ion-item>
-            <ion-item style="background-color: white" *ngIf="field.type == 'many2one'" style="background-color: #fff;border: 1px solid #ddd;height: 50px;" (click)="selectM2O(field.name, field.model, field.context)">
+            <ion-item *ngIf="field.type == 'many2one'"  class="field-100" (click)="selectM2O(field.name, field.model, field.context)">
               <h4 class="field-label">{{field.label || field.name}}</h4>
               <h4 class="field-value">{{workForm.value[field.name] && workForm.value[field.name].name || 'Selecionar'}}</h4>
             </ion-item>
+
+
             <ion-list style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name].length > 0">
               <h2 class="section-title" style="color:#1c61f3;background: white;border: 1px solid;border-top-left-radius: 5px;border-top-right-radius: 5px;">{{ field.label || field.name | translate}}</h2>
-
-
               <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
                 <ion-item (click)="editFieldItem(field.name, i)" class="internal-item" style="--background: white;">
                   <ion-row style="width: 100%">
@@ -96,9 +97,6 @@
                   </ion-button>
                 </ion-item-options>
               </ion-item-sliding>
-
-
-
               <ion-row style="background: #1c61f3;border-radius: 7px;border: 1px solid #1c61f3; border-top-left-radius: 0px;border-top-right-radius: 0px;"
               (click)="addFieldItem(field.name)">
                 <a style="color:white;cursor: default;font-size:16px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
@@ -106,6 +104,8 @@
                 </a>
               </ion-row>
             </ion-list>
+
+
 
             <ion-item style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name].length == 0">
               <ion-row style="background: #1c61f3;border-radius: 5px;border: 1px solid #1c61f3;"
@@ -116,7 +116,7 @@
               </ion-row>
             </ion-item>
 
-            <ion-item style="background-color: #fff;border: 1px solid #ddd;height: 50px;" *ngIf="field.type == 'date'" >
+            <ion-item class="field-100" *ngIf="field.type == 'date'" >
               <ion-label position="floating">{{field.label || field.name}}</ion-label>
               <ion-datetime class="task-date" displayFormat="DD/MM/YYYY"
               pickerFormat="DD/MM/YYYY"
