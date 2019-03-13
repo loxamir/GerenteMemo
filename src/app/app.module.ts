@@ -75,6 +75,16 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { ActivitysPageModule } from './activitys/activitys.module';
 import { ActivityPageModule } from './activity/activity.module';
 import { FieldPageModule } from './field/field.module';
+
+import { AnimalPageModule } from './animal/animal.module';
+import { AreaPageModule } from './area/area.module';
+import { MachinePageModule } from './machine/machine.module';
+import { CropPageModule } from './crop/crop.module';
+import { AnimalsPageModule } from './animals/animals.module';
+import { AreasPageModule } from './areas/areas.module';
+import { MachinesPageModule } from './machines/machines.module';
+import { CropsPageModule } from './crops/crops.module';
+
 import { environment } from '../environments/environment';
 
 @NgModule({
@@ -107,6 +117,14 @@ import { environment } from '../environments/environment';
     BrandListPageModule,
     ProductCategoryListPageModule,
     AccountCategoryListPageModule,
+    AnimalPageModule,
+    AreaPageModule,
+    MachinePageModule,
+    CropPageModule,
+    AnimalsPageModule,
+    AreasPageModule,
+    MachinesPageModule,
+    CropsPageModule,
     ProductListPageModule,
     PaymentConditionListPageModule,
     CurrencyListPageModule,

@@ -3,12 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  // { path: 'home', loadChildren: './home/home.module#HomePageModule' },
   { path: 'contact', loadChildren: './contact/contact.module#ContactPageModule' },
   { path: 'contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule' },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
-  // { path: 'menu', loadChildren: './menu/menu.module#MenuPageModule' },
-  // { path: '', loadChildren: './menu/menu.module#MenuPageModule' },
   { path: 'product', loadChildren: './product/product.module#ProductPageModule' },
   { path: 'product-category', loadChildren: './product-category/product-category.module#ProductCategoryPageModule' },
   { path: 'product-category-list', loadChildren: './product-category-list/product-category-list.module#ProductCategoryListPageModule' },
@@ -45,7 +42,6 @@ const routes: Routes = [
   { path: 'user', loadChildren: './user/user.module#UserPageModule' },
   { path: 'help', loadChildren: './help/help.module#HelpPageModule' },
   { path: 'help-list', loadChildren: './help-list/help-list.module#HelpListPageModule' },
-  // // { path: 'importer', loadChildren: './importer/importer.module#ImporterPageModule' },
   { path: 'planned-list', loadChildren: './planned-list/planned-list.module#PlannedListPageModule' },
   { path: 'purchase', loadChildren: './purchase/purchase.module#PurchasePageModule' },
   { path: 'salary', loadChildren: './salary/salary.module#SalaryPageModule' },
@@ -95,8 +91,6 @@ const routes: Routes = [
   { path: 'activity', loadChildren: './activity/activity.module#ActivityPageModule' },
   { path: 'activitys', loadChildren: './activitys/activitys.module#ActivitysPageModule' },
   { path: 'field', loadChildren: './field/field.module#FieldPageModule' },
-  { path: 'project', loadChildren: './project/project.module#ProjectPageModule' },
-  // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 
 @NgModule({
