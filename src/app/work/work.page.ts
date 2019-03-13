@@ -443,4 +443,65 @@ export class WorkPage implements OnInit {
     }
   }
 
+  showNextButton(){
+    // console.log("stock",this.workForm.value.stock);
+    // if (this.workForm.value.name==null){
+      return true;
+    // }
+    // else if (this.workForm.value.price==null){
+    //   return true;
+    // }
+    // else if (this.workForm.value.cost==null){
+    //   return true;
+    // }
+    // else if (this.workForm.value.type=='product'&&this.workForm.value.stock==null){
+    //   return true;
+    // }
+    // else {
+    //   return false;
+    // }
+  }
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.workForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      this.workForm.markAsPristine();
+      this.navCtrl.navigateBack('/agro-tabs/work-list');
+    }
+  }
+
 }
