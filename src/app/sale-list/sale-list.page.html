@@ -27,9 +27,6 @@
       <ion-item no-padding (click)="openSale(item)">
         <ion-card class="list-card" no-padding>
           <ion-row>
-            <!-- <ion-col no-padding width-20 class="schedule-date">
-              <h2 class="list-big-number">{{item.code}}</h2>
-            </ion-col> -->
             <ion-col>
               <h3 class="item-name"><b>{{ item.contact_name || 'No Informado'}}</b></h3>
             </ion-col>
@@ -74,10 +71,6 @@
   </ion-infinite-scroll>
   <ion-row style="height:15px;">
   </ion-row>
-  <!-- <div>
-    <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="https://uc345e667ca43908d75a8cf2bc88.previews.dropboxusercontent.com/p/thumb/AATLtAiIK4RGYT7yj71W0syFKYCjVG3wSwkU69o92pa__72jG9r98BSj985Ul8Pj2LoK26vXBFn4pCZjlqzaCeHC8XwjeySykvxU3My3458ojVjEbPWBJAs26kZJJ7PZm3EU6Ylc-7lt78hU_Lbg-gIJ0UEprS2thP1e3kiLpwevJvK00WuzaXKljqO_Y11BgrnwGIn7bnaSnXo5ZdITcSpiqBe-RGM2ABYCL3VBDbNU2qBCZAUsJJg2Bfj-c5FlH_nyAs34o_75eLZ01YS4G37G/p.png?size=1600x1200&size_mode=3"/>
-  </div> -->
-
   <ion-row *ngIf="!sales.length">
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
       <ion-row>
@@ -92,11 +85,6 @@
       </ion-row>
     </ion-col>
   </ion-row>
-  <!-- <ion-row>
-    <ion-col size="12" style="text-align: center;margin-top: 54px;">
-      <ion-icon name="arrow-round-down"  color="primary" style="font-size: 70px"></ion-icon>
-    </ion-col>
-  </ion-row> -->
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
       <ion-fab-button (click)="createSale()" color="primary">
           <ion-icon name="add">
