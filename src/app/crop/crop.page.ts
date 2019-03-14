@@ -57,7 +57,7 @@ export class CropPage implements OnInit {
     })
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.cropForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
@@ -71,14 +71,15 @@ export class CropPage implements OnInit {
       code: new FormControl(''),
       _id: new FormControl(''),
     });
-    //this.loading.present();
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     if (this._id){
       this.cropService.getCrop(this._id).then((data) => {
         this.cropForm.patchValue(data);
-        //this.loading.dismiss();
+        this.loading.dismiss();
       });
     } else {
-      //this.loading.dismiss();
+      this.loading.dismiss();
     }
   }
 

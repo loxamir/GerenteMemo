@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events } from '@ionic/angular';
+import { NavController,  ModalController, LoadingController, Events,
+  AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import 'rxjs/Rx';
@@ -24,6 +25,7 @@ export class ActivityPage implements OnInit {
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
+  select;
 
   constructor(
     public navCtrl: NavController,
@@ -36,7 +38,7 @@ export class ActivityPage implements OnInit {
     // public platform: Platform,
     public activityService: ActivityService,
     public route: ActivatedRoute,
-
+    public alertCtrl: AlertController,
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
@@ -45,6 +47,7 @@ export class ActivityPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
+    this.select = this.route.snapshot.paramMap.get('select');
   }
 
   async ngOnInit() {
@@ -95,22 +98,20 @@ export class ActivityPage implements OnInit {
     // }
   }
   async editField(item){
-    // if (this.activityForm.value.state=='QUOTATION'){
       let profileModal = await this.modalCtrl.create({
         component: FieldPage,
         componentProps: item
       });
       profileModal.onDidDismiss().then(data => {
-        if (data) {
-          Object.keys(data).forEach(key => {
-            item[key] = data[key];
+        if (data.data) {
+          Object.keys(data.data).forEach(key => {
+            item[key] = data.data[key];
           })
           // this.recomputeValues();
           this.activityForm.markAsDirty();
         }
       });
       profileModal.present();
-    // }
   }
   removeField(item){
     // if (this.activityForm.value.state=='QUOTATION'){
@@ -124,6 +125,9 @@ export class ActivityPage implements OnInit {
     if (this._id){
       this.activityService.updateActivity(this.activityForm.value);
       // this.navCtrl.navigateBack().then(() => {
+        if (this.select){
+          this.modalCtrl.dismiss();
+        }
         this.events.publish('open-activity', this.activityForm.value);
       // });
     } else {
@@ -134,6 +138,9 @@ export class ActivityPage implements OnInit {
         });
         this._id = doc.id;
         // this.navCtrl.navigateBack().then(() => {
+        if (this.select){
+          this.modalCtrl.dismiss();
+        }
           this.events.publish('create-activity', this.activityForm.value);
         // });
       });
@@ -158,5 +165,48 @@ export class ActivityPage implements OnInit {
 
   onSubmit(values){
     //console.log("teste", values);
+  }
+
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.activityForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      this.activityForm.markAsPristine();
+      this.navCtrl.navigateBack('/tabs/sale-list');
+    }
   }
 }

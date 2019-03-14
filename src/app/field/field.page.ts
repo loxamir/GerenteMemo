@@ -34,10 +34,11 @@ export class FieldPage implements OnInit {
   activity;
   activity_id;
   context;
+  select;
 
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -68,6 +69,7 @@ export class FieldPage implements OnInit {
     this.activity = this.route.snapshot.paramMap.get('activity');
     this.activity_id = this.route.snapshot.paramMap.get('activity_id');
     this.context = this.route.snapshot.paramMap.get('context');
+    this.select = this.route.snapshot.paramMap.get('select');
   }
 
   ngOnInit() {
@@ -93,7 +95,7 @@ export class FieldPage implements OnInit {
 
   buttonSave(){
 
-    // this.viewCtrl.dismiss(this.fieldForm.value);
+    this.modalCtrl.dismiss(this.fieldForm.value);
   }
 
   selectActivity() {
@@ -111,7 +113,7 @@ export class FieldPage implements OnInit {
         this.events.unsubscribe('select-activity');
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: ActivitysPage,
         componentProps: {
           "select": true,
@@ -199,5 +201,48 @@ export class FieldPage implements OnInit {
   removeFieldItem(item){
     this.fieldForm.value.attributes.splice(item, 1);
     this.fieldForm.markAsDirty();
+  }
+
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.fieldForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      this.fieldForm.markAsPristine();
+      this.navCtrl.navigateBack('/tabs/sale-list');
+    }
   }
 }

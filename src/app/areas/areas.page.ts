@@ -40,8 +40,9 @@ export class AreasPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
     this.events.subscribe('changed-work', (change)=>{
       this.areasService.handleViewChange(this.areas, change);
@@ -83,7 +84,7 @@ export class AreasPage implements OnInit {
     ).then((areas) => {
       this.areas = areas;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -99,7 +100,7 @@ export class AreasPage implements OnInit {
       this.events.unsubscribe('open-area');
     })
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    this.navCtrl.navigateForward(['/animal', {'_id': area._id}]);
+    this.navCtrl.navigateForward(['/area', {'_id': area._id}]);
   }
 
   selectArea(area) {

@@ -372,7 +372,7 @@ export class LoginPage implements OnInit {
         // this.loading.dismiss();
       })
       this.menuCtrl.enable(true);
-      this.router.navigate(['/tabs/sale-list']);
+      this.router.navigate(['/agro-tabs/work-list']);
     // }
   }
 

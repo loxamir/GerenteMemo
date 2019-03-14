@@ -57,7 +57,7 @@ export class AnimalPage implements OnInit {
     })
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.animalForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
@@ -71,13 +71,15 @@ export class AnimalPage implements OnInit {
       code: new FormControl(''),
       _id: new FormControl(''),
     });
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     if (this._id){
       this.animalService.getAnimal(this._id).then((data) => {
         this.animalForm.patchValue(data);
-        //this.loading.dismiss();
+        this.loading.dismiss();
       });
     } else {
-      //this.loading.dismiss();
+      this.loading.dismiss();
     }
   }
 

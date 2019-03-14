@@ -97,13 +97,24 @@ export class ActivitysPage implements OnInit {
   //   });
   // }
 
-  openActivity(activity) {
+  async openActivity(activity) {
     this.events.subscribe('open-activity', (data) => {
       this.events.unsubscribe('open-activity');
     })
     // this.navCtrl.navigateForward(ActivityPage, {'_id': activity._id});
-
-    this.navCtrl.navigateForward(['/activity', {'_id': activity._id}]);
+    if (this.select) {
+      // this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
+      let profileModal = await this.modalCtrl.create({
+        component: ActivityPage,
+        componentProps: {
+          "select": true,
+          "_id": activity._id,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/activity', {'_id': activity._id}]);
+    }
   }
 
   selectActivity(activity) {

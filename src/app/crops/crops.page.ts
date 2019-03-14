@@ -40,8 +40,9 @@ export class CropsPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
     this.events.subscribe('changed-work', (change)=>{
       this.cropsService.handleViewChange(this.crops, change);
@@ -83,7 +84,7 @@ export class CropsPage implements OnInit {
     ).then((crops) => {
       this.crops = crops;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

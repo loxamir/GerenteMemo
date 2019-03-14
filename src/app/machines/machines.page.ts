@@ -39,8 +39,9 @@ export class MachinesPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
     this.events.subscribe('changed-work', (change)=>{
       this.machinesService.handleViewChange(this.machines, change);
@@ -82,7 +83,7 @@ export class MachinesPage implements OnInit {
     ).then((machines) => {
       this.machines = machines;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -99,7 +100,7 @@ export class MachinesPage implements OnInit {
     })
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // newRootNav.push(MachinePage, {'_id': machine._id});
-    this.navCtrl.navigateForward(['/crop', {'_id': machine._id}]);
+    this.navCtrl.navigateForward(['/machine', {'_id': machine._id}]);
   }
 
   selectMachine(machine) {

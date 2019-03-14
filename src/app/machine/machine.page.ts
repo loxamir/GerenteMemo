@@ -58,7 +58,7 @@ export class MachinePage implements OnInit {
     })
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.machineForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
@@ -72,14 +72,15 @@ export class MachinePage implements OnInit {
       code: new FormControl(''),
       _id: new FormControl(''),
     });
-    //this.loading.present();
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     if (this._id){
       this.machineService.getMachine(this._id).then((data) => {
         this.machineForm.patchValue(data);
-        //this.loading.dismiss();
+        this.loading.dismiss();
       });
     } else {
-      //this.loading.dismiss();
+      this.loading.dismiss();
     }
   }
 

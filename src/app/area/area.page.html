@@ -1,19 +1,12 @@
 <ion-header>
   <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/account-list"></ion-back-button>
+    </ion-buttons>
     <ion-title>
-      <ion-row>
-        {{areaForm.value.name}}
-      </ion-row>
+        Area: {{areaForm.value.name}}
     </ion-title>
-
     <ion-buttons slot="end" >
-      <ion-button (click)="buttonSave()" [hidden]="!areaForm.dirty">
-        {{ 'SAVE' | translate }}
-      </ion-button>
-      <ion-button icon-only
-              (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 

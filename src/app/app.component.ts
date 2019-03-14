@@ -13,7 +13,12 @@ import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/rou
 export class AppComponent implements OnInit {
   public appPages = [
     {
-      title: 'Operativo',
+      title: 'Agricultura',
+      url: '/agro-tabs',
+      icon: 'ios-leaf'
+    },
+    {
+      title: 'Administración',
       url: '/tabs',
       icon: 'infinite'
     },
@@ -21,11 +26,6 @@ export class AppComponent implements OnInit {
       title: 'Informes',
       url: '/report-list',
       icon: 'stats'
-    },
-    {
-      title: 'Agro',
-      url: '/agro-tabs',
-      icon: 'ios-leaf'
     },
     {
       title: 'Productos',

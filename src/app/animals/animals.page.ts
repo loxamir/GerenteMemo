@@ -40,8 +40,9 @@ export class AnimalsPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
     this.events.subscribe('changed-work', (change)=>{
       this.animalsService.handleViewChange(this.animals, change);
@@ -83,7 +84,7 @@ export class AnimalsPage implements OnInit {
     ).then((animals) => {
       this.animals = animals;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
