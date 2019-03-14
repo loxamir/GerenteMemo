@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/account-list"></ion-back-button>
+      <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
         Area: {{areaForm.value.name}}
@@ -17,6 +17,15 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <form class="sample-form validations-form" [formGroup]="areaForm" (ngSubmit)="onSubmit(areaForm.value)">
+    <ion-item
+     no-padding
+     *ngIf="create"
+     class="field-50">
+      <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+      <ion-input #name type="text"
+      formControlName="name"></ion-input>
+    </ion-item>
+
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)">
       <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
@@ -69,4 +78,22 @@
   </ion-icon>
 </ion-fab-button>
 </ion-fab>
+<ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <ion-button (click)="discard()" color="danger">
+    <ion-icon name="backspace" *ngIf="areaForm.dirty"> </ion-icon>
+    <ion-icon name="arrow-back" *ngIf="!areaForm.dirty"> </ion-icon>
+    <span *ngIf="areaForm.dirty">Descartar</span>
+    <span *ngIf="!areaForm.dirty">Volver</span>
+  </ion-button>
+</ion-fab>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="areaForm.dirty">
+  <ion-button (click)="buttonSave()"  color="success">
+    <ion-icon name="save"> </ion-icon>
+    Guardar
+  </ion-button>
+</ion-fab>
+
+<div style="height: 100px">
+</div>
 </ion-content>

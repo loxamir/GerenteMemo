@@ -117,7 +117,7 @@ export class AreasPage implements OnInit {
   createArea() {
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // newRootNav.push(ProductPage, {'type': 'rural_area'});
-    this.navCtrl.navigateForward(['/product', {'type': 'rural_area'}]);
+    this.navCtrl.navigateForward(['/area', {'create': true}]);
   }
 
   deleteArea(area){

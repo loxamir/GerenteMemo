@@ -21,7 +21,7 @@ import { ActivitysPage } from '../activitys/activitys.page';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ProductListPage } from '../product-list/product-list.page';
 import { ContactListPage } from '../contact-list/contact-list.page';
-// import { ProjectsPage } from '../project/list/projects';
+import { AreasPage } from '../areas/areas.page';
 import { StockMoveService } from '../stock-move/stock-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -322,6 +322,9 @@ export class WorkPage implements OnInit {
       //   break;
       case 'product':
         this.showModal(ProductListPage, context)
+        break;
+      case 'area':
+        this.showModal(AreasPage, context)
         break;
     }
   }

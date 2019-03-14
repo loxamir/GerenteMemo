@@ -16,8 +16,8 @@ export class AreasService {
         ['z']
       ).then((planneds: any[]) => {
         let areaList = [];
-        this.pouchdbService.searchDocTypeDataField(
-          'product', keyword, page, 'type', 'rural_area'
+        this.pouchdbService.searchDocTypeData(
+          'area', keyword, page
         ).then((areas: any[]) => {
           console.log("areas", areas);
           console.log("planneds", planneds);

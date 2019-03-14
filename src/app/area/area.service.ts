@@ -46,24 +46,19 @@ export class AreaService {
     });
   }
 
-  createArea(area){
-    area.docType = 'account';
+  createArea(viewData){
+    let area = Object.assign({}, viewData);
+    area.docType = 'area';
     delete area.moves;
     delete area.area;
     return new Promise((resolve, reject)=>{
       if (area.code && area.code != ''){
         this.pouchdbService.createDoc(area).then(doc => {
-          if (area.type == 'liquidity'){
-            area._id = "account.area."+area.code;
-          }
           resolve({doc: doc, area: area});
         });
       } else {
-        this.configService.getSequence('account').then((code) => {
+        this.configService.getSequence('area').then((code) => {
           area['code'] = code;
-          if (area.type == 'liquidity'){
-            area._id = "account.area."+code;
-          }
           this.pouchdbService.createDoc(area).then(doc => {
             resolve({doc: doc, area: area});
           });
