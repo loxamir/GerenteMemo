@@ -31,10 +31,11 @@ export class MachinePage implements OnInit {
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
-
+  select;
+  create;
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -53,6 +54,8 @@ export class MachinePage implements OnInit {
     //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
+    this.select = this.route.snapshot.paramMap.get('select');
+    this.create = this.route.snapshot.paramMap.get('create');
     this.events.subscribe('changed-machine-move', (change)=>{
       this.machineService.handleChange(this.machineForm.value.moves, change);
     })
@@ -62,13 +65,13 @@ export class MachinePage implements OnInit {
     this.machineForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
-      currency: new FormControl({}),
-      currency_name: new FormControl(''),
+      // currency: new FormControl({}),
+      // currency_name: new FormControl(''),
       moves: new FormControl([]),
-      checks: new FormControl([]),
-      type: new FormControl('liquidity'),
-      sequence: new FormControl(1),
-      note: new FormControl(''),
+      // checks: new FormControl([]),
+      // type: new FormControl('liquidity'),
+      // sequence: new FormControl(1),
+      // note: new FormControl(''),
       code: new FormControl(''),
       _id: new FormControl(''),
     });
@@ -120,7 +123,7 @@ export class MachinePage implements OnInit {
       item.date = data.date;
       this.events.unsubscribe('open-machine-move');
     });
-    let profileModal = await this.modal.create({
+    let profileModal = await this.modalCtrl.create({
       component:WorkPage,
       componentProps: {
         "_id": item._id,
@@ -130,7 +133,7 @@ export class MachinePage implements OnInit {
   }
 
   async addActivity(){
-    let profileModal = await this.modal.create({
+    let profileModal = await this.modalCtrl.create({
       component: WorkPage,
       componentProps: {
         "machine": this.machineForm.value,
@@ -158,6 +161,49 @@ export class MachinePage implements OnInit {
 
   onSubmit(values){
     //console.log(values);
+  }
+
+  discard(){
+    this.canDeactivate();
+  }
+  async canDeactivate() {
+      if(this.machineForm.dirty) {
+          let alertPopup = await this.alertCtrl.create({
+              header: 'Descartar',
+              message: '¿Deseas salir sin guardar?',
+              buttons: [{
+                      text: 'Si',
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: 'No',
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
+
+          // Show the alert
+          alertPopup.present();
+
+          // Return false to avoid the page to be popped up
+          return false;
+      } else {
+        this.exitPage();
+      }
+  }
+
+  private exitPage() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      this.machineForm.markAsPristine();
+      this.navCtrl.navigateBack('/agro-tabs/machine-list');
+    }
   }
 
 }

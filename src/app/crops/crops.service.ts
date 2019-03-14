@@ -17,7 +17,7 @@ export class CropsService {
       ).then((planneds: any[]) => {
         let cropList = [];
         this.pouchdbService.searchDocTypeData(
-          'project', keyword
+          'crop', keyword
         ).then((crops: any[]) => {
           console.log("projects", crops);
           console.log("planneds", planneds);

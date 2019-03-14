@@ -46,30 +46,23 @@ export class CropService {
     });
   }
 
-  createCrop(crop){
-    crop.docType = 'account';
+  createCrop(viewData){
+    let crop = Object.assign({}, viewData);
+    crop.docType = 'crop';
     delete crop.moves;
-    delete crop.crop;
     return new Promise((resolve, reject)=>{
       if (crop.code && crop.code != ''){
         this.pouchdbService.createDoc(crop).then(doc => {
-          if (crop.type == 'liquidity'){
-            crop._id = "account.crop."+crop.code;
-          }
-          resolve({doc: doc, crop: crop});
+          resolve({doc: doc, area: crop});
         });
       } else {
-        this.configService.getSequence('account').then((code) => {
+        this.configService.getSequence('crop').then((code) => {
           crop['code'] = code;
-          if (crop.type == 'liquidity'){
-            crop._id = "account.crop."+code;
-          }
           this.pouchdbService.createDoc(crop).then(doc => {
             resolve({doc: doc, crop: crop});
           });
         });
       }
-
     });
   }
 

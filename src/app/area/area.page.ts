@@ -73,7 +73,7 @@ export class AreaPage implements OnInit {
       // type: new FormControl('liquidity'),
       // sequence: new FormControl(1),
       // note: new FormControl(''),
-      // code: new FormControl(''),
+      code: new FormControl(''),
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
@@ -203,7 +203,7 @@ export class AreaPage implements OnInit {
       this.modalCtrl.dismiss();
     } else {
       this.areaForm.markAsPristine();
-      this.navCtrl.navigateBack('/tabs/cash-list');
+      this.navCtrl.navigateBack('/agro-tabs/area-list');
     }
   }
 

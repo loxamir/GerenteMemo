@@ -117,7 +117,7 @@ export class MachinesPage implements OnInit {
   createMachine() {
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // newRootNav.push(ProductPage, {'type': 'machine'});
-    this.navCtrl.navigateForward(['/product', {'type': 'machine'}]);
+    this.navCtrl.navigateForward(['/machine', {"create": true}]);
   }
 
   deleteMachine(machine){

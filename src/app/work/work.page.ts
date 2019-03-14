@@ -22,6 +22,8 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ProductListPage } from '../product-list/product-list.page';
 import { ContactListPage } from '../contact-list/contact-list.page';
 import { AreasPage } from '../areas/areas.page';
+import { MachinesPage } from '../machines/machines.page';
+import { CropsPage } from '../crops/crops.page';
 import { StockMoveService } from '../stock-move/stock-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -317,14 +319,17 @@ export class WorkPage implements OnInit {
       case 'contact':
         this.showModal(ContactListPage, context)
         break;
-      // case 'project':
-      //   this.showModal(ProjectsPage, context)
-      //   break;
       case 'product':
         this.showModal(ProductListPage, context)
         break;
       case 'area':
         this.showModal(AreasPage, context)
+        break;
+      case 'machine':
+        this.showModal(MachinesPage, context)
+        break;
+      case 'crop':
+        this.showModal(CropsPage, context)
         break;
     }
   }

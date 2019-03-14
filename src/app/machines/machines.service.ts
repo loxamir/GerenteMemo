@@ -16,8 +16,8 @@ export class MachinesService {
         ['z']
       ).then((planneds: any[]) => {
         let machineList = [];
-        this.pouchdbService.searchDocTypeDataField(
-          'product', keyword, page, 'type', 'machine'
+        this.pouchdbService.searchDocTypeData(
+          'machine', keyword, page
         ).then((machines: any[]) => {
           console.log("machines", machines);
           console.log("planneds", planneds);

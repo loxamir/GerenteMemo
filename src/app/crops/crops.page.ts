@@ -118,7 +118,7 @@ export class CropsPage implements OnInit {
   createCrop() {
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // newRootNav.push(CropPage, {});
-    this.navCtrl.navigateForward(['/crop', {}]);
+    this.navCtrl.navigateForward(['/crop', {"create": true}]);
   }
 
   deleteCrop(crop){

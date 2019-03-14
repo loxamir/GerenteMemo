@@ -46,30 +46,23 @@ export class MachineService {
     });
   }
 
-  createMachine(machine){
-    machine.docType = 'account';
+  createMachine(viewData){
+    let machine = Object.assign({}, viewData);
+    machine.docType = 'machine';
     delete machine.moves;
-    delete machine.machine;
     return new Promise((resolve, reject)=>{
       if (machine.code && machine.code != ''){
         this.pouchdbService.createDoc(machine).then(doc => {
-          if (machine.type == 'liquidity'){
-            machine._id = "account.machine."+machine.code;
-          }
-          resolve({doc: doc, machine: machine});
+          resolve({doc: doc, area: machine});
         });
       } else {
-        this.configService.getSequence('account').then((code) => {
+        this.configService.getSequence('machine').then((code) => {
           machine['code'] = code;
-          if (machine.type == 'liquidity'){
-            machine._id = "account.machine."+code;
-          }
           this.pouchdbService.createDoc(machine).then(doc => {
             resolve({doc: doc, machine: machine});
           });
         });
       }
-
     });
   }
 
