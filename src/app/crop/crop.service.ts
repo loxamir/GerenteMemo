@@ -18,7 +18,7 @@ export class CropService {
     return new Promise((resolve, reject)=>{
       let payableList = [];
       this.pouchdbService.getView(
-        'stock/Crops', 2,
+        'stock/Crops', 1,
         [doc_id, '0'],
         [doc_id, 'z']
       ).then((planneds: any[]) => {
@@ -27,7 +27,7 @@ export class CropService {
         let balance = 0;
         planneds.forEach(item => {
           pts.push(item);
-          promise_ids.push(this.pouchdbService.getDoc(item.key[1]));
+          promise_ids.push(this.pouchdbService.getDoc(item.key[0]));
           balance += parseFloat(item.value);
         })
         promise_ids.push(this.pouchdbService.getDoc(doc_id));

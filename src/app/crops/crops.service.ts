@@ -11,7 +11,7 @@ export class CropsService {
   getCrops(keyword, page){
     return new Promise((resolve, reject)=>{
       this.pouchdbService.getView(
-        'stock/Crops', 1,
+        'stock/Crops', 2,
         ['0'],
         ['z']
       ).then((planneds: any[]) => {
@@ -19,13 +19,17 @@ export class CropsService {
         this.pouchdbService.searchDocTypeData(
           'crop', keyword
         ).then((crops: any[]) => {
-          console.log("projects", crops);
+          console.log("safras", crops);
           console.log("planneds", planneds);
           crops.forEach(crop=>{
             crop.balance = 0;
             // if (crop._id.split('.')[1] == 'crop'){
-              let cropReport = planneds.filter(x => x.key[0]==crop._id)[0]
-              crop.balance = cropReport && cropReport.value || 0;
+              let cropReport = planneds.filter(x => x.key[0]==crop._id)
+              console.log("cropReport", cropReport);
+              cropReport.forEach(cr=>{
+                crop.balance += cr.value || 0;
+              })
+              // crop.balance = cropReport && cropReport.value || 0;
               cropList.push(crop);
             // }
           })
