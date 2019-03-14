@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/agro-tabs/work-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{ 'TASK' | translate }}: {{workForm.value.code}}
+      {{ 'WORK' | translate }}: {{workForm.value.code}}
     </ion-title>
     <ion-buttons slot="end">
     </ion-buttons>
@@ -109,7 +109,7 @@
 
 
             <ion-item style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name].length == 0">
-              <ion-row style="background: #1c61f3;border-radius: 5px;border: 1px solid #1c61f3;"
+              <ion-row style="background: #1c61f3;border-radius: 5px;border: 1px solid #1c61f3;width: 100%;"
               (click)="addFieldItem(field.name)">
                 <a style="color:white;cursor: default;font-size:16px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
                   Agregar {{ field.label || field.name }}
@@ -119,7 +119,7 @@
 
             <ion-item class="field-100" *ngIf="field.type == 'date'" >
               <ion-label position="floating">{{field.label || field.name}}</ion-label>
-              <ion-datetime class="task-date" displayFormat="DD/MM/YYYY"
+              <ion-datetime displayFormat="DD/MM/YYYY"
               pickerFormat="DD/MM/YYYY"
               [disabled]="calculate(field.readonly)"
               [formControlName]="field.name">

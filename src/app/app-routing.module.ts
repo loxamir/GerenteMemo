@@ -91,6 +91,8 @@ const routes: Routes = [
   { path: 'activity', loadChildren: './activity/activity.module#ActivityPageModule' },
   { path: 'activitys', loadChildren: './activitys/activitys.module#ActivitysPageModule' },
   { path: 'field', loadChildren: './field/field.module#FieldPageModule' },
+  { path: 'input', loadChildren: './input/input.module#InputPageModule' },
+  { path: 'inputs', loadChildren: './inputs/inputs.module#InputsPageModule' },
 ];
 
 @NgModule({

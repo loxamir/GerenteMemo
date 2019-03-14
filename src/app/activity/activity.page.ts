@@ -86,9 +86,9 @@ export class ActivityPage implements OnInit {
         componentProps: {}
       });
       profileModal.onDidDismiss().then(data => {
-        if (data) {
+        if (data.data) {
           //console.log(data);
-          this.activityForm.value.fields.unshift(data)
+          this.activityForm.value.fields.unshift(data.data)
           // this.recomputeValues();
           // this.show_travels=true;
           this.activityForm.markAsDirty();

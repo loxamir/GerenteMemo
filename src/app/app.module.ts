@@ -84,7 +84,8 @@ import { AnimalsPageModule } from './animals/animals.module';
 import { AreasPageModule } from './areas/areas.module';
 import { MachinesPageModule } from './machines/machines.module';
 import { CropsPageModule } from './crops/crops.module';
-
+import { InputPageModule } from './input/input.module';
+import { InputsPageModule } from './inputs/inputs.module';
 import { environment } from '../environments/environment';
 
 @NgModule({
@@ -117,6 +118,8 @@ import { environment } from '../environments/environment';
     BrandListPageModule,
     ProductCategoryListPageModule,
     AccountCategoryListPageModule,
+    InputPageModule,
+    InputsPageModule,
     AnimalPageModule,
     AreaPageModule,
     MachinePageModule,

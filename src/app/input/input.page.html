@@ -1,0 +1,87 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/agro-tabs/input-list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+        Insumo: {{inputForm.value.name}}
+    </ion-title>
+    <ion-buttons slot="end" >
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content class="list-mini-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <form class="sample-form validations-form" [formGroup]="inputForm" (ngSubmit)="onSubmit(inputForm.value)">
+    <ion-item
+     no-padding
+     *ngIf="create"
+     class="field-50">
+      <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+      <ion-input #name type="text"
+      formControlName="name"></ion-input>
+    </ion-item>
+    <ion-list no-lines>
+      <ion-item-sliding class="list-item" *ngFor="let item of inputForm.value.moves.sort(this.formatService.compare)">
+      <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
+        <ion-card class="list-card" style="border-radius: 5px;">
+     <ion-row no-padding class="content-row one-line">
+        <ion-col no-padding width-25 class="schedule-date">
+          <h2 class="list-big-number">{{item.activity_name}}</h2>
+          <h3 class="schedule-month">{{item.date|date: 'dd/MM/yyyy'}}</h3>
+          <h4 class="schedule-time">Costo: $ {{item.cost}}</h4>
+        </ion-col>
+        <ion-col no-padding width-35  >
+          <ion-row no-padding>
+            <ion-col class="item-content" style="white-space: normal;">
+              {{item.name}}
+            </ion-col>
+          </ion-row>
+
+        </ion-col>
+        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        </ion-col>
+      </ion-row>
+      </ion-card>
+    </ion-item>
+
+        <ion-item-options>
+          <ion-button icon-only color="primary" (click)="deleteInputMove(item)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+<ion-row style="height:15px;">
+</ion-row>
+</form>
+
+<ion-fab vertical="bottom" horizontal="center" slot="fixed" class="add-product-button">
+<ion-fab-button (click)="addActivity()">
+  <ion-icon name="add">
+  </ion-icon>
+</ion-fab-button>
+</ion-fab>
+<ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <ion-button (click)="discard()" color="danger" class="discard-button">
+    <ion-icon name="backspace" *ngIf="inputForm.dirty"> </ion-icon>
+    <ion-icon name="arrow-back" *ngIf="!inputForm.dirty"> </ion-icon>
+    <span *ngIf="inputForm.dirty">Descartar</span>
+    <span *ngIf="!inputForm.dirty">Volver</span>
+  </ion-button>
+</ion-fab>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="inputForm.dirty">
+  <ion-button (click)="buttonSave()"  color="success" class="save-button">
+    <ion-icon name="save"> </ion-icon>
+    Guardar
+  </ion-button>
+</ion-fab>
+<div style="height: 100px;">
+</div>
+</ion-content>

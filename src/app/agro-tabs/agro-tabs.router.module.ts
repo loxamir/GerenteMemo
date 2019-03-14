@@ -9,15 +9,6 @@ const routes: Routes = [
     component: AgroTabsPage,
     children: [
       {
-        path: 'work-list',
-        children: [
-          {
-            path: '',
-            loadChildren: '../works/works.module#WorksPageModule'
-          }
-        ]
-      },
-      {
         path: 'area-list',
         children: [
           {
@@ -36,11 +27,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'animal-list',
+        path: 'input-list',
         children: [
           {
             path: '',
-            loadChildren: '../animals/animals.module#AnimalsPageModule'
+            loadChildren: '../inputs/inputs.module#InputsPageModule'
           }
         ]
       },
@@ -50,6 +41,15 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: '../crops/crops.module#CropsPageModule'
+          }
+        ]
+      },
+      {
+        path: 'work-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../works/works.module#WorksPageModule'
           }
         ]
       },
