@@ -11,6 +11,7 @@ import { InputsService } from './inputs.service';
 import { InputService } from '../input/input.service';
 import { WorkService } from '../work/work.service';
 import { ProductPage } from '../product/product.page';
+import { FilterPage } from '../filter/filter.page';
 
 @Component({
   selector: 'app-inputs',
@@ -113,6 +114,19 @@ export class InputsPage implements OnInit {
       this.openInput(input);
     }
   }
+
+    async showFilter() {
+      this.events.subscribe('get-filter', (data) => {
+        //Do your stuff
+        this.events.unsubscribe('get-filter');
+      });
+      let profileModal = await this.modalCtrl.create({
+        component: FilterPage,
+        componentProps: {
+        }
+      });
+      profileModal.present();
+    }
 
   createInput() {
     // let newRootNav = <NavController>this.app.getRootNavById('n4');

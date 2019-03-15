@@ -12,6 +12,7 @@ import { CropsService } from './crops.service';
 import { CropService } from '../crop/crop.service';
 import { WorkService } from '../work/work.service';
 // import { ProjectPage } from '../../project/project';
+import { FilterPage } from '../filter/filter.page';
 
 @Component({
   selector: 'app-crops',
@@ -55,6 +56,20 @@ export class CropsPage implements OnInit {
       this.setFilteredItems();
     })
   }
+
+
+    async showFilter() {
+      this.events.subscribe('get-filter', (data) => {
+        //Do your stuff
+        this.events.unsubscribe('get-filter');
+      });
+      let profileModal = await this.modalCtrl.create({
+        component: FilterPage,
+        componentProps: {
+        }
+      });
+      profileModal.present();
+    }
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {

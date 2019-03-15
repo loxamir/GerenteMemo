@@ -12,6 +12,7 @@ import { AreasService } from './areas.service';
 import { AreaService } from '../area/area.service';
 import { WorkService } from '../work/work.service';
 import { ProductPage } from '../product/product.page';
+import { FilterPage } from '../filter/filter.page';
 
 @Component({
   selector: 'app-areas',
@@ -54,6 +55,19 @@ export class AreasPage implements OnInit {
     this.events.subscribe('got-database', ()=>{
       this.setFilteredItems();
     })
+  }
+
+  async showFilter() {
+    this.events.subscribe('get-filter', (data) => {
+      //Do your stuff
+      this.events.unsubscribe('get-filter');
+    });
+    let profileModal = await this.modalCtrl.create({
+      component: FilterPage,
+      componentProps: {
+      }
+    });
+    profileModal.present();
   }
 
   doInfinite(infiniteScroll) {

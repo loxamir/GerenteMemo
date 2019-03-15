@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, PopoverController , Events,
    NavParams, ModalController  } from '@ionic/angular';
-// import { WorkPage } from '../work';
+import { FilterPage } from '../filter/filter.page';
 //import { DecimalPipe } from '@angular/common';
 import 'rxjs/Rx';
 import { WorksService } from './works.service';
@@ -42,6 +42,19 @@ export class WorksPage implements OnInit {
     this.events.subscribe('got-database', (change)=>{
       this.setFilteredItems();
     })
+  }
+
+  async showFilter() {
+    this.events.subscribe('get-filter', (data) => {
+      //Do your stuff
+      this.events.unsubscribe('get-filter');
+    });
+    let profileModal = await this.modalCtrl.create({
+      component: FilterPage,
+      componentProps: {
+      }
+    });
+    profileModal.present();
   }
 
   async ngOnInit(){

@@ -93,6 +93,7 @@ const routes: Routes = [
   { path: 'field', loadChildren: './field/field.module#FieldPageModule' },
   { path: 'input', loadChildren: './input/input.module#InputPageModule' },
   { path: 'inputs', loadChildren: './inputs/inputs.module#InputsPageModule' },
+  { path: 'filter', loadChildren: './filter/filter.module#FilterPageModule' },
 ];
 
 @NgModule({
