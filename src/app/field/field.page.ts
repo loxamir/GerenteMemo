@@ -131,17 +131,19 @@ export class FieldPage implements OnInit {
     let self = this;
     let prompt = await self.alertCtrl.create({
       // title: 'Cantidad del Producto',
-      message: 'Cual es el Cantidad de este producto?',
+      message: 'Informe la Etiqueta y Nombre del campo?',
       inputs: [
         {
           // type: 'string',
-          name: 'name',
+          placeholder: "Etiqueta",
+          name: 'label',
           value: ""
         },
         {
           // type: 'string',
-          name: 'label',
-          value: ""
+          name: 'name',
+          value: "",
+          placeholder: "Nombre",
         },
       ],
       buttons: [
@@ -167,17 +169,19 @@ export class FieldPage implements OnInit {
     let self = this;
     let prompt = await self.alertCtrl.create({
       // title: 'Cantidad del Producto',
-      message: 'Cual es el Cantidad de este producto?',
+      message: 'Informe la Etiqueta y Nombre del campo?',
       inputs: [
+        {
+          // type: 'string',
+          placeholder: "Etiqueta",
+          name: 'label',
+          value: item.label
+        },
         {
           // type: 'string',
           name: 'name',
           value: item.name,
-        },
-        {
-          // type: 'string',
-          name: 'label',
-          value: item.label
+          placeholder: "Nombre",
         },
       ],
       buttons: [

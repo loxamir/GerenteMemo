@@ -70,6 +70,16 @@
               <ion-input type="text" [formControlName]="field.name" text-center>
               </ion-input>
             </ion-item>
+            <ion-item class="field-100" *ngIf="field.type == 'progress'">
+              <!-- <ion-label position="floating">{{field.label || field.name}}</ion-label>
+              <ion-input type="text" [formControlName]="field.name" text-center>
+              </ion-input> -->
+              <span style="margin-top: -20px;position: absolute;font-size: 13px;">{{field.label || field.name}}</span>
+              <ion-range min="0" max="100" color="primary" [formControlName]="field.name" pin="true" snaps="true">
+                <ion-label slot="start">0</ion-label>
+                <ion-label slot="end">100%</ion-label>
+              </ion-range>
+            </ion-item>
             <ion-item *ngIf="field.type == 'formula'" class="field-100">
               <h4 class="field-label">{{field.label || field.name}}</h4>
               <h4 class="field-value" style="color: gray">{{ fields[field.name] }}</h4>

@@ -4,11 +4,6 @@
       <ion-back-button (click)="this.navCtrl.navigateBack('/product-list')"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'PRODUCT' | translate }}-{{productForm.value.code}}</ion-title>
-    <!-- <ion-buttons slot="end" [hidden]="!productForm.dirty">
-      <ion-button (click)="buttonSave()" class="button-save">
-        {{ 'SAVE' | translate }}
-      </ion-button>
-    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 <ion-content class="product-content">

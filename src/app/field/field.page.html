@@ -66,9 +66,10 @@
             <ion-select formControlName="type"
               cancelText="{{ 'CANCEL' | translate }}"
               okText="{{ 'OK' | translate }}">
-              <ion-select-option value="string">String</ion-select-option>
+              <ion-select-option value="string">Texto</ion-select-option>
               <ion-select-option value="integer">Inteiro</ion-select-option>
               <ion-select-option value="float">Decimal</ion-select-option>
+              <ion-select-option value="progress">Progreso</ion-select-option>
               <ion-select-option value="date">Fecha</ion-select-option>
               <ion-select-option value="boolean">Boleano</ion-select-option>
               <ion-select-option value="many2one">Documento</ion-select-option>
@@ -103,10 +104,18 @@
               <ion-item class="field-100"  (click)="editFieldItem(attribute, i)" class="field-100">
                 <!-- <ion-row>
                   <ion-col no-padding> -->
-                    <h4 class="field-label">{{attribute.label}}</h4>
-                    <h4 class="user-name">{{attribute.name}}</h4>
+                  <!-- <h4 class="user-name">{{attribute.name}}</h4>
+                    <h4 class="field-label">{{attribute.label}}</h4> -->
                   <!-- </ion-col>
                 </ion-row> -->
+                <ion-col no-padding>
+                  <h4 class="field-label" style="margin-top: 0px;">Etiqueta</h4>
+                  <h4 class="user-name" style="margin-bottom: 0px;">{{attribute.label}}</h4>
+                </ion-col>
+                <ion-col no-padding>
+                  <h4 class="field-label" style="margin-top: 0px;">Nombre</h4>
+                  <h4 class="user-name" style="margin-bottom: 0px;">{{attribute.name}}</h4>
+                </ion-col>
               </ion-item>
               <ion-item-options>
                 <ion-button icon-only color="primary" (click)="removeFieldItem(i)">

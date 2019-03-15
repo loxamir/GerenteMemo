@@ -1,9 +1,64 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Filtro</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>{{ 'FILTER' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
+<ion-content class="product-content">
+  <form class="sample-form validations-form"
+  [formGroup]="filterForm"
+  (ngSubmit)="onSubmit(filterForm.value)">
+    <ion-row>
+      <ion-item no-padding class="field-100">
+        <ion-label position="floating">{{'Objeto' | translate}}</ion-label>
+        <ion-select
+        formControlName="model"
+        cancelText="{{ 'CANCEL' | translate }}"
+        okText="{{ 'OK' | translate }}"
+        interface="popover">
+          <ion-select-option value="product">Insumo</ion-select-option>
+          <ion-select-option value="area">Area</ion-select-option>
+          <ion-select-option value="machine">Maquina</ion-select-option>
+          <ion-select-option value="crop">Safra</ion-select-option>
+          <ion-select-option value="contact">Persona</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item no-padding class="field-100">
+        <ion-label position="floating">{{'Condición' | translate}}</ion-label>
+        <ion-select
+        formControlName="condition"
+        interface="popover"
+        cancelText="{{ 'CANCEL' | translate }}"
+        okText="{{ 'OK' | translate }}">
+          <ion-select-option value="equal">Es Igual a</ion-select-option>
+          <ion-select-option value="different">Es Diferente de</ion-select-option>
+        </ion-select>
+      </ion-item>
 
-<ion-content padding>
+      <ion-item no-padding #category (click)="selectCategory()" class="field-100">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Comparado' | translate}}</h4>
+          <h4 class="field-value">
+            {{filterForm.value.value && filterForm.value.value.name || 'Selecionar'}}
+          </h4>
+        </div>
+      </ion-item>
+    </ion-row>
+  </form>
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-button (click)="discard()" color="danger">
+      <ion-icon name="backspace" *ngIf="filterForm.dirty"> </ion-icon>
+      <ion-icon name="arrow-back" *ngIf="!filterForm.dirty"> </ion-icon>
+      <span *ngIf="filterForm.dirty">Descartar</span>
+      <span *ngIf="!filterForm.dirty">Volver</span>
+    </ion-button>
+  </ion-fab>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+    <ion-button (click)="buttonSave()"  class="next-button">
+      <ion-icon name="fastforward"> </ion-icon>
+      Proximo
+    </ion-button>
+  </ion-fab>
 
+  <div style="height: 100px;">
+  </div>
 </ion-content>

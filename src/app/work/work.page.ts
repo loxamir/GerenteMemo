@@ -265,6 +265,9 @@ export class WorkPage implements OnInit {
       else if (field.type == "string") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||""));
       }
+      else if (field.type == "progress") {
+        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||0));
+      }
       else if (field.type == "formula") {
         this.fields[field.name] = 0;
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||0));
