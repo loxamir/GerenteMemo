@@ -71,9 +71,6 @@
               </ion-input>
             </ion-item>
             <ion-item class="field-100" *ngIf="field.type == 'progress'">
-              <!-- <ion-label position="floating">{{field.label || field.name}}</ion-label>
-              <ion-input type="text" [formControlName]="field.name" text-center>
-              </ion-input> -->
               <span style="margin-top: -20px;position: absolute;font-size: 13px;">{{field.label || field.name}}</span>
               <ion-range min="0" max="100" color="primary" [formControlName]="field.name" pin="true" snaps="true">
                 <ion-label slot="start">0</ion-label>
@@ -97,7 +94,6 @@
                   <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
                     <ion-col *ngFor="let atribute of field.attributes;">
                       <h4 class="field-label" style="margin-top: 0px;">{{atribute.label}}</h4>
-                      <!-- <h4 class="user-name">{{ atribute.name }}</h4> -->
                       <h4 class="user-name"  style="margin-bottom: 0px;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
                     </ion-col>
                   </ion-row>
@@ -139,6 +135,41 @@
         </ion-row>
       </section>
     </ion-list>
+
+    <ion-segment formControlName="section" class="cash-segment">
+      <ion-segment-button class="list-item"
+      *ngFor="let field of filterTabs(workForm.value.fields)"
+      [value]="field.name">
+        {{ field.label }}
+      </ion-segment-button>
+    </ion-segment>
+
+    <div class="forms-wrapper" *ngFor="let field of filterTabs(workForm.value.fields)">
+        <div *ngIf="workForm.value.section == field.name" class="post-example-view">
+          <ion-list style="background-color: #ddd" *ngIf="field.type == 'tab' && workForm.value[field.name].length > 0">
+            <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
+              <ion-item class="internal-item" style="--background: white;">
+                <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
+                  <ion-col *ngFor="let atribute of field.attributes;">
+                    <h4 class="field-label" style="margin-top: 0px;">{{atribute.label}}</h4>
+                    <h4 class="user-name"  style="margin-bottom: 0px;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
+                  </ion-col>
+                </ion-row>
+              </ion-item>
+              <ion-item-options>
+                <ion-button icon-only color="primary" (click)="removeFieldItem(field.name, i)">
+                  <ion-icon name="trash"></ion-icon>
+                </ion-button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+            <ion-col size="12">
+              <ion-button class="button-100" color="success">
+                Agregar {{ field.label || field.name }}
+              </ion-button>
+            </ion-col>
+        </div>
+    </div>
   </form>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
     <ion-button (click)="goNextStep()"  class="next-button">

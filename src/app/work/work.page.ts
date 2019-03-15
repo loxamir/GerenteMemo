@@ -106,6 +106,16 @@ export class WorkPage implements OnInit {
     return result;
   }
 
+  filterTabs(fieldsList) {
+    let result = [];
+    fieldsList.forEach(field => {
+      if (!this.calculate(field.invisible) && field.type == 'tab') {
+        result.push(field);
+      }
+    });
+    return result;
+  }
+
   calculate(formula) {
     if (formula) {
       let result = eval(formula);
@@ -135,6 +145,7 @@ export class WorkPage implements OnInit {
       language: new FormControl(''),
       fields: new FormControl([]),
       cost: new FormControl(0),
+      section: new FormControl(null),
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
@@ -255,8 +266,9 @@ export class WorkPage implements OnInit {
     let data_fields = data.fields && data.fields.sort(function(a, b) {
       return self.formatService.compareField(a, b, 'sequence');
     }) || [];
-    data_fields.forEach(field => {
 
+    let defaultTab = null;
+    data_fields.forEach(field => {
       if (field.type == "boolean") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||false));
       } else if (field.type == "float") {
@@ -281,11 +293,15 @@ export class WorkPage implements OnInit {
         );
       } else if (field.type == "list") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
+      } else if (field.type == 'tab' && ! defaultTab) {
+          defaultTab = field.name;
+          console.log("defaultTab", defaultTab);
       }
     });
     this.workForm.patchValue({
       activity: data,
       fields: data.fields,
+      section: defaultTab,
     });
     this.workForm.markAsDirty();
     this.avoidAlertMessage = false;
