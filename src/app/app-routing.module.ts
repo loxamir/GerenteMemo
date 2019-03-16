@@ -90,6 +90,7 @@ const routes: Routes = [
   { path: 'works', loadChildren: './works/works.module#WorksPageModule' },
   { path: 'activity', loadChildren: './activity/activity.module#ActivityPageModule' },
   { path: 'activitys', loadChildren: './activitys/activitys.module#ActivitysPageModule' },
+  { path: 'activity-report', loadChildren: './activity-report/activity-report.module#ActivityReportPageModule' },
   { path: 'field', loadChildren: './field/field.module#FieldPageModule' },
   { path: 'input', loadChildren: './input/input.module#InputPageModule' },
   { path: 'inputs', loadChildren: './inputs/inputs.module#InputsPageModule' },

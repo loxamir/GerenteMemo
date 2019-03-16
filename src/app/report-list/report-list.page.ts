@@ -82,6 +82,12 @@ export class ReportListPage implements OnInit {
   _current: any;
   languages: Array<LanguageModel>;
 
+  ag_produced=0;
+  ag_production_material=0;
+  ag_production_labour=0;
+  ag_production_cost=0;
+  ag_production_cost_percent=0;
+
   constructor(
     public navCtrl: NavController,
     public reportsService: ReportListService,
@@ -302,6 +308,42 @@ export class ReportListPage implements OnInit {
     })
   }
 
+  computeAgroValues() {
+    return new Promise((resolve, reject)=>{
+      let self = this;
+      this.pouchdbService.getView(
+        'Informes/Agro',
+        10,
+        [],
+        [],
+        true,
+        true,
+        undefined,
+        undefined,
+        false
+      ).then((sales: any[]) => {
+        console.log("Agro", sales);
+        let ag_produced = 0;
+        let ag_production_material = 0;
+        let ag_production_labour = 0;
+        let ag_production_cost = 0;
+        let ag_production_cost_percent = 0;
+        sales.forEach(sale => {
+          ag_produced += parseFloat(sale.key[4]);
+          ag_production_material += parseFloat(sale.key[5]);
+          ag_production_labour += parseFloat(sale.key[6]);
+          ag_production_cost += parseFloat(sale.value);
+        });
+        this.ag_produced = ag_produced;
+        this.ag_production_material = ag_production_material;
+        this.ag_production_labour = ag_production_labour;
+        this.ag_production_cost = ag_production_cost;
+        this.ag_production_cost_percent = (ag_produced / ag_production_cost) * 100;
+        resolve(true);
+      });
+    })
+  }
+
   computeStockValues() {
     return new Promise((resolve, reject)=>{
       let self = this;
@@ -414,6 +456,7 @@ export class ReportListPage implements OnInit {
     await this.computeSaleValues();
     await this.computeServiceValues();
     await this.computeProductionValues();
+    await this.computeAgroValues();
     await this.computeStockValues();
     await this.computeToReceiveValues();
     await this.computePurchaseValues();
@@ -459,6 +502,14 @@ export class ReportListPage implements OnInit {
   showReportSale() {
     this.navCtrl.navigateForward(['/sale-report', {
       'reportType': "sale",
+      'dateStart': this.reportsForm.value.dateStart,
+      'dateEnd': this.reportsForm.value.dateEnd,
+    }]);
+  }
+
+  showReportAgriculture() {
+    this.navCtrl.navigateForward(['/activity-report', {
+      'reportType': "activity",
       'dateStart': this.reportsForm.value.dateStart,
       'dateEnd': this.reportsForm.value.dateEnd,
     }]);

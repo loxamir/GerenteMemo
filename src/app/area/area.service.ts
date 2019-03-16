@@ -79,7 +79,8 @@ export class AreaService {
   }
 
   updateArea(area){
-    area.docType = 'account';
+    let area = Object.assign({}, viewData);
+    area.docType = 'area';
     delete area.moves;
     delete area.area;
     return this.pouchdbService.updateDoc(area);

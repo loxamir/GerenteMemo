@@ -17,6 +17,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <form class="sample-form validations-form" [formGroup]="machineForm" (ngSubmit)="onSubmit(machineForm.value)">
+    <ion-row>
     <ion-item
      no-padding
      *ngIf="create"
@@ -25,6 +26,35 @@
       <ion-input #name type="text"
       formControlName="name"></ion-input>
     </ion-item>
+    <ion-item no-padding class="field-100">
+      <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
+      <ion-select #type
+      formControlName="type"
+      cancelText="{{ 'CANCEL' | translate }}"
+      okText="{{ 'OK' | translate }}"
+      interface="popover">
+        <ion-select-option value="tractor">Tractor</ion-select-option>
+        <ion-select-option value="planter">Plantadeira</ion-select-option>
+        <ion-select-option value="sprayer">Pulverizador</ion-select-option>
+        <ion-select-option value="fertilizer">Adubadera</ion-select-option>
+        <ion-select-option value="vehicle">Vehiculo</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item
+     no-padding
+     class="field-50">
+      <ion-label position="floating">{{'Horimetro' | translate}}</ion-label>
+      <ion-input #horimeter type="number"
+      formControlName="horimeter"></ion-input>
+    </ion-item>
+    <ion-item
+     no-padding
+     class="field-50">
+      <ion-label position="floating">{{'Costo por Hora' | translate}}</ion-label>
+      <ion-input #hourCost type="number"
+      formControlName="hourCost"></ion-input>
+    </ion-item>
+</ion-row>
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of machineForm.value.moves.sort(this.formatService.compare)">
       <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">

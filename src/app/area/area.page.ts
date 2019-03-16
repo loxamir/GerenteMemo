@@ -66,6 +66,7 @@ export class AreaPage implements OnInit {
     this.areaForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
+      renting: new FormControl(0),
       // currency: new FormControl({}),
       // currency_name: new FormControl(''),
       moves: new FormControl([]),

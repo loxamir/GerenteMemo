@@ -76,8 +76,9 @@ export class CropService {
     });
   }
 
-  updateCrop(crop){
-    crop.docType = 'account';
+  updateCrop(viewData){
+    let crop = Object.assign({}, viewData);
+    crop.docType = 'crop';
     delete crop.moves;
     delete crop.crop;
     return this.pouchdbService.updateDoc(crop);

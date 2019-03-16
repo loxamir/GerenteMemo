@@ -293,10 +293,12 @@ export class WorkPage implements OnInit {
         );
       } else if (field.type == "list") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
-      } else if (field.type == 'tab' && ! defaultTab) {
+      } else if (field.type == 'tab')
+        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
+        if(! defaultTab) {
           defaultTab = field.name;
           console.log("defaultTab", defaultTab);
-      }
+        }
     });
     this.workForm.patchValue({
       activity: data,

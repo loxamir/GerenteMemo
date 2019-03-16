@@ -100,6 +100,7 @@ export class ContactPage implements OnInit {
       currency: new FormControl({}),
       hire_date: new FormControl(undefined),
       salaries: new FormControl([]),
+      hourCost: new FormControl(0),
       advances: new FormControl([]),
       _id: new FormControl(''),
     });

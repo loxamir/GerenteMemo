@@ -65,7 +65,9 @@ export class MachinePage implements OnInit {
     this.machineForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
-      // currency: new FormControl({}),
+      hourCost: new FormControl(0),
+      horimeter: new FormControl(0),
+      type: new FormControl('tractor'),
       // currency_name: new FormControl(''),
       moves: new FormControl([]),
       // checks: new FormControl([]),

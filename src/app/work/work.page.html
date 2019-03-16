@@ -87,7 +87,7 @@
             </ion-item>
 
 
-            <ion-list style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name].length > 0">
+            <ion-list style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name] && workForm.value[field.name].length > 0">
               <h2 class="section-title" style="color:#1c61f3;background: white;border: 1px solid;border-top-left-radius: 5px;border-top-right-radius: 5px;">{{ field.label || field.name | translate}}</h2>
               <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
                 <ion-item class="internal-item" style="--background: white;">
@@ -146,7 +146,7 @@
 
     <div class="forms-wrapper" *ngFor="let field of filterTabs(workForm.value.fields)">
         <div *ngIf="workForm.value.section == field.name" class="post-example-view">
-          <ion-list style="background-color: #ddd" *ngIf="field.type == 'tab' && workForm.value[field.name].length > 0">
+          <ion-list style="background-color: #ddd" *ngIf="field.type == 'tab' && workForm.value[field.name] && workForm.value[field.name].length > 0">
             <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
               <ion-item class="internal-item" style="--background: white;">
                 <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
@@ -164,7 +164,10 @@
             </ion-item-sliding>
           </ion-list>
             <ion-col size="12">
-              <ion-button class="button-100" color="success">
+              <ion-button
+              (click)="addFieldItem(field.name)"
+              class="button-100"
+              color="success">
                 Agregar {{ field.label || field.name }}
               </ion-button>
             </ion-col>

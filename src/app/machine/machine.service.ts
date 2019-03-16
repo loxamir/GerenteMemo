@@ -76,8 +76,9 @@ export class MachineService {
     });
   }
 
-  updateMachine(machine){
-    machine.docType = 'account';
+  updateMachine(viewData){
+    let machine = Object.assign({}, viewData);
+    machine.docType = 'machine';
     delete machine.moves;
     delete machine.machine;
     return this.pouchdbService.updateDoc(machine);
