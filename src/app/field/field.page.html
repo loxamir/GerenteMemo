@@ -87,7 +87,7 @@
         </ion-item>
       <!-- </ion-card> -->
       <!-- <ion-card class="list-card"> -->
-        <ion-item class="field-100" style="background-color: white" (click)="selectActivity()"  *ngIf="fieldForm.value.type == 'list'">
+        <ion-item class="field-100" style="background-color: white" (click)="selectActivity()"  *ngIf="fieldForm.value.type == 'list' || fieldForm.value.type == 'tab'">
           <h4 class="field-label">{{'ACTIVITY' | translate }}</h4>
           <h4 class="field-value">{{fieldForm.value.activity.name || 'Selecionar'}}</h4>
         </ion-item>
@@ -99,7 +99,7 @@
         </ion-item>
       <!-- </ion-card> -->
       <!-- <ion-card class="list-card"> -->
-        <ion-list style="background-color: white" class="field-100" *ngIf="fieldForm.value.type == 'list'">
+        <ion-list style="background-color: white" class="field-100" *ngIf="fieldForm.value.type == 'list' || fieldForm.value.type == 'tab'">
           <h2 class="section-title">Campos en la Lista</h2>
             <ion-item-sliding class="list-item" *ngFor="let attribute of fieldForm.value.attributes; let i = index;">
               <ion-item class="field-100"  (click)="editFieldItem(attribute, i)" class="field-100">

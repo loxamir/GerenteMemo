@@ -47,7 +47,7 @@
           <ion-select-option value="crop">Costos por Safra</ion-select-option>
           <ion-select-option value="area">Costos por Area</ion-select-option>
           <ion-select-option value="activity">Costos por Atividade</ion-select-option>
-          <ion-select-option value="name">Costos por Nombre</ion-select-option>
+          <ion-select-option value="name">Costos por Item</ion-select-option>
           <ion-select-option value="date">Costos por Fecha</ion-select-option>
           <ion-select-option value="yieldCrop">Rendimiento por Safra</ion-select-option>
           <ion-select-option value="yieldArea">Rendimiento por Area</ion-select-option>
@@ -356,6 +356,94 @@
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+              <ion-row class="report-title">
+                <ion-col  width-40>
+                  TOTAL
+                </ion-col>
+                <ion-col width-20 style="text-align: right">
+                  {{items_margin|number:'1.0'}}
+                </ion-col>
+                <ion-col width-15 style="text-align: right">
+                  {{items_quantity|number:'1.0'}}
+                </ion-col>
+                <ion-col width-25 style="text-align: right">
+                  {{total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+            </ion-list>
+            <ion-list no-lines *ngIf="reportActivityForm.value.groupBy == 'yieldCrop'">
+              <ion-row class="report-title">
+                <ion-col width-60 (click)="orderByName()">
+                  Safra
+                </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Custo/Kg
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
+                  Costo Total
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
+                  Kg Producidos
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let item of reportActivityForm.value.items">
+                <ion-col width-60 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.name}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.total/item.margin|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.margin|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+              <ion-row class="report-title">
+                <ion-col  width-40>
+                  TOTAL
+                </ion-col>
+                <ion-col width-20 style="text-align: right">
+                  {{items_margin|number:'1.0'}}
+                </ion-col>
+                <ion-col width-15 style="text-align: right">
+                  {{items_quantity|number:'1.0'}}
+                </ion-col>
+                <ion-col width-25 style="text-align: right">
+                  {{total|number:'1.0'}}
+                </ion-col>
+              </ion-row>
+            </ion-list>
+            <ion-list no-lines *ngIf="reportActivityForm.value.groupBy == 'yieldArea'">
+              <ion-row class="report-title">
+                <ion-col width-60 (click)="orderByName()">
+                  Area
+                </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Custo/Kg
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
+                  Costo Total
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
+                  Kg Producidos
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let item of reportActivityForm.value.items">
+                <ion-col width-60 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.name}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.total/item.margin|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.total|number:'1.0'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.margin|number:'1.0'}}
                 </ion-col>
               </ion-row>
               <ion-row class="report-title">

@@ -354,6 +354,126 @@ export class ActivityReportPage implements OnInit {
             this.loading.dismiss();
             resolve(output);
           }
+          else if (this.reportActivityForm.value.groupBy == 'yieldCrop') {
+            // console.log("crop", );
+          items = [];
+          activitys.forEach(activityLine => {
+            if (result.hasOwnProperty(activityLine.key[0])) {
+              items[result[activityLine.key[0]]] = {
+                'name': items[result[activityLine.key[0]]].name,
+                'quantity': items[result[activityLine.key[0]]].quantity + parseFloat(activityLine.key[4]),
+                'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[5]),
+                'total': items[result[activityLine.key[0]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+              };
+            } else {
+              items.push({
+                'name': activityLine.key[0],
+                'quantity': parseFloat(activityLine.key[4]),
+                'margin': parseFloat(activityLine.key[5]),
+                'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+              });
+              result[activityLine.key[0]] = items.length-1;
+            }
+          });
+
+          let self = this;
+          let output = items.sort(function(a, b) {
+            return self.compare(a, b, self.reportActivityForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          console.log("output", output);
+          let yields:any = await this.pouchdbService.getView('Informes/AgroRend',10);
+          if (Object.keys(this.reportActivityForm.value.crop).length > 0) {
+            yields = yields.filter(word => word['key'][0] == this.reportActivityForm.value.crop.name);
+          }
+          if (Object.keys(this.reportActivityForm.value.area).length > 0) {
+            yields = yields.filter(word => word['key'][1] == this.reportActivityForm.value.area.name);
+          }
+          if (Object.keys(this.reportActivityForm.value.activity).length > 0) {
+            yields = yields.filter(word => word['key'][2] == this.reportActivityForm.value.activity.name);
+          }
+          console.log("yields", yields);
+          let listas = [];
+          // let otro = output
+          output.forEach((doc: any, index)=>{
+            yields.forEach((yie: any)=>{
+              if (doc.name == yie.key[0]){
+                doc['margin'] = yie.value;
+              } else {
+                doc['margin'] = 0;
+              }
+            })
+          })
+          console.log("output", output);
+          resolve(output);
+        }
+        else if (this.reportActivityForm.value.groupBy == 'yieldArea') {
+          // console.log("crop", );
+        items = [];
+        activitys.forEach(activityLine => {
+          if (result.hasOwnProperty(activityLine.key[1])) {
+            items[result[activityLine.key[1]]] = {
+              'name': items[result[activityLine.key[1]]].name,
+              'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
+              'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
+              'total': items[result[activityLine.key[1]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+            };
+          } else {
+            items.push({
+              'name': activityLine.key[1],
+              'quantity': parseFloat(activityLine.key[4]),
+              'margin': parseFloat(activityLine.key[5]),
+              'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+            });
+            result[activityLine.key[1]] = items.length-1;
+          }
+        });
+
+        let self = this;
+        let output = items.sort(function(a, b) {
+          return self.compare(a, b, self.reportActivityForm.value.orderBy);
+        })
+        let marker = false;
+        let total = 0;
+        output.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+          total += parseFloat(item['total']);
+        });
+        this.loading.dismiss();
+        console.log("output", output);
+        let yields:any = await this.pouchdbService.getView('Informes/AgroRend',10);
+        if (Object.keys(this.reportActivityForm.value.crop).length > 0) {
+          yields = yields.filter(word => word['key'][0] == this.reportActivityForm.value.crop.name);
+        }
+        if (Object.keys(this.reportActivityForm.value.area).length > 0) {
+          yields = yields.filter(word => word['key'][1] == this.reportActivityForm.value.area.name);
+        }
+        if (Object.keys(this.reportActivityForm.value.activity).length > 0) {
+          yields = yields.filter(word => word['key'][2] == this.reportActivityForm.value.activity.name);
+        }
+        console.log("yields", yields);
+        let listas = [];
+        // let otro = output
+        output.forEach((doc: any, index)=>{
+          yields.forEach((yie: any)=>{
+            if (doc.name == yie.key[1]){
+              doc['margin'] = yie.value;
+            } else {
+              doc['margin'] = 0;
+            }
+          })
+        })
+        console.log("output", output);
+        resolve(output);
+      }
           else if (this.reportActivityForm.value.groupBy == 'crop') {
             console.log("crop", );
           items = [];
