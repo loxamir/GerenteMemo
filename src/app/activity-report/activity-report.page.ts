@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, LoadingController, AlertController, Events, ToastController } from '@ionic/angular';
+import { NavController, LoadingController, AlertController, Events,
+  ModalController, ToastController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,7 +11,11 @@ import { ReportService } from '../report/report.service';
 import { ProductService } from '../product/product.service';
 import { FormatService } from '../services/format.service';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-
+import { CropsPage } from '../crops/crops.page';
+import { AreasPage } from '../areas/areas.page';
+import { InputsPage } from '../inputs/inputs.page';
+import { MachinesPage } from '../machines/machines.page';
+import { ActivitysPage } from '../activitys/activitys.page';
 import * as d3 from 'd3';
 
 // import * as d3 from 'd3-selection';
@@ -59,6 +64,7 @@ export class ActivityReportPage implements OnInit {
   line: d3Shape.Line<[number, number]>;
   constructor(
     public navCtrl: NavController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -159,19 +165,30 @@ export class ActivityReportPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     return new Promise(resolve => {
-      if (this.reportActivityForm.value.reportType == 'activity') {
+      // if (this.reportActivityForm.value.reportType == 'activity') {
         this.pouchdbService.getView(
           'Informes/Agro',
           10,
-          [],
-          [],
-          true,
-          true,
-          undefined,
-          undefined,
-          false
-        ).then(async (activitys: any[]) => {
-          console.log("activity lines", activitys);
+        ).then(async (activitys1: any[]) => {
+          console.log("activity1", Object.keys(this.reportActivityForm.value.crop).length, activitys1);
+          let activitys = activitys1;
+          if (Object.keys(this.reportActivityForm.value.crop).length > 0) {
+            activitys = activitys.filter(word => word['key'][0] == this.reportActivityForm.value.crop.name);
+          }
+          if (Object.keys(this.reportActivityForm.value.area).length > 0) {
+            activitys = activitys.filter(word => word['key'][1] == this.reportActivityForm.value.area.name);
+          }
+          if (Object.keys(this.reportActivityForm.value.activity).length > 0) {
+            activitys = activitys.filter(word => word['key'][2] == this.reportActivityForm.value.activity.name);
+          }
+          if (Object.keys(this.reportActivityForm.value.input).length > 0) {
+            activitys = activitys.filter(word => word['key'][6] == this.reportActivityForm.value.input._id);
+          }
+          if (Object.keys(this.reportActivityForm.value.machine).length > 0) {
+            activitys = activitys.filter(word => word['key'][6] == this.reportActivityForm.value.input._id);
+          }
+          console.log("activity lines", this.reportActivityForm.value.crop, activitys);
+
           let items = [];
           let promise_ids = [];
           let result = {};
@@ -301,25 +318,25 @@ export class ActivityReportPage implements OnInit {
             this.loading.dismiss();
             resolve(output);
           }
-          else if (this.reportActivityForm.value.groupBy == 'product') {
+          else if (this.reportActivityForm.value.groupBy == 'name') {
             items = [];
             activitys.forEach(activityLine => {
-              if (result.hasOwnProperty(activityLine.key[1])) {
+              if (result.hasOwnProperty(activityLine.key[3])) {
                 // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
-                items[result[activityLine.key[1]]] = {
-                  'name': items[result[activityLine.key[1]]].name,
-                  'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
-                  'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[3]),
-                  'total': items[result[activityLine.key[1]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
+                items[result[activityLine.key[3]]] = {
+                  'name': items[result[activityLine.key[3]]].name,
+                  'quantity': items[result[activityLine.key[3]]].quantity + parseFloat(activityLine.key[4]),
+                  'margin': items[result[activityLine.key[3]]].margin + parseFloat(activityLine.key[3]),
+                  'total': items[result[activityLine.key[3]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
                 };
               } else {
                 items.push({
-                  'name': activityLine.key[1],
+                  'name': activityLine.key[3],
                   'quantity': parseFloat(activityLine.key[4]),
-                  'margin': parseFloat(activityLine.key[3]),
-                  'total': parseFloat(activityLine.key[4])*activityLine.key[5],
+                  'margin': parseFloat(activityLine.key[5]),
+                  'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
                 });
-                result[activityLine.key[1]] = items.length-1;
+                result[activityLine.key[3]] = items.length-1;
               }
             });
 
@@ -337,24 +354,25 @@ export class ActivityReportPage implements OnInit {
             this.loading.dismiss();
             resolve(output);
           }
-          else if (this.reportActivityForm.value.groupBy == 'payment') {
+          else if (this.reportActivityForm.value.groupBy == 'crop') {
+            console.log("crop", );
           items = [];
           activitys.forEach(activityLine => {
-            if (result.hasOwnProperty(activityLine.key[7])) {
-              items[result[activityLine.key[7]]] = {
-                'name': items[result[activityLine.key[7]]].name,
-                'quantity': items[result[activityLine.key[7]]].quantity + parseFloat(activityLine.key[4]),
-                'margin': items[result[activityLine.key[7]]].margin + activityLine.key[3],
-                'total': items[result[activityLine.key[7]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
+            if (result.hasOwnProperty(activityLine.key[0])) {
+              items[result[activityLine.key[0]]] = {
+                'name': items[result[activityLine.key[0]]].name,
+                'quantity': items[result[activityLine.key[0]]].quantity + parseFloat(activityLine.key[4]),
+                'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[5]),
+                'total': items[result[activityLine.key[0]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
               };
             } else {
               items.push({
-                'name': activityLine.key[7],
+                'name': activityLine.key[0],
                 'quantity': parseFloat(activityLine.key[4]),
-                'margin': activityLine.key[3],
-                'total': parseFloat(activityLine.key[4])*activityLine.key[5],
+                'margin': parseFloat(activityLine.key[5]),
+                'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
               });
-              result[activityLine.key[7]] = items.length-1;
+              result[activityLine.key[0]] = items.length-1;
             }
           });
 
@@ -372,6 +390,80 @@ export class ActivityReportPage implements OnInit {
           this.loading.dismiss();
           resolve(output);
         }
+
+        else if (this.reportActivityForm.value.groupBy == 'area') {
+          console.log("area", );
+        items = [];
+        activitys.forEach(activityLine => {
+          if (result.hasOwnProperty(activityLine.key[1])) {
+            items[result[activityLine.key[1]]] = {
+              'name': items[result[activityLine.key[1]]].name,
+              'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
+              'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
+              'total': items[result[activityLine.key[1]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+            };
+          } else {
+            items.push({
+              'name': activityLine.key[1],
+              'quantity': parseFloat(activityLine.key[4]),
+              'margin': parseFloat(activityLine.key[5]),
+              'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+            });
+            result[activityLine.key[1]] = items.length-1;
+          }
+        });
+
+        let self = this;
+        let output = items.sort(function(a, b) {
+          return self.compare(a, b, self.reportActivityForm.value.orderBy);
+        })
+        let marker = false;
+        let total = 0;
+        output.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+          total += parseFloat(item['total']);
+        });
+        this.loading.dismiss();
+        resolve(output);
+      }
+
+      else if (this.reportActivityForm.value.groupBy == 'activity') {
+        console.log("area", );
+      items = [];
+      activitys.forEach(activityLine => {
+        if (result.hasOwnProperty(activityLine.key[2])) {
+          items[result[activityLine.key[2]]] = {
+            'name': items[result[activityLine.key[2]]].name,
+            'quantity': items[result[activityLine.key[2]]].quantity + parseFloat(activityLine.key[4]),
+            'margin': items[result[activityLine.key[2]]].margin + parseFloat(activityLine.key[5]),
+            'total': items[result[activityLine.key[2]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+          };
+        } else {
+          items.push({
+            'name': activityLine.key[2],
+            'quantity': parseFloat(activityLine.key[4]),
+            'margin': parseFloat(activityLine.key[5]),
+            'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+          });
+          result[activityLine.key[2]] = items.length-1;
+        }
+      });
+
+      let self = this;
+      let output = items.sort(function(a, b) {
+        return self.compare(a, b, self.reportActivityForm.value.orderBy);
+      })
+      let marker = false;
+      let total = 0;
+      output.forEach(item => {
+        item['marker'] = marker,
+          marker = !marker;
+        total += parseFloat(item['total']);
+      });
+      this.loading.dismiss();
+      resolve(output);
+    }
           else if (this.reportActivityForm.value.groupBy == 'contact') {
             items = [];
             activitys.forEach(activityLine => {
@@ -380,14 +472,14 @@ export class ActivityReportPage implements OnInit {
                 items[result[activityLine.key[2]]] = {
                   'name': items[result[activityLine.key[2]]].name,
                   'quantity': items[result[activityLine.key[2]]].quantity + parseFloat(activityLine.key[4]),
-                  'margin': items[result[activityLine.key[2]]].margin + activityLine.key[3],
+                  'margin': items[result[activityLine.key[2]]].margin + activityLine.key[5],
                   'total': items[result[activityLine.key[2]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
                 };
               } else {
                 items.push({
                   'name': activityLine.key[2],
                   'quantity': parseFloat(activityLine.key[4]),
-                  'margin': activityLine.key[3],
+                  'margin': activityLine.key[5],
                   'total': parseFloat(activityLine.key[4])*activityLine.key[5],
                 });
                 result[activityLine.key[2]] = items.length-1;
@@ -411,22 +503,22 @@ export class ActivityReportPage implements OnInit {
           else if (this.reportActivityForm.value.groupBy == 'date') {
             items = [];
             activitys.forEach(activityLine => {
-              if (result.hasOwnProperty(activityLine.key[0])) {
+              if (result.hasOwnProperty(activityLine.key[7])) {
                 // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
-                items[result[activityLine.key[0]]] = {
-                  'name': items[result[activityLine.key[0]]].name,
-                  'quantity': items[result[activityLine.key[0]]].quantity + parseFloat(activityLine.key[4]),
-                  'margin': items[result[activityLine.key[0]]].margin + activityLine.key[3],
-                  'total': items[result[activityLine.key[0]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
+                items[result[activityLine.key[7]]] = {
+                  'name': items[result[activityLine.key[7]]].name,
+                  'quantity': items[result[activityLine.key[7]]].quantity + parseFloat(activityLine.key[4]),
+                  'margin': items[result[activityLine.key[7]]].margin + activityLine.key[5],
+                  'total': items[result[activityLine.key[7]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
                 };
               } else {
                 items.push({
-                  'name': activityLine.key[0],
+                  'name': activityLine.key[7],
                   'quantity': parseFloat(activityLine.key[4]),
-                  'margin': activityLine.key[3],
+                  'margin': activityLine.key[5],
                   'total': parseFloat(activityLine.key[4])*activityLine.key[5],
                 });
-                result[activityLine.key[0]] = items.length-1;
+                result[activityLine.key[7]] = items.length-1;
               }
             });
 
@@ -483,7 +575,7 @@ export class ActivityReportPage implements OnInit {
             resolve(output);
           }
         });
-      }
+      // }
     });
   }
 
@@ -534,6 +626,127 @@ export class ActivityReportPage implements OnInit {
     this.goNextStep();
   }
 
+  selectCrop(){
+    return new Promise(async resolve => {
+      this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-crop');
+      this.events.subscribe('select-crop', async (data) => {
+        this.reportActivityForm.patchValue({
+          crop: data,
+        });
+        // this.reportActivityForm.markAsDirty();
+        this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-crop');
+        this.goNextStep();
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: CropsPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
+
+  selectArea(){
+    return new Promise(async resolve => {
+      this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-area');
+      this.events.subscribe('select-area', (data) => {
+        this.reportActivityForm.patchValue({
+          area: data,
+          // contact_name: data.name,
+        });
+        // this.reportActivityForm.markAsDirty();
+        this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-area');
+        resolve(true);
+        this.goNextStep();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: AreasPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
+  selectInput(){
+    return new Promise(async resolve => {
+      this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-input');
+      this.events.subscribe('select-input', (data) => {
+        this.reportActivityForm.patchValue({
+          input: data,
+          // contact_name: data.name,
+        });
+        this.reportActivityForm.markAsDirty();
+        this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-input');
+        resolve(true);
+        this.goNextStep();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: InputsPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
+  selectMachine(){
+    return new Promise(async resolve => {
+      this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-machine');
+      this.events.subscribe('select-machine', (data) => {
+        this.reportActivityForm.patchValue({
+          machine: data,
+        });
+        this.reportActivityForm.markAsDirty();
+        this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-machine');
+        resolve(true);
+        this.goNextStep();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: MachinesPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
+
+  selectActivity(){
+    return new Promise(async resolve => {
+      this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-activity');
+      this.events.subscribe('select-activity', (data) => {
+        this.reportActivityForm.patchValue({
+          activity: data,
+          // contact_name: data.name,
+        });
+        // this.reportActivityForm.markAsDirty();
+        this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-activity');
+        this.goNextStep();
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ActivitysPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
+
   ngOnInit() {
     //var today = new Date().toISOString();
     this.reportActivityForm = this.formBuilder.group({
@@ -542,9 +755,15 @@ export class ActivityReportPage implements OnInit {
       dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.getFirstDateOfMonth()),
       dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today),
       total: new FormControl(0),
+      area: new FormControl({}),
+      machine: new FormControl({}),
+      input: new FormControl({}),
+      showFilter: new FormControl(false),
+      activity: new FormControl({}),
+      crop: new FormControl({}),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'product'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'area'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),

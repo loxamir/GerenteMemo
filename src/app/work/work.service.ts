@@ -33,6 +33,7 @@ export class WorkService {
     viewData.fields.forEach(field=>{
       if (field.type=='many2one' && work[field.name]){
         work[field.name+'_id'] = work[field.name]._id;
+        work[field.name+'_name'] = work[field.name].name;
         delete work[field.name];
       }
     });
