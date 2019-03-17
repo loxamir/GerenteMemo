@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
-import { NavController, ModalController, LoadingController, AlertController, Events } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, AlertController,
+  ToastController, Events } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -11,6 +12,8 @@ import { ActivatedRoute } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { FormatService } from '../services/format.service';
 
 @Component({
   selector: 'app-contact',
@@ -42,10 +45,13 @@ export class ContactPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
+    public bluetoothSerial: BluetoothSerial,
     public alertCtrl: AlertController,
     // public contactService: ContactService,
     // public restProvider: RestProvider,
     // public navParams: NavParams,
+    public formatService: FormatService,
+    public toastCtrl: ToastController,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public events: Events,
@@ -66,6 +72,7 @@ export class ContactPage implements OnInit {
     this.supplier = this.route.snapshot.paramMap.get('supplier');
     this.seller = this.route.snapshot.paramMap.get('seller');
     this.employee = this.route.snapshot.paramMap.get('employee');
+
     // if (this.navParams.data._id){
     //   this.opened = true;
     // }
@@ -100,6 +107,14 @@ export class ContactPage implements OnInit {
       currency: new FormControl({}),
       hire_date: new FormControl(undefined),
       salaries: new FormControl([]),
+
+      rubro: new FormControl(),
+      timbrado: new FormControl(),
+      dateStart: new FormControl(),
+      dateEnd: new FormControl(),
+      invoiceNumberStart: new FormControl("001-001-0000001"),
+      invoiceNumberEnd: new FormControl("001-001-0000100"),
+
       advances: new FormControl([]),
       _id: new FormControl(''),
     });
@@ -117,6 +132,216 @@ export class ContactPage implements OnInit {
     // this.buttonSave();
 
   }
+
+
+  async preprint() {
+    let start = parseInt(this.contactForm.value.invoiceNumberStart.split("-")[2]);
+    let end = parseInt(this.contactForm.value.invoiceNumberEnd.split("-")[2]);
+    //First via
+    // let prefix = this.contactForm.value.invoiceNumberStart.split("-");
+    // let type = "Duplicado: Archivo Tributario";
+    let type = "Original: Cliente";
+    let invoiceNumber = this.contactForm.value.invoiceNumberStart;
+        let ticket = "--------------------------------\n";
+        ticket += this.formatService.string_pad(64,this.contactForm.value.name, 'left', ' ')+"\n";
+        ticket += "De "+this.formatService.string_pad(61,this.contactForm.value.name_legal, 'left', ' ')+"\n";
+        ticket += this.formatService.string_pad(64,this.contactForm.value.rubro, 'left', ' ')+"\n";
+        ticket += this.formatService.string_pad(64,this.contactForm.value.address, 'left', ' ')+"\n";
+        // ticket += "\n";
+        ticket += "Tel: "+this.contactForm.value.phone+"\n";
+        ticket += "RUC: "+this.contactForm.value.document+"\n";
+        ticket += "--------------------------------\n";
+        ticket += "Timbrado Numero:"+this.formatService.string_pad(16, this.contactForm.value.timbrado, 'right', ' ')+"\n";
+        ticket += "Inicio Vigencia:"+this.formatService.string_pad(16, this.contactForm.value.dateStart, 'right', ' ')+"\n";
+        ticket += "Fin de Vigencia:"+this.formatService.string_pad(16, this.contactForm.value.dateEnd, 'right', ' ')+"\n";
+        ticket += "Factura Numero: "+this.formatService.string_pad(16, invoiceNumber, 'right', ' ')+"\n";
+        ticket += "--------------------------------\n";
+        ticket += "Cliente:\n";
+        ticket += "Fecha:\n";
+        ticket += "C.I. o RUC:\n";
+        ticket += "Direccion:\n";
+        ticket += "Condicion de Pago:\n";
+        ticket += "Telefono:\n";
+        ticket += "--------------------------------\n";
+        ticket += "Codigo Descripcion\n";
+        ticket += "Cant |  Precio  | Subtotal | IVA\n";
+        ticket += "--------------------------------\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "TOTAL\n";
+        ticket += "Total Gravadas 10%:\n";
+        ticket += "Total Gravadas  5%:\n";
+        ticket += "Total Gravadas  0%:\n";
+        ticket += "\n";
+        ticket += "LIQUIDACION DE IVA\n";
+        ticket += "Total Gravadas 10%:\n";
+        ticket += "Total Gravadas  5%:\n";
+        ticket += "TOTAL IVA:\n";
+        ticket += "\n";
+        ticket += type+"\n";
+        ticket += "--------------------------------\n";
+        //TODO: Questionar este bloco
+        ticket += "Nombre Fantasia"+""+"\n";
+        ticket += "razon Social"+""+"\n";
+        ticket += "RUC"+""+"\n";
+        ticket += "Habilitación Nro "+""+"\n";
+        ticket += "Dirección "+""+"\n";
+        ticket += "Telefono "+""+"\n";
+        ticket += "Total de Hojas "+""+"\n";
+        ticket += "Desde el Nro "+""+"\n";
+        ticket += "Hasta el Nro "+""+"\n";
+        ticket += "Total de Vías "+""+"\n";
+        ticket += "--------------------------------\n";
+        ticket += "\n";
+        console.log(ticket);
+
+        // Print to bluetooth printer
+        let toast = await this.toastCtrl.create({
+        message: "Imprimiendo...",
+        duration: 3000
+      });
+      toast.present();
+      this.bluetoothSerial.isEnabled().then(res => {
+        this.bluetoothSerial.list().then((data)=> {
+          this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+            this.bluetoothSerial.isConnected().then(res => {
+              // |---- 32 characteres ----|
+              this.bluetoothSerial.write(ticket);
+              this.bluetoothSerial.disconnect();
+            }).catch(res => {
+              //console.log("res1", res);
+            });
+          },error=>{
+            //console.log("error", error);
+          });
+        })
+      }).catch(res => {
+        //console.log("res", res);
+      });
+}
+
+async posprint() {
+let ticket = "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "        Aline Schwertner Pieske\n";
+ticket += "                      5899939-6\n";
+ticket += "                     Santa Rita\n";
+ticket += "                        Contado\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "0001  Limpia Porcelanato 5L\n";
+ticket += "   5  11.035.000 55.175.000  10%\n";
+ticket += "--------------------------------\n";
+ticket += "0002  Limpia Porcelanato 5L\n";
+ticket += "   5  11.035.000 55.175.000  10%\n";
+ticket += "--------------------------------\n";
+ticket += "0003  Limpia Porcelanato 5L\n";
+ticket += "   5  11.035.000 55.175.000  10%\n";
+ticket += "--------------------------------\n";
+ticket += "0004  Otro Producto con iva dist\n";
+ticket += "   1      10.000      10.000  5%\n";
+ticket += "--------------------------------\n";
+ticket += "0005  Otro Producto con iva dist\n";
+ticket += "   1      10.000      10.000  0%\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "                         195.000\n";
+ticket += "                         175.000\n";
+ticket += "                          10.000\n";
+ticket += "                          10.000\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "                          15.909\n";
+ticket += "                             476\n";
+ticket += "                          16.385\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+ticket += "\n";
+      console.log("ticket", ticket);
+
+      // Print to bluetooth printer
+      let toast = await this.toastCtrl.create({
+      message: "Imprimiendo...",
+      duration: 3000
+    });
+    toast.present();
+    this.bluetoothSerial.isEnabled().then(res => {
+      this.bluetoothSerial.list().then((data)=> {
+        this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+          this.bluetoothSerial.isConnected().then(res => {
+            // |---- 32 characteres ----|
+            this.bluetoothSerial.write(ticket);
+            this.bluetoothSerial.disconnect();
+          }).catch(res => {
+            //console.log("res1", res);
+          });
+        },error=>{
+          //console.log("error", error);
+        });
+      })
+    }).catch(res => {
+      //console.log("res", res);
+    });
+}
 
   changedDocument(){
     let dv = this.contactForm.value.document.split('-')[1] || '';

@@ -20,6 +20,14 @@
       <ion-label position="floating">{{'NAME' | translate}}</ion-label>
       <ion-input #name type="text" formControlName="name"></ion-input>
     </ion-item>
+    <ion-item
+     no-padding
+     class="field-100">
+      <ion-label position="floating">{{'Rubro' | translate}}</ion-label>
+      <ion-input type="text"
+      #rubro
+      formControlName="rubro"></ion-input>
+    </ion-item>
     <ion-row>
       <div class="validation-errors" style="width: 100%">
         <ng-container *ngFor="let validation of validation_messages.name">
@@ -59,22 +67,79 @@
 
       <ion-item
        no-padding
-       class="field-50">
+       class="field-100">
         <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
         <ion-input type="text"
         #address
         formControlName="address"></ion-input>
       </ion-item>
 
-      <ion-item
+      <!-- <ion-item
        no-padding
        class="field-50">
         <ion-label position="floating">{{'EMAIL' | translate}}</ion-label>
         <ion-input type="text"
         formControlName="email"></ion-input>
-      </ion-item>
+      </ion-item> -->
+
 
       <ion-item
+       no-padding
+       class="field-100">
+        <ion-label position="floating">{{'Timbrado' | translate}}</ion-label>
+        <ion-input type="text"
+        #timbrado
+        formControlName="timbrado"></ion-input>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <!-- <ion-label position="floating">{{'Inicio de Vigencia' | translate}}</ion-label>
+        <ion-input type="text"
+        #dateStart
+        formControlName="dateStart"></ion-input> -->
+        <h4 class="field-label">{{'Inicio de Vigencia' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="dateStart">
+        </ion-datetime>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <!-- <ion-label position="floating">{{'Fin de Vigencia' | translate}}</ion-label>
+        <ion-input type="text"
+        #dateEnd
+        formControlName="dateEnd"></ion-input> -->
+        <h4 class="field-label">{{'Fin de Vigencia' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="dateEnd">
+        </ion-datetime>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating">{{'Primero Numero' | translate}}</ion-label>
+        <ion-input type="text"
+        #invoiceNumberStart
+        formControlName="invoiceNumberStart"></ion-input>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating">{{'Ultimo Numero' | translate}}</ion-label>
+        <ion-input type="text"
+        #invoiceNumberEnd
+        formControlName="invoiceNumberEnd"></ion-input>
+      </ion-item>
+      <ion-col size="12" class="item-content">
+        <ion-button (click)="preprint()" class="button-100">Imprimir Bobina</ion-button>
+      </ion-col>
+
+      <!-- <ion-item
        no-padding
        class="field-50">
          <ion-label>{{'Cliente' | translate}}</ion-label>
@@ -136,7 +201,7 @@
         <ion-label position="floating" class="field-label">{{'HIRE_DATE' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="hire_date">
         </ion-datetime>
-      </ion-item>
+      </ion-item> -->
       <ion-item class="field-100">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-input type="text" formControlName="note"></ion-input>
