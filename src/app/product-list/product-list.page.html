@@ -28,11 +28,6 @@
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <!-- <ion-searchbar
-    placeholder="Busqueda"
-    [(ngModel)]="searchTerm"
-    (ionInput)="setFilteredItems()">
-  </ion-searchbar> -->
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of products">
       <ion-item no-padding style="background-color: #ddd">
@@ -53,9 +48,6 @@
                   <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
                       Stock: <b style="color: green;margin-left: 5px">{{item.stock}}</b>
                   </h3>
-                  <!-- <h3 style="font-size: 15px;font-weight: normal;">
-                      Codigo: <b style="margin-left: 5px">{{item.code}}</b>
-                  </h3> -->
                 </ion-col>
                 <ion-col no-padding size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
                   <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">$ {{item.price| number:'1.0'}}</h2>
@@ -93,13 +85,6 @@
 
   <ion-row *ngIf="products.length==2">
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
-      <!-- <ion-row>
-        <ion-col></ion-col>
-        <ion-col no-padding>
-          <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="https://uc345e667ca43908d75a8cf2bc88.previews.dropboxusercontent.com/p/thumb/AATLtAiIK4RGYT7yj71W0syFKYCjVG3wSwkU69o92pa__72jG9r98BSj985Ul8Pj2LoK26vXBFn4pCZjlqzaCeHC8XwjeySykvxU3My3458ojVjEbPWBJAs26kZJJ7PZm3EU6Ylc-7lt78hU_Lbg-gIJ0UEprS2thP1e3kiLpwevJvK00WuzaXKljqO_Y11BgrnwGIn7bnaSnXo5ZdITcSpiqBe-RGM2ABYCL3VBDbNU2qBCZAUsJJg2Bfj-c5FlH_nyAs34o_75eLZ01YS4G37G/p.png?size=1600x1200&size_mode=3"/>
-        </ion-col>
-        <ion-col></ion-col>
-      </ion-row> -->
       <ion-row>
         <ion-col>
           <h1>Aún no has catastrado tus productos</h1>
@@ -112,11 +97,6 @@
       </ion-row>
     </ion-col>
   </ion-row>
-  <!-- <ion-row>
-    <ion-col size="12" style="text-align: center;margin-top: 20px;">
-      <ion-icon name="arrow-round-down"  color="primary" style="font-size: 70px"></ion-icon>
-    </ion-col>
-  </ion-row> -->
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
       <ion-fab-button (click)="createProduct()">

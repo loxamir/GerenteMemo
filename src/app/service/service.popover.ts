@@ -5,25 +5,26 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
   template: `
   <ion-list>
     <ion-item (click)="duplicate()">Duplicar</ion-item>
-    <ion-item (click)="share()">Compartir</ion-item>
-    <ion-item (click)="cancel()">Cancelar</ion-item>
+    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.serviceForm.value.state=='CONFIRMED' && navParams.data.doc.serviceForm.value.date.split('T')[0]==today.split('T')[0]">Desconfirmar</ion-item>
+    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.serviceForm.value.state=='SCHEDULED' || navParams.data.doc.serviceForm.value.state=='STARTED'">Volver a Borrador</ion-item>
   </ion-list>
   `
 })
 export class ServicePopover {
   pop: PopoverController;
-
+  today;
   constructor(
     public navParams: NavParams,
     public navCtrl: NavController,
     public toastCtrl: ToastController,
   ) {
     this.pop = navParams.get('popoverController');
+    this.today = new Date().toISOString();
   }
     async duplicate(){
       this.navParams.data.doc._id = '';
       this.navParams.data.doc.serviceForm.patchValue({
-        state: 'QUOTATION',
+        state: 'DRAFT',
         _id: '',
         code: '',
         planned: [],

@@ -7,9 +7,13 @@
     <ion-searchbar
       placeholder="Buscar Contas"
       [(ngModel)]="searchTerm"
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
+      <ion-button *ngIf="!select" ion-button icon-only class="more-button"
+              (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

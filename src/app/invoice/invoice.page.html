@@ -93,11 +93,7 @@
         <h4 class="field-value">{{invoiceForm.value.currency && invoiceForm.value.currency.name || 'Selecionar'}}</h4>
       </ion-item>
     </ion-row>
-    <ion-row>
-      <ion-col size="12" *ngIf="invoiceForm.value.state == 'QUOTATION'">
-        <ion-button class="button-100" (click)="addItem()">+ Agregar Item</ion-button>
-      </ion-col>
-    </ion-row>
+
 
     <ion-row>
 
@@ -108,8 +104,13 @@
         <ion-button class="button-100" color="success" (click)="setNumber()">ReImprimir Factura</ion-button>
       </ion-col>
       <ion-col *ngIf="invoiceForm.value.type == 'in' && invoiceForm.value.state == 'QUOTATION'" >
-        <ion-button class="button-100" (click)="setNumber()">Confirmar Factura</ion-button>
+        <ion-button class="button-100" color="success" (click)="setNumber()">Confirmar Factura</ion-button>
       </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col size="12" *ngIf="invoiceForm.value.state == 'QUOTATION'">
+    <ion-button class="button-100" (click)="addItem()">+ Agregar Item</ion-button>
+  </ion-col>
 </ion-row>
     <ion-list no-lines *ngIf="invoiceForm.value.items.length">
       <section>

@@ -2,14 +2,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { Component, OnInit } from '@angular/core';
 import {
-  NavController, LoadingController, ModalController, Events
+  NavController, LoadingController, ModalController, Events,
+  PopoverController
  } from '@ionic/angular';
 import { AccountPage } from '../account/account.page';
 import 'rxjs/Rx';
-//import { AccountsModel } from './accounts.model';
-// import { AccountsService } from './accounts.service';
-
-// import { PlannedListPage } from '../../../../planned/list/planned-list';
+import { AccountListPopover} from './account-list.popover';
 
 @Component({
   selector: 'app-account-list',
@@ -38,9 +36,9 @@ export class AccountListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
+    public popoverCtrl: PopoverController,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     this.show_cash_in = this.route.snapshot.paramMap.get('show_cash_in');
     this.show_cash_out = this.route.snapshot.paramMap.get('show_cash_out');
@@ -66,8 +64,9 @@ export class AccountListPage implements OnInit {
     // }
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     if (this.transfer){
       this.field = null;
       this.filter = "transfer";
@@ -101,6 +100,16 @@ export class AccountListPage implements OnInit {
     }, 0);
   }
 
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: AccountListPopover,
+      event: myEvent,
+      componentProps: {popoverController: this.popoverCtrl}
+    });
+    popover.present();
+  }
+
   setFilteredItems() {
     console.log("this.filter", this.filter);
     this.getAccounts(
@@ -108,7 +117,7 @@ export class AccountListPage implements OnInit {
     ).then((accounts: any) => {
       this.accounts = accounts;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

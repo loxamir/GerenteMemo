@@ -31,6 +31,8 @@ import { InvoicePage } from './invoice/invoice.page';
 import { WarehouseListPage } from './warehouse-list/warehouse-list.page';
 import { AccountListPage } from './account-list/account-list.page';
 
+import { ClosePageModule } from './cash/close/close.module';
+
 import { TitlePageModule } from './title/title.module';
 import { TitleListPageModule } from './title-list/title-list.module';
 import { AccountPageModule } from './account/account.module';
@@ -40,6 +42,7 @@ import { CashListPage } from './cash-list/cash-list.page';
 
 
 import { ProductCategoryListPageModule } from './product-category-list/product-category-list.module';
+import { BrandListPageModule } from './brand-list/brand-list.module';
 import { ProductListPageModule } from './product-list/product-list.module';
 import { PaymentConditionListPageModule } from './payment-condition-list/payment-condition-list.module';
 import { ContactListPageModule } from './contact-list/contact-list.module';
@@ -54,6 +57,7 @@ import { CashMovePageModule } from './cash-move/cash-move.module';
 import { LoginPageModule } from './login/login.module';
 
 import { ProductCategoryPageModule } from './product-category/product-category.module';
+import { BrandPageModule } from './brand/brand.module';
 import { ContactPageModule } from './contact/contact.module';
 import { ProductPageModule } from './product/product.module';
 
@@ -61,6 +65,7 @@ import { CheckListPageModule } from './check-list/check-list.module';
 import { CheckPageModule } from './check/check.module';
 import { PaymentConditionPageModule } from './payment-condition/payment-condition.module';
 import { ServiceWorkPageModule } from './service/work/work.module';
+import { ProductionWorkPageModule } from './production/work/work.module';
 import { ServiceTravelPageModule } from './service/travel/travel.module';
 
 import { UserPageModule } from './user/user.module';
@@ -95,12 +100,14 @@ import { environment } from '../environments/environment';
     LoginPageModule,
     ContactPageModule,
     CashMovePageModule,
+    BrandListPageModule,
     ProductCategoryListPageModule,
     AccountCategoryListPageModule,
     ProductListPageModule,
     PaymentConditionListPageModule,
     CurrencyListPageModule,
     TitleListPageModule,
+    ClosePageModule,
     ReceiptPageModule,
     TitlePageModule,
     AccountPageModule,
@@ -119,9 +126,11 @@ import { environment } from '../environments/environment';
     ReactiveFormsModule,
     ProductPageModule,
     ProductCategoryPageModule,
+    BrandPageModule,
     PaymentConditionPageModule,
     CheckListPageModule,
     ServiceWorkPageModule,
+    ProductionWorkPageModule,
     ServiceTravelPageModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),

@@ -71,28 +71,36 @@ export class CashMoveService {
       delete cash.amount_residual;
       delete cash.payments;
     }
-    let docs = await this.pouchdbService.getList([
+    let docs: any = await this.pouchdbService.getList([
       cash.accountFrom_id,
       cash.accountTo_id,
       cash.contact_id,
     ]);
+    let docDict = {}
+    docs.forEach(item=>{
+      docDict[item.id] = item;
+    })
+    console.log("docs", docDict);
+    console.log("cash", cash);
+
     if (cash.contact){
       cash.contact_name = cash.contact.name;
     } else {
       if (!cash.contact_id){
         cash.contact_id = 'contact.unknown';
       }
-      cash.contact_name = docs[2].doc.name;
+      cash.contact_name = docDict[cash.contact_id].doc.name;
     }
     if (cash.accountFrom){
       cash.accountFrom_name = cash.accountFrom.name;
     } else {
-      cash.accountFrom_name = docs[0].doc.name;
+      console.log("docDict[cash.accountFrom_id]", docDict[cash.accountFrom_id])
+      cash.accountFrom_name = docDict[cash.accountFrom_id].doc.name;
     }
     if (cash.accountTo){
       cash.accountTo_name = cash.accountTo.name;
     } else {
-      cash.accountTo_name = docs[1].doc.name;
+      cash.accountTo_name = docDict[cash.accountTo_id].doc.name;
     }
     return new Promise((resolve, reject)=>{
       // this.configService.getSequence('cash_move').then((code) => {

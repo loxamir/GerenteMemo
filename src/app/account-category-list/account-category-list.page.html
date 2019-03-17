@@ -6,7 +6,7 @@
     <ion-searchbar
       placeholder="Buscar Categoria"
       [(ngModel)]="searchTerm"
-      (ionInput)="setFilteredItems()">
+      (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
     </ion-buttons>

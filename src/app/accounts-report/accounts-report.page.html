@@ -1,19 +1,16 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/report-tabs/short-report"></ion-back-button>
+      <ion-back-button defaultHref="/report-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
       <ion-row>
         {{ 'Plan de Cuentas' | translate }}
       </ion-row>
     </ion-title>
-
     <ion-buttons slot="end" >
     </ion-buttons>
   </ion-toolbar>
-
-
 </ion-header>
 
 <ion-content class="accountsReport-content" style="background: white;">
@@ -93,26 +90,11 @@
             </div>
           </div>
         </div>
-
         <ion-row>
           <ion-col width-100 style="height: 60px">
           </ion-col>
         </ion-row>
       </ion-list>
-
-
     </div>
   </form>
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-      <ion-fab-button (click)="share()">
-          <ion-icon name="share">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button (click)="printAndroid()">
-          <ion-icon name="print">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab>
 </ion-content>

@@ -58,10 +58,10 @@
     </ion-item> -->
   </ion-row>
   <ion-row class="state-header">
-    <ion-col size="4" *ngIf="(serviceForm.value.state == 'QUOTATION' || serviceForm.value.state == 'PRODUCED') || serviceForm.value.production">
+    <ion-col size="4" *ngIf="(serviceForm.value.state == 'DRAFT' || serviceForm.value.state == 'PRODUCED') || serviceForm.value.production">
       <div class="clicked arron">
         <span class="state-label">
-          Nuevo
+          Borrador
         </span>
       </div>
     </ion-col>
@@ -74,33 +74,25 @@
       <div
       [class.arrow]="serviceForm.value.production"
       [class.arron]="!serviceForm.value.production"
-      [class.unclicked]="serviceForm.value.state!='STARTED' && serviceForm.value.state!='PRODUCED' && serviceForm.value.state!='PAID'"
-      [class.clicked]="serviceForm.value.state=='STARTED' || serviceForm.value.state=='PRODUCED' || serviceForm.value.state=='PAID'">
+      [class.unclicked]="serviceForm.value.state=='SCHEDULED'"
+      [class.clicked]="serviceForm.value.state=='STARTED' || serviceForm.value.state=='CONFIRMED' || serviceForm.value.state=='PAID'">
         <span class="state-label">Iniciado</span>
       </div>
     </ion-col>
-    <ion-col size="4" *ngIf="!serviceForm.value.production">
+    <ion-col size="4">
       <div
         class="arrow"
        [class.unclicked]="serviceForm.value.state!='CONFIRMED' && serviceForm.value.state!='PAID'"
        [class.clicked]="serviceForm.value.state=='CONFIRMED' || serviceForm.value.state=='PAID'">
-        <span class="state-label">Realizado</span>
+        <span class="state-label">Confirmado</span>
       </div>
     </ion-col>
-    <ion-col size="4" *ngIf="serviceForm.value.production">
-      <div
-      class="arrow"
-      [class.unclicked]="serviceForm.value.state!='PRODUCED'"
-      [class.clicked]="serviceForm.value.state=='PRODUCED'">
-        <span class="state-label">Producido</span>
-      </div>
-    </ion-col>
-    <ion-col size="4" *ngIf="!serviceForm.value.production">
+    <ion-col size="4">
       <div
         class="arrow"
        [class.unclicked]="serviceForm.value.state!='PAID'"
        [class.clicked]="serviceForm.value.state=='PAID'">
-        <span class="state-label">Cobrado</span>
+        <span class="state-label">Pagado</span>
       </div>
     </ion-col>
   </ion-row>
@@ -114,16 +106,15 @@
           no-padding
           (click)="selectContact()"
           *ngIf="!serviceForm.value.production"
-           class="field-100">
+           class="field-50">
             <h4 class="field-label">{{'CLIENT' | translate}}</h4>
             <h4 class="field-value">{{serviceForm.value.contact && serviceForm.value.contact.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item
           no-padding
           (click)="selectProduct()"
-          *ngIf="serviceForm.value.production"
-           class="field-100">
-            <h4 class="field-label">{{'PRODUCED_PRODUCT' | translate}}</h4>
+           class="field-50">
+            <h4 class="field-label">{{'Servicio Prestado' | translate}}</h4>
             <h4 class="field-value">{{serviceForm.value.product && serviceForm.value.product.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item
@@ -136,17 +127,17 @@
           </ion-item>
 
         </ion-row>
-        <ion-row
+        <!-- <ion-row
           *ngIf="!serviceForm.value.production"
            style="background: white;border: 1px solid #ddd">
-          <ion-col>
-            <ion-item  style="--background: white">
+          <ion-col> -->
+            <ion-item  class="field-100">
               <ion-label position="stacked">{{ 'CLIENT_REQUEST' | translate }}</ion-label>
               <ion-textarea #clrequest formControlName="client_request"
                 rows="3">
               </ion-textarea>
             </ion-item>
-          </ion-col>
+          <!-- </ion-col>
           <ion-col size="2" color="primary">
             <ion-button icon-only  style="height: 100%;margin-top: 0px;"
             color="primary"
@@ -154,7 +145,7 @@
               <ion-icon name="mic"></ion-icon>
             </ion-button>
           </ion-col>
-        </ion-row>
+        </ion-row> -->
           <ion-row>
           <ion-item
            no-padding
@@ -341,7 +332,7 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeWork(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
+                <ion-button icon-only color="primary" (click)="removeWork(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
                   <ion-icon name="trash"></ion-icon>
                 </ion-button>
               </ion-item-options>
@@ -365,7 +356,7 @@
               </ion-icon>
             </ion-col>
             <ion-col size="9" (click)="showInputs()">
-              <h4 class="section-title">{{'Productos Consumidos' | translate}}</h4>
+              <h4 class="section-title">{{'Materiales Consumidos' | translate}}</h4>
               <h4 class="field-value"  style="margin-top:0px;">$ {{serviceForm.value.input_amount|number:'1.0'}}</h4>
             </ion-col>
             <!-- <ion-col size="2" class="item-content"
@@ -391,7 +382,7 @@
               <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
                 <ion-card class="internal-card">
                   <ion-row (click)="openItem(item)" class="product-name-row">
-                    {{item.product && item.product.name}}
+                    {{item.product && item.product.code}} - {{item.product && item.product.name}}
                   </ion-row>
               <ion-row>
                 <ion-col size="6" style="white-space: normal;">
@@ -445,7 +436,7 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeInput(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
+                <ion-button icon-only color="primary" (click)="removeInput(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
                   <ion-icon name="trash"></ion-icon>
                 </ion-button>
               </ion-item-options>
@@ -532,25 +523,35 @@
               </ion-card>
               </ion-item>
                 <ion-item-options>
-                  <ion-button icon-only color="primary" (click)="removeTravel(item)" *ngIf="serviceForm.value.state!='QUOTATIONs'">
+                  <ion-button icon-only color="primary" (click)="removeTravel(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
                     <ion-icon name="trash"></ion-icon>
                   </ion-button>
                 </ion-item-options>
               </ion-item-sliding>
             </ion-list>
           </ion-card>
-
+          <ion-row>
+            <ion-col>
+              <ion-button class="button-100"
+              color="success"
+              (click)="print()">
+              <ion-icon name="print" style="margin-right:10px;"></ion-icon>Imprimir OS</ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button class="button-100" color="success" (click)="share()"><ion-icon name="share" style="margin-right:10px;"></ion-icon>Compartir</ion-button>
+            </ion-col>
+          </ion-row>
           <ion-row>
             <ion-col
              class="item-content"
-             *ngIf="serviceForm.value.state == 'QUOTATION' || serviceForm.value.state == 'SCHEDULED'">
+             *ngIf="serviceForm.value.state == 'DRAFT' || serviceForm.value.state == 'SCHEDULED'">
               <ion-button class="button-100"
                (click)="setStarted()">
                Iniciar
               </ion-button>
             </ion-col>
             <ion-col class="item-content"
-             *ngIf="serviceForm.value.state == 'QUOTATION'">
+             *ngIf="serviceForm.value.state == 'DRAFT'">
               <ion-button class="button-100"
                (click)="setSchedule()">
                Agendar
@@ -558,13 +559,13 @@
             </ion-col>
 
 
-            <ion-col size="6"
+            <!-- <ion-col size="6"
             *ngIf="serviceForm.value.state == 'CONFIRMED' && ! serviceForm.value.production">
               <ion-button class="button-100"
               (click)="print()">
                 Imprimir OS
               </ion-button>
-            </ion-col>
+            </ion-col> -->
             <ion-col size="6"
             *ngIf="serviceForm.value.state == 'CONFIRMED' && ! serviceForm.value.production">
               <ion-button class="button-100"
@@ -579,7 +580,7 @@
              && ! serviceForm.value.invoices.length">
               <ion-button class="button-100"
               (click)="addInvoice()">
-                Crear Fatura
+                Crear Factura
               </ion-button>
             </ion-col>
             <ion-col *ngIf="serviceForm.value.state == 'STARTED'">
@@ -589,6 +590,7 @@
               </ion-button>
             </ion-col>
           </ion-row>
+
 
 
 

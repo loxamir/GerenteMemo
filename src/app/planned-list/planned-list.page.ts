@@ -22,6 +22,7 @@ export class PlannedListPage implements OnInit {
   searchTerm: string = '';
   amountTotal: number;
   amountPaid: number;
+  createReceipt = false;
   contact = {};
   contact_id = "";
   today: any;
@@ -41,7 +42,6 @@ export class PlannedListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public alertCtrl: AlertController,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -56,9 +56,9 @@ export class PlannedListPage implements OnInit {
       })
     }
     this.events.subscribe('changed-cash-move', (change)=>{
-      this.plannedService.handleChange(this.plannedList, change);
+      this.plannedService.handleChange(this.plannedList || [], change);
     })
-    this.today = new Date();
+    this.today = new Date().toJSON();
   }
 
   createReceivableMove(){
@@ -100,15 +100,16 @@ export class PlannedListPage implements OnInit {
     })
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
 
   setFilteredItems() {
     if (this.contact_id){
       this.selectedContact();
-      //this.loading.dismiss();
+      this.loading.dismiss();
     } else {
       if (this.signal == "+"){
         this.plannedService.getReceivables(
@@ -117,7 +118,7 @@ export class PlannedListPage implements OnInit {
           console.log("plannedList", plannedList);
           this.plannedList = plannedList;
           this.recomputeValues();
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
         this.plannedService.getPayables(
@@ -125,7 +126,7 @@ export class PlannedListPage implements OnInit {
         ).then((plannedList: any[]) => {
           this.plannedList = plannedList;
           this.recomputeValues();
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       }
     }
@@ -143,20 +144,23 @@ export class PlannedListPage implements OnInit {
   recomputeValues(){
     let total = 0;
     let payment = 0;
+    let createReceipt = false;
     this.plannedList.forEach((item) => {
       if (item.amount_paid){
         payment = payment + parseFloat(item.amount_paid);
+        createReceipt = true;
       }
       total = total + parseFloat(item.value);
     });
     this.amountTotal = total;
     this.amountPaid = payment;
+    this.createReceipt = createReceipt;
   }
 
   async createPayment() {
     let paidPlanneds = [];
     this.plannedList.forEach(item => {
-      if (item.amount_paid > 0){
+      if (item.amount_paid && item.amount_paid != 0){
         paidPlanneds.push(item.doc);
       }
     })

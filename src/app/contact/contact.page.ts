@@ -39,7 +39,7 @@ export class ContactPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
-    // public loadingCtrl: LoadingController,
+    public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
     public alertCtrl: AlertController,
@@ -74,7 +74,7 @@ export class ContactPage implements OnInit {
   // goBack(){
   //   this.navCtrl.navigateBack('/contact-list');
   // }
-  ngOnInit() {
+  async ngOnInit() {
     this.contactForm = this.formBuilder.group({
       name: new FormControl(this.route.snapshot.paramMap.get('name')||null),
       name_legal: new FormControl(null),
@@ -103,14 +103,16 @@ export class ContactPage implements OnInit {
       advances: new FormControl([]),
       _id: new FormControl(''),
     });
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     console.log("paramap", this.route.snapshot.paramMap.get('_id'), this._id, this.select);
     if (this._id){
       this.getContact(this._id).then((data) => {
         this.contactForm.patchValue(data);
-        // this.loading.dismiss();
+        this.loading.dismiss();
       });
     } else {
-      // this.loading.dismiss();
+      this.loading.dismiss();
     }
     // this.buttonSave();
 
@@ -299,9 +301,19 @@ export class ContactPage implements OnInit {
     this.restProvider.getRucName(this.contactForm.value.document).then((data: any)=>{
       console.log("data", data);
       if (data.name!='HttpErrorResponse'){
-        this.contactForm.patchValue({
+        let dict = {
           'name_legal': data.name,
-        })
+        }
+        if (!this.contactForm.value.name || this.contactForm.value.name == ''){
+          let firstname = data.name.split(', ')[1] || '';
+          let lastname = data.name.split(', ')[0];
+          if (firstname){
+            dict['name'] = firstname +" "+ lastname;
+          } else {
+            dict['name'] = lastname;
+          }
+        }
+        this.contactForm.patchValue(dict)
       }
     })
   }

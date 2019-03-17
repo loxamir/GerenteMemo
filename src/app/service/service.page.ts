@@ -1,43 +1,30 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { NavController,  LoadingController, AlertController, Events, ToastController, ModalController, PopoverController} from '@ionic/angular';
+import { NavController, Platform, LoadingController, AlertController, Events, ToastController, ModalController, PopoverController} from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-//import { DecimalPipe } from '@angular/common';
 import { Printer } from '@ionic-native/printer';
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
-// import { ServiceService } from './service.service';
 import { ContactListPage } from '../contact-list/contact-list.page';
-//import { ServiceItemPage } from '../service-item/service-item';
-//import { CashMovePage } from '../cash/move/cash-move';
 import { ProductService } from '../product/product.service';
-//import { ServicesPage } from '../services/services';
 import { ProductListPage } from '../product-list/product-list.page';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { ConfigService } from '../config/config.service';
-//import { NumeroALetras } from './legacy';
 import { HostListener } from '@angular/core';
-// import { SalePage } from '../sale/sale';
 import { FormatService } from '../services/format.service';
-
-// import { ServiceEquipmentPage } from './equipment/equipment';
-// import { ServiceInputPage } from './input/input.page';
 import { ServiceWorkPage } from './work/work.page';
 import { ServiceTravelPage } from './travel/travel.page';
-// import { PlannedService } from '../planned/planned.service';
 import { InvoicePage } from '../invoice/invoice.page';
 import { ReceiptPage } from '../receipt/receipt.page';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
-// import { StockMoveService } from '../stock/stock-move.service';
-// import { CashMoveService } from '../cash/move/cash-move.service';
 import { ServicePopover } from './service.popover';
+import { SocialSharing } from '@ionic-native/social-sharing';
+import * as html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-service',
@@ -110,7 +97,6 @@ export class ServicePage implements OnInit {
     _id: string;
     avoidAlertMessage: boolean;
     travel_product: object;
-    // input_product: object;
     labor_product: object;
     languages: Array<LanguageModel>;
     show_works: boolean = false;
@@ -120,14 +106,13 @@ export class ServicePage implements OnInit {
     ignore_travels: boolean = false;
 
     constructor(
+      public socialSharing: SocialSharing,
+      public platform: Platform,
       public navCtrl: NavController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
       public modalCtrl: ModalController,
-      // public imagePicker: ImagePicker,
-      // public cropService: Crop,
-      // public platform: Platform,
       public route: ActivatedRoute,
       public formBuilder: FormBuilder,
       public alertCtrl: AlertController,
@@ -141,15 +126,10 @@ export class ServicePage implements OnInit {
       public modal: ModalController,
       public speechRecognition: SpeechRecognition,
       public tts: TextToSpeech,
-      // public plannedService: PlannedService,
-      // public cashMoveService: CashMoveService,
-      // public stockMoveService: StockMoveService,
       public pouchdbService: PouchdbService,
       public popoverCtrl: PopoverController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
-      // this.languages = this.languageService.getLanguages();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');
@@ -157,7 +137,7 @@ export class ServicePage implements OnInit {
       this.avoidAlertMessage = false;
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       this.serviceForm = this.formBuilder.group({
         contact: new FormControl('', Validators.required),
@@ -172,7 +152,7 @@ export class ServicePage implements OnInit {
         work_amount: new FormControl(0),
         quantity: new FormControl(1),
         note: new FormControl(''),
-        state: new FormControl('QUOTATION'),
+        state: new FormControl('DRAFT'),
         // tab: new FormControl('service'),
         works: new FormControl([]),
         results: new FormControl([]),
@@ -206,9 +186,8 @@ export class ServicePage implements OnInit {
         responsable: new FormControl({}),
         _id: new FormControl(''),
       });
-    // }
-    // ionViewDidLoad() {
-      //this.loading.present();
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.configService.getConfig().then((data) => {
         console.log("dddata", data);
         this.labor_product = data.labor_product;
@@ -219,10 +198,10 @@ export class ServicePage implements OnInit {
             //console.log("data", data);
             this.serviceForm.patchValue(data);
             this.recomputeValues();
-            //this.loading.dismiss();
+            this.loading.dismiss();
           });
         } else {
-          //this.loading.dismiss();
+          this.loading.dismiss();
           if (!this.serviceForm.value.production){
             setTimeout(() => {
               this.clientRequest.setFocus();
@@ -232,12 +211,6 @@ export class ServicePage implements OnInit {
       });
 
     }
-    // presentPopover(myEvent) {
-    //   let popover = this.popoverCtrl.create(ServicePopover, {doc: this});
-    //   popover.present({
-    //     ev: myEvent
-    //   });
-    // }
 
     async presentPopover(myEvent) {
       console.log("teste my event");
@@ -273,7 +246,7 @@ export class ServicePage implements OnInit {
           this.recomputeValues();
           this.avoidAlertMessage = false;
           this.serviceForm.markAsDirty();
-          this.buttonSave();
+          // this.buttonSave();
           profileModal.dismiss();
           this.events.unsubscribe('select-product');
         })
@@ -456,7 +429,7 @@ export class ServicePage implements OnInit {
     // }
 
     async goNextStep() {
-      if (this.serviceForm.value.state == 'QUOTATION' || this.serviceForm.value.state == 'SCHEDULED'){
+      if (this.serviceForm.value.state == 'DRAFT' || this.serviceForm.value.state == 'SCHEDULED'){
         console.log("set Focus");
         if (this.serviceForm.value.client_request == '' && !this.serviceForm.value.production){
           this.clientRequest.setFocus();
@@ -477,10 +450,10 @@ export class ServicePage implements OnInit {
           }
         }
       }
-      if (this.serviceForm.value.state == 'STARTED'){
-        if(!this.serviceForm.value._id){
-          this.buttonSave();
-        }
+      else if (this.serviceForm.value.state == 'STARTED'){
+        // if(!this.serviceForm.value._id){
+        //   this.buttonSave();
+        // }
         if (this.serviceForm.value.works.length==0){
           this.addWork();
         }
@@ -557,10 +530,10 @@ export class ServicePage implements OnInit {
         }
         else {
           console.log("Confirm Service");
-          this.confirmService();
+          this.beforeConfirm();
         }
       } else if (this.serviceForm.value.production){
-        this.confirmService();
+        this.beforeConfirm();
       } else if (this.serviceForm.value.state == 'CONFIRMED'){
           this.beforeAddPayment();
       } else if (this.serviceForm.value.state == 'PAID'){
@@ -636,7 +609,7 @@ export class ServicePage implements OnInit {
     }
 
     async editDescription(item){
-      if (this.serviceForm.value.state=='QUOTATION'){
+      if (this.serviceForm.value.state=='DRAFT'){
         let prompt = await this.alertCtrl.create({
           header: 'Description de la linea',
           message: 'Cual es la mejor description para esta linea?',
@@ -650,7 +623,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -708,7 +681,7 @@ export class ServicePage implements OnInit {
     }
 
     beforeAddPayment(){
-      if (this.serviceForm.value.state == "QUOTATION"){
+      if (this.serviceForm.value.state == "DRAFT"){
         // this.afterConfirm().then(data => {
           this.addPayment();
         // });
@@ -716,48 +689,6 @@ export class ServicePage implements OnInit {
         this.addPayment();
       }
     }
-
-    // addPayment() {
-    //   this.avoidAlertMessage = true;
-    //     this.events.unsubscribe('create-receipt');
-    //     this.events.subscribe('create-receipt', (data) => {
-    //         this.serviceForm.value.payments.push({
-    //           'paid': data.paid,
-    //           'date': data.date,
-    //           'state': data.state,
-    //           '_id': data._id,
-    //         });
-    //       this.recomputeValues();
-    //       this.avoidAlertMessage = false;
-    //       this.buttonSave();
-    //       this.events.unsubscribe('create-receipt');
-    //     });
-    //     let plannedItems = [];
-    //     this.serviceForm.value.planned.forEach(planned => {
-    //       if (planned.state == 'WAIT'){
-    //         plannedItems.push(planned);
-    //       }
-    //     })
-    //     // let origin_ids = [];
-    //     if (this.serviceForm['invoices'] && this.serviceForm['invoices'].length == 1){
-    //       plannedItems = [plannedItems[0]];
-    //       // origin_ids = [this.serviceForm.value._id];
-    //     } else {
-    //       plannedItems = [plannedItems[0]];
-    //       // origin_ids = [this.serviceForm.value._id];
-    //     }
-    //     let profileModal = this.modalCtrl.create({ component:ReceiptPage, {
-    //       "addPayment": true,
-    //       "contact": this.serviceForm.value.contact,
-    //       "account_id": "account.income.service",
-    //       "name": "Servicio "+this.serviceForm.value.code,
-    //       "items": plannedItems,
-    //       "signal": "+",
-    //       // "origin_ids": origin_ids,
-    //     });
-    //     profileModal.present();
-    // }
-
 
       async addPayment() {
         this.avoidAlertMessage = true;
@@ -778,7 +709,7 @@ export class ServicePage implements OnInit {
               "project_id": this.serviceForm.value.project_id
               || this.serviceForm.value.project
               && this.serviceForm.value.project._id,
-              "name": "Venta "+this.serviceForm.value.code,
+              "name": "Servicio "+this.serviceForm.value.code,
               "accountFrom_id": this.serviceForm.value.paymentCondition.accountTo_id,
               "items": plannedItems,
               "origin_id": this.serviceForm.value._id,
@@ -804,10 +735,6 @@ export class ServicePage implements OnInit {
             profileModal.dismiss();
             this.events.unsubscribe('create-receipt');
           });
-
-
-            // plannedItems = [this.serviceForm.value.planned[this.serviceForm.value.planned.length - 1]];
-
           console.log("this.serviceForm.value.planned", this.serviceForm.value.planned);
           console.log("plannedItems", JSON.stringify(plannedItems));
 
@@ -816,23 +743,15 @@ export class ServicePage implements OnInit {
     async addInvoice() {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('create-invoice');
-      let items = []
-      let work_sum = {
-        'product': this.labor_product,
-        'description': this.labor_product['name'],
-        'price': 0,
-        'quantity': 0,
-      }
-      let labor_total = 0;
-      this.serviceForm.value.works.forEach(work=>{
-        labor_total += parseFloat(work['time']) * parseFloat(work['price'])
-        work_sum['quantity'] += parseFloat(work['time']);
-      })
-      if (work_sum['quantity'] > 0){
-        work_sum.price = labor_total/work_sum['quantity'];
-        items.push(work_sum);
-      }
-
+      let items = [];
+      this.serviceForm.value.inputs.forEach(input=>{
+        items.push({
+          'product': input.product,
+          'description': input.description,
+          'price': parseFloat(input.price),
+          'quantity': parseFloat(input.quantity),
+        })
+      });
       let travel_sum = {
         'product': this.travel_product,
         'description': this.travel_product['name'],
@@ -846,22 +765,24 @@ export class ServicePage implements OnInit {
       })
       if (travel_sum['quantity'] > 0){
         travel_sum.price = travel_total/travel_sum['quantity'];
-        items.push(travel_sum);
+        items.unshift(travel_sum);
+      }
+      let work_sum = {
+        'product': this.labor_product,
+        'description': this.labor_product['name'],
+        'price': 0,
+        'quantity': 0,
+      }
+      let labor_total = 0;
+      this.serviceForm.value.works.forEach(work=>{
+        labor_total += parseFloat(work['time']) * parseFloat(work['price'])
+        work_sum['quantity'] += parseFloat(work['time']);
+      })
+      if (work_sum['quantity'] > 0){
+        work_sum.price = labor_total/work_sum['quantity'];
+        items.unshift(work_sum);
       }
 
-
-      // let input_sum = {
-      //   'product': this.input_product,
-      //   'description': this.input_product['name'],
-      //   'price': 0,
-      //   'quantity': 1,
-      // }
-      // this.serviceForm.value.inputs.forEach(input=>{
-      //   input_sum['price'] += parseFloat(input['price'])*parseFloat(input['quantity']);
-      // })
-      // if (input_sum['price'] > 0){
-      //   items.push(input_sum);
-      // }
       let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
@@ -876,7 +797,7 @@ export class ServicePage implements OnInit {
       await profileModal.present();
       this.events.subscribe('create-invoice', (data) => {
           this.serviceForm.value.invoices.push({
-            'number': data.number,
+            'code': data.code,
             'date': data.date,
             'residual': data.residual,
             'total': data.total,
@@ -945,7 +866,7 @@ export class ServicePage implements OnInit {
     }
 
     recomputeTotal(){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let total = this.serviceForm.value.travel_amount +
           this.serviceForm.value.work_amount +
           this.serviceForm.value.input_amount;
@@ -987,9 +908,6 @@ export class ServicePage implements OnInit {
     recomputeInputs(){
       let inputs = 0;
       this.serviceForm.value.inputs.forEach((input) => {
-        // console.log("input", input);
-        // inputs += parseFloat(input.price)*parseFloat(input.quantity);
-        // console.log("inputs", inputs);
         if (this.serviceForm.value.production){
           // works += parseFloat(work.time)*parseFloat(this.labor_product['cost']);
           inputs += parseFloat(input.quantity)*parseFloat(input.cost|| 0);
@@ -1004,7 +922,7 @@ export class ServicePage implements OnInit {
     }
 
     async addWork(){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component: ServiceWorkPage,
           componentProps: {}
@@ -1019,14 +937,14 @@ export class ServicePage implements OnInit {
             this.recomputeValues();
             this.serviceForm.markAsDirty();
             this.show_works=true;
-            this.buttonSave();
+            // this.buttonSave();
           }
         // });
       // }
     }
 
     async editWork(item){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component: ServiceWorkPage,
           componentProps: item
@@ -1040,7 +958,7 @@ export class ServicePage implements OnInit {
             })
             this.recomputeValues();
             this.serviceForm.markAsDirty();
-            this.buttonSave();
+            // this.buttonSave();
           }
         // });
       // }
@@ -1061,7 +979,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1079,7 +997,7 @@ export class ServicePage implements OnInit {
     }
 
     removeWork(item){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let index = this.serviceForm.value.works.indexOf(item)
         this.serviceForm.value.works.splice(index, 1);
         this.recomputeValues();
@@ -1089,7 +1007,7 @@ export class ServicePage implements OnInit {
 
 
     async addTravel(){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component: ServiceTravelPage,
           componentProps: {}
@@ -1104,7 +1022,7 @@ export class ServicePage implements OnInit {
             this.recomputeValues();
             this.show_travels=true;
             this.serviceForm.markAsDirty();
-            this.buttonSave();
+            // this.buttonSave();
           }
         // });
       // }
@@ -1125,7 +1043,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1143,7 +1061,7 @@ export class ServicePage implements OnInit {
     }
 
     async editTravel(item){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component:ServiceTravelPage,
           componentProps: item
@@ -1162,7 +1080,7 @@ export class ServicePage implements OnInit {
     }
 
     removeTravel(item){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let index = this.serviceForm.value.travels.indexOf(item)
         this.serviceForm.value.travels.splice(index, 1);
         this.recomputeValues();
@@ -1171,7 +1089,7 @@ export class ServicePage implements OnInit {
     }
 
     async addInput(){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
         let profileModal = await this.modalCtrl.create({
@@ -1197,7 +1115,7 @@ export class ServicePage implements OnInit {
             this.serviceForm.markAsDirty();
             this.avoidAlertMessage = false;
             this.show_inputs=true;
-            this.buttonSave();
+            // this.buttonSave();
             profileModal.dismiss();
             this.events.unsubscribe('select-product');
           }
@@ -1206,7 +1124,7 @@ export class ServicePage implements OnInit {
     }
 
     // editInput(item){
-    //   // if (this.serviceForm.value.state=='QUOTATION'){
+    //   // if (this.serviceForm.value.state=='DRAFT'){
     //     let profileModal = this.modalCtrl.create({ component:ServiceInputPage, item);
     //     let data: any profileModal.onDidDismiss();
     //       //console.log("ITEM", data);
@@ -1226,7 +1144,7 @@ export class ServicePage implements OnInit {
     // }
 
     removeInput(item){
-      // if (this.serviceForm.value.state=='QUOTATION'){
+      // if (this.serviceForm.value.state=='DRAFT'){
         let index = this.serviceForm.value.inputs.indexOf(item)
         this.serviceForm.value.inputs.splice(index, 1);
         this.recomputeValues();
@@ -1296,7 +1214,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1328,7 +1246,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1346,7 +1264,7 @@ export class ServicePage implements OnInit {
     }
 
     async editQuantity(){
-      if (this.serviceForm.value.state=='QUOTATION'){
+      if (this.serviceForm.value.state=='DRAFT'){
         let prompt = await this.alertCtrl.create({
           header: 'Cantidad del Producto',
           message: 'Cual es el Cantidad de este producto?',
@@ -1360,7 +1278,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1380,7 +1298,7 @@ export class ServicePage implements OnInit {
     }
 
     async editPrice(){
-      if (this.serviceForm.value.state=='QUOTATION'){
+      if (this.serviceForm.value.state=='DRAFT'){
         let prompt = await this.alertCtrl.create({
           header: 'Valor total esperado',
           message: 'Cual es el Cantidad de este producto?',
@@ -1394,7 +1312,7 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: 'Cancelar'
             },
             {
               text: 'Confirmar',
@@ -1574,9 +1492,11 @@ export class ServicePage implements OnInit {
                 });
               });
             }
-            let state = 'CONFIRMED';
+            let state;
             if (this.serviceForm.value.production){
-              let state = 'PRODUCED';
+              state = 'PRODUCED';
+            } else {
+              state = 'CONFIRMED';
             }
             this.pouchdbService.createDocList(createList).then((created: any)=>{
               this.serviceForm.patchValue({
@@ -1594,9 +1514,13 @@ export class ServicePage implements OnInit {
     }
 
     async serviceCancel(){
+      let name = "Desconfirmar";
+      if (this.serviceForm.value.state != 'CONFIRMED'){
+        name = "Volver a Borrador";
+      }
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas Cancelar el Servicio?',
-        message: 'Al cancelar el Servicio todos los registros asociados serán borrados',
+        header: 'Estas seguro que deseas '+name+' el Servicio?',
+        message: 'Al '+name+' el Servicio todos los registros asociados serán borrados',
         buttons: [
           {
             text: 'No',
@@ -1608,7 +1532,7 @@ export class ServicePage implements OnInit {
             text: 'Si',
             handler: data => {
               this.serviceForm.patchValue({
-                 state: 'CANCELED',
+                 state: 'DRAFT',
               });
               this.removeQuotes();
               this.removeStockMoves();
@@ -1721,159 +1645,354 @@ export class ServicePage implements OnInit {
     }
 
     print() {
-      this.configService.getConfigDoc().then( async (data) => {
-        let company_name = data.name || "";
-        let company_ruc = data.doc || "";
-        let company_phone = data.phone || "";
-        //let number = this.serviceForm.value.invoice || "";
-        let date = this.serviceForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
-        date = date[2]+"/"+date[1]+"/"+date[0]
-        // let project = this.serviceForm.value.project.name || "";
-        let contact_name = this.serviceForm.value.contact.name || "";
-        let code = this.serviceForm.value.code || "";
-        let doc = this.serviceForm.value.contact.document || "";
-        //let direction = this.serviceForm.value.contact.city || "";
-        //let phone = this.serviceForm.value.contact.phone || "";
-        let lines = ""
-        lines += "--------------------------------\n";
-        lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      if (this.platform.is('cordova')){
+        this.configService.getConfigDoc().then( async (data) => {
+          let company_name = data.name || "";
+          let company_ruc = data.doc || "";
+          let company_phone = data.phone || "";
+          //let number = this.serviceForm.value.invoice || "";
+          let date = this.serviceForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+          date = date[2]+"/"+date[1]+"/"+date[0]
+          // let project = this.serviceForm.value.project.name || "";
+          let contact_name = this.serviceForm.value.contact.name || "";
+          let code = this.serviceForm.value.code || "";
+          let doc = this.serviceForm.value.contact.document || "";
+          //let direction = this.serviceForm.value.contact.city || "";
+          //let phone = this.serviceForm.value.contact.phone || "";
+          let lines = ""
+          lines += "--------------------------------\n";
+          lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
 
-        lines += "--------------------------------\n";
-        lines += "Cod.  Cant.   Precio   Sub-total\n";
-        let totalExentas = 0;
-        let totalIva5 = 0;
-        let totalIva10 = 0;
-        this.serviceForm.value.inputs.forEach(item => {
-          let code = item.product.code;
-          let quantity = item.quantity;
-          //  let productName = item.product.name;
-          let price = item.price;
-          let subtotal = quantity*price;
-          let exenta = 0;
-          let iva5 = 0;
-          let iva10 = 0;
-          if (item.product.tax == "iva10"){
-            iva10 = item.quantity*item.price;
-            totalIva10 += iva10;
-          } else if (item.product.tax == "exenta"){
-            exenta = item.quantity*item.price;
-            totalExentas += exenta;
-          } else if (item.product.tax == "iva5"){
-            iva5 = item.quantity*item.price;
-            totalIva5 += iva5;
-          }
-          code = this.formatService.string_pad(6, code.toString());
-          quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-          price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          let product_name = this.formatService.string_pad(32, item.product.name);
-          lines += code+quantity+price+subtotal+"\n"+product_name+"\n";
-        });
-        let work_lines = "";
-        // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-        work_lines += "--------------------------------\n";
-        work_lines += "SERVICIOS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-        // work_lines += "Tiempo    Precio       Sub-total\n";
-        this.serviceForm.value.works.forEach(item => {
-
-          let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
-          let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          let work_description = item.description.toString();
+          lines += "--------------------------------\n";
+          lines += "Cod.  Cant.   Precio   Sub-total\n";
+          let totalExentas = 0;
+          let totalIva5 = 0;
+          let totalIva10 = 0;
+          this.serviceForm.value.inputs.forEach(item => {
+            let code = item.product.code;
+            let quantity = item.quantity;
+            //  let productName = item.product.name;
+            let price = item.price;
+            let subtotal = quantity*price;
+            let exenta = 0;
+            let iva5 = 0;
+            let iva10 = 0;
+            if (item.product.tax == "iva10"){
+              iva10 = item.quantity*item.price;
+              totalIva10 += iva10;
+            } else if (item.product.tax == "exenta"){
+              exenta = item.quantity*item.price;
+              totalExentas += exenta;
+            } else if (item.product.tax == "iva5"){
+              iva5 = item.quantity*item.price;
+              totalIva5 += iva5;
+            }
+            code = this.formatService.string_pad(6, code.toString());
+            quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+            price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            let product_name = this.formatService.string_pad(32, item.product.name);
+            lines += code+quantity+price+subtotal+"\n"+product_name+"\n";
+          });
+          let work_lines = "";
+          // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
           work_lines += "--------------------------------\n";
-          work_lines += work_description+"\n";
-          work_lines += "Tiempo      Precio     Sub-total\n";
-          work_lines += quantity+price+subtotal+"\n"
-        });
+          work_lines += "SERVICIOS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          // work_lines += "Tiempo    Precio       Sub-total\n";
+          this.serviceForm.value.works.forEach(item => {
 
-        let travel_lines = "";
+            let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
+            let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            let work_description = item.description.toString();
+            work_lines += "--------------------------------\n";
+            work_lines += work_description+"\n";
+            work_lines += "Tiempo      Precio     Sub-total\n";
+            work_lines += quantity+price+subtotal+"\n"
+          });
+
+          let travel_lines = "";
+          travel_lines += "--------------------------------\n";
+          travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+
+          travel_lines += "--------------------------------\n";
+          travel_lines += "Distancia   Precio     Sub-total\n";
+          this.serviceForm.value.travels.forEach(item => {
+            let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
+            let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            travel_lines += quantity+price+subtotal+"\n";
+          });
+
+
+          let totalAmount = this.serviceForm.value.total;
+          totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+          let ticket=""
+          ticket += company_name+"\n";
+          // ticket += "Ruc: "+company_ruc+"\n";
+          ticket += "Tel: "+company_phone+"\n";
+          ticket += "\n";
+          ticket += "ORDEN DE SERVICIO "+code+"\n";
+          ticket += "Fecha: "+date+"\n";
+          ticket += "Cliente: "+contact_name+"\n";
+          ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
+          // ticket += "Ruc: "+doc+"\n";
+          // ticket += "\n";
+          // ticket += "Local: "+project+"\n";
+          ticket += "\n";
+          ticket += work_lines;
+          ticket += lines;
+          ticket += travel_lines;
+          ticket += "--------------------------------\n";
+          ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          ticket += "--------------------------------\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "--------------------------------\n";
+          ticket += "Firma del tecnico\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "--------------------------------\n";
+          ticket += "Firma del cliente: "+contact_name+"\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+          ticket += "\n";
+
+
+          console.log("\n"+ticket);
+
+
+          //console.log("ticket", ticket);
+
+
+          // Print to bluetooth printer
+          let toast = await this.toastCtrl.create({
+          message: "Start ",
+          duration: 3000
+          });
+          toast.present();
+          this.bluetoothSerial.isEnabled().then(res => {
+            this.bluetoothSerial.list().then((data)=> {
+              this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+                this.bluetoothSerial.isConnected().then(res => {
+                  // |---- 32 characteres ----|
+                  this.bluetoothSerial.write(ticket);
+                  this.bluetoothSerial.disconnect();
+                }).catch(res => {
+                    //console.log("res1", res);
+                });
+             },error=>{
+               //console.log("error", error);
+             });
+           })
+          }).catch(res => {
+            //console.log("res", res);
+          });
+        });
+      } else {
+        this.share();
+      }
+    }
+
+
+  share() {
+    this.configService.getConfigDoc().then( async (data) => {
+      let company_name = data.name || "";
+      let company_ruc = data.doc || "";
+      let company_phone = data.phone || "";
+      //let number = this.serviceForm.value.invoice || "";
+      let date = this.serviceForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+      date = date[2]+"/"+date[1]+"/"+date[0]
+      // let project = this.serviceForm.value.project.name || "";
+      let contact_name = this.serviceForm.value.contact.name || "";
+      let code = this.serviceForm.value.code || "";
+      let doc = this.serviceForm.value.contact.document || "";
+      //let direction = this.serviceForm.value.contact.city || "";
+      //let phone = this.serviceForm.value.contact.phone || "";
+      let lines = ""
+      lines += "--------------------------------\n";
+      lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+
+      lines += "--------------------------------\n";
+      lines += "Cod.  Cant.   Precio   Sub-total\n";
+      let totalExentas = 0;
+      let totalIva5 = 0;
+      let totalIva10 = 0;
+      this.serviceForm.value.inputs.forEach(item => {
+        let code = item.product.code;
+        let quantity = item.quantity;
+        //  let productName = item.product.name;
+        let price = item.price;
+        let subtotal = quantity*price;
+        let exenta = 0;
+        let iva5 = 0;
+        let iva10 = 0;
+        if (item.product.tax == "iva10"){
+          iva10 = item.quantity*item.price;
+          totalIva10 += iva10;
+        } else if (item.product.tax == "exenta"){
+          exenta = item.quantity*item.price;
+          totalExentas += exenta;
+        } else if (item.product.tax == "iva5"){
+          iva5 = item.quantity*item.price;
+          totalIva5 += iva5;
+        }
+        code = this.formatService.string_pad(6, code.toString());
+        quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+        price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        let product_name = this.formatService.string_pad(32, item.product.name);
+        lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+      });
+      let work_lines = "";
+      // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      work_lines += "--------------------------------\n";
+      work_lines += "SERVICIOS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      // work_lines += "Tiempo    Precio       Sub-total\n";
+      this.serviceForm.value.works.forEach(item => {
+
+        let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
+        let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        let work_description = item.description.toString();
+        work_lines += "--------------------------------\n";
+        work_lines += work_description+"\n";
+        work_lines += "Tiempo      Precio     Sub-total\n";
+        work_lines += quantity+price+subtotal+"\n"
+      });
+
+      let travel_lines = "";
+      if (this.serviceForm.value.travels.length>0){
         travel_lines += "--------------------------------\n";
         travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-
         travel_lines += "--------------------------------\n";
         travel_lines += "Distancia   Precio     Sub-total\n";
-        this.serviceForm.value.travels.forEach(item => {
-          let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
-          let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          travel_lines += quantity+price+subtotal+"\n";
-        });
-
-
-        let totalAmount = this.serviceForm.value.total;
-        totalAmount = this.formatService.string_pad(16, totalAmount, "right");
-        let ticket=""
-        ticket += company_name+"\n";
-        // ticket += "Ruc: "+company_ruc+"\n";
-        ticket += "Tel: "+company_phone+"\n";
-        ticket += "\n";
-        ticket += "ORDEN DE SERVICIO "+code+"\n";
-        ticket += "Fecha: "+date+"\n";
-        ticket += "Cliente: "+contact_name+"\n";
-        ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
-        // ticket += "Ruc: "+doc+"\n";
-        // ticket += "\n";
-        // ticket += "Local: "+project+"\n";
-        ticket += "\n";
-        ticket += work_lines;
-        ticket += lines;
-        ticket += travel_lines;
-        ticket += "--------------------------------\n";
-        ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-        ticket += "--------------------------------\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "--------------------------------\n";
-        ticket += "Firma del tecnico\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "--------------------------------\n";
-        ticket += "Firma del cliente: "+contact_name+"\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-
-
-        console.log("\n"+ticket);
-
-
-        //console.log("ticket", ticket);
-
-
-        // Print to bluetooth printer
-        let toast = await this.toastCtrl.create({
-        message: "Start ",
-        duration: 3000
-        });
-        toast.present();
-        this.bluetoothSerial.isEnabled().then(res => {
-          this.bluetoothSerial.list().then((data)=> {
-            this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
-              this.bluetoothSerial.isConnected().then(res => {
-                // |---- 32 characteres ----|
-                this.bluetoothSerial.write(ticket);
-                this.bluetoothSerial.disconnect();
-              }).catch(res => {
-                  //console.log("res1", res);
-              });
-           },error=>{
-             //console.log("error", error);
-           });
-         })
-        }).catch(res => {
-          //console.log("res", res);
-        });
+      }
+      this.serviceForm.value.travels.forEach(item => {
+        let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
+        let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        travel_lines += quantity+price+subtotal+"\n";
       });
-    }
+
+
+      let totalAmount = this.serviceForm.value.total;
+      totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+      let ticket='<div style="font-family: monospace;width: 310px;background: #fffae3;word-break: break-all;"><pre>';
+      ticket += company_name+"\n";
+      // ticket += "Ruc: "+company_ruc+"\n";
+      ticket += "Tel: "+company_phone+"\n";
+      ticket += "\n";
+      ticket += "ORDEN DE SERVICIO "+code+"\n";
+      ticket += "Fecha: "+date+"\n";
+      ticket += "Cliente: "+contact_name+"\n";
+      ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
+      // ticket += "Ruc: "+doc+"\n";
+      // ticket += "\n";
+      // ticket += "Local: "+project+"\n";
+      ticket += "\n";
+      ticket += work_lines;
+      ticket += lines;
+      ticket += travel_lines;
+      ticket += "--------------------------------\n";
+      ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      ticket += "--------------------------------\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "--------------------------------\n";
+      // ticket += "Firma del tecnico\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "--------------------------------\n";
+      // ticket += "Firma del cliente: "+contact_name+"\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      ticket += "\n</pre></div>";
+
+
+      console.log("\n"+ticket);
+
+
+      //console.log("ticket", ticket);
+
+
+      // Print to bluetooth printer
+      // let toast = await this.toastCtrl.create({
+      // message: "Start ",
+      // duration: 3000
+      // });
+      // toast.present();
+      // this.bluetoothSerial.isEnabled().then(res => {
+      //   this.bluetoothSerial.list().then((data)=> {
+      //     this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+      //       this.bluetoothSerial.isConnected().then(res => {
+      //         // |---- 32 characteres ----|
+      //         this.bluetoothSerial.write(ticket);
+      //         this.bluetoothSerial.disconnect();
+      //       }).catch(res => {
+      //           //console.log("res1", res);
+      //       });
+      //    },error=>{
+      //      //console.log("error", error);
+      //    });
+      //  })
+      // }).catch(res => {
+      //   //console.log("res", res);
+      // });
+      const div = document.getElementById("htmltoimage");
+      div.innerHTML = ticket;
+      const options = {background:"white",height :div.clientHeight , width : 310  };
+
+
+      // let teste = document.getElementById("htmltoimage");
+      // console.log("teste element", div);
+     html2canvas(div, options).then(canvas => {
+       // console.log("canvas", canvas);
+       if (this.platform.is('cordova')){
+         var contentType = "image/png";
+         this.socialSharing.share(
+           "Valor Total "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+           "Servicio "+code,
+           canvas.toDataURL()
+         )
+       } else {
+         let a = document.createElement('a');
+         document.body.appendChild(a);
+         a.download = "Servicio-"+code+".png";
+         a.href =  canvas.toDataURL();
+         a.click();
+       }
+
+
+      //console.log("share sucess");
+      // if cordova.file is not available use instead :
+      // var folderpath = "file:///storage/emulated/0/Download/";
+      // var folderpath = cordova.file.externalRootDirectory + "Download/"; //you can select other folders
+      //console.log("folderpath", folderpath);
+      // this.formatService.savebase64AsPDF(
+      // canvas.toDataURL(), "Presupuesto.png", canvas, contentType);
+    });
+    });
+  }
 
     getService(doc_id): Promise<any> {
       return new Promise((resolve, reject)=>{
@@ -1911,7 +2030,7 @@ export class ServicePage implements OnInit {
       service.inputs.forEach(input => {
         service.lines.push({
           product_id: input.product_id || input.product._id,
-          product_name: input.product._id || input.product_name,
+          product_name: input.product.name || input.product_name,
           description: input.description,
           quantity: input.quantity,
           price: input.price,
@@ -2020,16 +2139,19 @@ export class ServicePage implements OnInit {
     }
 
     deleteService(service){
-    //  if (service.state == 'QUOTATION'){
+    //  if (service.state == 'DRAFT'){
         return this.pouchdbService.deleteDoc(service);
     //  }
     }
 
     showNextButton(){
       // console.log("stock",this.serviceForm.value.stock);
-      // if (this.serviceForm.value.client_request==null){
-        return true;
-      // }
+      if (this.serviceForm.value.state=='PAID'){
+        return false;
+      }
+      else if (this.serviceForm.value.state=='PRODUCED'){
+        return false;
+      }
       // else if (this.serviceForm.value.price==null){
       //   return true;
       // }
@@ -2039,9 +2161,9 @@ export class ServicePage implements OnInit {
       // else if (this.serviceForm.value.type=='product'&&this.serviceForm.value.stock==null){
       //   return true;
       // }
-      // else {
-      //   return false;
-      // }
+      else {
+        return true;
+      }
     }
     discard(){
       this.canDeactivate();

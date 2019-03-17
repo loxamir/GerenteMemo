@@ -124,7 +124,6 @@ export class InvoicePage implements OnInit {
       public events:Events,
       // public popoverCtrl: PopoverController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
@@ -144,7 +143,7 @@ export class InvoicePage implements OnInit {
     //   });
     // }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       //console.log("this.route.snapshot.paramMap.get('origin_ids", this.route.snapshot.paramMap.get('contact);
       let items = [];
@@ -185,6 +184,8 @@ export class InvoicePage implements OnInit {
         origin_id: new FormControl(this.origin_id||''),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
       });
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.recomputeValues();
       //this.loading.present();
       // console.log("id", this._id);
@@ -197,18 +198,15 @@ export class InvoicePage implements OnInit {
       // } else {
       //   //this.loading.dismiss();
       // }
-    }
-
-    ngAfterViewInit(){
       console.log("id", this._id);
       if (this._id){
         this.getInvoice(this._id).then((data) => {
           console.log("data invoice", data);
           this.invoiceForm.patchValue(data);
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
       }
     }
 
@@ -788,9 +786,6 @@ export class InvoicePage implements OnInit {
     setNumber(){
       if (this.invoiceForm.value.type == 'in'){
         this.informNumberSupplier("001-001-000");
-        if (this.select){
-          this.modalCtrl.dismiss();
-        }
       } else if (this.invoiceForm.value.code){
         this.informNumber(this.invoiceForm.value.code);
       } else {
@@ -837,7 +832,8 @@ export class InvoicePage implements OnInit {
                   } else {
                     let dotmatrix_model:any = await this.pouchdbService.getDoc('config.invoice');
                     console.log("dotmatrix_model", dotmatrix_model);
-                    this.formatService.print_file(this.invoiceForm.value, dotmatrix_model);
+                    let layout = await this.pouchdbService.getDoc('config.profile')
+                    this.formatService.printInvoice(this.invoiceForm.value, layout['invoicePrint']);
                   }
                   this.justSave();
                   // this.navCtrl.navigateBack();
@@ -877,7 +873,7 @@ export class InvoicePage implements OnInit {
             text: 'Cancel'
           },
           {
-            text: 'Imprimir',
+            text: 'Confirmar',
             handler: data => {
               this.invoiceForm.patchValue({
                 code: data.code,
@@ -885,6 +881,9 @@ export class InvoicePage implements OnInit {
               });
               this.recomputeValues();
               this.justSave();
+              if (this.select){
+                this.modalCtrl.dismiss();
+              }
               // this.navCtrl.navigateBack();
             }
           }
@@ -1082,15 +1081,15 @@ export class InvoicePage implements OnInit {
             let quantity = item.quantity;
             let productName = item.description || item.product.name;
             let price = item.price;
-            let exenta = 0;
+            let iva0 = 0;
             let iva5 = 0;
             let iva10 = 0;
             if (item.product.tax == "iva10"){
               iva10 = item.quantity*item.price;
               totalIva10 += iva10;
-            } else if (item.product.tax == "exenta"){
-              exenta = item.quantity*item.price;
-              totalExentas += exenta;
+            } else if (item.product.tax == "iva0"){
+              iva0 = item.quantity*item.price;
+              totalExentas += iva0;
             } else if (item.product.tax == "iva5"){
               iva5 = item.quantity*item.price;
               totalIva5 += iva5;
@@ -1105,7 +1104,7 @@ export class InvoicePage implements OnInit {
                 `+price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
               </div>
               <div class="lines-tax0">
-                `+exenta.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+                `+iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
               </div>
               <div class="lines-tax5">
                 `+iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
@@ -1361,5 +1360,6 @@ export class InvoicePage implements OnInit {
         profileModal.present();
       });
     }
+
 
 }

@@ -20,25 +20,23 @@ export class ProductService {
   ) {}
 
   getProduct(doc_id): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      this.pouchdbService.getDoc(doc_id).then((product: any) => {
-        this.pouchdbService.getDoc(product['category_id']).then((category) => {
-          product['category'] = category || {};
-          this.pouchdbService.getView(
-            'stock/Depositos', 2,
-            ['0'],
-            ['z']
-          ).then((viewList: any[]) => {
-            let stock = 0;
-            viewList.forEach(view=>{
-              if (view.key[0].split(".")[1] == 'physical' && view.key[1] == doc_id){
-                stock += view.value;
-              }
-            })
-            product.stock = stock;
-            resolve(product);
-          });
-        });
+    return new Promise(async (resolve, reject)=>{
+      let product:any = await this.pouchdbService.getDoc(doc_id);
+      product.category = (await  this.pouchdbService.getDoc(product['category_id'])||{});
+      product.brand = (await  this.pouchdbService.getDoc(product['brand_id'])||{});
+      this.pouchdbService.getView(
+        'stock/Depositos', 2,
+        ['0'],
+        ['z']
+      ).then((viewList: any[]) => {
+        let stock = 0;
+        viewList.forEach(view=>{
+          if (view.key[0].split(".")[1] == 'physical' && view.key[1] == doc_id){
+            stock += view.value;
+          }
+        })
+        product.stock = stock;
+        resolve(product);
       });
     });
   }
@@ -62,6 +60,9 @@ export class ProductService {
       product.category_id = product.category && product.category._id || product.category_id;
       product.category_name = product.category && product.category.name || product.category_name;
       delete product.category;
+      product.brand_id = product.brand && product.brand._id || product.brand_id;
+      product.brand_name = product.brand && product.brand.name || product.brand_name;
+      delete product.brand;
       if (product.code != ''){
         resolve(this.pouchdbService.createDoc(product));
       } else {
@@ -88,6 +89,11 @@ export class ProductService {
     }
     product.category_name = product.category && product.category.name || product.category_name;
     delete product.category;
+    if (product.brand){
+      product.brand_id = product.brand._id;
+    }
+    product.brand_name = product.brand && product.brand.name || product.brand_name;
+    delete product.brand;
     return this.pouchdbService.updateDoc(product);
   }
 

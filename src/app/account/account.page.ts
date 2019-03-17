@@ -1,6 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, AlertController, ModalController, LoadingController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -18,6 +18,12 @@ import { ConfigService } from '../config/config.service';
   styleUrls: ['./account.page.scss'],
 })
 export class AccountPage implements OnInit {
+
+  @ViewChild('name') name;
+  @ViewChild('type') type;
+  @ViewChild('bank_name') bank_name;
+  @ViewChild('code') code;
+
   accountForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -47,12 +53,12 @@ export class AccountPage implements OnInit {
 
   ngOnInit() {
     this.accountForm = this.formBuilder.group({
-      name: new FormControl('', Validators.required),
+      name: new FormControl(null, Validators.required),
       category: new FormControl({}),
-      category_id: new FormControl(''),
+      bank_name: new FormControl(null),
       note: new FormControl(''),
-      code: new FormControl(''),
-      type: new FormControl(''),
+      code: new FormControl(null),
+      type: new FormControl(null),
       cash_out: new FormControl(false),
       cash_in: new FormControl(false),
       transfer: new FormControl(false),
@@ -87,6 +93,29 @@ export class AccountPage implements OnInit {
     else {
       this.navCtrl.navigateBack('/account-list');
     }
+  }
+
+  goNextStep() {
+      if (this.accountForm.value.name==null){
+        this.name.setFocus();
+      }
+      else if (this.accountForm.value.type==null){
+        this.type.open();
+      }
+      else if (this.accountForm.value.bank_name==null&&this.accountForm.value.type=='bank'){
+        this.bank_name.open();
+      }
+      else if (Object.keys(this.accountForm.value.category).length==0){
+        // this.cost.setFocus();
+        this.selectCategory();
+      }
+      else if (this.accountForm.value.code==null){
+        this.code.setFocus();
+        return;
+      }
+      else if (this.accountForm.dirty) {
+        this.buttonSave();
+      }
   }
 
   setLanguage(lang: LanguageModel){
@@ -217,6 +246,27 @@ export class AccountPage implements OnInit {
     } else {
       this.accountForm.markAsPristine();
       this.navCtrl.navigateBack('/tabs/sale-list');
+    }
+  }
+  showNextButton(){
+    // console.log("stock",this.accountForm.value.stock);
+    if (this.accountForm.value.name==null){
+      return true;
+    }
+    else if (this.accountForm.value.type==null){
+      return true;
+    }
+    else if (this.accountForm.value.bank_name==null&&this.accountForm.value.type=='bank'){
+      return true;
+    }
+    else if (Object.keys(this.accountForm.value.category).length==0){
+      return true;
+    }
+    else if (this.accountForm.value.code==null){
+      return true;
+    }
+    else {
+      return false;
     }
   }
 

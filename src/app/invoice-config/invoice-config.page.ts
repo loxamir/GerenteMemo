@@ -6,6 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { ActivatedRoute } from '@angular/router';
+import { FormatService } from '../services/format.service';
+import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 @Component({
   selector: 'app-invoice-config',
@@ -29,6 +31,8 @@ export class InvoiceConfigPage implements OnInit {
     public navParams: NavParams,
     public alertCtrl: AlertController,
     public formBuilder: FormBuilder,
+    public formatService: FormatService,
+    public pouchdbService: PouchdbService,
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
@@ -43,11 +47,17 @@ export class InvoiceConfigPage implements OnInit {
       contactName_width: new FormControl(this.navParams.data.contactName_width),
       invoiceNumber_top: new FormControl(this.navParams.data.invoiceNumber_top),
       invoiceNumber_left: new FormControl(this.navParams.data.invoiceNumber_left),
+      invoiceDateType: new FormControl(this.navParams.data.invoiceDateType),
       invoiceDate_top: new FormControl(this.navParams.data.invoiceDate_top),
       invoiceDate_left: new FormControl(this.navParams.data.invoiceDate_left),
+      invoiceMonth_left: new FormControl(this.navParams.data.invoiceMonth_left),
+      invoiceYear_left: new FormControl(this.navParams.data.invoiceYear_left),
       invoicePayment_top: new FormControl(this.navParams.data.invoicePayment_top),
+      invoicePaymentType: new FormControl(this.navParams.data.invoicePaymentType),
       invoicePayment_left: new FormControl(this.navParams.data.invoicePayment_left),
       invoicePayment_width: new FormControl(this.navParams.data.invoicePayment_width),
+      invoicePaymentCredit_top: new FormControl(this.navParams.data.invoicePaymentCredit_top),
+      invoicePaymentCredit_left: new FormControl(this.navParams.data.invoicePaymentCredit_left),
       contactDocument_top: new FormControl(this.navParams.data.contactDocument_top),
       contactDocument_left: new FormControl(this.navParams.data.contactDocument_left),
       contactDocument_width: new FormControl(this.navParams.data.contactDocument_width),
@@ -62,6 +72,7 @@ export class InvoiceConfigPage implements OnInit {
       lines_width: new FormControl(this.navParams.data.lines_width),
       lines_limit: new FormControl(this.navParams.data.lines_limit),
       lines_height: new FormControl(this.navParams.data.lines_height),
+      linesCode_width: new FormControl(this.navParams.data.linesCode_width),
       linesQuantity_width: new FormControl(this.navParams.data.linesQuantity_width),
       linesProductName_width: new FormControl(this.navParams.data.linesProductName_width),
       linesPrice_width: new FormControl(this.navParams.data.linesPrice_width),
@@ -101,6 +112,125 @@ export class InvoiceConfigPage implements OnInit {
       marginLeft_config: new FormControl(this.navParams.data.marginLeft_config),
       printerFactor_config: new FormControl(this.navParams.data.printerFactor_config),
     });
+  }
+
+  async printTest(){
+    // let dotmatrix_model:any = await this.pouchdbService.getDoc('config.invoice');
+    // let layout = await this.pouchdbService.getDoc('config.profile');
+    let invoiceData = {
+      "contact":{
+        "code":"190",
+        "name":"Cliente de Ejemplo",
+        "phone":"0983-585555",
+        "document":"653777-7",
+        "address":"SANTA RITA - SINUELO",
+        "email":"",
+        "customer":true,
+        "supplier":false,
+        "employee":false,
+        "seller":false,
+        "note":"",
+        "docType":"contact",
+        },
+        "name":"",
+        "contact_name":"Cliente de Ejemplo",
+        "code":"001-001-0000002",
+        "date":"1999-12-31T12:07:47.265Z",
+        "total":300000,
+        "residual":300000,
+        "tax":36181.818181818184,
+        "note":"",
+        "state":"PRINTED",
+        "items":[
+          {
+            "product":{
+              "code":"021",
+              "name":"Producto Iva 10%",
+              "price":100000,
+              "stock":10,
+              "tax":"iva10",
+              "stock_min":0,
+              "type":"product",
+              "note":"",
+              "docType":"product"
+            },
+            "description":"Producto Iva 10%",
+            "quantity":"1",
+            "price":100000
+          },
+          {
+            "product":{
+              "code":"002",
+              "name":"Producto Iva 5%",
+              "price":100000,
+              "cost":50000,
+              "stock":2,
+              "tax":"iva5",
+              "stock_min":0,
+              "type":"product",
+              "note":"",
+              "docType":"product"
+            },
+            "description":"Producto Iva 5%",
+            "quantity":"1",
+            "price":100000
+          },
+          {
+            "product":{
+              "code":"253",
+              "name":"Producto Exento",
+              "price":100000,
+              "cost":50000,
+              "stock":2,
+              "tax":"iva0",
+              "stock_min":0,
+              "type":"product",
+              "note":"",
+              "docType":"product"
+            },
+            "description":"Producto Exento",
+            "quantity":"1",
+            "price":100000
+          },
+        ],
+        "type":"out",
+        "paymentCondition":"Contado",
+        "number":"",
+        "currency":{}
+      }
+    // async informNumberSupplier(code){
+      let prompt = await this.alertCtrl.create({
+        header: 'Elejir Condición de Pago',
+        message: 'Cual es la Condición de Pago de que quieres imprimir?',
+        buttons: [
+          {
+            text: 'Contado',
+            handler: data => {
+              invoiceData.paymentCondition = "Contado";
+              this.formatService.printInvoice(
+                invoiceData,
+                this.invoiceForm.value
+              );
+            }
+          },
+          {
+            text: 'Credito',
+            handler: data => {
+              invoiceData.paymentCondition = "Credito";
+              this.formatService.printInvoice(
+                invoiceData,
+                this.invoiceForm.value
+              );
+            }
+          }
+        ]
+      });
+
+    await prompt.present();
+    // }
+
+
+
   }
 
   buttonSave(){
@@ -147,7 +277,7 @@ export class InvoiceConfigPage implements OnInit {
       this.modalCtrl.dismiss();
     } else {
       this.invoiceForm.markAsPristine();
-      this.navCtrl.navigateBack('/tabs/product-list');
+      this.navCtrl.navigateBack('/product-list');
     }
   }
 }

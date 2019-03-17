@@ -26,7 +26,7 @@
       <ion-button (click)="validate()" color="success">
         Validar
       </ion-button>
-      <ion-button (click)="import()" color="danger">
+      <ion-button (click)="import()" color="danger" *ngIf="validated">
         Importar
       </ion-button>
     </ion-row>

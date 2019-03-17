@@ -126,7 +126,7 @@ export class UserPage implements OnInit {
       this.modalCtrl.dismiss();
     } else {
       this.form.markAsPristine();
-      this.navCtrl.navigateBack('/tabs/product-list');
+      this.navCtrl.navigateBack('/product-list');
     }
   }
 }

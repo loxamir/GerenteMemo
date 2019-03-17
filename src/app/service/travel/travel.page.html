@@ -18,15 +18,21 @@
 <ion-content>
   <form class="sample-form validations-form" [formGroup]="travelForm">
     <ion-item class="field-100">
-      <ion-row>
+      <!-- <ion-item style="background-color: white"> -->
+        <ion-label position="floating">{{'DISTANCE_KM' | translate}}</ion-label>
+        <ion-input #distance type="number" formControlName="distance" (ionChange)="onChangeDistance()"></ion-input>
+      <!-- </ion-item> -->
+    </ion-item>
+    <ion-item class="field-100">
+      <!-- <ion-row>
         <ion-col>
-          <ion-item  style="background-color: white">
+          <ion-item  style="background-color: white"> -->
             <ion-label position="floating">{{ 'DESCRIPTION' | translate }}</ion-label>
             <ion-textarea #description formControlName="description"
               rows="3">
             </ion-textarea>
-          </ion-item>
-        </ion-col>
+          <!-- </ion-item> -->
+        <!-- </ion-col> -->
         <!-- <ion-col size="2" color="primary">
           <ion-button icon-only  style="height: 100%;margin-top: 0px;"
           color="primary"
@@ -34,14 +40,9 @@
             <ion-icon name="mic"></ion-icon>
           </ion-button>
         </ion-col> -->
-      </ion-row>
+      <!-- </ion-row> -->
     </ion-item>
-    <ion-item class="field-100">
-      <ion-item style="background-color: white">
-        <ion-label position="floating">{{'DISTANCE_KM' | translate}}</ion-label>
-        <ion-input #distance type="number" formControlName="distance" (ionChange)="onChangeDistance()"></ion-input>
-      </ion-item>
-    </ion-item>
+
 
     <ion-item class="field-100"
     no-padding
@@ -52,26 +53,26 @@
 
 
     <ion-item class="field-100" *ngIf="travelForm.value.vehicle">
-      <ion-col>
-        <ion-item style="background-color: white">
+      <!-- <ion-col>
+        <ion-item style="background-color: white"> -->
           <ion-label position="floating">{{'START_KM' | translate}}</ion-label>
           <ion-input type="number" formControlName="start_km" (ionChange)="onChangeStartKm()"></ion-input>
-        </ion-item>
-      </ion-col>
+        <!-- </ion-item>
+      </ion-col> -->
     </ion-item>
 
 
 
     <ion-item class="field-100" *ngIf="travelForm.value.vehicle">
-      <ion-col>
-        <ion-item style="background-color: white">
+      <!-- <ion-col>
+        <ion-item style="background-color: white"> -->
           <ion-label position="floating">{{'END_KM' | translate}}</ion-label>
           <ion-input type="number"
            formControlName="end_km"
            (ionChange)="onChangeEndKm()">
           </ion-input>
-        </ion-item>
-      </ion-col>
+        <!-- </ion-item>
+      </ion-col> -->
     </ion-item>
 
 
@@ -103,10 +104,10 @@
     </ion-item> -->
 
     <ion-item class="field-100">
-      <ion-item style="background-color: white">
+      <!-- <ion-item style="background-color: white"> -->
         <ion-label position="floating">{{'NOTES' | translate}}</ion-label>
         <ion-textarea rows="3" formControlName="note"></ion-textarea>
-      </ion-item>
+      <!-- </ion-item> -->
     </ion-item>
   </form>
   <!-- <ion-button margin-bottom ion-button class="print-invoice"

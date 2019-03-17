@@ -18,6 +18,8 @@ export function createTranslateLoader(http: HttpClient) {
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { LoginPopover } from './login.popover';
+
 const routes: Routes = [
   {
     path: '',
@@ -42,6 +44,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [LoginPage]
+  declarations: [LoginPage, LoginPopover],
+  entryComponents:[LoginPopover]
 })
 export class LoginPageModule {}

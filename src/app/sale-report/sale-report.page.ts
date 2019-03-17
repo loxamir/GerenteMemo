@@ -3,35 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { NavController, LoadingController, AlertController, Events, ToastController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-//import { DecimalPipe } from '@angular/common';
-import { Printer } from '@ionic-native/printer';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
 import { ReportService } from '../report/report.service';
-// import { ContactListPage } from '../contact-list/contact-list.page';
-//import { ReportItemPage } from '../report-item/report-item';
-//import { CashMovePage } from '../cash/move/cash-move';
 import { ProductService } from '../product/product.service';
-//import { ReportsPage } from '../reports/reports';
-// import { ProductListPage } from '../product-list/product-list.page';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
-// import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
-// import { PlannedService } from '../../planned/planned.service';
-// import { SaleService } from '../../sale/sale.service';
-// import { PurchaseService } from '../../purchase/purchase.service';
-import { ConfigService } from '../config/config.service';
-// import { HostListener } from '@angular/core';
-// import { ReceiptPage } from '../receipt/receipt.page';
-// import { ReceiptService } from '../../receipt/receipt.service';
-// // import { InvoicePage } from '../../invoice/invoice';
 import { FormatService } from '../services/format.service';
-import { SocialSharing } from '@ionic-native/social-sharing';
-import { File } from '@ionic-native/file';
-
-// declare var cordova: any;
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 import * as d3 from 'd3';
@@ -39,7 +16,6 @@ import * as d3 from 'd3';
 // import * as d3 from 'd3-selection';
 import * as d3Scale from "d3-scale";
 import * as d3Shape from "d3-shape";
-
 import * as d3Array from "d3-array";
 import * as d3Axis from "d3-axis";
 
@@ -56,7 +32,10 @@ export class SaleReportPage implements OnInit {
   today: any;
   _id: string;
   avoidAlertMessage: boolean;
-
+  items_product_total;
+  items_margin;
+  items_quantity;
+  total;
   languages: Array<LanguageModel>;
 
   title: string = 'D3.js with Ionic 2!';
@@ -83,45 +62,25 @@ export class SaleReportPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    // public imagePicker: ImagePicker,
-    // public cropService: Crop,
-    // public platform: Platform,
     public reportService: ReportService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
     public productService: ProductService,
-    // public plannedService: PlannedService,
-    public bluetoothSerial: BluetoothSerial,
     public toastCtrl: ToastController,
-    public printer: Printer,
-    public configService: ConfigService,
     public formatService: FormatService,
     public events: Events,
-    public socialSharing: SocialSharing,
-    public file: File,
     public pouchdbService: PouchdbService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.avoidAlertMessage = false;
-
-    // this.width = 900 - this.margin.left - this.margin.right ;
-    // this.height = 500 - this.margin.top - this.margin.bottom;
-    // this.radius = Math.min(this.width, this.height) / 2;
-
   }
 
   groupBySum(object, prop, sum) {
     return object.reduce(function(lines, item) {
       const val = item[prop]
-      // groups[val] = groups[val] || []
-      // groups[val].push(item)
-
-      //lines[val] = lines[val] ||
-      //console.log("")
       lines[val] = lines[val] || {}
       lines[val][sum] = lines[val][sum] || 0
       lines[val][sum] += item[sum]
@@ -132,14 +91,9 @@ export class SaleReportPage implements OnInit {
   groupBySum2(object, prop, sum, sum2, sum3, sum4) {
     return object.reduce(function(lines, item) {
       const val = item[prop]
-      // groups[val] = groups[val] || []
-      // groups[val].push(item)
-
-      //lines[val] = lines[val] ||
       lines[val] = lines[val] || {}
       lines[val][sum] = lines[val][sum] || 0
       lines[val][sum] += item[sum]
-      // console.log("lines[val][sum3], lines[val][sum4]",  item)
       lines[val][sum2] = lines[val][sum2] || 0
       item.lines.forEach(line=>{
         lines[val][sum2] += (line[sum3] - line[sum4])*line['quantity']
@@ -178,7 +132,6 @@ export class SaleReportPage implements OnInit {
       } else {
         lines[val][sum] += parseFloat(item[sum])
       }
-
       lines[val]['list'] = lines[val]['list'] || []
       lines[val]['list'].push(item)
       return lines
@@ -186,13 +139,6 @@ export class SaleReportPage implements OnInit {
   }
 
   groupByDate(object, prop, sum) {
-    // return object.reduce(function(groups, item) {
-    //     const val = item[prop].split("T")[0]
-    //     groups[val] = groups[val] || []
-    //     groups[val].push(item)
-    //     return groups
-    //   }, {})
-
     return object.reduce(function(lines, item) {
       const val = item[prop].split("T")[0]
       lines[val] = lines[val] || {}
@@ -209,154 +155,175 @@ export class SaleReportPage implements OnInit {
     }, {})
   }
 
-  getData() {
+  async getData() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     return new Promise(resolve => {
       if (this.reportSaleForm.value.reportType == 'sale') {
-        this.pouchdbService.searchDocTypeAllData('sale', '', false).then((sales1: any[]) => {
-          let sales = sales1
-            .filter(word => word.date >= this.reportSaleForm.value.dateStart)
-            .filter(word => word.date <= this.reportSaleForm.value.dateEnd)
-            .filter(word => word.state != 'QUOTATION');
+        this.pouchdbService.getView(
+          'Informes/ProductoDiario',
+          10,
+          [this.reportSaleForm.value.dateStart.split("T")[0], "0", "0"],
+          [this.reportSaleForm.value.dateEnd.split("T")[0], "z", "z"],
+          true,
+          true,
+          undefined,
+          undefined,
+          false
+        ).then(async (sales: any[]) => {
+          console.log("sale lines", sales);
           let items = [];
           let promise_ids = [];
           let result = {};
-
-
           if (this.reportSaleForm.value.groupBy == 'category') {
-            sales.forEach(data1 => {
-              if (data1['lines']) {
-                data1['lines'].forEach(item => {
-                  let quantity = parseFloat(item.quantity);
-                  let price = parseFloat(item.price);
-                  let cost = parseFloat(item.cost);
-                  promise_ids.push(this.productService.getProduct(item.product_id).then(product => {
-                    if (!product.category) {
-                      product.category = { 'name': "Indefinido" };
-                    }
-                    if (result.hasOwnProperty(product.category.name)) {
-                      let current_value = result[product.category.name]['quantity'] * result[product.category.name]['price'];
-                      let new_value = quantity * price;
-                      result[product.category.name]['quantity'] += quantity;
-                      result[product.category.name]['margin'] += (price - cost)*quantity;;
-                      result[product.category.name]['price'] = (current_value + new_value) / result[product.category.name]['quantity'];
-                      result[product.category.name]['total'] += price * quantity;
-                    } else {
-                      result[product.category.name] = {
-                        'quantity': quantity,
-                        'margin': (price - cost)*quantity,
-                        'price': price,
-                        'total': price * quantity,
-                        'date': data1['date'],
-                      }
-                    }
-                    console.log('margin', item,)
-                  }));
-                });
-              }
-            });
-
-            let self = this;
-            Promise.all(promise_ids).then(products => {
-              Object.keys(result).forEach(category => {
-                result[category]['name'] = category;
-                items.push(result[category]);
-              });
-              let output = items.sort(function(a, b) {
-                return self.compare(a, b, self.reportSaleForm.value.orderBy);
-              })
-              let marker = false;
-              let total = 0;
-              output.forEach(item => {
-                item['marker'] = marker,
-                  marker = !marker;
-                total += parseFloat(item['total']);
-              });
-              // output.unshift({
-              //   "name": "namea",
-              //   "total": total,
-              //   "date": this.reportSaleForm.value.dateEnd,
-              //   "sumatory": true,
-              // });
-              resolve(output);
-            });
-          }
-
-          else if (this.reportSaleForm.value.groupBy == 'product') {
-            sales.forEach(data1 => {
-              let ttt = 0;
-              if (data1['lines']) {
-                data1['lines'].forEach(item => {
-                  let quantity = parseFloat(item.quantity);
-                  let price = parseFloat(item.price);
-                  let cost = parseFloat(item.cost);
-                  ttt += price * quantity;
-                  if (result.hasOwnProperty(item.product_id)) {
-                    let current_value = result[item.product_id]['quantity'] * result[item.product_id]['price'];
-                    let new_value = quantity * price;
-                    result[item.product_id]['margin'] += (price - cost)*quantity;
-                    result[item.product_id]['quantity'] += quantity;
-                    result[item.product_id]['price'] = (current_value + new_value) / result[item.product_id]['quantity'];
-                    result[item.product_id]['total'] += price * quantity;
-                  } else {
-                    result[item.product_id] = {
-                      'quantity': quantity,
-                      'price': price,
-                      'margin': (price - cost)*quantity,
-                      'total': price * quantity,
-                      'date': data1['date'],
-                    }
-                  }
-                });
-              }
-              console.log("total Venda:", data1.total, "total Lineas:", ttt, data1.code);
-            });
-            Object.keys(result).forEach(product_id => {
-              promise_ids.push(this.productService.getProduct(product_id).then(data => {
-                result[product_id]['product'] = data;
-                result[product_id]['name'] = data.name;
-                items.push(result[product_id]);
-              }));
-            });
-            let self = this;
-            Promise.all(promise_ids).then(item => {
-              let output = items.sort(function(a, b) {
-                return self.compare(a, b, self.reportSaleForm.value.orderBy);
-              })
-              let marker = false;
-              let total = 0;
-              let quantity = 0;
-              output.forEach(item => {
-                item['marker'] = marker,
-                  marker = !marker;
-                total += parseFloat(item['total']);
-                quantity += parseFloat(item['quantity']);
-              });
-              // output.unshift({
-              //   "name": "Sumatoria",
-              //   "total": total,
-              //   "date": this.reportSaleForm.value.dateEnd,
-              //   "quantity": quantity,
-              //   "sumatory": true,
-              // });
-              console.log("output", output);
-              resolve(output);
-            });
-          }
-          else if (this.reportSaleForm.value.groupBy == 'contact') {
-            console.log("sales", sales);
-            let array = this.groupBySum2(sales, 'contact_name', 'total', 'margin', 'price', 'cost');
-            console.log("array", array);
             items = [];
-            Object.keys(array).forEach(key => {
-              items.push({
-                'name': key,
-                'margin': array[key]['margin'],
-                'total': array[key]['total'],
-                'date': array[key]['date']
-              });
+            let getList = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[9])) {
+                // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
+                items[result[saleLine.key[9]]] = {
+                  'name': items[result[saleLine.key[9]]].name,
+                  'quantity': items[result[saleLine.key[9]]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[saleLine.key[9]]].margin + parseFloat(saleLine.key[3]),
+                  'total': items[result[saleLine.key[9]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[9],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': parseFloat(saleLine.key[3]),
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                getList.push(saleLine.key[9]);
+                result[saleLine.key[9]] = items.length-1;
+              }
             });
+
+            let products: any = await this.pouchdbService.getList(getList);
+            var doc_dict = {};
+            products.forEach(row=>{
+              doc_dict[row.id] = row.doc;
+            })
+            let categories = {};
+            let litems = [];
+            items.forEach(item=>{
+              if (categories.hasOwnProperty(doc_dict[item.name].category_name)) {
+                litems[categories[doc_dict[item.name].category_name]] = {
+                  'name': doc_dict[item.name].category_name,
+                  'quantity': litems[categories[doc_dict[item.name].category_name]].quantity + parseFloat(item.quantity),
+                  'margin': litems[categories[doc_dict[item.name].category_name]].margin + item.margin,
+                  'total': litems[categories[doc_dict[item.name].category_name]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item.name].category_name,
+                  'quantity': item.quantity,
+                  'margin': item.margin,
+                  'total': item.total,
+                });
+                categories[doc_dict[item.name].category_name] = litems.length-1;
+              }
+            })
             let self = this;
-            //console.log("items", items);
+            let output = litems.sort(function(a, b) {
+              return self.compare(a, b, self.reportSaleForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
+          else if (this.reportSaleForm.value.groupBy == 'brand') {
+            items = [];
+            let getList = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[9])) {
+                // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
+                items[result[saleLine.key[9]]] = {
+                  'name': items[result[saleLine.key[9]]].name,
+                  'quantity': items[result[saleLine.key[9]]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[saleLine.key[9]]].margin + parseFloat(saleLine.key[3]),
+                  'total': items[result[saleLine.key[9]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[9],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': parseFloat(saleLine.key[3]),
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                getList.push(saleLine.key[9]);
+                result[saleLine.key[9]] = items.length-1;
+              }
+            });
+
+            let products: any = await this.pouchdbService.getList(getList);
+            var doc_dict = {};
+            products.forEach(row=>{
+              doc_dict[row.id] = row.doc;
+            })
+            let brands = {};
+            let litems = [];
+            items.forEach(item=>{
+              if (brands.hasOwnProperty(doc_dict[item.name].brand_name)) {
+                litems[brands[doc_dict[item.name].brand_name]] = {
+                  'name': doc_dict[item.name].brand_name,
+                  'quantity': litems[brands[doc_dict[item.name].brand_name]].quantity + parseFloat(item.quantity),
+                  'margin': litems[brands[doc_dict[item.name].brand_name]].margin + item.margin,
+                  'total': litems[brands[doc_dict[item.name].brand_name]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item.name].brand_name,
+                  'quantity': item.quantity,
+                  'margin': item.margin,
+                  'total': item.total,
+                });
+                brands[doc_dict[item.name].brand_name] = litems.length-1;
+              }
+            })
+            let self = this;
+            let output = litems.sort(function(a, b) {
+              return self.compare(a, b, self.reportSaleForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
+          else if (this.reportSaleForm.value.groupBy == 'product') {
+            items = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[1])) {
+                // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
+                items[result[saleLine.key[1]]] = {
+                  'name': items[result[saleLine.key[1]]].name,
+                  'quantity': items[result[saleLine.key[1]]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[saleLine.key[1]]].margin + parseFloat(saleLine.key[3]),
+                  'total': items[result[saleLine.key[1]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[1],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': parseFloat(saleLine.key[3]),
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[saleLine.key[1]] = items.length-1;
+              }
+            });
+
+            let self = this;
             let output = items.sort(function(a, b) {
               return self.compare(a, b, self.reportSaleForm.value.orderBy);
             })
@@ -367,28 +334,67 @@ export class SaleReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
-            // output.unshift({
-            //   "name": "Sumatoria",
-            //   "total": total,
-            //   "date": this.reportSaleForm.value.dateEnd,
-            //   "sumatory": true,
-            // });
+            this.loading.dismiss();
             resolve(output);
           }
           else if (this.reportSaleForm.value.groupBy == 'payment') {
-            let array = this.groupBySum2(sales, 'payment_name', 'total', 'margin', 'price', 'cost');
-            //console.log("array", array);
-            items = [];
-            Object.keys(array).forEach(key => {
+          items = [];
+          sales.forEach(saleLine => {
+            if (result.hasOwnProperty(saleLine.key[7])) {
+              items[result[saleLine.key[7]]] = {
+                'name': items[result[saleLine.key[7]]].name,
+                'quantity': items[result[saleLine.key[7]]].quantity + parseFloat(saleLine.key[4]),
+                'margin': items[result[saleLine.key[7]]].margin + saleLine.key[3],
+                'total': items[result[saleLine.key[7]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+              };
+            } else {
               items.push({
-                'name': key,
-                'margin': array[key]['margin'],
-                'total': array[key]['total'],
-                'date': array[key]['date']
+                'name': saleLine.key[7],
+                'quantity': parseFloat(saleLine.key[4]),
+                'margin': saleLine.key[3],
+                'total': parseFloat(saleLine.key[4])*saleLine.key[5],
               });
+              result[saleLine.key[7]] = items.length-1;
+            }
+          });
+
+          let self = this;
+          let output = items.sort(function(a, b) {
+            return self.compare(a, b, self.reportSaleForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          resolve(output);
+        }
+          else if (this.reportSaleForm.value.groupBy == 'contact') {
+            items = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[2])) {
+                // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
+                items[result[saleLine.key[2]]] = {
+                  'name': items[result[saleLine.key[2]]].name,
+                  'quantity': items[result[saleLine.key[2]]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[saleLine.key[2]]].margin + saleLine.key[3],
+                  'total': items[result[saleLine.key[2]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[2],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': saleLine.key[3],
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[saleLine.key[2]] = items.length-1;
+              }
             });
+
             let self = this;
-            //console.log("items", items);
             let output = items.sort(function(a, b) {
               return self.compare(a, b, self.reportSaleForm.value.orderBy);
             })
@@ -399,29 +405,32 @@ export class SaleReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
-            // output.unshift({
-            //   "name": "Sumatoria",
-            //   "total": total,
-            //   "date": this.reportSaleForm.value.dateEnd,
-            //   "sumatory": true,
-            // });
+            this.loading.dismiss();
             resolve(output);
           }
           else if (this.reportSaleForm.value.groupBy == 'date') {
-            //console.log("sales", sales);
-            let array = this.groupByDate2(sales, 'date', 'total', 'margin', 'price', 'cost');
-            //console.log("array", array);
             items = [];
-            Object.keys(array).forEach(key => {
-              items.push({
-                'name': key,
-                'margin': array[key]['margin'],
-                'total': array[key]['total'],
-                'date': key,
-              });
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[0])) {
+                // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
+                items[result[saleLine.key[0]]] = {
+                  'name': items[result[saleLine.key[0]]].name,
+                  'quantity': items[result[saleLine.key[0]]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[saleLine.key[0]]].margin + saleLine.key[3],
+                  'total': items[result[saleLine.key[0]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[0],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': saleLine.key[3],
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[saleLine.key[0]] = items.length-1;
+              }
             });
+
             let self = this;
-            //console.log("items", items);
             let output = items.sort(function(a, b) {
               return self.compare(a, b, self.reportSaleForm.value.orderBy);
             })
@@ -432,28 +441,34 @@ export class SaleReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
-            // output.unshift({
-            //   "name": "Sumatoria",
-            //   "total": total,
-            //   "date": this.reportSaleForm.value.dateEnd,
-            //   "sumatory": true,
-            // });
+            this.loading.dismiss();
             resolve(output);
+
           }
+
           else if (this.reportSaleForm.value.groupBy == 'seller') {
-            let array = this.groupBySum2(sales, 'seller_name', 'total', 'margin', 'price', 'cost');
-            //console.log("array", array);
             items = [];
-            Object.keys(array).forEach(key => {
-              items.push({
-                'name': key || 'No Informado',
-                'margin': array[key]['margin'],
-                'total': array[key]['total'],
-                'date': array[key]['date']
-              });
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[8])) {
+                // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
+                items[result[saleLine.key[8]]] = {
+                  'name': items[result[saleLine.key[8]]].name,
+                  'quantity': items[result[saleLine.key[8]]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[saleLine.key[8]]].margin + saleLine.key[3],
+                  'total': items[result[saleLine.key[8]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[8],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': saleLine.key[3],
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[saleLine.key[8]] = items.length-1;
+              }
             });
+
             let self = this;
-            //console.log("items", items);
             let output = items.sort(function(a, b) {
               return self.compare(a, b, self.reportSaleForm.value.orderBy);
             })
@@ -464,12 +479,7 @@ export class SaleReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
-            // output.unshift({
-            //   "name": "Sumatoria",
-            //   "total": total,
-            //   "date": this.reportSaleForm.value.dateEnd,
-            //   "sumatory": true,
-            // });
+            this.loading.dismiss();
             resolve(output);
           }
         });
@@ -478,7 +488,6 @@ export class SaleReportPage implements OnInit {
   }
 
   compare(a, b, field) {
-    // Use toUpperCase() to ignore character casing
     const genreA = a[field];
     const genreB = b[field];
 
@@ -535,7 +544,7 @@ export class SaleReportPage implements OnInit {
       total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'date'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'product'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
@@ -558,27 +567,8 @@ export class SaleReportPage implements OnInit {
     return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
   }
 
-  // ionViewDidLoad() {
-  //   //this.loading.present();
-  //   if (this._id) {
-  //     this.reportService.getReport(this._id).then((data) => {
-  //       //console.log("data", data);
-  //       this.reportSaleForm.patchValue(data);
-  //       //this.loading.dismiss();
-  //     });
-  //   } else {
-  //     //this.loading.dismiss();
-  //   }
-  //   // if (this.route.snapshot.paramMap.get('compute){
-  //   this.goNextStep();
-  //   // }
-  //
-  // }
-
   goNextStep() {
     this.getData().then(data => {
-      //console.log("data", data);
-      // this.reportSaleForm.value.items = data;
       let self = this;
       new Promise((resolve, reject) => {
         self.reportSaleForm.patchValue({
@@ -607,26 +597,25 @@ export class SaleReportPage implements OnInit {
 
   recomputeValues() {
     let total = 0;
-    // console.log("this.reportSaleForm.value.items", this.reportSaleForm.value.items);
+    let items_product_total = 0;
+    let items_margin = 0;
+    let items_quantity = 0;
     this.reportSaleForm.value.items.forEach((item) => {
-      // console.log("item", item);
       total += parseFloat(item.total);
+      items_product_total += 1;
+      items_margin += parseFloat(item.margin);
+      items_quantity += parseFloat(item.quantity);
     });
+    this.items_product_total = items_product_total;
+    this.items_margin = items_margin;
+    this.items_quantity = items_quantity;
+    this.total = total;
     this.reportSaleForm.patchValue({
       "total": total,
     });
-    // this.initSvg();
-
     this.drawPie();
-
-    // this.initSvgBar();
     this.drawNewBar();
-
-    // this.initSvgLine()
-    // this.initAxisLine();
-    // this.drawAxisLine();
-    // this.drawLine();
-    this.drawNewLine();
+    // this.drawNewLine();
   }
 
   drawNewBar() {
@@ -670,17 +659,6 @@ export class SaleReportPage implements OnInit {
       .attr("transform", function(d) {
         return "rotate(-45)"
       });
-    // svg.append("g")
-    //   // .attr("class", "axis axis--y")
-    //   // .call(d3Axis.axisLeft(this.y).ticks(10))
-    //   .append("text")
-    //   // .attr("class", "bar-chart-title")
-    //   // .attr("transform", "rotate(-90)")
-    //   // .attr("y", 6)
-    //   // .attr("transform", "translate(0," + height/3 + ")")
-    //   // .attr("dy", "1.71em")
-    //   // .attr("text-anchor", "end")
-    //   .text("total");
     svg.append("g")
         .attr("class", "axis axis--y")
         // .call(d3Axis.axisLeft(this.y).ticks(10))
@@ -731,7 +709,7 @@ export class SaleReportPage implements OnInit {
         return (d.enabled) ? d.total : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase
       }));
       tooltip.select('.label').html(d.name); // set current label
-      tooltip.select('.count').html('$' + d.total); // set current count
+      tooltip.select('.count').html('$' + d.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")); // set current count
       tooltip.style('display', 'block'); // set display
     });
 
@@ -743,59 +721,6 @@ export class SaleReportPage implements OnInit {
       tooltip.style('top', (d3.event.layerY - 80) + 'px') // always 10px below the cursor
         .style('left', (d3.event.layerX - 65) + 'px'); // always 10px to the right of the mouse
     });
-
-    // // define legend
-    // var legend = svg.selectAll('.legend') // selecting elements with class 'legend'
-    //   .data(color.domain()) // refers to an array of labels from our dataset
-    //   .enter() // creates placeholder
-    //   .append('g') // replace placeholders with g elements
-    //   .attr('class', 'legend') // each g is given a legend class
-    //   .attr('transform', function(d, i) {
-    //     var height = legendRectSize + legendSpacing; // height of element is the height of the colored square plus the spacing
-    //     var offset = height * color.domain().length / 2; // vertical offset of the entire legend = height of a single element & half the total number of elements
-    //     var horz = 100; // the legend is shifted to the left to make room for the text
-    //     var vert = i * height - offset; // the top of the element is hifted up or down from the center using the offset defiend earlier and the index of the current element 'i'
-    //     return 'translate(' + horz + ',' + vert + ')'; //return translation
-    //   });
-    //
-    // // adding colored squares to legend
-    // legend.append('rect') // append rectangle squares to legend
-    //   .attr('width', legendRectSize) // width of rect size is defined above
-    //   .attr('height', legendRectSize) // height of rect size is defined above
-    //   .style('fill', color) // each fill is passed a color
-    //   .style('stroke', color) // each stroke is passed a color
-    //   .on('click', function(label) {
-    //     var rect = d3.select(this); // this refers to the colored squared just clicked
-    //     var enabled = true; // set enabled true to default
-    //     var totalEnabled = d3.sum(dataset.map(function(d) { // can't disable all options
-    //       return (d.enabled) ? 1 : 0; // return 1 for each enabled entry. and summing it up
-    //     }));
-    //
-    //     if (rect.attr('class') === 'disabled') { // if class is disabled
-    //       rect.attr('class', ''); // remove class disabled
-    //     } else { // else
-    //       if (totalEnabled < 2) return; // if less than two labels are flagged, exit
-    //       rect.attr('class', 'disabled'); // otherwise flag the square disabled
-    //       enabled = false; // set enabled to false
-    //     }
-    //     if (d3.select(this).classed('clicked')) {
-    //       //d3.select(this).classed('clicked', false);
-    //       //d3.select(this).style('fill-opacity', 1);
-    //       //self.toggleBar(name, false);
-    //       //} else {
-    //       //d3.select(this).classed('clicked', true);
-    //       //d3.select(this).style('fill-opacity', 0);
-    //       //self.toggleBar(name, true);
-    //       console.log("toggle", label);
-    //     }
-    //   });
-    //
-    // // adding text to legend
-    // legend.append('text')
-    //   .attr('x', legendRectSize + legendSpacing)
-    //   .attr('y', legendRectSize - legendSpacing + 8)
-    //   .attr('font-size', '12')
-    //   .text(function(d:any) { return d; }); // return label
   }
 
   drawPie() {
@@ -810,8 +735,6 @@ export class SaleReportPage implements OnInit {
     var legendSpacing = 10;
     var color:any = d3Scale.scaleOrdinal()
       .range(d3.schemeCategory10);
-
-
 
     if (d3.select("#chart").select('svg').nodes()[0]) {
       let node:any = d3.select("#chart").select('svg').nodes()[0];
@@ -866,7 +789,7 @@ export class SaleReportPage implements OnInit {
       }));
       var percent = Math.round(1000 * d.data.total / total) / 10; // calculate percent
       tooltip.select('.label').html(d.data.name); // set current label
-      tooltip.select('.count').html('$' + d.data.total); // set current count
+      tooltip.select('.count').html('$' + d.data.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")); // set current count
       tooltip.select('.percent').html(percent + '%'); // set percent calculated above
       tooltip.style('display', 'block'); // set display
     });
@@ -881,7 +804,7 @@ export class SaleReportPage implements OnInit {
     });
 
     // define legend
-    console.log("color.domain()", color.domain());
+    // console.log("color.domain()", color.domain());
     var legend = svg.selectAll('.legend') // selecting elements with class 'legend'
       .data(color.domain()) // refers to an array of labels from our dataset
       .enter() // creates placeholder
@@ -942,9 +865,7 @@ export class SaleReportPage implements OnInit {
       .text(function(d: any) { return d; }); // return label
   }
 
-
   drawNewLine() {
-
     let states = [
       {
         "name": "Ventas",
@@ -1160,6 +1081,4 @@ export class SaleReportPage implements OnInit {
       });
     console.log("fim");
   }
-
-
 }

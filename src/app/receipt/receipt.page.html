@@ -5,7 +5,6 @@
         {{ 'RECEIPT' | translate }}: {{receiptForm.value.name}}
       </ion-row>
     </ion-title>
-
     <ion-buttons slot="end">
     </ion-buttons>
   </ion-toolbar>
@@ -60,8 +59,6 @@
         </div>
       </ion-item>
     </ion-card>
-
-
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.payments">
         <ion-item style="background-color: #ddd;width: 110%;margin-left: -21px;">
@@ -83,15 +80,60 @@
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
-
-
-
     <ion-row>
       <ion-col class="item-content" *ngIf="receiptForm.value.state == 'CONFIRMED'">
-        <ion-button class="button-100" color="success" (click)="print()">Imprimir Recibo</ion-button>
+        <ion-button class="button-100" color="success" (click)="printMatrix()">
+          <ion-icon name="print" style="margin-right:10px;"></ion-icon>Imprimir Recibo
+        </ion-button>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="receiptForm.value.state == 'CONFIRMED' && receiptForm.value.amount_unInvoiced > 0">
+
+
+    <ion-list no-lines>
+      <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.items_details">
+        <ion-item no-padding (click)="selectCashMove(item)" style="margin-bottom: 0px; margin-top:0px;">
+          <ion-card class="list-card" style="border-radius: 5px;">
+            <ion-row no-padding>
+              <ion-col no-padding>
+                <h3 class="item-title"><b>{{ item.name }}</b></h3>
+              </ion-col>
+            </ion-row>
+            <ion-row no-padding class="content-row one-line">
+              <ion-col no-padding>
+                Fecha: {{item.date|date: 'dd/MM/yyyy'}}
+              </ion-col>
+              <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+                <h3 class="list-big-number amount" style="color: red;">$ {{item.amount_dued| number:'1.0'}}</h3>
+              </ion-col>
+              <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+                <h3 class="list-big-number amount" style="color: green;">$ {{item.amount_paid| number:'1.0'}}</h3>
+              </ion-col>
+            </ion-row>
+
+            <!-- <ion-row no-padding [class.paid]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] == 'cash'" [class.due]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] != 'cash'"
+              [class.quotation]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] == 'cash'" [class.confirmed]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] != 'cash'">
+              <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+                {{ item.accountFrom_name | translate}}
+              </ion-col>
+              <ion-col no-padding width-10 class="item-icon" (click)="openAsset(item)">
+                <ion-icon name="arrow-forward"></ion-icon>
+              </ion-col>
+              <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+                {{ item.accountTo_name | translate}}
+              </ion-col>
+            </ion-row> -->
+          </ion-card>
+        </ion-item>
+        <!-- <ion-item-options>
+          <ion-button icon-only color="primary" (click)="deleteCashMove(item)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-item-options> -->
+      </ion-item-sliding>
+    </ion-list>
+
+
+    <!-- <ion-row *ngIf="receiptForm.value.state == 'CONFIRMED' && receiptForm.value.amount_unInvoiced > 0">
       <ion-col width-33 class="field-label" no-padding>
         <h4 class="field-label" style="text-align: center;">{{'A Facturar' | translate }}</h4>
         <h4 class="sumary-value positive" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.amount_unInvoiced|number:'1.0'}}</h4>
@@ -100,7 +142,6 @@
         <ion-button style="background-color: #278c2c" class="print-receipt" (click)="createInvoice()">Crear Factura</ion-button>
       </ion-col>
     </ion-row>
-
     <ion-list no-lines *ngIf="receiptForm.value.invoices.length">
       <section>
         <h2 class="section-title">{{'INVOICE' | translate}}</h2>
@@ -124,7 +165,7 @@
           </ion-item>
         </ion-item-sliding>
       </section>
-    </ion-list>
+    </ion-list> -->
   </form>
   <ion-row style="height:120px;">
   </ion-row>

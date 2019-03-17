@@ -24,15 +24,12 @@ export class ReceiptListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public app: App,
-    // public receiptsService: ReceiptsService,
     public pouchdbService: PouchdbService,
     public loadingCtrl: LoadingController,
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     this.events.subscribe('changed-receipt', (change)=>{
       this.handleChange(this.receipts, change);
@@ -59,7 +56,7 @@ export class ReceiptListPage implements OnInit {
     ).then((receipts) => {
       this.receipts = receipts;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -70,15 +67,9 @@ export class ReceiptListPage implements OnInit {
     }, 200);
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(ReceiptsPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
-
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
 
@@ -88,7 +79,7 @@ export class ReceiptListPage implements OnInit {
     ).then((receipts) => {
       this.receipts = receipts;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

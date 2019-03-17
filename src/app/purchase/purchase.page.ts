@@ -155,7 +155,6 @@ export class PurchasePage implements OnInit {
       public modalCtrl: ModalController,
       public popoverCtrl: PopoverController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.today = new Date().toISOString();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
@@ -207,7 +206,7 @@ export class PurchasePage implements OnInit {
       }
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       this.purchaseForm = this.formBuilder.group({
         contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
@@ -238,18 +237,16 @@ export class PurchasePage implements OnInit {
         seller_name: new FormControl(this.route.snapshot.paramMap.get('seller_name')||''),
         _id: new FormControl(''),
       });
-    // }
-    //
-    // ionViewDidLoad() {
-      //this.loading.present();
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if (this._id){
         this.getPurchase(this._id).then((data) => {
           //console.log("data", data);
           this.purchaseForm.patchValue(data);
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
       }
     }
 
@@ -409,23 +406,26 @@ export class PurchasePage implements OnInit {
 
     buttonSave() {
       console.log("buttonSave");
-      if (this._id){
-        this.updatePurchase(this.purchaseForm.value);
-        // this.events.publish('open-purchase', this.purchaseForm.value);
-        this.purchaseForm.markAsPristine();
-      } else {
-        this.createPurchase(this.purchaseForm.value).then(doc => {
-          console.log("docss", doc);
-          this.purchaseForm.patchValue({
-            _id: doc['doc'].id,
-            code: doc['purchase'].code,
-          });
-          this._id = doc['doc'].id;
-          console.log("this.purchaseForm", this.purchaseForm.value);
-          // this.events.publish('create-purchase', this.purchaseForm.value);
+      return new Promise(resolve => {
+        if (this._id){
+          this.updatePurchase(this.purchaseForm.value);
+          // this.events.publish('open-purchase', this.purchaseForm.value);
           this.purchaseForm.markAsPristine();
-        });
-      }
+        } else {
+          this.createPurchase(this.purchaseForm.value).then(doc => {
+            console.log("docss", doc);
+            this.purchaseForm.patchValue({
+              _id: doc['doc'].id,
+              code: doc['purchase'].code,
+            });
+            this._id = doc['doc'].id;
+            console.log("this.purchaseForm", this.purchaseForm.value);
+            // this.events.publish('create-purchase', this.purchaseForm.value);
+            this.purchaseForm.markAsPristine();
+            resolve(true);
+          });
+        }
+      });
     }
 
     setLanguage(lang: LanguageModel){
@@ -493,9 +493,9 @@ export class PurchasePage implements OnInit {
     }
 
     async addItem(){
-      if(!this.purchaseForm.value._id){
-        this.buttonSave();
-      }
+      // if(!this.purchaseForm.value._id){
+      //   this.buttonSave();
+      // }
       if (this.purchaseForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
@@ -691,8 +691,11 @@ export class PurchasePage implements OnInit {
     }
 
     afterConfirm(){
-      return new Promise(resolve => {
+      return new Promise(async resolve => {
         let createList = [];
+        if(!this.purchaseForm.value._id){
+          await this.buttonSave();
+        }
         this.configService.getConfigDoc().then((config: any)=>{
 
           this.pouchdbService.getList([
@@ -774,14 +777,14 @@ export class PurchasePage implements OnInit {
               });
             });
 
-            this.pouchdbService.createDocList(createList).then((created: any)=>{
+            this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.purchaseForm.patchValue({
                 state: 'CONFIRMED',
                 amount_unInvoiced: this.purchaseForm.value.total,
                 planned: created,
               });
               console.log("Purchase created", created);
-              this.buttonSave();
+              await this.buttonSave();
               resolve(true);
             })
           })
@@ -811,7 +814,7 @@ export class PurchasePage implements OnInit {
                 //this.purchaseForm.value.step = 'chooseInvoice';
               });
               this.purchaseForm.patchValue({
-                 state: 'CANCELED',
+                 state: 'QUOTATION',
               });
               this.removeQuotes();
               this.removeStockMoves();
@@ -907,9 +910,8 @@ export class PurchasePage implements OnInit {
       this.events.unsubscribe('create-invoice');
       this.events.subscribe('create-invoice', (data) => {
         this.purchaseForm.value.invoices.push({
-          'number': data.number,
+          'code': data.code,
           'date': data.date,
-          // 'residual': data.residual,
           'total': data.total,
           'tax': data.tax,
           'state': data.state,

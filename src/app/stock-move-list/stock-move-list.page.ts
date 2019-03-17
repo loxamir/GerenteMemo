@@ -30,15 +30,15 @@ export class StockMoveListPage implements OnInit {
     public router: Router,
     public route: ActivatedRoute,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     this.events.subscribe('changed-stock-move', (change)=>{
       this.handleChange(this.stockMoveList, change);
     })
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     this.setFilteredItems();
   }
 
@@ -60,7 +60,7 @@ export class StockMoveListPage implements OnInit {
     ).then((stockMoveList) => {
       this.stockMoveList = stockMoveList;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

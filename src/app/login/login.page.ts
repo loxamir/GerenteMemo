@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { LoadingController, Events, ToastController, MenuController } from '@ionic/angular';
+import { LoadingController, Events, ToastController, MenuController, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -7,21 +7,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { Storage } from '@ionic/storage';
-// import { TabsNavigationPage } from '../tabs-navigation/tabs-navigation';
-// import { AppConfig } from '../../app/app.config';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from '../services/rest/rest';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
 import * as jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
+import { LoginPopover } from './login.popover';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-//   providers: [
-//   { provide: 'Window',  useValue: window }
-// ]
 })
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
@@ -50,6 +46,7 @@ export class LoginPage implements OnInit {
     public formBuilder: FormBuilder,
     public storage: Storage,
     public events: Events,
+    public popoverCtrl: PopoverController,
     // public appConfig: AppConfig,
     public menuCtrl: MenuController,
     public pouchdbService: PouchdbService,
@@ -87,24 +84,6 @@ export class LoginPage implements OnInit {
     });
   }
 
-
-
-
-//   download() {
-//
-//       var doc = new jsPDF();
-//       doc.text(20, 20, 'Hel<b>lo</b> world!');
-//       doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
-//       doc.addPage();
-//       doc.text(20, 20, 'Do you like that?');
-//
-//       // Save the PDF
-//       doc.save('Test.pdf');
-//   }
-//
-//
-
-
   async ngOnInit() {
     this.loading = await this.loadingCtrl.create();
     // this.router.events.subscribe((event: RouterEvent) => {
@@ -116,22 +95,23 @@ export class LoginPage implements OnInit {
       console.log("usernames", username);
       // }
     // });
-    // this.setFilteredItems();
+    this.setFilteredItems();
   }
 
-  // setFilteredItems() {
-  //   let filter = null;
-  //   if (this.filter == "all"){
-  //     let filter = null;
-  //   } else {
-  //     let filter = this.filter;
-  //   }
-  //   this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
-  //       this.helps = helps;
-  //     // this.helps = helps;
-  //     this.page = 1;
-  //   });
-  // }
+  setFilteredItems() {
+    let filter = null;
+    if (this.filter == "all"){
+      let filter = null;
+    } else {
+      let filter = this.filter;
+    }
+    this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
+        console.log("helps", helps);
+        this.helps = helps;
+      // this.helps = helps;
+      this.page = 1;
+    });
+  }
 
   // doInfinite(infiniteScroll) {
   //   setTimeout(() => {
@@ -169,31 +149,62 @@ export class LoginPage implements OnInit {
   //   }, 500);
   // }
   //
-  // getHelpsPage(keyword, page, field=''){
-  //   return new Promise(resolve => {
-  //     // this.pouchdbService.searchDocTypeData('help', keyword, page, "document", field).then((helps: any[]) => {
-  //     //   resolve(helps);
-  //     // });
-  //     let list = [
-  //       {
-  //         name: "Ajyda"
-  //       },
-  //       {
-  //         name: "Ajuda"
-  //       },
-  //       {
-  //         name: "Ayuda"
-  //       }
-  //     ];
-  //   // let otro = list.filter(help => help['name'].toString().search(new RegExp(keyword, "i")) != -1);
-  //   let otro = list.filter(word=>word.name.toString().search(new RegExp(keyword, "i")) != -1)
-  //   console.log("list", list);
-  //   console.log("otro", otro);
-  //   console.log("keyword", keyword);
-  //   console.log("this.searchTerm", this.searchTerm);
-  //   resolve(otro);
-  // });
-  // }
+  getHelpsPage(keyword, page, field=''){
+    console.log("getHelpsPage(",keyword, page, field);
+    return new Promise(resolve => {
+      this.restProvider.getDatabaseDoc('helps', '_design/Vistas/_view/videos?include_docs=true').then((helps: any[]) => {
+        console.log("helps", helps['rows']);
+        resolve(helps['rows']);
+      });
+    //   let list = [
+    //     {
+    //       "name": "Como Crear Nuevo Contacto",
+    //       youtubeCode: "cMMWurKDecg",
+    //     },
+    //     {
+    //       "name": "Como Crear un Registro de Caja",
+    //       youtubeCode: "xX3tyZYzqi4",
+    //     },
+    //     {
+    //       name: "Como Crear Nuevo Producto",
+    //       youtubeCode: "nG02vx4sQos",
+    //     },
+    //     {
+    //       name: "Como Crear una Compra al Contado",
+    //       youtubeCode: "Ot13AxANq2s",
+    //     },
+    //     {
+    //       name: "Como Crear una Compra a Credito",
+    //       youtubeCode: "24_dpHb9xHI",
+    //     },
+    //     {
+    //       name: "Como Crear una Venta al Contado",
+    //       youtubeCode: "c41qtU8Pl7k",
+    //     },
+    //
+    //   ];
+    // // let otro = list.filter(help => help['name'].toString().search(new RegExp(keyword, "i")) != -1);
+    // let otro = helps.list.filter(word=>word.name.toString().search(new RegExp(keyword, "i")) != -1)
+    // // console.log("list", list);
+    // // console.log("otro", otro);
+    // // console.log("keyword", keyword);
+    // // console.log("this.searchTerm", this.searchTerm);
+    // resolve(otro);
+  });
+  }
+
+  async presentPopover(myEvent) {
+    // console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: LoginPopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
+  }
 
   validation_messages = {
     'password': [
@@ -239,7 +250,7 @@ export class LoginPage implements OnInit {
       this.loginForm.value.user.toLowerCase(),
       this.loginForm.value.password
     ).then(async (loginData: any)=>{
-      console.log("LOGIN DATA", loginData);
+      // console.log("LOGIN DATA", loginData);
       if (loginData.ok){
         this.doLogin();
       } else {
@@ -283,7 +294,7 @@ export class LoginPage implements OnInit {
       this.loginForm.value.user.toLowerCase(),
       this.loginForm.value.password
     ).then(async (loginData: any)=>{
-      console.log("LOGIN DATA", loginData);
+      // console.log("LOGIN DATA", loginData);
       if (loginData.ok){
         this.restProvider.changePassword(
           this.loginForm.value.user.toLowerCase(),
@@ -305,12 +316,12 @@ export class LoginPage implements OnInit {
 
   async doLogin(){
     await this.storage.set('username', this.loginForm.value.user.toLowerCase());
-    this.storage.set("password", this.loginForm.value.password.toLowerCase());
+    this.storage.set("password", this.loginForm.value.password);
     this.events.publish('get-user', {"user": this.loginForm.value.user.toLowerCase()});
     this.selected_user = true;
     this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
     // this.selectDatabase();
-
+    this.username = this.loginForm.value.user.toLowerCase();
     this.menuCtrl.enable(false);
     this.loading.dismiss();
 
@@ -322,7 +333,7 @@ export class LoginPage implements OnInit {
     let listOnline: any = await this.restProvider.getUserDbList(
       username, password);
     console.log("listOnline", listOnline);
-    if (!listOnline.error){
+    if (listOnline.ok != false){
       console.log("yes list");
       this.storage.set("dbList", listOnline);
       this.databaseList = listOnline;

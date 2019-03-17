@@ -3,40 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { NavController, LoadingController, AlertController, Events, ToastController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-//import { DecimalPipe } from '@angular/common';
-import { Printer } from '@ionic-native/printer';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
 import { ReportService } from '../report/report.service';
-// import { ContactListPage } from '../contact-list/contact-list.page';
-//import { ReportItemPage } from '../report-item/report-item';
-//import { CashMovePage } from '../cash/move/cash-move';
-import { ProductService } from '../product/product.service';
-//import { ReportsPage } from '../reports/reports';
-// import { ProductListPage } from '../product-list/product-list.page';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
-// import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
-// import { PlannedService } from '../../planned/planned.service';
-// // import { PurchaseService } from '../../purchase/purchase.service';
-// import { PurchaseService } from '../../purchase/purchase.service';
-import { ConfigService } from '../config/config.service';
-// import { HostListener } from '@angular/core';
-// import { ReceiptPage } from '../receipt/receipt.page';
-// import { ReceiptService } from '../../receipt/receipt.service';
-// // import { InvoicePage } from '../../invoice/invoice';
-import { FormatService } from '../services/format.service';
-import { SocialSharing } from '@ionic-native/social-sharing';
-import { File } from '@ionic-native/file';
-
-// declare var cordova: any;
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 import * as d3 from 'd3';
 
-// import * as d3 from 'd3-selection';
 import * as d3Scale from "d3-scale";
 import * as d3Shape from "d3-shape";
 
@@ -77,54 +51,34 @@ export class PurchaseReportPage implements OnInit {
   y: any;
   g: any;
 
+  items_product_total = 0;
+  items_margin = 0;
+  items_quantity = 0;
+  total = 0;
+
   line: d3Shape.Line<[number, number]>;
   constructor(
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    // public imagePicker: ImagePicker,
-    // public cropService: Crop,
-    // public platform: Platform,
     public reportService: ReportService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
-    public productService: ProductService,
-    // public plannedService: PlannedService,
-    // public purchaseService: PurchaseService,
-    // public purchaseService: PurchaseService,
-    // public receiptService: ReceiptService,
-    public bluetoothSerial: BluetoothSerial,
-    public toastCtrl: ToastController,
-    public printer: Printer,
-    public configService: ConfigService,
-    public formatService: FormatService,
     public events: Events,
-    public socialSharing: SocialSharing,
-    public file: File,
     public pouchdbService: PouchdbService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
+    // this.loading = this.loadingCtrl.create();
     this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.avoidAlertMessage = false;
-
-    // this.width = 900 - this.margin.left - this.margin.right ;
-    // this.height = 500 - this.margin.top - this.margin.bottom;
-    // this.radius = Math.min(this.width, this.height) / 2;
-
   }
 
   groupBySum(object, prop, sum) {
     return object.reduce(function(lines, item) {
       const val = item[prop]
-      // groups[val] = groups[val] || []
-      // groups[val].push(item)
-
-      //lines[val] = lines[val] ||
-      //console.log("")
       lines[val] = lines[val] || {}
       lines[val][sum] = lines[val][sum] || 0
       lines[val][sum] += item[sum]
@@ -135,14 +89,9 @@ export class PurchaseReportPage implements OnInit {
   groupBySum2(object, prop, sum, sum2, sum3, sum4) {
     return object.reduce(function(lines, item) {
       const val = item[prop]
-      // groups[val] = groups[val] || []
-      // groups[val].push(item)
-
-      //lines[val] = lines[val] ||
       lines[val] = lines[val] || {}
       lines[val][sum] = lines[val][sum] || 0
       lines[val][sum] += item[sum]
-      // console.log("lines[val][sum3], lines[val][sum4]",  item)
       lines[val][sum2] = lines[val][sum2] || 0
       item.lines.forEach(line=>{
         lines[val][sum2] += (line[sum3] - line[sum4])*line['quantity']
@@ -189,13 +138,6 @@ export class PurchaseReportPage implements OnInit {
   }
 
   groupByDate(object, prop, sum) {
-    // return object.reduce(function(groups, item) {
-    //     const val = item[prop].split("T")[0]
-    //     groups[val] = groups[val] || []
-    //     groups[val].push(item)
-    //     return groups
-    //   }, {})
-
     return object.reduce(function(lines, item) {
       const val = item[prop].split("T")[0]
       lines[val] = lines[val] || {}
@@ -212,154 +154,161 @@ export class PurchaseReportPage implements OnInit {
     }, {})
   }
 
-  getData() {
+  async getData() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     return new Promise(resolve => {
       if (this.reportPurchaseForm.value.reportType == 'purchase') {
-        this.pouchdbService.searchDocTypeAllData('purchase', '', false).then((purchases1: any[]) => {
-          let purchases = purchases1
-            .filter(word => word.date >= this.reportPurchaseForm.value.dateStart)
-            .filter(word => word.date <= this.reportPurchaseForm.value.dateEnd)
-            .filter(word => word.state != 'QUOTATION');
+        this.pouchdbService.getView(
+          'Informes/CompraProductoDiario',
+          10,
+          [this.reportPurchaseForm.value.dateStart.split("T")[0], "0", "0"],
+          [this.reportPurchaseForm.value.dateEnd.split("T")[0], "z", "z"],
+          true,
+          true,
+          undefined,
+          undefined,
+          false
+        ).then(async (sales: any[]) => {
           let items = [];
           let promise_ids = [];
           let result = {};
-
-
           if (this.reportPurchaseForm.value.groupBy == 'category') {
-            purchases.forEach(data1 => {
-              if (data1['lines']) {
-                data1['lines'].forEach(item => {
-                  let quantity = parseFloat(item.quantity);
-                  let price = parseFloat(item.price);
-                  let cost = parseFloat(item.cost);
-                  promise_ids.push(this.productService.getProduct(item.product_id).then(product => {
-                    if (!product.category) {
-                      product.category = { 'name': "Indefinido" };
-                    }
-                    if (result.hasOwnProperty(product.category.name)) {
-                      let current_value = result[product.category.name]['quantity'] * result[product.category.name]['price'];
-                      let new_value = quantity * price;
-                      result[product.category.name]['quantity'] += quantity;
-                      result[product.category.name]['margin'] += (price - cost)*quantity;;
-                      result[product.category.name]['price'] = (current_value + new_value) / result[product.category.name]['quantity'];
-                      result[product.category.name]['total'] += price * quantity;
-                    } else {
-                      result[product.category.name] = {
-                        'quantity': quantity,
-                        'margin': (price - cost)*quantity,
-                        'price': price,
-                        'total': price * quantity,
-                        'date': data1['date'],
-                      }
-                    }
-                    console.log('margin', item,)
-                  }));
-                });
-              }
-            });
-
-            let self = this;
-            Promise.all(promise_ids).then(products => {
-              Object.keys(result).forEach(category => {
-                result[category]['name'] = category;
-                items.push(result[category]);
-              });
-              let output = items.sort(function(a, b) {
-                return self.compare(a, b, self.reportPurchaseForm.value.orderBy);
-              })
-              let marker = false;
-              let total = 0;
-              output.forEach(item => {
-                item['marker'] = marker,
-                  marker = !marker;
-                total += parseFloat(item['total']);
-              });
-              // output.unshift({
-              //   "name": "namea",
-              //   "total": total,
-              //   "date": this.reportPurchaseForm.value.dateEnd,
-              //   "sumatory": true,
-              // });
-              resolve(output);
-            });
-          }
-
-          else if (this.reportPurchaseForm.value.groupBy == 'product') {
-            purchases.forEach(data1 => {
-              let ttt = 0;
-              if (data1['lines']) {
-                data1['lines'].forEach(item => {
-                  let quantity = parseFloat(item.quantity);
-                  let price = parseFloat(item.price);
-                  let cost = parseFloat(item.cost);
-                  ttt += price * quantity;
-                  if (result.hasOwnProperty(item.product_id)) {
-                    let current_value = result[item.product_id]['quantity'] * result[item.product_id]['price'];
-                    let new_value = quantity * price;
-                    result[item.product_id]['margin'] += (price - cost)*quantity;
-                    result[item.product_id]['quantity'] += quantity;
-                    result[item.product_id]['price'] = (current_value + new_value) / result[item.product_id]['quantity'];
-                    result[item.product_id]['total'] += price * quantity;
-                  } else {
-                    result[item.product_id] = {
-                      'quantity': quantity,
-                      'price': price,
-                      'margin': (price - cost)*quantity,
-                      'total': price * quantity,
-                      'date': data1['date'],
-                    }
-                  }
-                });
-              }
-              console.log("total Compra:", data1.total, "total Lineas:", ttt, data1.code);
-            });
-            Object.keys(result).forEach(product_id => {
-              promise_ids.push(this.productService.getProduct(product_id).then(data => {
-                result[product_id]['product'] = data;
-                result[product_id]['name'] = data.name;
-                items.push(result[product_id]);
-              }));
-            });
-            let self = this;
-            Promise.all(promise_ids).then(item => {
-              let output = items.sort(function(a, b) {
-                return self.compare(a, b, self.reportPurchaseForm.value.orderBy);
-              })
-              let marker = false;
-              let total = 0;
-              let quantity = 0;
-              output.forEach(item => {
-                item['marker'] = marker,
-                  marker = !marker;
-                total += parseFloat(item['total']);
-                quantity += parseFloat(item['quantity']);
-              });
-              // output.unshift({
-              //   "name": "Sumatoria",
-              //   "total": total,
-              //   "date": this.reportPurchaseForm.value.dateEnd,
-              //   "quantity": quantity,
-              //   "sumatory": true,
-              // });
-              console.log("output", output);
-              resolve(output);
-            });
-          }
-          else if (this.reportPurchaseForm.value.groupBy == 'contact') {
-            console.log("purchases", purchases);
-            let array = this.groupBySum2(purchases, 'contact_name', 'total', 'margin', 'price', 'cost');
-            console.log("array", array);
             items = [];
-            Object.keys(array).forEach(key => {
-              items.push({
-                'name': key,
-                'margin': array[key]['margin'],
-                'total': array[key]['total'],
-                'date': array[key]['date']
-              });
+            let getList = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[9])) {
+                items[result[saleLine.key[9]]] = {
+                  'name': items[result[saleLine.key[9]]].name,
+                  'quantity': items[result[saleLine.key[9]]].quantity + parseFloat(saleLine.key[4]),
+                  'total': items[result[saleLine.key[9]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[9],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                getList.push(saleLine.key[9]);
+                result[saleLine.key[9]] = items.length-1;
+              }
             });
+
+            let products: any = await this.pouchdbService.getList(getList);
+            var doc_dict = {};
+            products.forEach(row=>{
+              doc_dict[row.id] = row.doc;
+            })
+            let categories = {};
+            let litems = [];
+            items.forEach(item=>{
+              if (categories.hasOwnProperty(doc_dict[item.name].category_name)) {
+                litems[categories[doc_dict[item.name].category_name]] = {
+                  'name': doc_dict[item.name].category_name,
+                  'quantity': litems[categories[doc_dict[item.name].category_name]].quantity + parseFloat(item.quantity),
+                  'total': litems[categories[doc_dict[item.name].category_name]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item.name].category_name,
+                  'quantity': item.quantity,
+                  'total': item.total,
+                });
+                categories[doc_dict[item.name].category_name] = litems.length-1;
+              }
+            })
             let self = this;
-            //console.log("items", items);
+            let output = litems.sort(function(a, b) {
+              return self.compare(a, b, self.reportPurchaseForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
+          else if (this.reportPurchaseForm.value.groupBy == 'brand') {
+            items = [];
+            let getList = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[9])) {
+                items[result[saleLine.key[9]]] = {
+                  'name': items[result[saleLine.key[9]]].name,
+                  'quantity': items[result[saleLine.key[9]]].quantity + parseFloat(saleLine.key[4]),
+                  'total': items[result[saleLine.key[9]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[9],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                getList.push(saleLine.key[9]);
+                result[saleLine.key[9]] = items.length-1;
+              }
+            });
+
+            let products: any = await this.pouchdbService.getList(getList);
+            var doc_dict = {};
+            products.forEach(row=>{
+              doc_dict[row.id] = row.doc;
+            })
+            let brands = {};
+            let litems = [];
+            items.forEach(item=>{
+              if (brands.hasOwnProperty(doc_dict[item.name].brand_name)) {
+                litems[brands[doc_dict[item.name].brand_name]] = {
+                  'name': doc_dict[item.name].brand_name,
+                  'quantity': litems[brands[doc_dict[item.name].brand_name]].quantity + parseFloat(item.quantity),
+                  'total': litems[brands[doc_dict[item.name].brand_name]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item.name].brand_name,
+                  'quantity': item.quantity,
+                  'total': item.total,
+                });
+                brands[doc_dict[item.name].brand_name] = litems.length-1;
+              }
+            })
+            let self = this;
+            let output = litems.sort(function(a, b) {
+              return self.compare(a, b, self.reportPurchaseForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
+          else if (this.reportPurchaseForm.value.groupBy == 'product') {
+            items = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[1])) {
+                items[result[saleLine.key[1]]] = {
+                  'name': items[result[saleLine.key[1]]].name,
+                  'quantity': items[result[saleLine.key[1]]].quantity + parseFloat(saleLine.key[4]),
+                  'total': items[result[saleLine.key[1]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[1],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[saleLine.key[1]] = items.length-1;
+              }
+            });
+
+            let self = this;
             let output = items.sort(function(a, b) {
               return self.compare(a, b, self.reportPurchaseForm.value.orderBy);
             })
@@ -370,28 +319,62 @@ export class PurchaseReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
-            // output.unshift({
-            //   "name": "Sumatoria",
-            //   "total": total,
-            //   "date": this.reportPurchaseForm.value.dateEnd,
-            //   "sumatory": true,
-            // });
+            this.loading.dismiss();
             resolve(output);
           }
           else if (this.reportPurchaseForm.value.groupBy == 'payment') {
-            let array = this.groupBySum2(purchases, 'payment_name', 'total', 'margin', 'price', 'cost');
-            //console.log("array", array);
-            items = [];
-            Object.keys(array).forEach(key => {
+          items = [];
+          sales.forEach(saleLine => {
+            if (result.hasOwnProperty(saleLine.key[7])) {
+              items[result[saleLine.key[7]]] = {
+                'name': items[result[saleLine.key[7]]].name,
+                'quantity': items[result[saleLine.key[7]]].quantity + parseFloat(saleLine.key[4]),
+                'total': items[result[saleLine.key[7]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+              };
+            } else {
               items.push({
-                'name': key,
-                'margin': array[key]['margin'],
-                'total': array[key]['total'],
-                'date': array[key]['date']
+                'name': saleLine.key[7],
+                'quantity': parseFloat(saleLine.key[4]),
+                'total': parseFloat(saleLine.key[4])*saleLine.key[5],
               });
+              result[saleLine.key[7]] = items.length-1;
+            }
+          });
+
+          let self = this;
+          let output = items.sort(function(a, b) {
+            return self.compare(a, b, self.reportPurchaseForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          resolve(output);
+        }
+          else if (this.reportPurchaseForm.value.groupBy == 'contact') {
+            items = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[2])) {
+                items[result[saleLine.key[2]]] = {
+                  'name': items[result[saleLine.key[2]]].name,
+                  'quantity': items[result[saleLine.key[2]]].quantity + parseFloat(saleLine.key[4]),
+                  'total': items[result[saleLine.key[2]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[2],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[saleLine.key[2]] = items.length-1;
+              }
             });
+
             let self = this;
-            //console.log("items", items);
             let output = items.sort(function(a, b) {
               return self.compare(a, b, self.reportPurchaseForm.value.orderBy);
             })
@@ -402,29 +385,32 @@ export class PurchaseReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
-            // output.unshift({
-            //   "name": "Sumatoria",
-            //   "total": total,
-            //   "date": this.reportPurchaseForm.value.dateEnd,
-            //   "sumatory": true,
-            // });
+            this.loading.dismiss();
             resolve(output);
           }
           else if (this.reportPurchaseForm.value.groupBy == 'date') {
-            //console.log("purchases", purchases);
-            let array = this.groupByDate2(purchases, 'date', 'total', 'margin', 'price', 'cost');
-            //console.log("array", array);
             items = [];
-            Object.keys(array).forEach(key => {
-              items.push({
-                'name': key,
-                'margin': array[key]['margin'],
-                'total': array[key]['total'],
-                'date': key,
-              });
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[0])) {
+                // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
+                items[result[saleLine.key[0]]] = {
+                  'name': items[result[saleLine.key[0]]].name,
+                  'quantity': items[result[saleLine.key[0]]].quantity + parseFloat(saleLine.key[4]),
+                  // 'margin': items[result[saleLine.key[0]]].margin + saleLine.key[3],
+                  'total': items[result[saleLine.key[0]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[0],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  // 'margin': saleLine.key[3],
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[saleLine.key[0]] = items.length-1;
+              }
             });
+
             let self = this;
-            //console.log("items", items);
             let output = items.sort(function(a, b) {
               return self.compare(a, b, self.reportPurchaseForm.value.orderBy);
             })
@@ -435,12 +421,7 @@ export class PurchaseReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
-            // output.unshift({
-            //   "name": "Sumatoria",
-            //   "total": total,
-            //   "date": this.reportPurchaseForm.value.dateEnd,
-            //   "sumatory": true,
-            // });
+            this.loading.dismiss();
             resolve(output);
           }
         });
@@ -506,21 +487,18 @@ export class PurchaseReportPage implements OnInit {
       total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'date'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'product'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
     if (this._id) {
       this.reportService.getReport(this._id).then((data) => {
-        //console.log("data", data);
         this.reportPurchaseForm.patchValue(data);
-        //this.loading.dismiss();
       });
     } else {
       //this.loading.dismiss();
     }
-    // if (this.route.snapshot.paramMap.get('compute){
     this.goNextStep();
   }
 
@@ -528,23 +506,6 @@ export class PurchaseReportPage implements OnInit {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
   }
-
-  // ionViewDidLoad() {
-  //   //this.loading.present();
-  //   if (this._id) {
-  //     this.reportService.getReport(this._id).then((data) => {
-  //       //console.log("data", data);
-  //       this.reportPurchaseForm.patchValue(data);
-  //       //this.loading.dismiss();
-  //     });
-  //   } else {
-  //     //this.loading.dismiss();
-  //   }
-  //   // if (this.route.snapshot.paramMap.get('compute){
-  //   this.goNextStep();
-  //   // }
-  //
-  // }
 
   goNextStep() {
     this.getData().then(data => {
@@ -577,27 +538,33 @@ export class PurchaseReportPage implements OnInit {
   }
 
   recomputeValues() {
+    // let total = 0;
+    // this.reportPurchaseForm.value.items.forEach((item) => {
+    //   total += parseFloat(item.total);
+    // });
+    // this.reportPurchaseForm.patchValue({
+    //   "total": total,
+    // });
     let total = 0;
-    // console.log("this.reportPurchaseForm.value.items", this.reportPurchaseForm.value.items);
+    let items_product_total = 0;
+    let items_margin = 0;
+    let items_quantity = 0;
     this.reportPurchaseForm.value.items.forEach((item) => {
-      // console.log("item", item);
       total += parseFloat(item.total);
+      items_product_total += 1;
+      items_margin += parseFloat(item.margin);
+      items_quantity += parseFloat(item.quantity);
     });
+    this.items_product_total = items_product_total;
+    this.items_margin = items_margin;
+    this.items_quantity = items_quantity;
+    this.total = total;
     this.reportPurchaseForm.patchValue({
       "total": total,
     });
-    // this.initSvg();
-
     this.drawPie();
-
-    // this.initSvgBar();
     this.drawNewBar();
-
-    // this.initSvgLine()
-    // this.initAxisLine();
-    // this.drawAxisLine();
-    // this.drawLine();
-    this.drawNewLine();
+    // this.drawNewLine();
   }
 
   drawNewBar() {
@@ -641,20 +608,8 @@ export class PurchaseReportPage implements OnInit {
       .attr("transform", function(d) {
         return "rotate(-45)"
       });
-    // svg.append("g")
-    //   // .attr("class", "axis axis--y")
-    //   // .call(d3Axis.axisLeft(this.y).ticks(10))
-    //   .append("text")
-    //   // .attr("class", "bar-chart-title")
-    //   // .attr("transform", "rotate(-90)")
-    //   // .attr("y", 6)
-    //   // .attr("transform", "translate(0," + height/3 + ")")
-    //   // .attr("dy", "1.71em")
-    //   // .attr("text-anchor", "end")
-    //   .text("total");
     svg.append("g")
         .attr("class", "axis axis--y")
-        // .call(d3Axis.axisLeft(this.y).ticks(10))
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("x", -height/2)
@@ -670,7 +625,6 @@ export class PurchaseReportPage implements OnInit {
           .attr("x", -height/2)
           .attr("dy", "-3em")
           .style("text-anchor", "middle");
-          // .text("Amount Dispensed");
 
     // define tooltip
     var tooltip = d3.select('#barChart') // select element in the DOM with id 'chart'
@@ -714,59 +668,6 @@ export class PurchaseReportPage implements OnInit {
       tooltip.style('top', (d3.event.layerY - 80) + 'px') // always 10px below the cursor
         .style('left', (d3.event.layerX - 65) + 'px'); // always 10px to the right of the mouse
     });
-
-    // // define legend
-    // var legend = svg.selectAll('.legend') // selecting elements with class 'legend'
-    //   .data(color.domain()) // refers to an array of labels from our dataset
-    //   .enter() // creates placeholder
-    //   .append('g') // replace placeholders with g elements
-    //   .attr('class', 'legend') // each g is given a legend class
-    //   .attr('transform', function(d, i) {
-    //     var height = legendRectSize + legendSpacing; // height of element is the height of the colored square plus the spacing
-    //     var offset = height * color.domain().length / 2; // vertical offset of the entire legend = height of a single element & half the total number of elements
-    //     var horz = 100; // the legend is shifted to the left to make room for the text
-    //     var vert = i * height - offset; // the top of the element is hifted up or down from the center using the offset defiend earlier and the index of the current element 'i'
-    //     return 'translate(' + horz + ',' + vert + ')'; //return translation
-    //   });
-    //
-    // // adding colored squares to legend
-    // legend.append('rect') // append rectangle squares to legend
-    //   .attr('width', legendRectSize) // width of rect size is defined above
-    //   .attr('height', legendRectSize) // height of rect size is defined above
-    //   .style('fill', color) // each fill is passed a color
-    //   .style('stroke', color) // each stroke is passed a color
-    //   .on('click', function(label) {
-    //     var rect = d3.select(this); // this refers to the colored squared just clicked
-    //     var enabled = true; // set enabled true to default
-    //     var totalEnabled = d3.sum(dataset.map(function(d) { // can't disable all options
-    //       return (d.enabled) ? 1 : 0; // return 1 for each enabled entry. and summing it up
-    //     }));
-    //
-    //     if (rect.attr('class') === 'disabled') { // if class is disabled
-    //       rect.attr('class', ''); // remove class disabled
-    //     } else { // else
-    //       if (totalEnabled < 2) return; // if less than two labels are flagged, exit
-    //       rect.attr('class', 'disabled'); // otherwise flag the square disabled
-    //       enabled = false; // set enabled to false
-    //     }
-    //     if (d3.select(this).classed('clicked')) {
-    //       //d3.select(this).classed('clicked', false);
-    //       //d3.select(this).style('fill-opacity', 1);
-    //       //self.toggleBar(name, false);
-    //       //} else {
-    //       //d3.select(this).classed('clicked', true);
-    //       //d3.select(this).style('fill-opacity', 0);
-    //       //self.toggleBar(name, true);
-    //       console.log("toggle", label);
-    //     }
-    //   });
-    //
-    // // adding text to legend
-    // legend.append('text')
-    //   .attr('x', legendRectSize + legendSpacing)
-    //   .attr('y', legendRectSize - legendSpacing + 8)
-    //   .attr('font-size', '12')
-    //   .text(function(d:any) { return d; }); // return label
   }
 
   drawPie() {
@@ -914,223 +815,223 @@ export class PurchaseReportPage implements OnInit {
   }
 
 
-  drawNewLine() {
-
-    let states = [
-      {
-        "name": "Compras",
-        "color": d3.schemeCategory10[1],
-        "current": 30,
-        "history": [
-          { 'date': '2018-07-01', 'total': 1 },
-          { 'date': '2018-07-02', 'total': 2 },
-          { 'date': '2018-07-03', 'total': 3 },
-          { 'date': '2018-07-04', 'total': 4 },
-          { 'date': '2018-07-05', 'total': 5 },
-          { 'date': '2018-07-06', 'total': 6 },
-          { 'date': '2018-07-07', 'total': 7 },
-          { 'date': '2018-07-08', 'total': 8 },
-          { 'date': '2018-07-09', 'total': 9 },
-          { 'date': '2018-07-10', 'total': 10 },
-          { 'date': '2018-07-11', 'total': 11 },
-          { 'date': '2018-07-12', 'total': 12 },
-          { 'date': '2018-07-13', 'total': 13 },
-          { 'date': '2018-07-14', 'total': 14 },
-          { 'date': '2018-07-15', 'total': 15 },
-          { 'date': '2018-07-16', 'total': 16 },
-          { 'date': '2018-07-17', 'total': 17 },
-          { 'date': '2018-07-18', 'total': 18 },
-          { 'date': '2018-07-19', 'total': 19 },
-          { 'date': '2018-07-20', 'total': 20 },
-          { 'date': '2018-07-21', 'total': 21 },
-          { 'date': '2018-07-22', 'total': 22 },
-          { 'date': '2018-07-23', 'total': 23 },
-          { 'date': '2018-07-24', 'total': 24 },
-          { 'date': '2018-07-25', 'total': 25 },
-          { 'date': '2018-07-26', 'total': 26 },
-          { 'date': '2018-07-27', 'total': 27 },
-          { 'date': '2018-07-28', 'total': 28 },
-          { 'date': '2018-07-29', 'total': 29 },
-          { 'date': '2018-07-30', 'total': 30 },
-        ]
-      },
-      {
-        "name": "Compras",
-        "color": d3.schemeCategory10[0],
-        "current": 36,
-        "history": [
-          { 'date': '2018-07-01', 'total': 1 + 6 },
-          { 'date': '2018-07-02', 'total': 2 + 6 },
-          { 'date': '2018-07-03', 'total': 3 + 6 },
-          { 'date': '2018-07-04', 'total': 4 + 6 },
-          { 'date': '2018-07-05', 'total': 5 + 6 },
-          { 'date': '2018-07-06', 'total': 6 + 6 },
-          { 'date': '2018-07-07', 'total': 7 + 6 },
-          { 'date': '2018-07-08', 'total': 8 + 6 },
-          { 'date': '2018-07-09', 'total': 9 + 6 },
-          { 'date': '2018-07-10', 'total': 10 + 8 },
-          { 'date': '2018-07-11', 'total': 11 + 10 },
-          { 'date': '2018-07-12', 'total': 12 + 12 },
-          { 'date': '2018-07-13', 'total': 13 + 10 },
-          { 'date': '2018-07-14', 'total': 14 + 8 },
-          { 'date': '2018-07-15', 'total': 15 + 6 },
-          { 'date': '2018-07-16', 'total': 16 + 6 },
-          { 'date': '2018-07-17', 'total': 17 + 6 },
-          { 'date': '2018-07-18', 'total': 18 + 6 },
-          { 'date': '2018-07-19', 'total': 19 + 6 },
-          { 'date': '2018-07-20', 'total': 20 + 6 },
-          { 'date': '2018-07-21', 'total': 21 + 6 },
-          { 'date': '2018-07-22', 'total': 22 + 6 },
-          { 'date': '2018-07-23', 'total': 23 + 6 },
-          { 'date': '2018-07-24', 'total': 24 + 6 },
-          { 'date': '2018-07-25', 'total': 25 + 6 },
-          { 'date': '2018-07-26', 'total': 26 + 6 },
-          { 'date': '2018-07-27', 'total': 27 + 6 },
-          { 'date': '2018-07-28', 'total': 28 + 6 },
-          { 'date': '2018-07-29', 'total': 29 + 6 },
-          { 'date': '2018-07-30', 'total': 30 + 6 },
-        ]
-      },
-      {
-        "name": "Cobranzas",
-        "color": d3.schemeCategory10[2],
-        "current": 24,
-        "history": [
-          { 'date': '2018-07-01', 'total': 0 },
-          { 'date': '2018-07-02', 'total': 0 },
-          { 'date': '2018-07-03', 'total': 0 },
-          { 'date': '2018-07-04', 'total': 0 },
-          { 'date': '2018-07-05', 'total': 0 },
-          { 'date': '2018-07-06', 'total': 0 },
-          { 'date': '2018-07-07', 'total': 7 - 6 },
-          { 'date': '2018-07-08', 'total': 8 - 6 },
-          { 'date': '2018-07-09', 'total': 9 - 6 },
-          { 'date': '2018-07-10', 'total': 10 - 8 },
-          { 'date': '2018-07-11', 'total': 11 - 10 },
-          { 'date': '2018-07-12', 'total': 12 - 12 },
-          { 'date': '2018-07-13', 'total': 13 - 10 },
-          { 'date': '2018-07-14', 'total': 14 - 8 },
-          { 'date': '2018-07-15', 'total': 15 - 6 },
-          { 'date': '2018-07-16', 'total': 16 - 6 },
-          { 'date': '2018-07-17', 'total': 17 - 6 },
-          { 'date': '2018-07-18', 'total': 18 - 6 },
-          { 'date': '2018-07-19', 'total': 19 - 6 },
-          { 'date': '2018-07-20', 'total': 20 - 6 },
-          { 'date': '2018-07-21', 'total': 21 - 6 },
-          { 'date': '2018-07-22', 'total': 22 - 6 },
-          { 'date': '2018-07-23', 'total': 23 - 6 },
-          { 'date': '2018-07-24', 'total': 24 - 6 },
-          { 'date': '2018-07-25', 'total': 25 - 6 },
-          { 'date': '2018-07-26', 'total': 26 - 6 },
-          { 'date': '2018-07-27', 'total': 27 - 6 },
-          { 'date': '2018-07-28', 'total': 28 - 6 },
-          { 'date': '2018-07-29', 'total': 29 - 6 },
-          { 'date': '2018-07-30', 'total': 30 - 6 },
-        ]
-      }
-    ];
-
-    const margin = { top: 40, right: 5, bottom: 30, left: 30 };
-    const width = 330 - margin.left - margin.right;
-    const height = 200 - margin.top - margin.bottom;
-
-
-    var bisectDate = d3.bisector(function(d: any) { return new Date(d.date); }).right,
-      dateFormatter = d3.timeFormat("%d/%m/%y");
-
-    let x = d3.scaleTime()
-      .domain([new Date(2018, 6, 1), new Date(2018, 7, 1)])
-      .range([0, width]);
-
-    const y = d3.scaleLinear().domain([0, 30]).range([height, 0]);
-    const line:any = d3.line().x((d: any) => x(new Date(d.date))).y((d:any) => y(d.total));
-    if (d3.select("#svg").select('g').nodes()[0]) {
-      let node:any = d3.select("#svg").select('g').nodes()[0];
-      node.remove();
-    }
-    const chart = d3.select('#svg').append('g')
-      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-    const tooltip = d3.select('#tooltip');
-    const tooltipLine = chart.append('line');
-
-    // Add the axes and a title
-    const xAxis = d3.axisBottom(x).ticks(8).tickFormat(dateFormatter);
-    const yAxis = d3.axisLeft(y).tickFormat(d3.format('.2s'));
-    chart.append('g').call(yAxis);
-    chart.append('g').attr('transform', 'translate(0,' + height + ')').call(xAxis).selectAll("text")
-      .style("text-anchor", "end")
-      .attr("transform", function(d) {
-        return "rotate(-45)"
-      });
-    // chart.append('text').html('State Population Over Time').attr('x', 50);
-
-    // Load the data and draw a chart
-    let tipBox;
-    chart.selectAll()
-      .data(states)
-      .enter()
-      .append('path')
-      .attr('fill', 'none')
-      .attr('stroke', d => d.color)
-      .attr('stroke-width', 2)
-      .attr('y', 2)
-      .datum(d => d.history)
-      .attr('d', line);
-
-    let self = this;
-    tipBox = chart.append('rect')
-      .attr('width', width)
-      .attr('height', height)
-      .attr('opacity', 0)
-      .on('touchstart', (nana) => {
-        var x0 = x.invert(d3.mouse(d3.event.currentTarget)[0]),
-          i = bisectDate(states[0].history, x0, 1),
-          d0 = states[0].history[i - 1];
-          // d1 = states[0].history[i];
-        let date: any = new Date(d0.date);
-
-        states.sort((a, b) => {
-          return self.compare(a, b, "date");
-        })
-        console.log("d3.event.pageX", d3.event.pageX);
-        tooltip.html(date)
-          .style('display', 'block')
-          .style('left', d3.event.pageX + 20)
-          .style('top', d3.event.pageY - 20)
-          .selectAll()
-          .data(states).enter()
-          .append('div')
-          .style('color', d => d.color)
-          .html(d => d.name + ': ' + d.history[i - 1].total)
-      })
-      .on('touchmove', (nana) => {
-        var x0 = x.invert(d3.mouse(d3.event.currentTarget)[0]),
-          i = bisectDate(states[0].history, x0, 1),
-          d0 = states[0].history[i - 1];
-          // d1 = states[0].history[i];
-        let date:any = new Date(d0.date);
-
-        states.sort((a, b) => {
-          return self.compare(a, b, "date");
-        })
-        console.log("d3.event.pageX", d3.event.pageX);
-        tooltip.html(date)
-          .style('display', 'block')
-          .style('left', d3.event.pageX + 20)
-          .style('top', d3.event.pageY - 20)
-          .selectAll()
-          .data(states).enter()
-          .append('div')
-          .style('color', d => d.color)
-          .html(d => d.name + ': ' + d.history[i - 1].total)
-      })
-      .on('mouseout', () => {
-        if (tooltip) tooltip.style('display', 'none');
-        if (tooltipLine) tooltipLine.attr('stroke', 'none');
-      });
-    console.log("fim");
-  }
+  // drawNewLine() {
+  //
+  //   let states = [
+  //     {
+  //       "name": "Compras",
+  //       "color": d3.schemeCategory10[1],
+  //       "current": 30,
+  //       "history": [
+  //         { 'date': '2018-07-01', 'total': 1 },
+  //         { 'date': '2018-07-02', 'total': 2 },
+  //         { 'date': '2018-07-03', 'total': 3 },
+  //         { 'date': '2018-07-04', 'total': 4 },
+  //         { 'date': '2018-07-05', 'total': 5 },
+  //         { 'date': '2018-07-06', 'total': 6 },
+  //         { 'date': '2018-07-07', 'total': 7 },
+  //         { 'date': '2018-07-08', 'total': 8 },
+  //         { 'date': '2018-07-09', 'total': 9 },
+  //         { 'date': '2018-07-10', 'total': 10 },
+  //         { 'date': '2018-07-11', 'total': 11 },
+  //         { 'date': '2018-07-12', 'total': 12 },
+  //         { 'date': '2018-07-13', 'total': 13 },
+  //         { 'date': '2018-07-14', 'total': 14 },
+  //         { 'date': '2018-07-15', 'total': 15 },
+  //         { 'date': '2018-07-16', 'total': 16 },
+  //         { 'date': '2018-07-17', 'total': 17 },
+  //         { 'date': '2018-07-18', 'total': 18 },
+  //         { 'date': '2018-07-19', 'total': 19 },
+  //         { 'date': '2018-07-20', 'total': 20 },
+  //         { 'date': '2018-07-21', 'total': 21 },
+  //         { 'date': '2018-07-22', 'total': 22 },
+  //         { 'date': '2018-07-23', 'total': 23 },
+  //         { 'date': '2018-07-24', 'total': 24 },
+  //         { 'date': '2018-07-25', 'total': 25 },
+  //         { 'date': '2018-07-26', 'total': 26 },
+  //         { 'date': '2018-07-27', 'total': 27 },
+  //         { 'date': '2018-07-28', 'total': 28 },
+  //         { 'date': '2018-07-29', 'total': 29 },
+  //         { 'date': '2018-07-30', 'total': 30 },
+  //       ]
+  //     },
+  //     {
+  //       "name": "Compras",
+  //       "color": d3.schemeCategory10[0],
+  //       "current": 36,
+  //       "history": [
+  //         { 'date': '2018-07-01', 'total': 1 + 6 },
+  //         { 'date': '2018-07-02', 'total': 2 + 6 },
+  //         { 'date': '2018-07-03', 'total': 3 + 6 },
+  //         { 'date': '2018-07-04', 'total': 4 + 6 },
+  //         { 'date': '2018-07-05', 'total': 5 + 6 },
+  //         { 'date': '2018-07-06', 'total': 6 + 6 },
+  //         { 'date': '2018-07-07', 'total': 7 + 6 },
+  //         { 'date': '2018-07-08', 'total': 8 + 6 },
+  //         { 'date': '2018-07-09', 'total': 9 + 6 },
+  //         { 'date': '2018-07-10', 'total': 10 + 8 },
+  //         { 'date': '2018-07-11', 'total': 11 + 10 },
+  //         { 'date': '2018-07-12', 'total': 12 + 12 },
+  //         { 'date': '2018-07-13', 'total': 13 + 10 },
+  //         { 'date': '2018-07-14', 'total': 14 + 8 },
+  //         { 'date': '2018-07-15', 'total': 15 + 6 },
+  //         { 'date': '2018-07-16', 'total': 16 + 6 },
+  //         { 'date': '2018-07-17', 'total': 17 + 6 },
+  //         { 'date': '2018-07-18', 'total': 18 + 6 },
+  //         { 'date': '2018-07-19', 'total': 19 + 6 },
+  //         { 'date': '2018-07-20', 'total': 20 + 6 },
+  //         { 'date': '2018-07-21', 'total': 21 + 6 },
+  //         { 'date': '2018-07-22', 'total': 22 + 6 },
+  //         { 'date': '2018-07-23', 'total': 23 + 6 },
+  //         { 'date': '2018-07-24', 'total': 24 + 6 },
+  //         { 'date': '2018-07-25', 'total': 25 + 6 },
+  //         { 'date': '2018-07-26', 'total': 26 + 6 },
+  //         { 'date': '2018-07-27', 'total': 27 + 6 },
+  //         { 'date': '2018-07-28', 'total': 28 + 6 },
+  //         { 'date': '2018-07-29', 'total': 29 + 6 },
+  //         { 'date': '2018-07-30', 'total': 30 + 6 },
+  //       ]
+  //     },
+  //     {
+  //       "name": "Cobranzas",
+  //       "color": d3.schemeCategory10[2],
+  //       "current": 24,
+  //       "history": [
+  //         { 'date': '2018-07-01', 'total': 0 },
+  //         { 'date': '2018-07-02', 'total': 0 },
+  //         { 'date': '2018-07-03', 'total': 0 },
+  //         { 'date': '2018-07-04', 'total': 0 },
+  //         { 'date': '2018-07-05', 'total': 0 },
+  //         { 'date': '2018-07-06', 'total': 0 },
+  //         { 'date': '2018-07-07', 'total': 7 - 6 },
+  //         { 'date': '2018-07-08', 'total': 8 - 6 },
+  //         { 'date': '2018-07-09', 'total': 9 - 6 },
+  //         { 'date': '2018-07-10', 'total': 10 - 8 },
+  //         { 'date': '2018-07-11', 'total': 11 - 10 },
+  //         { 'date': '2018-07-12', 'total': 12 - 12 },
+  //         { 'date': '2018-07-13', 'total': 13 - 10 },
+  //         { 'date': '2018-07-14', 'total': 14 - 8 },
+  //         { 'date': '2018-07-15', 'total': 15 - 6 },
+  //         { 'date': '2018-07-16', 'total': 16 - 6 },
+  //         { 'date': '2018-07-17', 'total': 17 - 6 },
+  //         { 'date': '2018-07-18', 'total': 18 - 6 },
+  //         { 'date': '2018-07-19', 'total': 19 - 6 },
+  //         { 'date': '2018-07-20', 'total': 20 - 6 },
+  //         { 'date': '2018-07-21', 'total': 21 - 6 },
+  //         { 'date': '2018-07-22', 'total': 22 - 6 },
+  //         { 'date': '2018-07-23', 'total': 23 - 6 },
+  //         { 'date': '2018-07-24', 'total': 24 - 6 },
+  //         { 'date': '2018-07-25', 'total': 25 - 6 },
+  //         { 'date': '2018-07-26', 'total': 26 - 6 },
+  //         { 'date': '2018-07-27', 'total': 27 - 6 },
+  //         { 'date': '2018-07-28', 'total': 28 - 6 },
+  //         { 'date': '2018-07-29', 'total': 29 - 6 },
+  //         { 'date': '2018-07-30', 'total': 30 - 6 },
+  //       ]
+  //     }
+  //   ];
+  //
+  //   const margin = { top: 40, right: 5, bottom: 30, left: 30 };
+  //   const width = 330 - margin.left - margin.right;
+  //   const height = 200 - margin.top - margin.bottom;
+  //
+  //
+  //   var bisectDate = d3.bisector(function(d: any) { return new Date(d.date); }).right,
+  //     dateFormatter = d3.timeFormat("%d/%m/%y");
+  //
+  //   let x = d3.scaleTime()
+  //     .domain([new Date(2018, 6, 1), new Date(2018, 7, 1)])
+  //     .range([0, width]);
+  //
+  //   const y = d3.scaleLinear().domain([0, 30]).range([height, 0]);
+  //   const line:any = d3.line().x((d: any) => x(new Date(d.date))).y((d:any) => y(d.total));
+  //   if (d3.select("#svg").select('g').nodes()[0]) {
+  //     let node:any = d3.select("#svg").select('g').nodes()[0];
+  //     node.remove();
+  //   }
+  //   const chart = d3.select('#svg').append('g')
+  //     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+  //
+  //   const tooltip = d3.select('#tooltip');
+  //   const tooltipLine = chart.append('line');
+  //
+  //   // Add the axes and a title
+  //   const xAxis = d3.axisBottom(x).ticks(8).tickFormat(dateFormatter);
+  //   const yAxis = d3.axisLeft(y).tickFormat(d3.format('.2s'));
+  //   chart.append('g').call(yAxis);
+  //   chart.append('g').attr('transform', 'translate(0,' + height + ')').call(xAxis).selectAll("text")
+  //     .style("text-anchor", "end")
+  //     .attr("transform", function(d) {
+  //       return "rotate(-45)"
+  //     });
+  //   // chart.append('text').html('State Population Over Time').attr('x', 50);
+  //
+  //   // Load the data and draw a chart
+  //   let tipBox;
+  //   chart.selectAll()
+  //     .data(states)
+  //     .enter()
+  //     .append('path')
+  //     .attr('fill', 'none')
+  //     .attr('stroke', d => d.color)
+  //     .attr('stroke-width', 2)
+  //     .attr('y', 2)
+  //     .datum(d => d.history)
+  //     .attr('d', line);
+  //
+  //   let self = this;
+  //   tipBox = chart.append('rect')
+  //     .attr('width', width)
+  //     .attr('height', height)
+  //     .attr('opacity', 0)
+  //     .on('touchstart', (nana) => {
+  //       var x0 = x.invert(d3.mouse(d3.event.currentTarget)[0]),
+  //         i = bisectDate(states[0].history, x0, 1),
+  //         d0 = states[0].history[i - 1];
+  //         // d1 = states[0].history[i];
+  //       let date: any = new Date(d0.date);
+  //
+  //       states.sort((a, b) => {
+  //         return self.compare(a, b, "date");
+  //       })
+  //       console.log("d3.event.pageX", d3.event.pageX);
+  //       tooltip.html(date)
+  //         .style('display', 'block')
+  //         .style('left', d3.event.pageX + 20)
+  //         .style('top', d3.event.pageY - 20)
+  //         .selectAll()
+  //         .data(states).enter()
+  //         .append('div')
+  //         .style('color', d => d.color)
+  //         .html(d => d.name + ': ' + d.history[i - 1].total)
+  //     })
+  //     .on('touchmove', (nana) => {
+  //       var x0 = x.invert(d3.mouse(d3.event.currentTarget)[0]),
+  //         i = bisectDate(states[0].history, x0, 1),
+  //         d0 = states[0].history[i - 1];
+  //         // d1 = states[0].history[i];
+  //       let date:any = new Date(d0.date);
+  //
+  //       states.sort((a, b) => {
+  //         return self.compare(a, b, "date");
+  //       })
+  //       console.log("d3.event.pageX", d3.event.pageX);
+  //       tooltip.html(date)
+  //         .style('display', 'block')
+  //         .style('left', d3.event.pageX + 20)
+  //         .style('top', d3.event.pageY - 20)
+  //         .selectAll()
+  //         .data(states).enter()
+  //         .append('div')
+  //         .style('color', d => d.color)
+  //         .html(d => d.name + ': ' + d.history[i - 1].total)
+  //     })
+  //     .on('mouseout', () => {
+  //       if (tooltip) tooltip.style('display', 'none');
+  //       if (tooltipLine) tooltipLine.attr('stroke', 'none');
+  //     });
+  //   console.log("fim");
+  // }
 
 
 }
