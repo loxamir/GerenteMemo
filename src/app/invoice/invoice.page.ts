@@ -1073,8 +1073,8 @@ export class InvoicePage implements OnInit {
           iva_10 = iva_10 + line_amount_10 / 11;
           iva = "10%";
         }
-        let productCode =this.formatService.string_pad(5, line.product.code, 'right');
-        let productName =this.formatService.string_pad(6, line.description);
+        let productCode =this.formatService.string_pad(5, line.product.code.substring(0, 5), 'right');
+        let productName =this.formatService.string_pad(26, line.description.substring(0, 26));
 
         let productQuantity =this.formatService.string_pad(4, line.quantity, 'right');
         let productPrice =this.formatService.string_pad(10, line.price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
@@ -1088,7 +1088,7 @@ export class InvoicePage implements OnInit {
         // ticket += "   5  11.035.000 55.175.000  10%\n";
         lines_count = lines_count + 1;
       })
-      while (lines_count <= max_lines) {
+      while (lines_count < max_lines) {
         invoiceLines += "     \n";
         invoiceLines += "     \n";
         invoiceLines += "     \n";
@@ -1100,7 +1100,7 @@ export class InvoicePage implements OnInit {
       ticket += "\n";
       ticket += "\n";
       ticket += "\n";
-      ticket += "\n";
+      // ticket += "\n";
       ticket += "\n";
       ticket += "\n";
       ticket += "\n";
@@ -1113,15 +1113,15 @@ export class InvoicePage implements OnInit {
       ticket += "\n";
       ticket += "\n";
       ticket += this.formatService.string_pad(32,(new Date(invoice.date)).toLocaleDateString('es-PY') , 'right', ' ')+"\n";
-      ticket += "        "+this.formatService.string_pad(56, partner_name, 'left', ' ')+"\n";
+      ticket += "         "+this.formatService.string_pad(55, partner_name.substring(0, 55), 'left', ' ')+"\n";
       ticket += this.formatService.string_pad(32, contact.document, 'right', ' ')+"\n";
-      ticket += this.formatService.string_pad(32, contact.address, 'right', ' ')+"\n";
-      ticket += this.formatService.string_pad(32, contact.phone, 'right', ' ')+"\n";
+      ticket += "           "+this.formatService.string_pad(53, contact.address.substring(0, 53), 'left', ' ')+"\n";
+      ticket += this.formatService.string_pad(32, contact.phone.substring(0, 22), 'right', ' ')+"\n";
       ticket += this.formatService.string_pad(32, invoice.paymentCondition, 'right', ' ')+"\n";
       ticket += "\n";
       ticket += "\n";
       ticket += "\n";
-      ticket += "\n";
+      ticket += "|------------------------------|\n";
       ticket += invoiceLines;
       // ticket += "0001  Limpia Porcelanato 5L\n";
       // ticket += "   5  11.035.000 55.175.000  10%\n";
@@ -1154,6 +1154,7 @@ export class InvoicePage implements OnInit {
       // ticket += "                             476\n";iva_05
       ticket += this.formatService.string_pad(32, (iva_05+iva_10).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
       // ticket += "                          16.385\n";iva_05+iva_10
+      ticket += "\n";
       ticket += "\n";
       ticket += "\n";
       ticket += "\n";
