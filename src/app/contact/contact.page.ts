@@ -137,101 +137,112 @@ export class ContactPage implements OnInit {
   async preprint() {
     let start = parseInt(this.contactForm.value.invoiceNumberStart.split("-")[2]);
     let end = parseInt(this.contactForm.value.invoiceNumberEnd.split("-")[2]);
+    let prefix = this.contactForm.value.invoiceNumberEnd.split("-")[1]+"-"+this.contactForm.value.invoiceNumberEnd.split("-")[1]
+    // let number = start;
+    let numberLength = this.contactForm.value.invoiceNumberStart.split("-")[2].length;
     //First via
     // let prefix = this.contactForm.value.invoiceNumberStart.split("-");
     // let type = "Duplicado: Archivo Tributario";
+    let client = true;
     let type = "Original: Cliente";
-    let invoiceNumber = this.contactForm.value.invoiceNumberStart;
-        let ticket = "--------------------------------\n";
-        ticket += this.formatService.string_pad(64,this.contactForm.value.name.substring(0, 64), 'left', ' ')+"\n";
-        ticket += "De "+this.formatService.string_pad(61,this.contactForm.value.name_legal.substring(0, 61), 'left', ' ')+"\n";
-        ticket += this.formatService.string_pad(64,this.contactForm.value.rubro.substring(0, 64), 'left', ' ')+"\n";
-        ticket += this.formatService.string_pad(64,this.contactForm.value.address.substring(0, 64), 'left', ' ')+"\n";
-        // ticket += "\n";
-        ticket += "Tel: "+this.contactForm.value.phone.substring(0, 25)+"\n";
-        ticket += "RUC: "+this.contactForm.value.document.substring(0, 25)+"\n";
-        ticket += "--------------------------------\n";
-        ticket += "Timbrado Numero:"+this.formatService.string_pad(16, this.contactForm.value.timbrado, 'right', ' ')+"\n";
-        ticket += "Inicio Vigencia:"+this.formatService.string_pad(16, (new Date(this.contactForm.value.dateStart)).toLocaleDateString('es-PY'), 'right', ' ')+"\n";
-        ticket += "Fin de Vigencia:"+this.formatService.string_pad(16, (new Date(this.contactForm.value.dateEnd)).toLocaleDateString('es-PY'), 'right', ' ')+"\n";
-        ticket += "Factura Numero: "+this.formatService.string_pad(16, invoiceNumber, 'right', ' ')+"\n";
-        ticket += "--------------------------------\n";
-        ticket += "Fecha:\n";
-        ticket += "Cliente:\n";
-        ticket += "\n";
-        ticket += "C.I. o RUC:\n";
-        ticket += "Direccion:\n";
-        ticket += "\n";
-        ticket += "Telefono:\n";
-        ticket += "Condicion de Pago:\n";
-        ticket += "--------------------------------\n";
-        ticket += "Codigo Descripcion\n";
-        ticket += "Cant |  Precio  | Subtotal | IVA\n";
-        ticket += "--------------------------------\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "\n";
-        ticket += "--------------------------------\n";
-        ticket += "TOTAL\n";
-        ticket += "Total Gravadas 10%:\n";
-        ticket += "Total Gravadas  5%:\n";
-        ticket += "Total Gravadas  0%:\n";
-        ticket += "\n";
-        ticket += "LIQUIDACION DE IVA\n";
-        ticket += "Total Gravadas 10%:\n";
-        ticket += "Total Gravadas  5%:\n";
-        ticket += "TOTAL IVA:\n";
-        ticket += "\n";
-        ticket += type+"\n";
-        ticket += "--------------------------------\n";
-        //TODO: Questionar este bloco
-        ticket += "Nombre Fantasia"+""+"\n";
-        ticket += "razon Social"+""+"\n";
-        ticket += "RUC"+""+"\n";
-        ticket += "Habilitacion Nro "+""+"\n";
-        ticket += "Direccion "+""+"\n";
-        ticket += "Telefono "+""+"\n";
-        ticket += "Total de Hojas "+""+"\n";
-        ticket += "Desde el Nro "+""+"\n";
-        ticket += "Hasta el Nro "+""+"\n";
-        ticket += "Total de Vias "+""+"\n";
-        ticket += "--------------------------------\n";
-        ticket += "\n";
-        ticket += "\n";
-        console.log(ticket);
+    let ticket = "";
+    for(let number=start;number<=end;number++){
+      let types = ["Original: Cliente", "Duplicado: Archivo Tributario"]
+      types.forEach(type=>{
+        let invoiceNumber = prefix+"-"+this.formatService.string_pad(numberLength, number, 'right', '0');
+            ticket += "--------------------------------\n";
+            ticket += this.formatService.string_pad(64,this.contactForm.value.name.substring(0, 64), 'left', ' ')+"\n";
+            ticket += "De "+this.formatService.string_pad(61,this.contactForm.value.name_legal.substring(0, 61), 'left', ' ')+"\n";
+            ticket += this.formatService.string_pad(64,this.contactForm.value.rubro.substring(0, 64), 'left', ' ')+"\n";
+            ticket += this.formatService.string_pad(64,this.contactForm.value.address.substring(0, 64), 'left', ' ')+"\n";
+            // ticket += "\n";
+            ticket += "Tel: "+this.contactForm.value.phone.substring(0, 25)+"\n";
+            ticket += "RUC: "+this.contactForm.value.document.substring(0, 25)+"\n";
+            ticket += "--------------------------------\n";
+            ticket += "Timbrado Numero:"+this.formatService.string_pad(16, this.contactForm.value.timbrado, 'right', ' ')+"\n";
+            ticket += "Inicio Vigencia:"+this.formatService.string_pad(16, (new Date(this.contactForm.value.dateStart)).toLocaleDateString('es-PY'), 'right', ' ')+"\n";
+            ticket += "Fin de Vigencia:"+this.formatService.string_pad(16, (new Date(this.contactForm.value.dateEnd)).toLocaleDateString('es-PY'), 'right', ' ')+"\n";
+            ticket += "Factura Numero: "+this.formatService.string_pad(16, invoiceNumber, 'right', ' ')+"\n";
+            ticket += "--------------------------------\n";
+            ticket += "Fecha:\n";
+            ticket += "Cliente:\n";
+            ticket += "\n";
+            ticket += "C.I. o RUC:\n";
+            ticket += "Direccion:\n";
+            ticket += "\n";
+            ticket += "Telefono:\n";
+            ticket += "Condicion de Pago:\n";
+            ticket += "--------------------------------\n";
+            ticket += "Codigo Descripcion\n";
+            ticket += "Cant |  Precio  | Subtotal | IVA\n";
+            ticket += "--------------------------------\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "--------------------------------\n";
+            ticket += "TOTAL\n";
+            ticket += "Total Gravadas 10%:\n";
+            ticket += "Total Gravadas  5%:\n";
+            ticket += "Total Gravadas  0%:\n";
+            ticket += "\n";
+            ticket += "LIQUIDACION DE IVA\n";
+            ticket += "Total Gravadas 10%:\n";
+            ticket += "Total Gravadas  5%:\n";
+            ticket += "TOTAL IVA:\n";
+            ticket += "\n";
+            ticket += type+"\n";
+            ticket += "--------------------------------\n";
+            //TODO: Questionar este bloco
+            ticket += "Nombre Fantasia"+""+"\n";
+            ticket += "razon Social"+""+"\n";
+            ticket += "RUC"+""+"\n";
+            ticket += "Habilitacion Nro "+""+"\n";
+            ticket += "Direccion "+""+"\n";
+            ticket += "Telefono "+""+"\n";
+            ticket += "Total de Hojas "+""+"\n";
+            ticket += "Desde el Nro "+""+"\n";
+            ticket += "Hasta el Nro "+""+"\n";
+            ticket += "Total de Vias "+""+"\n";
+            ticket += "--------------------------------\n";
+            ticket += "\n";
+            ticket += "\n";
 
-        // Print to bluetooth printer
-        let toast = await this.toastCtrl.create({
-        message: "Imprimiendo...",
-        duration: 3000
-      });
+      })
+
+    }
+    console.log(ticket);
+    // Print to bluetooth printer
+    let toast = await this.toastCtrl.create({
+    message: "Imprimiendo...",
+    duration: 3000
+    });
       toast.present();
       this.bluetoothSerial.isEnabled().then(res => {
         this.bluetoothSerial.list().then((data)=> {

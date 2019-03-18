@@ -1114,9 +1114,9 @@ export class InvoicePage implements OnInit {
       ticket += "\n";
       ticket += this.formatService.string_pad(32,(new Date(invoice.date)).toLocaleDateString('es-PY') , 'right', ' ')+"\n";
       ticket += "         "+this.formatService.string_pad(55, partner_name.substring(0, 55), 'left', ' ')+"\n";
-      ticket += this.formatService.string_pad(32, contact.document, 'right', ' ')+"\n";
-      ticket += "           "+this.formatService.string_pad(53, contact.address.substring(0, 53), 'left', ' ')+"\n";
-      ticket += this.formatService.string_pad(32, contact.phone.substring(0, 22), 'right', ' ')+"\n";
+      ticket += this.formatService.string_pad(32, (contact.document|| ""), 'right', ' ')+"\n";
+      ticket += "           "+this.formatService.string_pad(53, (contact.address || "").substring(0, 53), 'left', ' ')+"\n";
+      ticket += this.formatService.string_pad(32, (contact.phone|| "").substring(0, 22), 'right', ' ')+"\n";
       ticket += this.formatService.string_pad(32, invoice.paymentCondition, 'right', ' ')+"\n";
       ticket += "\n";
       ticket += "\n";
