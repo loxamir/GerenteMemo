@@ -36,6 +36,7 @@ export class LoginPage implements OnInit {
   page = 0;
   has_search = false;
   filter: string = 'all';
+  campaign;
 
   constructor(
     // public modal: ModalController,
@@ -69,6 +70,15 @@ export class LoginPage implements OnInit {
         })
       }
     })
+  }
+
+  showCampaign(){
+    console.log("campaign", this.campaign);
+  }
+
+  async ngOnInit() {
+
+
     this.loginForm = new FormGroup({
       name: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.compose([
@@ -82,10 +92,15 @@ export class LoginPage implements OnInit {
       ])),
       password: new FormControl('', Validators.required),
     });
-  }
-
-  async ngOnInit() {
     this.loading = await this.loadingCtrl.create();
+    let campaign = await this.storage.get("campaign");
+    this.campaign = campaign || this.route.snapshot.paramMap.get('campaign');
+    if (this.campaign && ! campaign){
+      await this.storage.set('campaign', this.campaign);
+    }
+    this.showCampaign();
+
+
     // this.router.events.subscribe((event: RouterEvent) => {
       // if (event instanceof NavigationEnd && event.url === '/login') {
       let username = await this.storage.get('username');
@@ -440,14 +455,16 @@ export class LoginPage implements OnInit {
   }
 
   createLogin(datas){
-    return new Promise((resolve, reject)=>{
+    return new Promise(async (resolve, reject)=>{
       // console.log("datas", datas);
+      // let campaign = await this.storage.get("campaign");
       let body = {variables:{
         "name": {"value":datas.name, "type": "String"},
         "mobile": {"value":datas.mobile, "type": "String"},
         "email": {"value":datas.email, "type": "String"},
         "user": {"value":datas.user.toLowerCase(), "type": "String"},
         "password": {"value":datas.password, "type": "String"},
+        "campaign": {"value": this.campaign, "type": "String"}
       }};
       // console.log("variables", variables);
       this.restProvider.startProcess("Process_1", body).then((data:any)=>{
