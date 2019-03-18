@@ -573,7 +573,7 @@ export class FormatService {
     marginLeft = layout.subTotalTax0_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = subtotal_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = subtotal_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -583,7 +583,7 @@ export class FormatService {
     marginLeft = layout.subTotalTax5_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = subtotal_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = subtotal_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -593,7 +593,7 @@ export class FormatService {
     marginLeft = layout.subTotalTax10_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = subtotal_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = subtotal_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -603,7 +603,7 @@ export class FormatService {
     marginLeft = layout.invoiceTotal_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = order.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = order.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];

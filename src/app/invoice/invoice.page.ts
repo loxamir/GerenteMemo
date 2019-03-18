@@ -827,14 +827,15 @@ export class InvoicePage implements OnInit {
                   console.log("recomputeValues");
                   this.recomputeValues();
                   console.log("formatService");
-                  if (this.platform.is('cordova')){
-                    this.printAndroid();
-                  } else {
-                    let dotmatrix_model:any = await this.pouchdbService.getDoc('config.invoice');
-                    console.log("dotmatrix_model", dotmatrix_model);
-                    let layout = await this.pouchdbService.getDoc('config.profile')
-                    this.formatService.printInvoice(this.invoiceForm.value, layout['invoicePrint']);
-                  }
+                  // if (this.platform.is('cordova')){
+                  //   this.printAndroid();
+                  // } else {
+                  //   let dotmatrix_model:any = await this.pouchdbService.getDoc('config.invoice');
+                  //   console.log("dotmatrix_model", dotmatrix_model);
+                  //   let layout = await this.pouchdbService.getDoc('config.profile')
+                  //   this.formatService.printInvoice(this.invoiceForm.value, layout['invoicePrint']);
+                  // }
+                  this.posprint();
                   this.justSave();
                   // this.navCtrl.navigateBack();
                 });
@@ -1033,6 +1034,167 @@ export class InvoicePage implements OnInit {
         });
       }
     }
+
+    async posprint() {
+      let invoice = this.invoiceForm.value;
+      var partner_name = invoice.contact.name_legal || invoice.contact.name;
+      let contact = invoice.contact;
+      var max_lines = 10;
+      var lines_count = 0;
+      var lines = "";
+      var subtotal_10 = 0;
+      var subtotal_05 = 0;
+      var subtotal_00 = 0;
+      var iva_10 = 0;
+      var iva_05 = 0;
+      let invoiceLines = ""
+      invoice.items.forEach((line: any, index) => {
+        let line_amount_00 = 0;
+        let line_amount_05 = 0;
+        let line_amount_10 = 0;
+        let iva = "10%";
+        //IVA Exento
+        if (line.product.tax == 'iva0') {
+          line_amount_00 = line.quantity * line.price;
+          subtotal_00 += line_amount_00;
+          iva = "0%";
+        }
+        //IVA 5%
+        if (line.product.tax == 'iva5') {
+          line_amount_05 = line.quantity * line.price;
+          subtotal_05 += line_amount_05;
+          iva_05 += line_amount_05 / 21;
+          iva = "5%";
+        }
+        //IVA 10%
+        if (line.product.tax == 'iva10') {
+          line_amount_10 = line.quantity * line.price;
+          subtotal_10 += line_amount_10;
+          iva_10 = iva_10 + line_amount_10 / 11;
+          iva = "10%";
+        }
+        let productCode =this.formatService.string_pad(5, line.product.code, 'right');
+        let productName =this.formatService.string_pad(6, line.description);
+
+        let productQuantity =this.formatService.string_pad(4, line.quantity, 'right');
+        let productPrice =this.formatService.string_pad(10, line.price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        let subTotal =this.formatService.string_pad(11, (line.price*line.quantity).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        let tax =this.formatService.string_pad(4, iva, 'right');
+        invoiceLines += productCode+" "+productName+"\n";
+        invoiceLines += productQuantity+" "+productPrice+" "+subTotal+" "+tax+"\n";
+        invoiceLines += "--------------------------------\n";
+        // invoiceLines += "0001  Limpia Porcelanato 5L\n";
+        // ticket += "   5  11.035.000 55.175.000  10%\n";
+        // ticket += "   5  11.035.000 55.175.000  10%\n";
+        lines_count = lines_count + 1;
+      })
+      while (lines_count <= max_lines) {
+        invoiceLines += "     \n";
+        invoiceLines += "     \n";
+        invoiceLines += "     \n";
+        lines_count = lines_count + 1;
+      }
+      let ticket = "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += this.formatService.string_pad(32,(new Date(invoice.date)).toLocaleDateString('es-PY') , 'right', ' ')+"\n";
+      ticket += "        "+this.formatService.string_pad(56, partner_name, 'left', ' ')+"\n";
+      ticket += this.formatService.string_pad(32, contact.document, 'right', ' ')+"\n";
+      ticket += this.formatService.string_pad(32, contact.address, 'right', ' ')+"\n";
+      ticket += this.formatService.string_pad(32, contact.phone, 'right', ' ')+"\n";
+      ticket += this.formatService.string_pad(32, invoice.paymentCondition, 'right', ' ')+"\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += invoiceLines;
+      // ticket += "0001  Limpia Porcelanato 5L\n";
+      // ticket += "   5  11.035.000 55.175.000  10%\n";
+      // ticket += "--------------------------------\n";
+      // ticket += "0002  Limpia Porcelanato 5L\n";
+      // ticket += "   5  11.035.000 55.175.000  10%\n";
+      // ticket += "--------------------------------\n";
+      // ticket += "0003  Limpia Porcelanato 5L\n";
+      // ticket += "   5  11.035.000 55.175.000  10%\n";
+      // ticket += "--------------------------------\n";
+      // ticket += "0004  Otro Producto con iva dist\n";
+      // ticket += "   1      10.000      10.000  5%\n";
+      // ticket += "--------------------------------\n";
+      // ticket += "0005  Otro Producto con iva dist\n";
+      // ticket += "   1      10.000      10.000  0%\n";
+      ticket += "\n";
+      ticket += this.formatService.string_pad(32, invoice.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      // ticket += "                         195.000\n";
+      ticket += this.formatService.string_pad(32, subtotal_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      // ticket += "                         175.000\n";subtotal_10
+      ticket += this.formatService.string_pad(32, subtotal_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      // ticket += "                          10.000\n";subtotal_05
+      ticket += this.formatService.string_pad(32, subtotal_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      // ticket += "                          10.000\n";subtotal_00
+      ticket += "\n";
+      ticket += "\n";
+      ticket += this.formatService.string_pad(32, iva_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      // ticket += "                          15.909\n";iva_10
+      ticket += this.formatService.string_pad(32, iva_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      // ticket += "                             476\n";iva_05
+      ticket += this.formatService.string_pad(32, (iva_05+iva_10).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      // ticket += "                          16.385\n";iva_05+iva_10
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      console.log("ticket", ticket);
+
+      // Print to bluetooth printer
+      let toast = await this.toastCtrl.create({
+      message: "Imprimiendo...",
+      duration: 3000
+    });
+    toast.present();
+    this.bluetoothSerial.isEnabled().then(res => {
+      this.bluetoothSerial.list().then((data)=> {
+        this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+          this.bluetoothSerial.isConnected().then(res => {
+            // |---- 32 characteres ----|
+            this.bluetoothSerial.write(ticket);
+            this.bluetoothSerial.disconnect();
+          }).catch(res => {
+            //console.log("res1", res);
+          });
+        },error=>{
+          //console.log("error", error);
+        });
+      })
+    }).catch(res => {
+      //console.log("res", res);
+    });
+  }
 
     printAndroid(){
       this.configService.getConfigDoc().then((data) => {
