@@ -6,6 +6,24 @@ let file = new File();
 @Injectable({ providedIn: 'root' })
 export class FormatService {
 
+  breakString(string, length){
+    let counter = 0;
+    let resultado = "";
+    for(let i = 0;i<string.length;i++){
+      let leter = string[i];
+      resultado += leter;
+      counter +=1;
+      if (counter == length){
+        resultado += "\n";
+        counter = 0;
+      }
+    }
+    // string.forEach(leter=>{
+    //
+    // })
+    return resultado;
+  }
+
   string_pad(qty, user_str, order = "left", complete = " ") {
     if (!user_str) {
       user_str = "";

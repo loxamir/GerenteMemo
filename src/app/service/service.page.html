@@ -7,9 +7,6 @@
     <ion-title *ngIf="!serviceForm.value.production">
         {{ 'SERVICE' | translate }}: {{serviceForm.value.code}}
     </ion-title>
-    <ion-title *ngIf="serviceForm.value.production">
-        {{ 'PRODUCTION' | translate }}: {{serviceForm.value.code}}
-    </ion-title>
 
     <ion-buttons slot="end" >
       <!-- <ion-button
@@ -184,12 +181,72 @@
 
 
     </ion-row>
+    <!-- <ion-row>
+      <ion-col>
+        <ion-button class="button-100"
+        color="success"
+        (click)="print()">
+        <ion-icon name="print" style="margin-right:10px;"></ion-icon>Imprimir OS</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button class="button-100" color="success" (click)="share()"><ion-icon name="share" style="margin-right:10px;"></ion-icon>Compartir</ion-button>
+      </ion-col>
+    </ion-row> -->
+    <ion-row>
+      <ion-col
+       class="item-content"
+       *ngIf="serviceForm.value.state == 'DRAFT' || serviceForm.value.state == 'SCHEDULED'">
+        <ion-button class="button-100"
+         (click)="setStarted()">
+         Iniciar
+        </ion-button>
+      </ion-col>
+      <ion-col class="item-content"
+       *ngIf="serviceForm.value.state == 'DRAFT'">
+        <ion-button class="button-100"
+         (click)="setSchedule()">
+         Agendar
+        </ion-button>
+      </ion-col>
 
 
-    <ion-list no-lines *ngIf="serviceForm.value.invoices.length">
+      <!-- <ion-col size="6"
+      *ngIf="serviceForm.value.state == 'CONFIRMED' && ! serviceForm.value.production">
+        <ion-button class="button-100"
+        (click)="print()">
+          Imprimir OS
+        </ion-button>
+      </ion-col> -->
+      <ion-col size="6"
+      *ngIf="serviceForm.value.state == 'CONFIRMED' && ! serviceForm.value.production">
+        <ion-button class="button-100"
+        (click)="beforeAddPayment()">
+          Cobrar
+        </ion-button>
+      </ion-col>
+      <ion-col
+      *ngIf="(serviceForm.value.state == 'CONFIRMED'
+       || serviceForm.value.state == 'PAID')
+       && ! serviceForm.value.production
+       && ! serviceForm.value.invoices.length">
+        <ion-button class="button-100"
+        (click)="addInvoice()">
+          Crear Factura
+        </ion-button>
+      </ion-col>
+      <ion-col *ngIf="serviceForm.value.state == 'STARTED'">
+        <ion-button class="button-100"
+        (click)="beforeConfirm()">
+          Concluir
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-list no-lines *ngFor="let item of serviceForm.value.invoices">
       <section>
-      <h2 class="section-title">{{'INVOICE' | translate}}</h2>
-      <ion-item-sliding class="list-item" *ngFor="let item of serviceForm.value.invoices">
+      <h2 class="section-title" *ngIf="serviceForm.value.invoices.length">{{'INVOICE' | translate}}</h2>
+      <ion-item-sliding class="list-item">
         <ion-item (click)="openInvoice(item)"  class="internal-item" style="background-color: #ddd;">
           <ion-card class="list-card">
           <ion-row style="padding-top:10px; padding-bottom:10px;">
@@ -214,7 +271,7 @@
     </ion-list>
     <ion-list no-lines *ngIf="serviceForm.value.payments.length">
       <section>
-      <h2 class="section-title">{{'Recibos' | translate}}</h2>
+      <h2 class="section-title" >{{'Recibos' | translate}}</h2>
       <ion-item-sliding class="list-item" *ngFor="let item of serviceForm.value.payments">
         <ion-item  class="internal-item" (click)="openPayment(item)" style="background-color: #ddd;">
           <ion-card class="list-card">
@@ -242,8 +299,26 @@
     </ion-list>
 
 
+    <ion-segment formControlName="section" class="cash-segment">
+      <ion-segment-button value="works">
+        Servicios
+      </ion-segment-button>
+      <ion-segment-button value="inputs">
+        Repuestos
+      </ion-segment-button>
+      <ion-segment-button value="travel">
+        Viatico
+      </ion-segment-button>
+    </ion-segment>
 
-        <ion-card class="internal-card" *ngIf="serviceForm.value.state=='STARTED' || serviceForm.value.state=='CONFIRMED' || serviceForm.value.state=='PAID' || serviceForm.value.state=='CANCELED'">
+    <div [ngSwitch]="serviceForm.value.section" class="forms-wrapper">
+      <div *ngSwitchCase="'works'" class="post-example-view">
+        <ion-button class="button-100" color="success" (click)="addWork()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Servicio</ion-button>
+
+        <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="serviceForm.value.works.length">
+          Total $ {{serviceForm.value.work_amount|number:'1.0'}}
+        </h2>
+        <!-- <ion-card class="internal-card">
           <ion-row>
             <ion-col (click)="showWorks()" size="1">
               <ion-icon name="arrow-dropdown"
@@ -254,20 +329,14 @@
               <h4 class="section-title">{{'SERVICES_DONE' | translate}}</h4>
               <h4 class="field-value" style="margin-top:0px;">$ {{serviceForm.value.work_amount|number:'1.0'}}</h4>
             </ion-col>
-            <!-- <ion-col size="2" color="primary"
-            *ngIf="serviceForm.value.state == 'STARTED'"
-              (click)="addWork()">
-                <ion-icon name="add"
-                style="font-size: 2rem;color: white;">
-                </ion-icon>
-            </ion-col> -->
             <ion-col size="2" class="open-item-col"
               *ngIf="serviceForm.value.state == 'STARTED'"
               (click)="addWork()">
               <ion-icon name="add" class="open-item-arrow"></ion-icon>
             </ion-col>
-          </ion-row>
-          <ion-list no-lines *ngIf="serviceForm.value.works.length && show_works" style="border-top: 1px solid blue;;background: #ddd">
+          </ion-row> -->
+
+          <ion-list no-lines style="background: #ddd">
 
             <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.works">
               <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
@@ -338,17 +407,15 @@
               </ion-item-options>
             </ion-item-sliding>
           </ion-list>
-        </ion-card>
+        <!-- </ion-card> -->
+      </div>
+      <div *ngSwitchCase="'inputs'" class="post-example-view">
+        <ion-button class="button-100" color="success" (click)="addInput()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Repuesto</ion-button>
 
-
-
-
-
-
-
-
-
-        <ion-card class="internal-card"  *ngIf="serviceForm.value.state=='STARTED' || serviceForm.value.state=='CONFIRMED' || serviceForm.value.state=='PAID' || serviceForm.value.state=='CANCELED'">
+        <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="serviceForm.value.inputs.length">
+          Total $ {{serviceForm.value.input_amount|number:'1.0'}}
+        </h2>
+        <!-- <ion-card class="internal-card" >
           <ion-row>
             <ion-col (click)="showInputs()" size="1">
               <ion-icon name="arrow-dropdown"
@@ -358,7 +425,7 @@
             <ion-col size="9" (click)="showInputs()">
               <h4 class="section-title">{{'Materiales Consumidos' | translate}}</h4>
               <h4 class="field-value"  style="margin-top:0px;">$ {{serviceForm.value.input_amount|number:'1.0'}}</h4>
-            </ion-col>
+            </ion-col> -->
             <!-- <ion-col size="2" class="item-content"
             *ngIf="serviceForm.value.state == 'STARTED'">
               <ion-button class="print-invoice"
@@ -368,16 +435,15 @@
                 </ion-icon>
               </ion-button>
             </ion-col> -->
-            <ion-col size="2" class="open-item-col"
+            <!-- <ion-col size="2" class="open-item-col"
               *ngIf="serviceForm.value.state == 'STARTED'"
               (click)="addInput()">
               <ion-icon name="add" class="open-item-arrow"></ion-icon>
             </ion-col>
-          </ion-row>
+          </ion-row> -->
 
 
-          <ion-list no-lines *ngIf="show_inputs" style="border-top: 1px solid blue;background: #ddd">
-
+          <ion-list no-lines style="background: #ddd">
             <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.inputs">
               <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
                 <ion-card class="internal-card">
@@ -444,152 +510,116 @@
           </ion-list>
 
 
-        </ion-card>
+        <!-- </ion-card> -->
+      </div>
+      <div *ngSwitchCase="'travel'" class="post-example-view">
+        <ion-button class="button-100" color="success" (click)="addTravel()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Viatico</ion-button>
 
-
-          <ion-card class="internal-card"  *ngIf="(serviceForm.value.state=='STARTED' || serviceForm.value.state=='CONFIRMED' || serviceForm.value.state=='PAID' || serviceForm.value.state=='CANCELED')  && !serviceForm.value.production">
-            <ion-row>
-              <ion-col (click)="showTravels()" size="1">
-                <ion-icon name="arrow-dropdown"
-                style="font-size: 2rem;color: #47ad4c;">
+        <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="serviceForm.value.travels.length">
+          Total $ {{serviceForm.value.travel_amount|number:'1.0'}}
+        </h2>
+        <!-- <ion-card class="internal-card"> -->
+          <!-- <ion-row>
+            <ion-col (click)="showTravels()" size="1">
+              <ion-icon name="arrow-dropdown"
+              style="font-size: 2rem;color: #47ad4c;">
+              </ion-icon>
+            </ion-col>
+            <ion-col size="9" (click)="showTravels()">
+              <h4 class="section-title">{{'Viaticos' | translate}}</h4>
+              <h4 class="field-value"  style="margin-top:0px;">$ {{serviceForm.value.travel_amount|number:'1.0'}}</h4>
+            </ion-col> -->
+            <!-- <ion-col size="2" class="item-content"
+            *ngIf="serviceForm.value.state == 'STARTED'">
+              <ion-button class="print-invoice"
+              (click)="addTravel()">
+                <ion-icon name="add"
+                style="font-size: 2rem;color: white;">
                 </ion-icon>
-              </ion-col>
-              <ion-col size="9" (click)="showTravels()">
-                <h4 class="section-title">{{'Viaticos' | translate}}</h4>
-                <h4 class="field-value"  style="margin-top:0px;">$ {{serviceForm.value.travel_amount|number:'1.0'}}</h4>
-              </ion-col>
-              <!-- <ion-col size="2" class="item-content"
-              *ngIf="serviceForm.value.state == 'STARTED'">
-                <ion-button class="print-invoice"
-                (click)="addTravel()">
-                  <ion-icon name="add"
-                  style="font-size: 2rem;color: white;">
-                  </ion-icon>
-                </ion-button>
-              </ion-col> -->
-              <ion-col size="2" class="open-item-col"
-                *ngIf="serviceForm.value.state == 'STARTED'"
-                (click)="addTravel()">
-                <ion-icon name="add" class="open-item-arrow"></ion-icon>
-              </ion-col>
-            </ion-row>
-            <ion-list no-lines *ngIf="serviceForm.value.travels.length && show_travels" style="border-top: 1px solid blue;;background: #ddd">
-              <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.travels">
-                <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
-                  <ion-card class="internal-card">
-                    <ion-row (click)="editTravel(item)" class="product-name-row">
-                      {{item.note}}
-                    </ion-row>
-                <ion-row>
-                  <ion-col size="6" style="white-space: normal;">
-                    <ion-row style="margin-top: -5px;">
-                      <ion-col  size="12" (click)="editTravelPrice(item)" >
-                        <span class="price-label">Precio:</span>
-                        <div style="font-size: 15px;display: contents; color:red">
-                           $ {{item.price|number:'1.0'}}<div style="color: gray;display:inline">/km</div>
-                        </div>
-
-                      </ion-col>
-                    </ion-row>
-                    <ion-row (click)="editTravelPrice(item)">
-                      <ion-col  size="12">
-                        <span class="price-label">SubTotal:</span>
-                        <div style="font-size: 20px;color:green;">
-                           ${{item.price*item.distance|number:'1.0'}}
-                        </div>
-                      </ion-col>
-                    </ion-row>
-                  </ion-col>
-                  <ion-col size="6">
-
-                    <ion-row>
-                      <ion-col style="text-align: center;">
-                        Kilometros
-                      </ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col size="3">
-                        <ion-button class="quantity-button" (click)="remTravel(item)">-</ion-button>
-                      </ion-col>
-                      <ion-col size="6" (click)="editTravel(item)" style="text-align: center;font-size: 30px;">
-                        {{item.distance}}
-                      </ion-col>
-                      <ion-col size="3">
-                        <ion-button class="quantity-button" (click)="sumTravel(item)">+</ion-button>
-                      </ion-col>
-                    </ion-row>
-                  </ion-col>
-                </ion-row>
-              </ion-card>
-              </ion-item>
-                <ion-item-options>
-                  <ion-button icon-only color="primary" (click)="removeTravel(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
-                    <ion-icon name="trash"></ion-icon>
-                  </ion-button>
-                </ion-item-options>
-              </ion-item-sliding>
-            </ion-list>
-          </ion-card>
-          <ion-row>
-            <ion-col>
-              <ion-button class="button-100"
-              color="success"
-              (click)="print()">
-              <ion-icon name="print" style="margin-right:10px;"></ion-icon>Imprimir OS</ion-button>
-            </ion-col>
-            <ion-col>
-              <ion-button class="button-100" color="success" (click)="share()"><ion-icon name="share" style="margin-right:10px;"></ion-icon>Compartir</ion-button>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col
-             class="item-content"
-             *ngIf="serviceForm.value.state == 'DRAFT' || serviceForm.value.state == 'SCHEDULED'">
-              <ion-button class="button-100"
-               (click)="setStarted()">
-               Iniciar
-              </ion-button>
-            </ion-col>
-            <ion-col class="item-content"
-             *ngIf="serviceForm.value.state == 'DRAFT'">
-              <ion-button class="button-100"
-               (click)="setSchedule()">
-               Agendar
-              </ion-button>
-            </ion-col>
-
-
-            <!-- <ion-col size="6"
-            *ngIf="serviceForm.value.state == 'CONFIRMED' && ! serviceForm.value.production">
-              <ion-button class="button-100"
-              (click)="print()">
-                Imprimir OS
               </ion-button>
             </ion-col> -->
-            <ion-col size="6"
-            *ngIf="serviceForm.value.state == 'CONFIRMED' && ! serviceForm.value.production">
-              <ion-button class="button-100"
-              (click)="beforeAddPayment()">
-                Cobrar
-              </ion-button>
+            <!-- <ion-col size="2" class="open-item-col"
+              *ngIf="serviceForm.value.state == 'STARTED'"
+              (click)="addTravel()">
+              <ion-icon name="add" class="open-item-arrow"></ion-icon>
             </ion-col>
-            <ion-col
-            *ngIf="(serviceForm.value.state == 'CONFIRMED'
-             || serviceForm.value.state == 'PAID')
-             && ! serviceForm.value.production
-             && ! serviceForm.value.invoices.length">
-              <ion-button class="button-100"
-              (click)="addInvoice()">
-                Crear Factura
-              </ion-button>
-            </ion-col>
-            <ion-col *ngIf="serviceForm.value.state == 'STARTED'">
-              <ion-button class="button-100"
-              (click)="beforeConfirm()">
-                Concluir
-              </ion-button>
-            </ion-col>
-          </ion-row>
+          </ion-row> -->
+          <ion-list no-lines style=";background: #ddd">
+            <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.travels">
+              <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
+                <ion-card class="internal-card">
+                  <ion-row (click)="editTravel(item)" class="product-name-row">
+                    {{item.note}}
+                  </ion-row>
+              <ion-row>
+                <ion-col size="6" style="white-space: normal;">
+                  <ion-row style="margin-top: -5px;">
+                    <ion-col  size="12" (click)="editTravelPrice(item)" >
+                      <span class="price-label">Precio:</span>
+                      <div style="font-size: 15px;display: contents; color:red">
+                         $ {{item.price|number:'1.0'}}<div style="color: gray;display:inline">/km</div>
+                      </div>
+
+                    </ion-col>
+                  </ion-row>
+                  <ion-row (click)="editTravelPrice(item)">
+                    <ion-col  size="12">
+                      <span class="price-label">SubTotal:</span>
+                      <div style="font-size: 20px;color:green;">
+                         ${{item.price*item.distance|number:'1.0'}}
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+                <ion-col size="6">
+
+                  <ion-row>
+                    <ion-col style="text-align: center;">
+                      Kilometros
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="3">
+                      <ion-button class="quantity-button" (click)="remTravel(item)">-</ion-button>
+                    </ion-col>
+                    <ion-col size="6" (click)="editTravel(item)" style="text-align: center;font-size: 30px;">
+                      {{item.distance}}
+                    </ion-col>
+                    <ion-col size="3">
+                      <ion-button class="quantity-button" (click)="sumTravel(item)">+</ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
+            </ion-card>
+            </ion-item>
+              <ion-item-options>
+                <ion-button icon-only color="primary" (click)="removeTravel(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
+                  <ion-icon name="trash"></ion-icon>
+                </ion-button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+        <!-- </ion-card> -->
+      </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

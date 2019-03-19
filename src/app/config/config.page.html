@@ -74,9 +74,17 @@
     </ion-item>
 
 
+
     <ion-col class="item-content">
       <ion-button class="print-invoice" (click)="configInvoicePrint()" style="width: 99%">Configurar Factura</ion-button>
     </ion-col>
+
+    <ion-item  class="field-100">
+      <ion-label position="stacked">{{ 'SERVICE_NOTE' | translate }}</ion-label>
+      <ion-textarea #clrequest formControlName="serviceNote"
+        rows="3">
+      </ion-textarea>
+    </ion-item>
     <!--ion-col class="item-content">
       <ion-button class="print-invoice" (click)="setLegalName()" style="width: 99%">Definir Razon Social</ion-button>
     </ion-col-->

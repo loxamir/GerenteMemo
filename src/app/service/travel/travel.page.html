@@ -44,77 +44,34 @@
     </ion-item>
 
 
-    <ion-item class="field-100"
+    <!-- <ion-item class="field-100"
     no-padding
     (click)="selectVehicle()">
       <h4 class="field-label">{{'Vehiculo' | translate}}</h4>
       <h4 class="field-value">{{travelForm.value.vehicle && travelForm.value.vehicle.name || 'No Informado'}}</h4>
-    </ion-item>
+    </ion-item> -->
 
 
-    <ion-item class="field-100" *ngIf="travelForm.value.vehicle">
-      <!-- <ion-col>
-        <ion-item style="background-color: white"> -->
+    <!-- <ion-item class="field-100" *ngIf="travelForm.value.vehicle">
           <ion-label position="floating">{{'START_KM' | translate}}</ion-label>
           <ion-input type="number" formControlName="start_km" (ionChange)="onChangeStartKm()"></ion-input>
-        <!-- </ion-item>
-      </ion-col> -->
-    </ion-item>
+    </ion-item> -->
 
 
 
-    <ion-item class="field-100" *ngIf="travelForm.value.vehicle">
-      <!-- <ion-col>
-        <ion-item style="background-color: white"> -->
+    <!-- <ion-item class="field-100" *ngIf="travelForm.value.vehicle">
           <ion-label position="floating">{{'END_KM' | translate}}</ion-label>
           <ion-input type="number"
            formControlName="end_km"
            (ionChange)="onChangeEndKm()">
           </ion-input>
-        <!-- </ion-item>
-      </ion-col> -->
-    </ion-item>
-
-
-    <!-- <ion-item class="field-100">
-      <ion-col no-padding>
-        <ion-label>{{'START_TIME' | translate }}</ion-label>
-        <ion-datetime class="service-date"
-          displayFormat="DD/MM/YYYY HH:mm"
-          formControlName="start_time"
-          [disabled]="travelForm.value.state=='CONFIRMED'">
-        </ion-datetime>
-      </ion-col>
-    </ion-item>
-    <ion-item class="field-100">
-      <ion-col no-padding>
-        <ion-label>{{'END_TIME' | translate }}</ion-label>
-        <ion-datetime class="service-date"
-          displayFormat="DD/MM/YYYY HH:mm"
-          formControlName="end_time"
-          [disabled]="travelForm.value.state=='CONFIRMED'">
-        </ion-datetime>
-      </ion-col>
-    </ion-item>
-    <ion-item class="field-100">
-      <ion-item style="background-color: white">
-        <ion-label position="floating">{{'TIME_HS' | translate}}</ion-label>
-        <ion-input type="number" formControlName="time"></ion-input>
-      </ion-item>
     </ion-item> -->
 
     <ion-item class="field-100">
-      <!-- <ion-item style="background-color: white"> -->
-        <ion-label position="floating">{{'NOTES' | translate}}</ion-label>
+        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-textarea rows="3" formControlName="note"></ion-textarea>
-      <!-- </ion-item> -->
     </ion-item>
   </form>
-  <!-- <ion-button margin-bottom ion-button class="print-invoice"
-    [hidden]="!travelForm.dirty"
-    (click)="buttonSave()">
-    {{ 'SAVE' | translate }}
-  </ion-button> -->
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">

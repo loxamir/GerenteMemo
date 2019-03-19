@@ -104,6 +104,7 @@ export class ServicePage implements OnInit {
     show_inputs: boolean = false;
     ignore_inputs: boolean = false;
     ignore_travels: boolean = false;
+    serviceNote;
 
     constructor(
       public socialSharing: SocialSharing,
@@ -182,6 +183,7 @@ export class ServicePage implements OnInit {
         // equipment_note: new FormControl(''),
         client_request: new FormControl(''),
         service_overview: new FormControl(''),
+        section: new FormControl('works'),
 
         responsable: new FormControl({}),
         _id: new FormControl(''),
@@ -190,6 +192,7 @@ export class ServicePage implements OnInit {
       await this.loading.present();
       this.configService.getConfig().then((data) => {
         console.log("dddata", data);
+        this.serviceNote = data.serviceNote;
         this.labor_product = data.labor_product;
         // this.input_product = data.input_product;
         this.travel_product = data.travel_product;
@@ -1746,6 +1749,7 @@ export class ServicePage implements OnInit {
           ticket += "--------------------------------\n";
           ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
           ticket += "--------------------------------\n";
+          ticket += this.formatService.breakString(this.serviceNote, 32)+"\n";
           ticket += "\n";
           ticket += "\n";
           ticket += "\n";
@@ -1906,6 +1910,7 @@ export class ServicePage implements OnInit {
       ticket += "--------------------------------\n";
       ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
       ticket += "--------------------------------\n";
+      ticket += this.formatService.breakString(this.serviceNote, 32)+"\n";
       // ticket += "\n";
       // ticket += "\n";
       // ticket += "\n";

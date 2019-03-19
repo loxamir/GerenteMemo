@@ -90,14 +90,14 @@
         <ion-button class="button-100" (click)="beforeAddPayment()"><ion-icon name="cash" style="margin-right:10px;"></ion-icon>Registrar Cobro</ion-button>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <!-- <ion-row>
       <ion-col *ngIf="saleForm.value.items.length > 0">
         <ion-button class="button-100" color="success" (click)="print()"><ion-icon name="print" style="margin-right:10px;"></ion-icon>Imprimir</ion-button>
       </ion-col>
       <ion-col *ngIf="saleForm.value.items.length > 0">
         <ion-button class="button-100" color="success" (click)="share()"><ion-icon name="share" style="margin-right:10px;"></ion-icon>Compartir</ion-button>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
     <ion-row>
       <ion-col size="12" *ngIf="saleForm.value.state == 'QUOTATION'">
         <ion-button class="button-100" (click)="addItem()"><ion-icon name="add" style="margin-right:10px;"></ion-icon> Agregar Item</ion-button>

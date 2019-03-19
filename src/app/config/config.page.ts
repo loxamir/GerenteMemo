@@ -68,6 +68,7 @@ export class ConfigPage implements OnInit {
     this.configForm = this.formBuilder.group({
       name: ['', Validators.required],
       image: [''],
+      serviceNote: [''],
       doc: [''],
       currency: [{}],
       cash: [{}],
