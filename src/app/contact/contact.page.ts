@@ -143,27 +143,29 @@ export class ContactPage implements OnInit {
     //First via
     // let prefix = this.contactForm.value.invoiceNumberStart.split("-");
     // let type = "Duplicado: Archivo Tributario";
-    let client = true;
-    let type = "Original: Cliente";
+    // let client = true;
+    // let type = "Original: Cliente";
     let ticket = "";
+    let types = ["Original: Cliente", "Duplicado: Archivo Tributario"]
     for(let number=start;number<=end;number++){
-      let types = ["Original: Cliente", "Duplicado: Archivo Tributario"]
+      // ticket += this.formatService.string_pad(48, number.toString(), 'right', ' ')+"\n";
+      let invoiceNumber = prefix+"-"+this.formatService.string_pad(
+        numberLength, number, 'right', '0');
       types.forEach(type=>{
-        let invoiceNumber = prefix+"-"+this.formatService.string_pad(numberLength, number, 'right', '0');
-            ticket += "--------------------------------\n";
-            ticket += this.formatService.string_pad(64,this.contactForm.value.name.substring(0, 64), 'left', ' ')+"\n";
-            ticket += "De "+this.formatService.string_pad(61,this.contactForm.value.name_legal.substring(0, 61), 'left', ' ')+"\n";
-            ticket += this.formatService.string_pad(64,this.contactForm.value.rubro.substring(0, 64), 'left', ' ')+"\n";
-            ticket += this.formatService.string_pad(64,this.contactForm.value.address.substring(0, 64), 'left', ' ')+"\n";
+            ticket += "------------------------------------------------\n";
+            ticket += this.formatService.string_pad(96,this.contactForm.value.name.substring(0, 96), 'left', ' ')+"\n";
+            ticket += "De "+this.formatService.string_pad(93,this.contactForm.value.name_legal.substring(0, 93), 'left', ' ')+"\n";
+            ticket += this.formatService.string_pad(96,this.contactForm.value.rubro.substring(0, 96), 'left', ' ')+"\n";
+            ticket += this.formatService.string_pad(96,this.contactForm.value.address.substring(0, 96), 'left', ' ')+"\n";
             // ticket += "\n";
-            ticket += "Tel: "+this.contactForm.value.phone.substring(0, 25)+"\n";
-            ticket += "RUC: "+this.contactForm.value.document.substring(0, 25)+"\n";
-            ticket += "--------------------------------\n";
-            ticket += "Timbrado Numero:"+this.formatService.string_pad(16, this.contactForm.value.timbrado, 'right', ' ')+"\n";
-            ticket += "Inicio Vigencia:"+this.formatService.string_pad(16, (new Date(this.contactForm.value.dateStart)).toLocaleDateString('es-PY'), 'right', ' ')+"\n";
-            ticket += "Fin de Vigencia:"+this.formatService.string_pad(16, (new Date(this.contactForm.value.dateEnd)).toLocaleDateString('es-PY'), 'right', ' ')+"\n";
-            ticket += "Factura Numero: "+this.formatService.string_pad(16, invoiceNumber, 'right', ' ')+"\n";
-            ticket += "--------------------------------\n";
+            ticket += "Telefono: "+this.contactForm.value.phone.substring(0, 38)+"\n";
+            ticket += "RUC o CI: "+this.contactForm.value.document.substring(0, 38)+"\n";
+            ticket += "------------------------------------------------\n";
+            ticket += "Timbrado Numero:"+this.formatService.string_pad(32, this.contactForm.value.timbrado, 'right', ' ')+"\n";
+            ticket += "Fecha de Inicio Vigencia:"+this.formatService.string_pad(23, (new Date(this.contactForm.value.dateStart)).toLocaleDateString('es-PY'), 'right', ' ')+"\n";
+            ticket += "Fecha Fin de Vigencia:"+this.formatService.string_pad(26, (new Date(this.contactForm.value.dateEnd)).toLocaleDateString('es-PY'), 'right', ' ')+"\n";
+            ticket += "Factura Numero: "+this.formatService.string_pad(32, invoiceNumber, 'right', ' ')+"\n";
+            ticket += "------------------------------------------------\n";
             ticket += "Fecha:\n";
             ticket += "Cliente:\n";
             ticket += "\n";
@@ -172,10 +174,10 @@ export class ContactPage implements OnInit {
             ticket += "\n";
             ticket += "Telefono:\n";
             ticket += "Condicion de Pago:\n";
-            ticket += "--------------------------------\n";
-            ticket += "Codigo Descripcion\n";
-            ticket += "Cant |  Precio  | Subtotal | IVA\n";
-            ticket += "--------------------------------\n";
+            ticket += "------------------------------------------------\n";
+            ticket += " Codigo  Descripcion\n";
+            ticket += "   Cant  |    Precio    |    Subtotal    | IVA  \n";
+            ticket += "------------------------------------------------\n";
             ticket += "\n";
             ticket += "\n";
             ticket += "\n";
@@ -206,7 +208,7 @@ export class ContactPage implements OnInit {
             ticket += "\n";
             ticket += "\n";
             ticket += "\n";
-            ticket += "--------------------------------\n";
+            ticket += "------------------------------------------------\n";
             ticket += "TOTAL\n";
             ticket += "Total Gravadas 10%:\n";
             ticket += "Total Gravadas  5%:\n";
@@ -218,7 +220,7 @@ export class ContactPage implements OnInit {
             ticket += "TOTAL IVA:\n";
             ticket += "\n";
             ticket += type+"\n";
-            ticket += "--------------------------------\n";
+            ticket += "------------------------------------------------\n";
             //TODO: Questionar este bloco
             ticket += "Nombre Fantasia"+""+"\n";
             ticket += "razon Social"+""+"\n";
@@ -230,27 +232,33 @@ export class ContactPage implements OnInit {
             ticket += "Desde el Nro "+""+"\n";
             ticket += "Hasta el Nro "+""+"\n";
             ticket += "Total de Vias "+""+"\n";
-            ticket += "--------------------------------\n";
+            ticket += "------------------------------------------------\n";
             ticket += "\n";
             ticket += "\n";
-
       })
-
     }
     console.log(ticket);
     // Print to bluetooth printer
     let toast = await this.toastCtrl.create({
     message: "Imprimiendo...",
-    duration: 3000
+    duration: 1000
     });
       toast.present();
       this.bluetoothSerial.isEnabled().then(res => {
         this.bluetoothSerial.list().then((data)=> {
           this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
-            this.bluetoothSerial.isConnected().then(res => {
+            this.bluetoothSerial.isConnected().then(async res => {
               // |---- 32 characteres ----|
-              this.bluetoothSerial.write(ticket);
-              this.bluetoothSerial.disconnect();
+              let teste = await this.bluetoothSerial.write(ticket);
+              let toast = await this.toastCtrl.create({
+              message: "Concluido"+JSON.stringify(teste),
+              duration: 2000
+              });
+                toast.present();
+              // setTimeout(() => {
+              //   this.name.setFocus();
+              //   this.bluetoothSerial.disconnect();
+              // }, 2000);
             }).catch(res => {
               //console.log("res1", res);
             });
@@ -261,101 +269,6 @@ export class ContactPage implements OnInit {
       }).catch(res => {
         //console.log("res", res);
       });
-}
-
-async posprint() {
-let ticket = "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "        Aline Schwertner Pieske\n";
-ticket += "                      5899939-6\n";
-ticket += "                     Santa Rita\n";
-ticket += "                        Contado\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "0001  Limpia Porcelanato 5L\n";
-ticket += "   5  11.035.000 55.175.000  10%\n";
-ticket += "--------------------------------\n";
-ticket += "0002  Limpia Porcelanato 5L\n";
-ticket += "   5  11.035.000 55.175.000  10%\n";
-ticket += "--------------------------------\n";
-ticket += "0003  Limpia Porcelanato 5L\n";
-ticket += "   5  11.035.000 55.175.000  10%\n";
-ticket += "--------------------------------\n";
-ticket += "0004  Otro Producto con iva dist\n";
-ticket += "   1      10.000      10.000  5%\n";
-ticket += "--------------------------------\n";
-ticket += "0005  Otro Producto con iva dist\n";
-ticket += "   1      10.000      10.000  0%\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "                         195.000\n";
-ticket += "                         175.000\n";
-ticket += "                          10.000\n";
-ticket += "                          10.000\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "                          15.909\n";
-ticket += "                             476\n";
-ticket += "                          16.385\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-ticket += "\n";
-      console.log("ticket", ticket);
-
-      // Print to bluetooth printer
-      let toast = await this.toastCtrl.create({
-      message: "Imprimiendo...",
-      duration: 3000
-    });
-    toast.present();
-    this.bluetoothSerial.isEnabled().then(res => {
-      this.bluetoothSerial.list().then((data)=> {
-        this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
-          this.bluetoothSerial.isConnected().then(res => {
-            // |---- 32 characteres ----|
-            this.bluetoothSerial.write(ticket);
-            this.bluetoothSerial.disconnect();
-          }).catch(res => {
-            //console.log("res1", res);
-          });
-        },error=>{
-          //console.log("error", error);
-        });
-      })
-    }).catch(res => {
-      //console.log("res", res);
-    });
 }
 
   changedDocument(){
