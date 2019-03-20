@@ -175,7 +175,7 @@ export class ContactPage implements OnInit {
             ticket += "Telefono:\n";
             ticket += "Condicion de Pago:\n";
             ticket += "------------------------------------------------\n";
-            ticket += " Codigo  Descripcion\n";
+            ticket += " Codigo  |  Descripcion\n";
             ticket += "   Cant  |    Precio    |    Subtotal    | IVA  \n";
             ticket += "------------------------------------------------\n";
             ticket += "\n";
@@ -249,15 +249,12 @@ export class ContactPage implements OnInit {
           this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
             this.bluetoothSerial.isConnected().then(async res => {
               // |---- 32 characteres ----|
+              // var blob = new Blob([ticket], { type: "text/plain;charset=utf-8" });
               let teste = await this.bluetoothSerial.write(ticket);
-              let toast = await this.toastCtrl.create({
-              message: "Concluido"+JSON.stringify(teste),
-              duration: 2000
-              });
-                toast.present();
               // setTimeout(() => {
-              //   this.name.setFocus();
-              //   this.bluetoothSerial.disconnect();
+                // this.name.setFocu  s();
+                // bluetoothSerial.subscribe('\n', success, failure);
+                // this.bluetoothSerial.disconnect();
               // }, 2000);
             }).catch(res => {
               //console.log("res1", res);
