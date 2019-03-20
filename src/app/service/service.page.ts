@@ -933,7 +933,7 @@ export class ServicePage implements OnInit {
         await profileModal.present();
         let data: any = await profileModal.onDidDismiss();//data => {
           console.log("Work", data);
-          if (data) {
+          if (data.data) {
             data.data.cost = this.labor_product['cost'];
             data.data.price = this.labor_product['price'];
             this.serviceForm.value.works.unshift(data.data)
@@ -954,7 +954,7 @@ export class ServicePage implements OnInit {
         });
         await profileModal.present();
         let data = await profileModal.onDidDismiss()
-          if (data) {
+          if (data.data) {
             //console.log("asdf", data);
             Object.keys(data.data).forEach(key => {
               item[key] = data.data[key];
@@ -1017,7 +1017,7 @@ export class ServicePage implements OnInit {
         });
         await profileModal.present();
         let data: any = await profileModal.onDidDismiss();
-          if (data) {
+          if (data.data) {
             data.data.cost = this.travel_product['cost'];
             data.data.price = this.travel_product['price'];
             console.log(data);
@@ -1071,7 +1071,7 @@ export class ServicePage implements OnInit {
         });
         await profileModal.present();
         let data = await profileModal.onDidDismiss();
-        if (data) {
+        if (data.data) {
           Object.keys(data.data).forEach(key => {
             item[key] = data.data[key];
           })
@@ -1663,40 +1663,42 @@ export class ServicePage implements OnInit {
           //let direction = this.serviceForm.value.contact.city || "";
           //let phone = this.serviceForm.value.contact.phone || "";
           let lines = ""
-          lines += "--------------------------------\n";
-          lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          if (this.serviceForm.value.input_amount > 0){
+            lines += "--------------------------------\n";
+            lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
 
-          lines += "--------------------------------\n";
-          lines += "Cod.  Cant.   Precio   Sub-total\n";
-          let totalExentas = 0;
-          let totalIva5 = 0;
-          let totalIva10 = 0;
-          this.serviceForm.value.inputs.forEach(item => {
-            let code = item.product.code;
-            let quantity = item.quantity;
-            //  let productName = item.product.name;
-            let price = item.price;
-            let subtotal = quantity*price;
-            let exenta = 0;
-            let iva5 = 0;
-            let iva10 = 0;
-            if (item.product.tax == "iva10"){
-              iva10 = item.quantity*item.price;
-              totalIva10 += iva10;
-            } else if (item.product.tax == "exenta"){
-              exenta = item.quantity*item.price;
-              totalExentas += exenta;
-            } else if (item.product.tax == "iva5"){
-              iva5 = item.quantity*item.price;
-              totalIva5 += iva5;
-            }
-            code = this.formatService.string_pad(6, code.toString());
-            quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-            price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-            subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-            let product_name = this.formatService.string_pad(32, item.product.name);
-            lines += code+quantity+price+subtotal+"\n"+product_name+"\n";
-          });
+            lines += "--------------------------------\n";
+            lines += "Cod.  Cant.   Precio   Sub-total\n";
+            let totalExentas = 0;
+            let totalIva5 = 0;
+            let totalIva10 = 0;
+            this.serviceForm.value.inputs.forEach(item => {
+              let code = item.product.code;
+              let quantity = item.quantity;
+              //  let productName = item.product.name;
+              let price = item.price;
+              let subtotal = quantity*price;
+              let exenta = 0;
+              let iva5 = 0;
+              let iva10 = 0;
+              if (item.product.tax == "iva10"){
+                iva10 = item.quantity*item.price;
+                totalIva10 += iva10;
+              } else if (item.product.tax == "exenta"){
+                exenta = item.quantity*item.price;
+                totalExentas += exenta;
+              } else if (item.product.tax == "iva5"){
+                iva5 = item.quantity*item.price;
+                totalIva5 += iva5;
+              }
+              code = this.formatService.string_pad(6, code.toString());
+              quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+              price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+              subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+              let product_name = this.formatService.string_pad(32, item.product.name.substring(0, 32));
+              lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+            });
+          }
           let work_lines = "";
           // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
           work_lines += "--------------------------------\n";
@@ -1715,18 +1717,19 @@ export class ServicePage implements OnInit {
           });
 
           let travel_lines = "";
-          travel_lines += "--------------------------------\n";
-          travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          if (this.serviceForm.value.travel_amount > 0){
+            travel_lines += "--------------------------------\n";
+            travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
 
-          travel_lines += "--------------------------------\n";
-          travel_lines += "Distancia   Precio     Sub-total\n";
-          this.serviceForm.value.travels.forEach(item => {
-            let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
-            let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-            let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-            travel_lines += quantity+price+subtotal+"\n";
-          });
-
+            travel_lines += "--------------------------------\n";
+            travel_lines += "Distancia   Precio     Sub-total\n";
+            this.serviceForm.value.travels.forEach(item => {
+              let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
+              let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+              let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+              travel_lines += quantity+price+subtotal+"\n";
+            });
+          }
 
           let totalAmount = this.serviceForm.value.total;
           totalAmount = this.formatService.string_pad(16, totalAmount, "right");
@@ -1824,40 +1827,41 @@ export class ServicePage implements OnInit {
       //let direction = this.serviceForm.value.contact.city || "";
       //let phone = this.serviceForm.value.contact.phone || "";
       let lines = ""
-      lines += "--------------------------------\n";
-      lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-
-      lines += "--------------------------------\n";
-      lines += "Cod.  Cant.   Precio   Sub-total\n";
-      let totalExentas = 0;
-      let totalIva5 = 0;
-      let totalIva10 = 0;
-      this.serviceForm.value.inputs.forEach(item => {
-        let code = item.product.code;
-        let quantity = item.quantity;
-        //  let productName = item.product.name;
-        let price = item.price;
-        let subtotal = quantity*price;
-        let exenta = 0;
-        let iva5 = 0;
-        let iva10 = 0;
-        if (item.product.tax == "iva10"){
-          iva10 = item.quantity*item.price;
-          totalIva10 += iva10;
-        } else if (item.product.tax == "exenta"){
-          exenta = item.quantity*item.price;
-          totalExentas += exenta;
-        } else if (item.product.tax == "iva5"){
-          iva5 = item.quantity*item.price;
-          totalIva5 += iva5;
-        }
-        code = this.formatService.string_pad(6, code.toString());
-        quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-        price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-        subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-        let product_name = this.formatService.string_pad(32, item.product.name);
-        lines += code+quantity+price+subtotal+"\n"+product_name+"\n";
-      });
+      if (this.serviceForm.value.input_amount > 0){
+        lines += "--------------------------------\n";
+        lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+        lines += "--------------------------------\n";
+        lines += "Cod.  Cant.   Precio   Sub-total\n";
+        let totalExentas = 0;
+        let totalIva5 = 0;
+        let totalIva10 = 0;
+        this.serviceForm.value.inputs.forEach(item => {
+          let code = item.product.code;
+          let quantity = item.quantity;
+          //  let productName = item.product.name;
+          let price = item.price;
+          let subtotal = quantity*price;
+          let exenta = 0;
+          let iva5 = 0;
+          let iva10 = 0;
+          if (item.product.tax == "iva10"){
+            iva10 = item.quantity*item.price;
+            totalIva10 += iva10;
+          } else if (item.product.tax == "exenta"){
+            exenta = item.quantity*item.price;
+            totalExentas += exenta;
+          } else if (item.product.tax == "iva5"){
+            iva5 = item.quantity*item.price;
+            totalIva5 += iva5;
+          }
+          code = this.formatService.string_pad(6, code.toString());
+          quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+          price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          let product_name = this.formatService.string_pad(32, item.product.name.substring(0, 32));
+          lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+        });
+      }
       let work_lines = "";
       // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       work_lines += "--------------------------------\n";
@@ -1876,17 +1880,19 @@ export class ServicePage implements OnInit {
       });
 
       let travel_lines = "";
-      travel_lines += "--------------------------------\n";
-      travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      if (this.serviceForm.value.travel_amount > 0){
+        travel_lines += "--------------------------------\n";
+        travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
 
-      travel_lines += "--------------------------------\n";
-      travel_lines += "Distancia   Precio     Sub-total\n";
-      this.serviceForm.value.travels.forEach(item => {
-        let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
-        let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-        let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-        travel_lines += quantity+price+subtotal+"\n";
-      });
+        travel_lines += "--------------------------------\n";
+        travel_lines += "Distancia   Precio     Sub-total\n";
+        this.serviceForm.value.travels.forEach(item => {
+          let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
+          let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          travel_lines += quantity+price+subtotal+"\n";
+        });
+      }
 
 
       let totalAmount = this.serviceForm.value.total;
@@ -1955,40 +1961,42 @@ export class ServicePage implements OnInit {
       //let direction = this.serviceForm.value.contact.city || "";
       //let phone = this.serviceForm.value.contact.phone || "";
       let lines = ""
-      lines += "--------------------------------\n";
-      lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      if (this.serviceForm.value.input_amount > 0){
+        lines += "--------------------------------\n";
+        lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
 
-      lines += "--------------------------------\n";
-      lines += "Cod.  Cant.   Precio   Sub-total\n";
-      let totalExentas = 0;
-      let totalIva5 = 0;
-      let totalIva10 = 0;
-      this.serviceForm.value.inputs.forEach(item => {
-        let code = item.product.code;
-        let quantity = item.quantity;
-        //  let productName = item.product.name;
-        let price = item.price;
-        let subtotal = quantity*price;
-        let exenta = 0;
-        let iva5 = 0;
-        let iva10 = 0;
-        if (item.product.tax == "iva10"){
-          iva10 = item.quantity*item.price;
-          totalIva10 += iva10;
-        } else if (item.product.tax == "exenta"){
-          exenta = item.quantity*item.price;
-          totalExentas += exenta;
-        } else if (item.product.tax == "iva5"){
-          iva5 = item.quantity*item.price;
-          totalIva5 += iva5;
-        }
-        code = this.formatService.string_pad(6, code.toString());
-        quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-        price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-        subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-        let product_name = this.formatService.string_pad(32, item.product.name);
-        lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
-      });
+        lines += "--------------------------------\n";
+        lines += "Cod.  Cant.   Precio   Sub-total\n";
+        let totalExentas = 0;
+        let totalIva5 = 0;
+        let totalIva10 = 0;
+        this.serviceForm.value.inputs.forEach(item => {
+          let code = item.product.code;
+          let quantity = item.quantity;
+          //  let productName = item.product.name;
+          let price = item.price;
+          let subtotal = quantity*price;
+          let exenta = 0;
+          let iva5 = 0;
+          let iva10 = 0;
+          if (item.product.tax == "iva10"){
+            iva10 = item.quantity*item.price;
+            totalIva10 += iva10;
+          } else if (item.product.tax == "exenta"){
+            exenta = item.quantity*item.price;
+            totalExentas += exenta;
+          } else if (item.product.tax == "iva5"){
+            iva5 = item.quantity*item.price;
+            totalIva5 += iva5;
+          }
+          code = this.formatService.string_pad(6, code.toString());
+          quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+          price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          let product_name = this.formatService.string_pad(32, item.product.name.substring(0, 32));
+          lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+        });
+      }
       let work_lines = "";
       // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       work_lines += "--------------------------------\n";
@@ -2007,19 +2015,20 @@ export class ServicePage implements OnInit {
       });
 
       let travel_lines = "";
-      if (this.serviceForm.value.travels.length>0){
-        travel_lines += "--------------------------------\n";
-        travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-        travel_lines += "--------------------------------\n";
-        travel_lines += "Distancia   Precio     Sub-total\n";
+      if (this.serviceForm.value.travel_amount > 0){
+        if (this.serviceForm.value.travels.length>0){
+          travel_lines += "--------------------------------\n";
+          travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          travel_lines += "--------------------------------\n";
+          travel_lines += "Distancia   Precio     Sub-total\n";
+        }
+        this.serviceForm.value.travels.forEach(item => {
+          let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
+          let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          travel_lines += quantity+price+subtotal+"\n";
+        });
       }
-      this.serviceForm.value.travels.forEach(item => {
-        let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
-        let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-        let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-        travel_lines += quantity+price+subtotal+"\n";
-      });
-
 
       let totalAmount = this.serviceForm.value.total;
       totalAmount = this.formatService.string_pad(16, totalAmount, "right");
