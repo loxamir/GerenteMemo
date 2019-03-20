@@ -761,6 +761,11 @@ export class FormatService {
     saveAs(blob, filename);
   }
 
+  printMatrixClean(content, filename) {
+    var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, filename);
+  }
+
   async asyncForEach(array, callback) {
     for (let index = 0; index < array.length; index++) {
       await callback(array[index], index, array);
