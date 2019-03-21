@@ -41,15 +41,16 @@ export class WorkService {
     work.activity_id = work.activity._id;
     work.activity_name = work.activity.name;
     delete work.activity;
+    delete work.fields;
     return work;
   }
 
   unserializeWork(doc_id){
     return new Promise((resolve, reject)=>{
-      this.pouchdbService.getDoc(doc_id).then(((pouchData: any) => {
-        let getList = [
-          pouchData['activity_id']
-        ];
+      this.pouchdbService.getDoc(doc_id).then((async (pouchData: any) => {
+        let getList = [];
+        let activity = await this.pouchdbService.getDoc(pouchData['activity_id']);
+        pouchData['fields'] = activity['fields'];
         pouchData['fields'].forEach((field) => {
           if (field.type=='many2one'
           && getList.indexOf(pouchData[field.name+'_id'])==-1){
