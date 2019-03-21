@@ -1160,16 +1160,17 @@ export class InvoicePage implements OnInit {
       ticket += "\n";
       ticket += "\n";
       ticket += "\n";
+
       ticket += "\n";
       ticket += "\n";
       ticket += "\n";
       ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
+      // ticket += "\n";
       console.log("ticket", ticket);
 
       // Print to bluetooth printer

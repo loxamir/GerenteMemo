@@ -107,6 +107,12 @@ export class ContactPage implements OnInit {
       currency: new FormControl({}),
       hire_date: new FormControl(undefined),
       salaries: new FormControl([]),
+      datePrint: new FormControl(new Date()),
+      numeracion: new FormControl("0001 al 0150"),
+
+      talonarios: new FormControl(1),
+      vias: new FormControl(2),
+      faturas_talonario: new FormControl(50),
 
       rubro: new FormControl(),
       timbrado: new FormControl(),
@@ -146,7 +152,10 @@ export class ContactPage implements OnInit {
     // let client = true;
     // let type = "Original: Cliente";
     let ticket = "";
-    let types = ["Original: Cliente", "Duplicado: Archivo Tributario"]
+    let types = ["Original: Cliente", "Duplicado: Archivo Tributario"];
+    if (this.contactForm.value.vias == 3){
+      types = ["Original: Cliente", "Duplicado: Archivo Tributario", "Triplicado: Auditoria"];
+    }
     for(let number=start;number<=end;number++){
       // ticket += this.formatService.string_pad(48, number.toString(), 'right', ' ')+"\n";
       let invoiceNumber = prefix+"-"+this.formatService.string_pad(
@@ -219,19 +228,12 @@ export class ContactPage implements OnInit {
             ticket += "Total Gravadas  5%:\n";
             ticket += "TOTAL IVA:\n";
             ticket += "\n";
-            ticket += type+"\n";
             ticket += "------------------------------------------------\n";
-            //TODO: Questionar este bloco
-            ticket += "Nombre Fantasia"+""+"\n";
-            ticket += "razon Social"+""+"\n";
-            ticket += "RUC"+""+"\n";
-            ticket += "Habilitacion Nro "+""+"\n";
-            ticket += "Direccion "+""+"\n";
-            ticket += "Telefono "+""+"\n";
-            ticket += "Total de Hojas "+""+"\n";
-            ticket += "Desde el Nro "+""+"\n";
-            ticket += "Hasta el Nro "+""+"\n";
-            ticket += "Total de Vias "+""+"\n";
+            ticket += "Grafica Bien Hecho - ELIABE BOREL - RUC5448651-3\n";
+            ticket += "Avda. Blas Garay - km 6 - San Isidro - CDE - PY \n";
+            ticket += "Telefono: (061) 577 572 - Habilitacion Nro: 1782\n";
+            ticket += "Numeros: "+this.contactForm.value.numeracion+" - "+(new Date(this.contactForm.value.datePrint)).toLocaleDateString('es-PY')+" - "+this.contactForm.value.talonarios+" Tal " + this.contactForm.value.faturas_talonario + "x"+this.contactForm.value.vias+ "\n";
+            ticket += type+"\n";
             ticket += "------------------------------------------------\n";
             ticket += "\n";
             ticket += "\n";

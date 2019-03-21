@@ -140,6 +140,49 @@
       <ion-col size="12" class="item-content">
         <ion-button (click)="preprint()" class="button-100">Imprimir Bobina</ion-button>
       </ion-col>
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'DATE' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="datePrint">
+        </ion-datetime>
+      </ion-item>
+
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating">{{'Numeración' | translate}}</ion-label>
+        <ion-input type="text"
+        formControlName="numeracion"></ion-input>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating">{{'Cantidad de Bobinas' | translate}}</ion-label>
+        <ion-input type="number"
+        formControlName="talonarios"></ion-input>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating">{{'Cantidad de Vias' | translate}}</ion-label>
+        <ion-input type="number"
+        formControlName="vias"></ion-input>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating">{{'Facturas por Bobina' | translate}}</ion-label>
+        <ion-input type="text"
+        #invoiceNumberEnd
+        formControlName="faturas_talonario"></ion-input>
+      </ion-item>
+
+
+
+
+
 
       <!-- <ion-item
        no-padding
