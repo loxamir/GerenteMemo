@@ -78,7 +78,7 @@ export class AreaService {
     });
   }
 
-  updateArea(area){
+  updateArea(viewData){
     let area = Object.assign({}, viewData);
     area.docType = 'area';
     delete area.moves;
