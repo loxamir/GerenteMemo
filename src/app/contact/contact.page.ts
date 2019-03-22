@@ -143,7 +143,7 @@ export class ContactPage implements OnInit {
   async preprint() {
     let start = parseInt(this.contactForm.value.invoiceNumberStart.split("-")[2]);
     let end = parseInt(this.contactForm.value.invoiceNumberEnd.split("-")[2]);
-    let prefix = this.contactForm.value.invoiceNumberEnd.split("-")[1]+"-"+this.contactForm.value.invoiceNumberEnd.split("-")[1]
+    let prefix = this.contactForm.value.invoiceNumberEnd.split("-")[0]+"-"+this.contactForm.value.invoiceNumberEnd.split("-")[1]
     // let number = start;
     let numberLength = this.contactForm.value.invoiceNumberStart.split("-")[2].length;
     //First via
