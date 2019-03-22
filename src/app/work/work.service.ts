@@ -50,6 +50,7 @@ export class WorkService {
       this.pouchdbService.getDoc(doc_id).then((async (pouchData: any) => {
         let getList = [];
         let activity = await this.pouchdbService.getDoc(pouchData['activity_id']);
+
         pouchData['fields'] = activity['fields'];
         pouchData['fields'].forEach((field) => {
           if (field.type=='many2one'
@@ -62,7 +63,7 @@ export class WorkService {
           docs.forEach(row=>{
             doc_dict[row.id] = row.doc;
           })
-          pouchData.activity = doc_dict[pouchData.activity_id] || {};
+          pouchData.activity = activity || {};
           pouchData['fields'].forEach((field) => {
             if (field.type=='many2one'){
               pouchData[field.name] = doc_dict[pouchData[field.name+'_id']] || {};

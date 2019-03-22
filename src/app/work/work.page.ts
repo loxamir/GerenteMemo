@@ -159,6 +159,8 @@ export class WorkPage implements OnInit {
             );
           })
           this.workForm.patchValue(data);
+          console.log("data", data);
+          console.log("act", this.workForm.value.activity);
           if (Object.keys(this.workForm.value.activity).length === 0
           && !this.activity) {
             this.selectActivity();

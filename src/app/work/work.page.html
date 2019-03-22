@@ -15,7 +15,7 @@
 <ion-content class="work-content" style="background-color: #ddd">
 
   <form class="sample-form validations-form" [formGroup]="workForm" (ngSubmit)="onSubmit(workForm.value)">
-    <ion-row justify-content-center *ngIf="!list">
+    <ion-row justify-content-center *ngIf="!list"  id="teste">
         <ion-item no-padding (click)="selectActivity()" class="field-50">
           <h4 class="field-label">{{'Atividade' | translate}}</h4>
           <h4 class="field-value">{{workForm.value.activity && workForm.value.activity.name || 'Ningun'}}</h4>
@@ -29,10 +29,14 @@
           </ion-datetime>
         </ion-item>
     </ion-row>
-    <ion-list no-lines id="teste">
+    <!-- <ion-list no-lines>
       <section>
+      </section>
+    </ion-list> -->
         <ion-row>
-          <ion-item-sliding class="list-item" *ngFor="let field of filterFields(workForm.value.fields)" [style.width]="field.class == 'half-width' ? '50%' : '100%'">
+          <ion-item-sliding class="list-item"
+          *ngFor="let field of filterFields(workForm.value.fields)"
+          [style.width]="field.class == 'half-width' ? '50%' : '100%'">
             <ion-item class="field-100" *ngIf="field.type == 'boolean'">
               <ion-label>{{field.label || field.name}}</ion-label>
               <ion-toggle [formControlName]="field.name"></ion-toggle>
@@ -133,8 +137,7 @@
             </ion-item>
           </ion-item-sliding>
         </ion-row>
-      </section>
-    </ion-list>
+
 
     <ion-segment formControlName="section" class="cash-segment">
       <ion-segment-button class="list-item"
