@@ -64,8 +64,8 @@ export class LoginPage implements OnInit {
       if (username){
         this.storage.get("password").then((password)=>{
           this.showDatabaseList(username, password);
-          // this.selectDatabase(username);
           this.selected_user = true;
+          this.selectDatabase(username);
         })
       }
     })
@@ -320,10 +320,10 @@ export class LoginPage implements OnInit {
     this.events.publish('get-user', {"user": this.loginForm.value.user.toLowerCase()});
     this.selected_user = true;
     this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
-    // this.selectDatabase();
     this.username = this.loginForm.value.user.toLowerCase();
     this.menuCtrl.enable(false);
     this.loading.dismiss();
+    this.selectDatabase(this.username);
 
   }
 
@@ -372,7 +372,7 @@ export class LoginPage implements OnInit {
         // this.loading.dismiss();
       })
       this.menuCtrl.enable(true);
-      this.router.navigate(['/tabs/sale-list']);
+      this.router.navigate(['/contact-list']);
     // }
   }
 
