@@ -134,6 +134,7 @@ export class WorkPage implements OnInit {
       section: new FormControl(null),
       _id: new FormControl(''),
     });
+
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     let self = this;
@@ -144,7 +145,6 @@ export class WorkPage implements OnInit {
             if (field.type == 'tab'){
               if(! defaultTab) {
                 defaultTab = field.name;
-                console.log("defaultTab", defaultTab);
               }
             }
             this.workForm.addControl(
@@ -155,14 +155,13 @@ export class WorkPage implements OnInit {
           if (Object.keys(this.workForm.value.activity).length === 0
           && !this.activity) {
             this.selectActivity();
+          } else if (data['activity']) {
+            this.setActivity(data['activity'])
           }
           this.recomputeFields();
           this.loading.dismiss();
-          setTimeout(function(){
-              self.workForm.patchValue({
-                'section': defaultTab,
-              });
-          }, 200);
+
+
         });
       }
       else if (this.data){
@@ -172,8 +171,6 @@ export class WorkPage implements OnInit {
           );
         })
         this.workForm.patchValue(this.data);
-        console.log("data", this.data);
-        console.log("act", this.workForm.value.activity);
         if (Object.keys(this.workForm.value.activity).length === 0
         && !this.activity) {
           this.selectActivity();
@@ -249,7 +246,6 @@ export class WorkPage implements OnInit {
 
   setActivity(data){
     let self = this;
-    console.log("setActivity", data);
     let data_fields = data.fields && data.fields.sort(function(a, b) {
       return self.formatService.compareField(a, b, 'sequence');
     }) || [];
@@ -282,18 +278,20 @@ export class WorkPage implements OnInit {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
       } else if (field.type == 'tab'){
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
-        console.log("defaultTab1", defaultTab);
         if(! defaultTab) {
           defaultTab = field.name;
-          console.log("defaultTab", defaultTab);
         }
       }
     });
     this.workForm.patchValue({
       activity: data,
       fields: data.fields,
-      // section: defaultTab,
     });
+    setTimeout(function(){
+        self.workForm.patchValue({
+          'section': defaultTab,
+        });
+    }, 200);
     this.workForm.markAsDirty();
     this.events.unsubscribe('select-activity');
     this.goNextStep();
@@ -309,7 +307,6 @@ export class WorkPage implements OnInit {
     let value = this.workForm.value[field_name].forEach((item: any)=>{
       total += parseFloat(item[field])
     })
-    console.log("VALUE",total);
     return total;
   }
 
@@ -322,7 +319,6 @@ export class WorkPage implements OnInit {
       this.recomputeFields();
       this.events.unsubscribe('select-' + model);
       this.workForm.markAsDirty();
-      console.log("field", fielD);
       let self = this;
       let d = {}
       if(fielD.onchange){
@@ -381,7 +377,6 @@ export class WorkPage implements OnInit {
       componentProps: context
     });
     profileModal.onDidDismiss().then(data => {
-      console.log("dat12a", data.data);
       if (data.data) {
         field.push(data.data);
         this.workForm.markAsDirty();
@@ -414,7 +409,6 @@ export class WorkPage implements OnInit {
       componentProps: context
     });
     profileModal.onDidDismiss().then(data => {
-      console.log("dat13a", data.data);
       if (data.data) {
         field[item] = data.data;
         this.workForm.markAsDirty();
@@ -433,7 +427,6 @@ export class WorkPage implements OnInit {
   }
 
   goNextStep() {
-    console.log("set Focus");
     let done = true;
     let defaultTab = null;
     for (let field of this.workForm.value.fields) {
@@ -469,6 +462,9 @@ export class WorkPage implements OnInit {
       else if (field.type == 'list' || field.type == 'tab'){
         if (this.workForm.value[field.name].length === 0){
           // this.addFieldItem(field.name)
+          // this.workForm.patchValue({
+          //   "section": field.name,
+          // });
           if (! defaultTab){
             defaultTab = field.name;
           }
