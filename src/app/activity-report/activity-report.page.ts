@@ -390,24 +390,23 @@ export class ActivityReportPage implements OnInit {
           this.loading.dismiss();
           console.log("output", output);
           let yields:any = await this.pouchdbService.getView('Informes/AgroRend',10);
-          if (Object.keys(this.reportActivityForm.value.crop).length > 0) {
-            yields = yields.filter(word => word['key'][0] == this.reportActivityForm.value.crop.name);
-          }
-          if (Object.keys(this.reportActivityForm.value.area).length > 0) {
-            yields = yields.filter(word => word['key'][1] == this.reportActivityForm.value.area.name);
-          }
-          if (Object.keys(this.reportActivityForm.value.activity).length > 0) {
-            yields = yields.filter(word => word['key'][2] == this.reportActivityForm.value.activity.name);
-          }
+          // if (Object.keys(this.reportActivityForm.value.crop).length > 0) {
+          //   yields = yields.filter(word => word['key'][0] == this.reportActivityForm.value.crop.name);
+          // }
+          // if (Object.keys(this.reportActivityForm.value.area).length > 0) {
+          //   yields = yields.filter(word => word['key'][1] == this.reportActivityForm.value.area.name);
+          // }
+          // if (Object.keys(this.reportActivityForm.value.activity).length > 0) {
+          //   yields = yields.filter(word => word['key'][2] == this.reportActivityForm.value.activity.name);
+          // }
           console.log("yields", yields);
           let listas = [];
           // let otro = output
           output.forEach((doc: any, index)=>{
+            doc['margin'] = 0;
             yields.forEach((yie: any)=>{
               if (doc.name == yie.key[0]){
-                doc['margin'] = yie.value;
-              } else {
-                doc['margin'] = 0;
+                doc['margin'] += yie.value;
               }
             })
           })
@@ -463,11 +462,10 @@ export class ActivityReportPage implements OnInit {
         let listas = [];
         // let otro = output
         output.forEach((doc: any, index)=>{
+          doc['margin'] = 0;
           yields.forEach((yie: any)=>{
             if (doc.name == yie.key[1]){
-              doc['margin'] = yie.value;
-            } else {
-              doc['margin'] = 0;
+              doc['margin'] += yie.value;
             }
           })
         })
