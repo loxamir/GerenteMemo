@@ -1,17 +1,14 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, Input } from '@angular/core';
 import { NavController,  LoadingController, AlertController,
   Events, ToastController, ModalController,
 } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { Printer, PrintOptions } from '@ionic-native/printer';
-// import { SpeechRecognition } from '@ionic-native/speech-recognition';
-// import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { WorkService } from './work.service';
-// import { AssetsPage } from '../asset/list/assets';
 import { ProductService } from '../product/product.service';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { ConfigService } from '../config/config.service';
@@ -38,12 +35,11 @@ export class WorkPage implements OnInit {
   loading: any;
   today: any;
   _id: string;
-  avoidAlertMessage: boolean;
   languages: Array<LanguageModel>;
   fields: any = {};
-  list: boolean = false;
+  @Input() list: boolean = false;
   activity;
-  workData;
+  @Input() data;
   select;
 
   constructor(
@@ -65,24 +61,15 @@ export class WorkPage implements OnInit {
     public pouchdbService: PouchdbService,
     public events: Events,
     public modalCtrl: ModalController,
-    // public speechRecognition: SpeechRecognition,
-    // public tts: TextToSpeech,
     public stockMoveService: StockMoveService,
-
-    // private renderer: Renderer,
     private elementRef: ElementRef
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
-    this.list = eval(this.route.snapshot.paramMap.get('list'));
     this.activity = this.route.snapshot.paramMap.get('activity');
-    this.avoidAlertMessage = false;
-    this.workData = this.route.snapshot.data;
-    console.log("paramaps", this.route.snapshot);
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
@@ -93,7 +80,6 @@ export class WorkPage implements OnInit {
     if (this.select){
       this.modalCtrl.dismiss(this.workForm.value);
     }
-    // this.viewCtrl.dismiss(this.workForm.value);
   }
 
   filterFields(fieldsList) {
@@ -151,24 +137,51 @@ export class WorkPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     let self = this;
+    let defaultTab = '';
       if (this._id) {
         this.workService.getWork(this._id).then((data) => {
           data.fields.forEach(field => {
+            if (field.type == 'tab'){
+              if(! defaultTab) {
+                defaultTab = field.name;
+                console.log("defaultTab", defaultTab);
+              }
+            }
             this.workForm.addControl(
               field.name, new FormControl(data[field.name])
             );
           })
           this.workForm.patchValue(data);
-          console.log("data", data);
-          console.log("act", this.workForm.value.activity);
           if (Object.keys(this.workForm.value.activity).length === 0
           && !this.activity) {
             this.selectActivity();
           }
           this.recomputeFields();
           this.loading.dismiss();
+          setTimeout(function(){
+              self.workForm.patchValue({
+                'section': defaultTab,
+              });
+          }, 200);
         });
-      } else {
+      }
+      else if (this.data){
+        this.data.fields.forEach(field => {
+          this.workForm.addControl(
+            field.name, new FormControl(this.data[field.name])
+          );
+        })
+        this.workForm.patchValue(this.data);
+        console.log("data", this.data);
+        console.log("act", this.workForm.value.activity);
+        if (Object.keys(this.workForm.value.activity).length === 0
+        && !this.activity) {
+          this.selectActivity();
+        }
+        this.recomputeFields();
+        this.loading.dismiss();
+      }
+      else {
         this.loading.dismiss();
         if (Object.keys(this.workForm.value.activity).length === 0
         && !self.activity) {
@@ -178,33 +191,6 @@ export class WorkPage implements OnInit {
         }
       }
   }
-
-  // async ionViewCanLeave() {
-  //   if (this.workForm.dirty && ! this.avoidAlertMessage && ! this.list) {
-  //     let alertPopup = await this.alertCtrl.create({
-  //       // title: 'Descartar',
-  //       message: '¿Deseas salir sin guardar?',
-  //       buttons: [{
-  //           text: 'Si',
-  //           handler: () => {
-  //             this.exitPage();
-  //           }
-  //         },
-  //         {
-  //           text: 'No',
-  //           handler: () => {}
-  //         }
-  //       ]
-  //     });
-  //     alertPopup.present();
-  //     return false;
-  //   }
-  // }
-  //
-  // private exitPage() {
-  //   this.workForm.markAsPristine();
-  //   this.navCtrl.navigateBack();
-  // }
 
   buttonSave() {
     this.workForm.value.fields.forEach(field=>{
@@ -245,7 +231,6 @@ export class WorkPage implements OnInit {
 
   selectActivity() {
     return new Promise(async resolve => {
-      this.avoidAlertMessage = true;
       this.events.unsubscribe('select-activity');
       this.events.subscribe('select-activity', (data) => {
         this.setActivity(data);
@@ -295,20 +280,21 @@ export class WorkPage implements OnInit {
         );
       } else if (field.type == "list") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
-      } else if (field.type == 'tab')
+      } else if (field.type == 'tab'){
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
+        console.log("defaultTab1", defaultTab);
         if(! defaultTab) {
           defaultTab = field.name;
           console.log("defaultTab", defaultTab);
         }
+      }
     });
     this.workForm.patchValue({
       activity: data,
       fields: data.fields,
-      section: defaultTab,
+      // section: defaultTab,
     });
     this.workForm.markAsDirty();
-    this.avoidAlertMessage = false;
     this.events.unsubscribe('select-activity');
     this.goNextStep();
   }
@@ -390,6 +376,9 @@ export class WorkPage implements OnInit {
         this.workForm.markAsDirty();
         this.recomputeFields();
       }
+      this.workForm.patchValue({
+        'section': field_name,
+      });
     });
     profileModal.present();
   }
@@ -402,10 +391,13 @@ export class WorkPage implements OnInit {
         activity = variable.activity;
       }
     });
-    let context = this.workForm.value[field_name][item];
-    context["list"] = true;
-    context["activity"] = activity;
-    context["select"] = true;
+    let context = {
+      data: this.workForm.value[field_name][item],
+      list: true,
+      activity: activity,
+      select: true,
+    }
+
     let profileModal = await this.modalCtrl.create({
       component:WorkPage,
       componentProps: context
@@ -417,6 +409,9 @@ export class WorkPage implements OnInit {
         this.workForm.markAsDirty();
       }
       this.recomputeFields();
+      this.workForm.patchValue({
+        'section': field_name,
+      });
     });
     profileModal.present();
   }
@@ -429,6 +424,7 @@ export class WorkPage implements OnInit {
   goNextStep() {
     console.log("set Focus");
     let done = true;
+    let defaultTab = null;
     for (let field of this.workForm.value.fields) {
       // if (field.type == 'float'
       // || field.type == 'integer'
@@ -459,9 +455,12 @@ export class WorkPage implements OnInit {
           break;
         }
       }
-      else if (field.type == 'list'){
+      else if (field.type == 'list' || field.type == 'tab'){
         if (this.workForm.value[field.name].length === 0){
-          this.addFieldItem(field.name)
+          // this.addFieldItem(field.name)
+          if (! defaultTab){
+            defaultTab = field.name;
+          }
           done = false;
           break;
         }
@@ -472,6 +471,9 @@ export class WorkPage implements OnInit {
         break;
       }
     }
+    this.workForm.patchValue({
+      'section': defaultTab,
+    });
     if (done && this.list) {
 
       this.dismissData()

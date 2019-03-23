@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/agro-tabs/work-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{ 'WORK' | translate }}: {{workForm.value.code}}
+      {{ workForm.value.activity && workForm.value.activity.name || 'WORK' | translate }} {{workForm.value.code}}
     </ion-title>
     <ion-buttons slot="end">
     </ion-buttons>
@@ -15,7 +15,7 @@
 <ion-content class="work-content" style="background-color: #ddd">
 
   <form class="sample-form validations-form" [formGroup]="workForm" (ngSubmit)="onSubmit(workForm.value)">
-    <ion-row justify-content-center *ngIf="!list"  id="teste">
+    <!-- <ion-row justify-content-center *ngIf="!list"  id="teste">
         <ion-item no-padding (click)="selectActivity()" class="field-50">
           <h4 class="field-label">{{'Atividade' | translate}}</h4>
           <h4 class="field-value">{{workForm.value.activity && workForm.value.activity.name || 'Ningun'}}</h4>
@@ -28,7 +28,7 @@
           formControlName="date">
           </ion-datetime>
         </ion-item>
-    </ion-row>
+    </ion-row> -->
     <!-- <ion-list no-lines>
       <section>
       </section>
@@ -86,8 +86,10 @@
               <h4 class="field-value" style="color: gray">{{ fields[field.name] }}</h4>
             </ion-item>
             <ion-item *ngIf="field.type == 'many2one'"  class="field-100" (click)="selectM2O(field.name, field.model, field.context)">
-              <h4 class="field-label">{{field.label || field.name}}</h4>
-              <h4 class="field-value">{{workForm.value[field.name] && workForm.value[field.name].name || 'Selecionar'}}</h4>
+              <div class="field-many2one">
+                <h4 class="field-label">{{field.label || field.name}}</h4>
+                <h4 class="field-value">{{workForm.value[field.name] && workForm.value[field.name].name || 'Selecionar'}}</h4>
+              </div>
             </ion-item>
 
 

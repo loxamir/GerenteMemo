@@ -9,7 +9,6 @@
     <ion-buttons slot="end" >
     </ion-buttons>
   </ion-toolbar>
-
 </ion-header>
 
 <ion-content class="list-mini-content">
@@ -24,6 +23,11 @@
       <ion-label position="floating">{{'NAME' | translate}}</ion-label>
       <ion-input #name type="text"
       formControlName="name"></ion-input>
+    </ion-item>
+
+    <ion-item no-padding (click)="selectCrop()" class="field-100">
+      <h4 class="field-label">{{'Safra' | translate}}</h4>
+      <h4 class="field-value">{{areaForm.value.crop && areaForm.value.crop.name || 'Selecionar'}}</h4>
     </ion-item>
 
     <ion-list no-lines>

@@ -18,7 +18,7 @@ import { WorkPage } from '../work/work.page';
 // import { CurrencyListPage } from '../currency/list/currency-list';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { FormatService } from "../services/format.service";
-// import { AccountsPage } from './move/account/list/accounts';
+import { CropsPage } from '../crops/crops.page';
 
 @Component({
   selector: 'app-area',
@@ -67,6 +67,7 @@ export class AreaPage implements OnInit {
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
       renting: new FormControl(0),
+      crop: new FormControl({}),
       // currency: new FormControl({}),
       // currency_name: new FormControl(''),
       moves: new FormControl([]),
@@ -94,6 +95,7 @@ export class AreaPage implements OnInit {
       this.areaService.updateArea(this.areaForm.value);
       // this.navCtrl.navigateBack().then(() => {
         this.events.publish('open-area', this.areaForm.value);
+        this.navCtrl.navigateBack('/agro-tabs/area-list');
       // });
     } else {
       this.areaService.createArea(this.areaForm.value).then(doc => {
@@ -104,6 +106,7 @@ export class AreaPage implements OnInit {
         this._id = doc['id'];
         // this.navCtrl.navigateBack().then(() => {
           this.events.publish('create-area', this.areaForm.value);
+          this.navCtrl.navigateBack('/agro-tabs/area-list');
         // });
       });
     }
@@ -163,6 +166,29 @@ export class AreaPage implements OnInit {
 
   onSubmit(values){
     //console.log(values);
+  }
+
+  selectCrop() {
+      return new Promise(async resolve => {
+        this.events.unsubscribe('select-crop');
+        this.events.subscribe('select-crop', (data) => {
+          this.areaForm.patchValue({
+            crop: data,
+            crop_name: data.name,
+          });
+          this.areaForm.markAsDirty();
+          this.events.unsubscribe('select-crop');
+          profileModal.dismiss();
+          resolve(true);
+        })
+        let profileModal = await this.modalCtrl.create({
+          component: CropsPage,
+          componentProps: {
+            "select": true,
+          }
+        });
+        profileModal.present();
+      });
   }
 
   discard(){
