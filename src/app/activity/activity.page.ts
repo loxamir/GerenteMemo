@@ -117,6 +117,7 @@ export class ActivityPage implements OnInit {
     // if (this.activityForm.value.state=='QUOTATION'){
       let index = this.activityForm.value.fields.indexOf(item)
       this.activityForm.value.fields.splice(index, 1);
+      this.activityForm.markAsDirty();
       // this.recomputeValues();
     // }
   }
@@ -127,6 +128,8 @@ export class ActivityPage implements OnInit {
       // this.navCtrl.navigateBack().then(() => {
         if (this.select){
           this.modalCtrl.dismiss();
+        } else {
+          this.navCtrl.navigateBack('/activitys');
         }
         this.events.publish('open-activity', this.activityForm.value);
       // });
@@ -140,6 +143,8 @@ export class ActivityPage implements OnInit {
         // this.navCtrl.navigateBack().then(() => {
         if (this.select){
           this.modalCtrl.dismiss();
+        } else {
+          this.navCtrl.navigateBack('/activitys');
         }
           this.events.publish('create-activity', this.activityForm.value);
         // });
@@ -206,7 +211,7 @@ export class ActivityPage implements OnInit {
       this.modalCtrl.dismiss();
     } else {
       this.activityForm.markAsPristine();
-      this.navCtrl.navigateBack('/tabs/sale-list');
+      this.navCtrl.navigateBack('/activitys');
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit, Input } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, Input, ViewChildren } from '@angular/core';
 import { NavController,  LoadingController, AlertController,
   Events, ToastController, ModalController,
 } from '@ionic/angular';
@@ -30,7 +30,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./work.page.scss'],
 })
 export class WorkPage implements OnInit {
-
+  @ViewChild('teste') pageFields: any[];
   workForm: FormGroup;
   loading: any;
   today: any;
@@ -41,6 +41,7 @@ export class WorkPage implements OnInit {
   activity;
   @Input() data;
   select;
+  @Input() go = false;
 
   constructor(
     public navCtrl: NavController,
@@ -370,7 +371,7 @@ export class WorkPage implements OnInit {
     let context = {};
     context["list"] = true;
     context["activity"] = activity;
-    context["open"] = true;
+    // context["open"] = true;
     context["select"] = true;
     let profileModal = await this.modalCtrl.create({
       component: WorkPage,
@@ -400,6 +401,7 @@ export class WorkPage implements OnInit {
     let context = {
       data: this.workForm.value[field_name][item],
       list: true,
+      go: true,
       activity: activity,
       select: true,
     }
@@ -429,23 +431,34 @@ export class WorkPage implements OnInit {
   goNextStep() {
     let done = true;
     let defaultTab = null;
+    if (this.go && this.list) {
+      this.dismissData()
+    }
     for (let field of this.workForm.value.fields) {
-      // if (field.type == 'float'
-      // || field.type == 'integer'
-      // || field.type == 'string'){
-      //   console.log("field.name", field.name);
-      //   let element = this.elementRef.nativeElement.querySelector(
-      //     '#teste'
-      //   );
-      //   console.log("element", element);
-      //   if (element.value=="0" || element.value==""){
-      //     // this.renderer.invokeElementMethod(element, 'focus', []);
-      //     element.select();
-      //     done = false;
-      //     break;
-      //   }
-      // }
-      // else
+      if (field.type == 'float'
+      || field.type == 'integer'
+      || field.type == 'string'){
+        console.log("field.name", field.name);
+        console.log("pageFields", this.elementRef.nativeElement);
+        // this.pageFields['el'].children[0].setFocus();
+        // let element = this.pageFields;
+        let element = this.elementRef.nativeElement.querySelector(
+          '#teste'
+        );
+        console.log("element", element);
+        // if (element.value=="0" || element.value==""){
+        //   // this.renderer.invokeElementMethod(element, 'focus', []);
+        //   element.select();
+        //   done = false;
+        //   break;
+        // }
+        if (this.list && ! this.go){
+          done = false;
+          this.go = true;
+          break;
+        }
+      }
+      else
       if (field.type == 'date'){
 
       }
