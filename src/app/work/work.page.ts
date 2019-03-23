@@ -313,15 +313,26 @@ export class WorkPage implements OnInit {
     return total;
   }
 
-  selectM2O(field_name, model, context="{}") {
+  selectM2O(fielD, model, context="{}") {
     context = JSON.parse(context || "{}");
     this.events.subscribe('select-' + model, (data) => {
       let field = {};
-      field[field_name] = data;
+      field[fielD.name] = data;
       this.workForm.patchValue(field);
       this.recomputeFields();
       this.events.unsubscribe('select-' + model);
       this.workForm.markAsDirty();
+      console.log("field", fielD);
+      let self = this;
+      let d = {}
+      if(fielD.onchange){
+        fielD.onchange.split(';').forEach(item=>{
+          let fieldName = item.split('=')[0]
+          let fieldData = item.split('=')[1]
+          d[fieldName] = data[fieldData];
+        })
+        this.workForm.patchValue(d);
+      }
       this.goNextStep();
     })
     switch (model) {
@@ -450,7 +461,7 @@ export class WorkPage implements OnInit {
       }
       else if (field.type == 'many2one'){
         if (Object.keys(this.workForm.value[field.name]).length === 0){
-          this.selectM2O(field.name, field.model, field.context);
+          this.selectM2O(field, field.model, field.context);
           done = false;
           break;
         }

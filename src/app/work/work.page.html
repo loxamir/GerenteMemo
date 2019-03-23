@@ -85,7 +85,7 @@
               <h4 class="field-label">{{field.label || field.name}}</h4>
               <h4 class="field-value" style="color: gray">{{ fields[field.name] }}</h4>
             </ion-item>
-            <ion-item *ngIf="field.type == 'many2one'"  class="field-100" (click)="selectM2O(field.name, field.model, field.context)">
+            <ion-item *ngIf="field.type == 'many2one'"  class="field-100" (click)="selectM2O(field, field.model, field.context)">
               <div class="field-many2one">
                 <h4 class="field-label">{{field.label || field.name}}</h4>
                 <h4 class="field-value">{{workForm.value[field.name] && workForm.value[field.name].name || 'Selecionar'}}</h4>

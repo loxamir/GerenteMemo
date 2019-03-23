@@ -36,6 +36,7 @@ export class FieldPage implements OnInit {
   context;
   select;
   default;
+  onchange;
 
   constructor(
     public navCtrl: NavController,
@@ -66,6 +67,7 @@ export class FieldPage implements OnInit {
     this.note = this.route.snapshot.paramMap.get('note');
     this.attributes = this.route.snapshot.paramMap.get('attributes');
     this.default = this.route.snapshot.paramMap.get('default');
+    this.onchange = this.route.snapshot.paramMap.get('onchange');
     this.class = this.route.snapshot.paramMap.get('class');
     this.sequence = this.route.snapshot.paramMap.get('sequence');
     this.activity = this.route.snapshot.paramMap.get('activity');
@@ -91,13 +93,13 @@ export class FieldPage implements OnInit {
       sequence: new FormControl(this.sequence||0),
       activity: new FormControl(this.activity||{}),
       activity_id: new FormControl(this.activity_id||''),
+      onchange: new FormControl(this.onchange||null),
       default: new FormControl(this.default||null),
       context: new FormControl(this.context||'{}'),
     });
   }
 
   buttonSave(){
-
     this.modalCtrl.dismiss(this.fieldForm.value);
   }
 
