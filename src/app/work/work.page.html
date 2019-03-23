@@ -33,7 +33,7 @@
       <section>
       </section>
     </ion-list> -->
-        <ion-row id="teste">
+        <ion-row>
           <ion-item-sliding class="list-item"
           *ngFor="let field of filterFields(workForm.value.fields)"
           [style.width]="field.class == 'half-width' ? '50%' : '100%'">
@@ -179,12 +179,12 @@
         </div>
     </div>
   </form>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
       Proximo
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">

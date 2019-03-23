@@ -18,7 +18,7 @@ export class CropService {
     return new Promise((resolve, reject)=>{
       let payableList = [];
       this.pouchdbService.getView(
-        'stock/Crops', 1,
+        'stock/Crops', 2,
         [doc_id, '0'],
         [doc_id, 'z']
       ).then((planneds: any[]) => {
@@ -27,7 +27,7 @@ export class CropService {
         let balance = 0;
         planneds.forEach(item => {
           pts.push(item);
-          promise_ids.push(this.pouchdbService.getDoc(item.key[0]));
+          promise_ids.push(this.pouchdbService.getDoc(item.key[1]));
           balance += parseFloat(item.value);
         })
         promise_ids.push(this.pouchdbService.getDoc(doc_id));
@@ -36,10 +36,11 @@ export class CropService {
           crop.moves = [];
           crop.balance = balance;
           crop.account = cropMoves[cropMoves.length-1];
-          crop.name
+          crop.name;
           for(let i=0;i<pts.length;i++){
             crop.moves.unshift(cropMoves[i]);
           }
+          console.log("crop", crop);
           resolve(crop);
         })
       });

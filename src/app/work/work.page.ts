@@ -200,6 +200,7 @@ export class WorkPage implements OnInit {
       this.workService.updateWork(this.workForm.value);
       this.events.publish('open-work', this.workForm.value);
       this.workForm.markAsPristine();
+      this.navCtrl.navigateBack('/works');
     } else {
       this.workService.createWork(this.workForm.value).then(doc => {
         this.workForm.patchValue({
@@ -209,6 +210,7 @@ export class WorkPage implements OnInit {
         this._id = doc['doc'].id;
         this.events.publish('create-work', this.workForm.value);
         this.workForm.markAsPristine();
+        this.navCtrl.navigateBack('/works');
       });
     }
   }
@@ -293,7 +295,7 @@ export class WorkPage implements OnInit {
           'section': defaultTab,
         });
     }, 200);
-    this.workForm.markAsDirty();
+    // this.workForm.markAsDirty();
     this.events.unsubscribe('select-activity');
     this.goNextStep();
   }
@@ -438,14 +440,14 @@ export class WorkPage implements OnInit {
       if (field.type == 'float'
       || field.type == 'integer'
       || field.type == 'string'){
-        console.log("field.name", field.name);
-        console.log("pageFields", this.elementRef.nativeElement);
+        // console.log("field.name", field.name);
+        // console.log("pageFields", this.elementRef.nativeElement);
         // this.pageFields['el'].children[0].setFocus();
         // let element = this.pageFields;
-        let element = this.elementRef.nativeElement.querySelector(
-          '#teste'
-        );
-        console.log("element", element);
+        // let element = this.elementRef.nativeElement.querySelector(
+        //   '#teste'
+        // );
+        // console.log("element", element);
         // if (element.value=="0" || element.value==""){
         //   // this.renderer.invokeElementMethod(element, 'focus', []);
         //   element.select();
@@ -485,11 +487,11 @@ export class WorkPage implements OnInit {
           break;
         }
       }
-      else if (field.type == 'button'){
-        this.buttonPress(field);
-        done = false;
-        break;
-      }
+      // else if (field.type == 'button'){
+      //   this.buttonPress(field);
+      //   done = false;
+      //   break;
+      // }
     }
     this.workForm.patchValue({
       'section': defaultTab,
