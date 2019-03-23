@@ -65,7 +65,8 @@ export class CropPage implements OnInit {
     this.cropForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
-      // currency: new FormControl({}),
+      dateStart: new FormControl(new Date()),
+      dateEnd: new FormControl(new Date()),
       // currency_name: new FormControl(''),
       moves: new FormControl([]),
       // checks: new FormControl([]),
@@ -92,6 +93,7 @@ export class CropPage implements OnInit {
       this.cropService.updateCrop(this.cropForm.value);
       // this.navCtrl.navigateBack().then(() => {
         this.events.publish('open-crop', this.cropForm.value);
+        this.navCtrl.navigateBack('/agro-tabs/crop-list');
       // });
     } else {
       this.cropService.createCrop(this.cropForm.value).then(doc => {
@@ -103,6 +105,7 @@ export class CropPage implements OnInit {
         // this.navCtrl.navigateBack().then(() => {
           this.events.publish('create-crop', this.cropForm.value);
         // });
+        this.navCtrl.navigateBack('/agro-tabs/crop-list');
       });
     }
   }

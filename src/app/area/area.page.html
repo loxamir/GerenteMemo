@@ -16,19 +16,25 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <form class="sample-form validations-form" [formGroup]="areaForm" (ngSubmit)="onSubmit(areaForm.value)">
-    <ion-item
-     no-padding
-     *ngIf="create"
-     class="field-100">
+    <ion-row>
+      <ion-item
+      no-padding
+      class="field-100">
       <ion-label position="floating">{{'NAME' | translate}}</ion-label>
       <ion-input #name type="text"
       formControlName="name"></ion-input>
     </ion-item>
-
-    <ion-item no-padding (click)="selectCrop()" class="field-100">
-      <h4 class="field-label">{{'Safra' | translate}}</h4>
-      <h4 class="field-value">{{areaForm.value.crop && areaForm.value.crop.name || 'Selecionar'}}</h4>
+    <ion-item no-padding class="field-50">
+      <ion-label position="floating">{{'Area(ha)' | translate}}</ion-label>
+      <ion-input #cost type="number" formControlName="surface"></ion-input>
     </ion-item>
+    <ion-item no-padding (click)="selectCrop()" class="field-50">
+      <div class="field-many2one">
+        <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
+        <h4 class="field-value">{{areaForm.value.crop && areaForm.value.crop.name || 'Selecionar'}}</h4>
+      </div>
+    </ion-item>
+    </ion-row>
 
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)">

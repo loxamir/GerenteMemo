@@ -94,6 +94,7 @@ export class MachinePage implements OnInit {
       this.machineService.updateMachine(this.machineForm.value);
       // this.navCtrl.navigateBack().then(() => {
         this.events.publish('open-machine', this.machineForm.value);
+        this.navCtrl.navigateBack('/agro-tabs/machine-list');
       // });
     } else {
       this.machineService.createMachine(this.machineForm.value).then(doc => {
@@ -104,6 +105,7 @@ export class MachinePage implements OnInit {
         this._id = doc['id'];
         // this.navCtrl.navigateBack().then(() => {
           this.events.publish('create-machine', this.machineForm.value);
+          this.navCtrl.navigateBack('/agro-tabs/machine-list');
         // });
       });
     }

@@ -17,14 +17,31 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <form class="sample-form validations-form" [formGroup]="cropForm" (ngSubmit)="onSubmit(cropForm.value)">
-    <ion-item
-     no-padding
-     *ngIf="create"
-     class="field-100">
+    <ion-row>
+      <ion-item
+      no-padding
+      class="field-100">
       <ion-label position="floating">{{'NAME' | translate}}</ion-label>
       <ion-input #name type="text"
       formControlName="name"></ion-input>
     </ion-item>
+    <ion-item no-padding class="field-50">
+      <h4 class="field-label">{{'Fecha de Inicio' | translate }}</h4>
+      <ion-datetime class="field-50-datetime"
+      displayFormat="DD/MM/YYYY"
+      pickerFormat="DD/MM/YYYY"
+      formControlName="dateStart">
+      </ion-datetime>
+    </ion-item>
+    <ion-item no-padding class="field-50">
+      <h4 class="field-label">{{'Fecha de Fin' | translate }}</h4>
+      <ion-datetime class="field-50-datetime"
+      displayFormat="DD/MM/YYYY"
+      pickerFormat="DD/MM/YYYY"
+      formControlName="dateEnd">
+      </ion-datetime>
+    </ion-item>
+    </ion-row>
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of cropForm.value.moves.sort(this.formatService.compare)">
       <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">

@@ -68,6 +68,8 @@ export class AreaPage implements OnInit {
       balance: new FormControl(0),
       renting: new FormControl(0),
       crop: new FormControl({}),
+      crop_name: new FormControl(''),
+      surface: new FormControl(0),
       // currency: new FormControl({}),
       // currency_name: new FormControl(''),
       moves: new FormControl([]),
