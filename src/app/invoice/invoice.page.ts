@@ -1210,6 +1210,146 @@ export class InvoicePage implements OnInit {
       });
     }
 
+    async posprint() {
+      let invoice = this.invoiceForm.value;
+      var partner_name = invoice.contact.name_legal || invoice.contact.name;
+      let contact = invoice.contact;
+      var max_lines = 10;
+      var lines_count = 0;
+      var lines = "";
+      var subtotal_10 = 0;
+      var subtotal_05 = 0;
+      var subtotal_00 = 0;
+      var iva_10 = 0;
+      var iva_05 = 0;
+      let invoiceLines = ""
+      invoice.items.forEach((line: any, index) => {
+        let line_amount_00 = 0;
+        let line_amount_05 = 0;
+        let line_amount_10 = 0;
+        let iva = "10%";
+        //IVA Exento
+        if (line.product.tax == 'iva0') {
+          line_amount_00 = line.quantity * line.price;
+          subtotal_00 += line_amount_00;
+          iva = "0%";
+        }
+        //IVA 5%
+        if (line.product.tax == 'iva5') {
+          line_amount_05 = line.quantity * line.price;
+          subtotal_05 += line_amount_05;
+          iva_05 += line_amount_05 / 21;
+          iva = "5%";
+        }
+        //IVA 10%
+        if (line.product.tax == 'iva10') {
+          line_amount_10 = line.quantity * line.price;
+          subtotal_10 += line_amount_10;
+          iva_10 = iva_10 + line_amount_10 / 11;
+          iva = "10%";
+        }
+        let productCode =this.formatService.string_pad(8, line.product.code.substring(0, 8), 'right');
+        let productName =this.formatService.string_pad(38, line.description.substring(0, 38));
+
+        let productQuantity =this.formatService.string_pad(9, line.quantity, 'right');
+        let productPrice =this.formatService.string_pad(14, line.price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        let subTotal =this.formatService.string_pad(16, (line.price*line.quantity).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        let tax =this.formatService.string_pad(6, iva, 'right');
+        invoiceLines += productCode+" "+productName+"\n";
+        invoiceLines += productQuantity+" "+productPrice+" "+subTotal+" "+tax+"\n";
+        invoiceLines += "----------------------------------------------\n";
+        // invoiceLines += "0001  Limpia Porcelanato 5L\n";
+        // ticket += "   5  11.035.000 55.175.000  10%\n";
+        // ticket += "   5  11.035.000 55.175.000  10%\n";
+        lines_count = lines_count + 1;
+      })
+      while (lines_count < max_lines) {
+        invoiceLines += "     \n";
+        invoiceLines += "     \n";
+        invoiceLines += "     \n";
+        lines_count = lines_count + 1;
+      }
+      let ticket = "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      // ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += this.formatService.string_pad(48,(new Date(invoice.date)).toLocaleDateString('es-PY') , 'right', ' ')+"\n";
+      ticket += "         "+this.formatService.string_pad(55, partner_name.substring(0, 87), 'left', ' ')+"\n";
+      ticket += this.formatService.string_pad(48, (contact.document|| ""), 'right', ' ')+"\n";
+      ticket += "           "+this.formatService.string_pad(53, (contact.address || "").substring(0, 85), 'left', ' ')+"\n";
+      ticket += this.formatService.string_pad(48, (contact.phone|| "").substring(0, 38), 'right', ' ')+"\n";
+      ticket += this.formatService.string_pad(48, invoice.paymentCondition, 'right', ' ')+"\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "|----------------------------------------------|\n";
+      ticket += invoiceLines;
+      ticket += "\n";
+      ticket += this.formatService.string_pad(48, invoice.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      ticket += this.formatService.string_pad(48, subtotal_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      ticket += this.formatService.string_pad(48, subtotal_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      ticket += this.formatService.string_pad(48, subtotal_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += this.formatService.string_pad(48, iva_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      ticket += this.formatService.string_pad(48, iva_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      ticket += this.formatService.string_pad(48, (iva_05+iva_10).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      console.log("ticket", ticket);
+
+      // Print to bluetooth printer
+      let toast = await this.toastCtrl.create({
+      message: "Imprimiendo...",
+      duration: 3000
+    });
+    toast.present();
+    this.bluetoothSerial.isEnabled().then(res => {
+      this.bluetoothSerial.list().then((data)=> {
+        this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+          this.bluetoothSerial.isConnected().then(res => {
+            // |---- 32 characteres ----|
+            this.bluetoothSerial.write(ticket);
+
+            setTimeout(function(){
+                // this.barcode = ""
+                this.bluetoothSerial.disconnect();
+            }, 2000);
+          }).catch(res => {
+            //console.log("res1", res);
+          });
+        },error=>{
+          //console.log("error", error);
+        });
+      })
+    }).catch(res => {
+      //console.log("res", res);
+    });
+  }
+
     getInvoice(doc_id): Promise<any> {
       return new Promise((resolve, reject)=>{
         this.unserializeInvoice(doc_id).then(viewData => {
@@ -1360,6 +1500,8 @@ export class InvoicePage implements OnInit {
         profileModal.present();
       });
     }
+
+
 
 
 }
