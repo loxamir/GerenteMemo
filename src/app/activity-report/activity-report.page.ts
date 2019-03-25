@@ -472,9 +472,11 @@ export class ActivityReportPage implements OnInit {
         console.log("output", output);
         resolve(output);
       }
-          else if (this.reportActivityForm.value.groupBy == 'crop') {
+        else if (this.reportActivityForm.value.groupBy == 'crop') {
             console.log("crop", );
           items = [];
+          let getList = [];
+          let crops = {};
           activitys.forEach(activityLine => {
             if (result.hasOwnProperty(activityLine.key[0])) {
               items[result[activityLine.key[0]]] = {
@@ -483,6 +485,7 @@ export class ActivityReportPage implements OnInit {
                 'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[5]),
                 'total': items[result[activityLine.key[0]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
               };
+              crops
             } else {
               items.push({
                 'name': activityLine.key[0],
@@ -490,10 +493,59 @@ export class ActivityReportPage implements OnInit {
                 'margin': parseFloat(activityLine.key[5]),
                 'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
               });
+              getList.push(activityLine.key[10]);
               result[activityLine.key[0]] = items.length-1;
             }
-          });
 
+            if (crops.hasOwnProperty(activityLine.key[0])){
+              if (crops[activityLine.key[0]].hasOwnProperty(activityLine.key[1])) {
+                // crops[activityLine.key[0]][activityLine.key[10]] = 0;
+              } else {
+                crops[activityLine.key[0]][activityLine.key[10]] = 0;
+              }
+            } else {
+              crops[activityLine.key[0]] = [];
+              crops[activityLine.key[0]][activityLine.key[10]] = 0;
+            }
+          });
+          console.log("crops", crops);
+          let products: any = await this.pouchdbService.getList(getList);
+          var doc_dict = {};
+          products.forEach(row=>{
+            doc_dict[row.doc._id] = row.doc;
+          })
+          console.log("doc_dict", doc_dict);
+          let categories = {};
+          let litems = [];
+          let cropList = {};
+          Object.keys(crops).forEach(item=>{
+            console.log("item", item, doc_dict, crops[item]);
+            Object.keys(crops[item]).forEach(are=>{
+              console.log("doc_dict[are]", are, doc_dict[are]);
+              if (categories.hasOwnProperty(doc_dict[are].name)) {
+                litems[categories[doc_dict[are].name]] = {
+                  // 'name': doc_dict[are].name,
+                  // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
+                  'quantity': doc_dict[are].surface,
+                  // 'total': litems[categories[doc_dict[are].name]].total,
+                };
+                cropList[item] += doc_dict[are].surface;
+              } else {
+                litems.push({
+                  'name': doc_dict[are].name,
+                  'quantity': doc_dict[are].surface,
+                  // 'area': doc_dict[item.name].surface,
+                  // 'total': 0,
+                });
+                categories[doc_dict[are].name] = litems.length-1;
+                cropList[item] = doc_dict[are].surface;
+              }
+            })
+          })
+          console.log("litens", items);
+          items.forEach(item=>{
+            item.quantity = cropList[item.name];
+          })
           let self = this;
           let output = items.sort(function(a, b) {
             return self.compare(a, b, self.reportActivityForm.value.orderBy);
@@ -511,39 +563,70 @@ export class ActivityReportPage implements OnInit {
 
         else if (this.reportActivityForm.value.groupBy == 'area') {
           console.log("area", );
-        items = [];
-        activitys.forEach(activityLine => {
-          if (result.hasOwnProperty(activityLine.key[1])) {
-            items[result[activityLine.key[1]]] = {
-              'name': items[result[activityLine.key[1]]].name,
-              'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
-              'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
-              'total': items[result[activityLine.key[1]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-            };
-          } else {
-            items.push({
-              'name': activityLine.key[1],
-              'quantity': parseFloat(activityLine.key[4]),
-              'margin': parseFloat(activityLine.key[5]),
-              'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-            });
-            result[activityLine.key[1]] = items.length-1;
-          }
-        });
-
-        let self = this;
-        let output = items.sort(function(a, b) {
-          return self.compare(a, b, self.reportActivityForm.value.orderBy);
-        })
-        let marker = false;
-        let total = 0;
-        output.forEach(item => {
-          item['marker'] = marker,
-            marker = !marker;
-          total += parseFloat(item['total']);
-        });
-        this.loading.dismiss();
-        resolve(output);
+          let getList = [];
+          items = [];
+          activitys.forEach(activityLine => {
+            if (result.hasOwnProperty(activityLine.key[1])) {
+              items[result[activityLine.key[1]]] = {
+                'name': items[result[activityLine.key[1]]].name,
+                'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
+                'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
+                'total': items[result[activityLine.key[1]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+              };
+            } else {
+              items.push({
+                'name': activityLine.key[1],
+                'quantity': parseFloat(activityLine.key[4]),
+                'margin': parseFloat(activityLine.key[5]),
+                'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+              });
+              getList.push(activityLine.key[10]);
+              result[activityLine.key[1]] = items.length-1;
+            }
+          });
+          let products: any = await this.pouchdbService.getList(getList);
+          var doc_dict = {};
+          products.forEach(row=>{
+            doc_dict[row.doc.name] = row.doc;
+          })
+          let categories = {};
+          let litems = [];
+          items.forEach(item=>{
+            console.log("item", item.name,doc_dict,  doc_dict[item.name]);
+            if (categories.hasOwnProperty(doc_dict[item.name].name)) {
+              litems[categories[doc_dict[item.name].name]] = {
+                'name': doc_dict[item.name].name,
+                // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
+                'quantity': doc_dict[item.name].surface,
+                'total': litems[categories[doc_dict[item.name].name]].total + item.total,
+              };
+            } else {
+              litems.push({
+                'name': doc_dict[item.name].name,
+                'quantity': doc_dict[item.name].surface,
+                // 'area': doc_dict[item.name].surface,
+                'total': item.total,
+              });
+              categories[doc_dict[item.name].name] = litems.length-1;
+            }
+          })
+          let self = this;
+          // let output = items.sort(function(a, b) {
+          //   return self.compare(a, b, self.reportActivityForm.value.orderBy);
+          // })
+          let output = litems.sort(function(a, b) {
+            return self.compare(a, b, self.reportActivityForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          console.log("ouch put", output);
+          resolve(output);
       }
 
       else if (this.reportActivityForm.value.groupBy == 'activity') {

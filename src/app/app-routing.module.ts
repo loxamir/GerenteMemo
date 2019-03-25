@@ -91,7 +91,7 @@ const routes: Routes = [
   { path: 'works', loadChildren: './works/works.module#WorksPageModule', canActivate: [AuthGuardService] },
   { path: 'activity', loadChildren: './activity/activity.module#ActivityPageModule', canActivate: [AuthGuardService] },
   { path: 'activitys', loadChildren: './activitys/activitys.module#ActivitysPageModule', canActivate: [AuthGuardService] },
-  { path: 'activity-report', loadChildren: './activity-report/activity-report.module#ActivityReportPageModule', canActivate: [AuthGuardService] },
+  { path: 'activity-report', loadChildren: './activity-report/activity-report.module#ActivityReportPageModule'},
   { path: 'field', loadChildren: './field/field.module#FieldPageModule', canActivate: [AuthGuardService] },
   { path: 'input', loadChildren: './input/input.module#InputPageModule', canActivate: [AuthGuardService] },
   { path: 'inputs', loadChildren: './inputs/inputs.module#InputsPageModule', canActivate: [AuthGuardService] },
