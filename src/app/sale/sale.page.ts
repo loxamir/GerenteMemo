@@ -439,69 +439,81 @@ export class SalePage implements OnInit {
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-product');
         this.events.subscribe('select-product', async (product) => {
-          let prompt = await self.alertCtrl.create({
-            header: 'Cantidad del Producto',
-            message: 'Cual es el Cantidad de este producto?',
-            inputs: [
-              {
-                type: 'number',
-                name: 'quantity',
-                value: "1"
-            },
-
-            ],
-            buttons: [
-              {
-                text: 'Cancel'
-              },
-              {
-                text: 'Confirmar',
-                handler: async data => {
-                  // console.log("vars", data);
-                  self.saleForm.value.items.unshift({
-                    'quantity': data.quantity,
-                    'price': product.price,
-                    'cost': product.cost,
-                    'product': product,
-                    'description': product.name,
-                  })
-                  self.recomputeValues();
-                  self.saleForm.markAsDirty();
-                  self.avoidAlertMessage = false;
-                  self.events.unsubscribe('select-product');
-                  profileModal.dismiss();
-
-
-                  // this.addItem();
-
-                  let prompt2 = await self.alertCtrl.create({
-                    header: 'Agregar otro Producto?',
-                    // message: 'Cual es el Cantidad de este producto?',
-                    buttons: [
-                      {
-                        text: 'No'
-                      },
-                      // {
-                      //   text: 'Concluir Venta',
-                      //   handler: data => {
-                      //     this.goNextStep();
-                      //   }
-                      // },
-                      {
-                        text: 'Si',
-                        handler: data => {
-                          this.addItem();
-                        }
-                      }
-                    ]
-                  });
-                  prompt2.present();
-
-                }
-              }
-            ]
-          });
-          prompt.present();
+          self.saleForm.value.items.unshift({
+            'quantity': 1,
+            'price': product.price,
+            'cost': product.cost,
+            'product': product,
+            'description': product.name,
+          })
+          self.recomputeValues();
+          self.saleForm.markAsDirty();
+          self.avoidAlertMessage = false;
+          self.events.unsubscribe('select-product');
+          profileModal.dismiss();
+          // let prompt = await self.alertCtrl.create({
+          //   header: 'Cantidad del Producto',
+          //   message: 'Cual es el Cantidad de este producto?',
+          //   inputs: [
+          //     {
+          //       type: 'number',
+          //       name: 'quantity',
+          //       value: "1"
+          //   },
+          //
+          //   ],
+          //   buttons: [
+          //     {
+          //       text: 'Cancel'
+          //     },
+          //     {
+          //       text: 'Confirmar',
+          //       handler: async data => {
+          //         // console.log("vars", data);
+          //         self.saleForm.value.items.unshift({
+          //           'quantity': data.quantity,
+          //           'price': product.price,
+          //           'cost': product.cost,
+          //           'product': product,
+          //           'description': product.name,
+          //         })
+          //         self.recomputeValues();
+          //         self.saleForm.markAsDirty();
+          //         self.avoidAlertMessage = false;
+          //         self.events.unsubscribe('select-product');
+          //         profileModal.dismiss();
+          //
+          //
+          //         // this.addItem();
+          //
+          //         let prompt2 = await self.alertCtrl.create({
+          //           header: 'Agregar otro Producto?',
+          //           // message: 'Cual es el Cantidad de este producto?',
+          //           buttons: [
+          //             {
+          //               text: 'No'
+          //             },
+          //             // {
+          //             //   text: 'Concluir Venta',
+          //             //   handler: data => {
+          //             //     this.goNextStep();
+          //             //   }
+          //             // },
+          //             {
+          //               text: 'Si',
+          //               handler: data => {
+          //                 this.addItem();
+          //               }
+          //             }
+          //           ]
+          //         });
+          //         prompt2.present();
+          //
+          //       }
+          //     }
+          //   ]
+          // });
+          // prompt.present();
         })
         let profileModal = await this.modalCtrl.create({
           component: ProductListPage,

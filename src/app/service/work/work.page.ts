@@ -61,7 +61,7 @@ export class ServiceWorkPage implements OnInit {
     //
     // ionViewDidLoad(){
       setTimeout(() => {
-        this.descriptionField.setFocus();
+        this.timeField.setFocus();
       }, 200);
     }
 
@@ -116,12 +116,13 @@ export class ServiceWorkPage implements OnInit {
       //   if (this.workForm.value.client_request == ''){
       //     this.clientRequest.setFocus();
       //   }
-      if (this.workForm.value.description==null){
-        this.descriptionField.setFocus();
+
+      if (this.workForm.value.time==null){
+        this.timeField.setFocus();
         return;
       }
-      else if (this.workForm.value.time==null){
-        this.timeField.setFocus();
+      else if (this.workForm.value.description==null){
+        this.descriptionField.setFocus();
         return;
       }
     }

@@ -7,6 +7,8 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
     <ion-item (click)="duplicate()">Duplicar</ion-item>
     <ion-item (click)="cancel()" *ngIf="navParams.data.doc.serviceForm.value.state=='CONFIRMED' && navParams.data.doc.serviceForm.value.date.split('T')[0]==today.split('T')[0]">Desconfirmar</ion-item>
     <ion-item (click)="cancel()" *ngIf="navParams.data.doc.serviceForm.value.state=='SCHEDULED' || navParams.data.doc.serviceForm.value.state=='STARTED'">Volver a Borrador</ion-item>
+    <ion-item (click)="share()">Compartir</ion-item>
+    <ion-item (click)="print()">Imprimir</ion-item>
   </ion-list>
   `
 })
@@ -43,6 +45,11 @@ export class ServicePopover {
 
     share(){
       this.navParams.data.doc.share();
+      this.pop.dismiss();
+    }
+
+    print(){
+      this.navParams.data.doc.print();
       this.pop.dismiss();
     }
 

@@ -6,6 +6,24 @@ let file = new File();
 @Injectable({ providedIn: 'root' })
 export class FormatService {
 
+  breakString(string, length){
+    let counter = 0;
+    let resultado = "";
+    for(let i = 0;i<string.length;i++){
+      let leter = string[i];
+      resultado += leter;
+      counter +=1;
+      if (counter == length){
+        resultado += "\n";
+        counter = 0;
+      }
+    }
+    // string.forEach(leter=>{
+    //
+    // })
+    return resultado;
+  }
+
   string_pad(qty, user_str, order = "left", complete = " ") {
     if (!user_str) {
       user_str = "";
@@ -741,6 +759,11 @@ export class FormatService {
   printMatrix(content, filename) {
     let invoice = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a" + content;
     var blob = new Blob([invoice], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, filename);
+  }
+
+  printMatrixClean(content, filename) {
+    var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     saveAs(blob, filename);
   }
 

@@ -12,18 +12,22 @@
 
 <ion-content class="service-content">
   <form class="sample-form validations-form" [formGroup]="workForm" (ngSubmit)="buttonSave()">
-
+    <ion-item class="field-100">
+        <ion-label position="floating">{{'TIME_HS' | translate}}</ion-label>
+        <ion-input type="number" #time formControlName="time"></ion-input>
+    </ion-item>
+    <ion-item class="field-100">
+      <ion-label position="floating">{{ 'DESCRIPTION' | translate }}</ion-label>
+      <ion-textarea #description formControlName="description"
+        rows="3">
+      </ion-textarea>
+    </ion-item>
     <!-- <section class="form-section"> -->
       <!-- <h2 class="section-title">{{'Informaciones del Trabajo' | translate}}</h2> -->
       <!-- <ion-item class="field-100">
       <ion-row>
         <ion-col> -->
-          <ion-item class="field-100">
-            <ion-label position="floating">{{ 'DESCRIPTION' | translate }}</ion-label>
-            <ion-textarea #description formControlName="description"
-              rows="3">
-            </ion-textarea>
-          </ion-item>
+
         <!-- </ion-col>
         <ion-col size="2" color="primary">
           <ion-button icon-only  style="height: 100%;margin-top: 0px;"
@@ -34,12 +38,7 @@
         </ion-col>
       </ion-row>
     </ion-item> -->
-    <ion-item class="field-100">
-      <!-- <ion-item style="background-color: white"> -->
-        <ion-label position="floating">{{'TIME_HS' | translate}}</ion-label>
-        <ion-input type="number" #time formControlName="time"></ion-input>
-      <!-- </ion-item> -->
-    </ion-item>
+
       <!-- <ion-item class="user-preferences-row" (click)="selectResponsible()">
         <span class="radio-tags-label">{{'Responsable' | translate}}</span>
         <ion-list>
@@ -53,10 +52,8 @@
         <h4 class="field-value">{{workForm.value.responsible && workForm.value.responsible.name || 'Nadie'}}</h4>
       </ion-item>
       <ion-item class="field-100">
-        <!-- <ion-item style="background-color: white"> -->
-          <ion-label position="floating">{{'NOTES' | translate}}</ion-label>
+          <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
           <ion-textarea rows="3" formControlName="note"></ion-textarea>
-        <!-- </ion-item> -->
       </ion-item>
       <!-- <ion-card class="list-card"> -->
       <!-- <ion-item  style="background-color: white">
