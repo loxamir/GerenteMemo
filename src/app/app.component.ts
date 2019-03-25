@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
       icon: 'stats'
     },
     {
-      title: 'Deposito',
+      title: 'Insumos y Granos',
       url: '/product-list',
       icon: 'cube'
     },
@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
     {
       title: 'Ajuda',
       url: '/help-list',
-      icon: 'help'
+      icon: 'help-circle-outline'
     },
     {
       title: 'Ajustes',
