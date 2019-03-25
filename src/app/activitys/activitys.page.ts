@@ -44,13 +44,23 @@ export class ActivitysPage implements OnInit {
   }
 
   setFilteredItems() {
-    this.activitysService.getActivitysPage(
-      this.searchTerm, 0
-    ).then((activitys: any[]) => {
-      this.activitys = activitys;
-      this.page = 1;
-      this.loading.dismiss();
-    });
+    if (this.filter == 'showLess'){
+      this.activitysService.getActivitysPage(
+        this.searchTerm, 0, 'show'
+      ).then((activitys: any[]) => {
+        this.activitys = activitys;
+        this.page = 1;
+        this.loading.dismiss();
+      });
+    } else {
+      this.activitysService.getActivitysPage(
+        this.searchTerm, 0
+      ).then((activitys: any[]) => {
+        this.activitys = activitys;
+        this.page = 1;
+        this.loading.dismiss();
+      });
+    }
   }
 
   doInfinite(infiniteScroll) {

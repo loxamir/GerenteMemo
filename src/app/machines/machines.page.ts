@@ -12,6 +12,9 @@ import { MachineService } from '../machine/machine.service';
 import { WorkService } from '../work/work.service';
 import { ProductPage } from '../product/product.page';
 import { FilterPage } from '../filter/filter.page';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
+import { LanguageModel } from "../services/language/language.model";
 
 @Component({
   selector: 'app-machines',
@@ -19,6 +22,7 @@ import { FilterPage } from '../filter/filter.page';
   styleUrls: ['./machines.page.scss'],
 })
 export class MachinesPage implements OnInit {
+  languages: Array<LanguageModel>;
   machines: any;
   loading: any;
   searchTerm: string = '';
@@ -35,8 +39,12 @@ export class MachinesPage implements OnInit {
     public workService: WorkService,
     public machineService: MachineService,
     public alertCtrl: AlertController,
+    public translate: TranslateService,
+    public languageService: LanguageService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
+    this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select');
   }
 

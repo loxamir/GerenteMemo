@@ -191,27 +191,31 @@ export class WorkPage implements OnInit {
   }
 
   buttonSave() {
-    this.workForm.value.fields.forEach(field=>{
-      if (field.type == 'formula'){
-        this.workForm.value[field.name] = this.fields[field.name];
-      }
-    })
-    if (this._id) {
-      this.workService.updateWork(this.workForm.value);
-      this.events.publish('open-work', this.workForm.value);
-      this.workForm.markAsPristine();
-      this.navCtrl.navigateBack('/works');
+    if (this.select && this.list) {
+      this.dismissData();
     } else {
-      this.workService.createWork(this.workForm.value).then(doc => {
-        this.workForm.patchValue({
-          _id: doc['doc'].id,
-          code: doc['work'].code,
-        });
-        this._id = doc['doc'].id;
-        this.events.publish('create-work', this.workForm.value);
+      this.workForm.value.fields.forEach(field=>{
+        if (field.type == 'formula'){
+          this.workForm.value[field.name] = this.fields[field.name];
+        }
+      })
+      if (this._id) {
+        this.workService.updateWork(this.workForm.value);
+        this.events.publish('open-work', this.workForm.value);
         this.workForm.markAsPristine();
         this.navCtrl.navigateBack('/works');
-      });
+      } else {
+        this.workService.createWork(this.workForm.value).then(doc => {
+          this.workForm.patchValue({
+            _id: doc['doc'].id,
+            code: doc['work'].code,
+          });
+          this._id = doc['doc'].id;
+          this.events.publish('create-work', this.workForm.value);
+          this.workForm.markAsPristine();
+          this.navCtrl.navigateBack('/works');
+        });
+      }
     }
   }
 
@@ -240,7 +244,7 @@ export class WorkPage implements OnInit {
         component: ActivitysPage,
         componentProps: {
           "select": true,
-          "filter": "customer"
+          "filter": "showLess"
         }
       });
       profileModal.present();
@@ -434,7 +438,7 @@ export class WorkPage implements OnInit {
     let done = true;
     let defaultTab = null;
     if (this.go && this.list) {
-      this.dismissData()
+      this.dismissData();
     }
     for (let field of this.workForm.value.fields) {
       if (field.type == 'float'

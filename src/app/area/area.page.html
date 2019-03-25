@@ -15,7 +15,9 @@
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <form class="sample-form validations-form" [formGroup]="areaForm" (ngSubmit)="onSubmit(areaForm.value)">
+  <form class="sample-form validations-form"
+  [formGroup]="areaForm"
+  (ngSubmit)="onSubmit(areaForm.value)">
     <ion-row>
       <ion-item
       no-padding
@@ -31,14 +33,59 @@
     <ion-item no-padding (click)="selectCrop()" class="field-50">
       <div class="field-many2one">
         <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
-        <h4 class="field-value">{{areaForm.value.crop && areaForm.value.crop.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">
+          {{areaForm.value.crop && areaForm.value.crop.name || 'Selecionar'}}
+        </h4>
       </div>
+    </ion-item>
+    <ion-item
+     no-padding
+     class="field-100">
+       <ion-label>{{'Area Propria' | translate}}</ion-label>
+       <ion-toggle formControlName="own"></ion-toggle>
+    </ion-item>
+    <ion-item no-padding (click)="selectContact()"
+    *ngIf="!areaForm.value.own"
+    class="field-100">
+      <div class="field-many2one">
+        <h4 class="field-label">{{'Proprietario' | translate}}</h4>
+        <h4 class="field-value">
+          {{areaForm.value.contact && areaForm.value.contact.name || 'Selecionar'}}
+        </h4>
+      </div>
+    </ion-item>
+    <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
+      <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
+      <ion-select #type (ionChange)="getDefaultCategory()"
+      formControlName="rentingType"
+      cancelText="{{ 'CANCEL' | translate }}"
+      okText="{{ 'OK' | translate }}"
+      interface="popover">
+        <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
+        <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
+        <ion-select-option value="percent">Porcentage</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
+      <ion-label position="floating"
+      *ngIf="areaForm.value.rentingType == 'fixedAmount'">
+      {{'Valor em $' | translate}}</ion-label>
+      <ion-label position="floating"
+      *ngIf="areaForm.value.rentingType == 'fixedWeight'">
+      {{'Peso em Kg' | translate}}</ion-label>
+      <ion-label position="floating"
+      *ngIf="areaForm.value.rentingType == 'percent'">
+      {{'Porcentage %' | translate}}</ion-label>
+      <ion-input type="number" formControlName="rentingAmount"></ion-input>
     </ion-item>
     </ion-row>
 
     <ion-list no-lines>
-      <ion-item-sliding class="list-item" *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)">
-      <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-item-sliding class="list-item"
+      *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)">
+      <ion-item no-padding
+      (click)="openItem(item)"
+      style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
      <!-- <ion-row no-padding class="content-row one-line">
         <ion-col no-padding width-25 class="schedule-date">
@@ -61,21 +108,33 @@
       </ion-row> -->
             <ion-row>
               <ion-col>
-                <h3 class="item-name"><b>{{ item.activity_name || 'No Informado'}}</b></h3>
+                <h3 class="item-name">
+                  <b>{{ item.activity_name || 'No Informado'}}</b>
+                </h3>
               </ion-col>
             </ion-row>
        <ion-row no-padding class="content-row one-line">
           <ion-col no-padding size="6">
             <!-- <h3 class="item-title" style="font-size:15px;font-weight: bold">{{item.area_name | translate}}</h3> -->
-            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateStart|date: 'dd/MM/yyyy'}}</h3>
-            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateEnd|date: 'dd/MM/yyyy'}}</h3>
+            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">
+              {{item.dateStart|date: 'dd/MM/yyyy'}}
+            </h3>
+            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">
+              {{item.dateEnd|date: 'dd/MM/yyyy'}}
+            </h3>
             <!-- <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;">
               <span style="margin-left: 5px">{{item.code}}</span>
             </h3> -->
           </ion-col>
           <ion-col no-padding size="6" align-self-center>
-            <h2 *ngIf="item.progress < 100" class="list-big-number" style="color: red;">{{item.progress| number:'1.0'}}%</h2>
-            <h2 *ngIf="item.progress == 100" class="list-big-number" style="color: green;">{{item.progress| number:'1.0'}}%</h2>
+            <h2 *ngIf="item.progress < 100" class="list-big-number"
+            style="color: red;">
+              {{item.progress| number:'1.0'}}%
+            </h2>
+            <h2 *ngIf="item.progress == 100"
+            class="list-big-number" style="color: green;">
+            {{item.progress| number:'1.0'}}%
+          </h2>
             <!-- <div *ngIf="item.residual != 0 && item.state!='CANCELED'" class="residual-value">
               $ {{ item.residual | number:'1.0' }}
             </div> -->

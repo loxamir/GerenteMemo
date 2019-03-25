@@ -105,25 +105,21 @@ export class ProductListPage implements OnInit {
     this.getProductsPage(
       this.searchTerm, 0, this.type
     ).then((products: any[]) => {
-      if (this.type == 'all') {
-        this.products = products;
-      }
-      else {
-        this.products = products.filter(word => word.type == this.type);
-      }
+      this.products = products;
       this.page = 1;
       this.loading.dismiss();
     });
   }
 
   searchItems() {
-    this.searchItemsS(
-      this.searchTerm, 0
-    ).then((items) => {
-      this.products = items;
-      this.page = 1;
-      this.loading.dismiss();
-    });
+    this.setFilteredItems();
+    // this.searchItemsS(
+    //   this.searchTerm, 0
+    // ).then((items) => {
+    //   this.products = items;
+    //   this.page = 1;
+    //   this.loading.dismiss();
+    // });
   }
 
   doInfinite(infiniteScroll) {
@@ -235,10 +231,12 @@ export class ProductListPage implements OnInit {
       if (type=='all') {
         promise_ids.push(this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase'));
       } else {
-        promise_ids.push(this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'type', type, 'name', 'increase'));
+        console.log('type', type);
+        promise_ids.push(this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_name', type, 'name', 'increase'));
       }
       promise_ids.push(this.pouchdbService.getView('stock/Depositos', 2));
       Promise.all(promise_ids).then((resList: any[]) => {
+        console.log("rresList", resList);
         let data: any[] = resList[0];
         let viewList: any[] = resList[1];
         data.forEach(product=>{
@@ -252,25 +250,26 @@ export class ProductListPage implements OnInit {
           product.stock = stock;
         })
         resolve(data);
+        console.log("data", data);
       })
     })
   }
 
-  searchItemsS(keyword, page) {
-    return new Promise(resolve => {
-    this.pouchdbService.searchDocs(
-      'product',
-      keyword,
-      page,
-      undefined,
-      undefined,
-      'name',
-      'increase'
-    ).then((items) => {
-        resolve(items);
-      })
-    })
-  }
+  // searchItemsS(keyword, page) {
+  //   return new Promise(resolve => {
+  //   this.pouchdbService.searchDocs(
+  //     'product',
+  //     keyword,
+  //     page,
+  //     'type',
+  //     undefined,
+  //     'name',
+  //     'increase'
+  //   ).then((items) => {
+  //       resolve(items);
+  //     })
+  //   })
+  // }
 
   deleteProduct(product) {
     return this.pouchdbService.deleteDoc(product);

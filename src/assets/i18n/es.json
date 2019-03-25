@@ -309,5 +309,10 @@
   "CLASS": "Classe",
   "WIDTH": "Ancho",
   "SEQUENCE": "Sequencia",
+  "TRACTOR": "Tractor",
+  "SPRAYER": "Pulverizador",
+  "PLANTER": "Plantadera",
+  "FERTILIZER": "Adubadera",
+  "VEHICLE": "Vehiculo",
   "RESULT": "Resultado"
 }

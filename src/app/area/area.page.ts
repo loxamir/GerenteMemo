@@ -19,6 +19,7 @@ import { WorkPage } from '../work/work.page';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { FormatService } from "../services/format.service";
 import { CropsPage } from '../crops/crops.page';
+import { ContactListPage } from '../contact-list/contact-list.page';
 
 @Component({
   selector: 'app-area',
@@ -66,11 +67,14 @@ export class AreaPage implements OnInit {
     this.areaForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
-      renting: new FormControl(0),
       crop: new FormControl({}),
       crop_name: new FormControl(''),
       surface: new FormControl(0),
-      // currency: new FormControl({}),
+      own: new FormControl(true),
+      rentingType: new FormControl('fixedAmount'),
+      rentingAmount: new FormControl(0),
+      contact: new FormControl({}),
+      contact_name: new FormControl(''),
       // currency_name: new FormControl(''),
       moves: new FormControl([]),
       // checks: new FormControl([]),
@@ -192,6 +196,30 @@ export class AreaPage implements OnInit {
         profileModal.present();
       });
   }
+
+  selectContact() {
+      return new Promise(async resolve => {
+        this.events.unsubscribe('select-contact');
+        this.events.subscribe('select-contact', (data) => {
+          this.areaForm.patchValue({
+            contact: data,
+            contact_name: data.name,
+          });
+          this.areaForm.markAsDirty();
+          this.events.unsubscribe('select-contact');
+          profileModal.dismiss();
+          resolve(true);
+        })
+        let profileModal = await this.modalCtrl.create({
+          component: ContactListPage,
+          componentProps: {
+            "select": true,
+          }
+        });
+        profileModal.present();
+      });
+  }
+
 
   discard(){
     this.canDeactivate();

@@ -25,7 +25,7 @@
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of activitys">
       <ion-item no-padding >
-        <ion-card class="list-card">
+        <!-- <ion-card class="list-card">
       <ion-row no-padding class="content-row one-line">
         <ion-col no-padding width-90 class="item-content" (click)="selectActivity(item)">
           <ion-row>
@@ -40,6 +40,25 @@
         </ion-col>
         <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;">
           <ion-icon (click)="openActivity(item)" name="arrow-forward"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-card> -->
+    <ion-card  class="list-card" style="border-radius: 5px;">
+      <ion-row>
+        <ion-col (click)="selectActivity(item)">
+          <ion-row>
+            <ion-col>
+              <h3 class="item-title"><b>{{ item.name }}</b></h3>
+            </ion-col>
+          </ion-row>
+          <ion-row no-padding class="content-row one-line">
+            <ion-col class="item-content" style="white-space: normal;">
+              {{item.note}}
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openActivity(item)">
+          <ion-icon name="open" class="open-item-arrow"></ion-icon>
         </ion-col>
       </ion-row>
     </ion-card>

@@ -51,8 +51,9 @@ export class MachinePage implements OnInit {
     public events: Events,
     public formatService: FormatService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     this.create = this.route.snapshot.paramMap.get('create');
