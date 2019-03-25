@@ -44,13 +44,13 @@
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
-          <ion-select-option value="area">Costos por Area</ion-select-option>
+          <ion-select-option value="area">Costos por Lugar</ion-select-option>
           <ion-select-option value="crop">Costos por Safra</ion-select-option>
           <ion-select-option value="activity">Costos por Atividade</ion-select-option>
           <ion-select-option value="name">Costos por Item</ion-select-option>
           <ion-select-option value="date">Costos por Fecha</ion-select-option>
           <ion-select-option value="yieldCrop">Rendimiento por Safra</ion-select-option>
-          <ion-select-option value="yieldArea">Rendimiento por Area</ion-select-option>
+          <ion-select-option value="yieldArea">Rendimiento por Lugar</ion-select-option>
           <!-- <ion-select-option value="yieldDate">Rendimiento por Fecha</ion-select-option> -->
         </ion-select>
       </ion-item>
@@ -68,7 +68,7 @@
       </ion-item>
       <ion-item *ngIf="reportActivityForm.value.showFilter" no-padding (click)="selectArea()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Area' | translate}}</h4>
+          <h4 class="field-label">{{'Lugar' | translate}}</h4>
           <h4 class="field-value">{{reportActivityForm.value.area && reportActivityForm.value.area.name || 'Todos'}}</h4>
         </div>
       </ion-item>
@@ -115,13 +115,13 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                    {{item.margin|number:'1.0-2'}}
+                    $ {{item.total/item.quantity|number:'1.2-2'}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.quantity}}
                   </ion-col>
                   <ion-col width-25 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                    {{item.total|number:'1.0-2'}}
+                    $ {{item.total|number:'1.2-2'}}
                   </ion-col>
                 </ion-row>
                 <ion-row class="report-title">
@@ -129,13 +129,13 @@
                     TOTAL
                   </ion-col>
                   <ion-col width-20 style="text-align: right">
-                    {{items_margin|number:'1.0-2'}}
+                    $ {{total/items_quantity|number:'1.2-2'}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right">
-                    {{items_quantity|number:'1.0-2'}}
+                    {{items_quantity|number:'1.2-2'}}
                   </ion-col>
                   <ion-col width-25 style="text-align: right">
-                    {{total|number:'1.0-2'}}
+                    $ {{total|number:'1.2-2'}}
                   </ion-col>
                 </ion-row>
               </ion-list>
@@ -151,7 +151,7 @@
                   Costo/ha
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                  Superficie
+                  Area
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
                   Total
@@ -162,13 +162,13 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total/item.quantity|number:'1.0-2'}}
+                  $ {{item.total/item.quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.quantity|number:'1.0-2'}} ha
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total|number:'1.0-2'}}
+                  $ {{item.total|number:'1.2-2'}}
                 </ion-col>
               </ion-row>
               <ion-row class="report-title">
@@ -176,13 +176,13 @@
                   TOTAL
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
-                  {{total/items_quantity|number:'1.0-2'}}
+                  $ {{total/items_quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right">
                   {{items_quantity|number:'1.0-2'}} ha
                 </ion-col>
                 <ion-col width-25 style="text-align: right">
-                  {{total|number:'1.0-2'}}
+                  $ {{total|number:'1.2-2'}}
                 </ion-col>
               </ion-row>
             </ion-list>
@@ -198,7 +198,7 @@
                   Costo Total
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByMargin()">
-                  Kg Producidos
+                  Producción
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of reportActivityForm.value.items">
@@ -206,13 +206,13 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total/item.margin|number:'1.0-2'}}
+                  $ {{item.total/item.margin|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total|number:'1.0-2'}}
+                  $ {{item.total|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.margin|number:'1.0-2'}}
+                  {{item.margin|number:'1.0'}} kg
                 </ion-col>
               </ion-row>
               <ion-row class="report-title">
@@ -220,20 +220,20 @@
                   TOTAL
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
-                  {{total/items_margin|number:'1.0-2'}}
+                  $ {{total/items_margin|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right">
-                  {{total|number:'1.0-2'}}
+                  $ {{total|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-25 style="text-align: right">
-                  {{items_margin|number:'1.0-2'}}
+                  {{items_margin|number:'1.0'}} kg
                 </ion-col>
               </ion-row>
             </ion-list>
             <ion-list no-lines *ngIf="reportActivityForm.value.groupBy == 'yieldArea'">
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Area
+                  Lugar
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
                   Custo/Kg
@@ -242,7 +242,7 @@
                   Costo Total
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                  Kg Producidos
+                  Producción
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of reportActivityForm.value.items">
@@ -250,13 +250,13 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total/item.margin|number:'1.0-2'}}
+                  $ {{item.total/item.margin|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total|number:'1.0-2'}}
+                  $ {{item.total|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.margin|number:'1.0-2'}}
+                  {{item.margin|number:'1.0'}} kg
                 </ion-col>
               </ion-row>
               <ion-row class="report-title">
@@ -264,23 +264,23 @@
                   TOTAL
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
-                  {{total/items_margin|number:'1.0-2'}}
+                  $ {{total/items_margin|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right">
-                  {{total|number:'1.0-2'}}
+                  ${{total|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-25 style="text-align: right">
-                  {{items_margin|number:'1.0-2'}}
+                  {{items_margin|number:'1.0'}} kg
                 </ion-col>
               </ion-row>
             </ion-list>
             <ion-list no-lines *ngIf="reportActivityForm.value.groupBy == 'activity'">
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Actividade
+                  Actividad
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                  Promedio
+                  Precio
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
                   Cant.
@@ -294,13 +294,13 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total/item.quantity|number:'1.0-2'}}
+                  $ {{item.total/item.quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.quantity|number:'1.0-2'}}
+                  {{item.quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total|number:'1.0-2'}}
+                  $ {{item.total|number:'1.2-2'}}
                 </ion-col>
               </ion-row>
               <ion-row class="report-title">
@@ -308,26 +308,26 @@
                   TOTAL
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
-                  {{total/items_quantity|number:'1.0-2'}}
+                  $ {{total/items_quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right">
-                  {{items_quantity|number:'1.0-2'}}
+                  {{items_quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-25 style="text-align: right">
-                  {{total|number:'1.0-2'}}
+                  $ {{total|number:'1.2-2'}}
                 </ion-col>
               </ion-row>
             </ion-list>
             <ion-list no-lines *ngIf="reportActivityForm.value.groupBy == 'area'">
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Area
+                  Lugar
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
                   Costo/ha
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                  Superficie
+                  Area
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
                   Total
@@ -338,13 +338,13 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total/item.quantity|number:'1.0-2'}}
+                  $ {{item.total/item.quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.quantity|number:'1.0-2'}} ha
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total|number:'1.0-2'}}
+                  $ {{item.total|number:'1.2-2'}}
                 </ion-col>
               </ion-row>
               <ion-row class="report-title">
@@ -352,13 +352,13 @@
                   TOTAL
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
-                  {{total/items_quantity|number:'1.0-2'}}
+                  $ {{total/items_quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right">
                   {{items_quantity|number:'1.0-2'}} ha
                 </ion-col>
                 <ion-col width-25 style="text-align: right">
-                  {{total|number:'1.0-2'}}
+                  $ {{total|number:'1.2-2'}}
                 </ion-col>
               </ion-row>
             </ion-list>
@@ -386,13 +386,13 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.margin|number:'1.0-2'}}
+                  $ {{item.margin|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.quantity|number:'1.0-2'}}
+                  {{item.quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total|number:'1.0-2'}}
+                  $ {{item.total|number:'1.2-2'}}
                 </ion-col>
               </ion-row>
               <ion-row class="report-title">
@@ -400,13 +400,13 @@
                   TOTAL
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
-                  {{items_margin|number:'1.0-2'}}
+                  $ {{items_margin|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right">
-                  {{items_quantity|number:'1.0-2'}}
+                  {{items_quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col width-25 style="text-align: right">
-                  {{total|number:'1.0-2'}}
+                  $ {{total|number:'1.2-2'}}
                 </ion-col>
               </ion-row>
             </ion-list>
