@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
       icon: 'stats'
     },
     {
-      title: 'Stock',
+      title: 'Deposito',
       url: '/product-list',
       icon: 'cube'
     },

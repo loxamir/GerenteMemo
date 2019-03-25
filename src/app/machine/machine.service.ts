@@ -18,7 +18,7 @@ export class MachineService {
     return new Promise((resolve, reject)=>{
       let payableList = [];
       this.pouchdbService.getView(
-        'stock/Machines', 2,
+        'stock/Machines', 10,
         [doc_id, '0'],
         [doc_id, 'z']
       ).then((planneds: any[]) => {
@@ -35,11 +35,13 @@ export class MachineService {
           let machine = Object.assign({}, machineMoves[machineMoves.length-1]);
           machine.moves = [];
           machine.balance = balance;
-          machine.account = machineMoves[machineMoves.length-1];
-          machine.name
+          // machine.account = machineMoves[machineMoves.length-1];
+          // machine.name
           for(let i=0;i<pts.length;i++){
+            machineMoves[i]['line'] = pts[i];
             machine.moves.unshift(machineMoves[i]);
           }
+          console.log("machine", machine);
           resolve(machine);
         })
       });

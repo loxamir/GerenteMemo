@@ -91,8 +91,8 @@
             </h3> -->
           </ion-col>
           <ion-col no-padding size="6" align-self-center>
-            <h2 *ngIf="item.progress < 100" class="list-big-number" style="color: red;">{{item.progress| number:'1.0'}}%</h2>
-            <h2 *ngIf="item.progress == 100" class="list-big-number" style="color: green;">{{item.progress| number:'1.0'}}%</h2>
+            <!-- <h2 *ngIf="item.progress < 100" class="list-big-number" style="color: red;">{{item.progress| number:'1.0'}}%</h2> -->
+            <h2 class="list-big-number" style="color: green;">{{item.line.key[2]| number:'1.0'}} hs</h2>
             <!-- <div *ngIf="item.residual != 0 && item.state!='CANCELED'" class="residual-value">
               $ {{ item.residual | number:'1.0' }}
             </div> -->

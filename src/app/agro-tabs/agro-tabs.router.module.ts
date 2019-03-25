@@ -53,11 +53,11 @@ const routes: Routes = [
           }
         ]
       },
-      {
-        path: '',
-        redirectTo: '/agro-tabs/work-list',
-        pathMatch: 'full'
-      }
+      // {
+      //   path: '',
+      //   redirectTo: '/agro-tabs/work-list',
+      //   pathMatch: 'full'
+      // }
     ]
   },
   {
