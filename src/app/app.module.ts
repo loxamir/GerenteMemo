@@ -87,7 +87,9 @@ import { CropsPageModule } from './crops/crops.module';
 import { InputPageModule } from './input/input.module';
 import { InputsPageModule } from './inputs/inputs.module';
 import { FilterPageModule } from './filter/filter.module';
+import { AgroTabsPageModule } from './agro-tabs/agro-tabs.module';
 import { environment } from '../environments/environment';
+// import { AuthGuardService } from './services/auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -113,6 +115,7 @@ import { environment } from '../environments/environment';
     CashListPage,
   ],
   imports: [
+    AgroTabsPageModule,
     LoginPageModule,
     ContactPageModule,
     CashMovePageModule,
@@ -182,6 +185,7 @@ import { environment } from '../environments/environment';
     File,
     StatusBar,
     SplashScreen,
+    // AuthGuardService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

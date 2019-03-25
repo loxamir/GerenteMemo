@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
       icon: 'stats'
     },
     {
-      title: 'Productos',
+      title: 'Stock',
       url: '/product-list',
       icon: 'cube'
     },
@@ -36,6 +36,11 @@ export class AppComponent implements OnInit {
       title: 'Personas',
       url: '/contact-list',
       icon: 'contacts'
+    },
+    {
+      title: 'Ajuda',
+      url: '/help-list',
+      icon: 'help'
     },
     {
       title: 'Ajustes',

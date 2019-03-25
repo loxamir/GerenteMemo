@@ -13,6 +13,7 @@ import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/rou
 import * as jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
 import { LoginPopover } from './login.popover';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -48,7 +49,7 @@ export class LoginPage implements OnInit {
     public storage: Storage,
     public events: Events,
     public popoverCtrl: PopoverController,
-    // public appConfig: AppConfig,
+    public authService: AuthService,
     public menuCtrl: MenuController,
     public pouchdbService: PouchdbService,
     public toastCtrl: ToastController,
@@ -65,7 +66,7 @@ export class LoginPage implements OnInit {
       if (username){
         this.storage.get("password").then((password)=>{
           this.showDatabaseList(username, password);
-          this.selectDatabase(username);
+          // this.selectDatabase(username);
           this.selected_user = true;
         })
       }
@@ -77,8 +78,6 @@ export class LoginPage implements OnInit {
   }
 
   async ngOnInit() {
-
-
     this.loginForm = new FormGroup({
       name: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.compose([
@@ -120,12 +119,12 @@ export class LoginPage implements OnInit {
     } else {
       let filter = this.filter;
     }
-    this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
-        console.log("helps", helps);
-        this.helps = helps;
-      // this.helps = helps;
-      this.page = 1;
-    });
+    // this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
+    //     console.log("helps", helps);
+    //     this.helps = helps;
+    //   // this.helps = helps;
+    //   this.page = 1;
+    // });
   }
 
   // doInfinite(infiniteScroll) {
@@ -164,13 +163,13 @@ export class LoginPage implements OnInit {
   //   }, 500);
   // }
   //
-  getHelpsPage(keyword, page, field=''){
-    console.log("getHelpsPage(",keyword, page, field);
-    return new Promise(resolve => {
-      this.restProvider.getDatabaseDoc('helps', '_design/Vistas/_view/videos?include_docs=true').then((helps: any[]) => {
-        console.log("helps", helps['rows']);
-        resolve(helps['rows']);
-      });
+  // getHelpsPage(keyword, page, field=''){
+  //   console.log("getHelpsPage(",keyword, page, field);
+  //   return new Promise(resolve => {
+  //     this.restProvider.getDatabaseDoc('helps', '_design/Vistas/_view/videos?include_docs=true').then((helps: any[]) => {
+  //       console.log("helps", helps['rows']);
+  //       resolve(helps['rows']);
+  //     });
     //   let list = [
     //     {
     //       "name": "Como Crear Nuevo Contacto",
@@ -205,8 +204,8 @@ export class LoginPage implements OnInit {
     // // console.log("keyword", keyword);
     // // console.log("this.searchTerm", this.searchTerm);
     // resolve(otro);
-  });
-  }
+  // });
+  // }
 
   async presentPopover(myEvent) {
     // console.log("teste my event");
@@ -336,6 +335,7 @@ export class LoginPage implements OnInit {
     this.selected_user = true;
     this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
     this.username = this.loginForm.value.user.toLowerCase();
+    this.authService.login(this.username);
     this.selectDatabase(this.username);
     this.menuCtrl.enable(false);
     this.loading.dismiss();
