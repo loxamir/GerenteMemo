@@ -60,7 +60,8 @@
 
     </ion-item>
       <ion-item-options  side="end">
-        <ion-item-option (click)="deleteSale(slidingItem, item)" *ngIf="item.state=='QUOTATION'">
+        <ion-item-option (click)="deleteSale(slidingItem, item)"
+        *ngIf="item.state=='QUOTATION'">
           Borrar
         </ion-item-option>
       </ion-item-options>
