@@ -401,9 +401,9 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeWork(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
-                  <ion-icon name="trash"></ion-icon>
-                </ion-button>
+                <ion-item-option (click)="removeWork(item)">
+                  Borrar
+                </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
           </ion-list>
@@ -502,9 +502,9 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeInput(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
-                  <ion-icon name="trash"></ion-icon>
-                </ion-button>
+                <ion-item-option (click)="removeInput(item)">
+                  Borrar
+                </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
           </ion-list>
@@ -594,9 +594,9 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeTravel(item)" *ngIf="serviceForm.value.state!='DRAFTs'">
-                  <ion-icon name="trash"></ion-icon>
-                </ion-button>
+                <ion-item-option (click)="removeTravel(item)">
+                  Borrar
+                </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
           </ion-list>

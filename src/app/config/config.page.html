@@ -97,9 +97,9 @@
 
   </ion-item>
   <ion-item-options>
-    <ion-button icon-only color="primary" (click)="deleteUser(item)">
-      <ion-icon name="trash"></ion-icon>
-    </ion-button>
+    <ion-item-option (click)="deleteUser(item)">
+      Borrar
+    </ion-item-option>
   </ion-item-options>
 </ion-item-sliding>
 <ion-row style="border-radius: 7px;border: 1px solid blue; border-top-left-radius: 0px;border-top-right-radius: 0px;"
@@ -111,7 +111,7 @@
 </ion-card> -->
 
   </form>
-  <span>Version 3</span>
+  <span>v1.0.2</span>
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger">

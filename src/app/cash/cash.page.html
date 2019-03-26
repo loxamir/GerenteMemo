@@ -1,7 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <!-- <ion-back-button defaultHref="/cash-list"></ion-back-button> -->
       <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/cash-list')"></ion-back-button>
     </ion-buttons>
     <ion-title>
@@ -10,9 +9,6 @@
       </ion-row>
     </ion-title>
     <ion-buttons slot="end" >
-      <!-- <ion-button (click)="buttonSave()" [hidden]="!cashForm.dirty">
-        {{ 'SAVE' | translate }}
-      </ion-button> -->
       <ion-button (click)="editAccount()">
         <ion-icon name="create"></ion-icon>
       </ion-button>
@@ -56,7 +52,6 @@
     <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="cashForm.value.moves.length">
       Lanzamientos desde ultimo cierre
     </h2>
-    <!-- <ion-list no-lines> -->
       <ion-item-sliding class="list-item" *ngFor="let item of cashForm.value.moves && cashForm.value.moves.sort(this.formatService.compare) || []">
       <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
@@ -99,16 +94,11 @@
       </ion-card>
     </ion-item>
         <ion-item-options>
-          <!-- <ion-button icon-only color="primary" (click)="deleteCashMove(item)">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button> -->
         </ion-item-options>
       </ion-item-sliding>
-    <!-- </ion-list> -->
 
 
 
-    <!-- <ion-list no-lines> -->
       <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="cashForm.value.closes.length">
         Cierres Anteriores
       </h2>
@@ -125,13 +115,7 @@
            </ion-row>
       </ion-card>
     </ion-item>
-        <!-- <ion-item-options>
-          <ion-button icon-only color="primary" (click)="deleteCashMove(item)">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button>
-        </ion-item-options> -->
       </ion-item-sliding>
-    <!-- </ion-list> -->
 
 
 
@@ -185,9 +169,6 @@
       </ion-card>
     </ion-item>
         <ion-item-options>
-          <!-- <ion-button icon-only color="primary" (click)="deleteCashMove(item)">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button> -->
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
