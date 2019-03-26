@@ -1257,9 +1257,135 @@ export class SalePage implements OnInit {
         });
       });
     } else {
-      this.share();
+      this.printMatrix();
     }
-    }
+  }
+
+  printMatrix(){
+    var prefix = "venta_";
+    var extension = ".prt";
+    this.configService.getConfigDoc().then(async (data) => {
+      let company_name = data.name || "";
+      let company_ruc = data.doc || "";
+      let company_phone = data.phone || "";
+      //let number = this.saleForm.value.invoice || "";
+      let date = this.saleForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+      date = date[2]+"/"+date[1]+"/"+date[0]
+      let payment_condition = this.saleForm.value.paymentCondition.name || "";
+      let contact_name = this.saleForm.value.contact.name || "";
+      let seller_name = this.saleForm.value.seller.name || "";
+      let code = this.saleForm.value.code || "";
+      let doc = this.saleForm.value.contact.document || "";
+      //let direction = this.saleForm.value.contact.city || "";
+      //let phone = this.saleForm.value.contact.phone || "";
+      let lines = ""
+      let totalExentas = 0;
+      let totalIva5 = 0;
+      let totalIva10 = 0;
+      this.saleForm.value.items.forEach(item => {
+        let code = item.product.code;
+        let quantity = item.quantity;
+        //  let productName = item.product.name;
+        let price = item.price;
+        let subtotal = quantity*price;
+        let exenta = 0;
+        let iva5 = 0;
+        let iva10 = 0;
+        if (item.product.tax == "iva10"){
+          iva10 = item.quantity*item.price;
+          totalIva10 += iva10;
+        } else if (item.product.tax == "exenta"){
+          exenta = item.quantity*item.price;
+          totalExentas += exenta;
+        } else if (item.product.tax == "iva5"){
+          iva5 = item.quantity*item.price;
+          totalIva5 += iva5;
+        }
+        code = this.formatService.string_pad(6, code).toString();
+        quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+        price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        let product_name = this.formatService.string_pad(32, item.product.name.substring(0, 32));
+        lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+      });
+      let totalAmount = totalIva10 + totalIva5 + totalExentas;
+      totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+
+      let ticket=""
+      ticket +=company_name+"\n";
+      ticket += "Ruc: "+company_ruc+"\n";
+      ticket += "Tel: "+company_phone+"\n";
+      ticket += "\n";
+      ticket += "VENTA COD.: "+code+"\n";
+      ticket += "Fecha: "+date+"\n";
+      ticket += "Cliente: "+contact_name+"\n";
+      ticket += "Ruc: "+doc+"\n";
+      ticket += "\n";
+      ticket += "Condicion de pago: "+payment_condition+"\n";
+      ticket += "\n";
+      ticket += "--------------------------------\n";
+      ticket += "ARTICULOS DEL PEDIDO\n";
+      ticket += "\n";
+      ticket += "Cod.  Cant.   Precio   Sub-total\n";
+      ticket += lines;
+      ticket += "--------------------------------\n";
+      // ticket += "TOTAL Gs.:     "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+      ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      ticket += "--------------------------------\n";
+      ticket += "AVISO LEGAL: Este comprobante \n";
+      ticket += "no tiene valor fiscal.\n";
+      ticket += "--------------------------------\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "--------------------------------\n";
+      ticket += "Firma del vendedor: " +seller_name+"\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "--------------------------------\n";
+      ticket += "Firma del cliente: "+contact_name+"\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+      ticket += "\n";
+
+
+      console.log("ticket", ticket);
+
+      this.formatService.printMatrixClean(ticket, prefix + this.saleForm.value.code + extension);
+      let toast = await this.toastCtrl.create({
+        message: "Imprimiendo...",
+        duration: 3000
+      });
+      toast.present();
+
+      // Print to bluetooth printer
+    // this.bluetoothSerial.isEnabled().then(res => {
+    //   this.bluetoothSerial.list().then((data)=> {
+    //     this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+    //       this.bluetoothSerial.isConnected().then(res => {
+    //         // |---- 32 characteres ----|
+    //         this.bluetoothSerial.write(ticket);
+    //         this.bluetoothSerial.disconnect();
+    //       }).catch(res => {
+    //         //console.log("res1", res);
+    //       });
+    //     },error=>{
+    //       //console.log("error", error);
+    //     });
+    //   })
+    // }).catch(res => {
+    //   //console.log("res", res);
+    // });
+  });
+  }
 
     share() {
       this.configService.getConfigDoc().then((data) => {
