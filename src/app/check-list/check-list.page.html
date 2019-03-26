@@ -46,9 +46,10 @@
 
     </ion-item>
       <ion-item-options>
-        <ion-button icon-only color="primary" (click)="deleteCheck(item)" *ngIf="item.state=='QUOTATION'">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
+        <ion-item-option (click)="deleteCheck(item)"
+        *ngIf="item.state=='QUOTATION'">
+          Borrar
+        </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>

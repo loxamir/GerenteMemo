@@ -35,6 +35,10 @@
 </ion-card>
     </ion-item>
       <ion-item-options>
+        <ion-item-option (click)="deleteStockMove(item)"
+        *ngIf="!item.fixed">
+          Borrar
+        </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
