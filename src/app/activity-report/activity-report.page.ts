@@ -632,6 +632,8 @@ export class ActivityReportPage implements OnInit {
       else if (this.reportActivityForm.value.groupBy == 'activity') {
         console.log("area", );
       items = [];
+      let getList = [];
+      let activityArea = {};
       activitys.forEach(activityLine => {
         if (result.hasOwnProperty(activityLine.key[2])) {
           items[result[activityLine.key[2]]] = {
@@ -640,6 +642,11 @@ export class ActivityReportPage implements OnInit {
             'margin': items[result[activityLine.key[2]]].margin + parseFloat(activityLine.key[5]),
             'total': items[result[activityLine.key[2]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
           };
+          if (activityArea.hasOwnProperty(activityLine.key[1])) {
+            activityArea[activityLine.key[2]][activityLine.key[1]] += 1;
+          } else {
+            activityArea[activityLine.key[2]][activityLine.key[1]] = 1;
+          }
         } else {
           items.push({
             'name': activityLine.key[2],
@@ -648,8 +655,29 @@ export class ActivityReportPage implements OnInit {
             'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
           });
           result[activityLine.key[2]] = items.length-1;
+          activityArea[activityLine.key[2]] = {}
+          activityArea[activityLine.key[2]][activityLine.key[1]] = 1;
+        }
+        if (getList.indexOf(activityLine.key[10]) == -1){
+          getList.push(activityLine.key[10]);
         }
       });
+      console.log("activityArea", activityArea);
+
+      let products: any = await this.pouchdbService.getList(getList);
+      var doc_dict = {};
+      products.forEach(row=>{
+        doc_dict[row.doc.name] = row.doc;
+      })
+      Object.keys(activityArea).forEach((item)=>{
+        let counter = 0;
+        Object.keys(activityArea[item]).forEach((area)=>{
+          counter += activityArea[item][area]*doc_dict[area].surface;
+          activityArea[item][area] = activityArea[item][area]*doc_dict[area].surface;
+        })
+        activityArea[item] = counter;
+      })
+      console.log("activityArea2", activityArea);
 
       let self = this;
       let output = items.sort(function(a, b) {
@@ -661,6 +689,7 @@ export class ActivityReportPage implements OnInit {
         item['marker'] = marker,
           marker = !marker;
         total += parseFloat(item['total']);
+        item['quantity'] = activityArea[item['name']];
       });
       this.loading.dismiss();
       resolve(output);
