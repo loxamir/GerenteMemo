@@ -162,7 +162,7 @@
                 <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
                   <ion-col *ngFor="let atribute of field.attributes;">
                     <h4 class="field-label" style="margin-top: 0px;">{{atribute.label}}</h4>
-                    <h4 class="user-name"  style="margin-bottom: 0px;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
+                    <h4 class="user-name"  style="margin-bottom: 0px;text-align: center;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
                   </ion-col>
                 </ion-row>
               </ion-item>
