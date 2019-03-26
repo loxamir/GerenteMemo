@@ -170,9 +170,9 @@
       </ion-card>
       </ion-item>
         <ion-item-options>
-          <ion-button icon-only color="primary" (click)="deleteItem(item)" *ngIf="invoiceForm.value.state!='QUOTATIONs'">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button>
+          <ion-item-option (click)="deleteItem(item)">
+            Borrar
+          </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </section>

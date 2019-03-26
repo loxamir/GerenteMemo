@@ -337,9 +337,9 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeInput(item)" *ngIf="productionForm.value.state!='DRAFTs'">
-                  <ion-icon name="trash"></ion-icon>
-                </ion-button>
+                <ion-item-option (click)="removeInput(item)">
+                  Borrar
+                </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
           </ion-list>
@@ -437,90 +437,13 @@
             </ion-card>
             </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeWork(item)" *ngIf="productionForm.value.state!='DRAFTs'">
-                  <ion-icon name="trash"></ion-icon>
-                </ion-button>
+                <ion-item-option (click)="removeWork(item)">
+                  Borrar
+                </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
           </ion-list>
         </ion-card>
-
-
-          <!-- <ion-card class="internal-card"  *ngIf="(productionForm.value.state=='STARTED' || productionForm.value.state=='CONFIRMED' || productionForm.value.state=='PAID' || productionForm.value.state=='CANCELED')  && !productionForm.value.production">
-            <ion-row>
-              <ion-col (click)="showTravels()" size="1">
-                <ion-icon name="arrow-dropdown"
-                style="font-size: 2rem;color: #47ad4c;">
-                </ion-icon>
-              </ion-col>
-              <ion-col size="9" (click)="showTravels()">
-                <h4 class="section-title">{{'Viaticos' | translate}}</h4>
-                <h4 class="field-value"  style="margin-top:0px;">$ {{productionForm.value.travel_amount|number:'1.0'}}</h4>
-              </ion-col>
-              <ion-col size="2" class="open-item-col"
-                *ngIf="productionForm.value.state == 'STARTED'"
-                (click)="addTravel()">
-                <ion-icon name="add" class="open-item-arrow"></ion-icon>
-              </ion-col>
-            </ion-row>
-            <ion-list no-lines *ngIf="productionForm.value.travels.length && show_travels" style="border-top: 1px solid blue;;background: #ddd">
-              <ion-item-sliding  class="list-item" *ngFor="let item of productionForm.value.travels">
-                <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
-                  <ion-card class="internal-card">
-                    <ion-row (click)="editTravel(item)" class="product-name-row">
-                      {{item.note}}
-                    </ion-row>
-                <ion-row>
-                  <ion-col size="6" style="white-space: normal;">
-                    <ion-row style="margin-top: -5px;">
-                      <ion-col  size="12" (click)="editTravelPrice(item)" >
-                        <span class="price-label">Precio:</span>
-                        <div style="font-size: 15px;display: contents; color:red">
-                           $ {{item.price|number:'1.0'}}<div style="color: gray;display:inline">/km</div>
-                        </div>
-
-                      </ion-col>
-                    </ion-row>
-                    <ion-row (click)="editTravelPrice(item)">
-                      <ion-col  size="12">
-                        <span class="price-label">SubTotal:</span>
-                        <div style="font-size: 20px;color:green;">
-                           ${{item.price*item.distance|number:'1.0'}}
-                        </div>
-                      </ion-col>
-                    </ion-row>
-                  </ion-col>
-                  <ion-col size="6">
-
-                    <ion-row>
-                      <ion-col style="text-align: center;">
-                        Kilometros
-                      </ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col size="3">
-                        <ion-button class="quantity-button" (click)="remTravel(item)">-</ion-button>
-                      </ion-col>
-                      <ion-col size="6" (click)="editTravel(item)" style="text-align: center;font-size: 30px;">
-                        {{item.distance}}
-                      </ion-col>
-                      <ion-col size="3">
-                        <ion-button class="quantity-button" (click)="sumTravel(item)">+</ion-button>
-                      </ion-col>
-                    </ion-row>
-                  </ion-col>
-                </ion-row>
-              </ion-card>
-              </ion-item>
-                <ion-item-options>
-                  <ion-button icon-only color="primary" (click)="removeTravel(item)" *ngIf="productionForm.value.state!='DRAFTs'">
-                    <ion-icon name="trash"></ion-icon>
-                  </ion-button>
-                </ion-item-options>
-              </ion-item-sliding>
-            </ion-list>
-          </ion-card> -->
-
           <ion-row>
             <ion-col
              class="item-content"
