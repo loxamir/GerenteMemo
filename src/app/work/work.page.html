@@ -5,6 +5,9 @@
     </ion-buttons>
     <ion-title>
       {{ workForm.value.activity && workForm.value.activity.name || 'TASK' | translate }} {{workForm.value.code}}
+      <h1 style="font-size:13px;margin-top:5px;margin-bottom:0px;">
+        {{ workForm.value.date|date: 'dd/MM/yyyy' }}
+      </h1>
     </ion-title>
     <ion-buttons slot="end">
     </ion-buttons>
@@ -151,9 +154,9 @@
 
     <div class="forms-wrapper" *ngFor="let field of filterTabs(workForm.value.fields)">
         <div *ngIf="workForm.value.section == field.name" class="post-example-view">
-          <ion-list style="background-color: #ddd" *ngIf="field.type == 'tab' && workForm.value[field.name] && workForm.value[field.name].length > 0">
+          <ion-list style="background-color: #ddd;padding-top:3px;padding-bottom: 0px;" *ngIf="field.type == 'tab' && workForm.value[field.name] && workForm.value[field.name].length > 0">
             <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
-              <ion-item class="internal-item" style="--background: white;">
+              <ion-item style="--background: white;">
                 <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
                   <ion-col *ngFor="let atribute of field.attributes;">
                     <h4 class="field-label" style="margin-top: 0px;">{{atribute.label}}</h4>
@@ -162,10 +165,7 @@
                 </ion-row>
               </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeFieldItem(field.name, i)">
-                  <ion-icon name="trash"></ion-icon>
-                </ion-button>
-                <ion-item-option (click)="deleteStockMove(item)"
+                <ion-item-option (click)="removeFieldItem(field.name, i)"
                 *ngIf="!item.fixed">
                   Borrar
                 </ion-item-option>
@@ -182,6 +182,12 @@
             </ion-col>
         </div>
     </div>
+    <ion-item  class="field-100" style="margin-top: 10px;">
+      <ion-label position="stacked">{{ 'NOTE' | translate }}</ion-label>
+      <ion-textarea #note formControlName="note"
+        rows="2">
+      </ion-textarea>
+    </ion-item>
   </form>
   <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
     <ion-button (click)="goNextStep()"  class="next-button">

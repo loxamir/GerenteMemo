@@ -127,7 +127,7 @@ export class WorkPage implements OnInit {
       activity: new FormControl(this.activity||{}),
       code: new FormControl(''),
       date: new FormControl(this.today),
-      note: new FormControl(''),
+      note: new FormControl(),
       state: new FormControl('QUOTATION'),
       language: new FormControl(''),
       fields: new FormControl([]),

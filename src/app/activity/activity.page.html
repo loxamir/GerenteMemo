@@ -36,11 +36,7 @@
             </ion-row>
           </ion-item>
           <ion-item-options>
-            <ion-button icon-only color="primary" (click)="removeField(item)">
-              <ion-icon name="trash"></ion-icon>
-            </ion-button>
-            <ion-item-option (click)="deleteStockMove(item)"
-            *ngIf="!item.fixed">
+            <ion-item-option (click)="removeField(item)">
               Borrar
             </ion-item-option>
           </ion-item-options>
