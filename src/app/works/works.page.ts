@@ -20,6 +20,7 @@ export class WorksPage implements OnInit {
   items = [];
   page = 0;
   select;
+  changes = {};
   // has_search = false;
   // let total = 0;
   // this.workForm.deliveries.forEach((delivery)=>{
@@ -36,12 +37,18 @@ export class WorksPage implements OnInit {
     public route: ActivatedRoute,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
+    this.events.unsubscribe('changed-work');
     this.events.subscribe('changed-work', (change)=>{
-      this.worksService.handleChange(this.works, change);
+      if (!this.changes.hasOwnProperty(change.seq)){
+        console.log("handle ", change);
+        this.worksService.handleChange(this.works, change);
+        this.changes[change.seq] = true;
+      }
     })
-    this.events.subscribe('got-database', (change)=>{
+    // this.events.unsubscribe('got-database');
+    // this.events.subscribe('got-database', (change)=>{
       this.setFilteredItems();
-    })
+    // })
   }
 
   async showFilter() {

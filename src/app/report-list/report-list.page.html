@@ -52,7 +52,7 @@
         </ion-row>
         <ion-row>
           <ion-col no-padding class="report-100" style="margin-top: 15px;">
-            <h4 class="field-label">{{'Costo d' | translate}}</h4>
+            <h4 class="field-label">{{'Costo Total Estimado' | translate}}</h4>
             <h4 class="field-value" style="color:green; font-size:30px;">
               $ {{ag_production_cost|number:'1.0-1'}}
             </h4>
@@ -62,7 +62,7 @@
           <ion-col no-padding class="report-50">
             <h4 class="field-label">{{'Costo por hectare' | translate}}</h4>
             <h4 class="field-value" style="color:red">
-              $ {{ag_production_cost/ag_produced_area|number:'1.0-1'}}
+              $ {{ag_production_cost/ag_produced_area|number:'1.0-1'}}/ha
             </h4>
           </ion-col>
           <ion-col no-padding class="report-50">

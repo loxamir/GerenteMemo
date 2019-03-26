@@ -473,6 +473,7 @@ export class PouchdbService {
   }
 
   localHandleChangeData(list, change){
+    console.log("change1", change);
     let changedDoc = null;
     let changedIndex = null;
     list.forEach((doc, index) => {

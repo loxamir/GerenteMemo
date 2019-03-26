@@ -330,9 +330,13 @@ export class WorkPage implements OnInit {
       let d = {}
       if(fielD.onchange){
         fielD.onchange.split(';').forEach(item=>{
-          let fieldName = item.split('=')[0]
-          let fieldData = item.split('=')[1]
-          d[fieldName] = data[fieldData];
+          let fieldName = item.split('=')[0];
+          let fieldData = item.split('=')[1];
+          if (isNaN(fieldData)){
+            d[fieldName] = data[fieldData];
+          } else {
+            d[fieldName] = fieldData;
+          }
         })
         this.workForm.patchValue(d);
       }
