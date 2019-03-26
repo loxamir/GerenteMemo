@@ -1943,6 +1943,11 @@ export class ServicePage implements OnInit {
       console.log("\n"+ticket);
       // var blob = new Blob([invoice], { type: "text/plain;charset=utf-8" });
       this.formatService.printMatrixClean(ticket, prefix + this.serviceForm.value.code + extension);
+      let toast = await this.toastCtrl.create({
+        message: "Imprimiendo...",
+        duration: 3000
+      });
+      toast.present();
 
     })
   }
