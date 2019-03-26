@@ -233,7 +233,7 @@ export class InvoicePage implements OnInit {
         icon: 'print',
         handler: () => {
           console.log('BluetoothSerial');
-          this.posprint()
+          this.posprint();
         }
       })
     } else {
@@ -1247,7 +1247,7 @@ export class InvoicePage implements OnInit {
                  }
 
                  //Name of pdf
-                 const fileName = "example.pdf";
+                 const fileName = "factura_"+number+".pdf";
 
                  // Make file
                  doc.save(fileName);
@@ -1439,7 +1439,7 @@ export class InvoicePage implements OnInit {
         let productName =this.formatService.string_pad(38, line.description.substring(0, 38));
 
         let productQuantity =this.formatService.string_pad(9, line.quantity, 'right');
-        let productPrice =this.formatService.string_pad(14, line.price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+        let productPrice =this.formatService.string_pad(14, parseFloat(line.price).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
         let subTotal =this.formatService.string_pad(16, (line.price*line.quantity).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
         let tax =this.formatService.string_pad(6, iva, 'right');
         invoiceLines += productCode+" "+productName+"\n";
