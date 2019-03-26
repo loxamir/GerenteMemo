@@ -35,7 +35,7 @@
           <h2 *ngIf="item.progress == 100" class="list-big-number" style="color: green;">{{item.progress| number:'1.0'}}%</h2>
         </ion-col>
       </ion-row>
-      <ion-row no-padding>
+      <ion-row no-padding *ngIf="item.note">
         <ion-col class="item-content" style="white-space: normal;">
           {{item.note}}
         </ion-col>

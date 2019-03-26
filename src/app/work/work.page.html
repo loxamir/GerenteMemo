@@ -79,7 +79,9 @@
             </ion-item>
             <ion-item class="field-100" *ngIf="field.type == 'progress'">
               <span style="margin-top: -20px;position: absolute;font-size: 13px;">{{field.label || field.name}}</span>
-              <ion-range min="0" max="100" color="primary" [formControlName]="field.name" pin="true" snaps="true">
+              <ion-range min="0" max="100" color="primary"
+              [formControlName]="field.name"
+              pin="true" snaps="true">
                 <ion-label slot="start">0</ion-label>
                 <ion-label slot="end">100%</ion-label>
               </ion-range>

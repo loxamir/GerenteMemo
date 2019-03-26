@@ -96,7 +96,7 @@ export class ContactPage implements OnInit {
       employee: new FormControl(this.employee||false),
       user: new FormControl(false),
       user_details: new FormControl({}),
-      salary: new FormControl(null),
+      salary: new FormControl(0),
       currency: new FormControl({}),
       hire_date: new FormControl(undefined),
       salaries: new FormControl([]),
