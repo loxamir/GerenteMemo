@@ -54,7 +54,8 @@
       </ion-card>
     </ion-item>
       <ion-item-options>
-        <ion-button (click)="deleteContact(item)">
+        <ion-button (click)="deleteContact(item)"
+        *ngIf="!item.fixed">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-item-options>

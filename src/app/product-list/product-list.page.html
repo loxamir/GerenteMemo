@@ -73,7 +73,7 @@
       </ion-card>
     </ion-item>
       <ion-item-options *ngIf="!select">
-        <ion-button icon-only color="primary" (click)="deleteProduct(item)">
+        <ion-button icon-only color="primary" *ngIf="!item.fixed" (click)="deleteProduct(item)">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-item-options>

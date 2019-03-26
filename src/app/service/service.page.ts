@@ -936,6 +936,7 @@ export class ServicePage implements OnInit {
           if (data.data) {
             data.data.cost = this.labor_product['cost'];
             data.data.price = this.labor_product['price'];
+            data.data.description = data.data.description || '';
             this.serviceForm.value.works.unshift(data.data)
             this.recomputeValues();
             this.serviceForm.markAsDirty();
