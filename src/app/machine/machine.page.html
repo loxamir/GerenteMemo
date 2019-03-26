@@ -58,23 +58,6 @@
       <ion-item-sliding class="list-item" *ngFor="let item of machineForm.value.moves.sort(this.formatService.compare)">
       <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
-     <!-- <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-25 class="schedule-date">
-          <h2 class="list-big-number">{{item.activity_name}}</h2>
-          <h3 class="schedule-month">{{item.date|date: 'dd/MM/yyyy'}}</h3>
-          <h4 class="schedule-time">Costo: $ {{item.cost}}</h4>
-        </ion-col>
-        <ion-col no-padding width-35  >
-          <ion-row no-padding>
-            <ion-col class="item-content" style="white-space: normal;">
-              {{item.name}}
-            </ion-col>
-          </ion-row>
-
-        </ion-col>
-        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-        </ion-col>
-      </ion-row> -->
             <ion-row>
               <ion-col>
                 <h3 class="item-name"><b>{{ item.activity_name || 'No Informado'}}</b></h3>
@@ -85,25 +68,18 @@
             <h3 class="item-title" style="font-size:15px;font-weight: bold">{{item.area_name | translate}}</h3>
             <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateStart|date: 'dd/MM/yyyy'}}</h3>
             <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateEnd|date: 'dd/MM/yyyy'}}</h3>
-            <!-- <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;">
-              <span style="margin-left: 5px">{{item.code}}</span>
-            </h3> -->
           </ion-col>
           <ion-col no-padding size="6" align-self-center>
-            <!-- <h2 *ngIf="item.progress < 100" class="list-big-number" style="color: red;">{{item.progress| number:'1.0'}}%</h2> -->
             <h2 class="list-big-number" style="color: green;">{{item.line.key[2]| number:'1.0'}} hs</h2>
-            <!-- <div *ngIf="item.residual != 0 && item.state!='CANCELED'" class="residual-value">
-              $ {{ item.residual | number:'1.0' }}
-            </div> -->
           </ion-col>
         </ion-row>
       </ion-card>
     </ion-item>
 
         <ion-item-options>
-          <ion-button icon-only color="primary" (click)="deleteMachineMove(item)">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button>
+          <ion-item-option (click)="deleteMachineMove(item)">
+            Borrar
+          </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>

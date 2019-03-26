@@ -105,9 +105,9 @@
                   </ion-row>
                 </ion-item>
                 <ion-item-options>
-                  <ion-button icon-only color="primary" (click)="removeFieldItem(field.name, i)">
-                    <ion-icon name="trash"></ion-icon>
-                  </ion-button>
+                  <ion-item-option (click)="removeFieldItem(field.name, i)">
+                    Borrar
+                  </ion-item-option>
                 </ion-item-options>
               </ion-item-sliding>
               <ion-row style="background: #1c61f3;border-radius: 7px;border: 1px solid #1c61f3; border-top-left-radius: 0px;border-top-right-radius: 0px;"
@@ -165,6 +165,10 @@
                 <ion-button icon-only color="primary" (click)="removeFieldItem(field.name, i)">
                   <ion-icon name="trash"></ion-icon>
                 </ion-button>
+                <ion-item-option (click)="deleteStockMove(item)"
+                *ngIf="!item.fixed">
+                  Borrar
+                </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
           </ion-list>

@@ -51,9 +51,10 @@
     </ion-item>
 
         <ion-item-options>
-          <ion-button icon-only color="primary" (click)="deleteAnimalMove(item)">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button>
+          <ion-item-option (click)="deleteAnimalMove(item)"
+          *ngIf="!item.fixed">
+            Borrar
+          </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
@@ -62,14 +63,6 @@
 </ion-row>
 </form>
 
-<!-- <ion-fab center bottom #fab>
-<ion-fab-button><ion-icon name="add"></ion-icon></ion-button>
-<ion-fab-list side="top">
-<div style="background: #4CAF50;color: white;margin-top: -5px;">Entrada</div><button style="background: #4CAF50;color: white;margin-bottom: 5px;" ion-fab (click)="addIncome(fab)"><ion-icon name="arrow-round-down"></ion-icon></ion-button>
-<div style="background: #FF5722;color: white;margin-top: -5px;">Salida</div><button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addExpense(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
-<div style="background: #FF5722;color: white;margin-top: -5px;">Transferencia</div><button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addTransfer(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
-</ion-fab-list>
-</ion-fab> -->
 <ion-fab vertical="bottom" horizontal="center" slot="fixed" class="add-product-button">
 <ion-fab-button (click)="addActivity()">
   <ion-icon name="add">

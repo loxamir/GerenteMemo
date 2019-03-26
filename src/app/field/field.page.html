@@ -14,20 +14,14 @@
 <ion-content class="check-content">
   <form class="sample-form validations-form" [formGroup]="fieldForm"  (ngSubmit)="onSubmit(fieldForm.value)">
     <ion-row>
-    <!-- <section class="form-section"> -->
-      <!-- <ion-card class="list-card"> -->
         <ion-item class="field-100" style="background-color: white">
           <ion-label position="floating">{{'NAME' | translate}}</ion-label>
           <ion-input type="text" formControlName="name"></ion-input>
         </ion-item>
-      <!-- </ion-card>
-      <ion-card class="list-card"> -->
         <ion-item class="field-100" style="background-color: white">
           <ion-label position="floating">{{'LABEL' | translate}}</ion-label>
           <ion-input type="text" formControlName="label"></ion-input>
         </ion-item>
-      <!-- </ion-card>
-      <ion-card class="list-card"> -->
       <ion-item class="field-100" style="background-color: white">
         <ion-label position="floating">{{'DEFAULT' | translate}}</ion-label>
         <ion-input type="text" formControlName="default"></ion-input>
@@ -41,14 +35,10 @@
           <ion-label position="floating">{{'INVISIBLE' | translate}}</ion-label>
           <ion-input type="text" formControlName="invisible"></ion-input>
         </ion-item>
-      <!-- </ion-card>
-      <ion-card class="list-card"> -->
         <ion-item class="field-100" style="background-color: white">
           <ion-label position="floating">{{'READONLY' | translate}}</ion-label>
           <ion-input type="text" formControlName="readonly"></ion-input>
         </ion-item>
-      <!-- </ion-card>
-      <ion-card class="list-card"> -->
         <ion-item class="field-100" style="background-color: white">
             <ion-label>{{'WIDTH' | translate}}</ion-label>
             <ion-select formControlName="class"
@@ -58,14 +48,10 @@
               <ion-select-option value="full-width">100%</ion-select-option>
             </ion-select>
         </ion-item>
-      <!-- </ion-card> -->
-      <!-- <ion-card class="list-card"> -->
         <ion-item class="field-100" style="background-color: white">
           <ion-label position="floating">{{'SEQUENCE' | translate}}</ion-label>
           <ion-input type="number" formControlName="sequence"></ion-input>
         </ion-item>
-      <!-- </ion-card> -->
-      <!-- <ion-card class="list-card"> -->
         <ion-item class="field-100" style="background-color: white">
             <ion-label>{{'TYPE' | translate}}</ion-label>
             <ion-select formControlName="type"
@@ -84,36 +70,22 @@
               <ion-select-option value="button">Boton</ion-select-option>
             </ion-select>
         </ion-item>
-      <!-- </ion-card> -->
-      <!-- <ion-card class="list-card" *ngIf="fieldForm.value.type == 'formula'"> -->
         <ion-item class="field-100" style="background-color: white" *ngIf="fieldForm.value.type == 'formula'">
           <ion-label position="floating">{{'FORMULA' | translate}}</ion-label>
           <ion-input type="text" formControlName="formula"></ion-input>
         </ion-item>
-      <!-- </ion-card> -->
-      <!-- <ion-card class="list-card"> -->
         <ion-item class="field-100" style="background-color: white" (click)="selectActivity()"  *ngIf="fieldForm.value.type == 'list' || fieldForm.value.type == 'tab'">
           <h4 class="field-label">{{'ACTIVITY' | translate }}</h4>
           <h4 class="field-value">{{fieldForm.value.activity.name || 'Selecionar'}}</h4>
         </ion-item>
-      <!-- </ion-card> -->
-      <!-- <ion-card class="list-card" > -->
         <ion-item class="field-100" style="background-color: white" *ngIf="fieldForm.value.type == 'button'">
           <ion-label position="floating">{{'SCRIPT' | translate}}</ion-label>
           <ion-textarea rows="10" formControlName="script"></ion-textarea>
         </ion-item>
-      <!-- </ion-card> -->
-      <!-- <ion-card class="list-card"> -->
         <ion-list style="background-color: white" class="field-100" *ngIf="fieldForm.value.type == 'list' || fieldForm.value.type == 'tab'">
           <h2 class="section-title">Campos en la Lista</h2>
             <ion-item-sliding class="list-item" *ngFor="let attribute of fieldForm.value.attributes; let i = index;">
               <ion-item class="field-100"  (click)="editFieldItem(attribute, i)" class="field-100">
-                <!-- <ion-row>
-                  <ion-col no-padding> -->
-                  <!-- <h4 class="user-name">{{attribute.name}}</h4>
-                    <h4 class="field-label">{{attribute.label}}</h4> -->
-                  <!-- </ion-col>
-                </ion-row> -->
                 <ion-col no-padding>
                   <h4 class="field-label" style="margin-top: 0px;">Etiqueta</h4>
                   <h4 class="user-name" style="margin-bottom: 0px;">{{attribute.label}}</h4>
@@ -124,9 +96,9 @@
                 </ion-col>
               </ion-item>
               <ion-item-options>
-                <ion-button icon-only color="primary" (click)="removeFieldItem(i)">
-                  <ion-icon name="trash"></ion-icon>
-                </ion-button>
+                <ion-item-option (click)="removeFieldItem(i)">
+                  Borrar
+                </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
           <ion-row style="border-radius: 7px;border: 1px solid blue; border-top-left-radius: 0px;border-top-right-radius: 0px;"
@@ -136,8 +108,6 @@
             </a>
           </ion-row>
         </ion-list>
-      <!-- </ion-card> -->
-      <!-- <ion-card class="list-card" > -->
         <ion-item class="field-100" style="background-color: white" *ngIf="fieldForm.value.type == 'many2one'">
             <ion-label>{{'MODEL' | translate}}</ion-label>
             <ion-select formControlName="model"
@@ -148,19 +118,12 @@
               <ion-select-option value="area">Area</ion-select-option>
               <ion-select-option value="machine">Maquina</ion-select-option>
               <ion-select-option value="crop">Safra</ion-select-option>
-              <!-- <ion-select-option value="invoice">Factura</ion-select-option>
-              <ion-select-option value="sale">Venta</ion-select-option>
-              <ion-select-option value="purchase">Compra</ion-select-option> -->
             </ion-select>
         </ion-item>
-      <!-- </ion-card> -->
-      <!-- <ion-card class="list-card" > -->
         <ion-item class="field-100" style="background-color: white" *ngIf="fieldForm.value.type == 'many2one'">
           <ion-label position="floating">{{'CONTEXT' | translate}}</ion-label>
           <ion-input type="text" formControlName="context"></ion-input>
         </ion-item>
-      <!-- </ion-card> -->
-    <!-- </section> -->
     </ion-row>
   </form>
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">

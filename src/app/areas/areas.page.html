@@ -9,10 +9,6 @@
     (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only
-        (click)="showFilter()">
-        <ion-icon name="funnel"></ion-icon>
-      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -26,9 +22,6 @@
       <ion-item no-padding (click)="selectArea(item)"
       style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card">
-          <!-- <ion-row no-padding class="content-row one-line" style="margin-left:0.3em">
-            <h3 class="item-title"><b>{{ item.name }}</b></h3>
-          </ion-row> -->
           <ion-row>
             <ion-col>
               <h3 class="item-name"><b>{{ item.name}}</b></h3>
@@ -45,9 +38,10 @@
         </ion-card>
       </ion-item>
       <ion-item-options>
-        <ion-button icon-only color="primary" (click)="deleteArea(item)" *ngIf="item.balance==0">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
+        <ion-item-option (click)="deleteArea(item)"
+        *ngIf="!item.fixed">
+          Borrar
+        </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
