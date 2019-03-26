@@ -187,7 +187,6 @@ export class CashFlowPage implements OnInit {
             }
 
             if (result.hasOwnProperty(cashFlowLine.key[2])) {
-              // console.log("items[result[cashFlowLine.key[1]]]", items[result[cashFlowLine.key[1]]]);
               items[result[cashFlowLine.key[2]]] = {
                 'name': items[result[cashFlowLine.key[2]]].name,
                 'income': items[result[cashFlowLine.key[2]]].income + income,
@@ -233,7 +232,6 @@ export class CashFlowPage implements OnInit {
             }
 
             if (result.hasOwnProperty(cashFlowLine.key[0])) {
-              // console.log("items[result[cashFlowLine.key[1]]]", items[result[cashFlowLine.key[1]]]);
               items[result[cashFlowLine.key[0]]] = {
                 'name': items[result[cashFlowLine.key[0]]].name,
                 'income': items[result[cashFlowLine.key[0]]].income + income,
@@ -280,7 +278,6 @@ export class CashFlowPage implements OnInit {
             }
 
             if (result.hasOwnProperty(cashFlowLine.key[1])) {
-              // console.log("items[result[cashFlowLine.key[1]]]", items[result[cashFlowLine.key[1]]]);
               items[result[cashFlowLine.key[1]]] = {
                 'name': items[result[cashFlowLine.key[1]]].name,
                 'income': items[result[cashFlowLine.key[1]]].income + income,
@@ -343,13 +340,6 @@ export class CashFlowPage implements OnInit {
     this.goNextStep();
   }
 
-  // orderByQuantity() {
-  //   this.cashFlowForm.patchValue({
-  //     'orderBy': "quantity",
-  //   })
-  //   this.goNextStep();
-  // }
-
   orderByTotal() {
     this.cashFlowForm.patchValue({
       'orderBy': "total",
@@ -357,19 +347,11 @@ export class CashFlowPage implements OnInit {
     this.goNextStep();
   }
 
-  // orderByMargin() {
-  //   this.cashFlowForm.patchValue({
-  //     'orderBy': "margin",
-  //   })
-  //   this.goNextStep();
-  // }
-
   ngOnInit() {
-    //var today = new Date().toISOString();
     this.cashFlowForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
       name: new FormControl(''),
-      dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.getFirstDateOfMonth()),
+      dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.today),
       dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today),
       total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
