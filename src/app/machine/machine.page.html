@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/agro-tabs/machine-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
-        MACHINE: {{machineForm.value.name}}
+        {{ 'MACHINE' | translate }}: {{machineForm.value.name}}
     </ion-title>
     <ion-buttons slot="end" >
     </ion-buttons>
@@ -32,11 +32,11 @@
       cancelText="{{ 'CANCEL' | translate }}"
       okText="{{ 'OK' | translate }}"
       interface="popover">
-        <ion-select-option value="tractor">Tractor</ion-select-option>
-        <ion-select-option value="planter">Plantadeira</ion-select-option>
-        <ion-select-option value="sprayer">Pulverizador</ion-select-option>
-        <ion-select-option value="fertilizer">Adubadera</ion-select-option>
-        <ion-select-option value="vehicle">Vehiculo</ion-select-option>
+        <ion-select-option value="TRACTOR">{{ 'TRACTOR' | translate }}</ion-select-option>
+        <ion-select-option value="PLANTER">{{ 'PLANTER' | translate }}</ion-select-option>
+        <ion-select-option value="SPRAYER">{{ 'SPRAYER' | translate }}</ion-select-option>
+        <ion-select-option value="FERTILIZER">{{ 'FERTILIZER' | translate }}</ion-select-option>
+        <ion-select-option value="VEHICLE">{{ 'VEHICLE' | translate }}</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item
