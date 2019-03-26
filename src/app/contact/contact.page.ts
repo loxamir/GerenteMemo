@@ -101,6 +101,7 @@ export class ContactPage implements OnInit {
       hire_date: new FormControl(undefined),
       salaries: new FormControl([]),
       advances: new FormControl([]),
+      fixed: new FormControl(false),
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
