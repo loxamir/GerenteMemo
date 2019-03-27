@@ -4,11 +4,11 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item (click)="chartOfAccount()">Plan de Cuentas</ion-item>
-    <ion-item (click)="accounts()">Cuentas</ion-item>
-    <ion-item (click)="Balancete()">Balancete</ion-item>
-    <ion-item (click)="cashMoves()">Movimientos</ion-item>
-    <ion-item (click)="checks()">Cheques</ion-item>
+    <ion-item class="popover-item" (click)="chartOfAccount()">Plan de Cuentas</ion-item>
+    <ion-item class="popover-item" (click)="accounts()">Cuentas</ion-item>
+    <ion-item class="popover-item" (click)="Balancete()">Balancete</ion-item>
+    <ion-item class="popover-item" (click)="cashMoves()">Movimientos</ion-item>
+    <ion-item class="popover-item" (click)="checks()">Cheques</ion-item>
   </ion-list>
   `
 })

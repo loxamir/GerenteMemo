@@ -59,7 +59,7 @@ h4.field-label {
   text-align: left;
 }
 h4.field-value {
-  font-size: 18px;
+  font-size: 15px;
   margin-top: 10px;
   position: absolute;
   width: 100%;
@@ -250,6 +250,9 @@ ion-item-sliding, ion-item-sliding .item {
 //     width: 108%;
 //   }
 // }
+.popover-item {
+  margin-left: 5px;
+}
 
 .active-menu {
     --background: var(--ion-color-primary);

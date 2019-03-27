@@ -4,9 +4,9 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
 @Component({
   template: `
   <ion-list>
-    <ion-item (click)="duplicate()">Duplicar</ion-item>
-    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.productionForm.value.state=='CONFIRMED' && navParams.data.doc.productionForm.value.date.split('T')[0]==today.split('T')[0]">Desconfirmar</ion-item>
-    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.productionForm.value.state=='SCHEDULED' || navParams.data.doc.productionForm.value.state=='STARTED'">Volver a Borrador</ion-item>
+    <ion-item class="popover-item" (click)="duplicate()">Duplicar</ion-item>
+    <ion-item class="popover-item" (click)="cancel()" *ngIf="navParams.data.doc.productionForm.value.state=='CONFIRMED' && navParams.data.doc.productionForm.value.date.split('T')[0]==today.split('T')[0]">Desconfirmar</ion-item>
+    <ion-item class="popover-item" (click)="cancel()" *ngIf="navParams.data.doc.productionForm.value.state=='SCHEDULED' || navParams.data.doc.productionForm.value.state=='STARTED'">Volver a Borrador</ion-item>
   </ion-list>
   `
 })

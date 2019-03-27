@@ -4,11 +4,11 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item style="background-color: white;" ion-item (click)="receivable()">Cuentas A Cobrar</ion-item>
-    <ion-item style="background-color: white;" ion-item (click)="invoice()">Facturas</ion-item>
-    <ion-item style="background-color: white;" ion-item (click)="receipts()">Recibos</ion-item>
-    <!--ion-item ion-item (click)="importer()">Importador Ventas</ion-item>
-    <ion-item (click)="importerLine()">Importador Lineas</ion-item-->
+    <ion-item class="popover-item" (click)="receivable()">Cuentas A Cobrar</ion-item>
+    <ion-item class="popover-item" (click)="invoice()">Facturas</ion-item>
+    <ion-item class="popover-item" (click)="receipts()">Recibos</ion-item>
+    <!--ion-item class="popover-item" (click)="importer()">Importador Ventas</ion-item>
+    <ion-item class="popover-item" (click)="importerLine()">Importador Lineas</ion-item-->
   </ion-list>
   `
 })

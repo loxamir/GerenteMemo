@@ -4,7 +4,7 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item (click)="logout()">Salir</ion-item>
+    <ion-item class="popover-item" (click)="logout()">Salir</ion-item>
   </ion-list>
   `
 })
