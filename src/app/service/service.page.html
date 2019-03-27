@@ -313,9 +313,14 @@
 
     <div [ngSwitch]="serviceForm.value.section" class="forms-wrapper">
       <div *ngSwitchCase="'works'" class="post-example-view">
-        <ion-button class="button-100" color="success" (click)="addWork()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Servicio</ion-button>
+        <ion-button class="button-100" color="success" (click)="addWork()"
+        *ngIf="serviceForm.value.state!='CONFIRMED' && serviceForm.value.state!='PAID'">
+        <ion-icon name="add" style="margin-right:10px;"></ion-icon>
+          Agregar Servicio
+        </ion-button>
 
-        <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="serviceForm.value.works.length">
+        <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;"
+        *ngIf="serviceForm.value.works.length">
           Total $ {{serviceForm.value.work_amount|number:'1.0'}}
         </h2>
         <!-- <ion-card class="internal-card">
@@ -338,7 +343,8 @@
 
           <ion-list no-lines style="background: #ddd">
 
-            <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.works">
+            <ion-item-sliding  class="list-item"
+            *ngFor="let item of serviceForm.value.works">
               <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
                 <ion-card class="internal-card">
                   <ion-row (click)="editWork(item)" class="product-name-row">
@@ -410,7 +416,9 @@
         <!-- </ion-card> -->
       </div>
       <div *ngSwitchCase="'inputs'" class="post-example-view">
-        <ion-button class="button-100" color="success" (click)="addInput()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Repuesto</ion-button>
+        <ion-button class="button-100" color="success"
+        *ngIf="serviceForm.value.state!='CONFIRMED' && serviceForm.value.state!='PAID'"
+        (click)="addInput()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Repuesto</ion-button>
 
         <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="serviceForm.value.inputs.length">
           Total $ {{serviceForm.value.input_amount|number:'1.0'}}
@@ -513,7 +521,9 @@
         <!-- </ion-card> -->
       </div>
       <div *ngSwitchCase="'travel'" class="post-example-view">
-        <ion-button class="button-100" color="success" (click)="addTravel()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Viatico</ion-button>
+        <ion-button class="button-100"
+        *ngIf="serviceForm.value.state!='CONFIRMED' && serviceForm.value.state!='PAID'"
+        color="success" (click)="addTravel()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Viatico</ion-button>
 
         <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="serviceForm.value.travels.length">
           Total $ {{serviceForm.value.travel_amount|number:'1.0'}}
