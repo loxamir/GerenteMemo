@@ -552,7 +552,7 @@ export class FormatService {
       let linesPrice_width: any = layout.linesPrice_width / 1.35;
       linesPrice_width = parseInt(linesPrice_width);
       // dataModel = line.price;
-      dataModel = this.string_pad(linesPrice_width, line.price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+      dataModel = this.string_pad(linesPrice_width, parseFloat(line.price).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
       for (var x = 0; x < dataModel.toString().length; x++) {
         page_printed[linesMarginTop + index][x + marginLeft] = dataModel.toString()[x];
       }

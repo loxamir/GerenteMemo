@@ -113,10 +113,10 @@ export class ReportListPage implements OnInit {
     this.reportsForm = this.formBuilder.group({
       dateStart: new FormControl(
         this.route.snapshot.paramMap.get('dateStart')
-        || this.getFirstDateOfMonth()),
+        || this.today),
       dateEnd: new FormControl(
         this.route.snapshot.paramMap.get('dateEnd')
-        || this.getEndOfMonth()),
+        || this.today),
       // sales: new FormControl(0),
       // purchases: new FormControl(0),
     });
@@ -669,8 +669,8 @@ export class ReportListPage implements OnInit {
 
   showReportCashFlow() {
     this.navCtrl.navigateForward(['/cash-flow', {
-      'startkey': [this.reportsForm.value.dateStart.split('T')[0], '0'],
-      'endkey': [this.reportsForm.value.dateEnd.split('T')[0], 'z']
+      'dateStart': this.reportsForm.value.dateStart,
+      'dateEnd': this.reportsForm.value.dateEnd
     }]);
   }
 
