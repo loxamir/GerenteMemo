@@ -42,6 +42,7 @@ export class WorkPage implements OnInit {
   @Input() data;
   select;
   @Input() go = false;
+  @Input() area: any;
 
   constructor(
     public navCtrl: NavController,
@@ -71,6 +72,7 @@ export class WorkPage implements OnInit {
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.activity = this.route.snapshot.paramMap.get('activity');
+    this.area = eval(this.route.snapshot.paramMap.get('area'));
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
@@ -290,6 +292,12 @@ export class WorkPage implements OnInit {
         }
       }
     });
+    if (this.area){
+      this.workForm.patchValue({
+        area: this.area,
+        crop: this.area.crop,
+      });
+    }
     this.workForm.patchValue({
       activity: data,
       fields: data.fields,
