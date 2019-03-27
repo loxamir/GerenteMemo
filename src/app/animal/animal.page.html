@@ -7,13 +7,6 @@
     </ion-title>
 
     <ion-buttons slot="end" >
-      <ion-button (click)="buttonSave()" [hidden]="!animalForm.dirty">
-        {{ 'SAVE' | translate }}
-      </ion-button>
-      <ion-button icon-only
-              (tap)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 

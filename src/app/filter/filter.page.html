@@ -5,8 +5,7 @@
 </ion-header>
 <ion-content class="product-content">
   <form class="sample-form validations-form"
-  [formGroup]="filterForm"
-  (ngSubmit)="onSubmit(filterForm.value)">
+  [formGroup]="filterForm">
     <ion-row>
       <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'Objeto' | translate}}</ion-label>
@@ -34,14 +33,14 @@
         </ion-select>
       </ion-item>
 
-      <ion-item no-padding #category (click)="selectCategory()" class="field-100">
+      <!-- <ion-item no-padding #category (click)="selectCategory()" class="field-100">
         <div class="field-many2one">
           <h4 class="field-label">{{'Comparado' | translate}}</h4>
           <h4 class="field-value">
             {{filterForm.value.value && filterForm.value.value.name || 'Selecionar'}}
           </h4>
         </div>
-      </ion-item>
+      </ion-item> -->
     </ion-row>
   </form>
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
