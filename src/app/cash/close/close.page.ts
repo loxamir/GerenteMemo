@@ -130,14 +130,6 @@ export class ClosePage implements OnInit {
     });
   }
 
-  goNextStep(){
-    if (!this.closeForm.value.amount_physical){
-      this.input.setFocus();
-    } else {
-      this.closeConfirm();
-    }
-  }
-
   async closeConfirm(){
     this.accountMoves = [];
     // this.closeForm.value.accountMoves.forEach(async accountMove => {

@@ -136,13 +136,12 @@
       </ion-item-sliding>
     </ion-list>
   </form>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="!closeForm.value._id">
-    <ion-button (click)="goNextStep()" class="next-button">
-      <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!closeForm.value._id">
+    <ion-button (click)="closeConfirm()"  color="success">
+      <ion-icon name="checkmark-circle-outline"> </ion-icon>
+      Confirmar
     </ion-button>
   </ion-fab>
-
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">
       <ion-icon name="backspace" *ngIf="closeForm.dirty"> </ion-icon>
