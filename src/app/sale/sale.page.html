@@ -109,7 +109,7 @@
       <section>
       <h2 class="section-title">{{'INVOICE' | translate}}</h2>
       <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.invoices">
-        <ion-item (click)="openInvoice(item)"  class="internal-item" style="background-color: #ddd;">
+        <ion-item (click)="openInvoice(item)"  style="background-color: #ddd;">
           <ion-card class="list-card">
           <ion-row style="padding-top:10px; padding-bottom:10px;height:50px;">
           <ion-col >
@@ -132,7 +132,7 @@
       <section>
       <h2 class="section-title">{{'Recibos' | translate}}</h2>
       <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.payments">
-        <ion-item  class="internal-item" (click)="openPayment(item)" style="background-color: #ddd;">
+        <ion-item  (click)="openPayment(item)" style="background-color: #ddd;">
           <ion-card class="list-card">
           <ion-row style="padding-top:10px; padding-bottom:10px;height:50px;">
           <ion-col >
@@ -161,7 +161,7 @@
       <section>
       <h2 class="section-title">{{'Itenes de la Venta' | translate}}</h2>
       <ion-item-sliding  class="list-item" *ngFor="let item of saleForm.value.items" #slidingItem>
-        <ion-item class="internal-item">
+        <ion-item>
           <ion-card class="list-card">
             <ion-row (click)="openItem(item)" class="product-name-row">
               {{item.product && item.product.code}} - {{item.product && item.product.name}}

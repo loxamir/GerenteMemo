@@ -20,7 +20,7 @@
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of animalForm.value.moves.sort(this.formatService.compare)">
       <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
-        <ion-card class="list-card" style="border-radius: 5px;">
+        <ion-card class="list-card" style="">
      <ion-row no-padding class="content-row one-line">
         <ion-col no-padding width-25 class="schedule-date">
           <h2 class="list-big-number">{{item.activity_name}}</h2>

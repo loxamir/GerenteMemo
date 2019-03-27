@@ -101,7 +101,7 @@
             <ion-list style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name] && workForm.value[field.name].length > 0">
               <h2 class="section-title" style="color:#1c61f3;background: white;border: 1px solid;border-top-left-radius: 5px;border-top-right-radius: 5px;">{{ field.label || field.name | translate}}</h2>
               <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
-                <ion-item class="internal-item" style="--background: white;">
+                <ion-item style="--background: white;">
                   <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
                     <ion-col *ngFor="let atribute of field.attributes;">
                       <h4 class="field-label" style="margin-top: 0px;">{{atribute.label}}</h4>
@@ -126,7 +126,7 @@
 
 
             <ion-item style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name].length == 0">
-              <ion-row style="background: #1c61f3;border-radius: 5px;border: 1px solid #1c61f3;width: 100%;"
+              <ion-row style="background: #1c61f3;border: 1px solid #1c61f3;width: 100%;"
               (click)="addFieldItem(field.name)">
                 <a style="color:white;cursor: default;font-size:16px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
                   Agregar {{ field.label || field.name }}

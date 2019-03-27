@@ -30,6 +30,7 @@ h4 {
 }
 ion-item {
   --inner-padding-end: 0px;
+  --padding-start: 0px;
 }
 .field-50 {
   width: 50%;
@@ -237,6 +238,12 @@ ion-item-sliding, ion-item-sliding .item {
   margin-left: 5px;
   color: black;
 }
+
+.quantity-button {
+  width: 100%;
+  font-size: 20px;
+  height: 30px;
+}
 // @media screen and (max-width: 600px){
 //   .list-item {
 //     margin-left: -20px;
@@ -320,10 +327,6 @@ ion-button {
   width: 100%;
 }
 
-.internal-item {
-    margin-right: -16px;
-    margin-left: -20px;
-}
 .currency-label {
   position: absolute;
   font-size: 13px;

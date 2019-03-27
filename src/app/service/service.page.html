@@ -247,7 +247,7 @@
       <section>
       <h2 class="section-title" *ngIf="serviceForm.value.invoices.length">{{'INVOICE' | translate}}</h2>
       <ion-item-sliding class="list-item">
-        <ion-item (click)="openInvoice(item)"  class="internal-item" style="background-color: #ddd;">
+        <ion-item (click)="openInvoice(item)"  style="background-color: #ddd;">
           <ion-card class="list-card">
           <ion-row style="padding-top:10px; padding-bottom:10px;">
           <ion-col >
@@ -273,7 +273,7 @@
       <section>
       <h2 class="section-title" >{{'Recibos' | translate}}</h2>
       <ion-item-sliding class="list-item" *ngFor="let item of serviceForm.value.payments">
-        <ion-item  class="internal-item" (click)="openPayment(item)" style="background-color: #ddd;">
+        <ion-item  (click)="openPayment(item)" style="background-color: #ddd;">
           <ion-card class="list-card">
           <ion-row style="padding-top:10px; padding-bottom:10px;">
           <ion-col >
@@ -340,7 +340,7 @@
 
             <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.works">
               <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
-                <ion-card class="internal-card">
+                <ion-card>
                   <ion-row (click)="editWork(item)" class="product-name-row">
                     {{item.description}}
                   </ion-row>
