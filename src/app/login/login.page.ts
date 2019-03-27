@@ -387,7 +387,7 @@ export class LoginPage implements OnInit {
         // this.loading.dismiss();
       })
       this.menuCtrl.enable(true);
-      this.router.navigate(['/agro-tabs/work-list']);
+      this.router.navigate(['/agro-tabs/area-list']);
     // }
   }
 
