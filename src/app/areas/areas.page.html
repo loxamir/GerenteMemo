@@ -38,16 +38,18 @@
       style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card">
           <ion-row>
-            <ion-col>
+            <ion-col size="9">
               <h3 class="item-name"><b>{{ item.name}}</b></h3>
+            </ion-col>
+            <ion-col size="3">
+              <h3 *ngIf="isToday(item.date)" class="item-title-second">{{ item.date | date: 'HH:MM'}}</h3>
+              <h3 *ngIf="!isToday(item.date)" class="item-title-second">{{ item.date | date: 'dd/MM/yyyy'}}</h3>
             </ion-col>
           </ion-row>
      <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding size="6">
-          <h3 class="item-title" style="font-size:15px;margin-left: 5px">{{item.crop_name | translate}}</h3>
-        </ion-col>
-        <ion-col no-padding size="6" align-self-center>
-          <h2 class="list-big-number" style="color: green;">{{item.surface| number:'1.0'}} ha</h2>
+        <ion-col no-padding size="12">
+          <!-- <h3 class="item-title" style="font-size:15px;margin-left: 5px">{{item.crop_name | translate}}</h3> -->
+          <h3 class="item-title" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;font-size:15px;margin-left: 5px">{{item.lastActivity | translate}}</h3>
         </ion-col>
       </ion-row>
         </ion-card>

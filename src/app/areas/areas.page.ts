@@ -25,6 +25,8 @@ export class AreasPage implements OnInit {
   searchTerm: string = '';
   select;
   page = 0;
+
+  today: any;
   constructor(
     public navCtrl: NavController,
     public areasService: AreasService,
@@ -36,7 +38,10 @@ export class AreasPage implements OnInit {
     public workService: WorkService,
     public areaService: AreaService,
     public alertCtrl: AlertController,
-  ) {}
+  ) {
+    this.today = new Date().toISOString();
+    this.select = this.route.snapshot.paramMap.get('select');
+  }
 
   changeSearch(){
     this.showSearch = !this.showSearch;
@@ -48,8 +53,18 @@ export class AreasPage implements OnInit {
     }
   }
 
+  isToday(date){
+    let itemDate = new Date(date).toLocaleDateString();
+    let todayDate = new Date().toLocaleDateString();
+    if (itemDate == todayDate){
+      return true;
+    }
+    return false;
+  }
+
   async ngOnInit() {
-    this.select = this.route.snapshot.paramMap.get('select');
+
+
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     this.setFilteredItems();
