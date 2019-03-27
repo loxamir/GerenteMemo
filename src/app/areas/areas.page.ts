@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NavController, LoadingController,  Events, PopoverController,
@@ -7,8 +7,6 @@ import { AreaPage } from '../area/area.page';
 
 import 'rxjs/Rx';
 import { AreasService } from './areas.service';
-// import { AreasPopover } from './areas.popover';
-// import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { AreaService } from '../area/area.service';
 import { WorkService } from '../work/work.service';
 import { ProductPage } from '../product/product.page';
@@ -20,6 +18,8 @@ import { FilterPage } from '../filter/filter.page';
   styleUrls: ['./areas.page.scss'],
 })
 export class AreasPage implements OnInit {
+  @ViewChild('searchBar') searchBar;
+  showSearch = false;
   areas: any;
   loading: any;
   searchTerm: string = '';
@@ -36,12 +36,20 @@ export class AreasPage implements OnInit {
     public workService: WorkService,
     public areaService: AreaService,
     public alertCtrl: AlertController,
-  ) {
-    //this.loading = //this.loadingCtrl.create();
-    this.select = this.route.snapshot.paramMap.get('select');
+  ) {}
+
+  changeSearch(){
+    this.showSearch = !this.showSearch;
+    this.searchTerm = '';
+    if (this.showSearch){
+      setTimeout(() => {
+        this.searchBar.setFocus();
+      }, 500);
+    }
   }
 
   async ngOnInit() {
+    this.select = this.route.snapshot.paramMap.get('select');
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     this.setFilteredItems();
@@ -102,35 +110,23 @@ export class AreasPage implements OnInit {
     });
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(AreasPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
-
   openArea(area) {
     this.events.subscribe('open-area', (data) => {
       this.events.unsubscribe('open-area');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
     this.navCtrl.navigateForward(['/area', {'_id': area._id}]);
   }
 
   selectArea(area) {
     if (this.select){
-      // this.navCtrl.navigateBack().then(() => {
       this.modalCtrl.dismiss();
         this.events.publish('select-area', area);
-      // });
     } else {
       this.openArea(area);
     }
   }
 
   createArea() {
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(ProductPage, {'type': 'rural_area'});
     this.navCtrl.navigateForward(['/area', {'create': true}]);
   }
 

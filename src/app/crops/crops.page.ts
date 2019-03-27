@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NavController,  LoadingController,  Events, PopoverController,
@@ -20,6 +20,8 @@ import { FilterPage } from '../filter/filter.page';
   styleUrls: ['./crops.page.scss'],
 })
 export class CropsPage implements OnInit {
+  @ViewChild('searchBar') searchBar;
+  showSearch = false;
   crops: any;
   loading: any;
   searchTerm: string = '';
@@ -39,6 +41,16 @@ export class CropsPage implements OnInit {
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
+  }
+
+  changeSearch(){
+    this.showSearch = !this.showSearch;
+    this.searchTerm = '';
+    if (this.showSearch){
+      setTimeout(() => {
+        this.searchBar.setFocus();
+      }, 500);
+    }
   }
 
   async ngOnInit() {

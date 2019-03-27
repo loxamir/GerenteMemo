@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavController, LoadingController,  Events, PopoverController,
   AlertController, ModalController } from '@ionic/angular';
@@ -22,6 +22,8 @@ import { LanguageModel } from "../services/language/language.model";
   styleUrls: ['./machines.page.scss'],
 })
 export class MachinesPage implements OnInit {
+  @ViewChild('searchBar') searchBar;
+  showSearch = false;
   languages: Array<LanguageModel>;
   machines: any;
   loading: any;
@@ -46,6 +48,16 @@ export class MachinesPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select');
+  }
+
+  changeSearch(){
+    this.showSearch = !this.showSearch;
+    this.searchTerm = '';
+    if (this.showSearch){
+      setTimeout(() => {
+        this.searchBar.setFocus();
+      }, 500);
+    }
   }
 
   async ngOnInit() {

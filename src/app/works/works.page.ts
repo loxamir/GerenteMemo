@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, LoadingController, PopoverController , Events,
    NavParams, ModalController  } from '@ionic/angular';
 import { FilterPage } from '../filter/filter.page';
@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./works.page.scss'],
 })
 export class WorksPage implements OnInit {
+  @ViewChild('searchBar') searchBar;
   works: any;
   loading: any;
   searchTerm: string = '';
@@ -27,6 +28,8 @@ export class WorksPage implements OnInit {
   //   total += delivery.total;
   // })
   // return total;
+  showSearch = false;
+
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -49,6 +52,16 @@ export class WorksPage implements OnInit {
     // this.events.subscribe('got-database', (change)=>{
       this.setFilteredItems();
     // })
+  }
+
+  changeSearch(){
+    this.showSearch = !this.showSearch;
+    this.searchTerm = '';
+    if (this.showSearch){
+      setTimeout(() => {
+          this.searchBar.setFocus();
+      }, 500);
+    }
   }
 
   async showFilter() {

@@ -115,8 +115,8 @@ import { environment } from '../environments/environment';
     CashListPage,
   ],
   imports: [
-    AgroTabsPageModule,
     LoginPageModule,
+    AgroTabsPageModule,
     ContactPageModule,
     CashMovePageModule,
     BrandListPageModule,
