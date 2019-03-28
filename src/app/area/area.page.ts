@@ -34,6 +34,9 @@ export class AreaPage implements OnInit {
   _id: string;
   create;
   select;
+  showForm = false;
+
+  showBotom = false;
 
   constructor(
     public navCtrl: NavController,
@@ -62,7 +65,9 @@ export class AreaPage implements OnInit {
       this.areaService.handleChange(this.areaForm.value.moves, change);
     })
   }
-
+  showEdit (){
+    this.showForm = !this.showForm;
+  }
   async ngOnInit() {
     this.areaForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
@@ -80,7 +85,7 @@ export class AreaPage implements OnInit {
       // checks: new FormControl([]),
       // type: new FormControl('liquidity'),
       // sequence: new FormControl(1),
-      // note: new FormControl(''),
+      note: new FormControl(''),
       code: new FormControl(''),
       _id: new FormControl(''),
     });
@@ -96,6 +101,9 @@ export class AreaPage implements OnInit {
     }
   }
 
+  showButtons(){
+    this.showBotom = !this.showBotom;
+  }
   buttonSave() {
     if (this._id){
       this.areaService.updateArea(this.areaForm.value);
