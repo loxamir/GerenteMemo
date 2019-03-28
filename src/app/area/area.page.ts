@@ -35,6 +35,7 @@ export class AreaPage implements OnInit {
   _id: string;
   create;
   select;
+  today: any;
   showForm = false;
 
   showBotom = false;
@@ -54,11 +55,13 @@ export class AreaPage implements OnInit {
     public events: Events,
     public formatService: FormatService,
   ) {
+    this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.create = this.route.snapshot.paramMap.get('create');
     this.select = this.route.snapshot.paramMap.get('select');
-    this.events.subscribe('changed-area-move', (change)=>{
+    this.events.subscribe('changed-work', (change)=>{
+      console.log("chaNGE WORK", change);
       this.areaService.handleChange(this.areaForm.value.moves, change);
     })
   }
@@ -165,12 +168,16 @@ export class AreaPage implements OnInit {
     profileModal.present();
   }
 
-  async addActivity(){
+  async addActivity(activity_id){
+    let componentProps = {
+      "area": this.areaForm.value,
+    }
+    if (activity_id){
+      componentProps['activity'] = await this.pouchdbService.getDoc(activity_id);
+    }
     let profileModal = await this.modalCtrl.create({
       component: WorkPage,
-      componentProps: {
-        "area": this.areaForm.value,
-      }
+      componentProps: componentProps
     });
     profileModal.present();
   }

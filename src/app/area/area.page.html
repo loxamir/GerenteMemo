@@ -42,7 +42,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
     <ion-card class="date-card">
-      31/03/2019
+      {{today|date: 'dd/MM/yyyy'}}
     </ion-card>
   <form class="sample-form validations-form"
   [formGroup]="areaForm"
@@ -111,16 +111,22 @@
 
     <ion-list no-lines>
       <ion-item-sliding class="list-item"
-      *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)">
+      *ngFor="let item of areaForm.value.moves.sort(this.formatService.compareInv)">
       <ion-item no-padding
       (click)="openItem(item)"
       style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
         <ion-card class="area-card">
             <ion-row no-padding>
-              <ion-col size="10" no-padding>
-                <h3 class="card-name">
+              <ion-col size="2">
+                <ion-img [src]="'./assets/icons/'+item.activity_name+'.png'" class="activity-img"></ion-img>
+              </ion-col>
+              <ion-col size="8" no-padding>
+                <h3 class="activity-name">
                   {{ item.activity_name || 'No Informado'}}
                 </h3>
+                <h1 class="activity-note">
+                  {{item.note}}
+                </h1>
               </ion-col>
               <ion-col>
                 <h3 class="schedule-month" style="font-size:12px;margin-left: 5px">
@@ -168,27 +174,8 @@
 </ion-row>
 </form>
 
-<!-- <ion-fab center bottom #fab>
-<ion-fab-button><ion-icon name="add"></ion-icon></ion-button>
-<ion-fab-list side="top">
-<div style="background: #4CAF50;color: white;margin-top: -5px;">Entrada</div><button style="background: #4CAF50;color: white;margin-bottom: 5px;" ion-fab (click)="addIncome(fab)"><ion-icon name="arrow-round-down"></ion-icon></ion-button>
-<div style="background: #FF5722;color: white;margin-top: -5px;">Salida</div><button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addExpense(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
-<div style="background: #FF5722;color: white;margin-top: -5px;">Transferencia</div><button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addTransfer(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
-</ion-fab-list>
-</ion-fab> -->
-<!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" class="add-product-button">
-<ion-fab-button (click)="addActivity()">
-  <ion-icon name="add">
-  </ion-icon>
-</ion-fab-button>
-</ion-fab> -->
-<ion-fab vertical="bottom" style="left: 0px;right:0px;bottom: 0px;" horizontal="start" slot="fixed">
+<ion-fab vertical="bottom" style="left: 0px;right:0px;bottom: 0px;background: #dddddd;" horizontal="start" slot="fixed">
   <ion-row style="margin-bottom:5px;">
-    <!-- <ion-col size="1">
-      <ion-button (click)="showButtons()">
-        <ion-icon name="happy"></ion-icon>
-      </ion-button>
-    </ion-col> -->
     <ion-col [class.left-round]="!areaForm.value.note"
     [class.all-round]="areaForm.value.note">
       <ion-textarea #note [(ngModel)]="areaForm.value.note"
@@ -197,22 +184,15 @@
       </ion-textarea>
     </ion-col>
     <ion-col size="3" *ngIf="!areaForm.value.note" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;">
-      <!-- <ion-button (click)="showButtons()"> -->
         <!-- <ion-icon name="attach" (click)="showButtons()"
         style="font-size: 26px;color: gray;transform: rotate(0.38turn);margin-right: 9px;"></ion-icon> -->
         <ion-icon name="mic" (click)="getAudio()"
         style="font-size: 26px;color: gray;margin-right: 9px;"></ion-icon>
-      <!-- </ion-button> -->
 
-      <!-- <ion-button (click)="showButtons()"> -->
         <ion-icon name="camera" (click)="getPicture()"
         style="font-size: 26px;margin-top: 7px;color: gray;padding-left: 9px;"></ion-icon>
-      <!-- </ion-button> -->
     </ion-col>
     <ion-col size="2">
-      <!-- <ion-button (click)="showButtons()">
-        <ion-icon name="mic"></ion-icon>
-      </ion-button> -->
       <ion-fab-button *ngIf="!areaForm.value.note" (click)="addButton()"
       style="width:40px;height:40px;margin-left: 5px;">
         <ion-icon name="add" *ngIf="!showBotom">
@@ -228,60 +208,51 @@
     </ion-col>
   </ion-row>
   <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-    <ion-col size="4">
-      <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
+    <ion-col size="4" (click)="addActivity('activity.1536168428011')">
+      <ion-img [src]="'./assets/icons/plant.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
         Plantio
       </h1>
     </ion-col>
-    <ion-col size="4">
-      <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
+    <ion-col size="4" (click)="addActivity()">
+      <ion-img [src]="'./assets/icons/sprayer.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
         Pulverização
       </h1>
     </ion-col>
-    <ion-col size="4">
-      <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
-      <h1 class="activity-title">
-        Fertilização
-      </h1>
-    </ion-col>
-  </ion-row>
-  <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-    <ion-col size="4">
-      <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
-      <h1 class="activity-title">
-        Colheita
-      </h1>
-    </ion-col>
-    <ion-col size="4">
-      <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
-      <h1 class="activity-title">
-        Carpida
-      </h1>
-    </ion-col>
-    <ion-col size="4">
-      <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
+    <ion-col size="4" (click)="addActivity('activity.1536168580448')">
+      <ion-img [src]="'./assets/icons/manejo.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
         Manejo
       </h1>
     </ion-col>
   </ion-row>
-  <!-- <ion-button (click)="discard()" color="danger" style="width:340px;">
-    <ion-icon name="backspace" *ngIf="areaForm.dirty"> </ion-icon>
-    <ion-icon name="arrow-back" *ngIf="!areaForm.dirty"> </ion-icon>
-    <span *ngIf="areaForm.dirty">Descartar</span>
-    <span *ngIf="!areaForm.dirty">Volver</span>
-  </ion-button> -->
+  <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
+    <ion-col size="4" (click)="addActivity('activity.harvest')">
+      <ion-img [src]="'./assets/icons/harvest.png'" class="activity-menu"></ion-img>
+      <h1 class="activity-title">
+        Colheita
+      </h1>
+    </ion-col>
+    <ion-col size="4" (click)="addActivity()">
+      <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
+      <h1 class="activity-title">
+        Inversion
+      </h1>
+    </ion-col>
+    <ion-col size="4" (click)="addActivity()">
+      <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
+      <h1 class="activity-title">
+        Otro
+      </h1>
+    </ion-col>
+  </ion-row>
 </ion-fab>
 
-<!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="areaForm.dirty">
-  <ion-button (click)="buttonSave()"  color="success">
-    <ion-icon name="save"> </ion-icon>
-    Guardar
-  </ion-button>
-</ion-fab> -->
 
-<!-- <div style="height: 100px">
-</div> -->
+<!-- <ion-footer>
+  <ion-toolbar>
+    <ion-title>Footer</ion-title>
+  </ion-toolbar>
+</ion-footer> -->
 </ion-content>

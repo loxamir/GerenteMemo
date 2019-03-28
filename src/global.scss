@@ -28,6 +28,9 @@
   padding-bottom: 10px;
   padding-top: 10px;
 }
+.activity-img {
+
+}
 ion-title {
   padding-inline-start: 0px;
 }
@@ -45,6 +48,12 @@ ion-title {
   margin-top:5px;
   margin-bottom:0px;
   text-align: center;
+}
+.activity-note {
+  font-size:13px;
+  margin-top:5px;
+  margin-bottom:0px;
+  text-align: left;
 }
 h4 {
    font-size: 16px;
@@ -532,6 +541,14 @@ ion-segment-button {
 h3.card-name {
   color: black;
   margin-left: 5px;
+  font-size:16px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+h3.activity-name {
+  color: black;
+  margin-left: 0px;
   font-size:16px;
   margin-top: 0px;
   margin-bottom: 0px;

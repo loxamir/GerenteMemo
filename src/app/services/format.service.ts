@@ -296,6 +296,19 @@ export class FormatService {
     return 0;
   }
 
+  compareInv(a, b) {
+    // Use toUpperCase() to ignore character casing
+    const genreA = a.date;
+    const genreB = b.date;
+
+    if (genreA < genreB) {
+      return -1;
+    } else if (genreA > genreB) {
+      return 1;
+    }
+    return 0;
+  }
+
   compareField(a, b, field, direction = 'increase') {
     console.log("a", a);
     const genreA = a[field] && a[field].toString().toUpperCase() || a[field];

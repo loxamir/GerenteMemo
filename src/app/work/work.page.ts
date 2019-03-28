@@ -205,7 +205,8 @@ export class WorkPage implements OnInit {
         this.workService.updateWork(this.workForm.value);
         this.events.publish('open-work', this.workForm.value);
         this.workForm.markAsPristine();
-        this.navCtrl.navigateBack('/works');
+        // this.navCtrl.navigateBack('/works');
+        this.modalCtrl.dismiss();
       } else {
         this.workService.createWork(this.workForm.value).then(doc => {
           this.workForm.patchValue({
@@ -215,7 +216,8 @@ export class WorkPage implements OnInit {
           this._id = doc['doc'].id;
           this.events.publish('create-work', this.workForm.value);
           this.workForm.markAsPristine();
-          this.navCtrl.navigateBack('/works');
+          // this.navCtrl.navigateBack('/works');
+          this.modalCtrl.dismiss();
         });
       }
     }
