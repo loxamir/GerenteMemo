@@ -4,11 +4,7 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item class="popover-item" (click)="editArea()">Editar Area</ion-item>
-    <!--<ion-item class="popover-item" (click)="invoice()">Facturas</ion-item>
-    <ion-item class="popover-item" (click)="receipts()">Recibos</ion-item>
-    <ion-item class="popover-item" (click)="importer()">Importador Ventas</ion-item>
-    <ion-item class="popover-item" (click)="importerLine()">Importador Lineas</ion-item-->
+    <ion-item class="popover-item" (click)="editArea()">Todas tareas</ion-item>
   </ion-list>
   `
 })
@@ -28,7 +24,7 @@ export class AreasPopover {
     this.pop.dismiss();
   }
 
-  editArea(){
+  showWorks(){
     // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
     this.navParams.data.doc.showEdit();
     this.pop.dismiss();
