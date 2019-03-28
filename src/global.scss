@@ -517,3 +517,36 @@ ion-segment-button {
   width: 50%;
   width: 300px;
 }
+
+.date-card {
+  width: 100px;
+  height: 17px;
+  text-align: center;
+  --background: #e3f5fe;
+  --ion-background-color: #e3f5fe;
+  border-radius: 3px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h3.card-name {
+  color: black;
+  margin-left: 5px;
+  font-size:16px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.area-card {
+    width: 85%;
+    --background: #fff;
+    --ion-background-color: #fff;
+    border-radius: 7px;
+    margin-top: 0px;
+    margin-bottom: 3px;
+    margin-right: 0px;
+    padding-right: 0px;
+    margin-left: 3%;
+    padding-bottom: 0px;
+    padding-top: 8px;
+}

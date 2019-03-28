@@ -37,6 +37,9 @@
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
+    <ion-card class="date-card">
+      31/03/2019
+    </ion-card>
   <form class="sample-form validations-form"
   [formGroup]="areaForm"
   (ngSubmit)="onSubmit(areaForm.value)">
@@ -102,52 +105,62 @@
     </ion-item>
     </ion-row>
 
-    <ion-list no-lines>
-      <ion-item-sliding class="list-item"
-      *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)">
-      <ion-item no-padding
+    <!-- <ion-list no-lines> -->
+      <!-- <ion-item-sliding class="list-item"
+      *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)"> -->
+      <!-- <ion-item no-padding
       (click)="openItem(item)"
-      style="margin-bottom: 0px; margin-top:0px;">
-        <ion-card class="list-card" style="">
-            <ion-row>
+      *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)"
+      style="margin-bottom: 0px; margin-top:0px;"> -->
+        <ion-card class="area-card" (click)="openItem(item)"
+        *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)">
+            <ion-row no-padding>
+              <ion-col size="10" no-padding>
+                <h3 class="card-name">
+                  {{ item.activity_name || 'No Informado'}}
+                </h3>
+              </ion-col>
               <ion-col>
-                <h3 class="item-name">
-                  <b>{{ item.activity_name || 'No Informado'}}</b>
+                <h3 class="schedule-month" style="font-size:12px;margin-left: 5px">
+                  {{item.date|date: 'HH:mm'}}
                 </h3>
               </ion-col>
             </ion-row>
        <ion-row no-padding class="content-row one-line">
           <ion-col no-padding size="6">
             <!-- <h3 class="item-title" style="font-size:15px;font-weight: bold">{{item.area_name | translate}}</h3> -->
-            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">
-              {{item.dateStart|date: 'dd/MM/yyyy'}}
-            </h3>
-            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">
+            <!-- <h3 class="schedule-month" style="font-size:10px;margin-left: 5px">
+              {{item.date|date: 'HH:mm'}}
+            </h3> -->
+            <!-- <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">
               {{item.dateEnd|date: 'dd/MM/yyyy'}}
-            </h3>
+            </h3> -->
           </ion-col>
           <ion-col no-padding size="6" align-self-center>
-            <h2 *ngIf="item.progress < 100" class="list-big-number"
+            <!-- <h2 *ngIf="item.progress < 100" class="list-big-number"
             style="color: red;">
               {{item.progress| number:'1.0'}}%
             </h2>
             <h2 *ngIf="item.progress == 100"
             class="list-big-number" style="color: green;">
             {{item.progress| number:'1.0'}}%
-          </h2>
+          </h2> -->
+          <!-- <h3 class="schedule-month" style="font-size:12px;margin-left: 5px">
+            {{item.date|date: 'HH:mm'}}
+          </h3> -->
           </ion-col>
         </ion-row>
       </ion-card>
-    </ion-item>
+    <!-- </ion-item> -->
 
-        <ion-item-options>
+        <!-- <ion-item-options>
           <ion-item-option (click)="deleteAreaMove(item)"
           *ngIf="!item.fixed">
             Borrar
           </ion-item-option>
         </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
+      </ion-item-sliding> -->
+    <!-- </ion-list> -->
 
 <ion-row style="height:15px;">
 </ion-row>
