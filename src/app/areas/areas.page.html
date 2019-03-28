@@ -13,10 +13,10 @@
   </ion-searchbar>
   </ion-toolbar>
   <ion-toolbar *ngIf="!showSearch" color="primary">
-    <ion-buttons slot="start">
+    <!-- <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>AgroMemo</ion-title>
+    </ion-buttons> -->
+    <ion-title style="padding-inline-start: 10px;">AgroMemo</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="changeSearch()">
         <ion-icon name="search"></ion-icon>
@@ -26,9 +26,18 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-segment [(ngModel)]="section" scrollable="true" style="--color-checked: #ffffff;">
+    <ion-segment-button value="moves" style="color: white;--background-activated: red;">
+      Areas
+    </ion-segment-button>
+    <ion-segment-button value="waiting" style="color: white;--background-activated: red;">
+      Maquinas
+    </ion-segment-button>
+  </ion-segment>
 </ion-header>
 
 <ion-content class="list-mini-content">
+
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>

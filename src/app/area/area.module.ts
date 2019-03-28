@@ -21,6 +21,9 @@ const routes: Routes = [
   }
 ];
 
+import { AreaPopover } from './area.popover';
+
+
 @NgModule({
   imports: [
     ReactiveFormsModule,
@@ -37,7 +40,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AreaPage],
-  providers: [AreaService]
+  declarations: [AreaPage, AreaPopover],
+  providers: [AreaService],
+  entryComponents: [AreaPopover]
 })
 export class AreaPageModule {}

@@ -11,6 +11,7 @@ import { AreaService } from '../area/area.service';
 import { WorkService } from '../work/work.service';
 import { ProductPage } from '../product/product.page';
 import { FilterPage } from '../filter/filter.page';
+import { AreasPopover } from './areas.popover';
 
 @Component({
   selector: 'app-areas',
@@ -25,6 +26,7 @@ export class AreasPage implements OnInit {
   searchTerm: string = '';
   select;
   page = 0;
+  section = "moves";
 
   today: any;
   constructor(
@@ -51,6 +53,19 @@ export class AreasPage implements OnInit {
         this.searchBar.setFocus();
       }, 500);
     }
+  }
+
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: AreasPopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
   }
 
   isToday(date){

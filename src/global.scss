@@ -537,7 +537,19 @@ h3.card-name {
   margin-bottom: 0px;
 }
 
+.left-round {
+  background: white;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+
+.all-round {
+  background: white;
+  border-radius: 25px;
+}
+
 .area-card {
+    min-height: 48px;
     width: 85%;
     --background: #fff;
     --ion-background-color: #fff;
@@ -549,4 +561,19 @@ h3.card-name {
     margin-left: 3%;
     padding-bottom: 0px;
     padding-top: 8px;
+}
+
+ion-segment-button {
+    background: #1a73e8;
+}
+
+.sc-ion-segment-md-h {
+    --background: none;
+    --background-checked: none;
+    --background-hover: rgba(var(--ion-color-primary-rgb,56,128,255),0.04);
+    --background-activated: rgba(var(--ion-color-primary-rgb,56,128,255),0.16);
+    --color: rgba(var(--ion-text-color-rgb,0,0,0),0.6);
+    --color-checked: #ffffff;
+    --color-checked-disabled: var(--color-checked);
+    --indicator-color: transparent;
 }

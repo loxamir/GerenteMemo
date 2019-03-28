@@ -13,7 +13,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { AreasPage } from './areas.page';
-
+import { AreasPopover } from './areas.popover';
 const routes: Routes = [
   {
     path: '',
@@ -37,7 +37,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AreasPage],
-  providers: [AreasService]
+  declarations: [AreasPage, AreasPopover],
+  providers: [AreasService],
+  entryComponents: [AreasPopover]
 })
 export class AreasPageModule {}

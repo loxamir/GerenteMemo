@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NavController,  ModalController, LoadingController,
-   AlertController, Events } from '@ionic/angular';
+   AlertController, Events, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import 'rxjs/Rx';
@@ -20,6 +20,7 @@ import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { FormatService } from "../services/format.service";
 import { CropsPage } from '../crops/crops.page';
 import { ContactListPage } from '../contact-list/contact-list.page';
+import { AreaPopover } from './area.popover';
 
 @Component({
   selector: 'app-area',
@@ -44,11 +45,8 @@ export class AreaPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    // public imagePicker: ImagePicker,
-    // public cropService: Crop,
-    // public platform: Platform,
+    public popoverCtrl: PopoverController,
     public areaService: AreaService,
-    // public areaMoveService: AreaMoveService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
@@ -56,7 +54,6 @@ export class AreaPage implements OnInit {
     public events: Events,
     public formatService: FormatService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.create = this.route.snapshot.paramMap.get('create');
@@ -68,6 +65,22 @@ export class AreaPage implements OnInit {
   showEdit (){
     this.showForm = !this.showForm;
   }
+
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: AreaPopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
+
+  }
+
+
   async ngOnInit() {
     this.areaForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
@@ -85,7 +98,7 @@ export class AreaPage implements OnInit {
       // checks: new FormControl([]),
       // type: new FormControl('liquidity'),
       // sequence: new FormControl(1),
-      note: new FormControl(''),
+      note: new FormControl(null),
       code: new FormControl(''),
       _id: new FormControl(''),
     });
@@ -93,6 +106,7 @@ export class AreaPage implements OnInit {
     await this.loading.present();
     if (this._id){
       this.areaService.getArea(this._id).then((data) => {
+        data.note = null;
         this.areaForm.patchValue(data);
         this.loading.dismiss();
       });
@@ -204,6 +218,22 @@ export class AreaPage implements OnInit {
         profileModal.present();
       });
   }
+
+  addButton(){
+    this.showBotom = !this.showBotom;
+  }
+  sendButton(){
+    console.log("send");
+  }
+
+  getPicture(){
+    console.log("take picture");
+  }
+  getAudio(){
+    console.log("get audio");
+  }
+
+
 
   selectContact() {
       return new Promise(async resolve => {
