@@ -167,37 +167,40 @@
   </ion-icon>
 </ion-fab-button>
 </ion-fab> -->
-<ion-fab vertical="bottom" style="width: 95%;" horizontal="start" slot="fixed">
-  <ion-row>
-    <ion-col size="1">
+<ion-fab vertical="bottom" style="left: 0px;right:0px;bottom: 0px;" horizontal="start" slot="fixed">
+  <ion-row style="margin-bottom:5px;">
+    <!-- <ion-col size="1">
       <ion-button (click)="showButtons()">
         <ion-icon name="happy"></ion-icon>
       </ion-button>
-    </ion-col>
-    <ion-col size="6" style="background: white;">
-      <ion-textarea #note formControlName="note"
+    </ion-col> -->
+    <ion-col style="background: white;border-top-left-radius: 25px;    border-bottom-left-radius: 25px;">
+      <ion-textarea #note formControlName="note" placeholder="Escribir Observación" style="--padding-top: 11px;"
         rows="1">
       </ion-textarea>
     </ion-col>
-    <ion-col size="3" style="background: white;">
-      <ion-button (click)="showButtons()">
-        <ion-icon name="attach"></ion-icon>
-      </ion-button>
-      <ion-button (click)="showButtons()">
-        <ion-icon name="camera"></ion-icon>
-      </ion-button>
+    <ion-col size="3" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;">
+      <!-- <ion-button (click)="showButtons()"> -->
+        <ion-icon name="attach" (click)="showButtons()"
+        style="font-size: 26px;color: gray;transform: rotate(0.38turn);margin-right: 9px;"></ion-icon>
+      <!-- </ion-button> -->
+      <!-- <ion-button (click)="showButtons()"> -->
+        <ion-icon name="camera" (click)="showButtons()"
+        style="font-size: 26px;margin-top: 7px;color: gray;padding-left: 9px;"></ion-icon>
+      <!-- </ion-button> -->
     </ion-col>
     <ion-col size="2">
       <!-- <ion-button (click)="showButtons()">
         <ion-icon name="mic"></ion-icon>
       </ion-button> -->
-      <ion-fab-button (click)="createArea()">
-        <ion-icon name="mic">
+      <ion-fab-button (click)="showButtons()"
+      style="width:40px;height:40px;margin-left: 5px;">
+        <ion-icon name="add">
         </ion-icon>
       </ion-fab-button>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="showBotom" style="background: white;">
+  <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
     <ion-col size="4">
       <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
@@ -217,7 +220,7 @@
       </h1>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="showBotom" style="background: white;">
+  <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
     <ion-col size="4">
       <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
@@ -252,6 +255,6 @@
   </ion-button>
 </ion-fab> -->
 
-<div style="height: 100px">
-</div>
+<!-- <div style="height: 100px">
+</div> -->
 </ion-content>
