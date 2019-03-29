@@ -41,6 +41,7 @@ export class WorkPage implements OnInit {
   activity;
   @Input() data;
   select;
+  note;
   @Input() go = false;
   @Input() area: any;
 
@@ -74,6 +75,8 @@ export class WorkPage implements OnInit {
     this.activity = this.route.snapshot.paramMap.get('activity');
     this.area = eval(this.route.snapshot.paramMap.get('area'));
     this.select = this.route.snapshot.paramMap.get('select');
+    this.note = this.route.snapshot.paramMap.get('note');
+    // console.log("note", this.route.snapshot.paramMap.get('note'));
   }
 
   dismissData(){
@@ -311,7 +314,13 @@ export class WorkPage implements OnInit {
     }, 200);
     // this.workForm.markAsDirty();
     this.events.unsubscribe('select-activity');
-    this.goNextStep();
+    console.log("note", this.note);
+    if (this.note){
+      this.workForm.value.note = this.note;
+      this.buttonSave();
+    } else {
+      this.goNextStep();
+    }
   }
 
   buttonPress(field) {

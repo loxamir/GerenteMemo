@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NavController,  ModalController, LoadingController,
@@ -28,7 +28,7 @@ import { AreaPopover } from './area.popover';
   styleUrls: ['./area.page.scss'],
 })
 export class AreaPage implements OnInit {
-
+@ViewChild('content') content;
   areaForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -63,6 +63,10 @@ export class AreaPage implements OnInit {
     this.events.subscribe('changed-work', (change)=>{
       console.log("chaNGE WORK", change);
       this.areaService.handleChange(this.areaForm.value.moves, change);
+      setTimeout(() => {
+        console.log("acounteceu");
+        this.content.scrollToBottom();
+      }, 500);
     })
   }
   showEdit (){
@@ -112,15 +116,15 @@ export class AreaPage implements OnInit {
         data.note = null;
         this.areaForm.patchValue(data);
         this.loading.dismiss();
+        setTimeout(() => {
+          this.content.scrollToBottom();
+        }, 200);
       });
     } else {
       this.loading.dismiss();
     }
   }
 
-  showButtons(){
-    this.showBotom = !this.showBotom;
-  }
   buttonSave() {
     if (this._id){
       this.areaService.updateArea(this.areaForm.value);
@@ -174,6 +178,7 @@ export class AreaPage implements OnInit {
     }
     if (activity_id){
       componentProps['activity'] = await this.pouchdbService.getDoc(activity_id);
+      componentProps['note'] = this.areaForm.value.note;
     }
     let profileModal = await this.modalCtrl.create({
       component: WorkPage,
@@ -228,16 +233,36 @@ export class AreaPage implements OnInit {
 
   addButton(){
     this.showBotom = !this.showBotom;
+    if (this.showBotom){
+      setTimeout(() => {
+        this.content.scrollToBottom();
+      }, 200);
+    }
   }
   sendButton(){
     console.log("send");
+    // this.addActivity('activity.1536168428011');
+    this.pouchdbService.createDoc({
+      'docType': 'work',
+      'date': new Date().toISOString(),
+      'area_id': this.areaForm.value._id,
+      'area_name': this.areaForm.value.name,
+      'activity_name': "Anotacion",
+      'note': this.areaForm.value.note,
+    })
+    this.areaForm.value.note = null;
+    setTimeout(() => {
+      this.content.scrollToBottom();
+    }, 500);
   }
 
   getPicture(){
     console.log("take picture");
   }
   getAudio(){
+    this.content.scrollToBottom();
     console.log("get audio");
+
   }
 
 

@@ -36,7 +36,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="list-mini-content">
+<ion-content class="list-mini-content" #content>
 
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
@@ -109,9 +109,9 @@
     </ion-item>
     </ion-row>
 
-    <ion-list no-lines>
+    <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;">
       <ion-item-sliding class="list-item"
-      *ngFor="let item of areaForm.value.moves.sort(this.formatService.compareInv)">
+      *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)">
       <ion-item no-padding
       (click)="openItem(item)"
       style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
@@ -175,7 +175,7 @@
 </form>
 
 <ion-fab vertical="bottom" style="left: 0px;right:0px;bottom: 0px;background: #dddddd;" horizontal="start" slot="fixed">
-  <ion-row style="margin-bottom:5px;">
+  <ion-row style="padding-bottom:5px;padding-top: 5px;">
     <ion-col [class.left-round]="!areaForm.value.note"
     [class.all-round]="areaForm.value.note">
       <ion-textarea #note [(ngModel)]="areaForm.value.note"
@@ -221,7 +221,7 @@
       </h1>
     </ion-col>
     <ion-col size="4" (click)="addActivity('activity.1536168580448')">
-      <ion-img [src]="'./assets/icons/manejo.png'" class="activity-menu"></ion-img>
+      <ion-img [src]="'./assets/icons/Manejo.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
         Manejo
       </h1>
@@ -235,9 +235,9 @@
       </h1>
     </ion-col>
     <ion-col size="4" (click)="addActivity()">
-      <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
+      <ion-img [src]="'./assets/icons/Chuva2.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
-        Inversion
+        Chuva
       </h1>
     </ion-col>
     <ion-col size="4" (click)="addActivity()">
@@ -250,9 +250,14 @@
 </ion-fab>
 
 
-<!-- <ion-footer>
-  <ion-toolbar>
+<ion-footer *ngIf="showBotom" style="height:250px;">
+  <!-- <ion-toolbar>
     <ion-title>Footer</ion-title>
-  </ion-toolbar>
-</ion-footer> -->
+  </ion-toolbar> -->
+</ion-footer>
+<ion-footer *ngIf="!showBotom" style="height:50px;">
+  <!-- <ion-toolbar>
+    <ion-title>Footer</ion-title>
+  </ion-toolbar> -->
+</ion-footer>
 </ion-content>
