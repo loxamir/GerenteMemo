@@ -65,7 +65,11 @@ export class PouchdbService {
           PouchDB.plugin(PouchdbUpsert);
           PouchDB.plugin(cordovaSqlitePlugin);
           // this.db = new PouchDB(database);
-          this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+          this.db = new PouchDB(database, {
+          adapter: 'cordova-sqlite',
+          location: 'default',
+          androidDatabaseImplementation: 2
+         });
           console.log("database", database);
           self.events.publish('got-database');
           this.storage.get('password').then(password => {

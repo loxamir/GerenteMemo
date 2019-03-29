@@ -93,5 +93,5 @@
     <plugin name="cordova-plugin-filechooser" spec="^1.2.0" />
     <plugin name="cordova-plugin-sqlite-2" spec="^1.0.5" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
-    <engine name="android" spec="^7.1.4" />
+    <plugin name="cordova-plugin-apiai" spec="^1.7.4" />
 </widget>

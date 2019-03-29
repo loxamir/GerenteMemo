@@ -41,7 +41,6 @@ export class AreaPage implements OnInit {
   showForm = false;
   answer;
   showBotom = false;
-
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -84,9 +83,9 @@ export class AreaPage implements OnInit {
   }
 
 
-  ask(question) {
+  ask() {
     ApiAIPromises.requestText({
-      query: question
+      query: 'paguei 122 reais no mercado'
     })
     .then(({result: {fulfillment: {speech}}}) => {
        this.ngZone.run(()=> {
