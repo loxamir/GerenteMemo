@@ -86,21 +86,31 @@ export class AreaPage implements OnInit {
 
 
   ask(question) {
-    question = question.replace('r$', 'reais');
+    // question = question.replace('r$', 'reais');
     console.log("question", question);
     ApiAIPromises.requestText({
       query: question
     })
-    .then(({result: {fulfillment: {speech}}}) => {
+    .then((result) => {
+      console.log("resultad", result);
        this.ngZone.run(()=> {
-         this.answer = speech;
+         // this.answer = speech;
          this.areaForm.value.moves.push({
            'docType': 'work',
            'date': new Date().toISOString(),
            'area_id': this.areaForm.value._id,
            'area_name': this.areaForm.value.name,
            'activity_name': "Plantio",
-           'note': speech,
+           'note': result.result.fulfillment.speech,
+         })
+         this.tts.speak({
+           text: result.result.fulfillment.speech,
+           //rate: this.rate/10,
+           locale: "pt-BR"
+         }).then(()=>{
+           if (result.result.actionIncomplete){
+             this.listenRequest();
+           }
          })
        });
     })
@@ -126,6 +136,7 @@ export class AreaPage implements OnInit {
             'activity_name': "Anotacion",
             'note': matches[0],
           })
+
           // this.serviceForm.patchValue({
           //   client_request: matches[0],
           // });
