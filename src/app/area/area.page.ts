@@ -39,6 +39,7 @@ export class AreaPage implements OnInit {
   select;
   today: any;
   showForm = false;
+  showSearch;
   answer;
   showBotom = false;
   constructor(
@@ -89,7 +90,11 @@ export class AreaPage implements OnInit {
     // question = question.replace('r$', 'reais');
     console.log("question", question);
     ApiAIPromises.requestText({
-      query: question
+      query: question,
+      contexts: [{ name: "Area", parameters: {
+        "area_name": this.areaForm.value.name,
+        "area_id": this.areaForm.value._id
+      }}]
     })
     .then((result) => {
       console.log("resultad", result);
@@ -100,9 +105,12 @@ export class AreaPage implements OnInit {
            'date': new Date().toISOString(),
            'area_id': this.areaForm.value._id,
            'area_name': this.areaForm.value.name,
-           'activity_name': "Plantio",
+           'activity_name': "Memo",
            'note': result.result.fulfillment.speech,
          })
+         setTimeout(() => {
+           this.content.scrollToBottom();
+         }, 200);
          this.tts.speak({
            text: result.result.fulfillment.speech,
            //rate: this.rate/10,
@@ -113,6 +121,8 @@ export class AreaPage implements OnInit {
            }
          })
        });
+    }, (tset)=>{
+      console.log("return", tset);
     })
   }
 
@@ -136,49 +146,10 @@ export class AreaPage implements OnInit {
             'activity_name': "Anotacion",
             'note': matches[0],
           })
-
-          // this.serviceForm.patchValue({
-          //   client_request: matches[0],
-          // });
-          // this.serviceForm.markAsDirty();
+          setTimeout(() => {
+            this.content.scrollToBottom();
+          }, 200);
         });
-      }
-    });
-  }
-
-  listenService() {
-    let options = {
-      language: 'pt-BR'
-    }
-    this.speechRecognition.hasPermission()
-    .then((hasPermission: boolean) => {
-      if (!hasPermission) {
-        this.speechRecognition.requestPermission();
-      } else {
-        this.tts.speak({
-          text: "Diga oque deseja",
-          //rate: this.rate/10,
-          locale: "pt-BR"
-        })
-        .then(() => {
-          //console.log('Success1');
-          this.speechRecognition.startListening(options).subscribe(matches => {
-          //   this.serviceForm.patchValue({
-          //     service_overview: matches[0],
-          //   });
-            this.ask(matches[0]);
-            this.areaForm.value.moves.push({
-              'docType': 'work',
-              'date': new Date().toISOString(),
-              'area_id': this.areaForm.value._id,
-              'area_name': this.areaForm.value.name,
-              'activity_name': "Anotacion",
-              'note': matches[0],
-            })
-          });
-
-        })
-        .catch((reason: any) => console.log(reason));
       }
     });
   }

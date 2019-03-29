@@ -580,6 +580,20 @@ h3.activity-name {
     padding-top: 8px;
 }
 
+.memo-card {
+    min-height: 48px;
+    width: 85%;
+    --background: #dcf8c6;
+    border-radius: 7px;
+    margin-top: 0px;
+    margin-bottom: 3px;
+    margin-right: 0px;
+    padding-right: 0px;
+    margin-left: 13%;
+    padding-bottom: 0px;
+    padding-top: 8px;
+}
+
 ion-segment-button {
     background: #1a73e8;
 }

@@ -115,7 +115,7 @@
       <ion-item no-padding
       (click)="openItem(item)"
       style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
-        <ion-card class="area-card">
+        <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
             <ion-row no-padding>
               <ion-col size="2">
                 <ion-img [src]="'./assets/icons/'+item.activity_name+'.png'" class="activity-img"></ion-img>

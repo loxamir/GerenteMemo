@@ -24,9 +24,9 @@ export class AreasPopover {
     this.pop.dismiss();
   }
 
-  showWorks(){
+  editArea(){
     // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
-    this.navParams.data.doc.showEdit();
+    this.navParams.data.doc.areaForm.value.showForm = ! this.navParams.data.doc.areaForm.value.showForm;
     this.pop.dismiss();
   }
 
