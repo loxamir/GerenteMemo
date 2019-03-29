@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NavController,  ModalController, LoadingController,
-   AlertController, Events, PopoverController } from '@ionic/angular';
+   AlertController, Events, PopoverController, Platform } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import 'rxjs/Rx';
+import { SpeechRecognition } from '@ionic-native/speech-recognition';
+import { TextToSpeech } from '@ionic-native/text-to-speech';
 
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
@@ -21,7 +23,7 @@ import { FormatService } from "../services/format.service";
 import { CropsPage } from '../crops/crops.page';
 import { ContactListPage } from '../contact-list/contact-list.page';
 import { AreaPopover } from './area.popover';
-
+declare var ApiAIPromises: any;
 @Component({
   selector: 'app-area',
   templateUrl: './area.page.html',
@@ -37,7 +39,7 @@ export class AreaPage implements OnInit {
   select;
   today: any;
   showForm = false;
-
+  answer;
   showBotom = false;
 
   constructor(
@@ -54,6 +56,8 @@ export class AreaPage implements OnInit {
     public pouchdbService: PouchdbService,
     public events: Events,
     public formatService: FormatService,
+    public ngZone: NgZone,
+    public platform: Platform,
   ) {
     this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
@@ -68,9 +72,27 @@ export class AreaPage implements OnInit {
         this.content.scrollToBottom();
       }, 500);
     })
+    platform.ready().then(() => {
+      ApiAIPromises.init({
+        clientAccessToken: "9f4e551a24734d02b3242c6e365c49a5"
+      })
+      .then((result) =>  console.log("result1", result))
+    })
   }
   showEdit (){
     this.showForm = !this.showForm;
+  }
+
+
+  ask(question) {
+    ApiAIPromises.requestText({
+      query: question
+    })
+    .then(({result: {fulfillment: {speech}}}) => {
+       this.ngZone.run(()=> {
+         this.answer = speech;
+       });
+    })
   }
 
   async presentPopover(myEvent) {

@@ -186,18 +186,19 @@
     <ion-col size="3" *ngIf="!areaForm.value.note" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;">
         <!-- <ion-icon name="attach" (click)="showButtons()"
         style="font-size: 26px;color: gray;transform: rotate(0.38turn);margin-right: 9px;"></ion-icon> -->
-        <ion-icon name="mic" (click)="getAudio()"
-        style="font-size: 26px;color: gray;margin-right: 9px;"></ion-icon>
-
         <ion-icon name="camera" (click)="getPicture()"
-        style="font-size: 26px;margin-top: 7px;color: gray;padding-left: 9px;"></ion-icon>
+        style="font-size: 26px;margin-top: 7px;color: gray;margin-right: 9px;"></ion-icon>
+        <ion-icon name="add" *ngIf="!showBotom" (click)="addButton()"
+        style="font-size: 26px;color: gray;padding-left: 9px;"></ion-icon>
+        <ion-icon name="close" *ngIf="showBotom" (click)="addButton()"
+        style="font-size: 26px;color: gray;padding-left: 9px;">
+        </ion-icon>
+
     </ion-col>
     <ion-col size="2">
-      <ion-fab-button *ngIf="!areaForm.value.note" (click)="addButton()"
+      <ion-fab-button *ngIf="!areaForm.value.note"
       style="width:40px;height:40px;margin-left: 5px;">
-        <ion-icon name="add" *ngIf="!showBotom">
-        </ion-icon>
-        <ion-icon name="close" *ngIf="showBotom">
+        <ion-icon name="mic" (click)="ask('registrar gasto de 100 reais em mercado')">
         </ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="areaForm.value.note" (click)="sendButton()"
