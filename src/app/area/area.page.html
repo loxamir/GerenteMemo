@@ -198,7 +198,7 @@
     <ion-col size="2">
       <ion-fab-button *ngIf="!areaForm.value.note"
       style="width:40px;height:40px;margin-left: 5px;">
-        <ion-icon name="mic" (click)="ask()">
+        <ion-icon name="mic" (click)="listenRequest()">
         </ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="areaForm.value.note" (click)="sendButton()"

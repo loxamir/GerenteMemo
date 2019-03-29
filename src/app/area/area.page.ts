@@ -57,6 +57,8 @@ export class AreaPage implements OnInit {
     public formatService: FormatService,
     public ngZone: NgZone,
     public platform: Platform,
+    public speechRecognition: SpeechRecognition,
+    public tts: TextToSpeech,
   ) {
     this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
@@ -83,15 +85,91 @@ export class AreaPage implements OnInit {
   }
 
 
-  ask() {
+  ask(question) {
+    question = question.replace('r$', 'reais');
+    console.log("question", question);
     ApiAIPromises.requestText({
-      query: 'paguei 122 reais no mercado'
+      query: question
     })
     .then(({result: {fulfillment: {speech}}}) => {
        this.ngZone.run(()=> {
          this.answer = speech;
+         this.areaForm.value.moves.push({
+           'docType': 'work',
+           'date': new Date().toISOString(),
+           'area_id': this.areaForm.value._id,
+           'area_name': this.areaForm.value.name,
+           'activity_name': "Plantio",
+           'note': speech,
+         })
        });
     })
+  }
+
+  listenRequest() {
+    let options = {
+      language: 'pt-BR'
+    }
+    this.speechRecognition.hasPermission()
+    .then((hasPermission: boolean) => {
+      if (!hasPermission) {
+        this.speechRecognition.requestPermission();
+      } else {
+        this.speechRecognition.startListening(options).subscribe(matches => {
+          console.log("matches", matches);
+          this.ask(matches[0]);
+          this.areaForm.value.moves.push({
+            'docType': 'work',
+            'date': new Date().toISOString(),
+            'area_id': this.areaForm.value._id,
+            'area_name': this.areaForm.value.name,
+            'activity_name': "Anotacion",
+            'note': matches[0],
+          })
+          // this.serviceForm.patchValue({
+          //   client_request: matches[0],
+          // });
+          // this.serviceForm.markAsDirty();
+        });
+      }
+    });
+  }
+
+  listenService() {
+    let options = {
+      language: 'pt-BR'
+    }
+    this.speechRecognition.hasPermission()
+    .then((hasPermission: boolean) => {
+      if (!hasPermission) {
+        this.speechRecognition.requestPermission();
+      } else {
+        this.tts.speak({
+          text: "Diga oque deseja",
+          //rate: this.rate/10,
+          locale: "pt-BR"
+        })
+        .then(() => {
+          //console.log('Success1');
+          this.speechRecognition.startListening(options).subscribe(matches => {
+          //   this.serviceForm.patchValue({
+          //     service_overview: matches[0],
+          //   });
+            this.ask(matches[0]);
+            this.areaForm.value.moves.push({
+              'docType': 'work',
+              'date': new Date().toISOString(),
+              'area_id': this.areaForm.value._id,
+              'area_name': this.areaForm.value.name,
+              'activity_name': "Anotacion",
+              'note': matches[0],
+            })
+          });
+
+        })
+        .catch((reason: any) => console.log(reason));
+      }
+    });
   }
 
   async presentPopover(myEvent) {
