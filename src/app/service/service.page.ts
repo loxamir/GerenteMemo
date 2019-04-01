@@ -1662,7 +1662,7 @@ export class ServicePage implements OnInit {
           let code = this.serviceForm.value.code || "";
           let doc = this.serviceForm.value.contact.document || "";
           //let direction = this.serviceForm.value.contact.city || "";
-          //let phone = this.serviceForm.value.contact.phone || "";
+          let phone = this.serviceForm.value.contact.phone || "";
           let lines = ""
           if (this.serviceForm.value.input_amount > 0){
             lines += "--------------------------------\n";
@@ -1742,8 +1742,8 @@ export class ServicePage implements OnInit {
           ticket += "ORDEN DE SERVICIO "+code+"\n";
           ticket += "Fecha: "+date+"\n";
           ticket += "Cliente: "+contact_name+"\n";
+          ticket += "Tel: "+phone+"\n";
           ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
-          // ticket += "Ruc: "+doc+"\n";
           // ticket += "\n";
           // ticket += "Local: "+project+"\n";
           ticket += "\n";
@@ -1826,7 +1826,7 @@ export class ServicePage implements OnInit {
       let code = this.serviceForm.value.code || "";
       let doc = this.serviceForm.value.contact.document || "";
       //let direction = this.serviceForm.value.contact.city || "";
-      //let phone = this.serviceForm.value.contact.phone || "";
+      let phone = this.serviceForm.value.contact.phone || "";
       let lines = ""
       if (this.serviceForm.value.input_amount > 0){
         lines += "--------------------------------\n";
@@ -1906,6 +1906,7 @@ export class ServicePage implements OnInit {
       ticket += "ORDEN DE SERVICIO "+code+"\n";
       ticket += "Fecha: "+date+"\n";
       ticket += "Cliente: "+contact_name+"\n";
+      ticket += "Tel: "+phone+"\n";
       ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
       // ticket += "Ruc: "+doc+"\n";
       // ticket += "\n";
@@ -1965,7 +1966,7 @@ export class ServicePage implements OnInit {
       let code = this.serviceForm.value.code || "";
       let doc = this.serviceForm.value.contact.document || "";
       //let direction = this.serviceForm.value.contact.city || "";
-      //let phone = this.serviceForm.value.contact.phone || "";
+      let phone = this.serviceForm.value.contact.phone || "";
       let lines = ""
       if (this.serviceForm.value.input_amount > 0){
         lines += "--------------------------------\n";
@@ -2046,6 +2047,7 @@ export class ServicePage implements OnInit {
       ticket += "ORDEN DE SERVICIO "+code+"\n";
       ticket += "Fecha: "+date+"\n";
       ticket += "Cliente: "+contact_name+"\n";
+      ticket += "Tel: "+phone+"\n";
       ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
       // ticket += "Ruc: "+doc+"\n";
       // ticket += "\n";
