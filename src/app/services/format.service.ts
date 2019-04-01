@@ -6,21 +6,29 @@ let file = new File();
 @Injectable({ providedIn: 'root' })
 export class FormatService {
 
-  breakString(string, length){
+  breakString(string, length, firstLineLength=length){
     let counter = 0;
     let resultado = "";
+    let lastSpace = null;
+    let firstLine = true;
+    let comparator = firstLineLength;
     for(let i = 0;i<string.length;i++){
       let leter = string[i];
+      if (leter == ' '){
+        lastSpace = i;
+      }
       resultado += leter;
       counter +=1;
-      if (counter == length){
-        resultado += "\n";
+      if (counter == comparator){
+        resultado = resultado.substring(0, lastSpace)+"\n";
+        i = lastSpace;
         counter = 0;
+        if (firstLine){
+          comparator = length;
+          firstLine = false;
+        }
       }
     }
-    // string.forEach(leter=>{
-    //
-    // })
     return resultado;
   }
 

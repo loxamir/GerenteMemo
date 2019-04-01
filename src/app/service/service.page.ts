@@ -1710,7 +1710,8 @@ export class ServicePage implements OnInit {
             let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
             let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
             let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-            let work_description = item.description.toString();
+            // let work_description = item.description.toString();
+            let work_description = this.formatService.breakString(item.description.toString(), 32);
             work_lines += "--------------------------------\n";
             work_lines += work_description+"\n";
             work_lines += "Tiempo      Precio     Sub-total\n";
@@ -1743,7 +1744,8 @@ export class ServicePage implements OnInit {
           ticket += "Fecha: "+date+"\n";
           ticket += "Cliente: "+contact_name+"\n";
           ticket += "Tel: "+phone+"\n";
-          ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
+          let solicitud = this.formatService.breakString(this.serviceForm.value.client_request, 32, 32-12);
+          ticket += "Solicitud: "+solicitud+"\n";
           // ticket += "\n";
           // ticket += "Local: "+project+"\n";
           ticket += "\n";
@@ -2014,7 +2016,7 @@ export class ServicePage implements OnInit {
         let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
         let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
         let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-        let work_description = item.description.toString();
+        let work_description = this.formatService.breakString(item.description.toString(), 32);
         work_lines += "--------------------------------\n";
         work_lines += work_description+"\n";
         work_lines += "Tiempo      Precio     Sub-total\n";
@@ -2048,7 +2050,8 @@ export class ServicePage implements OnInit {
       ticket += "Fecha: "+date+"\n";
       ticket += "Cliente: "+contact_name+"\n";
       ticket += "Tel: "+phone+"\n";
-      ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
+      let solicitud = this.formatService.breakString(this.serviceForm.value.client_request, 32, 32-12);
+      ticket += "Solicitud: "+solicitud+"\n";
       // ticket += "Ruc: "+doc+"\n";
       // ticket += "\n";
       // ticket += "Local: "+project+"\n";
