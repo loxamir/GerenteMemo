@@ -128,6 +128,13 @@ export class ConfigPage implements OnInit {
     // this.setDbUsers();
   }
 
+  justSave() {
+    this.configService.updateConfig(this.configForm.value);
+    if (this.configForm.controls.product_sequence.dirty){
+      this.configService.setNextSequence('product', 1, this.configForm.value.product_sequence);
+    }
+  }
+
   setDbUsers(){
     let names = [];
     this.configForm.value.users.forEach((user: any)=>{
@@ -373,7 +380,7 @@ export class ConfigPage implements OnInit {
           this.configForm.patchValue({
             invoicePrint: data,
           });
-          this.configForm.markAsDirty();
+          this.justSave();
         }
       // });
 
