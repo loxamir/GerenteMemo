@@ -11,8 +11,8 @@ export function createTranslateLoader(http: HttpClient) {
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { Printer } from '@ionic-native/printer';
 import { SocialSharing } from '@ionic-native/social-sharing';
-import { TextToSpeech } from '@ionic-native/text-to-speech';
-import { SpeechRecognition } from '@ionic-native/speech-recognition';
+// import { TextToSpeech } from '@ionic-native/text-to-speech';
+// import { SpeechRecognition } from '@ionic-native/speech-recognition';
 // import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 // import { ProductListPage } from '../product-list/product-list.page';
 // import { ContactListPage } from '../contact-list/contact-list.page';
@@ -67,8 +67,8 @@ const routes: Routes = [
     BluetoothSerial,
     Printer,
     SocialSharing,
-    TextToSpeech,
-    SpeechRecognition,
+    // TextToSpeech,
+    // SpeechRecognition,
   ]
 })
 export class ServicePageModule {}
