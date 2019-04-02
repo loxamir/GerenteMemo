@@ -8,6 +8,7 @@ import { LanguageModel } from "../../services/language/language.model";
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { ContactListPage } from '../../contact-list/contact-list.page';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ProductListPage } from '../../product-list/product-list.page';
 
 @Component({
   selector: 'app-work',
@@ -16,7 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ServiceWorkPage implements OnInit {
   @ViewChild('description') descriptionField;
-  @ViewChild('time') timeField;
+  @ViewChild('quantity') quantityField;
     workForm: FormGroup;
     loading: any;
     _id: string;
@@ -24,8 +25,9 @@ export class ServiceWorkPage implements OnInit {
     select = true;
     @Input() description;
     @Input() date;
-    @Input() time;
+    @Input() quantity;
     @Input() responsible;
+    @Input() product;
 
     constructor(
       public navCtrl: NavController,
@@ -47,21 +49,27 @@ export class ServiceWorkPage implements OnInit {
       var foo = { foo: true };
       history.pushState(foo, "Anything", " ");
       // this._id = this.route.snapshot.paramMap.get(_id);
+      // this.product = this.route.snapshot.paramMap.get('product');
     }
 
     ngOnInit() {
       this.workForm = this.formBuilder.group({
-        description: new FormControl(this.description||null),
+        description: new FormControl(this.description||this.product && this.product.name || null),
         date: new FormControl(this.date||new Date().toISOString()),
-        time: new FormControl(this.time||null),
-        note: new FormControl(''),
-        responsible: new FormControl(this.route.snapshot.paramMap.get('responsible')||''),
+        // time: new FormControl(this.time||null),
+        // note: new FormControl(''),
+        responsible: new FormControl(this.responsible||{}),
+        product: new FormControl(this.product||{}),
+        price: new FormControl(this.product && this.product.price || 0),
+        cost: new FormControl(this.product && this.product.cost || 0),
+        quantity: new FormControl(1),
       });
     // }
     //
     // ionViewDidLoad(){
       setTimeout(() => {
-        this.timeField.setFocus();
+        this.quantityField.setFocus();
+        this.workForm.markAsDirty();
       }, 200);
     }
 
@@ -88,6 +96,34 @@ export class ServiceWorkPage implements OnInit {
         });
         profileModal.present();
       });
+    }
+
+    selectProduct() {
+      if (this.workForm.value.state!='PAID'){
+        return new Promise(async resolve => {
+          this.events.unsubscribe('select-product');
+          let profileModal = await this.modalCtrl.create({
+            component: ProductListPage,
+            componentProps: {
+              "select": true,
+              "type": "service",
+            }
+          });
+          await profileModal.present();
+          this.events.subscribe('select-product', (data) => {
+            this.workForm.patchValue({
+              product: data,
+              description: data.name,
+              price: data.price,
+              cost: data.cost,
+            });
+            this.workForm.markAsDirty();
+            profileModal.dismiss();
+            this.events.unsubscribe('select-product');
+            resolve(data);
+          })
+        });
+      }
     }
 
     listenDescription() {
@@ -117,12 +153,12 @@ export class ServiceWorkPage implements OnInit {
       //     this.clientRequest.setFocus();
       //   }
 
-      if (this.workForm.value.time==null){
-        this.timeField.setFocus();
+      if (this.workForm.value.description==null){
+        this.descriptionField.setFocus();
         return;
       }
-      else if (this.workForm.value.description==null){
-        this.descriptionField.setFocus();
+      else if (this.workForm.value.quantity==null){
+        this.quantityField.setFocus();
         return;
       }
     }
@@ -133,7 +169,7 @@ export class ServiceWorkPage implements OnInit {
       if (this.workForm.value.description==null){
         return true;
       }
-      else if (this.workForm.value.time==null){
+      else if (this.workForm.value.quantity==null){
         return true;
       }
       // else if (this.workForm.value.cost==null){

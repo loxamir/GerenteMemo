@@ -12,16 +12,44 @@
 
 <ion-content class="service-content">
   <form class="sample-form validations-form" [formGroup]="workForm" (ngSubmit)="buttonSave()">
-    <ion-item class="field-100">
-        <ion-label position="floating">{{'TIME_HS' | translate}}</ion-label>
-        <ion-input type="number" #time formControlName="time"></ion-input>
-    </ion-item>
-    <ion-item class="field-100">
-      <ion-label position="floating">{{ 'DESCRIPTION' | translate }}</ion-label>
-      <ion-textarea #description formControlName="description"
-        rows="3">
-      </ion-textarea>
-    </ion-item>
+    <ion-row>
+      <ion-item class="field-100"
+      no-padding
+      (click)="selectProduct()">
+        <h4 class="field-label">{{'Servicio' | translate}}</h4>
+        <h4 class="field-value">{{workForm.value.product && workForm.value.product.name || 'Ninguno'}}</h4>
+      </ion-item>
+
+      <ion-item class="field-50">
+          <ion-label position="floating">{{'QUANTITY' | translate}}</ion-label>
+          <ion-input type="number" #quantity formControlName="quantity"></ion-input>
+      </ion-item>
+      <ion-item class="field-50">
+          <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
+          <ion-input type="number" #price formControlName="price"></ion-input>
+      </ion-item>
+      <!-- <ion-item class="field-100" >
+          <ion-label position="floating">{{'TIME_HS' | translate}}</ion-label>
+          <ion-input type="number" #time formControlName="time"></ion-input>
+      </ion-item> -->
+      <ion-item class="field-100">
+        <ion-label position="floating">{{ 'DESCRIPTION' | translate }}</ion-label>
+        <ion-textarea #description formControlName="description"
+          rows="3">
+        </ion-textarea>
+      </ion-item>
+      <ion-item class="field-100"
+      no-padding
+      (click)="selectResponsible()">
+        <h4 class="field-label">{{'Responsable' | translate}}</h4>
+        <h4 class="field-value">{{workForm.value.responsible && workForm.value.responsible.name || 'Nadie'}}</h4>
+      </ion-item>
+      <!-- <ion-item class="field-100">
+          <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+          <ion-textarea rows="3" formControlName="note"></ion-textarea>
+      </ion-item> -->
+    </ion-row>
+
     <!-- <section class="form-section"> -->
       <!-- <h2 class="section-title">{{'Informaciones del Trabajo' | translate}}</h2> -->
       <!-- <ion-item class="field-100">
@@ -45,16 +73,7 @@
           <h3 class="service-value">{{workForm.value.responsible.name || 'Selecionar'}}</h3>
         </ion-list>
       </ion-item> -->
-      <ion-item class="field-100"
-      no-padding
-      (click)="selectResponsible()">
-        <h4 class="field-label">{{'Responsable' | translate}}</h4>
-        <h4 class="field-value">{{workForm.value.responsible && workForm.value.responsible.name || 'Nadie'}}</h4>
-      </ion-item>
-      <ion-item class="field-100">
-          <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
-          <ion-textarea rows="3" formControlName="note"></ion-textarea>
-      </ion-item>
+
       <!-- <ion-card class="list-card"> -->
       <!-- <ion-item  style="background-color: white">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>

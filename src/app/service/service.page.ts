@@ -18,7 +18,7 @@ import { ConfigService } from '../config/config.service';
 import { HostListener } from '@angular/core';
 import { FormatService } from '../services/format.service';
 import { ServiceWorkPage } from './work/work.page';
-import { ServiceTravelPage } from './travel/travel.page';
+// import { ServiceTravelPage } from './travel/travel.page';
 import { InvoicePage } from '../invoice/invoice.page';
 import { ReceiptPage } from '../receipt/receipt.page';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
@@ -778,8 +778,8 @@ export class ServicePage implements OnInit {
       }
       let labor_total = 0;
       this.serviceForm.value.works.forEach(work=>{
-        labor_total += parseFloat(work['time']) * parseFloat(work['price'])
-        work_sum['quantity'] += parseFloat(work['time']);
+        labor_total += parseFloat(work['quantity']) * parseFloat(work['price'])
+        work_sum['quantity'] += parseFloat(work['quantity']);
       })
       if (work_sum['quantity'] > 0){
         work_sum.price = labor_total/work_sum['quantity'];
@@ -898,9 +898,9 @@ export class ServicePage implements OnInit {
       let works = 0;
       this.serviceForm.value.works.forEach((work) => {
         if (this.serviceForm.value.production){
-          works += parseFloat(work.time|| 0)*parseFloat(work.cost || 0);
+          works += parseFloat(work.quantity|| 0)*parseFloat(work.cost || 0);
         } else {
-          works += parseFloat(work.time|| 0)*parseFloat(work.price || 0);
+          works += parseFloat(work.quantity|| 0)*parseFloat(work.price || 0);
         }
       });
       this.serviceForm.patchValue({
@@ -912,10 +912,10 @@ export class ServicePage implements OnInit {
       let inputs = 0;
       this.serviceForm.value.inputs.forEach((input) => {
         if (this.serviceForm.value.production){
-          // works += parseFloat(work.time)*parseFloat(this.labor_product['cost']);
+          // works += parseFloat(work.quantity)*parseFloat(this.labor_product['cost']);
           inputs += parseFloat(input.quantity)*parseFloat(input.cost|| 0);
         } else {
-          // works += parseFloat(work.time)*parseFloat(this.labor_product['price']);
+          // works += parseFloat(work.quantity)*parseFloat(this.labor_product['price']);
           inputs += parseFloat(input.quantity)*parseFloat(input.price|| 0);
         }
       });
@@ -928,14 +928,16 @@ export class ServicePage implements OnInit {
       // if (this.serviceForm.value.state=='DRAFT'){
         let profileModal = await this.modalCtrl.create({
           component: ServiceWorkPage,
-          componentProps: {}
+          componentProps: {
+            product: this.labor_product,
+          }
         });
         await profileModal.present();
         let data: any = await profileModal.onDidDismiss();//data => {
           console.log("Work", data);
           if (data.data) {
-            data.data.cost = this.labor_product['cost'];
-            data.data.price = this.labor_product['price'];
+            // data.data.cost = data.data.cost;
+            // data.data.price = this.labor_product['price'];
             data.data.description = data.data.description || '';
             this.serviceForm.value.works.unshift(data.data)
             this.recomputeValues();
@@ -971,8 +973,8 @@ export class ServicePage implements OnInit {
     async editWorkPrice(item){
       if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
-          header: 'Precio del servicio por hora',
-          message: 'Cual es el precio del la hora?',
+          header: 'Precio del servicio',
+          message: 'Cual es el precio de este servicio?',
           inputs: [
             {
               type: 'number',
@@ -1157,7 +1159,7 @@ export class ServicePage implements OnInit {
     }
     sumWork(item) {
       if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
-        item.time = parseFloat(item.time)+1;
+        item.quantity = parseFloat(item.quantity)+1;
         this.recomputeValues();
         this.serviceForm.markAsDirty();
       }
@@ -1165,27 +1167,27 @@ export class ServicePage implements OnInit {
 
     remWork(item) {
       if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
-        item.time = parseFloat(item.time)-1;
+        item.quantity = parseFloat(item.quantity)-1;
         this.recomputeValues();
         this.serviceForm.markAsDirty();
       }
     }
 
-    sumTravel(item) {
-      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
-        item.distance = parseFloat(item.distance)+1;
-        this.recomputeValues();
-        this.serviceForm.markAsDirty();
-      }
-    }
-
-    remTravel(item) {
-      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
-        item.distance = parseFloat(item.distance)-1;
-        this.recomputeValues();
-        this.serviceForm.markAsDirty();
-      }
-    }
+    // sumTravel(item) {
+    //   if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
+    //     item.distance = parseFloat(item.distance)+1;
+    //     this.recomputeValues();
+    //     this.serviceForm.markAsDirty();
+    //   }
+    // }
+    //
+    // remTravel(item) {
+    //   if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
+    //     item.distance = parseFloat(item.distance)-1;
+    //     this.recomputeValues();
+    //     this.serviceForm.markAsDirty();
+    //   }
+    // }
 
     sumItem(item) {
       if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
@@ -1337,7 +1339,7 @@ export class ServicePage implements OnInit {
     }
 
     recomputeValues() {
-      this.recomputeTravels();
+      // this.recomputeTravels();
       this.recomputeWorks();
       this.recomputeInputs();
       this.recomputeTotal();
@@ -1707,31 +1709,31 @@ export class ServicePage implements OnInit {
           // work_lines += "Tiempo    Precio       Sub-total\n";
           this.serviceForm.value.works.forEach(item => {
 
-            let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
+            let quantity = this.formatService.string_pad(8, item.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
             let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-            let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            let subtotal = this.formatService.string_pad(14, (item.price*item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
             // let work_description = item.description.toString();
             let work_description = this.formatService.breakString(item.description.toString(), 32);
             work_lines += "--------------------------------\n";
             work_lines += work_description+"\n";
-            work_lines += "Tiempo      Precio     Sub-total\n";
+            work_lines += "Cantidad    Precio     Sub-total\n";
             work_lines += quantity+price+subtotal+"\n"
           });
 
-          let travel_lines = "";
-          if (this.serviceForm.value.travel_amount > 0){
-            travel_lines += "--------------------------------\n";
-            travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-
-            travel_lines += "--------------------------------\n";
-            travel_lines += "Distancia   Precio     Sub-total\n";
-            this.serviceForm.value.travels.forEach(item => {
-              let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
-              let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-              let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-              travel_lines += quantity+price+subtotal+"\n";
-            });
-          }
+          // let travel_lines = "";
+          // if (this.serviceForm.value.travel_amount > 0){
+          //   travel_lines += "--------------------------------\n";
+          //   travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          //
+          //   travel_lines += "--------------------------------\n";
+          //   travel_lines += "Distancia   Precio     Sub-total\n";
+          //   this.serviceForm.value.travels.forEach(item => {
+          //     let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
+          //     let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          //     let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          //     travel_lines += quantity+price+subtotal+"\n";
+          //   });
+          // }
 
           let totalAmount = this.serviceForm.value.total;
           totalAmount = this.formatService.string_pad(16, totalAmount, "right");
@@ -1751,7 +1753,7 @@ export class ServicePage implements OnInit {
           ticket += "\n";
           ticket += work_lines;
           ticket += lines;
-          ticket += travel_lines;
+          // ticket += travel_lines;
           ticket += "--------------------------------\n";
           ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
           ticket += "--------------------------------\n";
@@ -1872,30 +1874,30 @@ export class ServicePage implements OnInit {
       // work_lines += "Tiempo    Precio       Sub-total\n";
       this.serviceForm.value.works.forEach(item => {
 
-        let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
+        let quantity = this.formatService.string_pad(8, item.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
         let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-        let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        let subtotal = this.formatService.string_pad(14, (item.price*item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
         let work_description = item.description.toString();
         work_lines += "--------------------------------\n";
         work_lines += work_description+"\n";
-        work_lines += "Tiempo      Precio     Sub-total\n";
+        work_lines += "Cantidad    Precio     Sub-total\n";
         work_lines += quantity+price+subtotal+"\n"
       });
 
-      let travel_lines = "";
-      if (this.serviceForm.value.travel_amount > 0){
-        travel_lines += "--------------------------------\n";
-        travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-
-        travel_lines += "--------------------------------\n";
-        travel_lines += "Distancia   Precio     Sub-total\n";
-        this.serviceForm.value.travels.forEach(item => {
-          let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
-          let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          travel_lines += quantity+price+subtotal+"\n";
-        });
-      }
+      // let travel_lines = "";
+      // if (this.serviceForm.value.travel_amount > 0){
+      //   travel_lines += "--------------------------------\n";
+      //   travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      //
+      //   travel_lines += "--------------------------------\n";
+      //   travel_lines += "Distancia   Precio     Sub-total\n";
+      //   this.serviceForm.value.travels.forEach(item => {
+      //     let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
+      //     let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+      //     let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      //     travel_lines += quantity+price+subtotal+"\n";
+      //   });
+      // }
 
 
       let totalAmount = this.serviceForm.value.total;
@@ -1916,7 +1918,7 @@ export class ServicePage implements OnInit {
       ticket += "\n";
       ticket += work_lines;
       ticket += lines;
-      ticket += travel_lines;
+      // ticket += travel_lines;
       ticket += "--------------------------------\n";
       ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
       ticket += "--------------------------------\n";
@@ -2013,31 +2015,31 @@ export class ServicePage implements OnInit {
       // work_lines += "Tiempo    Precio       Sub-total\n";
       this.serviceForm.value.works.forEach(item => {
 
-        let quantity = this.formatService.string_pad(8, item.time.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" hs");
+        let quantity = this.formatService.string_pad(8, item.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
         let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-        let subtotal = this.formatService.string_pad(14, (item.price*item.time).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        let subtotal = this.formatService.string_pad(14, (item.price*item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
         let work_description = this.formatService.breakString(item.description.toString(), 32);
         work_lines += "--------------------------------\n";
         work_lines += work_description+"\n";
-        work_lines += "Tiempo      Precio     Sub-total\n";
+        work_lines += "Cantidad    Precio     Sub-total\n";
         work_lines += quantity+price+subtotal+"\n"
       });
 
-      let travel_lines = "";
-      if (this.serviceForm.value.travel_amount > 0){
-        if (this.serviceForm.value.travels.length>0){
-          travel_lines += "--------------------------------\n";
-          travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-          travel_lines += "--------------------------------\n";
-          travel_lines += "Distancia   Precio     Sub-total\n";
-        }
-        this.serviceForm.value.travels.forEach(item => {
-          let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
-          let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          travel_lines += quantity+price+subtotal+"\n";
-        });
-      }
+      // let travel_lines = "";
+      // if (this.serviceForm.value.travel_amount > 0){
+      //   if (this.serviceForm.value.travels.length>0){
+      //     travel_lines += "--------------------------------\n";
+      //     travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      //     travel_lines += "--------------------------------\n";
+      //     travel_lines += "Distancia   Precio     Sub-total\n";
+      //   }
+      //   this.serviceForm.value.travels.forEach(item => {
+      //     let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
+      //     let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+      //     let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      //     travel_lines += quantity+price+subtotal+"\n";
+      //   });
+      // }
 
       let totalAmount = this.serviceForm.value.total;
       totalAmount = this.formatService.string_pad(16, totalAmount, "right");
@@ -2058,7 +2060,7 @@ export class ServicePage implements OnInit {
       ticket += "\n";
       ticket += work_lines;
       ticket += lines;
-      ticket += travel_lines;
+      // ticket += travel_lines;
       ticket += "--------------------------------\n";
       ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
       ticket += "--------------------------------\n";
