@@ -96,14 +96,14 @@ export class ServicePage implements OnInit {
     today: any;
     _id: string;
     avoidAlertMessage: boolean;
-    travel_product: object;
+    // travel_product: object;
     labor_product: object;
     languages: Array<LanguageModel>;
     show_works: boolean = false;
-    show_travels: boolean = false;
+    // show_travels: boolean = false;
     show_inputs: boolean = false;
     ignore_inputs: boolean = false;
-    ignore_travels: boolean = false;
+    // ignore_travels: boolean = false;
     serviceNote;
 
     constructor(
@@ -148,7 +148,7 @@ export class ServicePage implements OnInit {
         date: new FormControl(this.today),
         date_end: new FormControl(this.today),
         total: new FormControl(0),
-        travel_amount: new FormControl(0),
+        // travel_amount: new FormControl(0),
         price: new FormControl(0),
         work_amount: new FormControl(0),
         quantity: new FormControl(1),
@@ -170,7 +170,7 @@ export class ServicePage implements OnInit {
         location: new FormControl(''),
         description: new FormControl(''),
         equipment: new FormControl({}),
-        travels: new FormControl([]),
+        // travels: new FormControl([]),
         inputs: new FormControl([]),
         payments: new FormControl([]),
         project: new FormControl({}),
@@ -195,7 +195,7 @@ export class ServicePage implements OnInit {
         this.serviceNote = data.serviceNote;
         this.labor_product = data.labor_product;
         // this.input_product = data.input_product;
-        this.travel_product = data.travel_product;
+        // this.travel_product = data.travel_product;
         if (this._id){
           this.getService(this._id).then((data) => {
             //console.log("data", data);
@@ -431,122 +431,122 @@ export class ServicePage implements OnInit {
     //     // this.navCtrl.navigateBack();
     // }
 
-    async goNextStep() {
-      if (this.serviceForm.value.state == 'DRAFT' || this.serviceForm.value.state == 'SCHEDULED'){
-        console.log("set Focus");
-        if (this.serviceForm.value.client_request == '' && !this.serviceForm.value.production){
-          this.clientRequest.setFocus();
-        }
-        else if (this.serviceForm.value.production){
-          if (Object.keys(this.serviceForm.value.product).length === 0){
-            this.selectProduct();
-          } else {
-            this.setStarted();
-            return;
-          }
-        } else {
-          if (Object.keys(this.serviceForm.value.contact).length === 0){
-            this.selectContact();
-          } else {
-            this.setStarted();
-            return;
-          }
-        }
-      }
-      else if (this.serviceForm.value.state == 'STARTED'){
-        // if(!this.serviceForm.value._id){
-        //   this.buttonSave();
-        // }
-        if (this.serviceForm.value.works.length==0){
-          this.addWork();
-        }
-        else if (this.serviceForm.value.inputs.length==0 && ! this.ignore_inputs){
-          console.log("ignore_inputs");
-          let prompt = await this.alertCtrl.create({
-            header: 'Productos Consumidos',
-            message: 'Has consumido algun producto durante el trabajo?',
-            buttons: [
-              {
-                text: 'No',
-                handler: async data => {
-                  console.log("ignore_inputs");
-
-                  this.ignore_inputs = true;
-                  if (!this.serviceForm.value.production){
-                    let prompt = await this.alertCtrl.create({
-                      header: 'Viaticos',
-                      message: 'Has hecho algun viaje para realizar el trabajo?',
-                      buttons: [
-                        {
-                          text: 'No',
-                          handler: data => {
-                            // this.addTravel();
-                            this.ignore_travels = true;
-                          }
-                        },
-                        {
-                          text: 'Si',
-                          handler: data => {
-                            this.addTravel();
-                          }
-                        }
-                      ]
-                    });
-                    prompt.present();
-                  }
-                }
-              },
-              {
-                text: 'Si',
-                handler: data => {
-                  this.addInput();
-                  // item.description = data.description;
-                }
-              }
-            ]
-          });
-
-          prompt.present();
-        }
-        else if (this.serviceForm.value.travels.length==0 && ! this.ignore_travels && !this.serviceForm.value.production){
-          console.log("ignore_travels");
-          let prompt = await this.alertCtrl.create({
-            header: 'Viaticos',
-            message: 'Has hecho algun viaje para realizar el trabajo?',
-            buttons: [
-              {
-                text: 'No',
-                handler: data => {
-                  // this.addTravel();
-                  this.ignore_travels = true;
-                }
-              },
-              {
-                text: 'Si',
-                handler: data => {
-                  this.addTravel();
-                }
-              }
-            ]
-          });
-          prompt.present();
-        }
-        else {
-          console.log("Confirm Service");
-          this.beforeConfirm();
-        }
-      } else if (this.serviceForm.value.production){
-        this.beforeConfirm();
-      } else if (this.serviceForm.value.state == 'CONFIRMED'){
-          this.beforeAddPayment();
-      } else if (this.serviceForm.value.state == 'PAID'){
-        if (this.serviceForm.value.invoices.length){
-          // this.navCtrl.navigateBack();
-        } else {
-          this.addInvoice();
-        }
-      }
-    }
+    // async goNextStep() {
+    //   if (this.serviceForm.value.state == 'DRAFT' || this.serviceForm.value.state == 'SCHEDULED'){
+    //     console.log("set Focus");
+    //     if (this.serviceForm.value.client_request == '' && !this.serviceForm.value.production){
+    //       this.clientRequest.setFocus();
+    //     }
+    //     else if (this.serviceForm.value.production){
+    //       if (Object.keys(this.serviceForm.value.product).length === 0){
+    //         this.selectProduct();
+    //       } else {
+    //         this.setStarted();
+    //         return;
+    //       }
+    //     } else {
+    //       if (Object.keys(this.serviceForm.value.contact).length === 0){
+    //         this.selectContact();
+    //       } else {
+    //         this.setStarted();
+    //         return;
+    //       }
+    //     }
+    //   }
+    //   else if (this.serviceForm.value.state == 'STARTED'){
+    //     // if(!this.serviceForm.value._id){
+    //     //   this.buttonSave();
+    //     // }
+    //     if (this.serviceForm.value.works.length==0){
+    //       this.addWork();
+    //     }
+    //     else if (this.serviceForm.value.inputs.length==0 && ! this.ignore_inputs){
+    //       console.log("ignore_inputs");
+    //       let prompt = await this.alertCtrl.create({
+    //         header: 'Productos Consumidos',
+    //         message: 'Has consumido algun producto durante el trabajo?',
+    //         buttons: [
+    //           {
+    //             text: 'No',
+    //             handler: async data => {
+    //               console.log("ignore_inputs");
+    //
+    //               this.ignore_inputs = true;
+    //               if (!this.serviceForm.value.production){
+    //                 let prompt = await this.alertCtrl.create({
+    //                   header: 'Viaticos',
+    //                   message: 'Has hecho algun viaje para realizar el trabajo?',
+    //                   buttons: [
+    //                     {
+    //                       text: 'No',
+    //                       handler: data => {
+    //                         // this.addTravel();
+    //                         this.ignore_travels = true;
+    //                       }
+    //                     },
+    //                     {
+    //                       text: 'Si',
+    //                       handler: data => {
+    //                         this.addTravel();
+    //                       }
+    //                     }
+    //                   ]
+    //                 });
+    //                 prompt.present();
+    //               }
+    //             }
+    //           },
+    //           {
+    //             text: 'Si',
+    //             handler: data => {
+    //               this.addInput();
+    //               // item.description = data.description;
+    //             }
+    //           }
+    //         ]
+    //       });
+    //
+    //       prompt.present();
+    //     }
+    //     else if (this.serviceForm.value.travels.length==0 && ! this.ignore_travels && !this.serviceForm.value.production){
+    //       console.log("ignore_travels");
+    //       let prompt = await this.alertCtrl.create({
+    //         header: 'Viaticos',
+    //         message: 'Has hecho algun viaje para realizar el trabajo?',
+    //         buttons: [
+    //           {
+    //             text: 'No',
+    //             handler: data => {
+    //               // this.addTravel();
+    //               this.ignore_travels = true;
+    //             }
+    //           },
+    //           {
+    //             text: 'Si',
+    //             handler: data => {
+    //               this.addTravel();
+    //             }
+    //           }
+    //         ]
+    //       });
+    //       prompt.present();
+    //     }
+    //     else {
+    //       console.log("Confirm Service");
+    //       this.beforeConfirm();
+    //     }
+    //   } else if (this.serviceForm.value.production){
+    //     this.beforeConfirm();
+    //   } else if (this.serviceForm.value.state == 'CONFIRMED'){
+    //       this.beforeAddPayment();
+    //   } else if (this.serviceForm.value.state == 'PAID'){
+    //     if (this.serviceForm.value.invoices.length){
+    //       // this.navCtrl.navigateBack();
+    //     } else {
+    //       this.addInvoice();
+    //     }
+    //   }
+    // }
 
     // beforeConfirm(){
     //   //if ( this.serviceForm.value.product){
@@ -597,12 +597,12 @@ export class ServicePage implements OnInit {
       }
     }
 
-    showTravels(){
-      this.show_travels = !this.show_travels;
-      if (!this.serviceForm.value.travels.length){
-        this.addTravel();
-      }
-    }
+    // showTravels(){
+    //   this.show_travels = !this.show_travels;
+    //   if (!this.serviceForm.value.travels.length){
+    //     this.addTravel();
+    //   }
+    // }
 
     showInputs(){
       this.show_inputs = !this.show_inputs;
@@ -755,21 +755,21 @@ export class ServicePage implements OnInit {
           'quantity': parseFloat(input.quantity),
         })
       });
-      let travel_sum = {
-        'product': this.travel_product,
-        'description': this.travel_product['name'],
-        'price': 0,
-        'quantity': 0,
-      }
-      let travel_total = 0;
-      this.serviceForm.value.travels.forEach(travel=>{
-        travel_total += parseFloat(travel['distance']) * parseFloat(travel['price'])
-        travel_sum['quantity'] += parseFloat(travel['distance']);
-      })
-      if (travel_sum['quantity'] > 0){
-        travel_sum.price = travel_total/travel_sum['quantity'];
-        items.unshift(travel_sum);
-      }
+      // let travel_sum = {
+      //   'product': this.travel_product,
+      //   'description': this.travel_product['name'],
+      //   'price': 0,
+      //   'quantity': 0,
+      // }
+      // let travel_total = 0;
+      // this.serviceForm.value.travels.forEach(travel=>{
+      //   travel_total += parseFloat(travel['distance']) * parseFloat(travel['price'])
+      //   travel_sum['quantity'] += parseFloat(travel['distance']);
+      // })
+      // if (travel_sum['quantity'] > 0){
+      //   travel_sum.price = travel_total/travel_sum['quantity'];
+      //   items.unshift(travel_sum);
+      // }
       let work_sum = {
         'product': this.labor_product,
         'description': this.labor_product['name'],
@@ -870,8 +870,7 @@ export class ServicePage implements OnInit {
 
     recomputeTotal(){
       // if (this.serviceForm.value.state=='DRAFT'){
-        let total = this.serviceForm.value.travel_amount +
-          this.serviceForm.value.work_amount +
+        let total = this.serviceForm.value.work_amount +
           this.serviceForm.value.input_amount;
         this.serviceForm.patchValue({
           total: total,
@@ -879,20 +878,20 @@ export class ServicePage implements OnInit {
       // }
     }
 
-    recomputeTravels(){
-      let travels = 0;
-      this.serviceForm.value.travels.forEach((travel) => {
-        if (this.serviceForm.value.production){
-          travels += parseFloat(travel.distance || 0)*parseFloat(travel.cost || 0);
-        } else {
-          travels += parseFloat(travel.distance || 0)*parseFloat(travel.price || 0);
-        }
-      });
-      console.log("travel", travels);
-      this.serviceForm.patchValue({
-        travel_amount: travels,
-      });
-    }
+    // recomputeTravels(){
+    //   let travels = 0;
+    //   this.serviceForm.value.travels.forEach((travel) => {
+    //     if (this.serviceForm.value.production){
+    //       travels += parseFloat(travel.distance || 0)*parseFloat(travel.cost || 0);
+    //     } else {
+    //       travels += parseFloat(travel.distance || 0)*parseFloat(travel.price || 0);
+    //     }
+    //   });
+    //   console.log("travel", travels);
+    //   this.serviceForm.patchValue({
+    //     travel_amount: travels,
+    //   });
+    // }
 
     recomputeWorks(){
       let works = 0;
@@ -1012,87 +1011,87 @@ export class ServicePage implements OnInit {
     }
 
 
-    async addTravel(){
-      // if (this.serviceForm.value.state=='DRAFT'){
-        let profileModal = await this.modalCtrl.create({
-          component: ServiceTravelPage,
-          componentProps: {}
-        });
-        await profileModal.present();
-        let data: any = await profileModal.onDidDismiss();
-          if (data.data) {
-            data.data.cost = this.travel_product['cost'];
-            data.data.price = this.travel_product['price'];
-            console.log(data);
-            this.serviceForm.value.travels.unshift(data.data)
-            this.recomputeValues();
-            this.show_travels=true;
-            this.serviceForm.markAsDirty();
-            // this.buttonSave();
-          }
-        // });
-      // }
-    }
-
-    async editTravelPrice(item){
-      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
-        let prompt = await this.alertCtrl.create({
-          header: 'Precio del Viatico por km',
-          message: 'Cual es el precio de este del viatico por km?',
-          inputs: [
-            {
-              type: 'number',
-              name: 'price',
-              value: item.price
-          },
-
-          ],
-          buttons: [
-            {
-              text: 'Cancelar'
-            },
-            {
-              text: 'Confirmar',
-              handler: data => {
-                item.price = data.price;
-                this.recomputeValues();
-                this.serviceForm.markAsDirty();
-              }
-            }
-          ]
-        });
-
-        prompt.present();
-      }
-    }
-
-    async editTravel(item){
-      // if (this.serviceForm.value.state=='DRAFT'){
-        let profileModal = await this.modalCtrl.create({
-          component:ServiceTravelPage,
-          componentProps: item
-        });
-        await profileModal.present();
-        let data = await profileModal.onDidDismiss();
-        if (data.data) {
-          Object.keys(data.data).forEach(key => {
-            item[key] = data.data[key];
-          })
-          this.recomputeValues();
-          this.serviceForm.markAsDirty();
-        }
-        // });
-      // }
-    }
-
-    removeTravel(item){
-      // if (this.serviceForm.value.state=='DRAFT'){
-        let index = this.serviceForm.value.travels.indexOf(item)
-        this.serviceForm.value.travels.splice(index, 1);
-        this.recomputeValues();
-        this.serviceForm.markAsDirty();
-      // }
-    }
+    // async addTravel(){
+    //   // if (this.serviceForm.value.state=='DRAFT'){
+    //     let profileModal = await this.modalCtrl.create({
+    //       component: ServiceTravelPage,
+    //       componentProps: {}
+    //     });
+    //     await profileModal.present();
+    //     let data: any = await profileModal.onDidDismiss();
+    //       if (data.data) {
+    //         data.data.cost = this.travel_product['cost'];
+    //         data.data.price = this.travel_product['price'];
+    //         console.log(data);
+    //         this.serviceForm.value.travels.unshift(data.data)
+    //         this.recomputeValues();
+    //         this.show_travels=true;
+    //         this.serviceForm.markAsDirty();
+    //         // this.buttonSave();
+    //       }
+    //     // });
+    //   // }
+    // }
+    //
+    // async editTravelPrice(item){
+    //   if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
+    //     let prompt = await this.alertCtrl.create({
+    //       header: 'Precio del Viatico por km',
+    //       message: 'Cual es el precio de este del viatico por km?',
+    //       inputs: [
+    //         {
+    //           type: 'number',
+    //           name: 'price',
+    //           value: item.price
+    //       },
+    //
+    //       ],
+    //       buttons: [
+    //         {
+    //           text: 'Cancelar'
+    //         },
+    //         {
+    //           text: 'Confirmar',
+    //           handler: data => {
+    //             item.price = data.price;
+    //             this.recomputeValues();
+    //             this.serviceForm.markAsDirty();
+    //           }
+    //         }
+    //       ]
+    //     });
+    //
+    //     prompt.present();
+    //   }
+    // }
+    //
+    // async editTravel(item){
+    //   // if (this.serviceForm.value.state=='DRAFT'){
+    //     let profileModal = await this.modalCtrl.create({
+    //       component:ServiceTravelPage,
+    //       componentProps: item
+    //     });
+    //     await profileModal.present();
+    //     let data = await profileModal.onDidDismiss();
+    //     if (data.data) {
+    //       Object.keys(data.data).forEach(key => {
+    //         item[key] = data.data[key];
+    //       })
+    //       this.recomputeValues();
+    //       this.serviceForm.markAsDirty();
+    //     }
+    //     // });
+    //   // }
+    // }
+    //
+    // removeTravel(item){
+    //   // if (this.serviceForm.value.state=='DRAFT'){
+    //     let index = this.serviceForm.value.travels.indexOf(item)
+    //     this.serviceForm.value.travels.splice(index, 1);
+    //     this.recomputeValues();
+    //     this.serviceForm.markAsDirty();
+    //   // }
+    // }
 
     async addInput(){
       // if (this.serviceForm.value.state=='DRAFT'){
