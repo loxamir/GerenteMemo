@@ -100,14 +100,14 @@ export class AreaPage implements OnInit {
       console.log("resultad", result);
        this.ngZone.run(()=> {
          // this.answer = speech;
-         this.areaForm.value.moves.push({
-           'docType': 'work',
-           'date': new Date().toISOString(),
-           'area_id': this.areaForm.value._id,
-           'area_name': this.areaForm.value.name,
-           'activity_name': "Memo",
-           'note': result.result.fulfillment.speech,
-         })
+         // this.areaForm.value.moves.push({
+         //   'docType': 'work',
+         //   'date': new Date().toISOString(),
+         //   'area_id': this.areaForm.value._id,
+         //   'area_name': this.areaForm.value.name,
+         //   'activity_name': "Memo",
+         //   'note': result.result.fulfillment.speech,
+         // })
          setTimeout(() => {
            this.content.scrollToBottom();
          }, 200);
@@ -138,14 +138,14 @@ export class AreaPage implements OnInit {
         this.speechRecognition.startListening(options).subscribe(matches => {
           console.log("matches", matches);
           this.ask(matches[0]);
-          this.areaForm.value.moves.push({
-            'docType': 'work',
-            'date': new Date().toISOString(),
-            'area_id': this.areaForm.value._id,
-            'area_name': this.areaForm.value.name,
-            'activity_name': "Anotacion",
-            'note': matches[0],
-          })
+          // this.areaForm.value.moves.push({
+          //   'docType': 'work',
+          //   'date': new Date().toISOString(),
+          //   'area_id': this.areaForm.value._id,
+          //   'area_name': this.areaForm.value.name,
+          //   'activity_name': "Anotacion",
+          //   'note': matches[0],
+          // })
           setTimeout(() => {
             this.content.scrollToBottom();
           }, 200);
