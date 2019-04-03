@@ -7,7 +7,7 @@ import { LanguageService } from "../../services/language/language.service";
 import { LanguageModel } from "../../services/language/language.model";
 import { ProductService } from '../../product/product.service';
 import { ProductListPage } from '../../product-list/product-list.page';
-import { SpeechRecognition } from '@ionic-native/speech-recognition';
+// import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -31,7 +31,7 @@ export class ServiceInputPage implements OnInit {
     public formBuilder: FormBuilder,
     public productService: ProductService,
     public events: Events,
-    public speechRecognition: SpeechRecognition,
+    // public speechRecognition: SpeechRecognition,
   ) {
     //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
@@ -72,24 +72,24 @@ export class ServiceInputPage implements OnInit {
       profileModal.present();
   }
 
-  listenDescription() {
-    //console.log("teste");
-    let options = {
-      language: 'pt-BR'
-    }
-    this.speechRecognition.hasPermission()
-    .then((hasPermission: boolean) => {
-      if (!hasPermission) {
-        this.speechRecognition.requestPermission();
-      } else {
-        this.speechRecognition.startListening(options).subscribe(matches => {
-          this.inputForm.patchValue({
-            note: matches[0],
-          });
-        });
-      }
-    });
-  }
+  // listenDescription() {
+  //   //console.log("teste");
+  //   let options = {
+  //     language: 'pt-BR'
+  //   }
+  //   this.speechRecognition.hasPermission()
+  //   .then((hasPermission: boolean) => {
+  //     if (!hasPermission) {
+  //       this.speechRecognition.requestPermission();
+  //     } else {
+  //       this.speechRecognition.startListening(options).subscribe(matches => {
+  //         this.inputForm.patchValue({
+  //           note: matches[0],
+  //         });
+  //       });
+  //     }
+  //   });
+  // }
 
   buttonSave(){
     // this.viewCtrl.dismiss(this.inputForm.value);

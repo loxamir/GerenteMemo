@@ -5,7 +5,7 @@ import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../../services/language/language.service";
 import { LanguageModel } from "../../services/language/language.model";
-import { SpeechRecognition } from '@ionic-native/speech-recognition';
+// import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { ContactListPage } from '../../contact-list/contact-list.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductListPage } from '../../product-list/product-list.page';
@@ -39,7 +39,7 @@ export class ServiceWorkPage implements OnInit {
       // public navParams: NavParams,
       public alertCtrl: AlertController,
       public formBuilder: FormBuilder,
-      public speechRecognition: SpeechRecognition,
+      // public speechRecognition: SpeechRecognition,
       public events: Events,
     ) {
       //this.loading = //this.loadingCtrl.create();
@@ -126,24 +126,24 @@ export class ServiceWorkPage implements OnInit {
       }
     }
 
-    listenDescription() {
-      let options = {
-        language: 'pt-BR'
-      }
-      this.speechRecognition.hasPermission()
-      .then((hasPermission: boolean) => {
-        if (!hasPermission) {
-          this.speechRecognition.requestPermission();
-        } else {
-          this.speechRecognition.startListening(options).subscribe(matches => {
-            this.workForm.patchValue({
-              description: matches[0],
-            });
-            this.workForm.markAsDirty();
-          });
-        }
-      });
-    }
+    // listenDescription() {
+    //   let options = {
+    //     language: 'pt-BR'
+    //   }
+    //   this.speechRecognition.hasPermission()
+    //   .then((hasPermission: boolean) => {
+    //     if (!hasPermission) {
+    //       this.speechRecognition.requestPermission();
+    //     } else {
+    //       this.speechRecognition.startListening(options).subscribe(matches => {
+    //         this.workForm.patchValue({
+    //           description: matches[0],
+    //         });
+    //         this.workForm.markAsDirty();
+    //       });
+    //     }
+    //   });
+    // }
 
 
     async goNextStep() {
