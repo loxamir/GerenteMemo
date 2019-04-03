@@ -108,6 +108,8 @@ export class InvoiceConfigPage implements OnInit {
       copy_count: new FormControl(this.navParams.data.copy_count),
       copy_height: new FormControl(this.navParams.data.copy_height),
       invoice_height: new FormControl(this.navParams.data.invoice_height),
+      paperSize: new FormControl(this.navParams.data.paperSize),
+      fontSize: new FormControl(this.navParams.data.fontSize),
 
       marginTop_config: new FormControl(this.navParams.data.marginTop_config),
       marginLeft_config: new FormControl(this.navParams.data.marginLeft_config),

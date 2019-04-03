@@ -1089,63 +1089,51 @@ export class InvoicePage implements OnInit {
 
     printPDF(){
       this.configService.getConfigDoc().then((data) => {
-        var docPdf = new jsPDF()
 
-
-
+        var docPdf = new jsPDF('portrait', 'mm', data.invoicePrint.paperSize || 'a4');
+        docPdf.setFontSize(data.invoicePrint.fontSize || 7);
         let template_model = data.invoice_template;
         let marginTop = data.invoicePrint['marginTop_config'];
         let marginLeft = data.invoicePrint['marginLeft_config'];
         let printerFactor = data.invoicePrint['printerFactor_config'];
-
-        // Object.keys(data.invoicePrint).forEach(key=>{
-        //   let value = 0;
-        //   if (key.split("_")[1] == 'top'){
-        //     value = (data.invoicePrint[key] - marginTop)*printerFactor;
-        //   }
-        //   else if (key.split("_")[1] == 'left'){
-        //     value = (data.invoicePrint[key] - marginLeft)*printerFactor;
-        //   }
-        //   else if (key.split("_")[1] == 'width'){
-        //     value = (data.invoicePrint[key])*printerFactor;
-        //   }
-        //   else if (key.split("_")[1] == 'height'){
-        //     value = (data.invoicePrint[key])*printerFactor;
-        //   }
-        //   else {
-        //     // console.log("key", key);
-        //     return;
-        //   }
-        //   template_model = template_model.replace(key, value);
-        // })
-
-        // this.printer.pick().then(printer => {
+        let topo = 0;
           let number = this.invoiceForm.value.code || "";
-          let date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
-          date = date[2]+"/"+date[1]+"/"+date[0]
-          //console.log("date", date);
           let payment_condition = this.invoiceForm.value.paymentCondition || "";
           let contact_name = this.invoiceForm.value.contact.name_legal || this.invoiceForm.value.contact.name || "";
           let doc = this.invoiceForm.value.contact.document || "";
           let direction = this.invoiceForm.value.contact.address || "";
           let phone = this.invoiceForm.value.contact.phone || "";
-          let lines = ""
           let totalExentas = 0;
           let totalIva5 = 0;
           let totalIva10 = 0;
+          docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top + topo);
+          docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top + topo);
 
-          // docPdf.text(number, 10, 10);
-          docPdf.setFontSize(7);
-          docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top);
-          docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top);
-          docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top);
-          docPdf.text(payment_condition, data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top);
-          docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top);
-          docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top);
-          docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top);
-          // docPdf.text('Hello world100!', 100, 50);
+          let date = this.invoiceForm.value.date.split('T')[0].split('-');
+          if (data.invoicePrint.invoiceDateType == 'normal'){
+            date = date[2]+"/"+date[1]+"/"+date[0]
+            docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
+          } else {
+            let day = date[2];
+            docPdf.text(day, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
 
-          let lines_top = data.invoicePrint.lines_top;
+            let month = date[1];
+            docPdf.text(this.formatService.getMonth(month), data.invoicePrint.invoiceMonth_left, data.invoicePrint.invoiceDate_top + topo);
+
+            let year = date[0];
+            docPdf.text(year, data.invoicePrint.invoiceYear_left, data.invoicePrint.invoiceDate_top + topo);
+          }
+          if (data.invoicePrint.invoicePaymentType == 'name'){
+            docPdf.text(payment_condition, data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+          } else if (this.invoiceForm.value.paymentCondition == 'Contado') {
+            docPdf.text('XX', data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+          } else {
+            docPdf.text('XX', data.invoicePrint.invoicePaymentCredit_left, data.invoicePrint.invoicePayment_top + topo);
+          }
+          docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top + topo);
+          docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top + topo);
+          docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top + topo);
+          let lines_top = data.invoicePrint.lines_top + topo;
           let margin = 0;
           this.invoiceForm.value.items.forEach(item => {
             let quantity = item.quantity;
@@ -1165,42 +1153,22 @@ export class InvoicePage implements OnInit {
               iva5 = item.quantity*item.price;
               totalIva5 += iva5;
             }
-
-            // lines += `<div class="lines-quantity">
-            //   `+quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-            //   </div>
-            //   <div class="lines-product">
-            //     `+productName+`
-            //   </div>
-            //   <div class="lines-price">
-            //     `+price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-            //   </div>
-            //   <div class="lines-tax0">
-            //     `+iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-            //   </div>
-            //   <div class="lines-tax5">
-            //     `+iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-            //   </div>
-            //   <div class="lines-tax10">
-            //     `+iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-            //   </div>
-            //   <br/>`;
               margin = data.invoicePrint.lines_left || 0;
               if (data.invoicePrint.linesCode_width){
-                docPdf.text(code, margin, lines_top, 'center');
+                docPdf.text(code, margin, lines_top + topo, 'center');
                 margin += data.invoicePrint.linesCode_width;
               }
-              docPdf.text(quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), margin, lines_top, 'center');
+              docPdf.text(quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), margin, lines_top , 'center');
               margin += data.invoicePrint.linesQuantity_width;
-              docPdf.text(productName.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+              docPdf.text(productName.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top );
               margin += data.invoicePrint.linesProductName_width;
-              docPdf.text(price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesPrice_width, lines_top, 'right');
+              docPdf.text(price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesPrice_width, lines_top , 'right');
               margin += data.invoicePrint.linesPrice_width;
               docPdf.text(iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax0_width, lines_top, 'right');
               margin += data.invoicePrint.linesTax0_width;
-              docPdf.text(iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+              docPdf.text(iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top , 'right');
               margin += data.invoicePrint.linesTax5_width;
-              docPdf.text(iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+              docPdf.text(iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top , 'right');
               lines_top += data.invoicePrint.lines_height/data.invoicePrint.lines_limit;
           });
 
@@ -1209,106 +1177,206 @@ export class InvoicePage implements OnInit {
           let amountIva10 = (totalIva10/11).toFixed(0);
           let amountIva5 = (totalIva5/21).toFixed(0);
           let amountIva = parseFloat(amountIva10) + parseFloat(amountIva5);
-          // this.printer.isAvailable().then(onSuccess => {
-          //   //console.log("onSuccess", onSuccess);
-          // }, onError => {
-          //   //console.log("onError", onError);
-          // });
-          // let options: PrintOptions = {
-          //      name: 'MyDocument',
-          //      //printerId: 'printer007',
-          //      duplex: false,
-          //      landscape: false,
-          //      grayscale: true
-          //    };
+          docPdf.text(totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax0_left + data.invoicePrint.subTotalTax0_width, data.invoicePrint.subTotalTax0_top + topo, 'right');
+          docPdf.text(totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax5_left + data.invoicePrint.subTotalTax5_width, data.invoicePrint.subTotalTax5_top + topo, 'right');
+          docPdf.text(totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top + topo, 'right');
+
+          docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top + topo);
+          docPdf.text(totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top + topo, 'right');
+          docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top + topo);
+          docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top + topo);
+          docPdf.text(amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax_left, data.invoicePrint.totalTax_top + topo);
+
+          if (data.invoicePrint.copy_count>=2){
+            topo += data.invoicePrint.invoice_height + data.invoicePrint.copy_height;
+              number = this.invoiceForm.value.code || "";
+              date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
+              if (data.invoicePrint.invoiceDateType == 'normal'){
+                date = date[2]+"/"+date[1]+"/"+date[0]
+                docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
+              } else {
+                let day = date[2];
+                docPdf.text(day, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
+
+                let month = date[1];
+                docPdf.text(this.formatService.getMonth(month), data.invoicePrint.invoiceMonth_left, data.invoicePrint.invoiceDate_top + topo);
+
+                let year = date[0];
+                docPdf.text(year, data.invoicePrint.invoiceYear_left, data.invoicePrint.invoiceDate_top + topo);
+              }
+              payment_condition = this.invoiceForm.value.paymentCondition || "";
+              contact_name = this.invoiceForm.value.contact.name_legal || this.invoiceForm.value.contact.name || "";
+              doc = this.invoiceForm.value.contact.document || "";
+              direction = this.invoiceForm.value.contact.address || "";
+              phone = this.invoiceForm.value.contact.phone || "";
+              totalExentas = 0;
+              totalIva5 = 0;
+              totalIva10 = 0;
+              docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top + topo);
+              docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top + topo);
+              if (data.invoicePrint.invoicePaymentType == 'name'){
+                docPdf.text(payment_condition, data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+              } else if (this.invoiceForm.value.paymentCondition == 'Contado') {
+                docPdf.text('XX', data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+              } else {
+                docPdf.text('XX', data.invoicePrint.invoicePaymentCredit_left, data.invoicePrint.invoicePayment_top + topo);
+              }
+              docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top + topo);
+              docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top + topo);
+              docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top + topo);
+
+              lines_top = data.invoicePrint.lines_top + topo;
+              margin = 0;
+              this.invoiceForm.value.items.forEach(item => {
+                let quantity = item.quantity;
+                let productName = item.description || item.product.name;
+                let code = item.product && item.product.code || '';
+                let price = item.price;
+                let iva0 = 0;
+                let iva5 = 0;
+                let iva10 = 0;
+                if (item.product.tax == "iva10"){
+                  iva10 = item.quantity*item.price;
+                  totalIva10 += iva10;
+                } else if (item.product.tax == "iva0"){
+                  iva0 = item.quantity*item.price;
+                  totalExentas += iva0;
+                } else if (item.product.tax == "iva5"){
+                  iva5 = item.quantity*item.price;
+                  totalIva5 += iva5;
+                }
+                  margin = data.invoicePrint.lines_left || 0;
+                  if (data.invoicePrint.linesCode_width){
+                    docPdf.text(code, margin, lines_top, 'center');
+                    margin += data.invoicePrint.linesCode_width;
+                  }
+                  docPdf.text(quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), margin, lines_top, 'center');
+                  margin += data.invoicePrint.linesQuantity_width;
+                  docPdf.text(productName.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+                  margin += data.invoicePrint.linesProductName_width;
+                  docPdf.text(price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesPrice_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesPrice_width;
+                  docPdf.text(iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax0_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesTax0_width;
+                  docPdf.text(iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesTax5_width;
+                  docPdf.text(iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+                  lines_top += data.invoicePrint.lines_height/data.invoicePrint.lines_limit;
+              });
+
+              totalAmount = totalIva10 + totalIva5 + totalExentas;
+              totalInWords = this.formatService.NumeroALetras(totalAmount, "PYG");
+              amountIva10 = (totalIva10/11).toFixed(0);
+              amountIva5 = (totalIva5/21).toFixed(0);
+              amountIva = parseFloat(amountIva10) + parseFloat(amountIva5);
+              docPdf.text(totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax0_left + data.invoicePrint.subTotalTax0_width, data.invoicePrint.subTotalTax0_top + topo, 'right');
+              docPdf.text(totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax5_left + data.invoicePrint.subTotalTax5_width, data.invoicePrint.subTotalTax5_top + topo, 'right');
+              docPdf.text(totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top + topo, 'right');
+
+              docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top + topo);
+              docPdf.text(totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top + topo, 'right');
+              docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top + topo);
+              docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top + topo);
+              docPdf.text(amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax_left, data.invoicePrint.totalTax_top + topo);
+          }
+
+          if (data.invoicePrint.copy_count==3){
+            topo += data.invoicePrint.invoice_height + data.invoicePrint.copy_height;
+              number = this.invoiceForm.value.code || "";
+              date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
+              if (data.invoicePrint.invoiceDateType == 'normal'){
+                date = date[2]+"/"+date[1]+"/"+date[0]
+                docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
+              } else {
+                let day = date[2];
+                docPdf.text(day, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
+
+                let month = date[1];
+                docPdf.text(this.formatService.getMonth(month), data.invoicePrint.invoiceMonth_left, data.invoicePrint.invoiceDate_top + topo);
+
+                let year = date[0];
+                docPdf.text(year, data.invoicePrint.invoiceYear_left, data.invoicePrint.invoiceDate_top + topo);
+              }
+              payment_condition = this.invoiceForm.value.paymentCondition || "";
+              contact_name = this.invoiceForm.value.contact.name_legal || this.invoiceForm.value.contact.name || "";
+              doc = this.invoiceForm.value.contact.document || "";
+              direction = this.invoiceForm.value.contact.address || "";
+              phone = this.invoiceForm.value.contact.phone || "";
+              totalExentas = 0;
+              totalIva5 = 0;
+              totalIva10 = 0;
 
 
-          docPdf.text(totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax0_left + data.invoicePrint.subTotalTax0_width, data.invoicePrint.subTotalTax0_top, 'right');
-          docPdf.text(totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax5_left + data.invoicePrint.subTotalTax5_width, data.invoicePrint.subTotalTax5_top, 'right');
-          docPdf.text(totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top, 'right');
+              docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top + topo);
+              docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top + topo);
+              if (data.invoicePrint.invoicePaymentType == 'name'){
+                docPdf.text(payment_condition, data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+              } else if (this.invoiceForm.value.paymentCondition == 'Contado') {
+                docPdf.text('XX', data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+              } else {
+                docPdf.text('XX', data.invoicePrint.invoicePaymentCredit_left, data.invoicePrint.invoicePayment_top + topo);
+              }
+              docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top + topo);
+              docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top + topo);
+              docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top + topo);
 
-          docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top);
-          docPdf.text(totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top, 'right');
-          docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top);
-          docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top);
-          docPdf.text(amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax_left, data.invoicePrint.totalTax_top);
+              lines_top = data.invoicePrint.lines_top + topo;
+              margin = 0;
+              this.invoiceForm.value.items.forEach(item => {
+                let quantity = item.quantity;
+                let productName = item.description || item.product.name;
+                let code = item.product && item.product.code || '';
+                let price = item.price;
+                let iva0 = 0;
+                let iva5 = 0;
+                let iva10 = 0;
+                if (item.product.tax == "iva10"){
+                  iva10 = item.quantity*item.price;
+                  totalIva10 += iva10;
+                } else if (item.product.tax == "iva0"){
+                  iva0 = item.quantity*item.price;
+                  totalExentas += iva0;
+                } else if (item.product.tax == "iva5"){
+                  iva5 = item.quantity*item.price;
+                  totalIva5 += iva5;
+                }
+                  margin = data.invoicePrint.lines_left || 0;
+                  if (data.invoicePrint.linesCode_width){
+                    docPdf.text(code, margin, lines_top, 'center');
+                    margin += data.invoicePrint.linesCode_width;
+                  }
+                  docPdf.text(quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), margin, lines_top, 'center');
+                  margin += data.invoicePrint.linesQuantity_width;
+                  docPdf.text(productName.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+                  margin += data.invoicePrint.linesProductName_width;
+                  docPdf.text(price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesPrice_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesPrice_width;
+                  docPdf.text(iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax0_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesTax0_width;
+                  docPdf.text(iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesTax5_width;
+                  docPdf.text(iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+                  lines_top += data.invoicePrint.lines_height/data.invoicePrint.lines_limit;
+              });
+
+              totalAmount = totalIva10 + totalIva5 + totalExentas;
+              totalInWords = this.formatService.NumeroALetras(totalAmount, "PYG");
+              amountIva10 = (totalIva10/11).toFixed(0);
+              amountIva5 = (totalIva5/21).toFixed(0);
+              amountIva = parseFloat(amountIva10) + parseFloat(amountIva5);
+              docPdf.text(totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax0_left + data.invoicePrint.subTotalTax0_width, data.invoicePrint.subTotalTax0_top + topo, 'right');
+              docPdf.text(totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax5_left + data.invoicePrint.subTotalTax5_width, data.invoicePrint.subTotalTax5_top + topo, 'right');
+              docPdf.text(totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top + topo, 'right');
+
+              docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top + topo);
+              docPdf.text(totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top + topo, 'right');
+              docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top + topo);
+              docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top + topo);
+              docPdf.text(amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax_left, data.invoicePrint.totalTax_top + topo);
+
+
+          }
           docPdf.save('Factura_'+number+'.pdf')
-
-             //console.log("dafdata", data.invoice_template);
-             // let template = template_model;
-             // template = template.replace("+number+", number);
-             // template = template.replace("+date+", date);
-             // template = template.replace("+payment_condition+", payment_condition);
-             // template = template.replace("+contact_name+", contact_name);
-             // template = template.replace("+doc+", doc);
-             // template = template.replace("+direction+", direction);
-             // template = template.replace("+phone+", phone);
-             // template = template.replace("+lines+", lines);
-             // template = template.replace("+totalExentas+", totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             // template = template.replace("+totalIva5+", totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             // template = template.replace("+totalIva10+", totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             // template = template.replace("+totalInWords+", totalInWords);
-             // template = template.replace("+totalAmount+", totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             // template = template.replace("+amountIva5+", amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             // template = template.replace("+amountIva10+", amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             // template = template.replace("+amountIva+", amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             // let result = ""
-             // for(let i=0;i<data.invoicePrint['copy_count'];i++){
-             //   // console.log("teplateda", i);
-             //   result += template;
-             //   if (i<(data.invoicePrint['copy_count']-1)){
-             //     result += '<div class="space"></div>';
-             //   }
-             // }
-             // console.log("html template", result);
-             // let html = result;
-             //  let fragmentFromString = function (strHTML) {
-             //    return document.createRange().createContextualFragment(strHTML);
-             //  }
-             //  let fragment = fragmentFromString(html);
-             //  // document.body.appendChild(fragment);
-             //
-             // const div = document.getElementById("htmltoimage");
-             // // div.html(fragment);
-             // div.innerHTML = html;
-             // // const hoptions = {background: "white", height: div.clientHeight, width: div.clientWidth};
-             // const hoptions = {background:"white",height :div.clientHeight , width : 1200  };
-             // html2canvas(div, hoptions).then((canvas) => {
-             //   // let a = document.createElement('a');
-             //   // document.body.appendChild(a);
-             //   // a.download = "test.png";
-             //   // a.href =  canvas.toDataURL();
-             //   // a.click();
-             //
-             //     //Initialize JSPDF
-             //     let doc = new jsPDF("p", "mm", "a4");
-             //     //Converting canvas to Image
-             //     let imgData = canvas.toDataURL("image/PNG");
-             //     //Add image Canvas to PDF
-             //     doc.addImage(imgData, 'PNG', 20, 20);
-             //
-             //     let pdfOutput = doc.output();
-             //     // using ArrayBuffer will allow you to put image inside PDF
-             //     let buffer = new ArrayBuffer(pdfOutput.length);
-             //     let array = new Uint8Array(buffer);
-             //     for (let i = 0; i < pdfOutput.length; i++) {
-             //         array[i] = pdfOutput.charCodeAt(i);
-             //     }
-             //
-             //     //Name of pdf
-             //     const fileName = "factura_"+number+".pdf";
-             //
-             //     // Make file
-             //     doc.save(fileName);
-             //
-             // });
-
-             // this.printer.print(result, options).then(onSuccess => {
-             //   console.log("onPrintSuccess2", onSuccess);
-             // }, onError => {
-             //   console.log("onPrintError2", onError);
-             // });
-           //})
       });
     }
 

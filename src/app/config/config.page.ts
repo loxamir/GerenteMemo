@@ -373,7 +373,7 @@ export class ConfigPage implements OnInit {
       // await profileModal.onDidDismiss(data => {
         if (data) {
           Object.keys(data).forEach(key=>{
-            if (key != 'invoiceDateType' && key != 'invoicePaymentType'){
+            if (key != 'invoiceDateType' && key != 'invoicePaymentType' && key != 'paperSize'){
               data[key] = parseFloat(data[key]);
             }
           })
