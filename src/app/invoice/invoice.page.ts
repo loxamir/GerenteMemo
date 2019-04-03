@@ -1150,6 +1150,7 @@ export class InvoicePage implements OnInit {
           this.invoiceForm.value.items.forEach(item => {
             let quantity = item.quantity;
             let productName = item.description || item.product.name;
+            let code = item.product && item.product.code || '';
             let price = item.price;
             let iva0 = 0;
             let iva5 = 0;
@@ -1184,19 +1185,23 @@ export class InvoicePage implements OnInit {
             //     `+iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
             //   </div>
             //   <br/>`;
-              margin = 20;
-              docPdf.text(quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), margin, lines_top);
+              margin = data.invoicePrint.lines_left || 0;
+              if (data.invoicePrint.linesCode_width){
+                docPdf.text(code, margin, lines_top, 'center');
+                margin += data.invoicePrint.linesCode_width;
+              }
+              docPdf.text(quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), margin, lines_top, 'center');
               margin += data.invoicePrint.linesQuantity_width;
               docPdf.text(productName.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
               margin += data.invoicePrint.linesProductName_width;
-              docPdf.text(price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+              docPdf.text(price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesPrice_width, lines_top, 'right');
               margin += data.invoicePrint.linesPrice_width;
-              docPdf.text(iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+              docPdf.text(iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax0_width, lines_top, 'right');
               margin += data.invoicePrint.linesTax0_width;
-              docPdf.text(iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+              docPdf.text(iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
               margin += data.invoicePrint.linesTax5_width;
-              docPdf.text(iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
-              lines_top += data.invoicePrint.lines_height/15;
+              docPdf.text(iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+              lines_top += data.invoicePrint.lines_height/data.invoicePrint.lines_limit;
           });
 
           let totalAmount = totalIva10 + totalIva5 + totalExentas;
@@ -1218,11 +1223,12 @@ export class InvoicePage implements OnInit {
           //    };
 
 
-          docPdf.text(totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax0_left, data.invoicePrint.subTotalTax0_top);
-          docPdf.text(totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax5_left, data.invoicePrint.subTotalTax5_top);
-          docPdf.text(totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left, data.invoicePrint.subTotalTax10_top);
+          docPdf.text(totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax0_left + data.invoicePrint.subTotalTax0_width, data.invoicePrint.subTotalTax0_top, 'right');
+          docPdf.text(totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax5_left + data.invoicePrint.subTotalTax5_width, data.invoicePrint.subTotalTax5_top, 'right');
+          docPdf.text(totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top, 'right');
+
           docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top);
-          docPdf.text(totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left, data.invoicePrint.invoiceTotal_top);
+          docPdf.text(totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top, 'right');
           docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top);
           docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top);
           docPdf.text(amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax_left, data.invoicePrint.totalTax_top);

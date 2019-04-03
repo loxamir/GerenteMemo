@@ -69,6 +69,7 @@ export class InvoiceConfigPage implements OnInit {
       contactPhone_width: new FormControl(this.navParams.data.contactPhone_width),
 
       lines_top: new FormControl(this.navParams.data.lines_top),
+      lines_left: new FormControl(this.navParams.data.lines_left),
       lines_width: new FormControl(this.navParams.data.lines_width),
       lines_limit: new FormControl(this.navParams.data.lines_limit),
       lines_height: new FormControl(this.navParams.data.lines_height),

@@ -177,9 +177,17 @@
 
                     <h2 class="section-title">{{'Lineas de la Factura' | translate}}</h2>
 <ion-row>
-                  <ion-item class="field-50">
-                    <ion-label position="floating">{{'Cantidad' | translate}}</ion-label>
+                  <ion-item class="field-100">
+                    <ion-label position="floating">{{'Cantidad de Lineas' | translate}}</ion-label>
                     <ion-input type="number" formControlName="lines_limit"></ion-input>
+                  </ion-item>
+                  <ion-item class="field-50">
+                    <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+                    <ion-input type="number" formControlName="lines_top"></ion-input>
+                  </ion-item>
+                  <ion-item class="field-50">
+                    <ion-label position="floating">{{'Izquieda' | translate}}</ion-label>
+                    <ion-input type="number" formControlName="lines_left"></ion-input>
                   </ion-item>
                     <ion-item class="field-50">
                       <ion-label position="floating">{{'Alto' | translate}}</ion-label>
@@ -190,10 +198,7 @@
                       <ion-input type="number" formControlName="lines_width"></ion-input>
                     </ion-item>
 
-                    <ion-item class="field-50">
-                      <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                      <ion-input type="number" formControlName="lines_top"></ion-input>
-                    </ion-item>
+
                     </ion-row>
                     <h2 class="section-title">{{'Anchos de campos en la Linea' | translate}}</h2>
                     <ion-row>
