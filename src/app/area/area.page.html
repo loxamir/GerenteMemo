@@ -118,7 +118,7 @@
         <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
             <ion-row no-padding>
               <ion-col size="2">
-                <ion-img [src]="'./assets/icons/'+item.activity_name+'.png'" class="activity-img"></ion-img>
+                <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'" class="activity-img"></ion-img>
               </ion-col>
               <ion-col size="8" no-padding>
                 <h3 class="activity-name">
@@ -179,7 +179,7 @@
     <ion-col [class.left-round]="!areaForm.value.note"
     [class.all-round]="areaForm.value.note">
       <ion-textarea #note [(ngModel)]="areaForm.value.note"
-      placeholder="Escribir Observación" style="--padding-top: 11px;"
+      placeholder="Escrever Anotação" style="--padding-top: 11px;"
         rows="1">
       </ion-textarea>
     </ion-col>
@@ -209,20 +209,20 @@
     </ion-col>
   </ion-row>
   <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-    <ion-col size="4" (click)="addActivity('activity.1536168428011')">
-      <ion-img [src]="'./assets/icons/plant.png'" class="activity-menu"></ion-img>
+    <ion-col size="4" (click)="addActivity('activity.plant')">
+      <ion-img [src]="'./assets/icons/activity.plant.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
         Plantio
       </h1>
     </ion-col>
-    <ion-col size="4" (click)="addActivity()">
-      <ion-img [src]="'./assets/icons/sprayer.png'" class="activity-menu"></ion-img>
+    <ion-col size="4" (click)="addActivity('activity.spray')">
+      <ion-img [src]="'./assets/icons/activity.spray.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
         Pulverização
       </h1>
     </ion-col>
-    <ion-col size="4" (click)="addActivity('activity.1536168580448')">
-      <ion-img [src]="'./assets/icons/Manejo.png'" class="activity-menu"></ion-img>
+    <ion-col size="4" (click)="addActivity('activity.management')">
+      <ion-img [src]="'./assets/icons/activity.management.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
         Manejo
       </h1>
@@ -230,21 +230,21 @@
   </ion-row>
   <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
     <ion-col size="4" (click)="addActivity('activity.harvest')">
-      <ion-img [src]="'./assets/icons/harvest.png'" class="activity-menu"></ion-img>
+      <ion-img [src]="'./assets/icons/activity.harvest.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
         Colheita
       </h1>
     </ion-col>
-    <ion-col size="4" (click)="addActivity()">
-      <ion-img [src]="'./assets/icons/Chuva2.png'" class="activity-menu"></ion-img>
+    <ion-col size="4" (click)="addActivity('activity.rain')">
+      <ion-img [src]="'./assets/icons/activity.rain.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
         Chuva
       </h1>
     </ion-col>
-    <ion-col size="4" (click)="addActivity()">
-      <ion-img [src]="'./assets/icons/icon-72x72.png'" class="activity-menu"></ion-img>
+    <ion-col size="4" (click)="addActivity('activity.anotation')">
+      <ion-img [src]="'./assets/icons/activity.anotation.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
-        Otro
+        Anotação
       </h1>
     </ion-col>
   </ion-row>

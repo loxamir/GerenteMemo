@@ -134,9 +134,9 @@ export class WorkPage implements OnInit {
       date: new FormControl(this.today),
       note: new FormControl(),
       state: new FormControl('QUOTATION'),
-      language: new FormControl(''),
+      // language: new FormControl(''),
       fields: new FormControl([]),
-      cost: new FormControl(0),
+      // cost: new FormControl(0),
       section: new FormControl(null),
       _id: new FormControl(''),
     });
