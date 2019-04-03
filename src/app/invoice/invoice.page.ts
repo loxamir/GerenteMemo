@@ -1089,32 +1089,35 @@ export class InvoicePage implements OnInit {
 
     printPDF(){
       this.configService.getConfigDoc().then((data) => {
+        var docPdf = new jsPDF()
+
+
 
         let template_model = data.invoice_template;
         let marginTop = data.invoicePrint['marginTop_config'];
         let marginLeft = data.invoicePrint['marginLeft_config'];
         let printerFactor = data.invoicePrint['printerFactor_config'];
 
-        Object.keys(data.invoicePrint).forEach(key=>{
-          let value = 0;
-          if (key.split("_")[1] == 'top'){
-            value = (data.invoicePrint[key] - marginTop)*printerFactor;
-          }
-          else if (key.split("_")[1] == 'left'){
-            value = (data.invoicePrint[key] - marginLeft)*printerFactor;
-          }
-          else if (key.split("_")[1] == 'width'){
-            value = (data.invoicePrint[key])*printerFactor;
-          }
-          else if (key.split("_")[1] == 'height'){
-            value = (data.invoicePrint[key])*printerFactor;
-          }
-          else {
-            // console.log("key", key);
-            return;
-          }
-          template_model = template_model.replace(key, value);
-        })
+        // Object.keys(data.invoicePrint).forEach(key=>{
+        //   let value = 0;
+        //   if (key.split("_")[1] == 'top'){
+        //     value = (data.invoicePrint[key] - marginTop)*printerFactor;
+        //   }
+        //   else if (key.split("_")[1] == 'left'){
+        //     value = (data.invoicePrint[key] - marginLeft)*printerFactor;
+        //   }
+        //   else if (key.split("_")[1] == 'width'){
+        //     value = (data.invoicePrint[key])*printerFactor;
+        //   }
+        //   else if (key.split("_")[1] == 'height'){
+        //     value = (data.invoicePrint[key])*printerFactor;
+        //   }
+        //   else {
+        //     // console.log("key", key);
+        //     return;
+        //   }
+        //   template_model = template_model.replace(key, value);
+        // })
 
         // this.printer.pick().then(printer => {
           let number = this.invoiceForm.value.code || "";
@@ -1130,6 +1133,20 @@ export class InvoicePage implements OnInit {
           let totalExentas = 0;
           let totalIva5 = 0;
           let totalIva10 = 0;
+
+          // docPdf.text(number, 10, 10);
+          docPdf.setFontSize(7);
+          docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top);
+          docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top);
+          docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top);
+          docPdf.text(payment_condition, data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top);
+          docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top);
+          docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top);
+          docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top);
+          // docPdf.text('Hello world100!', 100, 50);
+
+          let lines_top = data.invoicePrint.lines_top;
+          let margin = 0;
           this.invoiceForm.value.items.forEach(item => {
             let quantity = item.quantity;
             let productName = item.description || item.product.name;
@@ -1147,25 +1164,39 @@ export class InvoicePage implements OnInit {
               iva5 = item.quantity*item.price;
               totalIva5 += iva5;
             }
-            lines += `<div class="lines-quantity">
-              `+quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-              </div>
-              <div class="lines-product">
-                `+productName+`
-              </div>
-              <div class="lines-price">
-                `+price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-              </div>
-              <div class="lines-tax0">
-                `+iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-              </div>
-              <div class="lines-tax5">
-                `+iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-              </div>
-              <div class="lines-tax10">
-                `+iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-              </div>
-              <br/>`;
+
+            // lines += `<div class="lines-quantity">
+            //   `+quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+            //   </div>
+            //   <div class="lines-product">
+            //     `+productName+`
+            //   </div>
+            //   <div class="lines-price">
+            //     `+price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+            //   </div>
+            //   <div class="lines-tax0">
+            //     `+iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+            //   </div>
+            //   <div class="lines-tax5">
+            //     `+iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+            //   </div>
+            //   <div class="lines-tax10">
+            //     `+iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+            //   </div>
+            //   <br/>`;
+              margin = 20;
+              docPdf.text(quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), margin, lines_top);
+              margin += data.invoicePrint.linesQuantity_width;
+              docPdf.text(productName.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+              margin += data.invoicePrint.linesProductName_width;
+              docPdf.text(price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+              margin += data.invoicePrint.linesPrice_width;
+              docPdf.text(iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+              margin += data.invoicePrint.linesTax0_width;
+              docPdf.text(iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+              margin += data.invoicePrint.linesTax5_width;
+              docPdf.text(iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+              lines_top += data.invoicePrint.lines_height/15;
           });
 
           let totalAmount = totalIva10 + totalIva5 + totalExentas;
@@ -1185,74 +1216,86 @@ export class InvoicePage implements OnInit {
           //      landscape: false,
           //      grayscale: true
           //    };
+
+
+          docPdf.text(totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax0_left, data.invoicePrint.subTotalTax0_top);
+          docPdf.text(totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax5_left, data.invoicePrint.subTotalTax5_top);
+          docPdf.text(totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left, data.invoicePrint.subTotalTax10_top);
+          docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top);
+          docPdf.text(totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left, data.invoicePrint.invoiceTotal_top);
+          docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top);
+          docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top);
+          docPdf.text(amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax_left, data.invoicePrint.totalTax_top);
+          docPdf.save('Factura_'+number+'.pdf')
+
              //console.log("dafdata", data.invoice_template);
-             let template = template_model;
-             template = template.replace("+number+", number);
-             template = template.replace("+date+", date);
-             template = template.replace("+payment_condition+", payment_condition);
-             template = template.replace("+contact_name+", contact_name);
-             template = template.replace("+doc+", doc);
-             template = template.replace("+direction+", direction);
-             template = template.replace("+phone+", phone);
-             template = template.replace("+lines+", lines);
-             template = template.replace("+totalExentas+", totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+totalIva5+", totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+totalIva10+", totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+totalInWords+", totalInWords);
-             template = template.replace("+totalAmount+", totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+amountIva5+", amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+amountIva10+", amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+amountIva+", amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             let result = ""
-             for(let i=0;i<data.invoicePrint['copy_count'];i++){
-               // console.log("teplateda", i);
-               result += template;
-               if (i<(data.invoicePrint['copy_count']-1)){
-                 result += '<div class="space"></div>';
-               }
-             }
-             console.log("html template", result);
-             let html = result;
-              let fragmentFromString = function (strHTML) {
-                return document.createRange().createContextualFragment(strHTML);
-              }
-              let fragment = fragmentFromString(html);
-              // document.body.appendChild(fragment);
-
-             const div = document.getElementById("htmltoimage");
-             // div.html(fragment);
-             div.innerHTML = html;
-             // const hoptions = {background: "white", height: div.clientHeight, width: div.clientWidth};
-             const hoptions = {background:"white",height :div.clientHeight , width : 800  };
-             html2canvas(div, hoptions).then((canvas) => {
-               // let a = document.createElement('a');
-               // document.body.appendChild(a);
-               // a.download = "test.png";
-               // a.href =  canvas.toDataURL();
-               // a.click();
-
-                 //Initialize JSPDF
-                 let doc = new jsPDF("p", "mm", "a4");
-                 //Converting canvas to Image
-                 let imgData = canvas.toDataURL("image/PNG");
-                 //Add image Canvas to PDF
-                 doc.addImage(imgData, 'PNG', 20, 20);
-
-                 let pdfOutput = doc.output();
-                 // using ArrayBuffer will allow you to put image inside PDF
-                 let buffer = new ArrayBuffer(pdfOutput.length);
-                 let array = new Uint8Array(buffer);
-                 for (let i = 0; i < pdfOutput.length; i++) {
-                     array[i] = pdfOutput.charCodeAt(i);
-                 }
-
-                 //Name of pdf
-                 const fileName = "factura_"+number+".pdf";
-
-                 // Make file
-                 doc.save(fileName);
-
-             });
+             // let template = template_model;
+             // template = template.replace("+number+", number);
+             // template = template.replace("+date+", date);
+             // template = template.replace("+payment_condition+", payment_condition);
+             // template = template.replace("+contact_name+", contact_name);
+             // template = template.replace("+doc+", doc);
+             // template = template.replace("+direction+", direction);
+             // template = template.replace("+phone+", phone);
+             // template = template.replace("+lines+", lines);
+             // template = template.replace("+totalExentas+", totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             // template = template.replace("+totalIva5+", totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             // template = template.replace("+totalIva10+", totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             // template = template.replace("+totalInWords+", totalInWords);
+             // template = template.replace("+totalAmount+", totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             // template = template.replace("+amountIva5+", amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             // template = template.replace("+amountIva10+", amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             // template = template.replace("+amountIva+", amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             // let result = ""
+             // for(let i=0;i<data.invoicePrint['copy_count'];i++){
+             //   // console.log("teplateda", i);
+             //   result += template;
+             //   if (i<(data.invoicePrint['copy_count']-1)){
+             //     result += '<div class="space"></div>';
+             //   }
+             // }
+             // console.log("html template", result);
+             // let html = result;
+             //  let fragmentFromString = function (strHTML) {
+             //    return document.createRange().createContextualFragment(strHTML);
+             //  }
+             //  let fragment = fragmentFromString(html);
+             //  // document.body.appendChild(fragment);
+             //
+             // const div = document.getElementById("htmltoimage");
+             // // div.html(fragment);
+             // div.innerHTML = html;
+             // // const hoptions = {background: "white", height: div.clientHeight, width: div.clientWidth};
+             // const hoptions = {background:"white",height :div.clientHeight , width : 1200  };
+             // html2canvas(div, hoptions).then((canvas) => {
+             //   // let a = document.createElement('a');
+             //   // document.body.appendChild(a);
+             //   // a.download = "test.png";
+             //   // a.href =  canvas.toDataURL();
+             //   // a.click();
+             //
+             //     //Initialize JSPDF
+             //     let doc = new jsPDF("p", "mm", "a4");
+             //     //Converting canvas to Image
+             //     let imgData = canvas.toDataURL("image/PNG");
+             //     //Add image Canvas to PDF
+             //     doc.addImage(imgData, 'PNG', 20, 20);
+             //
+             //     let pdfOutput = doc.output();
+             //     // using ArrayBuffer will allow you to put image inside PDF
+             //     let buffer = new ArrayBuffer(pdfOutput.length);
+             //     let array = new Uint8Array(buffer);
+             //     for (let i = 0; i < pdfOutput.length; i++) {
+             //         array[i] = pdfOutput.charCodeAt(i);
+             //     }
+             //
+             //     //Name of pdf
+             //     const fileName = "factura_"+number+".pdf";
+             //
+             //     // Make file
+             //     doc.save(fileName);
+             //
+             // });
 
              // this.printer.print(result, options).then(onSuccess => {
              //   console.log("onPrintSuccess2", onSuccess);
