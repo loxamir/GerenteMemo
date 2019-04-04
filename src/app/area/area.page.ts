@@ -253,6 +253,19 @@ export class AreaPage implements OnInit {
     profileModal.present();
   }
 
+  itemSumary(item){
+    let summary = item && item.summary || "";
+    if (summary){
+      let list = summary.split("${").splice(1);
+      list.forEach(variable=>{
+          variable = variable.split("}")[0];
+          summary = summary.replace("${"+variable+"}", item[variable]);
+          console.log("summary2", variable, summary);
+      })
+    }
+    return summary;
+  }
+
   async addActivity(activity_id){
     let componentProps = {
       "area": this.areaForm.value,
@@ -328,7 +341,10 @@ export class AreaPage implements OnInit {
       'date': new Date().toISOString(),
       'area_id': this.areaForm.value._id,
       'area_name': this.areaForm.value.name,
+      'crop_id': this.areaForm.value.crop._id,
+      'crop_name': this.areaForm.value.crop.name,
       'activity_name': "Anotacion",
+      'activity_id': "activity.anotation",
       'note': this.areaForm.value.note,
     })
     this.areaForm.value.note = null;

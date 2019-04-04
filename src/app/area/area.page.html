@@ -124,6 +124,7 @@
                 <h3 class="activity-name">
                   {{ item.activity_name || 'No Informado'}}
                 </h3>
+                {{ itemSumary(item) }}
                 <h1 class="activity-note">
                   {{item.note}}
                 </h1>
@@ -221,10 +222,10 @@
         Pulverização
       </h1>
     </ion-col>
-    <ion-col size="4" (click)="addActivity('activity.management')">
-      <ion-img [src]="'./assets/icons/activity.management.png'" class="activity-menu"></ion-img>
+    <ion-col size="4" (click)="addActivity('activity.work')">
+      <ion-img [src]="'./assets/icons/activity.work.png'" class="activity-menu"></ion-img>
       <h1 class="activity-title">
-        Manejo
+        Trabajo
       </h1>
     </ion-col>
   </ion-row>

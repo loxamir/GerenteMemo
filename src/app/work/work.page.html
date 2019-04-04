@@ -87,13 +87,15 @@
               </ion-range>
             </ion-item>
             <ion-item *ngIf="field.type == 'formula'" class="field-100">
-              <h4 class="field-label">{{field.label || field.name}}</h4>
-              <h4 class="field-value" style="color: gray">{{ fields[field.name] }}</h4>
+              <div class="field-many2one">
+                <h4 class="field-label">{{field.label || field.name}}</h4>
+                <h4 class="field-value-bigger">{{ fields[field.name] }}</h4>
+              </div>
             </ion-item>
             <ion-item *ngIf="field.type == 'many2one'"  class="field-100" (click)="selectM2O(field, field.model, field.context)">
               <div class="field-many2one">
                 <h4 class="field-label">{{field.label || field.name}}</h4>
-                <h4 class="field-value">{{workForm.value[field.name] && workForm.value[field.name].name || 'Selecionar'}}</h4>
+                <h4 class="field-value-bigger">{{workForm.value[field.name] && workForm.value[field.name].name || 'Selecionar'}}</h4>
               </div>
             </ion-item>
 
@@ -102,17 +104,19 @@
               <h2 class="section-title" style="color:#1c61f3;background: white;border: 1px solid;border-top-left-radius: 5px;border-top-right-radius: 5px;">{{ field.label || field.name | translate}}</h2>
               <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
                 <ion-item style="--background: white;">
-                  <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
-                    <ion-col *ngFor="let atribute of field.attributes;">
-                      <h4 class="field-label" style="margin-top: 0px;">{{atribute.label}}</h4>
-                      <h4 class="user-name"  style="margin-bottom: 0px;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row no-padding>
-                    <ion-col class="item-content" style="white-space: normal;">
-                      {{item.note}}
-                    </ion-col>
-                  </ion-row>
+                  <div style="width: 100%">
+                    <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
+                      <ion-col *ngFor="let atribute of field.attributes;">
+                        <h4 class="field-label" style="margin-top: 0px;">{{atribute.label}}</h4>
+                        <h4 class="user-name"  style="margin-bottom: 0px;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row no-padding>
+                      <ion-col class="item-content" style="white-space: normal;">
+                        {{item.note}}
+                      </ion-col>
+                    </ion-row>
+                  </div>
                 </ion-item>
                 <ion-item-options>
                   <ion-item-option (click)="removeFieldItem(field.name, i)">

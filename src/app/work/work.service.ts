@@ -47,7 +47,7 @@ export class WorkService {
     });
     console.log("work", work);
     // delete work.fields;
-
+    work.summary = work.activity.summary;
     work.activity_id = work.activity._id;
     work.activity_name = work.activity.name;
     delete work.activity;
