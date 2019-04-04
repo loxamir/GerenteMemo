@@ -51,6 +51,8 @@ export class CropService {
     let crop = Object.assign({}, viewData);
     crop.docType = 'crop';
     delete crop.moves;
+    crop.product_id = crop.product._id;
+    delete crop.product;
     return new Promise((resolve, reject)=>{
       if (crop.code && crop.code != ''){
         this.pouchdbService.createDoc(crop).then(doc => {
@@ -82,6 +84,8 @@ export class CropService {
     crop.docType = 'crop';
     delete crop.moves;
     delete crop.crop;
+    crop.product_id = crop.product._id;
+    delete crop.product;
     return this.pouchdbService.updateDoc(crop);
   }
 

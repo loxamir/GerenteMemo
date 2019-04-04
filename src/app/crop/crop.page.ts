@@ -18,6 +18,7 @@ import { WorkPage } from '../work/work.page';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { FormatService } from "../services/format.service";
 // import { AccountsPage } from './move/account/list/accounts';
+import { ProductListPage } from '../product-list/product-list.page';
 
 @Component({
   selector: 'app-crop',
@@ -67,6 +68,8 @@ export class CropPage implements OnInit {
       balance: new FormControl(0),
       dateStart: new FormControl(new Date()),
       dateEnd: new FormControl(new Date()),
+      product: new FormControl({}),
+      product_name: new FormControl(),
       // currency_name: new FormControl(''),
       moves: new FormControl([]),
       // checks: new FormControl([]),
@@ -108,6 +111,32 @@ export class CropPage implements OnInit {
         this.navCtrl.navigateBack('/agro-tabs/crop-list');
       });
     }
+  }
+
+  selectProduct() {
+    return new Promise(async resolve => {
+      // this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-product');
+      this.events.subscribe('select-product', (data) => {
+        this.cropForm.patchValue({
+          product: data,
+          product_name: data.name,
+        });
+        this.cropForm.markAsDirty();
+        // this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-product');
+        profileModal.dismiss();
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ProductListPage,
+        componentProps: {
+          "select": true,
+          "filter": "product",
+        }
+      });
+      profileModal.present();
+    });
   }
 
   setLanguage(lang: LanguageModel){

@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/agro-tabs/work-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{ workForm.value.activity && workForm.value.activity.name || 'TASK' | translate }} {{workForm.value.code}}
+      {{ workForm.value.activity && workForm.value.activity.name || 'TASK' | translate }}
       <h1 class="subtitle">
         {{ workForm.value.date|date: 'dd/MM/yyyy' }}
       </h1>
@@ -18,7 +18,7 @@
 <ion-content class="work-content" style="background-color: #ddd">
 
   <form class="sample-form validations-form" [formGroup]="workForm" (ngSubmit)="onSubmit(workForm.value)" >
-    <!-- <ion-row justify-content-center *ngIf="!list"  id="teste">
+    <ion-row justify-content-center *ngIf="!list">
         <ion-item no-padding (click)="selectActivity()" class="field-50">
           <h4 class="field-label">{{'Atividade' | translate}}</h4>
           <h4 class="field-value">{{workForm.value.activity && workForm.value.activity.name || 'Ningun'}}</h4>
@@ -31,7 +31,7 @@
           formControlName="date">
           </ion-datetime>
         </ion-item>
-    </ion-row> -->
+    </ion-row>
     <!-- <ion-list no-lines>
       <section>
       </section>

@@ -41,6 +41,10 @@
       formControlName="dateEnd">
       </ion-datetime>
     </ion-item>
+    <ion-item no-padding (click)="selectProduct()" class="field-100">
+      <h4 class="field-label">{{'Producto' | translate}}</h4>
+      <h4 class="field-value">{{cropForm.value.product && cropForm.value.product.name || 'Selecionar'}}</h4>
+    </ion-item>
     </ion-row>
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of cropForm.value.moves.sort(this.formatService.compare)">

@@ -71,7 +71,9 @@ export class AreaPage implements OnInit {
       this.areaService.handleChange(this.areaForm.value.moves, change);
       setTimeout(() => {
         console.log("acounteceu");
-        this.content.scrollToBottom();
+        if (this.content){
+          this.content.scrollToBottom();
+        }
       }, 500);
     })
     platform.ready().then(() => {
@@ -109,7 +111,9 @@ export class AreaPage implements OnInit {
          //   'note': result.result.fulfillment.speech,
          // })
          setTimeout(() => {
-           this.content.scrollToBottom();
+           if (this.content){
+             this.content.scrollToBottom();
+           }
          }, 200);
          this.tts.speak({
            text: result.result.fulfillment.speech,
@@ -147,7 +151,9 @@ export class AreaPage implements OnInit {
           //   'note': matches[0],
           // })
           setTimeout(() => {
-            this.content.scrollToBottom();
+            if (this.content){
+              this.content.scrollToBottom();
+            }
           }, 200);
         });
       }
@@ -198,7 +204,9 @@ export class AreaPage implements OnInit {
         this.areaForm.patchValue(data);
         this.loading.dismiss();
         setTimeout(() => {
-          this.content.scrollToBottom();
+          if (this.content){
+            this.content.scrollToBottom();
+          }
         }, 200);
       });
     } else {
@@ -328,7 +336,9 @@ export class AreaPage implements OnInit {
     this.showBotom = !this.showBotom;
     if (this.showBotom){
       setTimeout(() => {
-        this.content.scrollToBottom();
+        if (this.content){
+          this.content.scrollToBottom();
+        }
       }, 200);
     }
   }
@@ -348,7 +358,9 @@ export class AreaPage implements OnInit {
     })
     this.areaForm.value.note = null;
     setTimeout(() => {
-      this.content.scrollToBottom();
+      if (this.content){
+        this.content.scrollToBottom();
+      }
     }, 500);
   }
 
@@ -356,7 +368,9 @@ export class AreaPage implements OnInit {
     console.log("take picture");
   }
   getAudio(){
-    this.content.scrollToBottom();
+    if (this.content){
+      this.content.scrollToBottom();
+    }
     console.log("get audio");
 
   }

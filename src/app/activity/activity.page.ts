@@ -66,6 +66,7 @@ export class ActivityPage implements OnInit {
       // seller: new FormControl(false),
       // employee: new FormControl(false),
       summary: new FormControl(),
+      saveScript: new FormControl(),
       show: new FormControl(true),
       _id: new FormControl(''),
     });

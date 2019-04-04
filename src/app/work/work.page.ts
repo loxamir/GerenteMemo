@@ -44,6 +44,7 @@ export class WorkPage implements OnInit {
   note;
   @Input() go = false;
   @Input() area: any;
+  config;
 
   constructor(
     public navCtrl: NavController,
@@ -130,7 +131,7 @@ export class WorkPage implements OnInit {
     this.workForm = this.formBuilder.group({
       name: new FormControl(''),
       activity: new FormControl(this.activity||{}),
-      code: new FormControl(''),
+      // code: new FormControl(''),
       date: new FormControl(this.today),
       note: new FormControl(),
       state: new FormControl('QUOTATION'),
@@ -142,6 +143,7 @@ export class WorkPage implements OnInit {
     });
 
     this.loading = await this.loadingCtrl.create();
+    this.config = await this.configService.getConfig();
     await this.loading.present();
     let self = this;
     let defaultTab = '';
@@ -195,7 +197,7 @@ export class WorkPage implements OnInit {
       }
   }
 
-  buttonSave() {
+  async buttonSave() {
     if (this.select && this.list) {
       this.dismissData();
     } else {
@@ -204,12 +206,16 @@ export class WorkPage implements OnInit {
           this.workForm.value[field.name] = this.fields[field.name];
         }
       })
+      console.log("inicio");
+      await this.preSave();
+      console.log("fin");
       if (this._id) {
         this.workService.updateWork(this.workForm.value);
         this.events.publish('open-work', this.workForm.value);
         this.workForm.markAsPristine();
         // this.navCtrl.navigateBack('/works');
         this.modalCtrl.dismiss();
+        // this.postSave();
       } else {
         this.workService.createWork(this.workForm.value).then(doc => {
           this.workForm.patchValue({
@@ -221,9 +227,47 @@ export class WorkPage implements OnInit {
           this.workForm.markAsPristine();
           // this.navCtrl.navigateBack('/works');
           this.modalCtrl.dismiss();
+          // this.postSave();
         });
       }
     }
+  }
+
+  preSave() {
+    return new Promise(async (resolve, reject)=>{
+      let result = await eval(this.activity.saveScript);
+      console.log("resultads", result)
+      resolve(result);
+    })
+  }
+
+  // postSave() {
+  //   let result = eval(this.activity.saveScript);
+  //   console.log("resultads", result)
+  //   return result;
+  // }
+
+  async updateDoc(doc_id, changes){
+    return new Promise(async (resolve, reject)=>{
+      let doc = await this.pouchdbService.getDoc(doc_id);
+      console.log("doc1", doc);
+      changes.forEach((data: any)=>{
+        Object.keys(data).forEach((d: any, key)=>{
+          doc[d] = data[d];
+        })
+      })
+      console.log("doc2", doc);
+      await this.pouchdbService.updateDoc(doc);
+      resolve(doc);
+    })
+  }
+
+  async createDoc(data){
+    return new Promise(async (resolve, reject)=>{
+    let doc = await this.pouchdbService.createDoc(data);
+    console.log("created doc", doc);
+    resolve(doc);
+  })
   }
 
   setLanguage(lang: LanguageModel) {
@@ -307,6 +351,7 @@ export class WorkPage implements OnInit {
       activity: data,
       fields: data.fields,
     });
+    this.activity = data;
     setTimeout(function(){
         self.workForm.patchValue({
           'section': defaultTab,

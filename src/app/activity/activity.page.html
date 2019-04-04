@@ -49,13 +49,32 @@
        <ion-label>{{'Mostrar Sempre' | translate}}</ion-label>
        <ion-toggle formControlName="show"></ion-toggle>
     </ion-item>
-    <ion-item class="field-100">
+    <ion-item  class="field-100" style="margin-top: 10px;">
+      <ion-label position="stacked">{{ 'NOTE' | translate }}</ion-label>
+      <ion-textarea #note formControlName="note"
+        rows="2">
+      </ion-textarea>
+    </ion-item>
+    <!-- <ion-item class="field-100">
       <ion-label position="floating">{{'Resumo' | translate}}</ion-label>
       <ion-input type="text" formControlName="summary"></ion-input>
     </ion-item>
     <ion-item class="field-100">
       <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
       <ion-input type="text" formControlName="note"></ion-input>
+    </ion-item> -->
+    <ion-item  class="field-100" style="margin-top: 10px;">
+      <ion-label position="stacked">{{ 'Resumo no Cartão' | translate }}</ion-label>
+      <ion-textarea #summary formControlName="summary"
+        rows="3">
+      </ion-textarea>
+    </ion-item>
+
+    <ion-item  class="field-100" style="margin-top: 10px;">
+      <ion-label position="stacked">{{ 'Script de Salvamento' | translate }}</ion-label>
+      <ion-textarea #endScript formControlName="saveScript"
+        rows="5">
+      </ion-textarea>
     </ion-item>
 
   </form>
