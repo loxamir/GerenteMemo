@@ -973,9 +973,18 @@ export class ReceiptPage implements OnInit {
     }
 
     async printBluetooth(){
-      let date = this.receiptForm.value.date.split('T')[0];
-      let content = "Recibo";
-      content += "Fecha: "+date+"\n";
+      let config = await this.configService.getConfigDoc();
+
+      let company_name = config.name || "";
+      let company_ruc = config.doc || "";
+
+      let content = this.formatService.string_pad(40,"RECIBO DE DINERO", 'center', ' ')+"\n";
+      content += company_name+"\n";
+      content += "RUC: "+company_ruc+"\n";
+      content += "Cliente: "+this.receiptForm.value.contact.name+"\n";
+      content += "CI/RUC: "+this.receiptForm.value.contact.document+"\n";
+      content += "Fecha: "+(new Date(this.receiptForm.value.date)).toLocaleDateString('es-PY')+"\n";
+
       content += "Monto Total: $ "+this.receiptForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
       content += "Monto Recebido: $ "+this.receiptForm.value.payments[0].amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
       content += "Monto Vuelto: $ "+this.receiptForm.value.change.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
@@ -1005,6 +1014,13 @@ export class ReceiptPage implements OnInit {
         )+
         "\n";
       })
+      content += "\n";
+      content += "\n";
+      content += "\n";
+      content += "\n";
+      content += "\n";
+      content += this.formatService.string_pad(40, "", 'center', '-')+"\n";
+      content += "Firma del cobrador\n";
       if (!this.receiptForm.value.items_details && new_items_details){
         this.receiptForm.patchValue({
           items_details: new_items_details,
@@ -1037,13 +1053,22 @@ export class ReceiptPage implements OnInit {
     }
 
     async printMatrix(){
-      let date = this.receiptForm.value.date.split('T')[0];
-      let content = "Recibo";
-      content += "Fecha: "+date+"\n";
+      let config = await this.configService.getConfigDoc();
+
+      let company_name = config.name || "";
+      let company_ruc = config.doc || "";
+
+      let content = this.formatService.string_pad(40,"RECIBO DE DINERO", 'center', ' ')+"\n";
+      content += company_name+"\n";
+      content += "RUC: "+company_ruc+"\n";
+      content += "Cliente: "+this.receiptForm.value.contact.name+"\n";
+      content += "CI/RUC: "+this.receiptForm.value.contact.document+"\n";
+      content += "Fecha: "+(new Date(this.receiptForm.value.date)).toLocaleDateString('es-PY')+"\n";
       content += "Monto Total: $ "+this.receiptForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
       content += "Monto Recebido: $ "+this.receiptForm.value.payments[0].amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
       content += "Monto Vuelto: $ "+this.receiptForm.value.change.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
       // content += "---------| Movimentos |---------\n";
+
       content += this.formatService.string_pad(40, "| Movimentos |", 'center', '-')+"\n";
       content += this.formatService.string_pad(20, "Documento")+this.formatService.string_pad(10,"Pendiente", 'right')+this.formatService.string_pad(10,"Recibido", 'right')+"\n";
       content += this.formatService.string_pad(40, "", 'center', '-')+"\n";
@@ -1069,6 +1094,14 @@ export class ReceiptPage implements OnInit {
         )+
         "\n";
       })
+      content += "\n";
+      content += "\n";
+      content += "\n";
+      content += "\n";
+      content += "\n";
+      content += this.formatService.string_pad(40, "", 'center', '-')+"\n";
+      content += "Firma del cobrador\n";
+
       if (!this.receiptForm.value.items_details && new_items_details){
         this.receiptForm.patchValue({
           items_details: new_items_details,
