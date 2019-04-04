@@ -124,7 +124,8 @@
                 <h3 class="activity-name">
                   {{ item.activity_name || 'No Informado'}}
                 </h3>
-                {{ itemSumary(item) }}
+                <!-- {{ itemSumary(item) }} -->
+                <div [innerHTML]="itemSumary(item)"></div>
                 <h1 class="activity-note">
                   {{item.note}}
                 </h1>

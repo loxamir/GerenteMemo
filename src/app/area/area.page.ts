@@ -260,7 +260,6 @@ export class AreaPage implements OnInit {
       list.forEach(variable=>{
           variable = variable.split("}")[0];
           summary = summary.replace("${"+variable+"}", item[variable]);
-          console.log("summary2", variable, summary);
       })
     }
     return summary;
