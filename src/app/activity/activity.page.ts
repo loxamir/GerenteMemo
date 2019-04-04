@@ -65,7 +65,7 @@ export class ActivityPage implements OnInit {
       // supplier: new FormControl(false),
       // seller: new FormControl(false),
       // employee: new FormControl(false),
-      // show: new FormControl(true),
+      show: new FormControl(true),
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();

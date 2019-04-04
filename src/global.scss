@@ -395,7 +395,6 @@ ion-input {
     margin-right: 0px;
 }
 ion-segment {
-  // --background: white;
   background: white;
 }
 ion-segment-button {
@@ -594,17 +593,17 @@ h3.activity-name {
     padding-top: 8px;
 }
 
-ion-segment-button {
-    background: #1a73e8;
-}
-
-.sc-ion-segment-md-h {
-    --background: none;
-    --background-checked: none;
-    --background-hover: rgba(var(--ion-color-primary-rgb,56,128,255),0.04);
-    --background-activated: rgba(var(--ion-color-primary-rgb,56,128,255),0.16);
-    --color: rgba(var(--ion-text-color-rgb,0,0,0),0.6);
-    --color-checked: #ffffff;
-    --color-checked-disabled: var(--color-checked);
-    --indicator-color: transparent;
-}
+// ion-segment-button {
+//     background: #1a73e8;
+// }
+//
+// .sc-ion-segment-md-h {
+//     --background: none;
+//     --background-checked: none;
+//     --background-hover: rgba(var(--ion-color-primary-rgb,56,128,255),0.04);
+//     --background-activated: rgba(var(--ion-color-primary-rgb,56,128,255),0.16);
+//     --color: rgba(var(--ion-text-color-rgb,0,0,0),0.6);
+//     --color-checked: #ffffff;
+//     --color-checked-disabled: var(--color-checked);
+//     --indicator-color: transparent;
+// }

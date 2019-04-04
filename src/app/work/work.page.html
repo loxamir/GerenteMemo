@@ -108,6 +108,11 @@
                       <h4 class="user-name"  style="margin-bottom: 0px;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
                     </ion-col>
                   </ion-row>
+                  <ion-row no-padding>
+                    <ion-col class="item-content" style="white-space: normal;">
+                      {{item.note}}
+                    </ion-col>
+                  </ion-row>
                 </ion-item>
                 <ion-item-options>
                   <ion-item-option (click)="removeFieldItem(field.name, i)">
@@ -159,12 +164,19 @@
           <ion-list style="background-color: #ddd;padding-top:3px;padding-bottom: 0px;" *ngIf="field.type == 'tab' && workForm.value[field.name] && workForm.value[field.name].length > 0">
             <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
               <ion-item style="--background: white;">
-                <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
-                  <ion-col *ngFor="let atribute of field.attributes;">
-                    <h4 class="field-label" style="margin-top: 0px;">{{atribute.label}}</h4>
-                    <h4 class="user-name"  style="margin-bottom: 0px;text-align: center;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
-                  </ion-col>
-                </ion-row>
+                <div style="width: 100%">
+                  <ion-row (click)="editFieldItem(field.name, i)">
+                    <ion-col *ngFor="let atribute of field.attributes;">
+                      <h4 class="field-label" style="margin-top: 0px;">{{atribute.label}}</h4>
+                      <h4 class="user-name"  style="margin-bottom: 0px;text-align: center;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row no-padding>
+                    <ion-col class="item-content" style="white-space: normal;">
+                      {{item.note}}
+                    </ion-col>
+                  </ion-row>
+                </div>
               </ion-item>
               <ion-item-options>
                 <ion-item-option (click)="removeFieldItem(field.name, i)"
