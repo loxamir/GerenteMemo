@@ -27,8 +27,8 @@ export class AreasService {
             // if (area._id.split('.')[1] == 'area'){
               // let areaReport = planneds.filter(x => x.key[0]==area._id)[0]
               // area.balance = areaReport && areaReport.value || 0;
-              area.lastActivity = planneds[planneds.length-1].value.replace('<br/>', ' ');
-              area.lastDate = planneds[planneds.length-1].key[1];
+              area.lastActivity =  planneds[planneds.length-1] && planneds[planneds.length-1].value.replace('<br/>', ' ') || '';
+              area.lastDate = planneds[planneds.length-1] && planneds[planneds.length-1].key[1] || null;
               areaList.push(area);
             // }
           })

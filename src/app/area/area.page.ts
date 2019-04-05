@@ -223,6 +223,7 @@ export class AreaPage implements OnInit {
         }, 200);
       });
     } else {
+      this.showForm = true;
       this.loading.dismiss();
     }
   }

@@ -22,12 +22,12 @@ export class AreaService {
         [doc_id, '0'],
         [doc_id, 'z']
       ).then(async (planneds: any[]) => {
-        let promise_ids = [];
-        let pts = [];
-        let balance = 0;
+        // let promise_ids = [];
+        // let pts = [];
+        // let balance = 0;
         let getList = [];
         planneds.forEach(item => {
-          pts.push(item);
+          // pts.push(item);
           // promise_ids.push(this.pouchdbService.getDoc(item.key[1]));
           getList.push(item.key[1]);
           // balance += parseFloat(item.value);
@@ -82,16 +82,6 @@ export class AreaService {
         });
       }
 
-    });
-  }
-
-  getDefaultArea(){
-    return new Promise((resolve, reject)=>{
-      this.configService.getConfigDoc().then(config => {
-        this.pouchdbService.getDoc(config.area_id).then(default_area => {
-          resolve(default_area);
-        })
-      });
     });
   }
 
