@@ -162,10 +162,8 @@ export class AreasPage implements OnInit {
 
   deleteArea(area){
     let index = this.areas.indexOf(area);
-    if (area.balance == 0){
-      this.areas.splice(index, 1);
-      this.areasService.deleteArea(area);
-    }
+    this.areas.splice(index, 1);
+    this.areasService.deleteArea(area);
   }
 
 }

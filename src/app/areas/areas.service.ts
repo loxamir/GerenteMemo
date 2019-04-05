@@ -10,22 +10,25 @@ export class AreasService {
 
   getAreas(keyword, page){
     return new Promise((resolve, reject)=>{
-      this.pouchdbService.getView(
-        'stock/Areas', 1,
-        ['0'],
-        ['z']
-      ).then((planneds: any[]) => {
         let areaList = [];
         this.pouchdbService.searchDocTypeData(
           'area', keyword, page
         ).then((areas: any[]) => {
           console.log("areas", areas);
-          console.log("planneds", planneds);
+
           areas.forEach(area=>{
-            area.balance = 0;
+            this.pouchdbService.getView(
+              'Informes/AreaDiario', 3,
+              [area._id],
+              [area._id+'z']
+            ).then((planneds: any[]) => {
+            console.log("planneds"+area.name, planneds);
+            // area.balance = 0;
             // if (area._id.split('.')[1] == 'area'){
-              let areaReport = planneds.filter(x => x.key[0]==area._id)[0]
-              area.balance = areaReport && areaReport.value || 0;
+              // let areaReport = planneds.filter(x => x.key[0]==area._id)[0]
+              // area.balance = areaReport && areaReport.value || 0;
+              area.lastActivity = planneds[planneds.length-1].value;
+              area.lastDate = planneds[planneds.length-1].key[1];
               areaList.push(area);
             // }
           })

@@ -126,7 +126,7 @@
                   {{ item.activity_name || 'No Informado'}}
                 </h3>
                 <!-- {{ itemSumary(item) }} -->
-                <div [innerHTML]="itemSumary(item)"></div>
+                <div [innerHTML]="item.summary"></div>
                 <h1 class="activity-note">
                   {{item.note}}
                 </h1>

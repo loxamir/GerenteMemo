@@ -29,7 +29,7 @@ export class WorkService {
   serializeWork(viewData){
     let work = Object.assign({}, viewData);
     work.docType = 'work';
-    work.cost = parseFloat(work.cost);
+    // work.cost = parseFloat(work.cost);
     viewData.fields.forEach(field=>{
       if (field.type=='many2one' && work[field.name]){
         work[field.name+'_id'] = work[field.name]._id;
@@ -47,7 +47,7 @@ export class WorkService {
     });
     console.log("work", work);
     // delete work.fields;
-    work.summary = work.activity.summary;
+    // work.summary = work.activity.summary;
     work.activity_id = work.activity._id;
     work.activity_name = work.activity.name;
     delete work.activity;

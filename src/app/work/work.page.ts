@@ -138,7 +138,7 @@ export class WorkPage implements OnInit {
       state: new FormControl('QUOTATION'),
       // language: new FormControl(''),
       fields: new FormControl([]),
-      // cost: new FormControl(0),
+      summary: new FormControl(""),
       section: new FormControl(null),
       _id: new FormControl(''),
     });
@@ -209,6 +209,7 @@ export class WorkPage implements OnInit {
       })
       console.log("inicio");
       await this.preSave();
+      this.setSummary();
       this.deleteRemoved();
       console.log("fin");
       if (this._id) {
@@ -233,6 +234,24 @@ export class WorkPage implements OnInit {
         });
       }
     }
+  }
+
+  setSummary(){
+      let summary = this.workForm.value.summary || "";
+      console.log("summary", summary);
+      if (summary){
+        let list = summary.split("${").splice(1);
+        list.forEach(variable=>{
+            variable = variable.split("}")[0];
+            console.log("variable", variable);
+            summary = summary.replace("${"+variable+"}", this.workForm.value[variable]);
+        })
+      }
+      this.workForm.patchValue({
+        summary: summary
+      })
+      console.log("summary2", summary);
+      // return summary;
   }
 
   preSave() {
@@ -358,6 +377,7 @@ export class WorkPage implements OnInit {
     this.workForm.patchValue({
       activity: data,
       fields: data.fields,
+      summary: data.summary
     });
     this.activity = data;
     setTimeout(function(){

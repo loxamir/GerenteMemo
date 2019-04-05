@@ -261,17 +261,17 @@ export class AreaPage implements OnInit {
     profileModal.present();
   }
 
-  itemSumary(item){
-    let summary = item && item.summary || "";
-    if (summary){
-      let list = summary.split("${").splice(1);
-      list.forEach(variable=>{
-          variable = variable.split("}")[0];
-          summary = summary.replace("${"+variable+"}", item[variable]);
-      })
-    }
-    return summary;
-  }
+  // itemSumary(item){
+  //   let summary = item && item.summary || "";
+  //   if (summary){
+  //     let list = summary.split("${").splice(1);
+  //     list.forEach(variable=>{
+  //         variable = variable.split("}")[0];
+  //         summary = summary.replace("${"+variable+"}", item[variable]);
+  //     })
+  //   }
+  //   return summary;
+  // }
 
   async addActivity(activity_id){
     let componentProps = {
