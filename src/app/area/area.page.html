@@ -31,7 +31,7 @@
         <!-- Ultima chuva 15mm a 6 dias -->
       </h1>
       <h1 class="subtitle" *ngIf="!areaForm.value.lastRain">
-        Sem dados de Chuvas
+        Sem dados de Chuva
       </h1>
     </ion-title>
     <ion-buttons slot="end">
@@ -210,7 +210,7 @@
         </ion-icon>
 
     </ion-col>
-    <ion-col size="2" *ngIf="isCordova">
+    <ion-col size="2" *ngIf="isCordova || areaForm.value.note">
       <ion-fab-button *ngIf="!areaForm.value.note"
       style="width:40px;height:40px;margin-left: 5px;">
         <ion-icon name="mic" (click)="listenRequest()">
