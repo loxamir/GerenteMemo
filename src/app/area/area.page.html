@@ -18,8 +18,20 @@
       <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button>
     </ion-buttons>
     <ion-title>{{areaForm.value.name}}
-      <h1 class="subtitle">
-        Ultima chuva 15mm a 6 dias
+      <h1 class="subtitle" *ngIf="areaForm.value.lastRain && diffDays  > 1">
+        Ultima chuva {{areaForm.value.lastRain}}mm a {{ diffDays }} dias
+        <!-- Ultima chuva 15mm a 6 dias -->
+      </h1>
+      <h1 class="subtitle" *ngIf="areaForm.value.lastRain && diffDays == 1">
+        Ultima chuva {{areaForm.value.lastRain}}mm a {{ diffDays }} dia
+        <!-- Ultima chuva 15mm a 6 dias -->
+      </h1>
+      <h1 class="subtitle" *ngIf="areaForm.value.lastRain && !diffDays">
+        Ultima chuva {{areaForm.value.lastRain}}mm hoje
+        <!-- Ultima chuva 15mm a 6 dias -->
+      </h1>
+      <h1 class="subtitle" *ngIf="!areaForm.value.lastRain">
+        Sem dados de Chuvas
       </h1>
     </ion-title>
     <ion-buttons slot="end">

@@ -42,6 +42,7 @@ export class AreaPage implements OnInit {
   showSearch;
   answer;
   isCordova = false;
+  diffDays = 0;
   showBotom = false;
   constructor(
     public navCtrl: NavController,
@@ -196,6 +197,8 @@ export class AreaPage implements OnInit {
       // checks: new FormControl([]),
       // type: new FormControl('liquidity'),
       // sequence: new FormControl(1),
+      lastRain: new FormControl(0),
+      lastRainDate: new FormControl(),
       note: new FormControl(null),
       code: new FormControl(''),
       _id: new FormControl(''),
@@ -206,6 +209,12 @@ export class AreaPage implements OnInit {
       this.areaService.getArea(this._id).then((data) => {
         data.note = null;
         this.areaForm.patchValue(data);
+        var date1 = new Date(this.areaForm.value.lastRainDate);
+        var date2 = new Date();
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        this.diffDays = diffDays - 1;
+
         this.loading.dismiss();
         setTimeout(() => {
           if (this.content){
