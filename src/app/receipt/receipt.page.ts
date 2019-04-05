@@ -1101,6 +1101,12 @@ export class ReceiptPage implements OnInit {
       content += "\n";
       content += this.formatService.string_pad(40, "", 'center', '-')+"\n";
       content += "Firma del cobrador\n";
+      content += "\n";
+      content += "\n";
+      content += "\n";
+      content += "\n";
+      content += "\n";
+      content += "\n";
 
       if (!this.receiptForm.value.items_details && new_items_details){
         this.receiptForm.patchValue({
