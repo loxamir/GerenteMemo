@@ -1,11 +1,11 @@
 console.log("teste de salvamento", this.workForm.value);
 this.formatService.asyncForEach(this.workForm.value.loads, async (item)=>{
-  console.log("has move", item.move_id);
-  if(item.move_id){
-    let update = await this.updateDoc(item.move_id, [{
+  console.log("has move", item.doc_id);
+  if(item.doc_id){
+    let update = await this.updateDoc(item.doc_id, [{
       'quantity': parseFloat(item.quantity),
     }]);
-    console.log("existent move_id", item.move_id);
+    console.log("existent doc_id", item.doc_id);
     console.log("update", update);
   } else {
     let move = await this.createDoc({
@@ -25,8 +25,8 @@ this.formatService.asyncForEach(this.workForm.value.loads, async (item)=>{
       'warehouseTo_name': "Cliente",
     });
 
-    console.log("cvvreate move_id", move);
-    item.move_id = move.id;
+    console.log("cvvreate doc_id", move);
+    item.doc_id = move.id;
   }
 }).then((data)=>{
   console.log("data", data);

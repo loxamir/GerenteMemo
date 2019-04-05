@@ -258,7 +258,16 @@ export class PouchdbService {
     });
   }
 
-  deleteDoc(doc){
+  deleteDoc(doc_id){
+    this.db.remove(doc_id).catch((err) => {
+      console.log("Delete error", err);
+    });
+  }
+
+  deleteDocList(list){
+    list.forEach(item=>{
+
+    })
     this.db.remove(doc).catch((err) => {
       console.log("Delete error", err);
     });

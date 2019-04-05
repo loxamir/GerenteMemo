@@ -45,6 +45,7 @@ export class WorkPage implements OnInit {
   @Input() go = false;
   @Input() area: any;
   config;
+  deleteList = [];
 
   constructor(
     public navCtrl: NavController,
@@ -208,6 +209,7 @@ export class WorkPage implements OnInit {
       })
       console.log("inicio");
       await this.preSave();
+      this.deleteRemoved();
       console.log("fin");
       if (this._id) {
         this.workService.updateWork(this.workForm.value);
@@ -238,6 +240,12 @@ export class WorkPage implements OnInit {
       let result = await eval(this.activity.saveScript);
       console.log("resultads", result)
       resolve(result);
+    })
+  }
+
+  deleteRemoved(){
+    this.deleteList.forEach(item=>{
+      this.pouchdbService.deleteDoc(item);
     })
   }
 
@@ -497,8 +505,15 @@ export class WorkPage implements OnInit {
     profileModal.present();
   }
 
-  removeFieldItem(field_name, item){
+  async removeFieldItem(field_name, item){
+    let doc = this.workForm.value[field_name][item];
     this.workForm.value[field_name].splice(item, 1);
+    console.log("remove", doc);
+    if (doc.doc_id){
+      console.log("add to delete", doc);
+      let remove = await this.pouchdbService.getDoc(doc.doc_id);
+      this.deleteList.push(remove);
+    }
     this.workForm.markAsDirty();
   }
 
