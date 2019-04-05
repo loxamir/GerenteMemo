@@ -41,6 +41,7 @@ export class AreaPage implements OnInit {
   showForm = false;
   showSearch;
   answer;
+  isCordova = false;
   showBotom = false;
   constructor(
     public navCtrl: NavController,
@@ -77,10 +78,13 @@ export class AreaPage implements OnInit {
       }, 500);
     })
     platform.ready().then(() => {
-      ApiAIPromises.init({
-        clientAccessToken: "9f4e551a24734d02b3242c6e365c49a5"
-      })
-      .then((result) =>  console.log("result1", result))
+      if (this.platform.is('cordova')){
+        this.isCordova = true;
+        ApiAIPromises.init({
+          clientAccessToken: "9f4e551a24734d02b3242c6e365c49a5"
+        })
+        .then((result) =>  console.log("result1", result))
+      }
     })
   }
   showEdit (){

@@ -21,27 +21,39 @@ export class AreaService {
         'stock/Areas', 2,
         [doc_id, '0'],
         [doc_id, 'z']
-      ).then((planneds: any[]) => {
+      ).then(async (planneds: any[]) => {
         let promise_ids = [];
         let pts = [];
         let balance = 0;
+        let getList = [];
         planneds.forEach(item => {
           pts.push(item);
-          promise_ids.push(this.pouchdbService.getDoc(item.key[1]));
-          balance += parseFloat(item.value);
+          // promise_ids.push(this.pouchdbService.getDoc(item.key[1]));
+          getList.push(item.key[1]);
+          // balance += parseFloat(item.value);
         })
-        promise_ids.push(this.pouchdbService.getDoc(doc_id));
-        Promise.all(promise_ids).then(areaMoves => {
-          let area = Object.assign({}, areaMoves[areaMoves.length-1]);
-          area.moves = [];
-          area.balance = balance;
-          area.account = areaMoves[areaMoves.length-1];
-          area.name
-          for(let i=0;i<pts.length;i++){
-            area.moves.unshift(areaMoves[i]);
-          }
+        // promise_ids.push(this.pouchdbService.getDoc(doc_id));
+        let area: any = await this.pouchdbService.getDoc(doc_id);
+        let docs: any = await this.pouchdbService.getList(getList);
+        // var doc_dict = {};
+        area.moves = [];
+        docs.forEach(row=>{
+          area.moves.push(row.doc);
+        })
+
+
+        // let docList = await this.pouchdbService.getList(getList);
+        // Promise.all(promise_ids).then(areaMoves => {
+        //   // let area = Object.assign({}, areaMoves[areaMoves.length-1]);
+        //   // let area = doc_dict[doc_id];
+        //   // area.balance = balance;
+        //   area.account = areaMoves[areaMoves.length-1];
+        //   area.name
+        //   for(let i=0;i<pts.length;i++){
+        //     area.moves.unshift(areaMoves[i]);
+        //   }
           resolve(area);
-        })
+        // })
       });
     });
   }
