@@ -264,15 +264,6 @@ export class PouchdbService {
     });
   }
 
-  deleteDocList(list){
-    list.forEach(item=>{
-
-    })
-    this.db.remove(doc).catch((err) => {
-      console.log("Delete error", err);
-    });
-  }
-
   getRelated(docType, related, id): Promise<any> {
     return new Promise((resolve, reject)=>{
       this.getDocType(docType).then((docList: any[])=>{
