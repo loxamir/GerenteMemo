@@ -39,7 +39,7 @@ export class AreaService {
         area.moves = [];
         docs.forEach(row=>{
           area.moves.push(row.doc);
-          if (row.doc.activity_id == 'activity.rain'){
+          if (row.doc.activity_id == 'activity.rain' && !area.lastRain){
             area.lastRain = row.doc.quantity;
             area.lastRainDate = row.doc.date;
           }
