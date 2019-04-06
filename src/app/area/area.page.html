@@ -201,7 +201,7 @@
     <ion-col size="3" *ngIf="!areaForm.value.note" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;">
         <!-- <ion-icon name="attach" (click)="showButtons()"
         style="font-size: 26px;color: gray;transform: rotate(0.38turn);margin-right: 9px;"></ion-icon> -->
-        <ion-icon name="camera" (click)="getPicture()"
+        <ion-icon name="camera" (click)="selectImage()"
         style="font-size: 26px;margin-top: 7px;color: gray;margin-right: 9px;"></ion-icon>
         <ion-icon name="add" *ngIf="!showBotom" (click)="addButton()"
         style="font-size: 26px;color: gray;padding-left: 9px;"></ion-icon>
@@ -264,7 +264,24 @@
     </ion-col>
   </ion-row>
 </ion-fab>
+<!-- <h3 *ngIf="images.length == 0" text-center>Please Select Image!</h3> -->
 
+<ion-list>
+  <ion-item *ngFor="let img of images; index as pos" text-wrap>
+    <ion-thumbnail slot="start">
+      <ion-img [src]="img.path"></ion-img>
+    </ion-thumbnail>
+    <ion-label>
+      {{ img.name }}
+    </ion-label>
+    <ion-button slot="end" fill="clear" (click)="startUpload(img)">
+      <ion-icon slot="icon-only" name="cloud-upload"></ion-icon>
+    </ion-button>
+    <ion-button slot="end" fill="clear" (click)="deleteImage(img, pos)">
+      <ion-icon slot="icon-only" name="trash"></ion-icon>
+    </ion-button>
+  </ion-item>
+</ion-list>
 
 <ion-footer *ngIf="showBotom" style="height:250px;">
   <!-- <ion-toolbar>

@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { File } from '@ionic-native/file';
+// import { File } from '@ionic-native/file';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { NativeStorage } from '@ionic-native/native-storage';
@@ -90,6 +90,11 @@ import { FilterPageModule } from './filter/filter.module';
 import { AgroTabsPageModule } from './agro-tabs/agro-tabs.module';
 import { environment } from '../environments/environment';
 // import { AuthGuardService } from './services/auth-guard.service';
+
+import { Camera } from '@ionic-native/camera';
+import { File } from '@ionic-native/file';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { FilePath } from '@ionic-native/file-path';
 
 @NgModule({
   declarations: [
@@ -185,6 +190,9 @@ import { environment } from '../environments/environment';
     File,
     StatusBar,
     SplashScreen,
+    Camera,
+    WebView,
+    FilePath,
     // AuthGuardService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
