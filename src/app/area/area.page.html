@@ -150,7 +150,8 @@
               </ion-col>
             </ion-row>
        <ion-row no-padding class="content-row one-line">
-          <ion-col no-padding size="6">
+          <ion-col no-padding size="12">
+            <ion-img *ngIf="item.image" [src]="item.image"></ion-img>
             <!-- <h3 class="item-title" style="font-size:15px;font-weight: bold">{{item.area_name | translate}}</h3> -->
             <!-- <h3 class="schedule-month" style="font-size:10px;margin-left: 5px">
               {{item.date|date: 'HH:mm'}}
@@ -266,7 +267,7 @@
 </ion-fab>
 <!-- <h3 *ngIf="images.length == 0" text-center>Please Select Image!</h3> -->
 
-<ion-list>
+<!-- <ion-list>
   <ion-item *ngFor="let img of images; index as pos" text-wrap>
     <ion-thumbnail slot="start">
       <ion-img [src]="img.path"></ion-img>
@@ -281,7 +282,7 @@
       <ion-icon slot="icon-only" name="trash"></ion-icon>
     </ion-button>
   </ion-item>
-</ion-list>
+</ion-list> -->
 
 <ion-footer *ngIf="showBotom" style="height:250px;">
   <!-- <ion-toolbar>

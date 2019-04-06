@@ -225,6 +225,7 @@ export class AreaPage implements OnInit {
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
+    this.loadStoredImages();
     await this.loading.present();
     if (this._id){
       this.areaService.getArea(this._id).then((data) => {
@@ -487,7 +488,26 @@ updateStoredImages(name) {
             path: resPath,
             filePath: filePath
         };
-
+        console.log("newEntry", newEntry);
+        this.pouchdbService.createDoc({
+          'docType': 'work',
+          'date': new Date().toISOString(),
+          'area_id': this.areaForm.value._id,
+          'area_name': this.areaForm.value.name,
+          'crop_id': this.areaForm.value.crop._id,
+          'crop_name': this.areaForm.value.crop.name,
+          'activity_name': "Anotacion",
+          'activity_id': "activity.anotation",
+          'note': this.areaForm.value.note,
+          'image': resPath,
+          // 'image': resPath+"/"+filePath+
+        })
+        this.areaForm.value.note = null;
+        setTimeout(() => {
+          if (this.content){
+            this.content.scrollToBottom();
+          }
+        }, 500);
         this.images = [newEntry, ...this.images];
         this.ref.detectChanges(); // trigger change detection cycle
     });
