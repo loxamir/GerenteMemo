@@ -4,7 +4,7 @@ import { ProductPage } from '../product/product.page';
 import 'rxjs/Rx';
 // import { ProductsService } from './products.service';
 // import { ProductsPopover } from './products.popover';
-import { File } from '@ionic-native/file';
+import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductListPopover} from './product-list.popover';

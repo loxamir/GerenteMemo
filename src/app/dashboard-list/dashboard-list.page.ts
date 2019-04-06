@@ -5,7 +5,7 @@ import { NavController, LoadingController,   ModalController, Events, PopoverCon
 import 'rxjs/Rx';
 import { DashboardsService } from './dashboard-list.service';
 // import { DashboardsPopover } from './dashboards.popover';
-import { File } from '@ionic-native/file';
+import { File } from '@ionic-native/file/ngx';
 
 @Component({
   selector: 'app-dashboard-list',

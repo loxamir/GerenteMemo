@@ -7,7 +7,7 @@ import { LanguageService } from "../../services/language/language.service";
 import { LanguageModel } from "../../services/language/language.model";
 import { ProductService } from '../../product/product.service';
 import { ProductListPage } from '../../product-list/product-list.page';
-import { SpeechRecognition } from '@ionic-native/speech-recognition';
+import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({

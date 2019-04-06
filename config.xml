@@ -3,7 +3,7 @@
     <name>Agro Memo</name>
     <description>Organizando tu negocio</description>
     <author email="loxamir@gmail.com" href="http://www.sistemamemo.com/">Marcelo Pickler</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.0.50:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -91,4 +91,5 @@
     <plugin name="cordova-plugin-sqlite-2" spec="^1.0.5" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="cordova-plugin-apiai" spec="^1.7.4" />
+    <allow-navigation href="http://192.168.0.50:8100" sessionid="83eec3a5" />
 </widget>

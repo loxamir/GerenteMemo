@@ -13,7 +13,7 @@ import { ContactListPage } from '../contact-list/contact-list.page';
 import { CashMoveService } from '../cash-move/cash-move.service';
 import { ReceiptPage } from '../receipt/receipt.page';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
-import { Printer, PrintOptions } from '@ionic-native/printer';
+import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
 import { ConfigService } from '../config/config.service';
 
 @Component({
@@ -327,7 +327,7 @@ export class AdvancePage implements OnInit {
                      <div style="width:50%;margin-left: 25%; border-top: 1px solid black;margin-top: 40%; text-align:center;display:block;">
                      <t t-esc="o.employee_id.name"/> <br/>
                      <t t-esc="o.employee_id.identification_id"/>
-      
+
                      </div>
                   </div>
               </div>

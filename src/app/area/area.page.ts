@@ -7,8 +7,8 @@ import { NavController,  ModalController, LoadingController,
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import 'rxjs/Rx';
-import { SpeechRecognition } from '@ionic-native/speech-recognition';
-import { TextToSpeech } from '@ionic-native/text-to-speech';
+import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
+import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
@@ -26,12 +26,12 @@ import { ContactListPage } from '../contact-list/contact-list.page';
 import { AreaPopover } from './area.popover';
 declare var ApiAIPromises: any;
 
-import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera';
-import { File, FileEntry } from '@ionic-native/file';
+import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
+import { File, FileEntry } from '@ionic-native/file/ngx';
 import { HttpClient } from '@angular/common/http';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { Storage } from '@ionic/storage';
-import { FilePath } from '@ionic-native/file-path';
+import { FilePath } from '@ionic-native/file-path/ngx';
 
 const STORAGE_KEY = 'my_images';
 

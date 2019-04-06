@@ -4,13 +4,13 @@ import { NavController,  LoadingController, AlertController,
 } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-import { Printer, PrintOptions } from '@ionic-native/printer';
+import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { WorkService } from './work.service';
 import { ProductService } from '../product/product.service';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { ConfigService } from '../config/config.service';
 import { ReceiptService } from '../receipt/receipt.service';
 import { FormatService } from '../services/format.service';

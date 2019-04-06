@@ -21,8 +21,8 @@ const routes: Routes = [
   }
 ];
 
-import { TextToSpeech } from '@ionic-native/text-to-speech';
-import { SpeechRecognition } from '@ionic-native/speech-recognition';
+import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
+import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
 
 import { AreaPopover } from './area.popover';
 
@@ -44,7 +44,7 @@ import { AreaPopover } from './area.popover';
     RouterModule.forChild(routes)
   ],
   declarations: [AreaPage, AreaPopover],
-  providers: [AreaService, TextToSpeech, SpeechRecognition],
+  providers: [AreaService, SpeechRecognition, TextToSpeech],
   entryComponents: [AreaPopover]
 })
 export class AreaPageModule {}

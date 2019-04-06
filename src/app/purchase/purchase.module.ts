@@ -19,8 +19,8 @@ import { PurchasePopover } from './purchase.popover';
 import { IonicModule } from '@ionic/angular';
 
 import { PurchasePage } from './purchase.page';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
-import { Printer } from '@ionic-native/printer';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+import { Printer } from '@ionic-native/printer/ngx';
 
 const routes: Routes = [
   {

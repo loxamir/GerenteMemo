@@ -5,7 +5,7 @@ import { ContactPage } from '../contact/contact.page';
 import 'rxjs/Rx';
 // import { ContactsService } from './contacts.service';
 import { ContactListPopover } from './contact-list.popover';
-import { File } from '@ionic-native/file';
+import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 

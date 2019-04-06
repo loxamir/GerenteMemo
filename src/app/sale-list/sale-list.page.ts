@@ -4,7 +4,7 @@ import {
   NavParams
 } from '@ionic/angular';
 import 'rxjs/Rx';
-import { File } from '@ionic-native/file';
+import { File } from '@ionic-native/file/ngx';
 import { SalePage } from '../sale/sale.page';
 // import { SalesService } from './sales.service';
 import { SalesPopover } from './sale-list.popover';

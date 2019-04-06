@@ -4,7 +4,7 @@ import { NavController, LoadingController, AlertController, Events, ToastControl
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 //import { DecimalPipe } from '@angular/common';
-import { Printer, PrintOptions } from '@ionic-native/printer';
+import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
 
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
@@ -18,7 +18,7 @@ import { ContactListPage } from '../contact-list/contact-list.page';
 import { ProductService } from '../product/product.service';
 //import { ReportsPage } from '../reports/reports';
 import { ProductListPage } from '../product-list/product-list.page';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 // import { PlannedService } from '../planned/planned.service';
 // import { SaleService } from '../sale/sale.service';
@@ -29,7 +29,7 @@ import { ConfigService } from '../config/config.service';
 // import { ReceiptService } from '../receipt/receipt.service';
 // import { InvoicePage } from '../invoice/invoice';
 import { FormatService } from '../services/format.service';
-import { SocialSharing } from '@ionic-native/social-sharing';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { File } from '@ionic-native/file';
 
 declare var cordova:any;

@@ -5,7 +5,7 @@ import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../../services/language/language.service";
 import { LanguageModel } from "../../services/language/language.model";
-import { SpeechRecognition } from '@ionic-native/speech-recognition';
+import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
 import { ContactListPage } from '../../contact-list/contact-list.page';
 import { ActivatedRoute, Router } from '@angular/router';
 
