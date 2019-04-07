@@ -95,6 +95,7 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
+import { ImageModalPageModule } from './image-modal/image-modal.module';
 
 @NgModule({
   declarations: [
@@ -125,6 +126,7 @@ import { FilePath } from '@ionic-native/file-path/ngx';
     ContactPageModule,
     CashMovePageModule,
     BrandListPageModule,
+    ImageModalPageModule,
     ProductCategoryListPageModule,
     AccountCategoryListPageModule,
     FilterPageModule,

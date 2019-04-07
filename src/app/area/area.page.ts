@@ -32,6 +32,7 @@ import { HttpClient } from '@angular/common/http';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { Storage } from '@ionic/storage';
 import { FilePath } from '@ionic-native/file-path/ngx';
+import { ImageModalPage } from '../image-modal/image-modal.page';
 
 const STORAGE_KEY = 'my_images';
 
@@ -512,6 +513,17 @@ updateStoredImages(name) {
         this.ref.detectChanges(); // trigger change detection cycle
     });
 }
+
+openPreview(img) {
+   this.modalCtrl.create({
+     component: ImageModalPage,
+     componentProps: {
+       img: img
+     }
+   }).then(modal => {
+     modal.present();
+   });
+ }
 
 loadStoredImages() {
   this.storage.get(STORAGE_KEY).then(images => {

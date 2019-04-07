@@ -126,7 +126,7 @@
       <ion-item-sliding class="list-item"
       *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)">
       <ion-item no-padding
-      (click)="openItem(item)"
+      (click)="openItem(item)" *ngIf="!item.image"
       style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
         <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
             <ion-row no-padding>
@@ -151,31 +151,49 @@
             </ion-row>
        <ion-row no-padding class="content-row one-line">
           <ion-col no-padding size="12">
-            <ion-img *ngIf="item.image" [src]="item.image"></ion-img>
-            <!-- <h3 class="item-title" style="font-size:15px;font-weight: bold">{{item.area_name | translate}}</h3> -->
-            <!-- <h3 class="schedule-month" style="font-size:10px;margin-left: 5px">
-              {{item.date|date: 'HH:mm'}}
-            </h3> -->
-            <!-- <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">
-              {{item.dateEnd|date: 'dd/MM/yyyy'}}
-            </h3> -->
+            <ion-img *ngIf="item.image" [src]="item.image" (click)="openPreview(item.image)"></ion-img>
           </ion-col>
           <ion-col no-padding size="6" align-self-center>
-            <!-- <h2 *ngIf="item.progress < 100" class="list-big-number"
-            style="color: red;">
-              {{item.progress| number:'1.0'}}%
-            </h2>
-            <h2 *ngIf="item.progress == 100"
-            class="list-big-number" style="color: green;">
-            {{item.progress| number:'1.0'}}%
-          </h2> -->
-          <!-- <h3 class="schedule-month" style="font-size:12px;margin-left: 5px">
-            {{item.date|date: 'HH:mm'}}
-          </h3> -->
           </ion-col>
         </ion-row>
       </ion-card>
     </ion-item>
+
+    <ion-item no-padding
+    (click)="openPreview(item.image)"
+    *ngIf="item.image"
+    style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+      <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
+          <ion-row no-padding>
+            <!-- <ion-col size="2">
+              <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'" class="activity-img"></ion-img>
+            </ion-col> -->
+            <ion-col  no-padding>
+              <h3 class="activity-name">
+                Foto
+              </h3>
+              <!-- {{ itemSumary(item) }} -->
+              <!-- <div [innerHTML]="item.summary"></div> -->
+              <!-- <h1 class="activity-note">
+                {{item.note}}
+              </h1> -->
+            </ion-col>
+            <ion-col size="2">
+              <h3 class="schedule-month" style="font-size:12px;margin-left: 5px">
+                {{item.date|date: 'HH:mm'}}
+              </h3>
+            </ion-col>
+          </ion-row>
+     <ion-row no-padding class="content-row one-line">
+        <ion-col no-padding size="12">
+          <ion-img *ngIf="item.image" style="height: 100px;" [src]="item.image"></ion-img>
+        </ion-col>
+        <ion-col no-padding size="6" align-self-center>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ion-item>
+
 
         <ion-item-options>
           <ion-item-option (click)="deleteAreaMove(item)"
