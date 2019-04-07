@@ -5,7 +5,7 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 import { CashMoveService } from '../cash-move/cash-move.service';
 // import { FileChooser } from '@ionic-native/file-chooser';
 // import { FilePath } from '@ionic-native/file-path';
-// import { File } from '@ionic-native/file';
+// import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 // import { ImporterPage } from '../importer/importer.page';
 

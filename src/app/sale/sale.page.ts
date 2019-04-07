@@ -5,7 +5,7 @@ import 'rxjs/Rx';
 import { ActivatedRoute, Router } from '@angular/router';
 //import { DecimalPipe } from '@angular/common';
 import { Printer } from '@ionic-native/printer/ngx';
-// import { File } from '@ionic-native/file';
+// import { File } from '@ionic-native/file/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";

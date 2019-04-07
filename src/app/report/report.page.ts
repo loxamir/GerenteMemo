@@ -30,7 +30,7 @@ import { ConfigService } from '../config/config.service';
 // import { InvoicePage } from '../invoice/invoice';
 import { FormatService } from '../services/format.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { File } from '@ionic-native/file';
+import { File } from '@ionic-native/file/ngx';
 
 declare var cordova:any;
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
