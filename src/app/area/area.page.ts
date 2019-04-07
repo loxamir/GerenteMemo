@@ -33,6 +33,7 @@ import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { Storage } from '@ionic/storage';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { ImageModalPage } from '../image-modal/image-modal.page';
+import { WorksService } from '../works/works.service';
 
 const STORAGE_KEY = 'my_images';
 
@@ -68,6 +69,7 @@ export class AreaPage implements OnInit {
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
+    public worksService: WorksService,
     public pouchdbService: PouchdbService,
     public events: Events,
     public formatService: FormatService,
@@ -401,27 +403,27 @@ export class AreaPage implements OnInit {
     }, 500);
   }
 
-  getPicture(){
-    console.log("take picture");
-  }
+  // getPicture(){
+  //   console.log("take picture");
+  // }
 
   async selectImage() {
     const actionSheet = await this.actionSheetController.create({
-        header: "Select Image source",
+        header: "Pegar imagem da ",
         buttons: [{
-                text: 'Load from Library',
+                text: 'Galeria',
                 handler: () => {
                     this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
                 }
             },
             {
-                text: 'Use Camera',
+                text: 'Camera',
                 handler: () => {
                     this.takePicture(this.camera.PictureSourceType.CAMERA);
                 }
             },
             {
-                text: 'Cancel',
+                text: 'Cancelar',
                 role: 'cancel'
             }
         ]
@@ -692,6 +694,12 @@ async uploadImageData(formData: FormData) {
       this.areaForm.markAsPristine();
       this.navCtrl.navigateBack('/agro-tabs/area-list');
     }
+  }
+
+  deleteWork(work){
+    let index = this.areaForm.value.moves.indexOf(work);
+    // this.works.splice(index, 1);
+    this.worksService.deleteWork(work);
   }
 
 }
