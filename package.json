@@ -84,6 +84,7 @@
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.3.3",
     "serve": "^10.1.1",
+    "xml-js": "^1.6.11",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

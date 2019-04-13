@@ -17,31 +17,15 @@
 
 <ion-content class="work-content" style="background-color: #ddd">
 
+  <!-- <div [innerHTML]="renderedForm"></div> -->
+
   <form class="sample-form validations-form" [formGroup]="workForm" (ngSubmit)="onSubmit(workForm.value)" >
-    <!-- <ion-row justify-content-center *ngIf="!list">
-        <ion-item no-padding (click)="selectActivity()" class="field-50">
-          <h4 class="field-label">{{'Atividade' | translate}}</h4>
-          <h4 class="field-value">{{workForm.value.activity && workForm.value.activity.name || 'Ningun'}}</h4>
-        </ion-item>
-        <ion-item no-padding class="field-50">
-          <h4 class="field-label">{{'DATE' | translate }}</h4>
-          <ion-datetime class="field-50-datetime"
-          displayFormat="DD/MM/YYYY"
-          pickerFormat="DD/MM/YYYY"
-          formControlName="date">
-          </ion-datetime>
-        </ion-item>
-    </ion-row> -->
-    <!-- <ion-list no-lines>
-      <section>
-      </section>
-    </ion-list> -->
         <ion-row>
           <ion-item-sliding class="list-item"
           *ngFor="let field of workForm.value.fields"
           [style.width]="field.class == 'half-width' ? '50%' : '100%'">
             <ion-item class="field-100" *ngIf="field.type == 'Boolean'">
-              <ion-label>{{field.label || field.name}}</ion-label>
+              <ion-label>{{renderedForm[field.name] || field.name}}</ion-label>
               <ion-toggle [formControlName]="field.name"></ion-toggle>
             </ion-item>
             <ion-item class="switcher-item" *ngIf="field.type == 'button'">
@@ -73,7 +57,7 @@
               </ion-input>
             </ion-item>
             <ion-item class="field-100" *ngIf="field.type == 'String'">
-              <ion-label position="floating">{{field.label || field.name}}</ion-label>
+              <ion-label position="floating">{{renderedForm[field.name] || field.name}}</ion-label>
               <ion-input type="text" [formControlName]="field.name" text-center>
               </ion-input>
             </ion-item>
@@ -200,19 +184,8 @@
             </ion-col>
         </div>
     </div>
-    <!-- <ion-item  class="field-100" style="margin-top: 10px;">
-      <ion-label position="stacked">{{ 'NOTE' | translate }}</ion-label>
-      <ion-textarea #note formControlName="note"
-        rows="2">
-      </ion-textarea>
-    </ion-item> -->
   </form>
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-button (click)="goNextStep()"  class="next-button">
-      <ion-icon name="fastforward"> </ion-icon>
-      Proximo
-    </ion-button>
-  </ion-fab> -->
+
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">

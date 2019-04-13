@@ -24,6 +24,8 @@ import { CropsPage } from '../crops/crops.page';
 import { StockMoveService } from '../stock-move/stock-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { RestProvider } from '../services/rest/rest';
+
 @Component({
   selector: 'app-work',
   templateUrl: './work.page.html',
@@ -46,6 +48,7 @@ export class WorkPage implements OnInit {
   @Input() area: any;
   config;
   deleteList = [];
+  renderedForm = {};
 
   constructor(
     public navCtrl: NavController,
@@ -65,6 +68,7 @@ export class WorkPage implements OnInit {
     public formatService: FormatService,
     public pouchdbService: PouchdbService,
     public events: Events,
+    public restProvider: RestProvider,
     public modalCtrl: ModalController,
     public stockMoveService: StockMoveService,
     private elementRef: ElementRef
@@ -130,7 +134,7 @@ export class WorkPage implements OnInit {
 
   async ngOnInit() {
     this.workForm = this.formBuilder.group({
-      name: new FormControl(''),
+      // name: new FormControl(''),
       activity: new FormControl(this.activity||{}),
       // code: new FormControl(''),
       date: new FormControl(this.today),
@@ -149,25 +153,37 @@ export class WorkPage implements OnInit {
     let self = this;
     let defaultTab = '';
       if (this._id) {
-        this.workService.getWork(this._id).then((data) => {
-          data.forEach(field => {
-            if (field.type == 'tab'){
-              if(! defaultTab) {
-                defaultTab = field.name;
-              }
+        this.renderedForm = await this.restProvider.getTaskRenderedForm(this._id);
+        console.log("rer", this.renderedForm);
+        this.workService.getWork(this._id).then(async (data) => {
+          let fields = [];
+
+          data.forEach((field, index) => {
+
+            // if (field.type == 'tab'){
+            //   if(! defaultTab) {
+            //     defaultTab = field.name;
+            //   }
+            // }
+            if (this.renderedForm[field.name]){
+              this.workForm.addControl(
+                field.name, new FormControl(field.value)
+              );
+            } else {
+              data.splice(index, 1)
+              console.log("remove", field, index);
             }
-            this.workForm.addControl(
-              field.name, new FormControl(field.value)
-            );
           })
+          console.log("data", data);
           this.workForm.patchValue(data);
           // if (Object.keys(this.workForm.value.activity).length === 0
           // && !this.activity) {
           //   this.selectActivity();
           // } else if (data['activity']) {
-          this.setActivity(data)
+          this.setActivity(data);
           // }
           this.recomputeFields();
+
           this.loading.dismiss();
 
 
@@ -336,37 +352,42 @@ export class WorkPage implements OnInit {
     // }) || [];
 
     let defaultTab = null;
-    data_fields.forEach(field => {
-      if (field.type == "Boolean") {
-        this.workForm.addControl(field.name, new FormControl(field.value||false));
-      } else if (field.type == "Float") {
-        this.workForm.addControl(field.name, new FormControl(field.value||0));
-      }
-      else if (field.type == "String") {
-        this.workForm.addControl(field.name, new FormControl(field.value||""));
-      }
-      else if (field.type == "progress") {
-        this.workForm.addControl(field.name, new FormControl(field.value||0));
-      }
-      else if (field.type == "formula") {
-        this.fields[field.name] = 0;
-        this.workForm.addControl(field.name, new FormControl(field.value||0));
-      }
-      else if (field.type == "Date") {
-        this.workForm.addControl(field.name, new FormControl(field.value||this.today));
-      }
-      else if (field.type == "many2one") {
-        this.workForm.addControl(
-          field.name, new FormControl(field.value||{})
-        );
-      } else if (field.type == "list") {
-        this.workForm.addControl(field.name, new FormControl(field.value||[]));
-      } else if (field.type == 'tab'){
-        this.workForm.addControl(field.name, new FormControl(field.value||[]));
-        if(! defaultTab) {
-          defaultTab = field.name;
+    data_fields.forEach((field, index) => {
+      // if (this.renderedForm[field]){
+        if (field.type == "Boolean") {
+          this.workForm.addControl(field.name, new FormControl(field.value||false));
+        } else if (field.type == "Float") {
+          this.workForm.addControl(field.name, new FormControl(field.value||0));
         }
-      }
+        else if (field.type == "String") {
+          this.workForm.addControl(field.name, new FormControl(field.value||""));
+        }
+        else if (field.type == "progress") {
+          this.workForm.addControl(field.name, new FormControl(field.value||0));
+        }
+        else if (field.type == "formula") {
+          this.fields[field.name] = 0;
+          this.workForm.addControl(field.name, new FormControl(field.value||0));
+        }
+        else if (field.type == "Date") {
+          this.workForm.addControl(field.name, new FormControl(field.value||this.today));
+        }
+        else if (field.type == "many2one") {
+          this.workForm.addControl(
+            field.name, new FormControl(field.value||{})
+          );
+        } else if (field.type == "list") {
+          this.workForm.addControl(field.name, new FormControl(field.value||[]));
+        } else if (field.type == 'tab'){
+          this.workForm.addControl(field.name, new FormControl(field.value||[]));
+          if(! defaultTab) {
+            defaultTab = field.name;
+          }
+        }
+      // } else {
+      //   console.log("index", index, data_fields[index]);
+      //   data_fields.splice(index, 1);
+      // }
     });
     // if (this.area){
     //   this.workForm.patchValue({
@@ -374,19 +395,20 @@ export class WorkPage implements OnInit {
     //     crop: this.area.crop,
     //   });
     // }
+    console.log("data_fieldsss", data_fields);
     this.workForm.patchValue({
       // activity: data,
       fields: data_fields,
       // summary: data.summary
     });
     // this.activity = data;
-    setTimeout(function(){
-        self.workForm.patchValue({
-          'section': defaultTab,
-        });
-    }, 200);
+    // setTimeout(function(){
+    //     self.workForm.patchValue({
+    //       'section': defaultTab,
+    //     });
+    // }, 200);
     // this.workForm.markAsDirty();
-    this.events.unsubscribe('select-activity');
+    // this.events.unsubscribe('select-activity');
     console.log("note", this.note);
     if (this.note){
       this.workForm.value.note = this.note;
