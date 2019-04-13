@@ -478,6 +478,9 @@ export class ActivityReportPage implements OnInit {
           let getList = [];
           let crops = {};
           activitys.forEach(activityLine => {
+            if (getList.indexOf(activityLine.key[10]) == -1){
+              getList.push(activityLine.key[10]);
+            }
             if (result.hasOwnProperty(activityLine.key[0])) {
               items[result[activityLine.key[0]]] = {
                 'name': items[result[activityLine.key[0]]].name,
@@ -493,7 +496,6 @@ export class ActivityReportPage implements OnInit {
                 'margin': parseFloat(activityLine.key[5]),
                 'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
               });
-              getList.push(activityLine.key[10]);
               result[activityLine.key[0]] = items.length-1;
             }
 
@@ -566,6 +568,9 @@ export class ActivityReportPage implements OnInit {
           let getList = [];
           items = [];
           activitys.forEach(activityLine => {
+            if (getList.indexOf(activityLine.key[10]) == -1){
+              getList.push(activityLine.key[10]);
+            }
             if (result.hasOwnProperty(activityLine.key[1])) {
               items[result[activityLine.key[1]]] = {
                 'name': items[result[activityLine.key[1]]].name,
@@ -580,7 +585,6 @@ export class ActivityReportPage implements OnInit {
                 'margin': parseFloat(activityLine.key[5]),
                 'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
               });
-              getList.push(activityLine.key[10]);
               result[activityLine.key[1]] = items.length-1;
             }
           });

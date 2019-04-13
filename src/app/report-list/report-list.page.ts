@@ -339,6 +339,10 @@ export class ReportListPage implements OnInit {
         let crops = {};
         let result = {};
         sales.forEach(activityLine => {
+          console.log("activityLine", activityLine);
+          if (getList.indexOf(activityLine.key[10]) == -1){
+            getList.push(activityLine.key[10]);
+          }
           if (result.hasOwnProperty(activityLine.key[0])) {
             items[result[activityLine.key[0]]] = {
               'name': items[result[activityLine.key[0]]].name,
@@ -354,7 +358,6 @@ export class ReportListPage implements OnInit {
               'margin': parseFloat(activityLine.key[5]),
               'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
             });
-            getList.push(activityLine.key[10]);
             result[activityLine.key[0]] = items.length-1;
           }
 
@@ -369,7 +372,7 @@ export class ReportListPage implements OnInit {
             crops[activityLine.key[0]][activityLine.key[10]] = 0;
           }
         });
-        console.log("crops", crops);
+        console.log("getList", getList);
         let products: any = await this.pouchdbService.getList(getList);
         var doc_dict = {};
         products.forEach(row=>{
@@ -419,8 +422,8 @@ export class ReportListPage implements OnInit {
           total += parseFloat(item['total']);
         });
         console.log("outputu", items);
-        this.ag_production_cost = items[0]['total'];
-        this.ag_produced_area = items[0]['quantity'];
+        this.ag_production_cost = items[0] && items[0]['total'] || 0;
+        this.ag_produced_area = items[0] && items[0]['quantity'] || 0;
         resolve(true);
       });
     })
