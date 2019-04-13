@@ -23,13 +23,13 @@ export class RestProvider {
 
   getTasks() {
     return new Promise(resolve => {
-      resolve([]);
-      // this.http.get(this.apiUrl+'/engine-rest/task').subscribe(data => {
-      //   console.log("tasks", data);
-      //   resolve(data);
-      // }, err => {
-      //   console.log(err);
-      // });
+      // resolve([]);
+      this.http.get(this.apiUrl+'/engine-rest/task').subscribe(data => {
+        console.log("tasks", data);
+        resolve(data);
+      }, err => {
+        console.log(err);
+      });
     });
   }
 

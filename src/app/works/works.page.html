@@ -50,13 +50,13 @@
         <ion-card class="list-card" no-padding>
           <ion-row>
             <ion-col>
-              <h3 class="item-name"><b>{{ item.activity_name || 'No Informado'}}</b></h3>
+              <h3 class="item-name"><b>{{ item.name || 'No Informado'}}</b></h3>
             </ion-col>
           </ion-row>
      <ion-row no-padding class="content-row one-line">
         <ion-col no-padding size="6">
           <h3 class="item-title" style="font-size:15px;font-weight: bold">{{item.area_name | translate}}</h3>
-          <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateStart|date: 'dd/MM/yyyy'}}</h3>
+          <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.created|date: 'dd/MM/yyyy'}}</h3>
           <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateEnd|date: 'dd/MM/yyyy'}}</h3>
         </ion-col>
         <ion-col no-padding size="6" align-self-center>
@@ -64,9 +64,9 @@
           <h2 *ngIf="item.progress == 100" class="list-big-number" style="color: green;">{{item.progress| number:'1.0'}}%</h2>
         </ion-col>
       </ion-row>
-      <ion-row no-padding *ngIf="item.note">
+      <ion-row no-padding *ngIf="item.assignee">
         <ion-col class="item-content" style="white-space: normal;">
-          {{item.note}}
+          {{item.assignee}}
         </ion-col>
       </ion-row>
       </ion-card>

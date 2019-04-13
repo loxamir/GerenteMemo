@@ -128,7 +128,9 @@ export class WorksPage implements OnInit {
       console.log("works", works);
       this.works = works;
       this.page = 1;
-      this.loading.dismiss();
+      if (this.loading){
+        this.loading.dismiss();
+      }
     });
   }
 
@@ -139,7 +141,7 @@ export class WorksPage implements OnInit {
     })
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // newRootNav.push(WorkPage, {'_id': work._id});
-    this.navCtrl.navigateForward(['/work', {'_id': work._id}]);
+    this.navCtrl.navigateForward(['/work', {'_id': work.id}]);
   }
 
   createWork(){

@@ -150,52 +150,52 @@ export class WorkPage implements OnInit {
     let defaultTab = '';
       if (this._id) {
         this.workService.getWork(this._id).then((data) => {
-          data.fields.forEach(field => {
+          data.forEach(field => {
             if (field.type == 'tab'){
               if(! defaultTab) {
                 defaultTab = field.name;
               }
             }
             this.workForm.addControl(
-              field.name, new FormControl(data[field.name])
+              field.name, new FormControl(field.value)
             );
           })
           this.workForm.patchValue(data);
-          if (Object.keys(this.workForm.value.activity).length === 0
-          && !this.activity) {
-            this.selectActivity();
-          } else if (data['activity']) {
-            this.setActivity(data['activity'])
-          }
+          // if (Object.keys(this.workForm.value.activity).length === 0
+          // && !this.activity) {
+          //   this.selectActivity();
+          // } else if (data['activity']) {
+          this.setActivity(data)
+          // }
           this.recomputeFields();
           this.loading.dismiss();
 
 
         });
       }
-      else if (this.data){
-        this.data.fields.forEach(field => {
-          this.workForm.addControl(
-            field.name, new FormControl(this.data[field.name])
-          );
-        })
-        this.workForm.patchValue(this.data);
-        if (Object.keys(this.workForm.value.activity).length === 0
-        && !this.activity) {
-          this.selectActivity();
-        }
-        this.recomputeFields();
-        this.loading.dismiss();
-      }
-      else {
-        this.loading.dismiss();
-        if (Object.keys(this.workForm.value.activity).length === 0
-        && !self.activity) {
-          this.selectActivity();
-        } else {
-          this.setActivity(this.activity);
-        }
-      }
+      // else if (this.data){
+      //   this.data.fields.forEach(field => {
+      //     this.workForm.addControl(
+      //       field.name, new FormControl(this.data[field.name])
+      //     );
+      //   })
+      //   this.workForm.patchValue(this.data);
+      //   if (Object.keys(this.workForm.value.activity).length === 0
+      //   && !this.activity) {
+      //     this.selectActivity();
+      //   }
+      //   this.recomputeFields();
+      //   this.loading.dismiss();
+      // }
+      // else {
+      //   this.loading.dismiss();
+      //   if (Object.keys(this.workForm.value.activity).length === 0
+      //   && !self.activity) {
+      //     this.selectActivity();
+      //   } else {
+      //     this.setActivity(this.activity);
+      //   }
+      // }
   }
 
   async buttonSave() {
@@ -311,75 +311,75 @@ export class WorkPage implements OnInit {
     //console.log(values);
   }
 
-  selectActivity() {
-    return new Promise(async resolve => {
-      this.events.unsubscribe('select-activity');
-      this.events.subscribe('select-activity', (data) => {
-        this.setActivity(data);
-        resolve(true);
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: ActivitysPage,
-        componentProps: {
-          "select": true,
-          "filter": "showLess"
-        }
-      });
-      profileModal.present();
-    });
-  }
+  // selectActivity() {
+  //   return new Promise(async resolve => {
+  //     this.events.unsubscribe('select-activity');
+  //     this.events.subscribe('select-activity', (data) => {
+  //       this.setActivity(data);
+  //       resolve(true);
+  //     })
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: ActivitysPage,
+  //       componentProps: {
+  //         "select": true,
+  //         "filter": "showLess"
+  //       }
+  //     });
+  //     profileModal.present();
+  //   });
+  // }
 
-  setActivity(data){
+  setActivity(data_fields){
     let self = this;
-    let data_fields = data.fields && data.fields.sort(function(a, b) {
-      return self.formatService.compareField(a, b, 'sequence');
-    }) || [];
+    // let data_fields = data.fields && data.fields.sort(function(a, b) {
+    //   return self.formatService.compareField(a, b, 'sequence');
+    // }) || [];
 
     let defaultTab = null;
     data_fields.forEach(field => {
-      if (field.type == "boolean") {
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||false));
-      } else if (field.type == "float") {
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||0));
+      if (field.type == "Boolean") {
+        this.workForm.addControl(field.name, new FormControl(field.value||false));
+      } else if (field.type == "Float") {
+        this.workForm.addControl(field.name, new FormControl(field.value||0));
       }
-      else if (field.type == "string") {
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||""));
+      else if (field.type == "String") {
+        this.workForm.addControl(field.name, new FormControl(field.value||""));
       }
       else if (field.type == "progress") {
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||0));
+        this.workForm.addControl(field.name, new FormControl(field.value||0));
       }
       else if (field.type == "formula") {
         this.fields[field.name] = 0;
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||0));
+        this.workForm.addControl(field.name, new FormControl(field.value||0));
       }
-      else if (field.type == "date") {
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||this.today));
+      else if (field.type == "Date") {
+        this.workForm.addControl(field.name, new FormControl(field.value||this.today));
       }
       else if (field.type == "many2one") {
         this.workForm.addControl(
-          field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||{})
+          field.name, new FormControl(field.value||{})
         );
       } else if (field.type == "list") {
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
+        this.workForm.addControl(field.name, new FormControl(field.value||[]));
       } else if (field.type == 'tab'){
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
+        this.workForm.addControl(field.name, new FormControl(field.value||[]));
         if(! defaultTab) {
           defaultTab = field.name;
         }
       }
     });
-    if (this.area){
-      this.workForm.patchValue({
-        area: this.area,
-        crop: this.area.crop,
-      });
-    }
+    // if (this.area){
+    //   this.workForm.patchValue({
+    //     area: this.area,
+    //     crop: this.area.crop,
+    //   });
+    // }
     this.workForm.patchValue({
-      activity: data,
-      fields: data.fields,
-      summary: data.summary
+      // activity: data,
+      fields: data_fields,
+      // summary: data.summary
     });
-    this.activity = data;
+    // this.activity = data;
     setTimeout(function(){
         self.workForm.patchValue({
           'section': defaultTab,

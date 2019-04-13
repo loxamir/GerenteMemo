@@ -18,7 +18,7 @@
 <ion-content class="work-content" style="background-color: #ddd">
 
   <form class="sample-form validations-form" [formGroup]="workForm" (ngSubmit)="onSubmit(workForm.value)" >
-    <ion-row justify-content-center *ngIf="!list">
+    <!-- <ion-row justify-content-center *ngIf="!list">
         <ion-item no-padding (click)="selectActivity()" class="field-50">
           <h4 class="field-label">{{'Atividade' | translate}}</h4>
           <h4 class="field-value">{{workForm.value.activity && workForm.value.activity.name || 'Ningun'}}</h4>
@@ -31,16 +31,16 @@
           formControlName="date">
           </ion-datetime>
         </ion-item>
-    </ion-row>
+    </ion-row> -->
     <!-- <ion-list no-lines>
       <section>
       </section>
     </ion-list> -->
         <ion-row>
           <ion-item-sliding class="list-item"
-          *ngFor="let field of filterFields(workForm.value.fields)"
+          *ngFor="let field of workForm.value.fields"
           [style.width]="field.class == 'half-width' ? '50%' : '100%'">
-            <ion-item class="field-100" *ngIf="field.type == 'boolean'">
+            <ion-item class="field-100" *ngIf="field.type == 'Boolean'">
               <ion-label>{{field.label || field.name}}</ion-label>
               <ion-toggle [formControlName]="field.name"></ion-toggle>
             </ion-item>
@@ -72,7 +72,7 @@
               (ionChange)="recomputeFields()">
               </ion-input>
             </ion-item>
-            <ion-item class="field-100" *ngIf="field.type == 'string'">
+            <ion-item class="field-100" *ngIf="field.type == 'String'">
               <ion-label position="floating">{{field.label || field.name}}</ion-label>
               <ion-input type="text" [formControlName]="field.name" text-center>
               </ion-input>
@@ -200,12 +200,12 @@
             </ion-col>
         </div>
     </div>
-    <ion-item  class="field-100" style="margin-top: 10px;">
+    <!-- <ion-item  class="field-100" style="margin-top: 10px;">
       <ion-label position="stacked">{{ 'NOTE' | translate }}</ion-label>
       <ion-textarea #note formControlName="note"
         rows="2">
       </ion-textarea>
-    </ion-item>
+    </ion-item> -->
   </form>
   <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
     <ion-button (click)="goNextStep()"  class="next-button">
