@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.sistemamemo.agro" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Agro Memo</name>
-    <description>Organizando tu negocio</description>
+<widget id="com.sistemamemo.gerente" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Gerente Memo</name>
+    <description>Organizando tus tareas</description>
     <author email="loxamir@gmail.com" href="http://www.sistemamemo.com/">Marcelo Pickler</author>
-    <content original-src="index.html" src="http://192.168.0.50:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />

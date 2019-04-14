@@ -4,24 +4,24 @@ import { NavController,  LoadingController, AlertController,
 } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
+// import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { WorkService } from './work.service';
-import { ProductService } from '../product/product.service';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
-import { ConfigService } from '../config/config.service';
-import { ReceiptService } from '../receipt/receipt.service';
+// import { ProductService } from '../product/product.service';
+// import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+// import { ConfigService } from '../config/config.service';
+// import { ReceiptService } from '../receipt/receipt.service';
 import { FormatService } from '../services/format.service';
-import { ActivitysPage } from '../activitys/activitys.page';
-import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { ProductListPage } from '../product-list/product-list.page';
-import { ContactListPage } from '../contact-list/contact-list.page';
-import { AreasPage } from '../areas/areas.page';
-import { MachinesPage } from '../machines/machines.page';
-import { CropsPage } from '../crops/crops.page';
-import { StockMoveService } from '../stock-move/stock-move.service';
+// import { ActivitysPage } from '../activitys/activitys.page';
+// import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+// import { ProductListPage } from '../product-list/product-list.page';
+// import { ContactListPage } from '../contact-list/contact-list.page';
+// import { AreasPage } from '../areas/areas.page';
+// import { MachinesPage } from '../machines/machines.page';
+// import { CropsPage } from '../crops/crops.page';
+// import { StockMoveService } from '../stock-move/stock-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RestProvider } from '../services/rest/rest';
@@ -47,7 +47,7 @@ export class WorkPage implements OnInit {
   note;
   @Input() go = false;
   @Input() area: any;
-  config;
+  // config;
   deleteList = [];
   renderedForm = {};
 
@@ -60,18 +60,18 @@ export class WorkPage implements OnInit {
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
-    public ProductService: ProductService,
-    public ReceiptService: ReceiptService,
-    public bluetoothSerial: BluetoothSerial,
+    // public ProductService: ProductService,
+    // public ReceiptService: ReceiptService,
+    // public bluetoothSerial: BluetoothSerial,
     public toastCtrl: ToastController,
-    public printer: Printer,
-    public configService: ConfigService,
+    // public printer: Printer,
+    // public configService: ConfigService,
     public formatService: FormatService,
-    public pouchdbService: PouchdbService,
+    // public pouchdbService: PouchdbService,
     public events: Events,
     public restProvider: RestProvider,
     public modalCtrl: ModalController,
-    public stockMoveService: StockMoveService,
+    // public stockMoveService: StockMoveService,
     private elementRef: ElementRef
   ) {
     this.today = new Date().toISOString();
@@ -159,8 +159,9 @@ export class WorkPage implements OnInit {
       let formVariables = {
         "variables": variables
       };
-      this.restProvider.startProcess(this.data, formVariables)
+      this.restProvider.startProcess(this.data, formVariables);
     }
+    this.navCtrl.navigateBack('/works');
   }
 
   async ngOnInit() {
@@ -179,7 +180,7 @@ export class WorkPage implements OnInit {
     });
 
     this.loading = await this.loadingCtrl.create();
-    this.config = await this.configService.getConfig();
+    // this.config = await this.configService.getConfig();
     await this.loading.present();
     let self = this;
     let defaultTab = '';
@@ -286,43 +287,43 @@ export class WorkPage implements OnInit {
       // }
   }
 
-  async buttonSave() {
-    if (this.select && this.list) {
-      this.dismissData();
-    } else {
-      this.workForm.value.fields.forEach(field=>{
-        if (field.type == 'formula'){
-          this.workForm.value[field.name] = this.fields[field.name];
-        }
-      })
-      console.log("inicio");
-      await this.preSave();
-      this.setSummary();
-      this.deleteRemoved();
-      console.log("fin");
-      if (this._id) {
-        this.workService.updateWork(this.workForm.value);
-        this.events.publish('open-work', this.workForm.value);
-        this.workForm.markAsPristine();
-        // this.navCtrl.navigateBack('/works');
-        this.modalCtrl.dismiss();
-        // this.postSave();
-      } else {
-        this.workService.createWork(this.workForm.value).then(doc => {
-          this.workForm.patchValue({
-            _id: doc['doc'].id,
-            code: doc['work'].code,
-          });
-          this._id = doc['doc'].id;
-          this.events.publish('create-work', this.workForm.value);
-          this.workForm.markAsPristine();
-          // this.navCtrl.navigateBack('/works');
-          this.modalCtrl.dismiss();
-          // this.postSave();
-        });
-      }
-    }
-  }
+  // async buttonSave() {
+  //   if (this.select && this.list) {
+  //     this.dismissData();
+  //   } else {
+  //     this.workForm.value.fields.forEach(field=>{
+  //       if (field.type == 'formula'){
+  //         this.workForm.value[field.name] = this.fields[field.name];
+  //       }
+  //     })
+  //     console.log("inicio");
+  //     await this.preSave();
+  //     this.setSummary();
+  //     // this.deleteRemoved();
+  //     console.log("fin");
+  //     if (this._id) {
+  //       this.workService.updateWork(this.workForm.value);
+  //       this.events.publish('open-work', this.workForm.value);
+  //       this.workForm.markAsPristine();
+  //       // this.navCtrl.navigateBack('/works');
+  //       this.modalCtrl.dismiss();
+  //       // this.postSave();
+  //     } else {
+  //       this.workService.createWork(this.workForm.value).then(doc => {
+  //         this.workForm.patchValue({
+  //           _id: doc['doc'].id,
+  //           code: doc['work'].code,
+  //         });
+  //         this._id = doc['doc'].id;
+  //         this.events.publish('create-work', this.workForm.value);
+  //         this.workForm.markAsPristine();
+  //         // this.navCtrl.navigateBack('/works');
+  //         this.modalCtrl.dismiss();
+  //         // this.postSave();
+  //       });
+  //     }
+  //   }
+  // }
 
   setSummary(){
       let summary = this.workForm.value.summary || "";
@@ -350,11 +351,11 @@ export class WorkPage implements OnInit {
     })
   }
 
-  deleteRemoved(){
-    this.deleteList.forEach(item=>{
-      this.pouchdbService.deleteDoc(item);
-    })
-  }
+  // deleteRemoved(){
+  //   this.deleteList.forEach(item=>{
+  //     this.pouchdbService.deleteDoc(item);
+  //   })
+  // }
 
   // postSave() {
   //   let result = eval(this.activity.saveScript);
@@ -362,28 +363,28 @@ export class WorkPage implements OnInit {
   //   return result;
   // }
 
-  async updateDoc(doc_id, changes){
-    return new Promise(async (resolve, reject)=>{
-      let doc = await this.pouchdbService.getDoc(doc_id);
-      console.log("doc1", doc);
-      changes.forEach((data: any)=>{
-        Object.keys(data).forEach((d: any, key)=>{
-          doc[d] = data[d];
-        })
-      })
-      console.log("doc2", doc);
-      await this.pouchdbService.updateDoc(doc);
-      resolve(doc);
-    })
-  }
-
-  async createDoc(data){
-    return new Promise(async (resolve, reject)=>{
-    let doc = await this.pouchdbService.createDoc(data);
-    console.log("created doc", doc);
-    resolve(doc);
-  })
-  }
+  // async updateDoc(doc_id, changes){
+  //   return new Promise(async (resolve, reject)=>{
+  //     let doc = await this.pouchdbService.getDoc(doc_id);
+  //     console.log("doc1", doc);
+  //     changes.forEach((data: any)=>{
+  //       Object.keys(data).forEach((d: any, key)=>{
+  //         doc[d] = data[d];
+  //       })
+  //     })
+  //     console.log("doc2", doc);
+  //     await this.pouchdbService.updateDoc(doc);
+  //     resolve(doc);
+  //   })
+  // }
+  //
+  // async createDoc(data){
+  //   return new Promise(async (resolve, reject)=>{
+  //   let doc = await this.pouchdbService.createDoc(data);
+  //   console.log("created doc", doc);
+  //   resolve(doc);
+  // })
+  // }
 
   setLanguage(lang: LanguageModel) {
     let language_to_set = this.translate.getDefaultLang();
@@ -481,13 +482,13 @@ export class WorkPage implements OnInit {
     // }, 200);
     // this.workForm.markAsDirty();
     // this.events.unsubscribe('select-activity');
-    console.log("note", this.note);
-    if (this.note){
-      this.workForm.value.note = this.note;
-      this.buttonSave();
-    } else {
-      this.goNextStep();
-    }
+    // console.log("note", this.note);
+    // if (this.note){
+    //   this.workForm.value.note = this.note;
+    //   // this.buttonSave();
+    // } else {
+    //   this.goNextStep();
+    // }
   }
 
   buttonPress(field) {
@@ -528,23 +529,23 @@ export class WorkPage implements OnInit {
       }
       this.goNextStep();
     })
-    switch (model) {
-      case 'contact':
-        this.showModal(ContactListPage, context)
-        break;
-      case 'product':
-        this.showModal(ProductListPage, context)
-        break;
-      case 'area':
-        this.showModal(AreasPage, context)
-        break;
-      case 'machine':
-        this.showModal(MachinesPage, context)
-        break;
-      case 'crop':
-        this.showModal(CropsPage, context)
-        break;
-    }
+    // switch (model) {
+    //   case 'contact':
+    //     this.showModal(ContactListPage, context)
+    //     break;
+    //   case 'product':
+    //     this.showModal(ProductListPage, context)
+    //     break;
+    //   case 'area':
+    //     this.showModal(AreasPage, context)
+    //     break;
+    //   case 'machine':
+    //     this.showModal(MachinesPage, context)
+    //     break;
+    //   case 'crop':
+    //     this.showModal(CropsPage, context)
+    //     break;
+    // }
   }
 
   async showModal(page, context={}){
@@ -619,17 +620,17 @@ export class WorkPage implements OnInit {
     profileModal.present();
   }
 
-  async removeFieldItem(field_name, item){
-    let doc = this.workForm.value[field_name][item];
-    this.workForm.value[field_name].splice(item, 1);
-    console.log("remove", doc);
-    if (doc.doc_id){
-      console.log("add to delete", doc);
-      let remove = await this.pouchdbService.getDoc(doc.doc_id);
-      this.deleteList.push(remove);
-    }
-    this.workForm.markAsDirty();
-  }
+  // async removeFieldItem(field_name, item){
+  //   let doc = this.workForm.value[field_name][item];
+  //   this.workForm.value[field_name].splice(item, 1);
+  //   console.log("remove", doc);
+  //   if (doc.doc_id){
+  //     console.log("add to delete", doc);
+  //     let remove = await this.pouchdbService.getDoc(doc.doc_id);
+  //     this.deleteList.push(remove);
+  //   }
+  //   this.workForm.markAsDirty();
+  // }
 
   goNextStep() {
     let done = true;

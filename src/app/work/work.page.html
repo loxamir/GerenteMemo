@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/agro-tabs/work-list"></ion-back-button>
+      <ion-back-button defaultHref="/works"></ion-back-button>
     </ion-buttons>
     <ion-title>
       {{ workForm.value.activity && workForm.value.activity.name || 'TASK' | translate }}
@@ -187,17 +187,17 @@
   </form>
 
 
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-    <ion-button (click)="setCompleted()" color="danger" class="discard-button">
+  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-button (click)="claimTask()" color="danger" class="discard-button">
       <ion-icon name="backspace"> </ion-icon>
-      <span>Completar</span>
+      <span>Solicitar</span>
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-button (click)="claimTask()"  color="success" class="save-button">
-      <ion-icon name="save"> </ion-icon>
-      Claim
+    <ion-button (click)="setCompleted()"  color="success" class="save-button">
+      <ion-icon name="checkmark"> </ion-icon>
+      Completar
     </ion-button>
   </ion-fab>
   <div style="height: 100px;">

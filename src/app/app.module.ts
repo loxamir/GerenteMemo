@@ -22,81 +22,81 @@ import es from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
 registerLocaleData(es);
 // Custom Imports
-import { ProductListPage } from './product-list/product-list.page';
-import { PaymentConditionListPage } from './payment-condition-list/payment-condition-list.page';
-import { ContactListPage } from './contact-list/contact-list.page';
-import { CurrencyListPage } from './currency-list/currency-list.page';
-import { ReceiptPage } from './receipt/receipt.page';
-import { InvoicePage } from './invoice/invoice.page';
-import { WarehouseListPage } from './warehouse-list/warehouse-list.page';
-import { AccountListPage } from './account-list/account-list.page';
+// import { ProductListPage } from './product-list/product-list.page';
+// import { PaymentConditionListPage } from './payment-condition-list/payment-condition-list.page';
+// import { ContactListPage } from './contact-list/contact-list.page';
+// import { CurrencyListPage } from './currency-list/currency-list.page';
+// import { ReceiptPage } from './receipt/receipt.page';
+// import { InvoicePage } from './invoice/invoice.page';
+// import { WarehouseListPage } from './warehouse-list/warehouse-list.page';
+// import { AccountListPage } from './account-list/account-list.page';
 
-import { ClosePageModule } from './cash/close/close.module';
+// import { ClosePageModule } from './cash/close/close.module';
 
-import { TitlePageModule } from './title/title.module';
-import { TitleListPageModule } from './title-list/title-list.module';
-import { AccountPageModule } from './account/account.module';
-import { AccountCategoryPageModule } from './account-category/account-category.module';
-import { AccountCategoryListPageModule } from './account-category-list/account-category-list.module';
-import { CashListPage } from './cash-list/cash-list.page';
+// import { TitlePageModule } from './title/title.module';
+// import { TitleListPageModule } from './title-list/title-list.module';
+// import { AccountPageModule } from './account/account.module';
+// import { AccountCategoryPageModule } from './account-category/account-category.module';
+// import { AccountCategoryListPageModule } from './account-category-list/account-category-list.module';
+// import { CashListPage } from './cash-list/cash-list.page';
 
 
-import { ProductCategoryListPageModule } from './product-category-list/product-category-list.module';
-import { BrandListPageModule } from './brand-list/brand-list.module';
-import { ProductListPageModule } from './product-list/product-list.module';
-import { PaymentConditionListPageModule } from './payment-condition-list/payment-condition-list.module';
-import { ContactListPageModule } from './contact-list/contact-list.module';
-import { CurrencyListPageModule } from './currency-list/currency-list.module';
-import { CurrencyPageModule } from './currency/currency.module';
-import { ReceiptPageModule } from './receipt/receipt.module';
-import { InvoicePageModule } from './invoice/invoice.module';
-import { WarehouseListPageModule } from './warehouse-list/warehouse-list.module';
-import { AccountListPageModule } from './account-list/account-list.module';
-import { CashListPageModule } from './cash-list/cash-list.module';
-import { CashMovePageModule } from './cash-move/cash-move.module';
+// import { ProductCategoryListPageModule } from './product-category-list/product-category-list.module';
+// import { BrandListPageModule } from './brand-list/brand-list.module';
+// import { ProductListPageModule } from './product-list/product-list.module';
+// import { PaymentConditionListPageModule } from './payment-condition-list/payment-condition-list.module';
+// import { ContactListPageModule } from './contact-list/contact-list.module';
+// import { CurrencyListPageModule } from './currency-list/currency-list.module';
+// import { CurrencyPageModule } from './currency/currency.module';
+// import { ReceiptPageModule } from './receipt/receipt.module';
+// import { InvoicePageModule } from './invoice/invoice.module';
+// import { WarehouseListPageModule } from './warehouse-list/warehouse-list.module';
+// import { AccountListPageModule } from './account-list/account-list.module';
+// import { CashListPageModule } from './cash-list/cash-list.module';
+// import { CashMovePageModule } from './cash-move/cash-move.module';
 import { LoginPageModule } from './login/login.module';
 
-import { ProductCategoryPageModule } from './product-category/product-category.module';
-import { BrandPageModule } from './brand/brand.module';
-import { ContactPageModule } from './contact/contact.module';
-import { ProductPageModule } from './product/product.module';
+// import { ProductCategoryPageModule } from './product-category/product-category.module';
+// import { BrandPageModule } from './brand/brand.module';
+// import { ContactPageModule } from './contact/contact.module';
+// import { ProductPageModule } from './product/product.module';
 
-import { CheckListPageModule } from './check-list/check-list.module';
-import { CheckPageModule } from './check/check.module';
-import { PaymentConditionPageModule } from './payment-condition/payment-condition.module';
-import { ServiceWorkPageModule } from './service/work/work.module';
-import { ProductionWorkPageModule } from './production/work/work.module';
-import { ServiceTravelPageModule } from './service/travel/travel.module';
+// import { CheckListPageModule } from './check-list/check-list.module';
+// import { CheckPageModule } from './check/check.module';
+// import { PaymentConditionPageModule } from './payment-condition/payment-condition.module';
+// import { ServiceWorkPageModule } from './service/work/work.module';
+// import { ProductionWorkPageModule } from './production/work/work.module';
+// import { ServiceTravelPageModule } from './service/travel/travel.module';
 import { WorkPageModule } from './work/work.module';
 import { WorksPageModule } from './works/works.module';
-import { UserPageModule } from './user/user.module';
-import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
+// import { UserPageModule } from './user/user.module';
+// import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { ActivitysPageModule } from './activitys/activitys.module';
+// import { ActivitysPageModule } from './activitys/activitys.module';
 import { ProcessListPageModule } from './process-list/process-list.module';
-import { ActivityPageModule } from './activity/activity.module';
-import { FieldPageModule } from './field/field.module';
+// import { ActivityPageModule } from './activity/activity.module';
+// import { FieldPageModule } from './field/field.module';
 
-import { AnimalPageModule } from './animal/animal.module';
-import { AreaPageModule } from './area/area.module';
-import { MachinePageModule } from './machine/machine.module';
-import { CropPageModule } from './crop/crop.module';
-import { AnimalsPageModule } from './animals/animals.module';
-import { AreasPageModule } from './areas/areas.module';
-import { MachinesPageModule } from './machines/machines.module';
-import { CropsPageModule } from './crops/crops.module';
-import { InputPageModule } from './input/input.module';
-import { InputsPageModule } from './inputs/inputs.module';
-import { FilterPageModule } from './filter/filter.module';
-import { AgroTabsPageModule } from './agro-tabs/agro-tabs.module';
+// import { AnimalPageModule } from './animal/animal.module';
+// import { AreaPageModule } from './area/area.module';
+// import { MachinePageModule } from './machine/machine.module';
+// import { CropPageModule } from './crop/crop.module';
+// import { AnimalsPageModule } from './animals/animals.module';
+// import { AreasPageModule } from './areas/areas.module';
+// import { MachinesPageModule } from './machines/machines.module';
+// import { CropsPageModule } from './crops/crops.module';
+// import { InputPageModule } from './input/input.module';
+// import { InputsPageModule } from './inputs/inputs.module';
+// import { FilterPageModule } from './filter/filter.module';
+// import { AgroTabsPageModule } from './agro-tabs/agro-tabs.module';
 import { environment } from '../environments/environment';
 // import { AuthGuardService } from './services/auth-guard.service';
 
-import { Camera } from '@ionic-native/camera/ngx';
-import { File } from '@ionic-native/file/ngx';
+// import { Camera } from '@ionic-native/camera/ngx';
+// import { File } from '@ionic-native/file/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { FilePath } from '@ionic-native/file-path/ngx';
-import { ImageModalPageModule } from './image-modal/image-modal.module';
+// import { FilePath } from '@ionic-native/file-path/ngx';
+// import { ImageModalPageModule } from './image-modal/image-modal.module';
 
 @NgModule({
   declarations: [
@@ -111,71 +111,71 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     // CashListPage,
   ],
   entryComponents: [
-    ContactListPage,
-    CurrencyListPage,
-    PaymentConditionListPage,
-    ProductListPage,
-    ReceiptPage,
-    InvoicePage,
-    WarehouseListPage,
-    AccountListPage,
-    CashListPage,
+    // ContactListPage,
+    // CurrencyListPage,
+    // PaymentConditionListPage,
+    // ProductListPage,
+    // ReceiptPage,
+    // InvoicePage,
+    // WarehouseListPage,
+    // AccountListPage,
+    // CashListPage,
   ],
   imports: [
-    LoginPageModule,
-    AgroTabsPageModule,
-    ContactPageModule,
-    CashMovePageModule,
-    BrandListPageModule,
-    ImageModalPageModule,
-    ProductCategoryListPageModule,
-    AccountCategoryListPageModule,
-    FilterPageModule,
-    InputPageModule,
-    InputsPageModule,
-    AnimalPageModule,
-    AreaPageModule,
-    MachinePageModule,
-    CropPageModule,
-    AnimalsPageModule,
-    AreasPageModule,
-    MachinesPageModule,
-    CropsPageModule,
-    ProductListPageModule,
-    PaymentConditionListPageModule,
-    CurrencyListPageModule,
-    TitleListPageModule,
-    ClosePageModule,
-    ReceiptPageModule,
-    TitlePageModule,
-    AccountPageModule,
-    AccountCategoryPageModule,
-    InvoicePageModule,
-    WarehouseListPageModule,
-    AccountListPageModule,
-    ActivitysPageModule,
-    ProcessListPageModule,
-    ActivityPageModule,
-    CurrencyPageModule,
-    CashListPageModule,
-    WorkPageModule,
     WorksPageModule,
-    UserPageModule,
-    CheckPageModule,
-    InvoiceConfigPageModule,
+    WorkPageModule,
+    LoginPageModule,
+    // AgroTabsPageModule,
+    // ContactPageModule,
+    // CashMovePageModule,
+    // BrandListPageModule,
+    // ImageModalPageModule,
+    // ProductCategoryListPageModule,
+    // AccountCategoryListPageModule,
+    // FilterPageModule,
+    // InputPageModule,
+    // InputsPageModule,
+    // AnimalPageModule,
+    // AreaPageModule,
+    // MachinePageModule,
+    // CropPageModule,
+    // AnimalsPageModule,
+    // AreasPageModule,
+    // MachinesPageModule,
+    // CropsPageModule,
+    // ProductListPageModule,
+    // PaymentConditionListPageModule,
+    // CurrencyListPageModule,
+    // TitleListPageModule,
+    // ClosePageModule,
+    // ReceiptPageModule,
+    // TitlePageModule,
+    // AccountPageModule,
+    // AccountCategoryPageModule,
+    // InvoicePageModule,
+    // WarehouseListPageModule,
+    // AccountListPageModule,
+    // ActivitysPageModule,
+    ProcessListPageModule,
+    // ActivityPageModule,
+    // CurrencyPageModule,
+    // CashListPageModule,
+    // UserPageModule,
+    // CheckPageModule,
+    // InvoiceConfigPageModule,
     BrowserModule,
     FormsModule,
-    ContactListPageModule,
+    // ContactListPageModule,
     ReactiveFormsModule,
-    ProductPageModule,
-    FieldPageModule,
-    ProductCategoryPageModule,
-    BrandPageModule,
-    PaymentConditionPageModule,
-    CheckListPageModule,
-    ServiceWorkPageModule,
-    ProductionWorkPageModule,
-    ServiceTravelPageModule,
+    // ProductPageModule,
+    // FieldPageModule,
+    // ProductCategoryPageModule,
+    // BrandPageModule,
+    // PaymentConditionPageModule,
+    // CheckListPageModule,
+    // ServiceWorkPageModule,
+    // ProductionWorkPageModule,
+    // ServiceTravelPageModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),
     TranslateModule.forRoot({
@@ -191,12 +191,12 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
   providers: [
         { provide: LOCALE_ID, useValue: 'es-PY' },
     NativeStorage,
-    File,
+    // File,
     StatusBar,
     SplashScreen,
-    Camera,
+    // Camera,
     WebView,
-    FilePath,
+    // FilePath,
     // AuthGuardService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

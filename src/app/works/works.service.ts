@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
-import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+// import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from '../services/rest/rest';
 
 @Injectable()
 export class WorksService {
   constructor(
-    public pouchdbService: PouchdbService,
+    // public pouchdbService: PouchdbService,
     public restProvider: RestProvider,
   ) {}
 
@@ -32,21 +32,21 @@ export class WorksService {
   });
 }
 
-  searchItems(keyword, page) {
-    return new Promise(resolve => {
-    this.pouchdbService.searchDocs(
-      'work', keyword, page, "activity_name"
-    ).then((sales) => {
-        resolve(sales);
-      })
-    })
-  }
-
-  deleteWork(work){
-    return this.pouchdbService.deleteDoc(work);
-  }
-
-  handleChange(list, change){
-    this.pouchdbService.localHandleChangeData(list, change)
-  }
+  // searchItems(keyword, page) {
+  //   return new Promise(resolve => {
+  //   this.pouchdbService.searchDocs(
+  //     'work', keyword, page, "activity_name"
+  //   ).then((sales) => {
+  //       resolve(sales);
+  //     })
+  //   })
+  // }
+  //
+  // deleteWork(work){
+  //   return this.pouchdbService.deleteDoc(work);
+  // }
+  //
+  // handleChange(list, change){
+  //   this.pouchdbService.localHandleChangeData(list, change)
+  // }
 }

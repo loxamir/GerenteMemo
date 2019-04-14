@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, LoadingController, PopoverController , Events,
    NavParams, ModalController  } from '@ionic/angular';
-import { FilterPage } from '../filter/filter.page';
+// import { FilterPage } from '../filter/filter.page';
 //import { DecimalPipe } from '@angular/common';
 import 'rxjs/Rx';
 import { WorksService } from './works.service';
@@ -42,14 +42,14 @@ export class WorksPage implements OnInit {
     public restProvider: RestProvider,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
-    this.events.unsubscribe('changed-work');
-    this.events.subscribe('changed-work', (change)=>{
-      if (!this.changes.hasOwnProperty(change.seq)){
-        console.log("handle ", change);
-        this.worksService.handleChange(this.works, change);
-        this.changes[change.seq] = true;
-      }
-    })
+    // this.events.unsubscribe('changed-work');
+    // this.events.subscribe('changed-work', (change)=>{
+    //   if (!this.changes.hasOwnProperty(change.seq)){
+    //     console.log("handle ", change);
+    //     this.worksService.handleChange(this.works, change);
+    //     this.changes[change.seq] = true;
+    //   }
+    // })
     // this.events.unsubscribe('got-database');
     // this.events.subscribe('got-database', (change)=>{
       this.setFilteredItems();
@@ -66,18 +66,18 @@ export class WorksPage implements OnInit {
     }
   }
 
-  async showFilter() {
-    this.events.subscribe('get-filter', (data) => {
-      //Do your stuff
-      this.events.unsubscribe('get-filter');
-    });
-    let profileModal = await this.modalCtrl.create({
-      component: FilterPage,
-      componentProps: {
-      }
-    });
-    profileModal.present();
-  }
+  // async showFilter() {
+  //   this.events.subscribe('get-filter', (data) => {
+  //     //Do your stuff
+  //     this.events.unsubscribe('get-filter');
+  //   });
+  //   let profileModal = await this.modalCtrl.create({
+  //     component: FilterPage,
+  //     componentProps: {
+  //     }
+  //   });
+  //   profileModal.present();
+  // }
 
   async ngOnInit(){
     this.loading = await this.loadingCtrl.create();
@@ -85,30 +85,30 @@ export class WorksPage implements OnInit {
     this.setFilteredItems();
   }
 
-  searchItems() {
-    this.worksService.searchItems(
-      this.searchTerm, 0
-    ).then((works) => {
-      this.works = works;
-      this.page = 1;
-      //this.loading.dismiss();
-    });
-  }
+  // searchItems() {
+  //   this.worksService.searchItems(
+  //     this.searchTerm, 0
+  //   ).then((works) => {
+  //     this.works = works;
+  //     this.page = 1;
+  //     //this.loading.dismiss();
+  //   });
+  // }
 
-  doInfinite(infiniteScroll) {
-    setTimeout(() => {
-      // this.worksService.getWorksPage(
-      //   this.searchTerm, this.page
-      // ).then((works: any[]) => {
-      //   works.forEach(work => {
-      //     this.works.push(work);
-      //   });
-      //   this.page += 1;
-      // });
-      this.setFilteredItems();
-      infiniteScroll.target.complete();
-    }, 50);
-  }
+  // doInfinite(infiniteScroll) {
+  //   setTimeout(() => {
+  //     // this.worksService.getWorksPage(
+  //     //   this.searchTerm, this.page
+  //     // ).then((works: any[]) => {
+  //     //   works.forEach(work => {
+  //     //     this.works.push(work);
+  //     //   });
+  //     //   this.page += 1;
+  //     // });
+  //     this.setFilteredItems();
+  //     infiniteScroll.target.complete();
+  //   }, 50);
+  // }
 
   doRefresh(refresher) {
     setTimeout(() => {
@@ -183,9 +183,9 @@ export class WorksPage implements OnInit {
       });
     }
 
-  deleteWork(work){
-    let index = this.works.indexOf(work);
-    // this.works.splice(index, 1);
-    this.worksService.deleteWork(work);
-  }
+  // deleteWork(work){
+  //   let index = this.works.indexOf(work);
+  //   // this.works.splice(index, 1);
+  //   this.worksService.deleteWork(work);
+  // }
 }
