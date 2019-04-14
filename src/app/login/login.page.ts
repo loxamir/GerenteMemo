@@ -108,24 +108,27 @@ export class LoginPage implements OnInit {
       // }
       console.log("usernames", username);
       // }
+      if (this.username){
+      this.router.navigate(['/works']);
+    }
     // });
-    this.setFilteredItems();
+    // this.setFilteredItems();
   }
 
-  setFilteredItems() {
-    let filter = null;
-    if (this.filter == "all"){
-      let filter = null;
-    } else {
-      let filter = this.filter;
-    }
-    // this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
-    //     console.log("helps", helps);
-    //     this.helps = helps;
-    //   // this.helps = helps;
-    //   this.page = 1;
-    // });
-  }
+  // setFilteredItems() {
+  //   let filter = null;
+  //   if (this.filter == "all"){
+  //     let filter = null;
+  //   } else {
+  //     let filter = this.filter;
+  //   }
+  //   // this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
+  //   //     console.log("helps", helps);
+  //   //     this.helps = helps;
+  //   //   // this.helps = helps;
+  //   //   this.page = 1;
+  //   // });
+  // }
 
   // doInfinite(infiniteScroll) {
   //   setTimeout(() => {
@@ -259,7 +262,7 @@ export class LoginPage implements OnInit {
     this.show_create = false;
   }
 
-  login (){
+  login(){
     this.checkLogin(
       this.loginForm.value.user.toLowerCase(),
       this.loginForm.value.password
@@ -330,15 +333,16 @@ export class LoginPage implements OnInit {
 
   async doLogin(){
     await this.storage.set('username', this.loginForm.value.user.toLowerCase());
-    this.storage.set("password", this.loginForm.value.password);
-    this.events.publish('get-user', {"user": this.loginForm.value.user.toLowerCase()});
+    // this.storage.set("password", this.loginForm.value.password);
+    // this.events.publish('get-user', {"user": this.loginForm.value.user.toLowerCase()});
     this.selected_user = true;
-    this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
+    // this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
     this.username = this.loginForm.value.user.toLowerCase();
-    this.authService.login(this.username);
-    this.selectDatabase(this.username);
+    // this.authService.login(this.username);
+    // this.selectDatabase(this.username);
     this.menuCtrl.enable(false);
     this.loading.dismiss();
+    this.router.navigate(['/works']);
 
   }
 

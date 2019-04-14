@@ -25,7 +25,7 @@ export class WorksService {
 
   getWorksPage(keyword, page){
   return new Promise(resolve => {
-    this.restProvider.getTasks().then((tasks: any[]) => {
+    this.restProvider.getMys().then((tasks: any[]) => {
       console.log("got tasks service", tasks);
       resolve(tasks);
     });

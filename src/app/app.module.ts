@@ -122,9 +122,9 @@ import { WebView } from '@ionic-native/ionic-webview/ngx';
     // CashListPage,
   ],
   imports: [
+    LoginPageModule,
     WorksPageModule,
     WorkPageModule,
-    LoginPageModule,
     // AgroTabsPageModule,
     // ContactPageModule,
     // CashMovePageModule,

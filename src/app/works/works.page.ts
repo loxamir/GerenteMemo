@@ -9,6 +9,7 @@ import { RestProvider } from '../services/rest/rest';
 // import { WorksPopover } from './works.popover';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProcessListPage } from '../process-list/process-list.page';
+import { Storage } from '@ionic/storage';
 @Component({
   selector: 'app-works',
   templateUrl: './works.page.html',
@@ -40,6 +41,7 @@ export class WorksPage implements OnInit {
     public events:Events,
     public route: ActivatedRoute,
     public restProvider: RestProvider,
+    public storage: Storage,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
     // this.events.unsubscribe('changed-work');
@@ -64,6 +66,12 @@ export class WorksPage implements OnInit {
           this.searchBar.setFocus();
       }, 500);
     }
+  }
+
+  async logout(){
+    await this.storage.set('username', false);
+    // this.router.navigate(['/login']);
+    this.navCtrl.navigateBack(['/login', {}]);
   }
 
   // async showFilter() {

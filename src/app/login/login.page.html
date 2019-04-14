@@ -1,15 +1,6 @@
-
+<!--
 <ion-header *ngIf="selected_user">
   <ion-toolbar color="primary">
-    <!-- <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-    </ion-buttons> -->
-    <!-- <ion-searchbar
-      placeholder="Buscar Venta"
-      [(ngModel)]="searchTerm"
-      #searchbar
-      (ionChange)="searchItems()">
-    </ion-searchbar> -->
     <ion-title>
       Bien Venido {{ username }}
     </ion-title>
@@ -19,7 +10,7 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
     <img src="./assets/images/logo.png"
@@ -52,7 +43,7 @@
             </div>
           </ng-container>
         </div>
-        <ion-item *ngIf="show_create" style="background:white;border-radius:10px;margin-bottom:10px;">
+        <!-- <ion-item *ngIf="show_create" style="background:white;border-radius:10px;margin-bottom:10px;">
           <ion-label position="floating">{{'NAME' | translate}}</ion-label>
           <ion-input type="text" formControlName="name"></ion-input>
         </ion-item>
@@ -74,24 +65,24 @@
               {{ validation.message }}
             </div>
           </ng-container>
-        </div>
+        </div> -->
 
-        <ion-button class="print-invoice" (click)="login()" *ngIf="!show_create" style="border-radius:10px;width:100%">
+        <ion-button class="print-invoice" (click)="doLogin()" *ngIf="!show_create" style="border-radius:10px;width:100%">
           Entrar
         </ion-button>
-        <ion-button class="print-invoice" (click)="register()" [disabled]="!loginForm.valid" *ngIf="show_create" style="border-radius:10px;width:100%">
+        <!-- <ion-button class="print-invoice" (click)="register()" [disabled]="!loginForm.valid" *ngIf="show_create" style="border-radius:10px;width:100%">
           Registrar
-        </ion-button>
+        </ion-button> -->
         <ion-row>
           <ion-col>
           </ion-col>
         </ion-row>
-        <ion-row>
+        <!-- <ion-row>
           <ion-col style="text-align: center;">
             <a style="font-size:15px;" (click)="showCreate()" *ngIf="!show_create">Crear Cuenta</a>
             <a style="font-size:15px;" (click)="showLogin()" *ngIf="show_create">Volver al Login</a>
           </ion-col>
-        </ion-row>
+        </ion-row> -->
       </ion-col>
       <ion-col></ion-col>
     </ion-row>
@@ -101,7 +92,7 @@
 
 
 
-    <div *ngIf="selected_user">
+    <!-- <div *ngIf="selected_user">
       <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 20px;">Empresas</h2>
       <ion-item *ngFor="let database of databaseList" (click)="selectDatabase(database.database)"
       style="--background: white;">
@@ -112,7 +103,7 @@
           <ion-button class="button-100" color="success">Entrar</ion-button>
         </ion-col>
       </ion-item>
-    </div>
+    </div> -->
 <!-- <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 40px;">{{'Primeros Passos' | translate}}</h2>
     <div class="thumnails">
       <div class="list-thumbnail">

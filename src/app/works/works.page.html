@@ -33,9 +33,9 @@
       <!-- <ion-button (click)="changeSearch()">
         <ion-icon name="search"></ion-icon>
       </ion-button> -->
-      <!-- <ion-button  (click)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
+      <ion-button  (click)="logout()">
+        <ion-icon name="log-out"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -79,9 +79,9 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
-  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+  <!-- <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  </ion-infinite-scroll> -->
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
       <ion-fab-button (click)="createWork()" color="primary">
