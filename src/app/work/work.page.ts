@@ -13,7 +13,7 @@ import { WorkService } from './work.service';
 // import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 // import { ConfigService } from '../config/config.service';
 // import { ReceiptService } from '../receipt/receipt.service';
-import { FormatService } from '../services/format.service';
+// import { FormatService } from '../services/format.service';
 // import { ActivitysPage } from '../activitys/activitys.page';
 // import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 // import { ProductListPage } from '../product-list/product-list.page';
@@ -66,7 +66,7 @@ export class WorkPage implements OnInit {
     public toastCtrl: ToastController,
     // public printer: Printer,
     // public configService: ConfigService,
-    public formatService: FormatService,
+    // public formatService: FormatService,
     // public pouchdbService: PouchdbService,
     public events: Events,
     public restProvider: RestProvider,

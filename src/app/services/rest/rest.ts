@@ -86,15 +86,13 @@ export class RestProvider {
         responseType: 'text'
       }).subscribe(data => {
         var xml = data.replace(/&/g, "");
-        // console.log("XML", xml);
         var result1 = JSON.parse(convert.xml2json(xml, {compact: true, spaces: 2}));
-        // var result2 = convert.xml2json(xml, {compact: false, spaces: 4});
-        // console.log(result1.form);
         let result = {}
-        result1.form.div.forEach((field)=>{
-          result[field.input._attributes.name] = field.label._text.replace(/\n/g, "");
-        })
-        console.log("result", result);
+        if (Array.isArray(result1.form.div)){
+          result1.form.div.forEach((field)=>{
+            result[field.input._attributes.name] = field.label._text.replace(/\n/g, "");
+          })
+        }
         resolve(result);
       }, err => {
         console.log("error", err);
@@ -151,17 +149,14 @@ export class RestProvider {
         this.apiUrl+'/engine-rest/process-definition/'+processId+'/rendered-form',
         {responseType: 'text'}
     ).subscribe(data => {
-        console.log("start rendered form process", data);
         var xml = data.replace(/&/g, "");
-        // console.log("XML", xml);
         var result1 = JSON.parse(convert.xml2json(xml, {compact: true, spaces: 2}));
-        // var result2 = convert.xml2json(xml, {compact: false, spaces: 4});
-        // console.log(result1.form);
         let result = {}
-        result1.form.div.forEach((field)=>{
-          result[field.input._attributes.name] = field.label._text.replace(/\n/g, "");
-        })
-        console.log("result", result);
+        if (Array.isArray(result1.form.div)){
+          result1.form.div.forEach((field)=>{
+            result[field.input._attributes.name] = field.label._text.replace(/\n/g, "");
+          })
+        }
         resolve(result);
       }, err => {
         console.log(err);

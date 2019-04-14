@@ -7,11 +7,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { Storage } from '@ionic/storage';
-import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+// import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from '../services/rest/rest';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
-import * as jsPDF from 'jspdf';
-import * as html2canvas from 'html2canvas';
+// import * as jsPDF from 'jspdf';
+// import * as html2canvas from 'html2canvas';
 import { LoginPopover } from './login.popover';
 import { AuthService } from '../services/auth.service';
 
@@ -51,7 +51,7 @@ export class LoginPage implements OnInit {
     public popoverCtrl: PopoverController,
     public authService: AuthService,
     public menuCtrl: MenuController,
-    public pouchdbService: PouchdbService,
+    // public pouchdbService: PouchdbService,
     public toastCtrl: ToastController,
     public restProvider: RestProvider,
     public route: ActivatedRoute,
@@ -368,7 +368,12 @@ export class LoginPage implements OnInit {
       //   message: "1/8 - Sincronizando Datos",
       // });
       // toast.present();
-      this.pouchdbService.getConnect();
+
+
+      // this.pouchdbService.getConnect();
+
+
+
       // if (this.navParams.data.current_db){
       //   this.navCtrl.pop()
       // }
@@ -380,7 +385,7 @@ export class LoginPage implements OnInit {
         if(viewExist){
           this.loading.dismiss();
         } else {
-          this.initiateViews();
+          // this.initiateViews();
           this.storage.set('optimize-'+database, true);
         }
         // this.navCtrl.setRoot(TabsNavigationPage);
@@ -395,54 +400,54 @@ export class LoginPage implements OnInit {
   //   this.router.navigate(['/help-list']);
   // }
 
-  async initiateViews(){
-    let toast2 = await this.toastCtrl.create({
-      message: "2/8 - Sincronizando Balancete",
-    });
-    await toast2.present();
-    await this.pouchdbService.getView('stock/Contas');
-    toast2.dismiss();
-    let toast3 = await this.toastCtrl.create({
-    message: "3/8 - Sincronizando Cuentas a Cobrar",
-    });
-    await toast3.present();
-    await this.pouchdbService.getView('stock/A Cobrar');
-    toast3.dismiss();
-    let toast4 = await this.toastCtrl.create({
-    message: "4/8 - Sincronizando Cuentas a Pagar",
-    });
-    await toast4.present();
-    await this.pouchdbService.getView('stock/A Pagar');
-    toast4.dismiss();
-    let toast5 = await this.toastCtrl.create({
-    message: "5/8 - Sincronizando Stock",
-    });
-    await toast5.present();
-    await this.pouchdbService.getView('stock/Depositos');
-    toast5.dismiss();
-    let toast6 = await this.toastCtrl.create({
-    message: "6/8 - Sincronizando Cajas",
-    });
-    await toast6.present();
-    await this.pouchdbService.getView('stock/Caixas');
-    toast6.dismiss();
-    let toast7 = await this.toastCtrl.create({
-    message: "7/8 - Sincronizando Balance y Resultados",
-    });
-    await toast7.present();
-    await this.pouchdbService.getView('stock/ResultadoDiario');
-    toast7.dismiss();
-    let toast8 = await this.toastCtrl.create({
-    message: "8/8 - Sincronizando Flujo de Caja",
-    });
-    await toast8.present();
-    await this.pouchdbService.getView('stock/Fluxo');
-    toast8.dismiss();
-    this.events.publish('get-database', {});
-    this.loading.dismiss();
-    // this.navCtrl.setRoot(TabsNavigationPage);
-    // this.router.navigate(['/tabs/sale-list']);
-  }
+  // async initiateViews(){
+  //   let toast2 = await this.toastCtrl.create({
+  //     message: "2/8 - Sincronizando Balancete",
+  //   });
+  //   await toast2.present();
+  //   await this.pouchdbService.getView('stock/Contas');
+  //   toast2.dismiss();
+  //   let toast3 = await this.toastCtrl.create({
+  //   message: "3/8 - Sincronizando Cuentas a Cobrar",
+  //   });
+  //   await toast3.present();
+  //   await this.pouchdbService.getView('stock/A Cobrar');
+  //   toast3.dismiss();
+  //   let toast4 = await this.toastCtrl.create({
+  //   message: "4/8 - Sincronizando Cuentas a Pagar",
+  //   });
+  //   await toast4.present();
+  //   await this.pouchdbService.getView('stock/A Pagar');
+  //   toast4.dismiss();
+  //   let toast5 = await this.toastCtrl.create({
+  //   message: "5/8 - Sincronizando Stock",
+  //   });
+  //   await toast5.present();
+  //   await this.pouchdbService.getView('stock/Depositos');
+  //   toast5.dismiss();
+  //   let toast6 = await this.toastCtrl.create({
+  //   message: "6/8 - Sincronizando Cajas",
+  //   });
+  //   await toast6.present();
+  //   await this.pouchdbService.getView('stock/Caixas');
+  //   toast6.dismiss();
+  //   let toast7 = await this.toastCtrl.create({
+  //   message: "7/8 - Sincronizando Balance y Resultados",
+  //   });
+  //   await toast7.present();
+  //   await this.pouchdbService.getView('stock/ResultadoDiario');
+  //   toast7.dismiss();
+  //   let toast8 = await this.toastCtrl.create({
+  //   message: "8/8 - Sincronizando Flujo de Caja",
+  //   });
+  //   await toast8.present();
+  //   await this.pouchdbService.getView('stock/Fluxo');
+  //   toast8.dismiss();
+  //   this.events.publish('get-database', {});
+  //   this.loading.dismiss();
+  //   // this.navCtrl.setRoot(TabsNavigationPage);
+  //   // this.router.navigate(['/tabs/sale-list']);
+  // }
 
   logout(){
     this.storage.set('username', false).then(()=>{
