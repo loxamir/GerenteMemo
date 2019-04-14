@@ -132,6 +132,22 @@ export class WorkPage implements OnInit {
     })
   }
 
+  claimTask(){
+    this.restProvider.claimTask(this._id);
+  }
+
+  setCompleted(){
+    let variables = {};
+    this.workForm.value.fields.forEach(field=>{
+      variables[field.name] = {"value": this.workForm.value[field.name]};
+    })
+    console.log("variablss", variables);
+    let formVariables = {
+      "variables": variables
+    };
+    this.restProvider.completeTask(this._id, formVariables);
+  }
+
   async ngOnInit() {
     this.workForm = this.formBuilder.group({
       // name: new FormControl(''),
