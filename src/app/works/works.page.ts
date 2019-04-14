@@ -7,7 +7,7 @@ import 'rxjs/Rx';
 import { WorksService } from './works.service';
 // import { WorksPopover } from './works.popover';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { ProcessListPage } from '../process-list/process-list.page';
 @Component({
   selector: 'app-works',
   templateUrl: './works.page.html',
@@ -144,20 +144,40 @@ export class WorksPage implements OnInit {
     this.navCtrl.navigateForward(['/work', {'_id': work.id}]);
   }
 
-  createWork(){
-    this.events.subscribe('create-work', (data) => {
-      if (this.select){
-        // this.navCtrl.navigateBack().then(() => {
-          this.modalCtrl.dismiss();
-          this.events.publish('select-work', data);
-        // });
-      }
-      this.events.unsubscribe('create-work');
-    })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(WorkPage, {});
-    this.navCtrl.navigateForward(['/work', {}]);
-  }
+  // createWork(){
+  //   this.events.subscribe('create-work', (data) => {
+  //     if (this.select){
+  //       // this.navCtrl.navigateBack().then(() => {
+  //         this.modalCtrl.dismiss();
+  //         this.events.publish('select-work', data);
+  //       // });
+  //     }
+  //     this.events.unsubscribe('create-work');
+  //   })
+  //   // let newRootNav = <NavController>this.app.getRootNavById('n4');
+  //   // newRootNav.push(WorkPage, {});
+  //   this.navCtrl.navigateForward(['/work', {}]);
+  // }
+
+
+    createWork() {
+      return new Promise(async resolve => {
+        this.events.unsubscribe('select-process');
+        this.events.subscribe('select-process', (data) => {
+          // this.setActivity(data);
+          console.log("data", data)
+          resolve(true);
+          this.navCtrl.navigateForward(['/work', {}]);
+        })
+        let profileModal = await this.modalCtrl.create({
+          component: ProcessListPage,
+          componentProps: {
+            "select": true,
+          }
+        });
+        profileModal.present();
+      });
+    }
 
   deleteWork(work){
     let index = this.works.indexOf(work);

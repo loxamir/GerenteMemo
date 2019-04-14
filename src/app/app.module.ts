@@ -73,6 +73,7 @@ import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ActivitysPageModule } from './activitys/activitys.module';
+import { ProcessListPageModule } from './process-list/process-list.module';
 import { ActivityPageModule } from './activity/activity.module';
 import { FieldPageModule } from './field/field.module';
 
@@ -153,6 +154,7 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     WarehouseListPageModule,
     AccountListPageModule,
     ActivitysPageModule,
+    ProcessListPageModule,
     ActivityPageModule,
     CurrencyPageModule,
     CashListPageModule,

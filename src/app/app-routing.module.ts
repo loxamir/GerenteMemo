@@ -97,6 +97,7 @@ const routes: Routes = [
   { path: 'inputs', loadChildren: './inputs/inputs.module#InputsPageModule' },
   { path: 'filter', loadChildren: './filter/filter.module#FilterPageModule' },
   { path: 'image-modal', loadChildren: './image-modal/image-modal.module#ImageModalPageModule' },
+  { path: 'process-list', loadChildren: './process-list/process-list.module#ProcessListPageModule' },
 ];
 
 @NgModule({
