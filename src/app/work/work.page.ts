@@ -42,6 +42,7 @@ export class WorkPage implements OnInit {
   @Input() list: boolean = false;
   activity;
   @Input() data;
+  @Input() key;
   select;
   note;
   @Input() go = false;
@@ -78,6 +79,8 @@ export class WorkPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
+    this.data = this.route.snapshot.paramMap.get('data');
+    this.key = this.route.snapshot.paramMap.get('data');
     this.activity = this.route.snapshot.paramMap.get('activity');
     this.area = eval(this.route.snapshot.paramMap.get('area'));
     this.select = this.route.snapshot.paramMap.get('select');
@@ -138,6 +141,7 @@ export class WorkPage implements OnInit {
 
   setCompleted(){
     let variables = {};
+    if (this._id){
     this.workForm.value.fields.forEach(field=>{
       variables[field.name] = {"value": this.workForm.value[field.name]};
     })
@@ -145,7 +149,18 @@ export class WorkPage implements OnInit {
     let formVariables = {
       "variables": variables
     };
-    this.restProvider.completeTask(this._id, formVariables);
+
+      this.restProvider.completeTask(this._id, formVariables);
+    } else if (this.data){
+      this.workForm.value.fields.forEach(field=>{
+        variables[field.name] = {"value": this.workForm.value[field.name], type: field.type};
+      })
+      console.log("variablss", variables);
+      let formVariables = {
+        "variables": variables
+      };
+      this.restProvider.startProcess(this.data, formVariables)
+    }
   }
 
   async ngOnInit() {
@@ -172,6 +187,47 @@ export class WorkPage implements OnInit {
         this.renderedForm = await this.restProvider.getTaskRenderedForm(this._id);
         console.log("rer", this.renderedForm);
         this.workService.getWork(this._id).then(async (data) => {
+          let fields = [];
+
+          data.forEach((field, index) => {
+
+            // if (field.type == 'tab'){
+            //   if(! defaultTab) {
+            //     defaultTab = field.name;
+            //   }
+            // }
+            if (this.renderedForm[field.name]){
+              this.workForm.addControl(
+                field.name, new FormControl(field.value)
+              );
+            } else {
+              data.splice(index, 1)
+              console.log("remove", field, index);
+            }
+          })
+          console.log("data", data);
+          this.workForm.patchValue(data);
+          // if (Object.keys(this.workForm.value.activity).length === 0
+          // && !this.activity) {
+          //   this.selectActivity();
+          // } else if (data['activity']) {
+          this.setActivity(data);
+          // }
+          this.recomputeFields();
+
+          this.loading.dismiss();
+
+
+        });
+      } else if (this.data){
+        // let startTask = await this.restProvider.getStartTask(this.data);
+        // console.log("startTask2", startTask);
+
+
+
+        this.renderedForm = await this.restProvider.getStartTaskRenderedForm(this.data);
+        console.log("rer", this.renderedForm);
+        this.workService.getStartWork(this.data).then(async (data) => {
           let fields = [];
 
           data.forEach((field, index) => {

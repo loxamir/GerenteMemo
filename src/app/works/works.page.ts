@@ -5,6 +5,7 @@ import { FilterPage } from '../filter/filter.page';
 //import { DecimalPipe } from '@angular/common';
 import 'rxjs/Rx';
 import { WorksService } from './works.service';
+import { RestProvider } from '../services/rest/rest';
 // import { WorksPopover } from './works.popover';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProcessListPage } from '../process-list/process-list.page';
@@ -38,6 +39,7 @@ export class WorksPage implements OnInit {
     public popoverCtrl: PopoverController,
     public events:Events,
     public route: ActivatedRoute,
+    public restProvider: RestProvider,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
     this.events.unsubscribe('changed-work');
@@ -163,11 +165,13 @@ export class WorksPage implements OnInit {
     createWork() {
       return new Promise(async resolve => {
         this.events.unsubscribe('select-process');
-        this.events.subscribe('select-process', (data) => {
+        this.events.subscribe('select-process', async (data) => {
           // this.setActivity(data);
-          console.log("data", data)
+          console.log("data", data);
+          // let startTask = await this.restProvider.getStartTaskRenderedForm(data.id);
+          // console.log("startTask", startTask);
+          this.navCtrl.navigateForward(['/work', {data: data.id, key: data.key}]);
           resolve(true);
-          this.navCtrl.navigateForward(['/work', {}]);
         })
         let profileModal = await this.modalCtrl.create({
           component: ProcessListPage,

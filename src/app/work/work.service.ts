@@ -35,6 +35,23 @@ export class WorkService {
     });
   }
 
+  getStartWork(process_id): Promise<any> {
+    return new Promise((resolve, reject)=>{
+      this.restProvider.getStartTask(process_id).then((task) => {
+        console.log("Task", task);
+        let fieldList = [];
+        Object.keys(task).forEach(field=>{
+          // console.log("taskfield", field, task[field])
+          task[field]['name'] = field;
+          fieldList.push(task[field]);
+        })
+        console.log("fieldList", fieldList);
+        resolve(fieldList);
+      });
+    });
+  }
+
+
   createWork(viewData){
     return new Promise((resolve, reject)=>{
       let work = this.serializeWork(viewData)
