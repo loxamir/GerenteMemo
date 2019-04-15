@@ -270,6 +270,24 @@ export class ServicePage implements OnInit {
         profileModal.dismiss();
         this.events.unsubscribe('open-receipt');
       });
+      this.events.subscribe('cancel-receipt', (data) => {
+        let newPayments = [];
+        let residual = this.serviceForm.value.residual;
+        this.serviceForm.value.payments.forEach((receipt, index)=>{
+          if (receipt._id != data){
+            this.serviceForm.value.payments.slice(index, 1);
+            newPayments.push(receipt);
+          } else {
+            residual += receipt.paid;
+          }
+        })
+        this.serviceForm.patchValue({
+          payments: newPayments,
+          residual: residual
+        })
+        this.buttonSave();
+        this.events.unsubscribe('cancel-receipt');
+      });
     }
 
     recomputeResidual(){

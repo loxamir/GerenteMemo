@@ -636,6 +636,24 @@ export class PurchasePage implements OnInit {
       this.events.subscribe('open-receipt', (data) => {
         this.events.unsubscribe('open-receipt');
       });
+      this.events.subscribe('cancel-receipt', (data) => {
+        let newPayments = [];
+        let residual = this.purchaseForm.value.residual;
+        this.purchaseForm.value.payments.forEach((receipt, index)=>{
+          if (receipt._id != data){
+            this.purchaseForm.value.payments.slice(index, 1);
+            newPayments.push(receipt);
+          } else {
+            residual += receipt.paid;
+          }
+        })
+        this.purchaseForm.patchValue({
+          payments: newPayments,
+          residual: residual
+        })
+        this.buttonSave();
+        this.events.unsubscribe('cancel-receipt');
+      });
       let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,
         componentProps: {

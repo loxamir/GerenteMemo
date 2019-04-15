@@ -635,12 +635,10 @@ export class SalePage implements OnInit {
         this.events.unsubscribe('open-receipt');
         // profileModal.dismiss();
       });
-      console.log("cancel");
       this.events.subscribe('cancel-receipt', (data) => {
         let newPayments = [];
         let residual = this.saleForm.value.residual;
         this.saleForm.value.payments.forEach((receipt, index)=>{
-          console.log("receipt", receipt, "data", data);
           if (receipt._id != data){
             this.saleForm.value.payments.slice(index, 1);
             newPayments.push(receipt);
@@ -648,7 +646,6 @@ export class SalePage implements OnInit {
             residual += receipt.paid;
           }
         })
-        console.log("newPayments", newPayments);
         this.saleForm.patchValue({
           payments: newPayments,
           residual: residual
