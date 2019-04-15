@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavController, LoadingController,
   AlertController,  Events, ToastController,
-  ModalController, Platform } from '@ionic/angular';
+  ModalController, Platform, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 //import { DecimalPipe } from '@angular/common';
@@ -30,7 +30,7 @@ import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { InvoicePage } from '../invoice/invoice.page';
 import { CheckListPage } from '../check-list/check-list.page';
 import { CheckPage } from '../check/check.page';
-
+import { ReceiptPopover } from './receipt.popover';
 
 @Component({
   selector: 'app-receipt',
@@ -83,6 +83,7 @@ export class ReceiptPage implements OnInit {
       public cashMoveService: CashMoveService,
       public formatService: FormatService,
       public pouchdbService: PouchdbService,
+      public popoverCtrl: PopoverController,
       public events:Events,
       // public modal: ModalController,
     ) {
@@ -292,6 +293,20 @@ export class ReceiptPage implements OnInit {
           profileModal.present();
         });
       // }
+    }
+
+
+    async presentPopover(myEvent) {
+      console.log("teste my event");
+      let popover = await this.popoverCtrl.create({
+        component: ReceiptPopover,
+        event: myEvent,
+        componentProps: {
+          popoverController: this.popoverCtrl,
+          doc: this
+        }
+      });
+      popover.present();
     }
 
     async openInvoice(item) {
@@ -1175,5 +1190,81 @@ export class ReceiptPage implements OnInit {
             this.receiptForm.markAsPristine();
             this.navCtrl.navigateBack('/receipt-list');
           }
+        }
+
+
+        async receiptCancel(){
+          let prompt = await this.alertCtrl.create({
+            header: 'Estas seguro que deseas Cancelar el recibo?',
+            message: 'Al cancelar el Recibo todos los registros asociados serán borrados',
+            buttons: [
+              {
+                text: 'No',
+                handler: data => {
+                  //console.log("Cancelar");
+                }
+              },
+              {
+                text: 'Si',
+                handler: data => {
+                  //console.log("Confirmar");
+                  // this.receiptForm.value.items.forEach((item) => {
+                  //   ////console.log("item", item);
+                  //   // let product_id = item.product_id || item.product._id;
+                  //   // this.productService.updateStock(product_id, item.quantity);
+                  //   //this.purchaseForm.value.step = 'chooseInvoice';
+                  // });
+                  // this.receiptForm.patchValue({
+                  //    state: 'DRAFT',
+                  // });
+                  this.removeCashMoves();
+                  this.events.publish('cancel-receipt', this.receiptForm.value._id);
+                  if (this.select){
+                    this.modalCtrl.dismiss();
+                  } else {
+                    this.navCtrl.navigateBack('/receipt-list');
+                  }
+                  // this.removeStockMoves();
+                  // this.buttonSave();
+                }
+              }
+            ]
+          });
+          prompt.present();
+        }
+
+        async removeCashMoves(){
+          this.receiptForm.value.payments.forEach(payment => {
+            let total = 0
+            this.receiptForm.value.items.forEach(async item => {
+
+              console.log("payment", item);
+              let paidMove: any = await this.pouchdbService.getDoc(item._id);
+              let payments = [];
+              paidMove.payments.forEach((paid, index)=>{
+                console.log("paid._id", paid._id, "payment._id", payment._id);
+                if (paid._id != payment._id){
+                  // paidMove.payments.slice(index, 1);
+                  payments.push(paid);
+                } else {
+                  total += paid.amount;
+                }
+              })
+              console.log("paymentsss", payments);
+              paidMove.payments = payments;
+              paidMove.amount_residual += total;
+              console.log("paidMove", paidMove);
+              await this.pouchdbService.updateDoc(paidMove);
+            });
+
+            console.log("payment", payment);
+            this.pouchdbService.deleteDoc(payment);
+
+          });
+
+          let doc = await this.pouchdbService.getDoc(this.receiptForm.value._id);
+          console.log("doc", doc);
+          this.pouchdbService.deleteDoc(doc);
+
         }
 }
