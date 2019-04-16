@@ -79,6 +79,10 @@
       <ion-button class="print-invoice" (click)="configInvoicePrint()" style="width: 99%">Configurar Factura</ion-button>
     </ion-col>
 
+    <ion-col class="item-content">
+      <ion-button class="print-invoice" (click)="configTicketPrint()" style="width: 99%">Configurar Ticket</ion-button>
+    </ion-col>
+
     <ion-item  class="field-100">
       <ion-label position="stacked">{{ 'SERVICE_NOTE' | translate }}</ion-label>
       <ion-textarea #clrequest formControlName="serviceNote"

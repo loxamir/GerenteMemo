@@ -1305,109 +1305,132 @@ export class SalePage implements OnInit {
       let totalExentas = 0;
       let totalIva5 = 0;
       let totalIva10 = 0;
-      this.saleForm.value.items.forEach(item => {
-        let code = item.product.code;
-        let quantity = item.quantity;
-        //  let productName = item.product.name;
-        let price = item.price;
-        let subtotal = quantity*price;
-        let exenta = 0;
-        let iva5 = 0;
-        let iva10 = 0;
-        if (item.product.tax == "iva10"){
-          iva10 = item.quantity*item.price;
-          totalIva10 += iva10;
-        } else if (item.product.tax == "exenta"){
-          exenta = item.quantity*item.price;
-          totalExentas += exenta;
-        } else if (item.product.tax == "iva5"){
-          iva5 = item.quantity*item.price;
-          totalIva5 += iva5;
-        }
-        code = this.formatService.string_pad(6, code).toString();
-        quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-        price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-        subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-        let product_name = this.formatService.string_pad(32, item.product.name.substring(0, 32));
-        lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
-      });
-      let totalAmount = totalIva10 + totalIva5 + totalExentas;
-      totalAmount = this.formatService.string_pad(16, totalAmount, "right");
-
-      let ticket=""
-      ticket +=company_name+"\n";
-      ticket += "Ruc: "+company_ruc+"\n";
-      ticket += "Tel: "+company_phone+"\n";
-      ticket += "\n";
-      ticket += "VENTA COD.: "+code+"\n";
-      ticket += "Fecha: "+date+"\n";
-      ticket += "Cliente: "+contact_name+"\n";
-      ticket += "Ruc: "+doc+"\n";
-      ticket += "\n";
-      ticket += "Condicion de pago: "+payment_condition+"\n";
-      ticket += "\n";
-      ticket += "--------------------------------\n";
-      ticket += "ARTICULOS DEL PEDIDO\n";
-      ticket += "\n";
-      ticket += "Cod.  Cant.   Precio   Sub-total\n";
-      ticket += lines;
-      ticket += "--------------------------------\n";
-      // ticket += "TOTAL Gs.:     "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-      ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-      ticket += "--------------------------------\n";
-      ticket += "AVISO LEGAL: Este comprobante \n";
-      ticket += "no tiene valor fiscal.\n";
-      ticket += "--------------------------------\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "--------------------------------\n";
-      ticket += "Firma del vendedor: " +seller_name+"\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "--------------------------------\n";
-      ticket += "Firma del cliente: "+contact_name+"\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
 
 
+      let ticket="";
+      if (data.ticketPrint.paperWidth >= 100){
+
+        this.saleForm.value.items.forEach(item => {
+          let code = item.product.code;
+          let quantity = item.quantity;
+          let price = item.price;
+          let subtotal = quantity*price;
+          code = this.formatService.string_pad(6, code).toString();
+          quantity = this.formatService.string_pad(8, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          price = this.formatService.string_pad(11, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          let product_name = this.formatService.string_pad(data.ticketPrint.paperWidth -(6+8+11+12)-6, item.product.name.substring(0, data.ticketPrint.paperWidth/2));
+          lines += "|"+code+"|"+quantity+"|"+product_name+"|"+price+"|"+subtotal+"|\n";
+        });
+        let totalAmount = totalIva10 + totalIva5 + totalExentas;
+        totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+
+
+        ticket += this.formatService.string_pad(
+          data.ticketPrint.paperWidth, " "+
+          company_name.substring(0, data.ticketPrint.paperWidth/3)+
+          " - Tel: "+company_phone.substring(0, data.ticketPrint.paperWidth/3)+" ",
+          'center', '-')+"\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, ("Presupuesto: "+code).substring(0, data.ticketPrint.paperWidth/2-5));
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, ("Fecha: "+(new Date(this.saleForm.value.date)).toLocaleString('es-PY')).substring(0, data.ticketPrint.paperWidth/2-5))+"\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, ("Cliente: "+this.saleForm.value.contact.name).substring(0, data.ticketPrint.paperWidth/2-5));
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, ("Condicion de pago: "+payment_condition).substring(0, data.ticketPrint.paperWidth/2-5))+"\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
+        let product_description = this.formatService.string_pad(data.ticketPrint.paperWidth -(6+8+11+12)-6, "Descripción");
+        ticket += "|Codigo|Cantidad|"+product_description+"|   Precio  |  Subtotal  |\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
+        ticket += lines;
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth,
+          "Valor Total:"+this.formatService.string_pad(
+            14, "$ "+this.saleForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+" ",
+           'right', ' '
+        )+"\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+      } else {
+        this.saleForm.value.items.forEach(item => {
+          let code = item.product.code;
+          let quantity = item.quantity;
+          //  let productName = item.product.name;
+          let price = item.price;
+          let subtotal = quantity*price;
+          // let exenta = 0;
+          // let iva5 = 0;
+          // let iva10 = 0;
+          // if (item.product.tax == "iva10"){
+          //   iva10 = item.quantity*item.price;
+          //   totalIva10 += iva10;
+          // } else if (item.product.tax == "exenta"){
+          //   exenta = item.quantity*item.price;
+          //   totalExentas += exenta;
+          // } else if (item.product.tax == "iva5"){
+          //   iva5 = item.quantity*item.price;
+          //   totalIva5 += iva5;
+          // }
+          code = this.formatService.string_pad(6, code).toString();
+          quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+          price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          let product_name = this.formatService.string_pad(32, item.product.name.substring(0, 32));
+          lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+        });
+        let totalAmount = totalIva10 + totalIva5 + totalExentas;
+        totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+        ticket +=company_name+"\n";
+        ticket += "Ruc: "+company_ruc+"\n";
+        ticket += "Tel: "+company_phone+"\n";
+        ticket += "\n";
+        ticket += "VENTA COD.: "+code+"\n";
+        ticket += "Fecha: "+date+"\n";
+        ticket += "Cliente: "+contact_name+"\n";
+        ticket += "Ruc: "+doc+"\n";
+        ticket += "\n";
+        ticket += "Condicion de pago: "+payment_condition+"\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "ARTICULOS DEL PEDIDO\n";
+        ticket += "\n";
+        ticket += "Cod.  Cant.   Precio   Sub-total\n";
+        ticket += lines;
+        ticket += "--------------------------------\n";
+        // ticket += "TOTAL Gs.:     "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+        ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+        ticket += "--------------------------------\n";
+        ticket += "AVISO LEGAL: Este comprobante \n";
+        ticket += "no tiene valor fiscal.\n";
+        ticket += "--------------------------------\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "Firma del vendedor: " +seller_name+"\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "--------------------------------\n";
+        ticket += "Firma del cliente: "+contact_name+"\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+      }
       console.log("ticket", ticket);
-
       this.formatService.printMatrixClean(ticket, prefix + this.saleForm.value.code + extension);
       let toast = await this.toastCtrl.create({
         message: "Imprimiendo...",
         duration: 3000
       });
       toast.present();
-
-      // Print to bluetooth printer
-    // this.bluetoothSerial.isEnabled().then(res => {
-    //   this.bluetoothSerial.list().then((data)=> {
-    //     this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
-    //       this.bluetoothSerial.isConnected().then(res => {
-    //         // |---- 32 characteres ----|
-    //         this.bluetoothSerial.write(ticket);
-    //         this.bluetoothSerial.disconnect();
-    //       }).catch(res => {
-    //         //console.log("res1", res);
-    //       });
-    //     },error=>{
-    //       //console.log("error", error);
-    //     });
-    //   })
-    // }).catch(res => {
-    //   //console.log("res", res);
-    // });
-  });
+    });
   }
 
     share() {

@@ -70,6 +70,7 @@ import { ServiceTravelPageModule } from './service/travel/travel.module';
 
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
+import { TicketConfigPageModule } from './ticket-config/ticket-config.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
@@ -120,6 +121,7 @@ import { environment } from '../environments/environment';
     UserPageModule,
     CheckPageModule,
     InvoiceConfigPageModule,
+    TicketConfigPageModule,
     BrowserModule,
     FormsModule,
     ContactListPageModule,
