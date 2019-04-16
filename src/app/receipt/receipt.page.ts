@@ -1219,8 +1219,8 @@ export class ReceiptPage implements OnInit {
                 },
                 {
                   text: 'Si',
-                  handler: data => {
-                    this.removeCashMoves();
+                  handler: async data => {
+                    await this.removeCashMoves();
                     this.events.publish('cancel-receipt', this.receiptForm.value._id);
                     if (this.select){
                       this.modalCtrl.dismiss();
@@ -1248,26 +1248,34 @@ export class ReceiptPage implements OnInit {
         }
 
         async removeCashMoves(){
-          this.receiptForm.value.payments.forEach(payment => {
-            let total = 0
-            this.receiptForm.value.items.forEach(async item => {
-              let paidMove: any = await this.pouchdbService.getDoc(item._id);
-              let payments = [];
-              paidMove.payments.forEach((paid, index)=>{
-                if (paid._id != payment._id){
-                  // paidMove.payments.slice(index, 1);
-                  payments.push(paid);
-                } else {
-                  total += paid.amount;
-                }
-              })
-              paidMove.payments = payments;
-              paidMove.amount_residual += total;
-              await this.pouchdbService.updateDoc(paidMove);
-            });
-            this.pouchdbService.deleteDoc(payment);
-          });
-          let doc = await this.pouchdbService.getDoc(this.receiptForm.value._id);
-          this.pouchdbService.deleteDoc(doc);
+            return new Promise(async resolve => {
+
+              // this.receiptForm.value.payments.forEach(payment => {
+              await this.formatService.asyncForEach(this.receiptForm.value.payments, async (payment: any)=>{
+                let total = 0
+                await this.formatService.asyncForEach(this.receiptForm.value.items, async (item: any)=>{
+
+                // })
+                // this.receiptForm.value.items.forEach(async item => {
+                  let paidMove: any = await this.pouchdbService.getDoc(item._id);
+                  let payments = [];
+                  paidMove.payments.forEach((paid, index)=>{
+                    if (paid._id != payment._id){
+                      // paidMove.payments.slice(index, 1);
+                      payments.push(paid);
+                    } else {
+                      total += paid.amount;
+                    }
+                  })
+                  paidMove.payments = payments;
+                  paidMove.amount_residual += total;
+                  await this.pouchdbService.updateDoc(paidMove);
+                });
+                this.pouchdbService.deleteDoc(payment);
+              });
+              let doc = await this.pouchdbService.getDoc(this.receiptForm.value._id);
+              this.pouchdbService.deleteDoc(doc);
+              resolve(true);
+            })
         }
 }

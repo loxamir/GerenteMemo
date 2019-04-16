@@ -647,11 +647,16 @@ export class PurchasePage implements OnInit {
             residual += receipt.paid;
           }
         })
-        this.purchaseForm.patchValue({
-          payments: newPayments,
-          residual: residual
-        })
-        this.buttonSave();
+        this.pouchdbService.getRelated(
+        "cash-move", "origin_id", this.purchaseForm.value._id).then((planned) => {
+          this.purchaseForm.patchValue({
+            payments: newPayments,
+            residual: residual,
+            state: 'CONFIRMED',
+            planned: planned
+          })
+          this.buttonSave();
+        });
         this.events.unsubscribe('cancel-receipt');
       });
       let profileModal = await this.modalCtrl.create({

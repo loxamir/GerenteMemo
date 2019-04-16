@@ -281,11 +281,16 @@ export class ServicePage implements OnInit {
             residual += receipt.paid;
           }
         })
-        this.serviceForm.patchValue({
-          payments: newPayments,
-          residual: residual
-        })
-        this.buttonSave();
+        this.pouchdbService.getRelated(
+        "cash-move", "origin_id", this.serviceForm.value._id).then((planned) => {
+          this.serviceForm.patchValue({
+            payments: newPayments,
+            residual: residual,
+            state: 'CONFIRMED',
+            planned: planned
+          })
+          this.buttonSave();
+        });
         this.events.unsubscribe('cancel-receipt');
       });
     }
