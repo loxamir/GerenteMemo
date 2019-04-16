@@ -21,9 +21,19 @@
             <ion-label position="floating">{{'Largo del Papel(mm)' | translate}}</ion-label>
             <ion-input type="number" formControlName="paperWidth"></ion-input>
           </ion-item>
-          <ion-item class="field-100">
+          <!-- <ion-item class="field-100">
             <ion-label position="floating">{{'Margin Inferior(mm)' | translate}}</ion-label>
             <ion-input type="number" formControlName="marginBottom"></ion-input>
+          </ion-item> -->
+          <!-- <ion-item class="field-100">
+            <ion-label position="floating">{{'Margin Inferior(mm)' | translate}}</ion-label>
+            <ion-input type="number" formControlName="ticketComment"></ion-input>
+          </ion-item> -->
+          <ion-item  class="field-100">
+            <ion-label position="stacked">{{ 'Comentario en Presupuesto' | translate }}</ion-label>
+            <ion-textarea #clrequest formControlName="ticketComment"
+              rows="3">
+            </ion-textarea>
           </ion-item>
         </ion-row>
 

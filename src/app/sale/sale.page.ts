@@ -1302,13 +1302,13 @@ export class SalePage implements OnInit {
       //let direction = this.saleForm.value.contact.city || "";
       //let phone = this.saleForm.value.contact.phone || "";
       let lines = ""
-      let totalExentas = 0;
-      let totalIva5 = 0;
-      let totalIva10 = 0;
+      // let totalExentas = 0;
+      // let totalIva5 = 0;
+      // let totalIva10 = 0;
 
 
       let ticket="";
-      if (data.ticketPrint.paperWidth >= 100){
+      if (data.ticketPrint.paperWidth >= 80){
 
         this.saleForm.value.items.forEach(item => {
           let code = item.product.code;
@@ -1322,8 +1322,8 @@ export class SalePage implements OnInit {
           let product_name = this.formatService.string_pad(data.ticketPrint.paperWidth -(6+8+11+12)-6, item.product.name.substring(0, data.ticketPrint.paperWidth/2));
           lines += "|"+code+"|"+quantity+"|"+product_name+"|"+price+"|"+subtotal+"|\n";
         });
-        let totalAmount = totalIva10 + totalIva5 + totalExentas;
-        totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+        // let totalAmount = totalIva10 + totalIva5 + totalExentas;
+        // totalAmount = this.formatService.string_pad(16, totalAmount, "right");
 
 
         ticket += this.formatService.string_pad(
@@ -1346,6 +1346,7 @@ export class SalePage implements OnInit {
             14, "$ "+this.saleForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+" ",
            'right', ' '
         )+"\n";
+        ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
         ticket += "\n";
         ticket += "\n";
         ticket += "\n";
@@ -1370,15 +1371,15 @@ export class SalePage implements OnInit {
           //   iva5 = item.quantity*item.price;
           //   totalIva5 += iva5;
           // }
-          code = this.formatService.string_pad(6, code).toString();
-          quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-          price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          let product_name = this.formatService.string_pad(32, item.product.name.substring(0, 32));
+          code = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*6/32), code).toString();
+          quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*5/32), quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
+          price = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*9/32), price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*12/32), subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          let product_name = this.formatService.string_pad(data.ticketPrint.paperWidth, item.product.name.substring(0, data.ticketPrint.paperWidth));
           lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
         });
-        let totalAmount = totalIva10 + totalIva5 + totalExentas;
-        totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+        // let totalAmount = totalIva10 + totalIva5 + totalExentas;
+        // let totalAmount = this.formatService.string_pad(data.ticketPrint.paperWidth - 16, this.saleForm.value.total, "right");
         ticket +=company_name+"\n";
         ticket += "Ruc: "+company_ruc+"\n";
         ticket += "Tel: "+company_phone+"\n";
@@ -1390,31 +1391,44 @@ export class SalePage implements OnInit {
         ticket += "\n";
         ticket += "Condicion de pago: "+payment_condition+"\n";
         ticket += "\n";
-        ticket += "--------------------------------\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += "ARTICULOS DEL PEDIDO\n";
         ticket += "\n";
-        ticket += "Cod.  Cant.   Precio   Sub-total\n";
+        let head_code = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*6/32) - 1, "Codigo".substring(0, Math.floor(data.ticketPrint.paperWidth*6/32) - 1)).toString();
+        let head_quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*5/32) -1, "Cant.".substring(0, Math.floor(data.ticketPrint.paperWidth*5/32) - 1));
+        let head_price = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*9/32), "Precio".substring(0, Math.floor(data.ticketPrint.paperWidth*9/32)), 'right');
+        let head_subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*12/32) -1, "SubTotal".substring(0, Math.floor(data.ticketPrint.paperWidth*12/32) -1), "right");
+        // let head_product_name = this.formatService.string_pad(data.ticketPrint.paperWidth, "Descripcion".substring(0, data.ticketPrint.paperWidth));
+        // lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+
+        ticket += head_code+"|"+head_quantity+"|"+head_price+"|"+head_subtotal+"\n";
         ticket += lines;
-        ticket += "--------------------------------\n";
+        // ticket += "--------------------------------\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         // ticket += "TOTAL Gs.:     "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-        ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-        ticket += "--------------------------------\n";
-        ticket += "AVISO LEGAL: Este comprobante \n";
-        ticket += "no tiene valor fiscal.\n";
-        ticket += "--------------------------------\n";
+        ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.paperWidth-5, "G$ "+this.saleForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+        // ticket += "--------------------------------\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
+        ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
+        // ticket += "AVISO LEGAL: Este comprobante no tiene valor fiscal.";
+        // ticket += "\n";
+        // ticket += "--------------------------------\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += "\n";
         ticket += "\n";
         ticket += "\n";
         ticket += "\n";
         ticket += "\n";
-        ticket += "--------------------------------\n";
+        // ticket += "--------------------------------\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += "Firma del vendedor: " +seller_name+"\n";
         ticket += "\n";
         ticket += "\n";
         ticket += "\n";
         ticket += "\n";
         ticket += "\n";
-        ticket += "--------------------------------\n";
+        // ticket += "--------------------------------\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += "Firma del cliente: "+contact_name+"\n";
         ticket += "\n";
         ticket += "\n";

@@ -43,7 +43,8 @@ export class TicketConfigPage implements OnInit {
   ngOnInit() {
     this.ticketForm = this.formBuilder.group({
       paperWidth: new FormControl(this.navParams.data.paperWidth),
-      marginBottom: new FormControl(this.navParams.data.marginBottom),
+      // marginBottom: new FormControl(this.navParams.data.marginBottom),
+      ticketComment: new FormControl(this.navParams.data.ticketComment),
     });
   }
 
