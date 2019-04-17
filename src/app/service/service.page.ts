@@ -666,7 +666,7 @@ export class ServicePage implements OnInit {
 
     selectPaymentCondition() {
       return new Promise(async resolve => {
-      if (this.serviceForm.value.state=='STARTED'){
+      if (this.serviceForm.value.state=='STARTED' || this.serviceForm.value.state=='DRAFT' || this.serviceForm.value.state=='SCHEDULED'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-payment-condition');
         let profileModal = await this.modalCtrl.create({
@@ -808,11 +808,15 @@ export class ServicePage implements OnInit {
         work_sum.price = labor_total/work_sum['quantity'];
         items.unshift(work_sum);
       }
-
+      let paymentType = 'Credito';
+      if (this.serviceForm.value.paymentCondition._id == 'payment-condition.cash'){
+        paymentType = 'Contado';
+      }
       let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
           "select": true,
+          "paymentCondition": paymentType,
           "contact_id": this.serviceForm.value.contact._id,
           "contact": this.serviceForm.value.contact,
           "origin_id": this.serviceForm.value._id,
