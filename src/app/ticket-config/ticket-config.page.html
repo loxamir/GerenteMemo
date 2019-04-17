@@ -18,13 +18,13 @@
         <!-- <h2 class="section-title" style="margin-top: 10px;">{{'Numero de la Factura' | translate}}</h2> -->
         <ion-row>
           <ion-item class="field-100">
-            <ion-label position="floating">{{'Largo del Papel(mm)' | translate}}</ion-label>
+            <ion-label position="floating">{{'Letras por linea' | translate}}</ion-label>
             <ion-input type="number" formControlName="paperWidth"></ion-input>
           </ion-item>
-          <!-- <ion-item class="field-100">
-            <ion-label position="floating">{{'Margin Inferior(mm)' | translate}}</ion-label>
+          <ion-item class="field-100">
+            <ion-label position="floating">{{'Lineas de Margin Inferior' | translate}}</ion-label>
             <ion-input type="number" formControlName="marginBottom"></ion-input>
-          </ion-item> -->
+          </ion-item>
           <!-- <ion-item class="field-100">
             <ion-label position="floating">{{'Margin Inferior(mm)' | translate}}</ion-label>
             <ion-input type="number" formControlName="ticketComment"></ion-input>
@@ -35,6 +35,22 @@
               rows="3">
             </ion-textarea>
           </ion-item>
+
+          <ion-item
+           no-padding
+           class="field-100">
+             <ion-label>{{'Firma del Vendedor' | translate}}</ion-label>
+             <ion-toggle formControlName="showSignSeller"></ion-toggle>
+          </ion-item>
+          <ion-item
+           no-padding
+           class="field-100">
+             <ion-label>{{'Firma del Cliente' | translate}}</ion-label>
+             <ion-toggle formControlName="showSignClient"></ion-toggle>
+          </ion-item>
+
+
+
         </ion-row>
 
           <!-- <h2 class="section-title">{{'Fecha' | translate}}</h2>
