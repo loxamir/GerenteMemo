@@ -1340,7 +1340,7 @@ export class ReceiptPage implements OnInit {
       content += "\n";
       content += "\n";
       content += this.formatService.string_pad(40, "", 'center', '-')+"\n";
-      content += "Firma del cobrador\n";
+      content += "Firma del Cobrador\n";
       content += "\n";
       content += "\n";
       content += "\n";

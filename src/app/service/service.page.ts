@@ -1678,136 +1678,199 @@ export class ServicePage implements OnInit {
           let company_name = data.name || "";
           let company_ruc = data.doc || "";
           let company_phone = data.phone || "";
-          //let number = this.serviceForm.value.invoice || "";
           let date = this.serviceForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
           date = date[2]+"/"+date[1]+"/"+date[0]
-          // let project = this.serviceForm.value.project.name || "";
+          let payment_condition = this.serviceForm.value.paymentCondition.name || "";
           let contact_name = this.serviceForm.value.contact.name || "";
           let code = this.serviceForm.value.code || "";
           let doc = this.serviceForm.value.contact.document || "";
           //let direction = this.serviceForm.value.contact.city || "";
           let phone = this.serviceForm.value.contact.phone || "";
           let lines = ""
-          if (this.serviceForm.value.input_amount > 0){
-            lines += "--------------------------------\n";
-            lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          let ticket="";
 
-            lines += "--------------------------------\n";
-            lines += "Cod.  Cant.   Precio   Sub-total\n";
-            let totalExentas = 0;
-            let totalIva5 = 0;
-            let totalIva10 = 0;
-            this.serviceForm.value.inputs.forEach(item => {
-              let code = item.product.code;
-              let quantity = item.quantity;
-              //  let productName = item.product.name;
-              let price = item.price;
-              let subtotal = quantity*price;
-              let exenta = 0;
-              let iva5 = 0;
-              let iva10 = 0;
-              if (item.product.tax == "iva10"){
-                iva10 = item.quantity*item.price;
-                totalIva10 += iva10;
-              } else if (item.product.tax == "exenta"){
-                exenta = item.quantity*item.price;
-                totalExentas += exenta;
-              } else if (item.product.tax == "iva5"){
-                iva5 = item.quantity*item.price;
-                totalIva5 += iva5;
-              }
-              code = this.formatService.string_pad(6, code.toString());
-              quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-              price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-              subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-              let product_name = this.formatService.string_pad(32, item.product.name.substring(0, 32));
-              lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
-            });
-          }
-          let work_lines = "";
-          // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          work_lines += "--------------------------------\n";
-          work_lines += "SERVICIOS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-          // work_lines += "Tiempo    Precio       Sub-total\n";
-          this.serviceForm.value.works.forEach(item => {
-
-            let quantity = this.formatService.string_pad(8, item.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-            let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-            let subtotal = this.formatService.string_pad(14, (item.price*item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-            // let work_description = item.description.toString();
-            let work_description = this.formatService.breakString(item.description.toString(), 32);
-            work_lines += "--------------------------------\n";
-            work_lines += work_description+"\n";
-            work_lines += "Cantidad    Precio     Sub-total\n";
-            work_lines += quantity+price+subtotal+"\n"
-          });
-
-          // let travel_lines = "";
-          // if (this.serviceForm.value.travel_amount > 0){
-          //   travel_lines += "--------------------------------\n";
-          //   travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-          //
-          //   travel_lines += "--------------------------------\n";
-          //   travel_lines += "Distancia   Precio     Sub-total\n";
-          //   this.serviceForm.value.travels.forEach(item => {
-          //     let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
-          //     let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          //     let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-          //     travel_lines += quantity+price+subtotal+"\n";
-          //   });
-          // }
-
-          let totalAmount = this.serviceForm.value.total;
-          totalAmount = this.formatService.string_pad(16, totalAmount, "right");
-          let ticket=""
           ticket += company_name+"\n";
-          // ticket += "Ruc: "+company_ruc+"\n";
           ticket += "Tel: "+company_phone+"\n";
           ticket += "\n";
           ticket += "ORDEN DE SERVICIO "+code+"\n";
           ticket += "Fecha: "+date+"\n";
           ticket += "Cliente: "+contact_name+"\n";
           ticket += "Tel: "+phone+"\n";
-          let solicitud = this.formatService.breakString(this.serviceForm.value.client_request, 32, 32-12);
+          let solicitud = this.formatService.breakString(this.serviceForm.value.client_request, data.ticketPrint.servicePaperWidth, data.ticketPrint.servicePaperWidth-12);
           ticket += "Solicitud: "+solicitud+"\n";
-          // ticket += "\n";
-          // ticket += "Local: "+project+"\n";
-          ticket += "\n";
+          lines = "";
+          this.serviceForm.value.inputs.forEach(item => {
+            let code = item.product.code;
+            let quantity = item.quantity;
+            let price = item.price;
+            let subtotal = quantity*price;
+            code = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*6/32), code).toString();
+            quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*5/32), quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
+            price = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*9/32), price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*12/32), subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            let product_name = this.formatService.string_pad(data.ticketPrint.servicePaperWidth, item.product.name.substring(0, data.ticketPrint.servicePaperWidth));
+            lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+          });
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          ticket += "SERVICIOS PRESTADOS"+this.formatService.string_pad(data.ticketPrint.servicePaperWidth-19, "$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          // ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          let work_head = "";
+          let work_head_quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*8/32), "Cantidad".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*8/32)));
+          let work_head_price = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*10/32), "Precio".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*10/32)), 'right');
+          let work_head_subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*14/32), "SubTotal".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*14/32)), "right");
+          work_head = work_head_quantity+work_head_price+work_head_subtotal+"\n";
+
+          let work_lines = "";
+          this.serviceForm.value.works.forEach(item => {
+
+            let quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*8/32), item.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
+            let price = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*10/32), item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            let subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*14/32), (item.price*item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            let work_description = item.description.toString();
+            work_lines += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            work_lines += work_description+"\n";
+            work_lines += work_head;
+            work_lines += quantity+price+subtotal+"\n"
+          });
           ticket += work_lines;
-          ticket += lines;
-          // ticket += travel_lines;
-          ticket += "--------------------------------\n";
-          ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-          ticket += "--------------------------------\n";
-          ticket += this.formatService.breakString(this.serviceNote, 32)+"\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "--------------------------------\n";
-          ticket += "Firma del tecnico\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "--------------------------------\n";
-          ticket += "Firma del cliente: "+contact_name+"\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "\n";
-          ticket += "\n";
+
+          if (this.serviceForm.value.input_amount > 0){
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            ticket += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(data.ticketPrint.servicePaperWidth-20, "$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            let head_code = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*6/32) - 1, "Codigo".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*6/32) - 1)).toString();
+            let head_quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*5/32) -1, "Cant".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*5/32) - 1));
+            let head_price = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*9/32), "Precio".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*9/32)), 'right');
+            let head_subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*12/32) -1, "SubTotal".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*12/32) -1), "right");
+            ticket += head_code+"|"+head_quantity+"|"+head_price+"|"+head_subtotal+"\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            ticket += lines;
+          }
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.servicePaperWidth-5, "$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          ticket += this.formatService.breakString(data.ticketPrint.serviceComment, data.ticketPrint.servicePaperWidth)+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          if (data.ticketPrint.showServiceSign){
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            ticket += "Firma del Tecnico\n";
+          }
+          if (data.ticketPrint.showServiceSignClient){
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            ticket += "Firma del Cliente\n";
+          }
+          let i = data.ticketPrint.serviceMarginBottom;
+          while(i>0){
+            ticket += "\n";
+            i--;
+          }
+          //
+          // let company_name = data.name || "";
+          // let company_ruc = data.doc || "";
+          // let company_phone = data.phone || "";
+          // let date = this.serviceForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+          // date = date[2]+"/"+date[1]+"/"+date[0]
+          // let contact_name = this.serviceForm.value.contact.name || "";
+          // let code = this.serviceForm.value.code || "";
+          // let doc = this.serviceForm.value.contact.document || "";
+          // let phone = this.serviceForm.value.contact.phone || "";
+          // let lines = ""
+          // if (this.serviceForm.value.input_amount > 0){
+          //   lines += "--------------------------------\n";
+          //   lines += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(12, "G$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          //   lines += "--------------------------------\n";
+          //   lines += "Cod.  Cant.   Precio   Sub-total\n";
+          //   let totalExentas = 0;
+          //   let totalIva5 = 0;
+          //   let totalIva10 = 0;
+          //   this.serviceForm.value.inputs.forEach(item => {
+          //     let code = item.product.code;
+          //     let quantity = item.quantity;
+          //     let price = item.price;
+          //     let subtotal = quantity*price;
+          //     let exenta = 0;
+          //     let iva5 = 0;
+          //     let iva10 = 0;
+          //     if (item.product.tax == "iva10"){
+          //       iva10 = item.quantity*item.price;
+          //       totalIva10 += iva10;
+          //     } else if (item.product.tax == "exenta"){
+          //       exenta = item.quantity*item.price;
+          //       totalExentas += exenta;
+          //     } else if (item.product.tax == "iva5"){
+          //       iva5 = item.quantity*item.price;
+          //       totalIva5 += iva5;
+          //     }
+          //     code = this.formatService.string_pad(6, code.toString());
+          //     quantity = this.formatService.string_pad(5, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+          //     price = this.formatService.string_pad(9, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          //     subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          //     let product_name = this.formatService.string_pad(32, item.product.name.substring(0, 32));
+          //     lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+          //   });
+          // }
+          // let work_lines = "";
+          // work_lines += "--------------------------------\n";
+          // work_lines += "SERVICIOS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          // this.serviceForm.value.works.forEach(item => {
+          //
+          //   let quantity = this.formatService.string_pad(8, item.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+          //   let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          //   let subtotal = this.formatService.string_pad(14, (item.price*item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          //   let work_description = this.formatService.breakString(item.description.toString(), 32);
+          //   work_lines += "--------------------------------\n";
+          //   work_lines += work_description+"\n";
+          //   work_lines += "Cantidad    Precio     Sub-total\n";
+          //   work_lines += quantity+price+subtotal+"\n"
+          // });
+          // let totalAmount = this.serviceForm.value.total;
+          // totalAmount = this.formatService.string_pad(16, totalAmount, "right");
+          // let ticket=""
+          // ticket += company_name+"\n";
+          // ticket += "Tel: "+company_phone+"\n";
+          // ticket += "\n";
+          // ticket += "ORDEN DE SERVICIO "+code+"\n";
+          // ticket += "Fecha: "+date+"\n";
+          // ticket += "Cliente: "+contact_name+"\n";
+          // ticket += "Tel: "+phone+"\n";
+          // let solicitud = this.formatService.breakString(this.serviceForm.value.client_request, 32, 32-12);
+          // ticket += "Solicitud: "+solicitud+"\n";
+          // ticket += "\n";
+          // ticket += work_lines;
+          // ticket += lines;
+          // ticket += "--------------------------------\n";
+          // ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          // ticket += "--------------------------------\n";
+          // ticket += this.formatService.breakString(this.serviceNote, 32)+"\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "--------------------------------\n";
+          // ticket += "Firma del tecnico\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "--------------------------------\n";
+          // ticket += "Firma del cliente: "+contact_name+"\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "\n";
+          // ticket += "\n";
 
 
           console.log("\n"+ticket);
-
-
-          //console.log("ticket", ticket);
-
-
           // Print to bluetooth printer
           let toast = await this.toastCtrl.create({
           message: "Start ",
@@ -1837,21 +1900,241 @@ export class ServicePage implements OnInit {
       }
     }
 
-  printMatrix(){
+    printMatrix(){
+      var prefix = "Servicio_";
+      var extension = ".prt";
+      this.configService.getConfigDoc().then(async (data) => {
+        let company_name = data.name || "";
+        let company_ruc = data.doc || "";
+        let company_phone = data.phone || "";
+        let date = this.serviceForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+        date = date[2]+"/"+date[1]+"/"+date[0]
+        let payment_condition = this.serviceForm.value.paymentCondition.name || "";
+        let contact_name = this.serviceForm.value.contact.name || "";
+        let code = this.serviceForm.value.code || "";
+        let doc = this.serviceForm.value.contact.document || "";
+        //let direction = this.serviceForm.value.contact.city || "";
+        let phone = this.serviceForm.value.contact.phone || "";
+        let lines = ""
+        let ticket="";
+        if (data.ticketPrint.servicePaperWidth >= 80){
+          ticket += this.formatService.string_pad(
+            data.ticketPrint.servicePaperWidth, " "+
+            company_name.substring(0, data.ticketPrint.servicePaperWidth/3)+
+            " - Tel: "+company_phone.substring(0, data.ticketPrint.servicePaperWidth/3)+" ",
+            'center', '-')+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth/2-5, ("Servicio: "+code).substring(0, data.ticketPrint.servicePaperWidth/2-5));
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth/2-5, ("Fecha: "+(new Date(this.serviceForm.value.date)).toLocaleString('es-PY')).substring(0, data.ticketPrint.servicePaperWidth/2-5))+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth/2-5, ("Cliente: "+this.serviceForm.value.contact.name).substring(0, data.ticketPrint.servicePaperWidth/2-5));
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth/2-5, ("Telefono: "+phone).substring(0, data.ticketPrint.servicePaperWidth/2-5))+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          let solicitud = this.formatService.breakString(this.serviceForm.value.client_request, data.ticketPrint.servicePaperWidth, data.ticketPrint.servicePaperWidth-23);
+          ticket += "Solicitud del Cliente: "+solicitud+"\n";
+          // ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          lines = "";
+          this.serviceForm.value.works.forEach(item => {
+            let code = item.product.code;
+            let quantity = item.quantity;
+            let price = item.price;
+            let subtotal = quantity*price;
+            code = this.formatService.string_pad(6, code).toString();
+            quantity = this.formatService.string_pad(8, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            price = this.formatService.string_pad(11, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            let product_name = this.formatService.string_pad(data.ticketPrint.servicePaperWidth -(6+8+11+12)-6, item.description.toString().substring(0, data.ticketPrint.servicePaperWidth/2));
+            lines += "|"+code+"|"+quantity+"|"+product_name+"|"+price+"|"+subtotal+"|\n";
+          });
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          let product_description = this.formatService.string_pad(data.ticketPrint.servicePaperWidth -(6+8+11+12)-6, "Descripción");
+          ticket += "|Codigo|Cantidad|"+product_description+"|   Precio  |  Subtotal  |\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          ticket += lines;
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          ticket += "SERVICIOS PRESTADOS"+this.formatService.string_pad(data.ticketPrint.servicePaperWidth-20, "$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          if (this.serviceForm.value.input_amount > 0){
+            lines = ""
+            this.serviceForm.value.inputs.forEach(item => {
+              let code = item.product.code;
+              let quantity = item.quantity;
+              let price = item.price;
+              let subtotal = quantity*price;
+              code = this.formatService.string_pad(6, code).toString();
+              quantity = this.formatService.string_pad(8, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+              price = this.formatService.string_pad(11, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+              subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+              let product_name = this.formatService.string_pad(data.ticketPrint.servicePaperWidth -(6+8+11+12)-6, item.product.name.substring(0, data.ticketPrint.servicePaperWidth/2));
+              lines += "|"+code+"|"+quantity+"|"+product_name+"|"+price+"|"+subtotal+"|\n";
+            });
+            product_description = this.formatService.string_pad(data.ticketPrint.servicePaperWidth -(6+8+11+12)-6, "Descripción");
+            ticket += "|Codigo|Cantidad|"+product_description+"|   Precio  |  Subtotal  |\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            ticket += lines;
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            ticket += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(data.ticketPrint.servicePaperWidth-21, "$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          }
+
+
+          // ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          // ticket += "SERVICIOS PRESTADOS"+this.formatService.string_pad(data.ticketPrint.servicePaperWidth-19, "$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          // // ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          // let work_head = "";
+          // let work_head_quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*8/32), "Cantidad".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*8/32)));
+          // let work_head_price = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*10/32), "Precio".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*10/32)), 'right');
+          // let work_head_subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*14/32), "SubTotal".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*14/32)), "right");
+          // work_head = work_head_quantity+work_head_price+work_head_subtotal+"\n";
+          //
+          // let work_lines = "";
+          // this.serviceForm.value.works.forEach(item => {
+          //
+          //   let quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*8/32), item.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
+          //   let price = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*10/32), item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          //   let subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*14/32), (item.price*item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          //   // let work_description = item.description.toString();
+          //   let work_description = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*14/32), item.description.substring(0, Math.floor(data.ticketPrint.servicePaperWidth*14/32)), "right");
+          //   work_lines += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          //   work_lines += work_description;
+          //   work_lines += work_head;
+          //   work_lines += quantity+price+subtotal+"\n"
+          // });
+          // ticket += work_lines;
+
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth,
+            "Valor Total:"+this.formatService.string_pad(
+              14, "$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+" ",
+             'right', ' '
+          )+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          ticket += this.formatService.breakString(data.ticketPrint.serviceComment, data.ticketPrint.servicePaperWidth)+"\n";
+          if (data.ticketPrint.showServiceSign || data.ticketPrint.showServiceSignClient){
+            ticket += "\n";
+            ticket += "\n";
+          }
+          if (data.ticketPrint.showServiceSign){
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth/2-5, "", 'center', '_');
+            ticket += "          ";
+          }
+          if (data.ticketPrint.showServiceSignClient){
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth/2-5, "", 'center', '_')+"\n";
+          }
+          if (data.ticketPrint.showServiceSign){
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth/2-5, "Firma del Tecnico ", 'center', ' ');
+            ticket += "          ";
+          }
+          if (data.ticketPrint.showServiceSignClient){
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth/2-5, "Firma del cliente", 'center', ' ')+"\n";
+          }
+          let i = data.ticketPrint.serviceMarginBottom;
+          while(i>0){
+            ticket += "\n";
+            i--;
+          }
+        } else {
+          ticket += company_name+"\n";
+          ticket += "Tel: "+company_phone+"\n";
+          ticket += "\n";
+          ticket += "ORDEN DE SERVICIO "+code+"\n";
+          ticket += "Fecha: "+date+"\n";
+          ticket += "Cliente: "+contact_name+"\n";
+          ticket += "Tel: "+phone+"\n";
+          let solicitud = this.formatService.breakString(this.serviceForm.value.client_request, data.ticketPrint.servicePaperWidth, data.ticketPrint.servicePaperWidth-12);
+          ticket += "Solicitud: "+solicitud+"\n";
+          lines = "";
+          this.serviceForm.value.inputs.forEach(item => {
+            let code = item.product.code;
+            let quantity = item.quantity;
+            let price = item.price;
+            let subtotal = quantity*price;
+            code = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*6/32), code).toString();
+            quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*5/32), quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
+            price = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*9/32), price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*12/32), subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            let product_name = this.formatService.string_pad(data.ticketPrint.servicePaperWidth, item.product.name.substring(0, data.ticketPrint.servicePaperWidth));
+            lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
+          });
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          ticket += "SERVICIOS PRESTADOS"+this.formatService.string_pad(data.ticketPrint.servicePaperWidth-19, "$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          // ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          let work_head = "";
+          let work_head_quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*8/32), "Cantidad".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*8/32)));
+          let work_head_price = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*10/32), "Precio".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*10/32)), 'right');
+          let work_head_subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*14/32), "SubTotal".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*14/32)), "right");
+          work_head = work_head_quantity+work_head_price+work_head_subtotal+"\n";
+
+          let work_lines = "";
+          this.serviceForm.value.works.forEach(item => {
+
+            let quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*8/32), item.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
+            let price = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*10/32), item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            let subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*14/32), (item.price*item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            let work_description = item.description.toString();
+            work_lines += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            work_lines += work_description+"\n";
+            work_lines += work_head;
+            work_lines += quantity+price+subtotal+"\n"
+          });
+          ticket += work_lines;
+
+          if (this.serviceForm.value.input_amount > 0){
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            ticket += "PRODUCTOS CONSUMIDOS"+this.formatService.string_pad(data.ticketPrint.servicePaperWidth-20, "$ "+this.serviceForm.value.input_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            let head_code = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*6/32) - 1, "Codigo".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*6/32) - 1)).toString();
+            let head_quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*5/32) -1, "Cant".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*5/32) - 1));
+            let head_price = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*9/32), "Precio".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*9/32)), 'right');
+            let head_subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.servicePaperWidth*12/32) -1, "SubTotal".substring(0, Math.floor(data.ticketPrint.servicePaperWidth*12/32) -1), "right");
+            ticket += head_code+"|"+head_quantity+"|"+head_price+"|"+head_subtotal+"\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            ticket += lines;
+          }
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.servicePaperWidth-5, "$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          ticket += this.formatService.breakString(data.ticketPrint.serviceComment, data.ticketPrint.servicePaperWidth)+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+          if (data.ticketPrint.showServiceSign){
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            ticket += "Firma del Tecnico\n";
+          }
+          if (data.ticketPrint.showServiceSignClient){
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
+            ticket += "Firma del Cliente\n";
+          }
+          let i = data.ticketPrint.serviceMarginBottom;
+          while(i>0){
+            ticket += "\n";
+            i--;
+          }
+        }
+        // console.log("ticket", ticket);
+        this.formatService.printMatrixClean(ticket, prefix + this.serviceForm.value.code + extension);
+        let toast = await this.toastCtrl.create({
+          message: "Imprimiendo...",
+          duration: 3000
+        });
+        toast.present();
+      });
+    }
+
+  printMatrix2(){
     var prefix = "servicio_";
     var extension = ".prt";
     this.configService.getConfigDoc().then( async (data) => {
       let company_name = data.name || "";
       let company_ruc = data.doc || "";
       let company_phone = data.phone || "";
-      //let number = this.serviceForm.value.invoice || "";
       let date = this.serviceForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
       date = date[2]+"/"+date[1]+"/"+date[0]
-      // let project = this.serviceForm.value.project.name || "";
       let contact_name = this.serviceForm.value.contact.name || "";
       let code = this.serviceForm.value.code || "";
       let doc = this.serviceForm.value.contact.document || "";
-      //let direction = this.serviceForm.value.contact.city || "";
       let phone = this.serviceForm.value.contact.phone || "";
       let lines = ""
       if (this.serviceForm.value.input_amount > 0){
@@ -1865,7 +2148,6 @@ export class ServicePage implements OnInit {
         this.serviceForm.value.inputs.forEach(item => {
           let code = item.product.code;
           let quantity = item.quantity;
-          //  let productName = item.product.name;
           let price = item.price;
           let subtotal = quantity*price;
           let exenta = 0;
@@ -1890,10 +2172,8 @@ export class ServicePage implements OnInit {
         });
       }
       let work_lines = "";
-      // this.formatService.string_pad(9, this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       work_lines += "--------------------------------\n";
       work_lines += "SERVICIOS PRESTADOS"+this.formatService.string_pad(13, "G$ "+this.serviceForm.value.work_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-      // work_lines += "Tiempo    Precio       Sub-total\n";
       this.serviceForm.value.works.forEach(item => {
 
         let quantity = this.formatService.string_pad(8, item.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
@@ -1905,28 +2185,10 @@ export class ServicePage implements OnInit {
         work_lines += "Cantidad    Precio     Sub-total\n";
         work_lines += quantity+price+subtotal+"\n"
       });
-
-      // let travel_lines = "";
-      // if (this.serviceForm.value.travel_amount > 0){
-      //   travel_lines += "--------------------------------\n";
-      //   travel_lines += "VIATICOS"+this.formatService.string_pad(24, "G$ "+this.serviceForm.value.travel_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-      //
-      //   travel_lines += "--------------------------------\n";
-      //   travel_lines += "Distancia   Precio     Sub-total\n";
-      //   this.serviceForm.value.travels.forEach(item => {
-      //     let quantity = this.formatService.string_pad(8, item.distance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+" km");
-      //     let price = this.formatService.string_pad(10, item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-      //     let subtotal = this.formatService.string_pad(14, (item.price*item.distance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
-      //     travel_lines += quantity+price+subtotal+"\n";
-      //   });
-      // }
-
-
       let totalAmount = this.serviceForm.value.total;
       totalAmount = this.formatService.string_pad(16, totalAmount, "right");
       let ticket=""
       ticket += company_name+"\n";
-      // ticket += "Ruc: "+company_ruc+"\n";
       ticket += "Tel: "+company_phone+"\n";
       ticket += "\n";
       ticket += "ORDEN DE SERVICIO "+code+"\n";
@@ -1934,13 +2196,9 @@ export class ServicePage implements OnInit {
       ticket += "Cliente: "+contact_name+"\n";
       ticket += "Tel: "+phone+"\n";
       ticket += "Solicitud: "+this.serviceForm.value.client_request+"\n";
-      // ticket += "Ruc: "+doc+"\n";
-      // ticket += "\n";
-      // ticket += "Local: "+project+"\n";
       ticket += "\n";
       ticket += work_lines;
       ticket += lines;
-      // ticket += travel_lines;
       ticket += "--------------------------------\n";
       ticket += "TOTAL"+this.formatService.string_pad(27, "G$ "+this.serviceForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
       ticket += "--------------------------------\n";
@@ -1968,7 +2226,6 @@ export class ServicePage implements OnInit {
 
 
       console.log("\n"+ticket);
-      // var blob = new Blob([invoice], { type: "text/plain;charset=utf-8" });
       this.formatService.printMatrixClean(ticket, prefix + this.serviceForm.value.code + extension);
       let toast = await this.toastCtrl.create({
         message: "Imprimiendo...",

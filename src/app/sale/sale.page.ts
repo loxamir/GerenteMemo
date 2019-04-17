@@ -1217,14 +1217,14 @@ export class SalePage implements OnInit {
             ticket += "\n";
             ticket += "\n";
             ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
-            ticket += "Firma del vendedor: " +seller_name+"\n";
+            ticket += "Firma del Vendedor: " +seller_name+"\n";
           }
           if (data.ticketPrint.showSignClient){
             ticket += "\n";
             ticket += "\n";
             ticket += "\n";
             ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
-            ticket += "Firma del cliente: "+contact_name+"\n";
+            ticket += "Firma del Cliente: "+contact_name+"\n";
           }
           let i = data.ticketPrint.marginBottom;
           while(i>0){
@@ -1325,11 +1325,11 @@ export class SalePage implements OnInit {
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, "", 'center', '_')+"\n";
         }
         if (data.ticketPrint.showSignSeller){
-          ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, "Firma del vendedor: " +seller_name, 'center', ' ');
+          ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, "Firma del Vendedor: " +seller_name, 'center', ' ');
           ticket += "          ";
         }
         if (data.ticketPrint.showSignClient){
-          ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, "Firma del cliente: " +contact_name, 'center', ' ')+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, "Firma del Cliente: " +contact_name, 'center', ' ')+"\n";
         }
         let i = data.ticketPrint.marginBottom;
         while(i>0){
@@ -1379,14 +1379,14 @@ export class SalePage implements OnInit {
           ticket += "\n";
           ticket += "\n";
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
-          ticket += "Firma del vendedor: " +seller_name+"\n";
+          ticket += "Firma del Vendedor: " +seller_name+"\n";
         }
         if (data.ticketPrint.showSignClient){
           ticket += "\n";
           ticket += "\n";
           ticket += "\n";
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
-          ticket += "Firma del cliente: "+contact_name+"\n";
+          ticket += "Firma del Cliente: "+contact_name+"\n";
         }
         let i = data.ticketPrint.marginBottom;
         while(i>0){
