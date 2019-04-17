@@ -988,26 +988,36 @@ export class ReceiptPage implements OnInit {
     }
 
     async printBluetooth(){
-      let config = await this.configService.getConfigDoc();
+      let data = await this.configService.getConfigDoc();
 
-      let company_name = config.name || "";
-      let company_ruc = config.doc || "";
+      let company_name = data.name || "";
+      let company_ruc = data.doc || "";
+      let company_phone = data.phone || "";
+      let date = this.receiptForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+      date = date[2]+"/"+date[1]+"/"+date[0]
+      // let payment_condition = this.receiptForm.value.paymentCondition.name || "";
+      // let contact_name = this.receiptForm.value.contact.name || "";
+      // let seller_name = this.receiptForm.value.seller.name || "";
+      let code = this.receiptForm.value.code || "";
+      // let doc = this.receiptForm.value.contact.document || "";
+      //let direction = this.receiptForm.value.contact.city || "";
+      //let phone = this.receiptForm.value.contact.phone || "";
+      let lines = ""
+      let ticket="";
 
-      let content = this.formatService.string_pad(40,"RECIBO DE DINERO", 'center', ' ')+"\n";
-      content += company_name+"\n";
-      content += "RUC: "+company_ruc+"\n";
-      content += "Cliente: "+this.receiptForm.value.contact.name+"\n";
-      content += "CI/RUC: "+this.receiptForm.value.contact.document+"\n";
-      content += "Fecha: "+(new Date(this.receiptForm.value.date)).toLocaleDateString('es-PY')+"\n";
-
-      content += "Monto Total: $ "+this.receiptForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-      content += "Monto Recebido: $ "+this.receiptForm.value.payments[0].amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-      content += "Monto Vuelto: $ "+this.receiptForm.value.change.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-      // content += "---------| Movimentos |---------\n";
-      content += this.formatService.string_pad(40, "| Movimentos |", 'center', '-')+"\n";
-      content += this.formatService.string_pad(20, "Documento")+this.formatService.string_pad(10,"Pendiente", 'right')+this.formatService.string_pad(10,"Recibido", 'right')+"\n";
-      content += this.formatService.string_pad(40, "", 'center', '-')+"\n";
-      // this.receiptForm.value.items_details.forEach(async (move: any)=>{
+      ticket += this.formatService.string_pad(
+        data.ticketPrint.receiptPaperWidth, " "+
+        company_name.substring(0, data.ticketPrint.receiptPaperWidth/3)+
+        " - Tel: "+company_phone.substring(0, data.ticketPrint.receiptPaperWidth/3)+" ",
+        'center', '-')+"\n";
+      ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, ("Recibo: "+code).substring(0, data.ticketPrint.receiptPaperWidth/2-5))+"\n";
+      ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, ("Fecha: "+(new Date(this.receiptForm.value.date)).toLocaleDateString('es-PY')).substring(0, data.ticketPrint.receiptPaperWidth/2-5))+"\n";
+      ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, ("Cliente: "+this.receiptForm.value.contact.name).substring(0, data.ticketPrint.receiptPaperWidth/2-5));
+      ticket += "\n";
+      ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+      ticket += this.formatService.string_pad(
+      Math.floor(data.ticketPrint.receiptPaperWidth/2), "Documento".substring(0, Math.floor(data.ticketPrint.receiptPaperWidth/2)))+"|"+this.formatService.string_pad(Math.floor(data.ticketPrint.receiptPaperWidth/4)-1,"Valor".substring(0, Math.floor(data.ticketPrint.receiptPaperWidth/4)-1)+"|", 'right')+this.formatService.string_pad(Math.floor(data.ticketPrint.receiptPaperWidth/4),"Cobrado".substring(0, Math.floor(data.ticketPrint.receiptPaperWidth/4)), 'right')+"\n";
+      ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
       let new_items_details = [];
       await this.formatService.asyncForEach(this.receiptForm.value.items_details, async (move: any)=>{
         let moveOriginal = await this.pouchdbService.getDoc(move._id);
@@ -1016,29 +1026,89 @@ export class ReceiptPage implements OnInit {
           move.name = invoice.code;
           new_items_details.push(move);
         }
-        content += this.formatService.string_pad(20, move.name)+
+        ticket += this.formatService.string_pad(Math.floor(data.ticketPrint.receiptPaperWidth/2), move.name)+
         this.formatService.string_pad(
-          10,
+          Math.floor(data.ticketPrint.receiptPaperWidth/4),
           move.amount_dued.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
           "."), 'right'
         )+
         this.formatService.string_pad(
-          10,
+          Math.floor(data.ticketPrint.receiptPaperWidth/4),
           move.amount_paid.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
           'right'
         )+
         "\n";
       })
-      content += "\n";
-      content += "\n";
-      content += "\n";
-      content += "\n";
-      content += "\n";
-      content += this.formatService.string_pad(40, "", 'center', '-')+"\n";
-      content += "Firma del cobrador\n";
-      content += "\n";
-      content += "\n";
-      content += "\n";
+      ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+      ticket += "Valor Total"+this.formatService.string_pad(data.ticketPrint.receiptPaperWidth-11, "$ "+this.receiptForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      ticket += "Valor Recebido"+this.formatService.string_pad(data.ticketPrint.receiptPaperWidth-14, "$ "+this.receiptForm.value.payments[0].amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      ticket += "Valor Vuelto"+this.formatService.string_pad(data.ticketPrint.receiptPaperWidth-12, "$ "+this.receiptForm.value.change.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      if (data.ticketPrint.showReceiptSignSeller){
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+        ticket += "Firma del Cobrador\n";
+      }
+      if (data.ticketPrint.showReceiptSignClient){
+        ticket += "\n";
+        ticket += "\n";
+        ticket += "\n";
+        ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+        ticket += "Firma del Cliente\n";
+      }
+      let i = data.ticketPrint.receiptMarginBottom;
+      while(i>0){
+        ticket += "\n";
+        i--;
+      }
+      console.log("ticket", ticket);
+      // let content = this.formatService.string_pad(40,"RECIBO DE DINERO", 'center', ' ')+"\n";
+      // content += company_name+"\n";
+      // content += "RUC: "+company_ruc+"\n";
+      // content += "Cliente: "+this.receiptForm.value.contact.name+"\n";
+      // content += "CI/RUC: "+this.receiptForm.value.contact.document+"\n";
+      // content += "Fecha: "+(new Date(this.receiptForm.value.date)).toLocaleDateString('es-PY')+"\n";
+      //
+      // content += "Monto Total: $ "+this.receiptForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+      // content += "Monto Recebido: $ "+this.receiptForm.value.payments[0].amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+      // content += "Monto Vuelto: $ "+this.receiptForm.value.change.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
+      // // content += "---------| Movimentos |---------\n";
+      // content += this.formatService.string_pad(40, "| Movimentos |", 'center', '-')+"\n";
+      // content += this.formatService.string_pad(20, "Documento")+this.formatService.string_pad(10,"Valor", 'right')+this.formatService.string_pad(10,"Cobrado", 'right')+"\n";
+      // content += this.formatService.string_pad(40, "", 'center', '-')+"\n";
+      // // this.receiptForm.value.items_details.forEach(async (move: any)=>{
+      // let new_items_details = [];
+      // await this.formatService.asyncForEach(this.receiptForm.value.items_details, async (move: any)=>{
+      //   let moveOriginal = await this.pouchdbService.getDoc(move._id);
+      //   if (moveOriginal['invoices'].length > 0){
+      //     let invoice: any = await this.pouchdbService.getDoc(moveOriginal['invoices'][0]._id);
+      //     move.name = invoice.code;
+      //     new_items_details.push(move);
+      //   }
+      //   content += this.formatService.string_pad(20, move.name)+
+      //   this.formatService.string_pad(
+      //     10,
+      //     move.amount_dued.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
+      //     "."), 'right'
+      //   )+
+      //   this.formatService.string_pad(
+      //     10,
+      //     move.amount_paid.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+      //     'right'
+      //   )+
+      //   "\n";
+      // })
+      // content += "\n";
+      // content += "\n";
+      // content += "\n";
+      // content += "\n";
+      // content += "\n";
+      // content += this.formatService.string_pad(40, "", 'center', '-')+"\n";
+      // content += "Firma del cobrador\n";
+      // content += "\n";
+      // content += "\n";
+      // content += "\n";
       if (!this.receiptForm.value.items_details && new_items_details){
         this.receiptForm.patchValue({
           items_details: new_items_details,
@@ -1056,7 +1126,7 @@ export class ReceiptPage implements OnInit {
           this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
             this.bluetoothSerial.isConnected().then(res => {
               // |---- 32 characteres ----|
-              this.bluetoothSerial.write(content);
+              this.bluetoothSerial.write(ticket);
               this.bluetoothSerial.disconnect();
             }).catch(res => {
                 //console.log("res1", res);
@@ -1070,7 +1140,159 @@ export class ReceiptPage implements OnInit {
       });
     }
 
-    async printMatrix(){
+    printMatrix(){
+      var prefix = "Recibo_";
+      var extension = ".prt";
+      this.configService.getConfigDoc().then(async (data) => {
+        let company_name = data.name || "";
+        let company_ruc = data.doc || "";
+        let company_phone = data.phone || "";
+        let date = this.receiptForm.value.date.split('T')[0].split("-"); //"25 de Abril de 2018";
+        date = date[2]+"/"+date[1]+"/"+date[0]
+        // let payment_condition = this.receiptForm.value.paymentCondition.name || "";
+        let contact_name = this.receiptForm.value.contact.name || "";
+        // let seller_name = this.receiptForm.value.seller.name || "";
+        let code = this.receiptForm.value.code || "";
+        let doc = this.receiptForm.value.contact.document || "";
+        //let direction = this.receiptForm.value.contact.city || "";
+        //let phone = this.receiptForm.value.contact.phone || "";
+        let lines = ""
+        let ticket="";
+        if (data.ticketPrint.receiptPaperWidth >= 80){
+          ticket += this.formatService.string_pad(
+            data.ticketPrint.receiptPaperWidth, " "+
+            company_name.substring(0, data.ticketPrint.receiptPaperWidth/3)+
+            " - Tel: "+company_phone.substring(0, data.ticketPrint.receiptPaperWidth/3)+" ",
+            'center', '-')+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, ("Recibo: "+code).substring(0, data.ticketPrint.receiptPaperWidth/2-5));
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, ("Fecha: "+(new Date(this.receiptForm.value.date)).toLocaleString('es-PY')).substring(0, data.ticketPrint.receiptPaperWidth/2-5))+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, ("Cliente: "+this.receiptForm.value.contact.name).substring(0, data.ticketPrint.receiptPaperWidth/2-5));
+          ticket += "\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2, "Documento")+this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/4,"Valor", 'right')+this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/4,"Cobrado", 'right')+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+          let new_items_details = [];
+          await this.formatService.asyncForEach(this.receiptForm.value.items_details, async (move: any)=>{
+            let moveOriginal = await this.pouchdbService.getDoc(move._id);
+            if (moveOriginal['invoices'].length > 0){
+              let invoice: any = await this.pouchdbService.getDoc(moveOriginal['invoices'][0]._id);
+              move.name = invoice.code;
+              new_items_details.push(move);
+            }
+            ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2, move.name)+
+            this.formatService.string_pad(
+              data.ticketPrint.receiptPaperWidth/4,
+              move.amount_dued.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
+              "."), 'right'
+            )+
+            this.formatService.string_pad(
+              data.ticketPrint.receiptPaperWidth/4,
+              move.amount_paid.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+              'right'
+            )+
+            "\n";
+          })
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth,
+            "Valor Total:"+this.formatService.string_pad(
+              14, "$ "+this.receiptForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+" ",
+             'right', ' '
+          )+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, "Valor Recebido: $ "+this.receiptForm.value.payments[0].amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, "Vuelto: $ "+this.receiptForm.value.change.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."))+"\n";
+          if (data.ticketPrint.showReceiptSignSeller || data.ticketPrint.showReceiptSignClient){
+            ticket += "\n";
+            ticket += "\n";
+          }
+          if (data.ticketPrint.showReceiptSignSeller){
+            ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, "", 'center', '_');
+            ticket += "          ";
+          }
+          if (data.ticketPrint.showReceiptSignClient){
+            ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, "", 'center', '_')+"\n";
+          }
+          if (data.ticketPrint.showReceiptSignSeller){
+            ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, "Firma del Cobrador", 'center', ' ');
+            ticket += "          ";
+          }
+          if (data.ticketPrint.showReceiptSignClient){
+            ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, "Firma del Cliente", 'center', ' ')+"\n";
+          }
+          let i = data.ticketPrint.receiptMarginBottom;
+          while(i>0){
+            ticket += "\n";
+            i--;
+          }
+        } else {
+          ticket += this.formatService.string_pad(
+            data.ticketPrint.receiptPaperWidth, " "+
+            company_name.substring(0, data.ticketPrint.receiptPaperWidth/3)+" ",
+            'center', '-')+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, ("Recibo: "+code).substring(0, data.ticketPrint.receiptPaperWidth/2-5))+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, ("Fecha: "+(new Date(this.receiptForm.value.date)).toLocaleDateString('es-PY')).substring(0, data.ticketPrint.receiptPaperWidth/2-5))+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth/2-5, ("Cliente: "+this.receiptForm.value.contact.name).substring(0, data.ticketPrint.receiptPaperWidth/2-5));
+          ticket += "\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+          ticket += this.formatService.string_pad(
+          Math.floor(data.ticketPrint.receiptPaperWidth/2), "Documento".substring(0, Math.floor(data.ticketPrint.receiptPaperWidth/2)))+"|"+this.formatService.string_pad(Math.floor(data.ticketPrint.receiptPaperWidth/4)-1,"Valor".substring(0, Math.floor(data.ticketPrint.receiptPaperWidth/4)-1)+"|", 'right')+this.formatService.string_pad(Math.floor(data.ticketPrint.receiptPaperWidth/4),"Cobrado".substring(0, Math.floor(data.ticketPrint.receiptPaperWidth/4)), 'right')+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+          let new_items_details = [];
+          await this.formatService.asyncForEach(this.receiptForm.value.items_details, async (move: any)=>{
+            let moveOriginal = await this.pouchdbService.getDoc(move._id);
+            if (moveOriginal['invoices'].length > 0){
+              let invoice: any = await this.pouchdbService.getDoc(moveOriginal['invoices'][0]._id);
+              move.name = invoice.code;
+              new_items_details.push(move);
+            }
+            ticket += this.formatService.string_pad(Math.floor(data.ticketPrint.receiptPaperWidth/2), move.name)+
+            this.formatService.string_pad(
+              Math.floor(data.ticketPrint.receiptPaperWidth/4),
+              move.amount_dued.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
+              "."), 'right'
+            )+
+            this.formatService.string_pad(
+              Math.floor(data.ticketPrint.receiptPaperWidth/4),
+              move.amount_paid.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+              'right'
+            )+
+            "\n";
+          })
+          ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+          ticket += "Valor Total"+this.formatService.string_pad(data.ticketPrint.receiptPaperWidth-11, "$ "+this.receiptForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          ticket += "Valor Recebido"+this.formatService.string_pad(data.ticketPrint.receiptPaperWidth-14, "$ "+this.receiptForm.value.payments[0].amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          ticket += "Valor Vuelto"+this.formatService.string_pad(data.ticketPrint.receiptPaperWidth-12, "$ "+this.receiptForm.value.change.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          if (data.ticketPrint.showReceiptSignSeller){
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+            ticket += "Firma del Cobrador\n";
+          }
+          if (data.ticketPrint.showReceiptSignClient){
+            ticket += "\n";
+            ticket += "\n";
+            ticket += "\n";
+            ticket += this.formatService.string_pad(data.ticketPrint.receiptPaperWidth, "", 'center', '-')+"\n";
+            ticket += "Firma del Cliente\n";
+          }
+          let i = data.ticketPrint.receiptMarginBottom;
+          while(i>0){
+            ticket += "\n";
+            i--;
+          }
+        }
+        // console.log("ticket", ticket);
+        this.formatService.printMatrixClean(ticket, prefix + this.receiptForm.value.code + extension);
+        let toast = await this.toastCtrl.create({
+          message: "Imprimiendo...",
+          duration: 3000
+        });
+        toast.present();
+      });
+    }
+
+
+    async printMatrix2(){
       let config = await this.configService.getConfigDoc();
 
       let company_name = config.name || "";
@@ -1088,7 +1310,7 @@ export class ReceiptPage implements OnInit {
       // content += "---------| Movimentos |---------\n";
 
       content += this.formatService.string_pad(40, "| Movimentos |", 'center', '-')+"\n";
-      content += this.formatService.string_pad(20, "Documento")+this.formatService.string_pad(10,"Pendiente", 'right')+this.formatService.string_pad(10,"Recibido", 'right')+"\n";
+      content += this.formatService.string_pad(20, "Documento")+this.formatService.string_pad(10,"Valor", 'right')+this.formatService.string_pad(10,"Cobrado", 'right')+"\n";
       content += this.formatService.string_pad(40, "", 'center', '-')+"\n";
       // this.receiptForm.value.items_details.forEach(async (move: any)=>{
       let new_items_details = [];

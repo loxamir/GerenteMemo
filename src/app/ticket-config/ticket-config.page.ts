@@ -47,6 +47,12 @@ export class TicketConfigPage implements OnInit {
       ticketComment: new FormControl(this.navParams.data.ticketComment),
       showSignSeller: new FormControl(this.navParams.data.showSignSeller),
       showSignClient: new FormControl(this.navParams.data.showSignClient),
+
+      receiptPaperWidth: new FormControl(this.navParams.data.receiptPaperWidth),
+      receiptMarginBottom: new FormControl(this.navParams.data.receiptMarginBottom),
+      receiptComment: new FormControl(this.navParams.data.receiptComment),
+      showReceiptSignSeller: new FormControl(this.navParams.data.showReceiptSignSeller),
+      showReceiptSignClient: new FormControl(this.navParams.data.showReceiptSignClient),
     });
   }
 
