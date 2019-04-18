@@ -192,6 +192,15 @@ export class FormatService {
     if (moneda == 'PYG') {
       moneda_plural = "GUARANIES";
       moneda_singular = "GUARANI";
+    } else if (moneda == 'BRL') {
+      moneda_plural = "REALES";
+      moneda_singular = "REAL";
+    } else if (moneda == 'ARS') {
+      moneda_plural = "PESOS";
+      moneda_singular = "PESO";
+    } else if (moneda == 'EUR') {
+      moneda_plural = "EUROS";
+      moneda_singular = "EURO";
     }
     var data = {
       numero: num,
@@ -341,7 +350,7 @@ export class FormatService {
     return string;
   }
 
-  printInvoice(order, layout = null) {
+  printInvoice(order, layout = null, currency_precision=0, currency='PYG') {
     var prefix = "Factura_";
     var extension = ".prt";
     var partner_name = order.contact_name;
@@ -359,7 +368,7 @@ export class FormatService {
     var iva_05 = 0;
     let self = this;
 
-    let amount_in_word_line = this.NumeroALetras(order.total, 'PYG');
+    let amount_in_word_line = this.NumeroALetras(order.total, currency);
 
     //Create matrix
     let page_printed = [];
@@ -559,7 +568,7 @@ export class FormatService {
       let linesPrice_width: any = layout.linesPrice_width / 1.35;
       linesPrice_width = parseInt(linesPrice_width);
       // dataModel = line.price;
-      dataModel = this.string_pad(linesPrice_width, parseFloat(line.price).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+      dataModel = this.string_pad(linesPrice_width, parseFloat(line.price).toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
       for (var x = 0; x < dataModel.toString().length; x++) {
         page_printed[linesMarginTop + index][x + marginLeft] = dataModel.toString()[x];
       }
@@ -568,7 +577,7 @@ export class FormatService {
       let linesTax0_width: any = layout.linesTax0_width / 1.35;
       linesTax0_width = parseInt(linesTax0_width);
       // dataModel = line_amount_00;
-      dataModel = this.string_pad(linesTax0_width, line_amount_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+      dataModel = this.string_pad(linesTax0_width, line_amount_00.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
       for (var x = 0; x < dataModel.toString().length; x++) {
         page_printed[linesMarginTop + index][x + marginLeft] = dataModel.toString()[x];
       }
@@ -578,7 +587,7 @@ export class FormatService {
       let linesTax5_width: any = layout.linesTax5_width / 1.35;
       linesTax5_width = parseInt(linesTax5_width);
       // dataModel = line_amount_05;
-      dataModel = this.string_pad(linesTax5_width, line_amount_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+      dataModel = this.string_pad(linesTax5_width, line_amount_05.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
       for (var x = 0; x < dataModel.toString().length; x++) {
         page_printed[linesMarginTop + index][x + marginLeft] = dataModel.toString()[x];
       }
@@ -588,7 +597,7 @@ export class FormatService {
       linesTax10_width = parseInt(linesTax10_width);
       // marginLeft += linesTax10_width;
       // dataModel = line_amount_10;
-      dataModel = this.string_pad(linesTax10_width, line_amount_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+      dataModel = this.string_pad(linesTax10_width, line_amount_10.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
       for (var x = 0; x < dataModel.toString().length; x++) {
         page_printed[linesMarginTop + index][x + marginLeft] = dataModel.toString()[x];
       }
@@ -599,7 +608,7 @@ export class FormatService {
     marginLeft = layout.subTotalTax0_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = subtotal_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = subtotal_00.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -609,7 +618,7 @@ export class FormatService {
     marginLeft = layout.subTotalTax5_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = subtotal_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = subtotal_05.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -619,7 +628,7 @@ export class FormatService {
     marginLeft = layout.subTotalTax10_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = subtotal_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = subtotal_10.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -629,7 +638,7 @@ export class FormatService {
     marginLeft = layout.invoiceTotal_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = order.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = order.total.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -649,7 +658,7 @@ export class FormatService {
     marginLeft = layout.totalTax5_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = iva_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    dataModel = iva_05.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -659,7 +668,7 @@ export class FormatService {
     marginLeft = layout.totalTax10_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = parseInt(iva_10.toString()).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    dataModel = parseInt(iva_10.toString()).toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -671,7 +680,7 @@ export class FormatService {
     marginLeft = parseInt(marginLeft);
     let amount_tax = parseInt((iva_05 + iva_10).toString());
 
-    dataModel = amount_tax.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    dataModel = amount_tax.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -684,81 +693,6 @@ export class FormatService {
       }
       invoice += "\n";
     }
-    var blob = new Blob([invoice], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, prefix + order.code + extension);
-  }
-
-
-
-
-  print_file(order, dotmatrix_model) {
-    let date = new Date(order.date);
-    let day = date.getDay();
-    let month = this.getMonth(date.getMonth());
-    let year = date.getFullYear();
-    let contado = "";
-    let credito = "";
-    let condicion = "Credito"
-    if (order.paymentCondition == 'Contado') {
-      contado = "XX";
-      condicion = "Contado";
-    } else {
-      credito = "XX";
-      condicion = "Credito";
-    }
-    let name = "123"
-    var prefix = "factura_";
-    var extension = ".prt";
-    var partner_name = order.contact.name_legal || order.contact.name;
-    var partner = order.contact;
-    var ruc = partner.document;
-    var street = partner.address;
-    var phone = partner.phone;
-    var max_lines = dotmatrix_model.qty_lines;
-    var lines_count = 0;
-    var lines = "";
-    var subtotal_10 = 0;
-    var subtotal_05 = 0;
-    var subtotal_00 = 0;
-    var iva_10 = 0;
-    var iva_05 = 0;
-    let self = this;
-    order.items.forEach((line: any) => {
-      let line_amount_00 = 0;
-      let line_amount_05 = 0;
-      let line_amount_10 = 0;
-
-      //IVA Exento
-      if (line.product.tax == 'iva0') {
-        line_amount_00 = line.quantity * line.price;
-        subtotal_00 = subtotal_00 + line.subtotal;
-      }
-      //IVA 5%
-      if (line.product.tax == 'iva5') {
-        line_amount_05 = line.quantity * line.price;
-        subtotal_05 = subtotal_05 + line.quantity * line.price;
-        iva_05 = iva_05 + line.quantity * line.price / 21;
-      }
-      //IVA 10%
-      if (line.product.tax == 'iva10') {
-        line_amount_10 = line.quantity * line.price;
-        subtotal_10 = subtotal_10 + line.quantity * line.price;
-        iva_10 = iva_10 + line.quantity * line.price / 11;
-      }
-      console.log("line", dotmatrix_model.line);
-      let line_eval = eval(dotmatrix_model.line.toString())
-      console.log("line_eval", line_eval);
-      lines = lines + line_eval;
-      lines_count = lines_count + 1;
-    });
-    while (lines_count < max_lines) {
-      lines = lines + "\n";
-      lines_count = lines_count + 1;
-    }
-    let gross = order.total;
-    let amount_in_word_line = this.NumeroALetras(order.total, 'PYG');
-    let amount_tax = iva_05 + iva_10;
-    let invoice = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a" + eval(dotmatrix_model.content).replace("false", "");
     var blob = new Blob([invoice], { type: "text/plain;charset=utf-8" });
     saveAs(blob, prefix + order.code + extension);
   }

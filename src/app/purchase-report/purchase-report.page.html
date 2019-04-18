@@ -78,7 +78,7 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                    {{item.total/item.quantity|number:'1.0-2'}}
+                    {{item.total/item.quantity|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.quantity}}
@@ -126,7 +126,7 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                    {{item.total/item.quantity|number:'1.0-2'}}
+                    {{item.total/item.quantity|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.quantity}}
@@ -174,7 +174,7 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                    {{item.total/item.quantity|number:'1.0-2'}}
+                    {{item.total/item.quantity|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.quantity}}
@@ -221,7 +221,7 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total/item.quantity|number:'1.0-2'}}
+                  {{item.total/item.quantity|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.quantity}}
@@ -268,7 +268,7 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total/item.quantity|number:'1.0-2'}}
+                  {{item.total/item.quantity|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.quantity}}
@@ -314,7 +314,7 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total/item.quantity|number:'1.0-2'}}
+                  {{item.total/item.quantity|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.quantity}}

@@ -401,7 +401,7 @@ export class SalePage implements OnInit {
         });
         console.log("total", total);
         this.saleForm.patchValue({
-          total: total.toFixed(0),
+          total: total,
         });
       }
     }
@@ -1162,7 +1162,7 @@ export class SalePage implements OnInit {
     }
 
     print() {
-      if (this.platform.is('cordova')){
+      // if (this.platform.is('cordova')){
         this.configService.getConfigDoc().then(async (data) => {
           let company_name = data.name || "";
           let company_ruc = data.doc || "";
@@ -1182,12 +1182,12 @@ export class SalePage implements OnInit {
           this.saleForm.value.items.forEach(item => {
             let code = item.product.code;
             let quantity = item.quantity;
-            let price = item.price;
+            let price = parseFloat(item.price);
             let subtotal = quantity*price;
             code = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*6/32), code).toString();
             quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*5/32), quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
-            price = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*9/32), price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-            subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*12/32), subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+            price = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*9/32), price.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+            subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*12/32), subtotal.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
             let product_name = this.formatService.string_pad(data.ticketPrint.paperWidth, item.product.name.substring(0, data.ticketPrint.paperWidth));
             lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
           });
@@ -1212,7 +1212,7 @@ export class SalePage implements OnInit {
           ticket += head_code+"|"+head_quantity+"|"+head_price+"|"+head_subtotal+"\n";
           ticket += lines;
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
-          ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.paperWidth-5, "$ "+this.saleForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+          ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.paperWidth-5, "$ "+this.saleForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
           ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
@@ -1241,6 +1241,7 @@ export class SalePage implements OnInit {
           message: "Imprimiendo...",
           duration: 3000
         });
+        console.log("ticket", ticket);
         toast.present();
         this.bluetoothSerial.isEnabled().then(res => {
           this.bluetoothSerial.list().then((data)=> {
@@ -1260,9 +1261,9 @@ export class SalePage implements OnInit {
           //console.log("res", res);
         });
       });
-    } else {
-      this.printMatrix();
-    }
+    // } else {
+    //   this.printMatrix();
+    // }
   }
 
   printMatrix(){
@@ -1287,16 +1288,12 @@ export class SalePage implements OnInit {
         this.saleForm.value.items.forEach(item => {
           let code = item.product.code;
           let quantity = item.quantity;
-          let price = item.price;
-          let subtotal = (quantity*price).toFixed(data.currency_precision);
-          console.log("quantity", quantity);
-          console.log("price", price);
-          console.log("subtotal", subtotal);
-          console.log("subtotal.toString().replace(/B(?=(d{3})+(?!d))/g, '.')", subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+          let price = parseFloat(item.price);
+          let subtotal = quantity*price;
           code = this.formatService.string_pad(6, code).toString();
           quantity = this.formatService.string_pad(8, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          price = this.formatService.string_pad(11, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          subtotal = this.formatService.string_pad(12, subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          price = this.formatService.string_pad(11, price.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          subtotal = this.formatService.string_pad(12, subtotal.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
           let product_name = this.formatService.string_pad(data.ticketPrint.paperWidth -(6+8+11+12)-6, item.product.name.substring(0, data.ticketPrint.paperWidth/2));
           lines += "|"+code+"|"+quantity+"|"+product_name+"|"+price+"|"+subtotal+"|\n";
         });
@@ -1348,16 +1345,16 @@ export class SalePage implements OnInit {
         this.saleForm.value.items.forEach(item => {
           let code = item.product.code;
           let quantity = item.quantity;
-          let price = item.price;
+          let price = parseFloat(item.price);
           let subtotal = quantity*price;
-          console.log("quantity", quantity);
-          console.log("price", price);
-          console.log("subtotal", subtotal);
-          console.log("subtotal.toString().replace(/B(?=(d{3})+(?!d))/g, '.')", subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+          // console.log("quantity", quantity);
+          // console.log("price", price);
+          // console.log("subtotal", subtotal);
+          // console.log("subtotal.toString().replace(/B(?=(d{3})+(?!d))/g, '.')", subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
           code = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*6/32), code).toString();
           quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*5/32), quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
-          price = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*9/32), price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-          subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*12/32), subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+          price = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*9/32), price.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+          subtotal = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*12/32), subtotal.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
           let product_name = this.formatService.string_pad(data.ticketPrint.paperWidth, item.product.name.substring(0, data.ticketPrint.paperWidth));
           lines += product_name+"\n"+code+quantity+price+subtotal+"\n";
         });
@@ -1382,7 +1379,7 @@ export class SalePage implements OnInit {
         ticket += head_code+"|"+head_quantity+"|"+head_price+"|"+head_subtotal+"\n";
         ticket += lines;
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
-        ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.paperWidth-5, "$ "+this.saleForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+        ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.paperWidth-5, "$ "+this.saleForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
