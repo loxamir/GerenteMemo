@@ -108,10 +108,10 @@
                 Fecha: {{item.date|date: 'dd/MM/yyyy'}}
               </ion-col>
               <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-                <h3 class="list-big-number amount" style="color: red;">$ {{item.amount_dued| number:'1.0'}}</h3>
+                <h3 class="list-big-number amount" style="color: red;">$ {{item.amount_dued| number:'1.'+currency_precision}}</h3>
               </ion-col>
               <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-                <h3 class="list-big-number amount" style="color: green;">$ {{item.amount_paid| number:'1.0'}}</h3>
+                <h3 class="list-big-number amount" style="color: green;">$ {{item.amount_paid| number:'1.'+currency_precision}}</h3>
               </ion-col>
             </ion-row>
 
@@ -137,7 +137,7 @@
     <!-- <ion-row *ngIf="receiptForm.value.state == 'CONFIRMED' && receiptForm.value.amount_unInvoiced > 0">
       <ion-col width-33 class="field-label" no-padding>
         <h4 class="field-label" style="text-align: center;">{{'A Facturar' | translate }}</h4>
-        <h4 class="sumary-value positive" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.amount_unInvoiced|number:'1.0'}}</h4>
+        <h4 class="sumary-value positive" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.amount_unInvoiced|number:'1.'+currency_precision}}</h4>
       </ion-col>
       <ion-col class="item-content">
         <ion-button style="background-color: #278c2c" class="print-receipt" (click)="createInvoice()">Crear Factura</ion-button>
@@ -156,7 +156,7 @@
                 </ion-col>
                 <ion-col>
                   <h4 class="field-label">{{'TAX' | translate}}</h4>
-                  <h4 class="field-value">$ {{item.tax|number:'1.0'}}</h4>
+                  <h4 class="field-value">$ {{item.tax|number:'1.'+currency_precision}}</h4>
                 </ion-col>
                 <ion-button class="relation-button" [ngClass]="{following: !item.inverse_relation}" clear icon-only item-right>
                   <ion-icon *ngIf="item.state=='CONFIRMED'" name="print"></ion-icon>

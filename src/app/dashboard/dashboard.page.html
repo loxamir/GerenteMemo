@@ -100,7 +100,7 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          Total: {{value| number:'1.0'}}
+          Total: {{value| number:'1.'+currency_precision}}
         </ion-col>
       </ion-row>
 
@@ -132,7 +132,7 @@
                   </ion-col>
                   <ion-col no-padding>
                     <h4 class="field-label">Value</h4>
-                    <h4 class="user-name">{{item.value| number:'1.0'}}</h4>
+                    <h4 class="user-name">{{item.value| number:'1.'+currency_precision}}</h4>
                   </ion-col>
                 </ion-row>
               </ion-item>

@@ -27,21 +27,21 @@
      no-padding
      class="summary-50">
       <h4 class="field-label">{{'TOTAL_COST' | translate}}</h4>
-      <h4 class="field-value" style="color:blue">$ {{productionForm.value.total|number:'1.0'}}</h4>
+      <h4 class="field-value" style="color:blue">$ {{productionForm.value.total|number:'1.'+currency_precision}}</h4>
     </ion-item>
 
     <ion-item
     no-padding
      class="summary-50">
       <h4 class="field-label">{{'Valor Agregado' | translate}}</h4>
-      <h4 class="field-value" style="color:green">$ {{productionForm.value.price*productionForm.value.quantity-productionForm.value.total|number:'1.0'}}</h4>
+      <h4 class="field-value" style="color:green">$ {{productionForm.value.price*productionForm.value.quantity-productionForm.value.total|number:'1.'+currency_precision}}</h4>
     </ion-item>
     <!-- <ion-item
     *ngIf="productionForm.value.production"
     no-padding
      class="summary-50">
       <h4 class="field-label">{{'Insumos' | translate}}</h4>
-      <h4 class="field-value" style="color:red">$ {{productionForm.value.residual|number:'1.0'}}</h4>
+      <h4 class="field-value" style="color:red">$ {{productionForm.value.residual|number:'1.'+currency_precision}}</h4>
     </ion-item> -->
   </ion-row>
   <ion-row class="state-header">
@@ -195,7 +195,7 @@
           </ion-col>
           <ion-col >
             <h4 class="field-label">{{'TAX' | translate}}</h4>
-            <h4 class="field-value">$ {{item.tax|number:'1.0'}}</h4>
+            <h4 class="field-value">$ {{item.tax|number:'1.'+currency_precision}}</h4>
           </ion-col>
           <ion-button class="relation-button"
           [ngClass]="{following: !item.inverse_relation}"
@@ -221,7 +221,7 @@
           </ion-col>
           <ion-col>
             <h4 class="field-label">{{'AMOUNT' | translate}}</h4>
-            <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
+            <h4 class="field-value">$ {{item.paid|number:'1.'+currency_precision}}</h4>
           </ion-col>
           <ion-button class="relation-button"
           [ngClass]="{following: !item.inverse_relation}"
@@ -258,7 +258,7 @@
             </ion-col>
             <ion-col size="9" (click)="showInputs()">
               <h4 class="section-title">{{'Materiales Consumidos' | translate}}</h4>
-              <h4 class="field-value"  style="margin-top:0px;">$ {{productionForm.value.input_amount|number:'1.0'}}</h4>
+              <h4 class="field-value"  style="margin-top:0px;">$ {{productionForm.value.input_amount|number:'1.'+currency_precision}}</h4>
             </ion-col>
             <!-- <ion-col size="2" class="item-content"
             *ngIf="productionForm.value.state == 'STARTED'">
@@ -291,13 +291,13 @@
                     <ion-col  size="12" (click)="editItemPrice(item)" *ngIf="!productionForm.value.production">
                       <span class="price-label">Precio:</span>
                       <div style="font-size: 15px;display: contents; color:red">
-                         ${{item.price|number:'1.0'}}
+                         ${{item.price|number:'1.'+currency_precision}}
                       </div>
                     </ion-col>
                     <ion-col  size="12" (click)="editItemPrice(item)" *ngIf="productionForm.value.production">
                       <span class="price-label">Costo:</span>
                       <div style="font-size: 15px;display: contents; color:red">
-                         ${{item.cost|number:'1.0'}}
+                         ${{item.cost|number:'1.'+currency_precision}}
                       </div>
                     </ion-col>
 
@@ -306,10 +306,10 @@
                     <ion-col  size="12" class="item-content price-tag" (click)="editItemPrice(item)" >
                       <span class="price-label">SubTotal:</span>
                       <div style="font-size: 20px;color:green;"  *ngIf="!productionForm.value.production">
-                         ${{item.price*item.quantity|number:'1.0'}}
+                         ${{item.price*item.quantity|number:'1.'+currency_precision}}
                       </div>
                       <div style="font-size: 20px;color:green;"  *ngIf="productionForm.value.production">
-                         ${{item.cost*item.quantity|number:'1.0'}}
+                         ${{item.cost*item.quantity|number:'1.'+currency_precision}}
                       </div>
                     </ion-col>
                   </ion-row>
@@ -357,7 +357,7 @@
             </ion-col>
             <ion-col size="9" (click)="showWorks()">
               <h4 class="section-title">{{'Trabajos Realizados' | translate}}</h4>
-              <h4 class="field-value" style="margin-top:0px;">$ {{productionForm.value.work_amount|number:'1.0'}}</h4>
+              <h4 class="field-value" style="margin-top:0px;">$ {{productionForm.value.work_amount|number:'1.'+currency_precision}}</h4>
             </ion-col>
             <!-- <ion-col size="2" color="primary"
             *ngIf="productionForm.value.state == 'STARTED'"
@@ -387,14 +387,14 @@
                     *ngIf="!productionForm.value.production">
                       <span class="price-label">Precio:</span>
                       <div style="font-size: 15px;display: contents; color:red">
-                         $ {{item.price|number:'1.0'}}<div style="color: gray;display:inline">/hora</div>
+                         $ {{item.price|number:'1.'+currency_precision}}<div style="color: gray;display:inline">/hora</div>
                       </div>
                     </ion-col>
                     <ion-col  size="12"
                     *ngIf="productionForm.value.production">
                       <span class="price-label">Costo:</span>
                       <div style="font-size: 15px;display: contents; color:red">
-                         $ {{item.cost|number:'1.0'}}<div style="color: gray;display:inline">/hora</div>
+                         $ {{item.cost|number:'1.'+currency_precision}}<div style="color: gray;display:inline">/hora</div>
                       </div>
                     </ion-col>
                   </ion-row>
@@ -404,12 +404,12 @@
                       <div
                       *ngIf="!productionForm.value.production"
                       style="font-size: 20px;color:green;">
-                         ${{item.price*item.time|number:'1.0'}}
+                         ${{item.price*item.time|number:'1.'+currency_precision}}
                       </div>
                       <div
                       *ngIf="productionForm.value.production"
                       style="font-size: 20px;color:green;">
-                         ${{item.cost*item.time|number:'1.0'}}
+                         ${{item.cost*item.time|number:'1.'+currency_precision}}
                       </div>
                     </ion-col>
                   </ion-row>

@@ -66,7 +66,7 @@
               {{ title.code + ' - ' + title.name }}
             </ion-col>
             <ion-col width-25 style="text-align: right;color: #000;">
-              {{title.accountsReport|number:'1.0-1'}}
+              {{title.accountsReport|number:'1.'+currency_precision}}
             </ion-col>
           </ion-row>
           <div *ngFor="let category of sortByCode(title.categories)">
@@ -75,7 +75,7 @@
                 {{category.code + ' - ' + category.name}}
               </ion-col>
               <ion-col width-25 style="text-align: right;color: #000;">
-                {{category.accountsReport|number:'1.0-1'}}
+                {{category.accountsReport|number:'1.'+currency_precision}}
               </ion-col>
             </ion-row>
             <div *ngFor="let account of sortByCode(category.accounts)" >
@@ -84,7 +84,7 @@
                   {{account.code + ' - ' + account.name}}
                 </ion-col>
                 <ion-col width-25 style="text-align: right;color: #000;">
-                  {{account.accountsReport|number:'1.0-1'}}
+                  {{account.accountsReport|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
             </div>

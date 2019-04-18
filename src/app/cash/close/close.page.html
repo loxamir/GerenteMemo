@@ -19,7 +19,7 @@
             {{'Monto Teorico' | translate }}
           </h4>
           <h4 class="field-value" style="color: green;">
-            {{closeForm.value.amount_theoretical|number:'1.0'}}
+            {{closeForm.value.amount_theoretical|number:'1.'+currency_precision}}
           </h4>
         </div>
       </ion-item>
@@ -29,10 +29,10 @@
             {{'Differencia de Caja' | translate }}
           </h4>
           <h4 class="field-value" style="color: green;" *ngIf="closeForm.value.amount_physical - closeForm.value.amount_theoretical > 0">
-            +{{closeForm.value.amount_physical - closeForm.value.amount_theoretical|number:'1.0'}}
+            +{{closeForm.value.amount_physical - closeForm.value.amount_theoretical|number:'1.'+currency_precision}}
           </h4>
           <h4 class="field-value" style="color: red;" *ngIf="closeForm.value.amount_physical - closeForm.value.amount_theoretical <= 0">
-            {{closeForm.value.amount_physical - closeForm.value.amount_theoretical|number:'1.0'}}
+            {{closeForm.value.amount_physical - closeForm.value.amount_theoretical|number:'1.'+currency_precision}}
           </h4>
         </div>
       </ion-item>
@@ -42,7 +42,7 @@
             {{'Monto Recibido' | translate }}
           </h4>
           <h4 class="field-value" style="color: green;">
-            {{closeForm.value.amount_income|number:'1.0'}}
+            {{closeForm.value.amount_income|number:'1.'+currency_precision}}
           </h4>
         </div>
       </ion-item>
@@ -52,7 +52,7 @@
             {{'Monto Entregado' | translate }}
           </h4>
           <h4 class="field-value" style="color: red;">
-            {{closeForm.value.amount_expense|number:'1.0'}}
+            {{closeForm.value.amount_expense|number:'1.'+currency_precision}}
           </h4>
         </div>
       </ion-item>
@@ -62,7 +62,7 @@
             {{'Monto Inicial' | translate }}
           </h4>
           <h4 class="field-value" style="color: green;">
-            {{closeForm.value.amount_open|number:'1.0'}}
+            {{closeForm.value.amount_open|number:'1.'+currency_precision}}
           </h4>
         </div>
       </ion-item>
@@ -72,10 +72,10 @@
             {{'Variación' | translate }}
           </h4>
           <h4 class="field-value" style="color: green;" *ngIf="(closeForm.value.amount_physical || 0)-closeForm.value.amount_open > 0">
-            +{{(closeForm.value.amount_physical || 0)-closeForm.value.amount_open|number:'1.0'}}
+            +{{(closeForm.value.amount_physical || 0)-closeForm.value.amount_open|number:'1.'+currency_precision}}
           </h4>
           <h4 class="field-value" style="color: red;" *ngIf="(closeForm.value.amount_physical || 0)-closeForm.value.amount_open <= 0">
-            {{(closeForm.value.amount_physical || 0)-closeForm.value.amount_open|number:'1.0'}}
+            {{(closeForm.value.amount_physical || 0)-closeForm.value.amount_open|number:'1.'+currency_precision}}
           </h4>
         </div>
       </ion-item>
@@ -111,8 +111,8 @@
                 </ion-row>
               </ion-col>
               <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-                <h2 *ngIf="item.accountFrom_id != cash_id" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.0'}}</h2>
-                <h2 *ngIf="item.accountTo_id != cash_id" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.0'}}</h2>
+                <h2 *ngIf="item.accountFrom_id != cash_id" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+                <h2 *ngIf="item.accountTo_id != cash_id" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
               </ion-col>
             </ion-row>
             <ion-row no-padding [class.paid]="item.accountFrom_id != cash_id" [class.due]="item.accountFrom_id == _id">

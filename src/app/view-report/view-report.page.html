@@ -21,7 +21,7 @@
       <ion-col no-padding width-30 >
       </ion-col>
       <ion-col no-padding width-70 class="item-icon" align-self-center style="text-align: right;">
-        <h2 class="list-big-number" style="color: green;margin-right:0.5em">$ {{item.value| number:'1.0'}}</h2>
+        <h2 class="list-big-number" style="color: green;margin-right:0.5em">$ {{item.value| number:'1.'+currency_precision}}</h2>
       </ion-col>
     </ion-row>
   </ion-card>

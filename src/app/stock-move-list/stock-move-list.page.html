@@ -39,8 +39,8 @@
                 {{ item.product_name }}
             </ion-col>
             <ion-col no-padding width-25 class="item-icon" align-self-center style="text-align: center;">
-              <h2 *ngIf="item.quantity > 0" class="list-big-number" style="margin-right:10px;"><div style="color: green;">{{item.quantity| number:'1.0'}}</div><div style="font-size:12px;color: #000">Un.</div></h2>
-              <h2 *ngIf="item.quantity <= 0" class="list-big-number" style="color: red;">{{item.quantity| number:'1.0'}}</h2>
+              <h2 *ngIf="item.quantity > 0" class="list-big-number" style="margin-right:10px;"><div style="color: green;">{{item.quantity| number:'1.'+currency_precision}}</div><div style="font-size:12px;color: #000">Un.</div></h2>
+              <h2 *ngIf="item.quantity <= 0" class="list-big-number" style="color: red;">{{item.quantity| number:'1.'+currency_precision}}</h2>
             </ion-col>
           </ion-row>
     <ion-row no-padding class="paid">

@@ -102,6 +102,7 @@ export class ProductionPage implements OnInit {
     show_inputs: boolean = false;
     ignore_inputs: boolean = false;
     // ignore_travels: boolean = false;
+    currency_precision = 2;
 
     constructor(
       public navCtrl: NavController,
@@ -186,6 +187,7 @@ export class ProductionPage implements OnInit {
       await this.loading.present();
       this.configService.getConfig().then((data) => {
         console.log("dddata", data);
+        this.currency_precision = data.currency_precision;
         this.labor_product = data.labor_product;
         // this.input_product = data.input_product;
         // this.travel_product = data.travel_product;

@@ -19,6 +19,7 @@ export class CheckListPage implements OnInit {
   searchTerm: string = '';
   // has_search = false;
   page = 0;
+  currency_precision = 2;
 
   constructor(
     public navCtrl: NavController,
@@ -38,8 +39,10 @@ export class CheckListPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     //this.loading.present();
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     this.setFilteredItems();
   }
 

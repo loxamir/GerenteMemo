@@ -97,6 +97,7 @@ export class ConfigPage implements OnInit {
       contact_sequence: [1],
       cash_move_sequence: [1],
       stock_move_sequence: [1],
+      currency_precision: 2,
       invoice_template: [''],
       invoicePrint: [{}],
       ticketPrint: [{}],
@@ -167,6 +168,7 @@ export class ConfigPage implements OnInit {
       this.events.subscribe('select-currency', (data) => {
         this.configForm.patchValue({
           currency: data,
+          currency_precision: data.precision,
         });
         this.configForm.markAsDirty();
         this.events.unsubscribe('select-currency');

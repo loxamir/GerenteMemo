@@ -127,7 +127,7 @@ export class PurchasePage implements OnInit {
     today: any;
     _id: string;
     avoidAlertMessage: boolean;
-
+    currency_precision = 2;
     languages: Array<LanguageModel>;
 
     constructor(
@@ -239,6 +239,8 @@ export class PurchasePage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       if (this._id){
         this.getPurchase(this._id).then((data) => {
           //console.log("data", data);

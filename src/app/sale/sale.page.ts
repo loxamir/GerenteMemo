@@ -123,6 +123,7 @@ export class SalePage implements OnInit {
     items;
     origin_id;
     return;
+    currency_precision = 2;
 
     constructor(
       public navCtrl: NavController,
@@ -203,6 +204,8 @@ export class SalePage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       if (this._id){
         this.saleService.getSale(this._id).then((data) => {
           //console.log("data", data);
@@ -396,8 +399,9 @@ export class SalePage implements OnInit {
         this.saleForm.value.items.forEach((item) => {
           total = total + item.quantity*item.price;
         });
+        console.log("total", total);
         this.saleForm.patchValue({
-          total: total,
+          total: total.toFixed(0),
         });
       }
     }
@@ -1284,7 +1288,11 @@ export class SalePage implements OnInit {
           let code = item.product.code;
           let quantity = item.quantity;
           let price = item.price;
-          let subtotal = quantity*price;
+          let subtotal = (quantity*price).toFixed(data.currency_precision);
+          console.log("quantity", quantity);
+          console.log("price", price);
+          console.log("subtotal", subtotal);
+          console.log("subtotal.toString().replace(/B(?=(d{3})+(?!d))/g, '.')", subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
           code = this.formatService.string_pad(6, code).toString();
           quantity = this.formatService.string_pad(8, quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
           price = this.formatService.string_pad(11, price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
@@ -1309,7 +1317,7 @@ export class SalePage implements OnInit {
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth,
           "Valor Total:"+this.formatService.string_pad(
-            14, "$ "+this.saleForm.value.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+" ",
+            14, "$ "+this.saleForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+" ",
            'right', ' '
         )+"\n";
         ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
@@ -1342,6 +1350,10 @@ export class SalePage implements OnInit {
           let quantity = item.quantity;
           let price = item.price;
           let subtotal = quantity*price;
+          console.log("quantity", quantity);
+          console.log("price", price);
+          console.log("subtotal", subtotal);
+          console.log("subtotal.toString().replace(/B(?=(d{3})+(?!d))/g, '.')", subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
           code = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*6/32), code).toString();
           quantity = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*5/32), quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'center');
           price = this.formatService.string_pad(Math.floor(data.ticketPrint.paperWidth*9/32), price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');

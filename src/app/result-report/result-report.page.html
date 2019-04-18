@@ -45,7 +45,7 @@
               {{ title.code + ' - ' + title.name }}
             </ion-col>
             <ion-col size="4" style="text-align: right;color: #0a880a;">
-              {{title.balance|number:'1.0-1'}}
+              {{title.balance|number:'1.'+currency_precision}}
             </ion-col>
           </ion-row>
           <div *ngFor="let category of sortByCode(title.categories)">
@@ -54,7 +54,7 @@
                 {{category.code + ' - ' + category.name}}
               </ion-col>
               <ion-col size="6" style="text-align: right;color: #0a880a;">
-                {{category.balance|number:'1.0-1'}}
+                {{category.balance|number:'1.'+currency_precision}}
               </ion-col>
             </ion-row>
           </div>

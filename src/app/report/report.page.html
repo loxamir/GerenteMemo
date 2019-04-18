@@ -118,13 +118,13 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.price|number:'1.0'}}
+                    {{item.price|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
                     {{item.quantity}}
                   </ion-col>
                   <ion-col width-25 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.total|number:'1.0'}}
+                    {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
             </ion-list>
@@ -150,13 +150,13 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.price|number:'1.0'}}
+                    {{item.price|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
                     {{item.quantity}}
                   </ion-col>
                   <ion-col width-25 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.total|number:'1.0'}}
+                    {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
             </ion-list>
@@ -176,7 +176,7 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.total|number:'1.0'}}
+                    {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
             </ion-list>
@@ -197,7 +197,7 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.total|number:'1.0'}}
+                    {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
             </ion-list>
@@ -225,13 +225,13 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.price|number:'1.0'}}
+                    {{item.price|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
                     {{item.quantity}}
                   </ion-col>
                   <ion-col width-25 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.total|number:'1.0'}}
+                    {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
             </ion-list>
@@ -257,13 +257,13 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.price|number:'1.0'}}
+                    {{item.price|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
                     {{item.quantity}}
                   </ion-col>
                   <ion-col width-25 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.total|number:'1.0'}}
+                    {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
             </ion-list>
@@ -283,7 +283,7 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.total|number:'1.0'}}
+                    {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
             </ion-list>
@@ -304,7 +304,7 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                    {{item.total|number:'1.0'}}
+                    {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
             </ion-list>
@@ -327,7 +327,7 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                  {{item.total|number:'1.0'}}
+                  {{item.total|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
           </ion-list>
@@ -345,7 +345,7 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                  {{item.total|number:'1.0'}}
+                  {{item.total|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
           </ion-list>
@@ -366,7 +366,7 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                  {{item.total|number:'1.0'}}
+                  {{item.total|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
           </ion-list>
@@ -387,7 +387,7 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col width-40 style="text-align: right" [class.quotation]="item.marker" [class.unmarked]="!item.marker">
-                  {{item.total|number:'1.0'}}
+                  {{item.total|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
           </ion-list>

@@ -12,6 +12,7 @@ import { ProductPage } from '../product/product.page';
 import { ContactPage } from '../contact/contact.page';
 import { WarehousePage } from '../warehouse/warehouse.page';
 import { StockMovePage } from '../stock-move/stock-move.page';
+import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 
 @Component({
   selector: 'app-view-report',
@@ -29,9 +30,11 @@ export class ViewReportPage implements OnInit {
   endkey: any = ['z'];
   reportView: string = 'stock/ResultadoDiario';
   filter: string = "";
+  currency_precision = 2;
 
   constructor(
     public navCtrl: NavController,
+    public pouchdbService: PouchdbService,
     public viewService: ViewService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
@@ -53,6 +56,8 @@ export class ViewReportPage implements OnInit {
   async ngOnInit() {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     this.setFilteredItems();
   }
 

@@ -38,6 +38,7 @@ export class InvoicePage implements OnInit {
   @Input() items;
   @Input() type: any = 'out';
   @Input() origin_id;
+  currency_precision = 2;
 
   @ViewChild('select') select;
   @HostListener('document:keypress', ['$event'])
@@ -183,6 +184,8 @@ export class InvoicePage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       this.recomputeValues();
       //this.loading.present();
       // console.log("id", this._id);

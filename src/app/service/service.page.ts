@@ -105,6 +105,7 @@ export class ServicePage implements OnInit {
     ignore_inputs: boolean = false;
     // ignore_travels: boolean = false;
     serviceNote;
+    currency_precision = 2;
 
     constructor(
       public socialSharing: SocialSharing,
@@ -191,7 +192,9 @@ export class ServicePage implements OnInit {
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
       this.configService.getConfig().then((data) => {
-        console.log("dddata", data);
+        // console.log("dddata", data);
+        // let config:any = (await this.pouchdbService.getDoc('config.profile'));
+        this.currency_precision = data.currency_precision;
         this.serviceNote = data.serviceNote;
         this.labor_product = data.labor_product;
         // this.input_product = data.input_product;

@@ -56,7 +56,7 @@ export class ReceiptPage implements OnInit {
   @Input() signal: any;
   @Input() exchange_rate: any;
   @Input() origin_id: any;
-
+  currency_precision = 2;
 
 
 
@@ -149,6 +149,7 @@ export class ReceiptPage implements OnInit {
       await this.loading.present();
       this.recomputeValues();
         this.configService.getConfig().then(async config => {
+          this.currency_precision = config.currency_precision;
           this.receiptForm.patchValue({
             "cash_paid": config.cash,
             "exchange_rate": config.currency.sale_rate,

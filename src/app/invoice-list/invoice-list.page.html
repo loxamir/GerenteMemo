@@ -42,10 +42,10 @@
           <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;" class="item-title">{{item.paymentCondition | translate}}</h3>
         </ion-col>
         <ion-col no-padding width-65 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-          <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.total| number:'1.0'}}</h2>
-          <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.0'}}</h2>
+          <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.total| number:'1.'+currency_precision}}</h2>
+          <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.'+currency_precision}}</h2>
           <div *ngIf="item.residual != 0 && item.state!='CANCELED'" style="color: red;">
-            $ {{ item.residual | number:'1.0' }}
+            $ {{ item.residual | number:'1.'+currency_precision }}
           </div>
         </ion-col>
       </ion-row>

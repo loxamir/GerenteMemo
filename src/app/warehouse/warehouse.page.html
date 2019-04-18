@@ -33,7 +33,7 @@
         formControlName="name"></ion-input>
       </ion-item>
       <ion-col style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;">
-        {{'CURRENT_STOCK' | translate }}<div class="warehouse-move-amount" style="text-align: center"> {{warehouseForm.value.balance|number:'1.0'}} Un.</div>
+        {{'CURRENT_STOCK' | translate }}<div class="warehouse-move-amount" style="text-align: center"> {{warehouseForm.value.balance|number:'1.'+currency_precision}} Un.</div>
       </ion-col>
     </ion-row>
     <ion-list no-lines>
@@ -50,8 +50,8 @@
            </ion-row>
          </ion-col>
          <ion-col no-padding class="item-icon" align-self-center style="text-align: right">
-           <h2 *ngIf="item.stock > 0" class="list-big-number" style="margin-right:10px;"><div style="color: green;">{{item.stock| number:'1.0'}}</div><div style="font-size:12px;color: #000">Un.</div></h2>
-           <h2 *ngIf="item.stock <= 0" class="list-big-number" style="margin-right:10px;"><div style="color: red;">{{item.stock| number:'1.0'}}</div><div style="font-size:12px;color: #000">Un.</div></h2>
+           <h2 *ngIf="item.stock > 0" class="list-big-number" style="margin-right:10px;"><div style="color: green;">{{item.stock| number:'1.'+currency_precision}}</div><div style="font-size:12px;color: #000">Un.</div></h2>
+           <h2 *ngIf="item.stock <= 0" class="list-big-number" style="margin-right:10px;"><div style="color: red;">{{item.stock| number:'1.'+currency_precision}}</div><div style="font-size:12px;color: #000">Un.</div></h2>
          </ion-col>
        </ion-row>
 

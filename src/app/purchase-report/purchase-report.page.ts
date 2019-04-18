@@ -30,7 +30,7 @@ export class PurchaseReportPage implements OnInit {
   today: any;
   _id: string;
   avoidAlertMessage: boolean;
-
+  currency_precision = 2;
   languages: Array<LanguageModel>;
 
   title: string = 'D3.js with Ionic 2!';
@@ -477,7 +477,7 @@ export class PurchaseReportPage implements OnInit {
     this.goNextStep();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     //var today = new Date().toISOString();
     this.reportPurchaseForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
@@ -492,6 +492,8 @@ export class PurchaseReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     if (this._id) {
       this.reportService.getReport(this._id).then((data) => {
         this.reportPurchaseForm.patchValue(data);
