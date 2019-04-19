@@ -180,7 +180,7 @@ export class StockReportPage implements OnInit {
             items = [];
             let getList = [];
             stocks.forEach(stockLine => {
-              if (stockLine.value > 0){
+              // if (stockLine.value > 0){
                 if (result.hasOwnProperty(stockLine.key[1])) {
                   // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
                   items[result[stockLine.key[1]]] = {
@@ -199,7 +199,7 @@ export class StockReportPage implements OnInit {
                   getList.push(stockLine.key[1]);
                   result[stockLine.key[1]] = items.length-1;
                 }
-              }
+              // }
             });
 
             let products: any = await this.pouchdbService.getList(getList);
