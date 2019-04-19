@@ -981,11 +981,11 @@ export class ReceiptPage implements OnInit {
     }
 
     print(){
-      // if (this.platform.is('cordova')){
+      if (this.platform.is('cordova')){
         this.printBluetooth();
-      // } else {
-      //   this.printMatrix();
-      // }
+      } else {
+        this.printMatrix();
+      }
     }
 
     async printBluetooth(){

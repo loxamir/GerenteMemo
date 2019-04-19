@@ -1162,7 +1162,7 @@ export class SalePage implements OnInit {
     }
 
     print() {
-      // if (this.platform.is('cordova')){
+      if (this.platform.is('cordova')){
         this.configService.getConfigDoc().then(async (data) => {
           let company_name = data.name || "";
           let company_ruc = data.doc || "";
@@ -1261,9 +1261,9 @@ export class SalePage implements OnInit {
           //console.log("res", res);
         });
       });
-    // } else {
-    //   this.printMatrix();
-    // }
+    } else {
+      this.printMatrix();
+    }
   }
 
   printMatrix(){
