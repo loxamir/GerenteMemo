@@ -409,6 +409,14 @@ export class WorkPage implements OnInit {
     return total;
   }
 
+  sumListFieldMulti(field_name, field1='quantity', field2='cost'){
+    let total = 0;
+    let value = this.workForm.value[field_name].forEach((item: any)=>{
+      total += parseFloat(item[field1])*parseFloat(item[field2])
+    })
+    return total;
+  }
+
   selectM2O(fielD, model, context="{}") {
     context = JSON.parse(context || "{}");
     this.events.subscribe('select-' + model, (data) => {
