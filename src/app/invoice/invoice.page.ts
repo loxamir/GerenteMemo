@@ -221,145 +221,30 @@ export class InvoicePage implements OnInit {
       role: 'destructive',
       icon: 'print',
       handler: () => {
-        if (this.platform.is('cordova')){
-          this.printAndroid();
-        } else {
           this.printPDF();
-        }
-        // console.log('Delete clicked');
       }
-    }];
-    // if (this.platform.is('cordova')){
-    //   buttons.push({
-    //     role: 'bluetooth',
-    //     text: 'Bluetooth',
-    //     icon: 'print',
-    //     handler: () => {
-    //       console.log('BluetoothSerial');
-    //       this.posprint();
-    //     }
-    //   })
-    // } else {
-      buttons.push({
+      },
+      {
         role: 'matrix',
         text: 'Matricial',
         icon: 'print',
         handler: () => {
-          // console.log('Share clicked');
           this.printMatrix();
         }
-      });
-    // }
-    buttons.push({
-      text: 'Cancelar',
-      icon: 'close',
-      role: 'cancel',
-      handler: () => {
-        // console.log('Cancel clicked');
+      },
+      {
+        text: 'Cancelar',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {}
       }
-    });
+    ];
     const actionSheet = await this.actionSheetController.create({
       header: 'Impressora',
       buttons: buttons
     });
     await actionSheet.present();
   }
-
-  //   generatePdf() {
-  //     const div = document.getElementById("htmltoimage");
-  //     const options = {background: "white", height: div.clientHeight, width: div.clientWidth};
-  //
-  //     html2canvas(div, options).then((canvas) => {
-  //         //Initialize JSPDF
-  //         let doc = new jsPDF("p", "mm", "a4");
-  //         //Converting canvas to Image
-  //         let imgData = canvas.toDataURL("image/PNG");
-  //         //Add image Canvas to PDF
-  //         doc.addImage(imgData, 'PNG', 20, 20);
-  //
-  //         let pdfOutput = doc.output();
-  //         // using ArrayBuffer will allow you to put image inside PDF
-  //         let buffer = new ArrayBuffer(pdfOutput.length);
-  //         let array = new Uint8Array(buffer);
-  //         for (let i = 0; i < pdfOutput.length; i++) {
-  //             array[i] = pdfOutput.charCodeAt(i);
-  //         }
-  //
-  //         //Name of pdf
-  //         const fileName = "example.pdf";
-  //
-  //         // Make file
-  //         doc.save(fileName);
-  //
-  //     });
-  // }
-
-
-  downloadImage(){
-    const div = document.getElementById("htmltoimage");
-    const options = {background:"white",height :div.clientHeight , width : div.clientWidth  };
-
-
-    // let teste = document.getElementById("htmltoimage");
-    console.log("teste element", div);
-   html2canvas(div, options).then(canvas => {
-     console.log("canvas", canvas);
-    let a = document.createElement('a');
-    document.body.appendChild(a);
-    a.download = "test.png";
-    a.href =  canvas.toDataURL();
-    a.click();
-  });
-
-
- }
-
-    // async ionViewCanLeave() {
-    //     if(this.invoiceForm.dirty && ! this.avoidAlertMessage) {
-    //         let alertPopup = await this.alertCtrl.create({
-    //             header: 'Queres Descartar Cambios?',
-    //             message: '¿Estas seguro que deseas salir de la factura sin guardar las modificaciones?',
-    //             buttons: [{
-    //                     text: 'Si',
-    //                     handler: () => {
-    //                         // alertPopup.dismiss().then(() => {
-    //                             this.exitPage();
-    //                         // });
-    //                     }
-    //                 },
-    //                 {
-    //                     text: 'No',
-    //                     handler: () => {
-    //                         // need to do something if the user stays?
-    //                     }
-    //                 }]
-    //         });
-    //
-    //         // Show the alert
-    //         alertPopup.present();
-    //
-    //         // Return false to avoid the page to be popped up
-    //         return false;
-    //     }
-    // }
-    //
-    // private exitPage() {
-    //     this.invoiceForm.markAsPristine();
-    //     // this.navCtrl.navigateBack();
-    // }
-
-    // goNextStep() {
-    //   if (this.invoiceForm.value.state == 'QUOTATION'){
-    //     if(!this.invoiceForm.value._id){
-    //       this.justSave();
-    //     }
-    //     this.confirmInvoice();
-    //   } else if (this.invoiceForm.value.state == 'CONFIRMED'){
-    //     this.navCtrl.navigateBack();
-    //   } else if (this.invoiceForm.value.state == 'PAID'){
-    //     this.navCtrl.navigateBack();
-    //   }
-    // }
 
     async goNextStep() {
       if (this.invoiceForm.value.state == 'QUOTATION'){
@@ -383,118 +268,6 @@ export class InvoicePage implements OnInit {
         } else {
           this.setNumber();
         }
-
-
-
-
-      //   console.log("set Focus");
-      //   if (this.invoiceForm.value.client_request == ''){
-      //     this.clientRequest.setFocus();
-      //   }
-      //   else if (this.invoiceForm.value.production){
-      //     if (Object.keys(this.invoiceForm.value.product).length === 0){
-      //       this.selectProduct();
-      //     } else {
-      //       this.setStarted();
-      //       return;
-      //     }
-      //   } else {
-      //     if (Object.keys(this.invoiceForm.value.contact).length === 0){
-      //       this.selectContact();
-      //     } else {
-      //       this.setStarted();
-      //       return;
-      //     }
-      //   }
-      // }
-      // if (this.invoiceForm.value.state == 'STARTED'){
-      //   if(!this.invoiceForm.value._id){
-      //     this.buttonSave();
-      //   }
-      //   if (this.invoiceForm.value.works.length==0){
-      //     this.addItem();
-      //   }
-      //   else if (this.invoiceForm.value.inputs.length==0 && ! this.ignore_inputs){
-      //     console.log("ignore_inputs");
-      //     let prompt = this.alertCtrl.create({
-      //       title: 'Productos Consumidos',
-      //       message: 'Has consumido algun producto durante el trabajo?',
-      //       buttons: [
-      //         {
-      //           text: 'No',
-      //           handler: data => {
-      //             console.log("ignore_inputs");
-      //
-      //             this.ignore_inputs = true;
-      //             let prompt = this.alertCtrl.create({
-      //               title: 'Viaticos',
-      //               message: 'Has hecho algun viaja para realizar el trabajo?',
-      //               buttons: [
-      //                 {
-      //                   text: 'No',
-      //                   handler: data => {
-      //                     // this.addTravel();
-      //                     this.ignore_travels = true;
-      //                   }
-      //                 },
-      //                 {
-      //                   text: 'Si',
-      //                   handler: data => {
-      //                     this.addTravel();
-      //                   }
-      //                 }
-      //               ]
-      //             });
-      //             prompt.present();
-      //           }
-      //         },
-      //         {
-      //           text: 'Si',
-      //           handler: data => {
-      //             this.addInput();
-      //             // item.description = data.description;
-      //           }
-      //         }
-      //       ]
-      //     });
-      //
-      //     prompt.present();
-      //   }
-      //   else if (this.invoiceForm.value.travels.length==0 && ! this.ignore_travels){
-      //     console.log("ignore_travels");
-      //     let prompt = this.alertCtrl.create({
-      //       title: 'Viaticos',
-      //       message: 'Has hecho algun viaja para realizar el trabajo?',
-      //       buttons: [
-      //         {
-      //           text: 'No',
-      //           handler: data => {
-      //             // this.addTravel();
-      //             this.ignore_travels = true;
-      //           }
-      //         },
-      //         {
-      //           text: 'Si',
-      //           handler: data => {
-      //             this.addTravel();
-      //           }
-      //         }
-      //       ]
-      //     });
-      //     prompt.present();
-      //   }
-      //   else {
-      //     console.log("Confirm Service");
-      //     this.confirmService();
-      //   }
-      // } else if (this.invoiceForm.value.state == 'CONFIRMED'){
-      //     this.beforeAddPayment();
-      // } else if (this.invoiceForm.value.state == 'PAID'){
-      //   if (this.invoiceForm.value.invoices.length){
-      //     this.navCtrl.navigateBack();
-      //   } else {
-      //     this.addInvoice();
-      //   }
     } else {
         // this.navCtrl.navigateBack();
       }
@@ -624,42 +397,6 @@ export class InvoicePage implements OnInit {
         residual: residual,
       });
     }
-
-    // addItem(){
-    //   if (this.invoiceForm.value.state=='QUOTATION'){
-    //     this.avoidAlertMessage = true;
-    //     this.events.subscribe('select-product', (product) => {
-    //       this.invoiceForm.value.items.push({
-    //         'description': product.name,
-    //         'quantity': 1,
-    //         'price': product.price,
-    //         'product': product
-    //       })
-    //       this.recomputeValues();
-    //       this.invoiceForm.markAsDirty();
-    //       this.avoidAlertMessage = false;
-    //       this.events.unsubscribe('select-product');
-    //     })
-    //     this.navCtrl.navigateForward(ProductsPage, {"select": true});
-    //   }
-    // }
-    //
-    // openItem(item) {
-    //   if (this.invoiceForm.value.state=='QUOTATION'){
-    //     this.avoidAlertMessage = true;
-    //     this.events.subscribe('select-product', (product) => {
-    //       //console.log("vars", product);
-    //       item.price = product.price;
-    //       item.product = product;
-    //       item.description = product.name;
-    //       this.recomputeValues();
-    //       this.avoidAlertMessage = false;
-    //       this.invoiceForm.markAsDirty();
-    //       this.events.unsubscribe('select-product');
-    //     })
-    //     this.navCtrl.navigateForward(ProductsPage, {"select": true});
-    //   }
-    // }
 
     async addItem(){
       if(!this.invoiceForm.value._id){
@@ -869,28 +606,25 @@ export class InvoicePage implements OnInit {
           {
             text: 'Imprimir',
             handler: data => {
-              console.log("imprimiv");
+              // console.log("imprimiv");
               if (this.invoiceForm.value.type == 'out'){
-                console.log("cliente");
+                // console.log("cliente");
                 this.configService.setNextSequence('invoice', data.code).then(async dados => {
                   // console.log("imprimiv");
-                  console.log("dados", dados);
+                  // console.log("dados", dados);
                   this.invoiceForm.patchValue({
                     code: data.code,
                     state: 'PRINTED',
                   });
-                  console.log("recomputeValues");
+                  // console.log("recomputeValues");
                   this.recomputeValues();
-                  console.log("formatService");
-                  this.presentActionSheet();
-                  // if (this.platform.is('cordova')){
-                  //   this.presentActionSheet();
-                  // } else {
-                  //   let dotmatrix_model:any = await this.pouchdbService.getDoc('config.invoice');
-                  //   console.log("dotmatrix_model", dotmatrix_model);
-                  //   let layout = await this.pouchdbService.getDoc('config.profile')
-                  //   this.formatService.printInvoice(this.invoiceForm.value, layout['invoicePrint']);
-                  // }
+                  // console.log("formatService");
+                  // this.presentActionSheet();
+                  if (this.platform.is('cordova')){
+                    this.printAndroid();
+                  } else {
+                    this.presentActionSheet();
+                  }
                   this.justSave();
                   // this.navCtrl.navigateBack();
                 });
