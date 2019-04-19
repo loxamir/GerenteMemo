@@ -1490,11 +1490,11 @@ export class InvoicePage implements OnInit {
              template = template.replace("+direction+", direction);
              template = template.replace("+phone+", phone);
              template = template.replace("+lines+", lines);
-             template = template.replace("+totalExentas+", totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+totalIva5+", totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+totalIva10+", totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             template = template.replace("+totalExentas+", totalExentas.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             template = template.replace("+totalIva5+", totalIva5.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             template = template.replace("+totalIva10+", totalIva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
              template = template.replace("+totalInWords+", totalInWords);
-             template = template.replace("+totalAmount+", totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             template = template.replace("+totalAmount+", totalAmount.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
              template = template.replace("+amountIva5+", amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
              template = template.replace("+amountIva10+", amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
              template = template.replace("+amountIva+", amountIva.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
