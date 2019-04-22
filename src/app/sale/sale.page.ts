@@ -1307,7 +1307,7 @@ export class SalePage implements OnInit {
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, ("Cliente: "+this.saleForm.value.contact.name).substring(0, data.ticketPrint.paperWidth/2-5));
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth/2-5, ("Condicion de pago: "+payment_condition).substring(0, data.ticketPrint.paperWidth/2-5))+"\n";
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
-        let product_description = this.formatService.string_pad(data.ticketPrint.paperWidth -(6+8+11+12)-6, "Descripción");
+        let product_description = this.formatService.string_pad(data.ticketPrint.paperWidth -(6+8+11+12)-6, "Descripcion");
         ticket += "|Codigo|Cantidad|"+product_description+"|   Precio  |  Subtotal  |\n";
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += lines;

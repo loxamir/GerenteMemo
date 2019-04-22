@@ -1853,7 +1853,7 @@ export class ServicePage implements OnInit {
             lines += "|"+code+"|"+quantity+"|"+product_name+"|"+price+"|"+subtotal+"|\n";
           });
           ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
-          let product_description = this.formatService.string_pad(data.ticketPrint.servicePaperWidth -(6+8+11+12)-6, "Descripción");
+          let product_description = this.formatService.string_pad(data.ticketPrint.servicePaperWidth -(6+8+11+12)-6, "Descripcion");
           ticket += "|Codigo|Cantidad|"+product_description+"|   Precio  |  Subtotal  |\n";
           ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
           ticket += lines;
@@ -1874,7 +1874,7 @@ export class ServicePage implements OnInit {
               let product_name = this.formatService.string_pad(data.ticketPrint.servicePaperWidth -(6+8+11+12)-6, item.product.name.substring(0, data.ticketPrint.servicePaperWidth/2));
               lines += "|"+code+"|"+quantity+"|"+product_name+"|"+price+"|"+subtotal+"|\n";
             });
-            product_description = this.formatService.string_pad(data.ticketPrint.servicePaperWidth -(6+8+11+12)-6, "Descripción");
+            product_description = this.formatService.string_pad(data.ticketPrint.servicePaperWidth -(6+8+11+12)-6, "Descripcion");
             ticket += "|Codigo|Cantidad|"+product_description+"|   Precio  |  Subtotal  |\n";
             ticket += this.formatService.string_pad(data.ticketPrint.servicePaperWidth, "", 'center', '-')+"\n";
             ticket += lines;
