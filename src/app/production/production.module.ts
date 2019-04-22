@@ -8,9 +8,9 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
-import { Printer } from '@ionic-native/printer';
-import { SocialSharing } from '@ionic-native/social-sharing';
+// import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+// import { Printer } from '@ionic-native/printer/ngx';
+// import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 // import { TextToSpeech } from '@ionic-native/text-to-speech';
 // import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { ProductionPopover, } from './production.popover';
@@ -48,9 +48,9 @@ const routes: Routes = [
     ProductionPopover,
   ],
   providers: [
-    BluetoothSerial,
-    Printer,
-    SocialSharing,
+    // BluetoothSerial,
+    // Printer,
+    // SocialSharing,
     // TextToSpeech,
     // SpeechRecognition,
   ]

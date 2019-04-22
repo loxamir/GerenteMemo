@@ -4,7 +4,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { NavController, Platform, LoadingController, AlertController, Events, ToastController, ModalController, PopoverController} from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-import { Printer } from '@ionic-native/printer';
+import { Printer } from '@ionic-native/printer/ngx';
 // import { SpeechRecognition } from '@ionic-native/speech-recognition';
 // import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { TranslateService } from '@ngx-translate/core';
