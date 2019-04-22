@@ -214,14 +214,14 @@
     </ion-button>
   </ion-fab> -->
 
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">
       <ion-icon name="backspace" *ngIf="workForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!workForm.dirty"> </ion-icon>
       <span *ngIf="workForm.dirty">Descartar</span>
       <span *ngIf="!workForm.dirty">Volver</span>
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="workForm.dirty">
     <ion-button (click)="buttonSave()"  color="success" class="save-button">

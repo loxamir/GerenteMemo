@@ -4,7 +4,7 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item class="popover-item" (click)="editArea()">Relatorio de Maquinas</ion-item>
+    <ion-item class="popover-item" (click)="gotoReport()">Relatorio de Maquinas</ion-item>
   </ion-list>
   `
 })
@@ -24,9 +24,9 @@ export class MachinesPopover {
     this.pop.dismiss();
   }
 
-  editArea(){
+  gotoReport(){
     // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
-    this.navParams.data.doc.areaForm.value.showForm = ! this.navParams.data.doc.areaForm.value.showForm;
+    this.navCtrl.navigateForward(['/activity-report', {}]);
     this.pop.dismiss();
   }
 

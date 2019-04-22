@@ -49,6 +49,16 @@
        <ion-label>{{'Mostrar Sempre' | translate}}</ion-label>
        <ion-toggle formControlName="show"></ion-toggle>
     </ion-item>
+    <ion-item no-padding class="field-50">
+      <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
+      <ion-select formControlName="type"
+      cancelText="{{ 'CANCEL' | translate }}"
+      okText="{{ 'OK' | translate }}"
+      interface="popover">
+        <ion-select-option value="area">Agricola</ion-select-option>
+        <ion-select-option value="machine">Maquina</ion-select-option>
+      </ion-select>
+    </ion-item>
     <ion-item  class="field-100" style="margin-top: 10px;">
       <ion-label position="stacked">{{ 'NOTE' | translate }}</ion-label>
       <ion-textarea #note formControlName="note"
@@ -79,14 +89,14 @@
 
   </form>
 
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">
       <ion-icon name="backspace" *ngIf="activityForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!activityForm.dirty"> </ion-icon>
       <span *ngIf="activityForm.dirty">Descartar</span>
       <span *ngIf="!activityForm.dirty">Volver</span>
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="activityForm.dirty">
     <ion-button (click)="buttonSave()"  color="success" class="save-button">

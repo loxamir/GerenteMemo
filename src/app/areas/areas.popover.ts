@@ -4,8 +4,9 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item class="popover-item" (click)="editArea()">Relatorio Agricola</ion-item>
-    <ion-item class="popover-item" (click)="editArea()">Safras</ion-item>
+    <ion-item class="popover-item" (click)="gotoReport()">Relatorio Agricola</ion-item>
+    <ion-item class="popover-item" (click)="gotoCrops()">Safras</ion-item>
+    <ion-item class="popover-item" (click)="gotoActivities()">Actividades</ion-item>
   </ion-list>
   `
 })
@@ -25,9 +26,20 @@ export class AreasPopover {
     this.pop.dismiss();
   }
 
-  editArea(){
+  gotoCrops(){
     // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
-    this.navParams.data.doc.areaForm.value.showForm = ! this.navParams.data.doc.areaForm.value.showForm;
+    this.navCtrl.navigateForward(['/crops', {}]);
+    this.pop.dismiss();
+  }
+
+  gotoReport(){
+    // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
+    this.navCtrl.navigateForward(['/activity-report', {}]);
+    this.pop.dismiss();
+  }
+
+  gotoActivities(){
+    this.navCtrl.navigateForward(['/activitys', {}]);
     this.pop.dismiss();
   }
 

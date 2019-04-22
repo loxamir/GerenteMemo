@@ -112,6 +112,7 @@ export class WorkPage implements OnInit {
 
   calculate(formula) {
     if (formula) {
+      console.log("eval", formula);
       let result = eval(formula);
       return result;
     } else {

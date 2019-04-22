@@ -68,6 +68,7 @@ export class ActivityPage implements OnInit {
       summary: new FormControl(),
       saveScript: new FormControl(),
       show: new FormControl(true),
+      type: new FormControl('area'),
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
