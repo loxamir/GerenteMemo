@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NavController,  ModalController, LoadingController,
@@ -44,6 +44,7 @@ const STORAGE_KEY = 'my_images';
 })
 export class AreaPage implements OnInit {
 @ViewChild('content') content;
+@ViewChild('pwaphoto') pwaphoto: ElementRef;
   areaForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -57,6 +58,7 @@ export class AreaPage implements OnInit {
   isCordova = false;
   diffDays = 0;
   showBotom = false;
+  imgURI: string = null;
   images = [];
   constructor(
     public navCtrl: NavController,
@@ -112,6 +114,67 @@ export class AreaPage implements OnInit {
       }
     })
   }
+
+  async getImage(){
+    let avatar = await this.pouchdbService.getAttachment(this._id, 'avatar.png');
+    // console.log("avatar", avatar);
+    this.firstFileToBase64(avatar).then((result: string) => {
+      // console.log("result", result);
+      this.imgURI = result;
+    });
+  }
+
+
+  openPWAPhotoPicker() {
+    if (this.pwaphoto == null) {
+      return;
+    }
+
+    this.pwaphoto.nativeElement.click();
+  }
+
+  uploadPWA() {
+
+    if (this.pwaphoto == null) {
+      return;
+    }
+
+    const fileList: FileList = this.pwaphoto.nativeElement.files;
+
+    if (fileList && fileList.length > 0) {
+      this.firstFileToBase64(fileList[0]).then((result: string) => {
+        this.imgURI = result;
+        // console.log("result", result);
+      }, (err: any) => {
+        // Ignore error, do nothing
+        // console.log("nulo", err);
+        this.imgURI = null;
+      });
+    }
+  }
+
+  private firstFileToBase64(fileImage): Promise<{}> {
+    return new Promise((resolve, reject) => {
+      let fileReader: FileReader = new FileReader();
+      if (fileReader && fileImage != null) {
+        fileReader.readAsDataURL(fileImage);
+        fileReader.onload = () => {
+          let resultado = fileReader.result.toString().split(',')[1];
+          console.log("result", fileImage);
+          this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
+          resolve(fileReader.result);
+        };
+
+        fileReader.onerror = (error) => {
+          reject(error);
+        };
+      } else {
+        reject(new Error('No file found'));
+      }
+    });
+  }
+
+
   showEdit (){
     this.showForm = !this.showForm;
   }
@@ -231,6 +294,7 @@ export class AreaPage implements OnInit {
     this.loadStoredImages();
     await this.loading.present();
     if (this._id){
+      this.getImage();
       this.areaService.getArea(this._id).then((data) => {
         data.note = null;
         this.areaForm.patchValue(data);

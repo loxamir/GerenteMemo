@@ -50,6 +50,21 @@
 
 <ion-content class="list-mini-content" #content>
 
+
+  <!-- <h2 (click)="openPWAPhotoPicker()">Tire uma foto da area</h2> -->
+  <ion-button class="button-100" color="success" (click)="openPWAPhotoPicker()">Escolher/Tirar Foto</ion-button>
+
+  <!-- <ion-button (click)="openPWAPhotoPicker()">Let's go!</ion-button> -->
+
+  <div *ngIf="imgURI != null">
+    <img [src]="imgURI" #imageSrc style="width: 200px;">
+  </div>
+
+  <div id="pwa">
+    <input type="file"  #pwaphoto accept="image/x-png,image/jpeg" (change)="uploadPWA()" style="display: none;">
+    <!-- <input type="file" id="pwaphoto" #pwaphoto accept="image/*" capture="camera"  style="display: none;"/> -->
+  </div>
+
   <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!showForm">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>

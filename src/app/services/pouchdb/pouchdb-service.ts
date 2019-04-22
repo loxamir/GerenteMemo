@@ -47,6 +47,44 @@ export class PouchdbService {
     });
   }
 
+  attachFile(doc_id, file_name, file_data){
+    return new Promise(async (resolve, reject)=>{
+      let self= this;
+      let document = await this.getDoc(doc_id);
+      let attachment = document['_attachments'] || {};
+      attachment[file_name] = {
+        content_type: 'image/png',
+        data: file_data
+      }
+      document['_attachments'] = attachment;
+      console.log("documento", document);
+      self.db.put(document).then(async function () {
+        let data = await self.db.getAttachment(doc_id, file_name);
+        console.log("data", data);
+        resolve(data);
+        // return this.db.getAttachment(doc_id, file_name);
+      }).then((blob) => {
+        // var url = window.URL.createObjectURL(blob);
+        console.log("url", blob);
+        resolve(blob);
+        // var img = document.createElement('img');
+        // img.src = url;
+        // document.body.appendChild(img);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    })
+  }
+
+  async getAttachment(doc_id, file_name){
+    let self = this;
+    return new Promise(async (resolve, reject)=>{
+      let data = await self.db.getAttachment(doc_id, file_name);
+      console.log("data", data);
+      resolve(data)
+    })
+  }
+
   getConnect(){
     let self = this;
     return new Promise((resolve, reject)=>{
