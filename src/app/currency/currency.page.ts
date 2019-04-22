@@ -52,6 +52,7 @@ export class CurrencyPage implements OnInit {
     ngOnInit() {
       this.currencyForm = this.formBuilder.group({
         name: new FormControl('', Validators.required),
+        precision: new FormControl(2),
         sale_rate: new FormControl(1),
         purchase_rate: new FormControl(1),
         _id: new FormControl(''),

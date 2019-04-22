@@ -50,8 +50,8 @@
                   </h3>
                 </ion-col>
                 <ion-col no-padding size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
-                  <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">$ {{item.price| number:'1.0'}}</h2>
-                  <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.0'}}</h2>
+                  <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">$ {{item.price| number:'1.'+currency_precision}}</h2>
+                  <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.'+currency_precision}}</h2>
                 </ion-col>
               </ion-row>
               <ion-row no-padding *ngIf="item.stock>=0&&item.stock<item.stock_min&&item.type=='product'">

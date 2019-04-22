@@ -27,13 +27,17 @@
         </ng-container>
       </div>
       <ion-item class="field-100">
+        <ion-label position="floating">{{'Precisión Decimal' | translate}}</ion-label>
+        <ion-input type="number" formControlName="precision"></ion-input>
+      </ion-item>
+      <ion-item class="field-100">
         <ion-label position="floating">{{'SALE' | translate}}</ion-label>
-        <ion-input type="text" formControlName="sale_rate" autocomplete='name'></ion-input>
+        <ion-input type="number" formControlName="sale_rate" autocomplete='name'></ion-input>
       </ion-item>
 
       <ion-item class="field-100">
         <ion-label position="floating">{{'PURCHASE' | translate}}</ion-label>
-        <ion-input type="text" formControlName="purchase_rate" autocomplete='name'></ion-input>
+        <ion-input type="number" formControlName="purchase_rate" autocomplete='name'></ion-input>
       </ion-item>
 
     </ion-row>

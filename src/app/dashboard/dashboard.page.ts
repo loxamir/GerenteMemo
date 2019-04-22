@@ -45,6 +45,7 @@ export class DashboardPage implements OnInit {
     line_show: boolean = false;
     bar_show: boolean = false;
     pie_show: boolean = false;
+    currency_precision = 2;
 
 
     title: string = 'D3.js with Ionic 2!';
@@ -94,7 +95,7 @@ export class DashboardPage implements OnInit {
       }
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       this.dashboardForm = this.formBuilder.group({
         name: new FormControl('', Validators.required),
         view: new FormControl(''),
@@ -104,6 +105,8 @@ export class DashboardPage implements OnInit {
         sortBy: new FormControl('value_decrease'),
         _id: new FormControl(''),
       });
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       this.pouchdbService.getIntervalList('_design', '_design0').then((docs: any) =>{
         // console.log("docs", docs);
         docs.forEach((item: any)=>{
@@ -128,11 +131,6 @@ export class DashboardPage implements OnInit {
       }
     }
 
-    ionViewDidEnter() {
-      // setTimeout(() => {
-      //   this.name.setFocus();
-      // }, 200);
-    }
     changeSection(){
       console.log("form", this.dashboardForm.value.section);
       let tab = this.dashboardForm.value.section;

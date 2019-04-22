@@ -33,7 +33,7 @@ export class AccountsReportPage implements OnInit {
 
     accountCategories: any[];
     accounts: any[];
-
+    currency_precision = 2;
     languages: Array<LanguageModel>;
 
     constructor(
@@ -138,6 +138,7 @@ export class AccountsReportPage implements OnInit {
     }
 
     async ngOnInit() {
+
       this.accountsReportForm = this.formBuilder.group({
         contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
         name: new FormControl(''),
@@ -171,6 +172,8 @@ export class AccountsReportPage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       this.recomputeValues();
     }
 

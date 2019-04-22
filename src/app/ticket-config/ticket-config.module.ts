@@ -8,20 +8,15 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
-import { Printer } from '@ionic-native/printer';
-import { SocialSharing } from '@ionic-native/social-sharing';
-// import { TextToSpeech } from '@ionic-native/text-to-speech';
-// import { SpeechRecognition } from '@ionic-native/speech-recognition';
-import { ProductionPopover, } from './production.popover';
+
 import { IonicModule } from '@ionic/angular';
 
-import { ProductionPage } from './production.page';
+import { TicketConfigPage } from './ticket-config.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: ProductionPage
+    component: TicketConfigPage
   }
 ];
 
@@ -39,20 +34,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes)
   ],
-  declarations: [ProductionPage,
-  ProductionPopover,
-],
-  entryComponents: [
-    ProductionPopover,
-  ],
-  providers: [
-    BluetoothSerial,
-    Printer,
-    SocialSharing,
-    // TextToSpeech,
-    // SpeechRecognition,
-  ]
+  declarations: [TicketConfigPage]
 })
-export class ProductionPageModule {}
+export class TicketConfigPageModule {}

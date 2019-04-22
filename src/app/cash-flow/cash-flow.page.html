@@ -71,13 +71,13 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                    {{item.income|number:'1.0'}}
+                    {{item.income|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                    {{item.expense|number:'1.0'}}
+                    {{item.expense|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                    {{item.total|number:'1.0'}}
+                    {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
                 <ion-row class="report-title">
@@ -85,13 +85,13 @@
                     TOTAL
                   </ion-col>
                   <ion-col style="text-align: right">
-                    {{items_income|number:'1.0'}}
+                    {{items_income|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col  style="text-align: right">
-                    {{items_expense|number:'1.0'}}
+                    {{items_expense|number:'1.'+currency_precision}}
                   </ion-col>
                   <ion-col  style="text-align: right">
-                    {{total|number:'1.0'}}
+                    {{total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
               </ion-list>
@@ -118,13 +118,13 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.income|number:'1.0'}}
+                  {{item.income|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.expense|number:'1.0'}}
+                  {{item.expense|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total|number:'1.0'}}
+                  {{item.total|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
               <ion-row class="report-title">
@@ -132,13 +132,13 @@
                   TOTAL
                 </ion-col>
                 <ion-col style="text-align: right">
-                  {{items_income|number:'1.0'}}
+                  {{items_income|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col  style="text-align: right">
-                  {{items_expense|number:'1.0'}}
+                  {{items_expense|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col  style="text-align: right">
-                  {{total|number:'1.0'}}
+                  {{total|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
             </ion-list>
@@ -167,13 +167,13 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.income|number:'1.0'}}
+                  {{item.income|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.expense|number:'1.0'}}
+                  {{item.expense|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.total|number:'1.0'}}
+                  {{item.total|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
               <ion-row class="report-title">
@@ -181,13 +181,13 @@
                   TOTAL
                 </ion-col>
                 <ion-col style="text-align: right">
-                  {{items_income|number:'1.0'}}
+                  {{items_income|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col  style="text-align: right">
-                  {{items_expense|number:'1.0'}}
+                  {{items_expense|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col  style="text-align: right">
-                  {{total|number:'1.0'}}
+                  {{total|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
             </ion-list>

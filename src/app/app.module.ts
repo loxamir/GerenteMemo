@@ -71,6 +71,7 @@ import { WorkPageModule } from './work/work.module';
 import { WorksPageModule } from './works/works.module';
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
+import { TicketConfigPageModule } from './ticket-config/ticket-config.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ActivitysPageModule } from './activitys/activitys.module';
 import { ActivityPageModule } from './activity/activity.module';
@@ -161,6 +162,7 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     UserPageModule,
     CheckPageModule,
     InvoiceConfigPageModule,
+    TicketConfigPageModule,
     BrowserModule,
     FormsModule,
     ContactListPageModule,

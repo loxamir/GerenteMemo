@@ -30,6 +30,7 @@ export class WarehousePage implements OnInit {
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
+  currency_precision = 2;
 
   constructor(
     public navCtrl: NavController,
@@ -54,7 +55,7 @@ export class WarehousePage implements OnInit {
     this.translate.use('es');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.warehouseForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
@@ -69,6 +70,8 @@ export class WarehousePage implements OnInit {
       default: new FormControl(false),
       _id: new FormControl(''),
     });
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     if (this._id){
       this.getWarehouse(this._id).then((data) => {
         this.warehouseForm.patchValue(data);

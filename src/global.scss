@@ -306,12 +306,19 @@ ion-item-sliding, ion-item-sliding .item {
   background: #2ad078;
 }
 
+
 .item-title-second {
   margin-top: 5px;
   margin-bottom: 0;
   margin-left: 0px;
   text-align: right;
   font-size: 14px;
+}
+
+.quantity-button {
+  width: 100%;
+  font-size: 20px;
+  height: 30px;
 }
 
 ion-button {

@@ -28,7 +28,7 @@
         *ngIf="!serviceForm.value.production"
      class="summary-50">
       <h4 class="field-label">{{'TOTAL' | translate}}</h4>
-      <h4 class="field-value" style="color:blue">$ {{serviceForm.value.total|number:'1.0'}}</h4>
+      <h4 class="field-value" style="color:blue">$ {{serviceForm.value.total|number:'1.'+currency_precision}}</h4>
     </ion-item>
 
     <ion-item
@@ -36,7 +36,7 @@
         *ngIf="serviceForm.value.production"
      class="summary-100">
       <h4 class="field-label">{{'TOTAL' | translate}}</h4>
-      <h4 class="field-value" style="color:blue">$ {{serviceForm.value.total|number:'1.0'}}</h4>
+      <h4 class="field-value" style="color:blue">$ {{serviceForm.value.total|number:'1.'+currency_precision}}</h4>
     </ion-item>
 
     <ion-item
@@ -44,14 +44,14 @@
     no-padding
      class="summary-50">
       <h4 class="field-label">{{'Cobrar' | translate}}</h4>
-      <h4 class="field-value" style="color:red">$ {{serviceForm.value.residual|number:'1.0'}}</h4>
+      <h4 class="field-value" style="color:red">$ {{serviceForm.value.residual|number:'1.'+currency_precision}}</h4>
     </ion-item>
     <!-- <ion-item
     *ngIf="serviceForm.value.production"
     no-padding
      class="summary-50">
       <h4 class="field-label">{{'Insumos' | translate}}</h4>
-      <h4 class="field-value" style="color:red">$ {{serviceForm.value.residual|number:'1.0'}}</h4>
+      <h4 class="field-value" style="color:red">$ {{serviceForm.value.residual|number:'1.'+currency_precision}}</h4>
     </ion-item> -->
   </ion-row>
   <ion-row class="state-header">
@@ -103,26 +103,45 @@
           no-padding
           (click)="selectContact()"
           *ngIf="!serviceForm.value.production"
-           class="field-50">
+           class="field-100">
             <h4 class="field-label">{{'CLIENT' | translate}}</h4>
             <h4 class="field-value">{{serviceForm.value.contact && serviceForm.value.contact.name || 'Selecionar'}}</h4>
           </ion-item>
           <ion-item
           no-padding
           (click)="selectProduct()"
-           class="field-50">
+          *ngIf="serviceForm.value.product && serviceForm.value.product.name"
+           class="field-100">
             <h4 class="field-label">{{'Servicio Prestado' | translate}}</h4>
             <h4 class="field-value">{{serviceForm.value.product && serviceForm.value.product.name || 'Selecionar'}}</h4>
           </ion-item>
-          <ion-item
+
+
+          <!-- <ion-item
            no-padding
            *ngIf="serviceForm.value.production"
            class="field-100">
             <ion-label position="floating" style="font-size:14px">{{'PRODUCED_QUANTITY' | translate }}</ion-label>
             <ion-input #input type="number"
             formControlName="quantity"></ion-input>
-          </ion-item>
-
+          </ion-item> -->
+          <ion-item no-padding class="item-content"  class="field-50">
+            <h4 class="field-label">{{'DATE' | translate }}</h4>
+            <ion-datetime
+            class="field-50-datetime"
+            displayFormat="DD/MM/YYYY"
+            pickerFormat="DD/MM/YYYY"
+            formControlName="date"
+            [disabled]="serviceForm.value.state=='PAID'">
+            </ion-datetime>
+        </ion-item>
+        <ion-item
+         no-padding
+         (click)="selectPaymentCondition()"
+         class="field-50">
+          <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
+          <h4 class="field-value">{{serviceForm.value.paymentCondition && serviceForm.value.paymentCondition.name || 'Selecionar'}}</h4>
+        </ion-item>
         </ion-row>
         <!-- <ion-row
           *ngIf="!serviceForm.value.production"
@@ -144,17 +163,7 @@
           </ion-col>
         </ion-row> -->
           <ion-row>
-          <ion-item
-           no-padding
-           (click)="selectPaymentCondition()"
-           *ngIf="!serviceForm.value.production && (serviceForm.value.state == 'CONFIRMED' || serviceForm.value.state == 'PAID' || serviceForm.value.state == 'STARTED')"
-           class="field-50">
-            <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
-            <h4 class="field-value">{{serviceForm.value.paymentCondition && serviceForm.value.paymentCondition.name || 'Selecionar'}}</h4>
-          </ion-item>
-          <ion-item no-padding class="item-content"
-          *ngIf="!serviceForm.value.production && (serviceForm.value.state == 'CONFIRMED' || serviceForm.value.state == 'PAID' || serviceForm.value.state == 'STARTED')"
-          class="field-50">
+          <!--
 
             <h4 class="field-label">{{'DATE' | translate }}</h4>
             <ion-datetime
@@ -177,7 +186,7 @@
           formControlName="date"
           [disabled]="serviceForm.value.state=='PAID'">
           </ion-datetime>
-      </ion-item>
+      </ion-item> -->
 
 
     </ion-row>
@@ -256,7 +265,7 @@
           </ion-col>
           <ion-col >
             <h4 class="field-label">{{'TAX' | translate}}</h4>
-            <h4 class="field-value">$ {{item.tax|number:'1.0'}}</h4>
+            <h4 class="field-value">$ {{item.tax|number:'1.'+currency_precision}}</h4>
           </ion-col>
           <ion-button class="relation-button"
           [ngClass]="{following: !item.inverse_relation}"
@@ -282,7 +291,7 @@
           </ion-col>
           <ion-col>
             <h4 class="field-label">{{'AMOUNT' | translate}}</h4>
-            <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
+            <h4 class="field-value">$ {{item.paid|number:'1.'+currency_precision}}</h4>
           </ion-col>
           <ion-button class="relation-button"
           [ngClass]="{following: !item.inverse_relation}"
@@ -306,17 +315,22 @@
       <ion-segment-button value="inputs">
         Repuestos
       </ion-segment-button>
-      <ion-segment-button value="travel">
+      <!-- <ion-segment-button value="travel">
         Viatico
-      </ion-segment-button>
+      </ion-segment-button> -->
     </ion-segment>
 
     <div [ngSwitch]="serviceForm.value.section" class="forms-wrapper">
       <div *ngSwitchCase="'works'" class="post-example-view">
-        <ion-button class="button-100" color="success" (click)="addWork()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Servicio</ion-button>
+        <ion-button class="button-100" color="success" (click)="addWork()"
+        *ngIf="serviceForm.value.state!='CONFIRMED' && serviceForm.value.state!='PAID'">
+        <ion-icon name="add" style="margin-right:10px;"></ion-icon>
+          Agregar Servicio
+        </ion-button>
 
-        <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="serviceForm.value.works.length">
-          Total $ {{serviceForm.value.work_amount|number:'1.0'}}
+        <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;"
+        *ngIf="serviceForm.value.works.length">
+          Total $ {{serviceForm.value.work_amount|number:'1.'+currency_precision}}
         </h2>
         <!-- <ion-card class="internal-card">
           <ion-row>
@@ -327,7 +341,7 @@
             </ion-col>
             <ion-col size="9" (click)="showWorks()">
               <h4 class="section-title">{{'SERVICES_DONE' | translate}}</h4>
-              <h4 class="field-value" style="margin-top:0px;">$ {{serviceForm.value.work_amount|number:'1.0'}}</h4>
+              <h4 class="field-value" style="margin-top:0px;">$ {{serviceForm.value.work_amount|number:'1.'+currency_precision}}</h4>
             </ion-col>
             <ion-col size="2" class="open-item-col"
               *ngIf="serviceForm.value.state == 'STARTED'"
@@ -338,7 +352,8 @@
 
           <ion-list no-lines style="background: #ddd">
 
-            <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.works">
+            <ion-item-sliding  class="list-item"
+            *ngFor="let item of serviceForm.value.works">
               <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
                 <ion-card>
                   <ion-row (click)="editWork(item)" class="product-name-row">
@@ -351,14 +366,14 @@
                     *ngIf="!serviceForm.value.production">
                       <span class="price-label">Precio:</span>
                       <div style="font-size: 15px;display: contents; color:red">
-                         $ {{item.price|number:'1.0'}}<div style="color: gray;display:inline">/hora</div>
+                         $ {{item.price|number:'1.'+currency_precision}}<div style="color: gray;display:inline"></div>
                       </div>
                     </ion-col>
                     <ion-col  size="12"
                     *ngIf="serviceForm.value.production">
                       <span class="price-label">Costo:</span>
                       <div style="font-size: 15px;display: contents; color:red">
-                         $ {{item.cost|number:'1.0'}}<div style="color: gray;display:inline">/hora</div>
+                         $ {{item.cost|number:'1.'+currency_precision}}<div style="color: gray;display:inline"></div>
                       </div>
                     </ion-col>
                   </ion-row>
@@ -368,12 +383,12 @@
                       <div
                       *ngIf="!serviceForm.value.production"
                       style="font-size: 20px;color:green;">
-                         ${{item.price*item.time|number:'1.0'}}
+                         ${{item.price*item.quantity|number:'1.'+currency_precision}}
                       </div>
                       <div
                       *ngIf="serviceForm.value.production"
                       style="font-size: 20px;color:green;">
-                         ${{item.cost*item.time|number:'1.0'}}
+                         ${{item.cost*item.quantity|number:'1.'+currency_precision}}
                       </div>
                     </ion-col>
                   </ion-row>
@@ -382,7 +397,7 @@
 
                   <ion-row>
                     <ion-col style="text-align: center;">
-                      Horas
+                      Cantidad
                     </ion-col>
                   </ion-row>
                   <ion-row>
@@ -390,7 +405,7 @@
                       <ion-button class="quantity-button" (click)="remWork(item)">-</ion-button>
                     </ion-col>
                     <ion-col size="6" (click)="editWork(item)" style="text-align: center;font-size: 30px;">
-                      {{item.time}}
+                      {{item.quantity}}
                     </ion-col>
                     <ion-col size="3">
                       <ion-button class="quantity-button" (click)="sumWork(item)">+</ion-button>
@@ -410,10 +425,12 @@
         <!-- </ion-card> -->
       </div>
       <div *ngSwitchCase="'inputs'" class="post-example-view">
-        <ion-button class="button-100" color="success" (click)="addInput()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Repuesto</ion-button>
+        <ion-button class="button-100" color="success"
+        *ngIf="serviceForm.value.state!='CONFIRMED' && serviceForm.value.state!='PAID'"
+        (click)="addInput()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Repuesto</ion-button>
 
         <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="serviceForm.value.inputs.length">
-          Total $ {{serviceForm.value.input_amount|number:'1.0'}}
+          Total $ {{serviceForm.value.input_amount|number:'1.'+currency_precision}}
         </h2>
         <!-- <ion-card class="internal-card" >
           <ion-row>
@@ -424,7 +441,7 @@
             </ion-col>
             <ion-col size="9" (click)="showInputs()">
               <h4 class="section-title">{{'Materiales Consumidos' | translate}}</h4>
-              <h4 class="field-value"  style="margin-top:0px;">$ {{serviceForm.value.input_amount|number:'1.0'}}</h4>
+              <h4 class="field-value"  style="margin-top:0px;">$ {{serviceForm.value.input_amount|number:'1.'+currency_precision}}</h4>
             </ion-col> -->
             <!-- <ion-col size="2" class="item-content"
             *ngIf="serviceForm.value.state == 'STARTED'">
@@ -456,13 +473,13 @@
                     <ion-col  size="12" (click)="editItemPrice(item)" *ngIf="!serviceForm.value.production">
                       <span class="price-label">Precio:</span>
                       <div style="font-size: 15px;display: contents; color:red">
-                         ${{item.price|number:'1.0'}}
+                         ${{item.price|number:'1.'+currency_precision}}
                       </div>
                     </ion-col>
                     <ion-col  size="12" (click)="editItemPrice(item)" *ngIf="serviceForm.value.production">
                       <span class="price-label">Costo:</span>
                       <div style="font-size: 15px;display: contents; color:red">
-                         ${{item.cost|number:'1.0'}}
+                         ${{item.cost|number:'1.'+currency_precision}}
                       </div>
                     </ion-col>
 
@@ -471,10 +488,10 @@
                     <ion-col  size="12" class="item-content price-tag" (click)="editItemPrice(item)" >
                       <span class="price-label">SubTotal:</span>
                       <div style="font-size: 20px;color:green;"  *ngIf="!serviceForm.value.production">
-                         ${{item.price*item.quantity|number:'1.0'}}
+                         ${{item.price*item.quantity|number:'1.'+currency_precision}}
                       </div>
                       <div style="font-size: 20px;color:green;"  *ngIf="serviceForm.value.production">
-                         ${{item.cost*item.quantity|number:'1.0'}}
+                         ${{item.cost*item.quantity|number:'1.'+currency_precision}}
                       </div>
                     </ion-col>
                   </ion-row>
@@ -512,12 +529,14 @@
 
         <!-- </ion-card> -->
       </div>
-      <div *ngSwitchCase="'travel'" class="post-example-view">
-        <ion-button class="button-100" color="success" (click)="addTravel()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Viatico</ion-button>
+      <!-- <div *ngSwitchCase="'travel'" class="post-example-view">
+        <ion-button class="button-100"
+        *ngIf="serviceForm.value.state!='CONFIRMED' && serviceForm.value.state!='PAID'"
+        color="success" (click)="addTravel()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>Agregar Viatico</ion-button>
 
         <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="serviceForm.value.travels.length">
-          Total $ {{serviceForm.value.travel_amount|number:'1.0'}}
-        </h2>
+          Total $ {{serviceForm.value.travel_amount|number:'1.'+currency_precision}}
+        </h2> -->
         <!-- <ion-card class="internal-card"> -->
           <!-- <ion-row>
             <ion-col (click)="showTravels()" size="1">
@@ -527,7 +546,7 @@
             </ion-col>
             <ion-col size="9" (click)="showTravels()">
               <h4 class="section-title">{{'Viaticos' | translate}}</h4>
-              <h4 class="field-value"  style="margin-top:0px;">$ {{serviceForm.value.travel_amount|number:'1.0'}}</h4>
+              <h4 class="field-value"  style="margin-top:0px;">$ {{serviceForm.value.travel_amount|number:'1.'+currency_precision}}</h4>
             </ion-col> -->
             <!-- <ion-col size="2" class="item-content"
             *ngIf="serviceForm.value.state == 'STARTED'">
@@ -544,7 +563,7 @@
               <ion-icon name="add" class="open-item-arrow"></ion-icon>
             </ion-col>
           </ion-row> -->
-          <ion-list no-lines style=";background: #ddd">
+          <!-- <ion-list no-lines style=";background: #ddd">
             <ion-item-sliding  class="list-item" *ngFor="let item of serviceForm.value.travels">
               <ion-item style="width: 100%; margin-right: -5px;--background: #ddd">
                 <ion-card class="internal-card">
@@ -557,7 +576,7 @@
                     <ion-col  size="12" (click)="editTravelPrice(item)" >
                       <span class="price-label">Precio:</span>
                       <div style="font-size: 15px;display: contents; color:red">
-                         $ {{item.price|number:'1.0'}}<div style="color: gray;display:inline">/km</div>
+                         $ {{item.price|number:'1.'+currency_precision}}<div style="color: gray;display:inline">/km</div>
                       </div>
 
                     </ion-col>
@@ -566,7 +585,7 @@
                     <ion-col  size="12">
                       <span class="price-label">SubTotal:</span>
                       <div style="font-size: 20px;color:green;">
-                         ${{item.price*item.distance|number:'1.0'}}
+                         ${{item.price*item.distance|number:'1.'+currency_precision}}
                       </div>
                     </ion-col>
                   </ion-row>
@@ -599,9 +618,9 @@
                 </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
-          </ion-list>
+          </ion-list> -->
         <!-- </ion-card> -->
-      </div>
+      <!-- </div> -->
       </div>
 
 
@@ -629,12 +648,12 @@
 
   </form>
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
       Proximo
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">

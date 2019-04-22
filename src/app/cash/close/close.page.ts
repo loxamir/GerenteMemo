@@ -28,6 +28,7 @@ export class ClosePage implements OnInit {
   closeForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
+  currency_precision = 2;
 
   constructor(
     public navCtrl: NavController,
@@ -67,6 +68,8 @@ export class ClosePage implements OnInit {
     });
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     if (this._id){
       setTimeout(() => {
         this.closeForm.markAsPristine();

@@ -48,7 +48,7 @@ export class ReportPage implements OnInit {
     today: any;
     _id: string;
     avoidAlertMessage: boolean;
-
+    currency_precision = 2;
     languages: Array<LanguageModel>;
 
     constructor(
@@ -823,7 +823,7 @@ export class ReportPage implements OnInit {
       this.goNextStep();
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       //var today = new Date().toISOString();
       this.reportForm = this.formBuilder.group({
         contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
@@ -853,6 +853,8 @@ export class ReportPage implements OnInit {
         invoices: new FormControl([]),
         _id: new FormControl(''),
       });
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       if (this._id){
         this.reportService.getReport(this._id).then((data) => {
           //console.log("data", data);

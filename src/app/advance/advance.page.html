@@ -59,7 +59,7 @@
             </ion-col>
             <ion-col no-padding>
               <h4 class="field-label">{{'RECEIVED' | translate}}</h4>
-              <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
+              <h4 class="field-value">$ {{item.paid|number:'1.'+currency_precision}}</h4>
             </ion-col>
           </ion-row>
         </ion-item>

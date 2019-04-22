@@ -38,6 +38,7 @@ export class InvoicePage implements OnInit {
   @Input() items;
   @Input() type: any = 'out';
   @Input() origin_id;
+  currency_precision = 2;
 
   @ViewChild('select') select;
   @HostListener('document:keypress', ['$event'])
@@ -183,6 +184,8 @@ export class InvoicePage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       this.recomputeValues();
       //this.loading.present();
       // console.log("id", this._id);
@@ -209,7 +212,7 @@ export class InvoicePage implements OnInit {
 
   async printMatrix(){
     let layout = await this.pouchdbService.getDoc('config.profile');
-    this.formatService.printInvoice(this.invoiceForm.value, layout['invoicePrint']);
+    this.formatService.printInvoice(this.invoiceForm.value, layout['invoicePrint'], this.currency_precision, layout['currency_id'].split('.')[1]);
   }
 
   async presentActionSheet() {
@@ -218,145 +221,30 @@ export class InvoicePage implements OnInit {
       role: 'destructive',
       icon: 'print',
       handler: () => {
-        if (this.platform.is('cordova')){
-          this.printAndroid();
-        } else {
           this.printPDF();
-        }
-        console.log('Delete clicked');
       }
-    }];
-    if (this.platform.is('cordova')){
-      buttons.push({
-        role: 'bluetooth',
-        text: 'Bluetooth',
-        icon: 'print',
-        handler: () => {
-          console.log('BluetoothSerial');
-          this.posprint();
-        }
-      })
-    } else {
-      buttons.push({
+      },
+      {
         role: 'matrix',
         text: 'Matricial',
         icon: 'print',
         handler: () => {
-          console.log('Share clicked');
           this.printMatrix();
         }
-      });
-    }
-    buttons.push({
-      text: 'Cancel',
-      icon: 'close',
-      role: 'cancel',
-      handler: () => {
-        console.log('Cancel clicked');
+      },
+      {
+        text: 'Cancelar',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {}
       }
-    });
+    ];
     const actionSheet = await this.actionSheetController.create({
       header: 'Impressora',
       buttons: buttons
     });
     await actionSheet.present();
   }
-
-  //   generatePdf() {
-  //     const div = document.getElementById("htmltoimage");
-  //     const options = {background: "white", height: div.clientHeight, width: div.clientWidth};
-  //
-  //     html2canvas(div, options).then((canvas) => {
-  //         //Initialize JSPDF
-  //         let doc = new jsPDF("p", "mm", "a4");
-  //         //Converting canvas to Image
-  //         let imgData = canvas.toDataURL("image/PNG");
-  //         //Add image Canvas to PDF
-  //         doc.addImage(imgData, 'PNG', 20, 20);
-  //
-  //         let pdfOutput = doc.output();
-  //         // using ArrayBuffer will allow you to put image inside PDF
-  //         let buffer = new ArrayBuffer(pdfOutput.length);
-  //         let array = new Uint8Array(buffer);
-  //         for (let i = 0; i < pdfOutput.length; i++) {
-  //             array[i] = pdfOutput.charCodeAt(i);
-  //         }
-  //
-  //         //Name of pdf
-  //         const fileName = "example.pdf";
-  //
-  //         // Make file
-  //         doc.save(fileName);
-  //
-  //     });
-  // }
-
-
-  downloadImage(){
-    const div = document.getElementById("htmltoimage");
-    const options = {background:"white",height :div.clientHeight , width : div.clientWidth  };
-
-
-    // let teste = document.getElementById("htmltoimage");
-    console.log("teste element", div);
-   html2canvas(div, options).then(canvas => {
-     console.log("canvas", canvas);
-    let a = document.createElement('a');
-    document.body.appendChild(a);
-    a.download = "test.png";
-    a.href =  canvas.toDataURL();
-    a.click();
-  });
-
-
- }
-
-    // async ionViewCanLeave() {
-    //     if(this.invoiceForm.dirty && ! this.avoidAlertMessage) {
-    //         let alertPopup = await this.alertCtrl.create({
-    //             header: 'Queres Descartar Cambios?',
-    //             message: '¿Estas seguro que deseas salir de la factura sin guardar las modificaciones?',
-    //             buttons: [{
-    //                     text: 'Si',
-    //                     handler: () => {
-    //                         // alertPopup.dismiss().then(() => {
-    //                             this.exitPage();
-    //                         // });
-    //                     }
-    //                 },
-    //                 {
-    //                     text: 'No',
-    //                     handler: () => {
-    //                         // need to do something if the user stays?
-    //                     }
-    //                 }]
-    //         });
-    //
-    //         // Show the alert
-    //         alertPopup.present();
-    //
-    //         // Return false to avoid the page to be popped up
-    //         return false;
-    //     }
-    // }
-    //
-    // private exitPage() {
-    //     this.invoiceForm.markAsPristine();
-    //     // this.navCtrl.navigateBack();
-    // }
-
-    // goNextStep() {
-    //   if (this.invoiceForm.value.state == 'QUOTATION'){
-    //     if(!this.invoiceForm.value._id){
-    //       this.justSave();
-    //     }
-    //     this.confirmInvoice();
-    //   } else if (this.invoiceForm.value.state == 'CONFIRMED'){
-    //     this.navCtrl.navigateBack();
-    //   } else if (this.invoiceForm.value.state == 'PAID'){
-    //     this.navCtrl.navigateBack();
-    //   }
-    // }
 
     async goNextStep() {
       if (this.invoiceForm.value.state == 'QUOTATION'){
@@ -380,118 +268,6 @@ export class InvoicePage implements OnInit {
         } else {
           this.setNumber();
         }
-
-
-
-
-      //   console.log("set Focus");
-      //   if (this.invoiceForm.value.client_request == ''){
-      //     this.clientRequest.setFocus();
-      //   }
-      //   else if (this.invoiceForm.value.production){
-      //     if (Object.keys(this.invoiceForm.value.product).length === 0){
-      //       this.selectProduct();
-      //     } else {
-      //       this.setStarted();
-      //       return;
-      //     }
-      //   } else {
-      //     if (Object.keys(this.invoiceForm.value.contact).length === 0){
-      //       this.selectContact();
-      //     } else {
-      //       this.setStarted();
-      //       return;
-      //     }
-      //   }
-      // }
-      // if (this.invoiceForm.value.state == 'STARTED'){
-      //   if(!this.invoiceForm.value._id){
-      //     this.buttonSave();
-      //   }
-      //   if (this.invoiceForm.value.works.length==0){
-      //     this.addItem();
-      //   }
-      //   else if (this.invoiceForm.value.inputs.length==0 && ! this.ignore_inputs){
-      //     console.log("ignore_inputs");
-      //     let prompt = this.alertCtrl.create({
-      //       title: 'Productos Consumidos',
-      //       message: 'Has consumido algun producto durante el trabajo?',
-      //       buttons: [
-      //         {
-      //           text: 'No',
-      //           handler: data => {
-      //             console.log("ignore_inputs");
-      //
-      //             this.ignore_inputs = true;
-      //             let prompt = this.alertCtrl.create({
-      //               title: 'Viaticos',
-      //               message: 'Has hecho algun viaja para realizar el trabajo?',
-      //               buttons: [
-      //                 {
-      //                   text: 'No',
-      //                   handler: data => {
-      //                     // this.addTravel();
-      //                     this.ignore_travels = true;
-      //                   }
-      //                 },
-      //                 {
-      //                   text: 'Si',
-      //                   handler: data => {
-      //                     this.addTravel();
-      //                   }
-      //                 }
-      //               ]
-      //             });
-      //             prompt.present();
-      //           }
-      //         },
-      //         {
-      //           text: 'Si',
-      //           handler: data => {
-      //             this.addInput();
-      //             // item.description = data.description;
-      //           }
-      //         }
-      //       ]
-      //     });
-      //
-      //     prompt.present();
-      //   }
-      //   else if (this.invoiceForm.value.travels.length==0 && ! this.ignore_travels){
-      //     console.log("ignore_travels");
-      //     let prompt = this.alertCtrl.create({
-      //       title: 'Viaticos',
-      //       message: 'Has hecho algun viaja para realizar el trabajo?',
-      //       buttons: [
-      //         {
-      //           text: 'No',
-      //           handler: data => {
-      //             // this.addTravel();
-      //             this.ignore_travels = true;
-      //           }
-      //         },
-      //         {
-      //           text: 'Si',
-      //           handler: data => {
-      //             this.addTravel();
-      //           }
-      //         }
-      //       ]
-      //     });
-      //     prompt.present();
-      //   }
-      //   else {
-      //     console.log("Confirm Service");
-      //     this.confirmService();
-      //   }
-      // } else if (this.invoiceForm.value.state == 'CONFIRMED'){
-      //     this.beforeAddPayment();
-      // } else if (this.invoiceForm.value.state == 'PAID'){
-      //   if (this.invoiceForm.value.invoices.length){
-      //     this.navCtrl.navigateBack();
-      //   } else {
-      //     this.addInvoice();
-      //   }
     } else {
         // this.navCtrl.navigateBack();
       }
@@ -621,42 +397,6 @@ export class InvoicePage implements OnInit {
         residual: residual,
       });
     }
-
-    // addItem(){
-    //   if (this.invoiceForm.value.state=='QUOTATION'){
-    //     this.avoidAlertMessage = true;
-    //     this.events.subscribe('select-product', (product) => {
-    //       this.invoiceForm.value.items.push({
-    //         'description': product.name,
-    //         'quantity': 1,
-    //         'price': product.price,
-    //         'product': product
-    //       })
-    //       this.recomputeValues();
-    //       this.invoiceForm.markAsDirty();
-    //       this.avoidAlertMessage = false;
-    //       this.events.unsubscribe('select-product');
-    //     })
-    //     this.navCtrl.navigateForward(ProductsPage, {"select": true});
-    //   }
-    // }
-    //
-    // openItem(item) {
-    //   if (this.invoiceForm.value.state=='QUOTATION'){
-    //     this.avoidAlertMessage = true;
-    //     this.events.subscribe('select-product', (product) => {
-    //       //console.log("vars", product);
-    //       item.price = product.price;
-    //       item.product = product;
-    //       item.description = product.name;
-    //       this.recomputeValues();
-    //       this.avoidAlertMessage = false;
-    //       this.invoiceForm.markAsDirty();
-    //       this.events.unsubscribe('select-product');
-    //     })
-    //     this.navCtrl.navigateForward(ProductsPage, {"select": true});
-    //   }
-    // }
 
     async addItem(){
       if(!this.invoiceForm.value._id){
@@ -866,28 +606,25 @@ export class InvoicePage implements OnInit {
           {
             text: 'Imprimir',
             handler: data => {
-              console.log("imprimiv");
+              // console.log("imprimiv");
               if (this.invoiceForm.value.type == 'out'){
-                console.log("cliente");
+                // console.log("cliente");
                 this.configService.setNextSequence('invoice', data.code).then(async dados => {
                   // console.log("imprimiv");
-                  console.log("dados", dados);
+                  // console.log("dados", dados);
                   this.invoiceForm.patchValue({
                     code: data.code,
                     state: 'PRINTED',
                   });
-                  console.log("recomputeValues");
+                  // console.log("recomputeValues");
                   this.recomputeValues();
-                  console.log("formatService");
-                  this.presentActionSheet();
-                  // if (this.platform.is('cordova')){
-                  //   this.presentActionSheet();
-                  // } else {
-                  //   let dotmatrix_model:any = await this.pouchdbService.getDoc('config.invoice');
-                  //   console.log("dotmatrix_model", dotmatrix_model);
-                  //   let layout = await this.pouchdbService.getDoc('config.profile')
-                  //   this.formatService.printInvoice(this.invoiceForm.value, layout['invoicePrint']);
-                  // }
+                  // console.log("formatService");
+                  // this.presentActionSheet();
+                  if (this.platform.is('cordova')){
+                    this.printAndroid();
+                  } else {
+                    this.presentActionSheet();
+                  }
                   this.justSave();
                   // this.navCtrl.navigateBack();
                 });
@@ -1089,51 +826,56 @@ export class InvoicePage implements OnInit {
 
     printPDF(){
       this.configService.getConfigDoc().then((data) => {
-
+        var docPdf = new jsPDF('portrait', 'mm', data.invoicePrint.paperSize || 'a4');
+        docPdf.setFontSize(data.invoicePrint.fontSize || 7);
         let template_model = data.invoice_template;
         let marginTop = data.invoicePrint['marginTop_config'];
         let marginLeft = data.invoicePrint['marginLeft_config'];
         let printerFactor = data.invoicePrint['printerFactor_config'];
-
-        Object.keys(data.invoicePrint).forEach(key=>{
-          let value = 0;
-          if (key.split("_")[1] == 'top'){
-            value = (data.invoicePrint[key] - marginTop)*printerFactor;
-          }
-          else if (key.split("_")[1] == 'left'){
-            value = (data.invoicePrint[key] - marginLeft)*printerFactor;
-          }
-          else if (key.split("_")[1] == 'width'){
-            value = (data.invoicePrint[key])*printerFactor;
-          }
-          else if (key.split("_")[1] == 'height'){
-            value = (data.invoicePrint[key])*printerFactor;
-          }
-          else {
-            // console.log("key", key);
-            return;
-          }
-          template_model = template_model.replace(key, value);
-        })
-
-        // this.printer.pick().then(printer => {
+        let topo = 0;
           let number = this.invoiceForm.value.code || "";
-          let date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
-          date = date[2]+"/"+date[1]+"/"+date[0]
-          //console.log("date", date);
           let payment_condition = this.invoiceForm.value.paymentCondition || "";
           let contact_name = this.invoiceForm.value.contact.name_legal || this.invoiceForm.value.contact.name || "";
           let doc = this.invoiceForm.value.contact.document || "";
           let direction = this.invoiceForm.value.contact.address || "";
           let phone = this.invoiceForm.value.contact.phone || "";
-          let lines = ""
           let totalExentas = 0;
           let totalIva5 = 0;
           let totalIva10 = 0;
+          docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top + topo);
+          docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top + topo);
+
+          let date = this.invoiceForm.value.date.split('T')[0].split('-');
+          if (data.invoicePrint.invoiceDateType == 'normal'){
+            date = date[2]+"/"+date[1]+"/"+date[0]
+            docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
+          } else {
+            let day = date[2];
+            docPdf.text(day, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
+
+            let month = date[1];
+            docPdf.text(this.formatService.getMonth(month), data.invoicePrint.invoiceMonth_left, data.invoicePrint.invoiceDate_top + topo);
+
+            let year = date[0];
+            docPdf.text(year, data.invoicePrint.invoiceYear_left, data.invoicePrint.invoiceDate_top + topo);
+          }
+          if (data.invoicePrint.invoicePaymentType == 'name'){
+            docPdf.text(payment_condition, data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+          } else if (this.invoiceForm.value.paymentCondition == 'Contado') {
+            docPdf.text('XX', data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+          } else {
+            docPdf.text('XX', data.invoicePrint.invoicePaymentCredit_left, data.invoicePrint.invoicePayment_top + topo);
+          }
+          docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top + topo);
+          docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top + topo);
+          docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top + topo);
+          let lines_top = data.invoicePrint.lines_top + topo;
+          let margin = 0;
           this.invoiceForm.value.items.forEach(item => {
             let quantity = item.quantity;
             let productName = item.description || item.product.name;
-            let price = item.price;
+            let code = item.product && item.product.code || '';
+            let price = parseFloat(item.price);
             let iva0 = 0;
             let iva5 = 0;
             let iva10 = 0;
@@ -1147,119 +889,230 @@ export class InvoicePage implements OnInit {
               iva5 = item.quantity*item.price;
               totalIva5 += iva5;
             }
-            lines += `<div class="lines-quantity">
-              `+quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-              </div>
-              <div class="lines-product">
-                `+productName+`
-              </div>
-              <div class="lines-price">
-                `+price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-              </div>
-              <div class="lines-tax0">
-                `+iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-              </div>
-              <div class="lines-tax5">
-                `+iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-              </div>
-              <div class="lines-tax10">
-                `+iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
-              </div>
-              <br/>`;
+              margin = data.invoicePrint.lines_left || 0;
+              if (data.invoicePrint.linesCode_width){
+                docPdf.text(code, margin, lines_top + topo, 'center');
+                margin += data.invoicePrint.linesCode_width;
+              }
+              docPdf.text(quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), margin, lines_top , 'center');
+              margin += data.invoicePrint.linesQuantity_width;
+              docPdf.text(productName.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top );
+              margin += data.invoicePrint.linesProductName_width;
+              docPdf.text(price.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesPrice_width, lines_top , 'right');
+              margin += data.invoicePrint.linesPrice_width;
+              docPdf.text(iva0.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax0_width, lines_top, 'right');
+              margin += data.invoicePrint.linesTax0_width;
+              docPdf.text(iva5.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top , 'right');
+              margin += data.invoicePrint.linesTax5_width;
+              docPdf.text(iva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top , 'right');
+              lines_top += data.invoicePrint.lines_height/data.invoicePrint.lines_limit;
           });
 
           let totalAmount = totalIva10 + totalIva5 + totalExentas;
-          let totalInWords = this.formatService.NumeroALetras(totalAmount, "PYG");
-          let amountIva10 = (totalIva10/11).toFixed(0);
-          let amountIva5 = (totalIva5/21).toFixed(0);
+          let totalInWords = this.formatService.NumeroALetras(totalAmount, data.currency_id.split('.')[1]);
+          let amountIva10 = (totalIva10/11).toFixed(this.currency_precision);
+          let amountIva5 = (totalIva5/21).toFixed(this.currency_precision);
           let amountIva = parseFloat(amountIva10) + parseFloat(amountIva5);
-          // this.printer.isAvailable().then(onSuccess => {
-          //   //console.log("onSuccess", onSuccess);
-          // }, onError => {
-          //   //console.log("onError", onError);
-          // });
-          // let options: PrintOptions = {
-          //      name: 'MyDocument',
-          //      //printerId: 'printer007',
-          //      duplex: false,
-          //      landscape: false,
-          //      grayscale: true
-          //    };
-             //console.log("dafdata", data.invoice_template);
-             let template = template_model;
-             template = template.replace("+number+", number);
-             template = template.replace("+date+", date);
-             template = template.replace("+payment_condition+", payment_condition);
-             template = template.replace("+contact_name+", contact_name);
-             template = template.replace("+doc+", doc);
-             template = template.replace("+direction+", direction);
-             template = template.replace("+phone+", phone);
-             template = template.replace("+lines+", lines);
-             template = template.replace("+totalExentas+", totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+totalIva5+", totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+totalIva10+", totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+totalInWords+", totalInWords);
-             template = template.replace("+totalAmount+", totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+amountIva5+", amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+amountIva10+", amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+amountIva+", amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             let result = ""
-             for(let i=0;i<data.invoicePrint['copy_count'];i++){
-               // console.log("teplateda", i);
-               result += template;
-               if (i<(data.invoicePrint['copy_count']-1)){
-                 result += '<div class="space"></div>';
-               }
-             }
-             console.log("html template", result);
-             let html = result;
-              let fragmentFromString = function (strHTML) {
-                return document.createRange().createContextualFragment(strHTML);
+          docPdf.text(totalExentas.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax0_left + data.invoicePrint.subTotalTax0_width, data.invoicePrint.subTotalTax0_top + topo, 'right');
+          docPdf.text(totalIva5.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax5_left + data.invoicePrint.subTotalTax5_width, data.invoicePrint.subTotalTax5_top + topo, 'right');
+          docPdf.text(totalIva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top + topo, 'right');
+
+          docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top + topo);
+          docPdf.text(totalAmount.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top + topo, 'right');
+          docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top + topo);
+          docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top + topo);
+          docPdf.text(amountIva.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax_left, data.invoicePrint.totalTax_top + topo);
+
+          if (data.invoicePrint.copy_count>=2){
+            topo += data.invoicePrint.invoice_height + data.invoicePrint.copy_height;
+              number = this.invoiceForm.value.code || "";
+              date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
+              if (data.invoicePrint.invoiceDateType == 'normal'){
+                date = date[2]+"/"+date[1]+"/"+date[0]
+                docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
+              } else {
+                let day = date[2];
+                docPdf.text(day, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
+
+                let month = date[1];
+                docPdf.text(this.formatService.getMonth(month), data.invoicePrint.invoiceMonth_left, data.invoicePrint.invoiceDate_top + topo);
+
+                let year = date[0];
+                docPdf.text(year, data.invoicePrint.invoiceYear_left, data.invoicePrint.invoiceDate_top + topo);
               }
-              let fragment = fragmentFromString(html);
-              // document.body.appendChild(fragment);
+              payment_condition = this.invoiceForm.value.paymentCondition || "";
+              contact_name = this.invoiceForm.value.contact.name_legal || this.invoiceForm.value.contact.name || "";
+              doc = this.invoiceForm.value.contact.document || "";
+              direction = this.invoiceForm.value.contact.address || "";
+              phone = this.invoiceForm.value.contact.phone || "";
+              totalExentas = 0;
+              totalIva5 = 0;
+              totalIva10 = 0;
+              docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top + topo);
+              docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top + topo);
+              if (data.invoicePrint.invoicePaymentType == 'name'){
+                docPdf.text(payment_condition, data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+              } else if (this.invoiceForm.value.paymentCondition == 'Contado') {
+                docPdf.text('XX', data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+              } else {
+                docPdf.text('XX', data.invoicePrint.invoicePaymentCredit_left, data.invoicePrint.invoicePayment_top + topo);
+              }
+              docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top + topo);
+              docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top + topo);
+              docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top + topo);
 
-             const div = document.getElementById("htmltoimage");
-             // div.html(fragment);
-             div.innerHTML = html;
-             // const hoptions = {background: "white", height: div.clientHeight, width: div.clientWidth};
-             const hoptions = {background:"white",height :div.clientHeight , width : 800  };
-             html2canvas(div, hoptions).then((canvas) => {
-               // let a = document.createElement('a');
-               // document.body.appendChild(a);
-               // a.download = "test.png";
-               // a.href =  canvas.toDataURL();
-               // a.click();
+              lines_top = data.invoicePrint.lines_top + topo;
+              margin = 0;
+              this.invoiceForm.value.items.forEach(item => {
+                let quantity = item.quantity;
+                let productName = item.description || item.product.name;
+                let code = item.product && item.product.code || '';
+                let price = parseFloat(item.price);
+                let iva0 = 0;
+                let iva5 = 0;
+                let iva10 = 0;
+                if (item.product.tax == "iva10"){
+                  iva10 = item.quantity*item.price;
+                  totalIva10 += iva10;
+                } else if (item.product.tax == "iva0"){
+                  iva0 = item.quantity*item.price;
+                  totalExentas += iva0;
+                } else if (item.product.tax == "iva5"){
+                  iva5 = item.quantity*item.price;
+                  totalIva5 += iva5;
+                }
+                  margin = data.invoicePrint.lines_left || 0;
+                  if (data.invoicePrint.linesCode_width){
+                    docPdf.text(code, margin, lines_top, 'center');
+                    margin += data.invoicePrint.linesCode_width;
+                  }
+                  docPdf.text(quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), margin, lines_top, 'center');
+                  margin += data.invoicePrint.linesQuantity_width;
+                  docPdf.text(productName.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+                  margin += data.invoicePrint.linesProductName_width;
+                  docPdf.text(price.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesPrice_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesPrice_width;
+                  docPdf.text(iva0.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax0_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesTax0_width;
+                  docPdf.text(iva5.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesTax5_width;
+                  docPdf.text(iva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+                  lines_top += data.invoicePrint.lines_height/data.invoicePrint.lines_limit;
+              });
 
-                 //Initialize JSPDF
-                 let doc = new jsPDF("p", "mm", "a4");
-                 //Converting canvas to Image
-                 let imgData = canvas.toDataURL("image/PNG");
-                 //Add image Canvas to PDF
-                 doc.addImage(imgData, 'PNG', 20, 20);
+              totalAmount = totalIva10 + totalIva5 + totalExentas;
+              totalInWords = this.formatService.NumeroALetras(totalAmount, data.currency_id.split('.')[1]);
+              amountIva10 = (totalIva10/11).toFixed(this.currency_precision);
+              amountIva5 = (totalIva5/21).toFixed(this.currency_precision);
+              amountIva = parseFloat(amountIva10) + parseFloat(amountIva5);
+              docPdf.text(totalExentas.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax0_left + data.invoicePrint.subTotalTax0_width, data.invoicePrint.subTotalTax0_top + topo, 'right');
+              docPdf.text(totalIva5.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax5_left + data.invoicePrint.subTotalTax5_width, data.invoicePrint.subTotalTax5_top + topo, 'right');
+              docPdf.text(totalIva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top + topo, 'right');
 
-                 let pdfOutput = doc.output();
-                 // using ArrayBuffer will allow you to put image inside PDF
-                 let buffer = new ArrayBuffer(pdfOutput.length);
-                 let array = new Uint8Array(buffer);
-                 for (let i = 0; i < pdfOutput.length; i++) {
-                     array[i] = pdfOutput.charCodeAt(i);
-                 }
+              docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top + topo);
+              docPdf.text(totalAmount.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top + topo, 'right');
+              docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top + topo);
+              docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top + topo);
+              docPdf.text(amountIva.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax_left, data.invoicePrint.totalTax_top + topo);
+          }
 
-                 //Name of pdf
-                 const fileName = "factura_"+number+".pdf";
+          if (data.invoicePrint.copy_count==3){
+            topo += data.invoicePrint.invoice_height + data.invoicePrint.copy_height;
+              number = this.invoiceForm.value.code || "";
+              date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
+              if (data.invoicePrint.invoiceDateType == 'normal'){
+                date = date[2]+"/"+date[1]+"/"+date[0]
+                docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
+              } else {
+                let day = date[2];
+                docPdf.text(day, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
 
-                 // Make file
-                 doc.save(fileName);
+                let month = date[1];
+                docPdf.text(this.formatService.getMonth(month), data.invoicePrint.invoiceMonth_left, data.invoicePrint.invoiceDate_top + topo);
 
-             });
+                let year = date[0];
+                docPdf.text(year, data.invoicePrint.invoiceYear_left, data.invoicePrint.invoiceDate_top + topo);
+              }
+              payment_condition = this.invoiceForm.value.paymentCondition || "";
+              contact_name = this.invoiceForm.value.contact.name_legal || this.invoiceForm.value.contact.name || "";
+              doc = this.invoiceForm.value.contact.document || "";
+              direction = this.invoiceForm.value.contact.address || "";
+              phone = this.invoiceForm.value.contact.phone || "";
+              totalExentas = 0;
+              totalIva5 = 0;
+              totalIva10 = 0;
 
-             // this.printer.print(result, options).then(onSuccess => {
-             //   console.log("onPrintSuccess2", onSuccess);
-             // }, onError => {
-             //   console.log("onPrintError2", onError);
-             // });
-           //})
+
+              docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top + topo);
+              docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top + topo);
+              if (data.invoicePrint.invoicePaymentType == 'name'){
+                docPdf.text(payment_condition, data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+              } else if (this.invoiceForm.value.paymentCondition == 'Contado') {
+                docPdf.text('XX', data.invoicePrint.invoicePayment_left, data.invoicePrint.invoicePayment_top + topo);
+              } else {
+                docPdf.text('XX', data.invoicePrint.invoicePaymentCredit_left, data.invoicePrint.invoicePayment_top + topo);
+              }
+              docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top + topo);
+              docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top + topo);
+              docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top + topo);
+
+              lines_top = data.invoicePrint.lines_top + topo;
+              margin = 0;
+              this.invoiceForm.value.items.forEach(item => {
+                let quantity = item.quantity;
+                let productName = item.description || item.product.name;
+                let code = item.product && item.product.code || '';
+                let price = parseFloat(item.price);
+                let iva0 = 0;
+                let iva5 = 0;
+                let iva10 = 0;
+                if (item.product.tax == "iva10"){
+                  iva10 = item.quantity*item.price;
+                  totalIva10 += iva10;
+                } else if (item.product.tax == "iva0"){
+                  iva0 = item.quantity*item.price;
+                  totalExentas += iva0;
+                } else if (item.product.tax == "iva5"){
+                  iva5 = item.quantity*item.price;
+                  totalIva5 += iva5;
+                }
+                  margin = data.invoicePrint.lines_left || 0;
+                  if (data.invoicePrint.linesCode_width){
+                    docPdf.text(code, margin, lines_top, 'center');
+                    margin += data.invoicePrint.linesCode_width;
+                  }
+                  docPdf.text(quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), margin, lines_top, 'center');
+                  margin += data.invoicePrint.linesQuantity_width;
+                  docPdf.text(productName.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin, lines_top);
+                  margin += data.invoicePrint.linesProductName_width;
+                  docPdf.text(price.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesPrice_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesPrice_width;
+                  docPdf.text(iva0.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax0_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesTax0_width;
+                  docPdf.text(iva5.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+                  margin += data.invoicePrint.linesTax5_width;
+                  docPdf.text(iva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),  margin + data.invoicePrint.linesTax10_width, lines_top, 'right');
+                  lines_top += data.invoicePrint.lines_height/data.invoicePrint.lines_limit;
+              });
+
+              totalAmount = totalIva10 + totalIva5 + totalExentas;
+              totalInWords = this.formatService.NumeroALetras(totalAmount, data.currency_id.split('.')[1]);
+              amountIva10 = (totalIva10/11).toFixed(this.currency_precision);
+              amountIva5 = (totalIva5/21).toFixed(this.currency_precision);
+              amountIva = parseFloat(amountIva10) + parseFloat(amountIva5);
+              docPdf.text(totalExentas.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax0_left + data.invoicePrint.subTotalTax0_width, data.invoicePrint.subTotalTax0_top + topo, 'right');
+              docPdf.text(totalIva5.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax5_left + data.invoicePrint.subTotalTax5_width, data.invoicePrint.subTotalTax5_top + topo, 'right');
+              docPdf.text(totalIva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top + topo, 'right');
+
+              docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top + topo);
+              docPdf.text(totalAmount.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top + topo, 'right');
+              docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top + topo);
+              docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top + topo);
+              docPdf.text(amountIva.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax_left, data.invoicePrint.totalTax_top + topo);
+
+
+          }
+          docPdf.save('Factura_'+number+'.pdf')
       });
     }
 
@@ -1309,7 +1162,7 @@ export class InvoicePage implements OnInit {
           this.invoiceForm.value.items.forEach(item => {
             let quantity = item.quantity;
             let productName = item.description || item.product.name;
-            let price = item.price;
+            let price = parseFloat(item.price);
             let iva0 = 0;
             let iva5 = 0;
             let iva10 = 0;
@@ -1330,24 +1183,24 @@ export class InvoicePage implements OnInit {
                 `+productName+`
               </div>
               <div class="lines-price">
-                `+price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+                `+price.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
               </div>
               <div class="lines-tax0">
-                `+iva0.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+                `+iva0.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
               </div>
               <div class="lines-tax5">
-                `+iva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+                `+iva5.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
               </div>
               <div class="lines-tax10">
-                `+iva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
+                `+iva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+`
               </div>
               <br/>`;
           });
 
           let totalAmount = totalIva10 + totalIva5 + totalExentas;
-          let totalInWords = this.formatService.NumeroALetras(totalAmount, "PYG");
-          let amountIva10 = (totalIva10/11).toFixed(0);
-          let amountIva5 = (totalIva5/21).toFixed(0);
+          let totalInWords = this.formatService.NumeroALetras(totalAmount, data.currency_id.split('.')[1]);
+          let amountIva10 = (totalIva10/11).toFixed(this.currency_precision);
+          let amountIva5 = (totalIva5/21).toFixed(this.currency_precision);
           let amountIva = parseFloat(amountIva10) + parseFloat(amountIva5);
           this.printer.isAvailable().then(onSuccess => {
             //console.log("onSuccess", onSuccess);
@@ -1371,14 +1224,14 @@ export class InvoicePage implements OnInit {
              template = template.replace("+direction+", direction);
              template = template.replace("+phone+", phone);
              template = template.replace("+lines+", lines);
-             template = template.replace("+totalExentas+", totalExentas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+totalIva5+", totalIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+totalIva10+", totalIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             template = template.replace("+totalExentas+", totalExentas.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             template = template.replace("+totalIva5+", totalIva5.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             template = template.replace("+totalIva10+", totalIva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
              template = template.replace("+totalInWords+", totalInWords);
-             template = template.replace("+totalAmount+", totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             template = template.replace("+totalAmount+", totalAmount.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
              template = template.replace("+amountIva5+", amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
              template = template.replace("+amountIva10+", amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-             template = template.replace("+amountIva+", amountIva.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+             template = template.replace("+amountIva+", amountIva.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
              let result = ""
              for(let i=0;i<data.invoicePrint['copy_count'];i++){
                // console.log("teplateda", i);
@@ -1397,145 +1250,145 @@ export class InvoicePage implements OnInit {
       });
     }
 
-    async posprint() {
-      let invoice = this.invoiceForm.value;
-      var partner_name = invoice.contact.name_legal || invoice.contact.name;
-      let contact = invoice.contact;
-      var max_lines = 10;
-      var lines_count = 0;
-      var lines = "";
-      var subtotal_10 = 0;
-      var subtotal_05 = 0;
-      var subtotal_00 = 0;
-      var iva_10 = 0;
-      var iva_05 = 0;
-      let invoiceLines = ""
-      invoice.items.forEach((line: any, index) => {
-        let line_amount_00 = 0;
-        let line_amount_05 = 0;
-        let line_amount_10 = 0;
-        let iva = "10%";
-        //IVA Exento
-        if (line.product.tax == 'iva0') {
-          line_amount_00 = line.quantity * line.price;
-          subtotal_00 += line_amount_00;
-          iva = "0%";
-        }
-        //IVA 5%
-        if (line.product.tax == 'iva5') {
-          line_amount_05 = line.quantity * line.price;
-          subtotal_05 += line_amount_05;
-          iva_05 += line_amount_05 / 21;
-          iva = "5%";
-        }
-        //IVA 10%
-        if (line.product.tax == 'iva10') {
-          line_amount_10 = line.quantity * line.price;
-          subtotal_10 += line_amount_10;
-          iva_10 = iva_10 + line_amount_10 / 11;
-          iva = "10%";
-        }
-        let productCode =this.formatService.string_pad(8, line.product.code.substring(0, 8), 'right');
-        let productName =this.formatService.string_pad(38, line.description.substring(0, 38));
-
-        let productQuantity =this.formatService.string_pad(9, line.quantity, 'right');
-        let productPrice =this.formatService.string_pad(14, parseFloat(line.price).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-        let subTotal =this.formatService.string_pad(16, (line.price*line.quantity).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-        let tax =this.formatService.string_pad(6, iva, 'right');
-        invoiceLines += productCode+" "+productName+"\n";
-        invoiceLines += productQuantity+" "+productPrice+" "+subTotal+" "+tax+"\n";
-        invoiceLines += "----------------------------------------------\n";
-        // invoiceLines += "0001  Limpia Porcelanato 5L\n";
-        // ticket += "   5  11.035.000 55.175.000  10%\n";
-        // ticket += "   5  11.035.000 55.175.000  10%\n";
-        lines_count = lines_count + 1;
-      })
-      while (lines_count < max_lines) {
-        invoiceLines += "     \n";
-        invoiceLines += "     \n";
-        invoiceLines += "     \n";
-        lines_count = lines_count + 1;
-      }
-      let ticket = "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      // ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += this.formatService.string_pad(48,(new Date(invoice.date)).toLocaleDateString('es-PY') , 'right', ' ')+"\n";
-      ticket += "         "+this.formatService.string_pad(55, partner_name.substring(0, 87), 'left', ' ')+"\n";
-      ticket += this.formatService.string_pad(48, (contact.document|| ""), 'right', ' ')+"\n";
-      ticket += "           "+this.formatService.string_pad(53, (contact.address || "").substring(0, 85), 'left', ' ')+"\n";
-      ticket += this.formatService.string_pad(48, (contact.phone|| "").substring(0, 38), 'right', ' ')+"\n";
-      ticket += this.formatService.string_pad(48, invoice.paymentCondition, 'right', ' ')+"\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "|----------------------------------------------|\n";
-      ticket += invoiceLines;
-      ticket += "\n";
-      ticket += this.formatService.string_pad(48, invoice.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-      ticket += this.formatService.string_pad(48, subtotal_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-      ticket += this.formatService.string_pad(48, subtotal_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-      ticket += this.formatService.string_pad(48, subtotal_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += this.formatService.string_pad(48, iva_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-      ticket += this.formatService.string_pad(48, iva_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-      ticket += this.formatService.string_pad(48, (iva_05+iva_10).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      ticket += "\n";
-      console.log("ticket", ticket);
-
-      // Print to bluetooth printer
-      let toast = await this.toastCtrl.create({
-      message: "Imprimiendo...",
-      duration: 3000
-    });
-    toast.present();
-    this.bluetoothSerial.isEnabled().then(res => {
-      this.bluetoothSerial.list().then((data)=> {
-        this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
-          this.bluetoothSerial.isConnected().then(res => {
-            // |---- 32 characteres ----|
-            this.bluetoothSerial.write(ticket);
-
-            setTimeout(function(){
-                // this.barcode = ""
-                this.bluetoothSerial.disconnect();
-            }, 2000);
-          }).catch(res => {
-            //console.log("res1", res);
-          });
-        },error=>{
-          //console.log("error", error);
-        });
-      })
-    }).catch(res => {
-      //console.log("res", res);
-    });
-  }
+  //   async posprint() {
+  //     let invoice = this.invoiceForm.value;
+  //     var partner_name = invoice.contact.name_legal || invoice.contact.name;
+  //     let contact = invoice.contact;
+  //     var max_lines = 10;
+  //     var lines_count = 0;
+  //     var lines = "";
+  //     var subtotal_10 = 0;
+  //     var subtotal_05 = 0;
+  //     var subtotal_00 = 0;
+  //     var iva_10 = 0;
+  //     var iva_05 = 0;
+  //     let invoiceLines = ""
+  //     invoice.items.forEach((line: any, index) => {
+  //       let line_amount_00 = 0;
+  //       let line_amount_05 = 0;
+  //       let line_amount_10 = 0;
+  //       let iva = "10%";
+  //       //IVA Exento
+  //       if (line.product.tax == 'iva0') {
+  //         line_amount_00 = line.quantity * line.price;
+  //         subtotal_00 += line_amount_00;
+  //         iva = "0%";
+  //       }
+  //       //IVA 5%
+  //       if (line.product.tax == 'iva5') {
+  //         line_amount_05 = line.quantity * line.price;
+  //         subtotal_05 += line_amount_05;
+  //         iva_05 += line_amount_05 / 21;
+  //         iva = "5%";
+  //       }
+  //       //IVA 10%
+  //       if (line.product.tax == 'iva10') {
+  //         line_amount_10 = line.quantity * line.price;
+  //         subtotal_10 += line_amount_10;
+  //         iva_10 = iva_10 + line_amount_10 / 11;
+  //         iva = "10%";
+  //       }
+  //       let productCode =this.formatService.string_pad(8, line.product.code.substring(0, 8), 'right');
+  //       let productName =this.formatService.string_pad(38, line.description.substring(0, 38));
+  //
+  //       let productQuantity =this.formatService.string_pad(9, line.quantity, 'right');
+  //       let productPrice =this.formatService.string_pad(14, parseFloat(line.price).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+  //       let subTotal =this.formatService.string_pad(16, (line.price*line.quantity).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+  //       let tax =this.formatService.string_pad(6, iva, 'right');
+  //       invoiceLines += productCode+" "+productName+"\n";
+  //       invoiceLines += productQuantity+" "+productPrice+" "+subTotal+" "+tax+"\n";
+  //       invoiceLines += "----------------------------------------------\n";
+  //       // invoiceLines += "0001  Limpia Porcelanato 5L\n";
+  //       // ticket += "   5  11.035.000 55.175.000  10%\n";
+  //       // ticket += "   5  11.035.000 55.175.000  10%\n";
+  //       lines_count = lines_count + 1;
+  //     })
+  //     while (lines_count < max_lines) {
+  //       invoiceLines += "     \n";
+  //       invoiceLines += "     \n";
+  //       invoiceLines += "     \n";
+  //       lines_count = lines_count + 1;
+  //     }
+  //     let ticket = "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     // ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += this.formatService.string_pad(48,(new Date(invoice.date)).toLocaleDateString('es-PY') , 'right', ' ')+"\n";
+  //     ticket += "         "+this.formatService.string_pad(55, partner_name.substring(0, 87), 'left', ' ')+"\n";
+  //     ticket += this.formatService.string_pad(48, (contact.document|| ""), 'right', ' ')+"\n";
+  //     ticket += "           "+this.formatService.string_pad(53, (contact.address || "").substring(0, 85), 'left', ' ')+"\n";
+  //     ticket += this.formatService.string_pad(48, (contact.phone|| "").substring(0, 38), 'right', ' ')+"\n";
+  //     ticket += this.formatService.string_pad(48, invoice.paymentCondition, 'right', ' ')+"\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "|----------------------------------------------|\n";
+  //     ticket += invoiceLines;
+  //     ticket += "\n";
+  //     ticket += this.formatService.string_pad(48, invoice.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+  //     ticket += this.formatService.string_pad(48, subtotal_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+  //     ticket += this.formatService.string_pad(48, subtotal_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+  //     ticket += this.formatService.string_pad(48, subtotal_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += this.formatService.string_pad(48, iva_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+  //     ticket += this.formatService.string_pad(48, iva_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+  //     ticket += this.formatService.string_pad(48, (iva_05+iva_10).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     ticket += "\n";
+  //     console.log("ticket", ticket);
+  //
+  //     // Print to bluetooth printer
+  //     let toast = await this.toastCtrl.create({
+  //     message: "Imprimiendo...",
+  //     duration: 3000
+  //   });
+  //   toast.present();
+  //   this.bluetoothSerial.isEnabled().then(res => {
+  //     this.bluetoothSerial.list().then((data)=> {
+  //       this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
+  //         this.bluetoothSerial.isConnected().then(res => {
+  //           // |---- 32 characteres ----|
+  //           this.bluetoothSerial.write(ticket);
+  //
+  //           setTimeout(function(){
+  //               // this.barcode = ""
+  //               this.bluetoothSerial.disconnect();
+  //           }, 2000);
+  //         }).catch(res => {
+  //           //console.log("res1", res);
+  //         });
+  //       },error=>{
+  //         //console.log("error", error);
+  //       });
+  //     })
+  //   }).catch(res => {
+  //     //console.log("res", res);
+  //   });
+  // }
 
     getInvoice(doc_id): Promise<any> {
       return new Promise((resolve, reject)=>{

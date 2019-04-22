@@ -18,6 +18,8 @@ export class WarehouseListPage implements OnInit {
   has_search = false;
   select;
   page = 0;
+  currency_precision = 2;
+
   constructor(
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
@@ -39,8 +41,10 @@ export class WarehouseListPage implements OnInit {
     this.has_search = ! this.has_search;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     //this.loading.present();
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     this.setFilteredItems();
   }
 

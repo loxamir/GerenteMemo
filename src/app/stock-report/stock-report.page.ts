@@ -37,6 +37,7 @@ export class StockReportPage implements OnInit {
   items_quantity;
   total;
   languages: Array<LanguageModel>;
+  currency_precision = 2;
 
   title: string = 'D3.js with Ionic 2!';
   margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -179,7 +180,7 @@ export class StockReportPage implements OnInit {
             items = [];
             let getList = [];
             stocks.forEach(stockLine => {
-              if (stockLine.value > 0){
+              // if (stockLine.value > 0){
                 if (result.hasOwnProperty(stockLine.key[1])) {
                   // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
                   items[result[stockLine.key[1]]] = {
@@ -198,7 +199,7 @@ export class StockReportPage implements OnInit {
                   getList.push(stockLine.key[1]);
                   result[stockLine.key[1]] = items.length-1;
                 }
-              }
+              // }
             });
 
             let products: any = await this.pouchdbService.getList(getList);
@@ -498,7 +499,7 @@ export class StockReportPage implements OnInit {
     this.goNextStep();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     //var today = new Date().toISOString();
     this.reportStockForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
@@ -513,6 +514,8 @@ export class StockReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     if (this._id) {
       this.reportService.getReport(this._id).then((data) => {
         //console.log("data", data);

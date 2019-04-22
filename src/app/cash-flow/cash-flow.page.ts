@@ -32,6 +32,7 @@ export class CashFlowPage implements OnInit {
   today: any;
   _id: string;
   avoidAlertMessage: boolean;
+  currency_precision = 2;
   items_product_total;
   items_income;
   items_expense;
@@ -347,7 +348,7 @@ export class CashFlowPage implements OnInit {
     this.goNextStep();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.cashFlowForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
       name: new FormControl(''),
@@ -361,6 +362,8 @@ export class CashFlowPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     this.goNextStep();
   }
 

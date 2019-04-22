@@ -31,6 +31,7 @@ export class BalanceReportPage implements OnInit {
     accountCategories: any[];
     accounts: any[];
     languages: Array<LanguageModel>;
+    currency_precision = 2;
 
     constructor(
       public navCtrl: NavController,
@@ -176,6 +177,8 @@ export class BalanceReportPage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       this.recomputeValues();
     }
 

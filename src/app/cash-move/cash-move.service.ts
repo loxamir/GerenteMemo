@@ -43,6 +43,7 @@ export class CashMoveService {
 
   async createCashMove(viewData){
     let cash = Object.assign({}, viewData);
+    cash.amount = cash.amount || 0;
     cash.docType = 'cash-move';
     if (viewData.accountTo_id.split(".")[1] == 'receivable'){
       cash.amount_residual = parseFloat(cash.amount);

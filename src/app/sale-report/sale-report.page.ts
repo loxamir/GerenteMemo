@@ -37,6 +37,7 @@ export class SaleReportPage implements OnInit {
   items_quantity;
   total;
   languages: Array<LanguageModel>;
+  currency_precision = 2;
 
   title: string = 'D3.js with Ionic 2!';
   margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -534,7 +535,7 @@ export class SaleReportPage implements OnInit {
     this.goNextStep();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     //var today = new Date().toISOString();
     this.reportSaleForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
@@ -549,6 +550,8 @@ export class SaleReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     if (this._id) {
       this.reportService.getReport(this._id).then((data) => {
         //console.log("data", data);

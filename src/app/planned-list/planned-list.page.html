@@ -31,13 +31,13 @@
     <ion-col class="field-100">
       {{'TOTAL' | translate }}
       <div class="cash-move-amount negative" style="text-align: center">
-        $ {{amountTotal|number:'1.0'}}
+        $ {{amountTotal|number:'1.'+currency_precision}}
       </div>
     </ion-col>
     <ion-col width-50 *ngIf="amountPaid || createReceipt" class="field-100">
       {{'TO_PAY' | translate }}
       <div class="cash-move-amount positive" style="text-align: center">
-        $ {{amountPaid|number:'1.0'}}
+        $ {{amountPaid|number:'1.'+currency_precision}}
       </div>
     </ion-col>
   </ion-row>
@@ -58,7 +58,7 @@
               <h3 class="schedule-month">{{item.doc && item.doc.dateDue| date: 'dd/MM/yyyy'}}</h3>
             </ion-col>
             <ion-col no-padding width-50 class="item-icon" align-self-center style="text-align: right;">
-              <h2  class="list-big-number" style="color: green;">$ {{item.doc && item.doc.amount_residual| number:'1.0'}}</h2>
+              <h2  class="list-big-number" style="color: green;">$ {{item.doc && item.doc.amount_residual| number:'1.'+currency_precision}}</h2>
             </ion-col>
           </ion-row>
       <ion-row no-padding>
@@ -86,7 +86,7 @@
               <h3 class="item-title" style="margin-left: 5px;">{{item.contact && item.contact.phone || ''}}</h3>
             </ion-col>
             <ion-col no-padding width-70 class="item-icon" align-self-center style="text-align: right;">
-              <h2 class="list-big-number" style="color: red;margin-right:0.5em">$ {{item.value| number:'1.0'}}</h2>
+              <h2 class="list-big-number" style="color: red;margin-right:0.5em">$ {{item.value| number:'1.'+currency_precision}}</h2>
             </ion-col>
           </ion-row>
       </ion-card>

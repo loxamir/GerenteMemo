@@ -38,6 +38,7 @@ export class PayableReportPage implements OnInit {
   items_expense;
   total;
   languages: Array<LanguageModel>;
+  currency_precision = 2;
 
   title: string = 'D3.js with Ionic 2!';
   margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -378,7 +379,7 @@ export class PayableReportPage implements OnInit {
   //   this.goNextStep();
   // }
 
-  ngOnInit() {
+  async ngOnInit() {
     //var today = new Date().toISOString();
     this.payableReportForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || undefined, Validators.required),
@@ -393,6 +394,8 @@ export class PayableReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     this.goNextStep();
   }
 

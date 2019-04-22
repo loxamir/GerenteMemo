@@ -20,6 +20,7 @@ import { Storage } from '@ionic/storage';
 import { ProductListPage } from '../product-list/product-list.page';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { InvoiceConfigPage } from '../invoice-config/invoice-config.page';
+import { TicketConfigPage } from '../ticket-config/ticket-config.page';
 import { UserPage } from '../user/user.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RestProvider } from "../services/rest/rest";
@@ -96,8 +97,10 @@ export class ConfigPage implements OnInit {
       contact_sequence: [1],
       cash_move_sequence: [1],
       stock_move_sequence: [1],
+      currency_precision: 2,
       invoice_template: [''],
       invoicePrint: [{}],
+      ticketPrint: [{}],
       users: [],
       _id: [''],
     });
@@ -126,6 +129,13 @@ export class ConfigPage implements OnInit {
     }
     //TODO: Restore this to work with multi-users
     // this.setDbUsers();
+  }
+
+  justSave() {
+    this.configService.updateConfig(this.configForm.value);
+    if (this.configForm.controls.product_sequence.dirty){
+      this.configService.setNextSequence('product', 1, this.configForm.value.product_sequence);
+    }
   }
 
   setDbUsers(){
@@ -158,6 +168,7 @@ export class ConfigPage implements OnInit {
       this.events.subscribe('select-currency', (data) => {
         this.configForm.patchValue({
           currency: data,
+          currency_precision: data.precision,
         });
         this.configForm.markAsDirty();
         this.events.unsubscribe('select-currency');
@@ -366,19 +377,46 @@ export class ConfigPage implements OnInit {
       // await profileModal.onDidDismiss(data => {
         if (data) {
           Object.keys(data).forEach(key=>{
-            if (key != 'invoiceDateType' && key != 'invoicePaymentType'){
+            if (key != 'invoiceDateType' && key != 'invoicePaymentType' && key != 'paperSize'){
               data[key] = parseFloat(data[key]);
             }
           })
           this.configForm.patchValue({
             invoicePrint: data,
           });
-          this.configForm.markAsDirty();
+          this.justSave();
         }
       // });
 
     // });
   }
+
+  async configTicketPrint() {
+    // return new Promise(async resolve => {
+      console.log("ticket", {"teste": "ok"});
+      let profileModal = await this.modalCtrl.create({
+        component: TicketConfigPage,
+        componentProps: this.configForm.value.ticketPrint,
+      });
+      await profileModal.present();
+      const { data } = await profileModal.onDidDismiss();
+      // await profileModal.onDidDismiss(data => {
+        if (data) {
+          // Object.keys(data).forEach(key=>{
+          //   if (key != 'invoiceDateType' && key != 'invoicePaymentType' && key != 'paperSize'){
+          //     data[key] = parseFloat(data[key]);
+          //   }
+          // })
+          this.configForm.patchValue({
+            ticketPrint: data,
+          });
+          this.justSave();
+        }
+      // });
+
+    // });
+  }
+
 
   addUser() {
     return new Promise(async resolve => {

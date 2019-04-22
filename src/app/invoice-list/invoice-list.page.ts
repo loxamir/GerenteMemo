@@ -23,6 +23,7 @@ export class InvoiceListPage implements OnInit {
   page = 0;
   select;
   languages: Array<LanguageModel>;
+  currency_precision = 2;
 
   constructor(
     public navCtrl: NavController,
@@ -78,6 +79,8 @@ export class InvoiceListPage implements OnInit {
   async ngOnInit() {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     this.setFilteredItems();
   }
 

@@ -15,6 +15,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { ReceiptPage } from './receipt.page';
 import { ReceiptService } from './receipt.service';
+import { ReceiptPopover } from './receipt.popover';
 
 const routes: Routes = [
   {
@@ -39,7 +40,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ReceiptPage],
+  declarations: [ReceiptPage, ReceiptPopover],
+  entryComponents: [ReceiptPopover],
   providers: [
     BluetoothSerial,
     Printer,

@@ -20,13 +20,13 @@
     no-padding
      class="summary-50">
       <h4 class="field-label">{{'TOTAL' | translate}}</h4>
-      <h4 class="field-value" style="color:blue">$ {{saleForm.value.total|number:'1.0'}}</h4>
+      <h4 class="field-value" style="color:blue">$ {{saleForm.value.total|number:'1.'+currency_precision}}</h4>
     </ion-item>
     <ion-item
     no-padding
      class="summary-50">
       <h4 class="field-label">{{'Cobrar' | translate}}</h4>
-      <h4 class="field-value" style="color:red">$ {{saleForm.value.residual|number:'1.0'}}</h4>
+      <h4 class="field-value" style="color:red">$ {{saleForm.value.residual|number:'1.'+currency_precision}}</h4>
     </ion-item>
   </ion-row>
   <ion-row  class="state-header">
@@ -118,7 +118,7 @@
           </ion-col>
           <ion-col >
             <h4 class="field-label">{{'TAX' | translate}}</h4>
-            <h4 class="field-value">$ {{item.tax|number:'1.0'}}</h4>
+            <h4 class="field-value">$ {{item.tax|number:'1.'+currency_precision}}</h4>
           </ion-col>
           </ion-row>
           </ion-card>
@@ -141,7 +141,7 @@
           </ion-col>
           <ion-col>
             <h4 class="field-label">{{'AMOUNT' | translate}}</h4>
-            <h4 class="field-value">$ {{item.paid|number:'1.0'}}</h4>
+            <h4 class="field-value">$ {{item.paid|number:'1.'+currency_precision}}</h4>
           </ion-col>
           <!-- <ion-button class="relation-button"
           [ngClass]="{following: !item.inverse_relation}"
@@ -172,7 +172,7 @@
               <ion-col  size="12" (click)="editItemPrice(item)" >
                 <span class="price-label">Precio:</span>
                 <div style="font-size: 15px;display: contents; color:red">
-                   ${{item.price|number:'1.0'}}
+                   ${{item.price|number:'1.'+currency_precision}}
                 </div>
 
               </ion-col>
@@ -181,7 +181,7 @@
               <ion-col  size="12" class="item-content price-tag" (click)="editItemPrice(item)" >
                 <span class="price-label">SubTotal:</span>
                 <div style="font-size: 20px;color:green;">
-                   ${{item.price*item.quantity|number:'1.0'}}
+                   ${{item.price*item.quantity|number:'1.'+currency_precision}}
                 </div>
               </ion-col>
             </ion-row>

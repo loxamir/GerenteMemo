@@ -32,8 +32,8 @@
               </ion-row>
              <ion-row no-padding class="content-row one-line">
                 <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-                  <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.0'}}</h2>
-                  <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.0'}}</h2>
+                  <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+                  <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
                 </ion-col>
               </ion-row>
             </ion-col>

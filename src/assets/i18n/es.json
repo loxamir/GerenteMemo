@@ -120,6 +120,7 @@
   "NUMBER": "Numero",
   "TRAVEL": "Viaje",
   "AMOUNT_RECEIVED": "Monto Recibido",
+  "AMOUNT_PAID": "Monto Entregado",
   "START_KM": "Km del Inicio",
   "LABOR_PRODUCT": "Producto de Mano de Obra",
   "INPUT_PRODUCT": "Producto de Insumo",

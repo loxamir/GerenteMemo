@@ -36,6 +36,7 @@ export class CashPage implements OnInit {
     languages: Array<LanguageModel>;
     @Input() _id: string;
     changes = {};
+    currency_precision = 2;
 
     constructor(
       public navCtrl: NavController,
@@ -115,6 +116,8 @@ export class CashPage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       if (this._id){
         this.cashService.getCash(this._id).then((data) => {
           // console.log("data", data);

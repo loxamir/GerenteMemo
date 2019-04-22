@@ -30,6 +30,7 @@ export class AdvancePage implements OnInit {
     languages: Array<LanguageModel>;
     _id: string;
     opened: boolean = false;
+    currency_precision = 2;
 
     constructor(
       public navCtrl: NavController,
@@ -58,7 +59,7 @@ export class AdvancePage implements OnInit {
       }
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       setTimeout(() => {
         this.name.setFocus();
       }, 200);
@@ -73,6 +74,8 @@ export class AdvancePage implements OnInit {
         _id: new FormControl(''),
       });
       //this.loading.present();
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       if (this._id){
         this.getAdvance(this._id).then((data) => {
           this.advanceForm.patchValue(data);

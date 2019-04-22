@@ -69,6 +69,7 @@ export class InvoiceConfigPage implements OnInit {
       contactPhone_width: new FormControl(this.navParams.data.contactPhone_width),
 
       lines_top: new FormControl(this.navParams.data.lines_top),
+      lines_left: new FormControl(this.navParams.data.lines_left),
       lines_width: new FormControl(this.navParams.data.lines_width),
       lines_limit: new FormControl(this.navParams.data.lines_limit),
       lines_height: new FormControl(this.navParams.data.lines_height),
@@ -107,6 +108,8 @@ export class InvoiceConfigPage implements OnInit {
       copy_count: new FormControl(this.navParams.data.copy_count),
       copy_height: new FormControl(this.navParams.data.copy_height),
       invoice_height: new FormControl(this.navParams.data.invoice_height),
+      paperSize: new FormControl(this.navParams.data.paperSize),
+      fontSize: new FormControl(this.navParams.data.fontSize),
 
       marginTop_config: new FormControl(this.navParams.data.marginTop_config),
       marginLeft_config: new FormControl(this.navParams.data.marginLeft_config),

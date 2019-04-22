@@ -127,7 +127,7 @@ export class PurchasePage implements OnInit {
     today: any;
     _id: string;
     avoidAlertMessage: boolean;
-
+    currency_precision = 2;
     languages: Array<LanguageModel>;
 
     constructor(
@@ -239,6 +239,8 @@ export class PurchasePage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.currency_precision = config.currency_precision;
       if (this._id){
         this.getPurchase(this._id).then((data) => {
           //console.log("data", data);
@@ -635,6 +637,29 @@ export class PurchasePage implements OnInit {
       this.events.unsubscribe('open-receipt');
       this.events.subscribe('open-receipt', (data) => {
         this.events.unsubscribe('open-receipt');
+      });
+      this.events.subscribe('cancel-receipt', (data) => {
+        let newPayments = [];
+        let residual = this.purchaseForm.value.residual;
+        this.purchaseForm.value.payments.forEach((receipt, index)=>{
+          if (receipt._id != data){
+            this.purchaseForm.value.payments.slice(index, 1);
+            newPayments.push(receipt);
+          } else {
+            residual += receipt.paid;
+          }
+        })
+        this.pouchdbService.getRelated(
+        "cash-move", "origin_id", this.purchaseForm.value._id).then((planned) => {
+          this.purchaseForm.patchValue({
+            payments: newPayments,
+            residual: residual,
+            state: 'CONFIRMED',
+            planned: planned
+          })
+          this.buttonSave();
+        });
+        this.events.unsubscribe('cancel-receipt');
       });
       let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,

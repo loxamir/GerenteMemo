@@ -293,7 +293,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
     createInventoryAdjustment(){
       if(this.productForm.value.stock != this.theoreticalStock){
-        this.configService.getConfigDoc().then((config: any)=>{
+        this.configService.getConfigDoc().then(async (config: any)=>{
           let difference = (this.productForm.value.stock - this.theoreticalStock);
           let warehouseFrom_id = 'warehouse.inventoryAdjust';
           let warehouseTo_id  = config.warehouse_id;
@@ -305,16 +305,29 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             accountFrom_id = 'account.other.stock';
             accountTo_id  = 'account.expense.negativeInventory';
           }
+          let docs: any = await this.pouchdbService.getList([
+            warehouseFrom_id,
+            warehouseTo_id,
+            accountFrom_id,
+            accountTo_id,
+          ]);
+          var doc_dict = {};
+          docs.forEach(row=>{
+            doc_dict[row.id] = row.doc.name;
+          })
           this.stockMoveService.createStockMove({
             'name': "Ajuste "+this.productForm.value.code,
             'quantity': Math.abs(difference),
             'origin_id': this.productForm.value._id,
             'contact_id': "contact.myCompany",
+            'contact_name': config.name,
             'product_id': this.productForm.value._id,
             'date': new Date(),
             'cost': (parseFloat(this.productForm.value.cost)||0)*Math.abs(difference),
             'warehouseFrom_id': warehouseFrom_id,
+            'warehouseFrom_name': doc_dict[warehouseFrom_id],
             'warehouseTo_id': warehouseTo_id,
+            'warehouseTo_name': doc_dict[warehouseTo_id],
           }).then(res => {
             console.log("res", res);
           });
@@ -322,12 +335,15 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.cashMoveService.createCashMove({
             'name': "Ajuste "+this.productForm.value.code,
             'contact_id': "contact.myCompany",
+            'contact_name': config.name,
             'amount': (parseFloat(this.productForm.value.cost)||0)*Math.abs(difference),
             'origin_id': this.productForm.value._id,
             // "project_id": this.productForm.value.project_id,
             'date': new Date(),
             'accountFrom_id': accountFrom_id,
+            'accountFrom_name': doc_dict[accountFrom_id],
             'accountTo_id': accountTo_id,
+            'accountTo_name': doc_dict[accountTo_id],
           }).then((plan: any) => {
             //console.log("Plan", plan);
             // data['_id'] = plan.id;

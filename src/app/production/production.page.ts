@@ -4,9 +4,9 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { NavController,  LoadingController, AlertController, Events, ToastController, ModalController, PopoverController} from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-import { Printer } from '@ionic-native/printer/ngx';
-import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
-import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
+import { Printer } from '@ionic-native/printer';
+// import { SpeechRecognition } from '@ionic-native/speech-recognition';
+// import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -102,6 +102,7 @@ export class ProductionPage implements OnInit {
     show_inputs: boolean = false;
     ignore_inputs: boolean = false;
     // ignore_travels: boolean = false;
+    currency_precision = 2;
 
     constructor(
       public navCtrl: NavController,
@@ -120,8 +121,8 @@ export class ProductionPage implements OnInit {
       public formatService: FormatService,
       public events:Events,
       public modal: ModalController,
-      public speechRecognition: SpeechRecognition,
-      public tts: TextToSpeech,
+      // public speechRecognition: SpeechRecognition,
+      // public tts: TextToSpeech,
       public pouchdbService: PouchdbService,
       public popoverCtrl: PopoverController,
     ) {
@@ -186,6 +187,7 @@ export class ProductionPage implements OnInit {
       await this.loading.present();
       this.configService.getConfig().then((data) => {
         console.log("dddata", data);
+        this.currency_precision = data.currency_precision;
         this.labor_product = data.labor_product;
         // this.input_product = data.input_product;
         // this.travel_product = data.travel_product;
@@ -328,51 +330,51 @@ export class ProductionPage implements OnInit {
       }
     }
 
-    listenRequest() {
-      let options = {
-        language: 'pt-BR'
-      }
-      this.speechRecognition.hasPermission()
-      .then((hasPermission: boolean) => {
-        if (!hasPermission) {
-          this.speechRecognition.requestPermission();
-        } else {
-          this.speechRecognition.startListening(options).subscribe(matches => {
-            this.productionForm.patchValue({
-              client_request: matches[0],
-            });
-            this.productionForm.markAsDirty();
-          });
-        }
-      });
-    }
-
-    listenService() {
-      let options = {
-        language: 'pt-BR'
-      }
-      this.speechRecognition.hasPermission()
-      .then((hasPermission: boolean) => {
-        if (!hasPermission) {
-          this.speechRecognition.requestPermission();
-        } else {
-          this.tts.speak({
-            text: "Diga oque deseja",
-            //rate: this.rate/10,
-            locale: "pt-BR"
-          })
-          .then(() => {
-            //console.log('Success1');
-            this.speechRecognition.startListening(options).subscribe(matches => {
-              this.productionForm.patchValue({
-                production_overview: matches[0],
-              });
-            });
-          })
-          .catch((reason: any) => console.log(reason));
-        }
-      });
-    }
+    // listenRequest() {
+    //   let options = {
+    //     language: 'pt-BR'
+    //   }
+    //   this.speechRecognition.hasPermission()
+    //   .then((hasPermission: boolean) => {
+    //     if (!hasPermission) {
+    //       this.speechRecognition.requestPermission();
+    //     } else {
+    //       this.speechRecognition.startListening(options).subscribe(matches => {
+    //         this.productionForm.patchValue({
+    //           client_request: matches[0],
+    //         });
+    //         this.productionForm.markAsDirty();
+    //       });
+    //     }
+    //   });
+    // }
+    //
+    // listenService() {
+    //   let options = {
+    //     language: 'pt-BR'
+    //   }
+    //   this.speechRecognition.hasPermission()
+    //   .then((hasPermission: boolean) => {
+    //     if (!hasPermission) {
+    //       this.speechRecognition.requestPermission();
+    //     } else {
+    //       this.tts.speak({
+    //         text: "Diga oque deseja",
+    //         //rate: this.rate/10,
+    //         locale: "pt-BR"
+    //       })
+    //       .then(() => {
+    //         //console.log('Success1');
+    //         this.speechRecognition.startListening(options).subscribe(matches => {
+    //           this.productionForm.patchValue({
+    //             production_overview: matches[0],
+    //           });
+    //         });
+    //       })
+    //       .catch((reason: any) => console.log(reason));
+    //     }
+    //   });
+    // }
 
     // async ionViewCanLeave() {
     //     if(this.productionForm.dirty && ! this.avoidAlertMessage) {

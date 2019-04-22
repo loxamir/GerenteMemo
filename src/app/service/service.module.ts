@@ -8,11 +8,11 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
-import { Printer } from '@ionic-native/printer/ngx';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
-import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { Printer } from '@ionic-native/printer';
+import { SocialSharing } from '@ionic-native/social-sharing';
+// import { TextToSpeech } from '@ionic-native/text-to-speech';
+// import { SpeechRecognition } from '@ionic-native/speech-recognition';
 // import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 // import { ProductListPage } from '../product-list/product-list.page';
 // import { ContactListPage } from '../contact-list/contact-list.page';
@@ -67,8 +67,8 @@ const routes: Routes = [
     BluetoothSerial,
     Printer,
     SocialSharing,
-    TextToSpeech,
-    SpeechRecognition,
+    // TextToSpeech,
+    // SpeechRecognition,
   ]
 })
 export class ServicePageModule {}

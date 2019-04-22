@@ -19,7 +19,7 @@
      no-padding
      class="field-50">
        <h4 class="field-label">{{'CURRENT_BALANCE' | translate }}</h4>
-       <h4 class="field-value" style="color: green;">{{cashForm.value.balance|number:'1.0'}}</h4>
+       <h4 class="field-value" style="color: green;">{{cashForm.value.balance|number:'1.'+currency_precision}}</h4>
     </ion-item>
     <ion-item class="field-50">
       <ion-button (click)="closeCash()" style="width: 100%;">
@@ -73,8 +73,8 @@
           </ion-row>
         </ion-col>
         <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-          <h2 *ngIf="item.accountFrom_id != _id" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.0'}}</h2>
-          <h2 *ngIf="item.accountTo_id != _id" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.0'}}</h2>
+          <h2 *ngIf="item.accountFrom_id != _id" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+          <h2 *ngIf="item.accountTo_id != _id" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
         </ion-col>
       </ion-row>
       <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
@@ -110,7 +110,7 @@
                Cierre <h3 class="item-title"><b>{{ ite.date|date: 'dd/MM/yyyy HH:mm' }}</b></h3>
              </ion-col>
              <ion-col no-padding size="5" style="text-align: right;">
-               Valor<h3 class="item-title"><b style="color: green">{{ ite.amount_physical| number:'1.0' }}</b></h3>
+               Valor<h3 class="item-title"><b style="color: green">{{ ite.amount_physical| number:'1.'+currency_precision }}</b></h3>
              </ion-col>
            </ion-row>
       </ion-card>
@@ -145,8 +145,8 @@
           </ion-row>
         </ion-col>
         <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-          <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.0'}}</h2>
-          <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.0'}}</h2>
+          <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+          <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
         </ion-col>
       </ion-row>
       <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
