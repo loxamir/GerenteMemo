@@ -15,6 +15,7 @@ import { FilterPage } from '../filter/filter.page';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
+import { MachinesPopover } from './machines.popover';
 
 @Component({
   selector: 'app-machines',
@@ -121,12 +122,18 @@ export class MachinesPage implements OnInit {
     });
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(MachinesPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
+  async presentPopover(myEvent) {
+    console.log("teste my event");
+    let popover = await this.popoverCtrl.create({
+      component: MachinesPopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
+  }
 
   openMachine(machine) {
     this.events.subscribe('open-machine', (data) => {

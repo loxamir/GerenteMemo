@@ -13,6 +13,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { MachinesPage } from './machines.page';
+import { MachinesPopover } from './machines.popover';
 
 const routes: Routes = [
   {
@@ -37,7 +38,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [MachinesPage],
-  providers: [MachinesService]
+  declarations: [MachinesPage, MachinesPopover],
+  providers: [MachinesService],
+  entryComponents: [MachinesPopover]
 })
 export class MachinesPageModule {}

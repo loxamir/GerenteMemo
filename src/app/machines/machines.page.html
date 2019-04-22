@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar *ngIf="showSearch" color="light">
+  <ion-toolbar *ngIf="showSearch" style="--background: #b8c9ff">
     <ion-buttons slot="start">
       <ion-button (click)="changeSearch()" color="primary">
         <ion-icon name="arrow-back"></ion-icon>
@@ -16,7 +16,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>AgroMemo</ion-title>
+    <ion-title style="padding-inline-start: 10px;">AgroMemo</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="changeSearch()">
         <ion-icon name="search"></ion-icon>

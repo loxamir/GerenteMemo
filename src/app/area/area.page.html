@@ -50,10 +50,10 @@
 
 <ion-content class="list-mini-content" #content>
 
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!showForm">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-    <ion-card class="date-card">
+    <ion-card class="date-card" *ngIf="!showForm">
       {{today|date: 'dd/MM/yyyy'}}
     </ion-card>
   <form class="sample-form validations-form"

@@ -4,12 +4,11 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item class="popover-item" (click)="editArea()">Relatorio Agricola</ion-item>
-    <ion-item class="popover-item" (click)="editArea()">Safras</ion-item>
+    <ion-item class="popover-item" (click)="editArea()">Relatorio de Maquinas</ion-item>
   </ion-list>
   `
 })
-export class AreasPopover {
+export class MachinesPopover {
   pop: PopoverController;
   today;
 
