@@ -38,6 +38,7 @@ export class AreaService {
         // var doc_dict = {};
         area.moves = [];
         docs.forEach(row=>{
+          delete row.doc.image;
           area.moves.push(row.doc);
           if (row.doc.activity_id == 'activity.rain' && !area.lastRain){
             area.lastRain = row.doc.quantity;

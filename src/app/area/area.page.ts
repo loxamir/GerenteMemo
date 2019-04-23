@@ -102,6 +102,7 @@ export class AreaPage implements OnInit {
       setTimeout(() => {
         console.log("acounteceu");
         if (this.content){
+          this.showImages();
           this.content.scrollToBottom();
         }
       }, 500);
@@ -296,6 +297,11 @@ export class AreaPage implements OnInit {
                     console.log("octx", octx);
                     ctx.canvas.toBlob(async (blob) => {
                       console.log("blob", blob);
+                      let attachment = document['_attachments'] || {};
+                      attachment['image.png'] = {
+                        content_type: 'image/png',
+                        data: blob
+                      }
 
                       let work:any = await self.pouchdbService.createDoc({
                         'docType': 'work',
@@ -307,17 +313,18 @@ export class AreaPage implements OnInit {
                         'activity_name': "Anotacion",
                         'activity_id': "activity.anotation",
                         'note': "Fotinho",
-                        'image': URL.createObjectURL(self.pwagalery.nativeElement.files[0]),
+                        // 'image': URL.createObjectURL(self.pwagalery.nativeElement.files[0]),
+                        '_attachments': attachment
                         // 'image': resPath+"/"+filePath+
                       })
                       self.areaForm.value.note = null;
                       console.log("work s", work);
-                      await self.pouchdbService.attachFile(work.id, 'image.png', blob);
+                      // await self.pouchdbService.attachFile(work.id, 'image.png', blob);
                       setTimeout(() => {
                         // if (this.content){
                           // this.showImages();
                           this.content.scrollToBottom();
-                          this.ref.detectChanges();
+                          // this.ref.detectChanges();
                           // }
                       }, 500);
                       // this.images = [newEntry, ...this.images];
@@ -546,12 +553,13 @@ export class AreaPage implements OnInit {
 
   showImages(){
     this.areaForm.value.moves.forEach(async work=>{
-      let image = await this.pouchdbService.getAttachment(work._id, 'image.png');
-      if (image){
-        this.firstFileToBase64(image).then((result: string) => {
-          // console.log("result", result);
-          work.image = result;
-        });
+      if (!work.image){
+        let image = await this.pouchdbService.getAttachment(work._id, 'image.png');
+        if (image){
+          this.firstFileToBase64(image).then((result: string) => {
+            work.image = result;
+          });
+        }
       }
     })
   }
