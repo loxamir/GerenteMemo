@@ -132,7 +132,7 @@ export class AreaPage implements OnInit {
     let self = this;
     var img = new Image;
     img.onload = function() {
-      canvasContext.drawImage(img, 0, 0);
+      canvasContext.drawImage(img, 0, 0, 360, 480);
       var base64Image = canvas.toDataURL('image/png')
       console.log(base64Image)
       self.imgURI = base64Image;
@@ -144,6 +144,55 @@ export class AreaPage implements OnInit {
     }
     img.src = URL.createObjectURL(this.pwaphoto.nativeElement.files[0]);
   }
+
+  goBack(){
+    this.navCtrl.navigateBack(['/agro-tabs/area-list']);
+  }
+
+  previewFile() {
+    let self= this;
+        var preview:any = document.querySelector('img');
+        // var preview = new Image;
+        // var file    = document.querySelector('input[type=file]').files[0];
+        var file    = this.pwaphoto.nativeElement.files[0];
+        var reader  = new FileReader();
+        var percentage = 1.0;
+            reader.addEventListener("load", function () {
+                preview.src = reader.result;
+                preview.onload = function () {
+                    var canvas:any = window.document.getElementById("canvas");
+                    var ctx = canvas.getContext("2d");
+                    canvas.height = canvas.width * (preview.height / preview.width);
+                    var oc = window.document.createElement('canvas');
+                    var octx = oc.getContext('2d');
+                    oc.width = preview.width * percentage;
+                    oc.height = preview.height * percentage;
+                    canvas.width = oc.width;
+                    canvas.height = oc.height;
+                    octx.drawImage(preview, 0, 0, oc.width, oc.height);
+                    octx.drawImage(oc, 0, 0, oc.width, oc.height);
+                    ctx.drawImage(oc, 0, 0, oc.width, oc.height,0, 0, canvas.width, canvas.height);
+                    console.log("canvas", canvas);
+                    console.log("ctx", ctx);
+                    console.log("oc", oc);
+                    console.log("octx", octx);
+                    ctx.canvas.toBlob((blob) => {
+                      console.log("blob", blob);
+                      self.pouchdbService.attachFile(self._id, 'avatar.png', blob);
+                    // const file = new File([blob], fileName, {
+                    //     type: 'image/jpeg',
+                    //     lastModified: Date.now()
+                    // });
+                  }, 'image/jpeg', 1);
+                    // var base64Image = canvas.toDataURL('image/png');
+                }
+            }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // document.getElementById('fileOpload').addEventListener('change', previewFile);
 
 
   openPWAPhotoPicker() {
@@ -181,8 +230,8 @@ export class AreaPage implements OnInit {
         fileReader.readAsDataURL(fileImage);
         fileReader.onload = () => {
           let resultado = fileReader.result.toString().split(',')[1];
-          console.log("result", fileImage);
-          this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
+          console.log("to64", fileImage);
+          // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
           resolve(fileReader.result);
         };
 

@@ -9,9 +9,10 @@ import 'rxjs/Rx';
 import { AreasService } from './areas.service';
 import { AreaService } from '../area/area.service';
 import { WorkService } from '../work/work.service';
-import { ProductPage } from '../product/product.page';
+// import { ProductPage } from '../product/product.page';
 import { FilterPage } from '../filter/filter.page';
 import { AreasPopover } from './areas.popover';
+import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 
 @Component({
   selector: 'app-areas',
@@ -32,6 +33,7 @@ export class AreasPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public areasService: AreasService,
+    public pouchdbService: PouchdbService,
     public loadingCtrl: LoadingController,
     public route: ActivatedRoute,
     public modalCtrl: ModalController,
@@ -46,6 +48,7 @@ export class AreasPage implements OnInit {
   }
 
   changeSearch(){
+    this.putImages();
     this.showSearch = !this.showSearch;
     this.searchTerm = '';
     if (this.showSearch){
@@ -133,11 +136,36 @@ export class AreasPage implements OnInit {
   setFilteredItems() {
     this.areasService.getAreas(
       this.searchTerm, 0
-    ).then((areas) => {
+    ).then(async (areas) => {
       this.areas = areas;
       this.page = 1;
-      this.loading.dismiss();
+      // setTimeout(() => {
+      // }, 500);
+        // resolve(true)
+      await this.loading.dismiss();
+      this.putImages();
     });
+  }
+
+  putImages(){
+    // return new Promise(async (resolve, reject) => {
+      this.areas.forEach(async (area:any)=>{
+        // area.image = './assets/icons/harvest.png';
+        if (!area.image){
+          let avatar = await this.pouchdbService.getAttachment(area._id, 'avatar.png');
+          console.log("avatar", avatar);
+
+          if (avatar){
+            area.image = await this.firstFileToBase64(avatar);
+          } else {
+            area.image = './assets/icons/harvest.png';
+          }
+        }
+      })
+    //   setTimeout(() => {
+    //     resolve(true)
+    //   }, 500);
+    // })
   }
 
   openArea(area) {
@@ -145,6 +173,40 @@ export class AreasPage implements OnInit {
       this.events.unsubscribe('open-area');
     })
     this.navCtrl.navigateForward(['/area', {'_id': area._id}]);
+  }
+
+  async getImage(docId){
+    return new Promise(async (resolve, reject) => {
+      let avatar = await this.pouchdbService.getAttachment(docId, 'avatar.png');
+      // console.log("avatar", avatar);
+      let url = await this.firstFileToBase64(avatar);
+      console.log("UUURL", url);
+        // console.log("result", result);
+        // this.imgURI = result;
+        resolve(url);
+        // item.image = result;
+      // });
+    })
+  }
+  private firstFileToBase64(fileImage): Promise<{}> {
+    return new Promise((resolve, reject) => {
+      let fileReader: FileReader = new FileReader();
+      if (fileReader && fileImage != null) {
+        fileReader.readAsDataURL(fileImage);
+        fileReader.onload = () => {
+          let resultado = fileReader.result.toString().split(',')[1];
+          console.log("to64", fileImage);
+          // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
+          resolve(fileReader.result);
+        };
+
+        fileReader.onerror = (error) => {
+          reject(error);
+        };
+      } else {
+        reject(new Error('No file found'));
+      }
+    });
   }
 
   selectArea(area) {

@@ -83,9 +83,15 @@ export class PouchdbService {
   async getAttachment(doc_id, file_name){
     let self = this;
     return new Promise(async (resolve, reject)=>{
-      let data = await self.db.getAttachment(doc_id, file_name);
-      console.log("data", data);
-      resolve(data)
+      try {
+        let data = await self.db.getAttachment(doc_id, file_name);
+        console.log("data", data);
+        resolve(data)
+      }
+      catch (err) {
+        console.log(err);
+        resolve(false);
+      }
     })
   }
 
