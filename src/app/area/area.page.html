@@ -17,8 +17,8 @@
     <ion-buttons slot="start" (click)="goBack()">
       <!-- <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button> -->
       <ion-icon name="arrow-back" style="font-size: 20px;"></ion-icon>
-      <ion-thumbnail>
-        <img [src]="imgURI" alt="Imagem no Encontrada" style="--border-radius:10px;">
+      <ion-thumbnail style="--border-radius:10px;">
+        <img [src]="imgURI" alt="Imagem no Encontrada">
       </ion-thumbnail>
     </ion-buttons>
     <ion-title style="padding-left: 5px;">{{areaForm.value.name}}
@@ -53,8 +53,14 @@
 </ion-header>
 
 <ion-content class="list-mini-content" #content>
-
-
+  <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
+  <!-- <img /> -->
+  <img id="imgtmp" #imgtmp style="display: none;">
+  <div id="pwa">
+    <input type="file"  #pwaphoto accept="image/x-png,image/jpeg" (change)="previewFile()"  style="display: none;">
+    <input type="file"  #pwacamera accept="image/*" capture="camera"  (change)="takeCamera()" style="display: none;"/>
+    <input type="file"  #pwagalery accept="image/x-png,image/jpeg" (change)="takeGalery()" style="display: none;">
+  </div>
   <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!showForm">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -65,7 +71,6 @@
   [formGroup]="areaForm"
   (ngSubmit)="onSubmit(areaForm.value)">
     <ion-row *ngIf="showForm">
-      <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
 
         <!-- <h2 (click)="openPWAPhotoPicker()">Tire uma foto da area</h2> -->
         <ion-button class="button-100" color="success" (click)="openPWAPhotoPicker()">Escolher/Tirar Foto</ion-button>
@@ -76,10 +81,7 @@
           <img [src]="imgURI" #imageSrc style="width: 200px;">
         </div>
 
-        <div id="pwa">
-          <input type="file"  #pwaphoto accept="image/x-png,image/jpeg" (change)="previewFile()"  style="display: none;">
-          <!-- <input type="file" id="pwaphoto" #pwaphoto accept="image/*" capture="camera"  style="display: none;"/> -->
-        </div>
+
       <ion-item
       no-padding
       class="field-100">

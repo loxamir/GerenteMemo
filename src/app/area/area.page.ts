@@ -45,6 +45,8 @@ const STORAGE_KEY = 'my_images';
 export class AreaPage implements OnInit {
 @ViewChild('content') content;
 @ViewChild('pwaphoto') pwaphoto: ElementRef;
+@ViewChild('pwacamera') pwacamera: ElementRef;
+@ViewChild('pwagalery') pwagalery: ElementRef;
   areaForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -151,7 +153,7 @@ export class AreaPage implements OnInit {
 
   previewFile() {
     let self= this;
-        var preview:any = document.querySelector('img');
+        var preview:any = document.querySelector('#imgtmp');
         // var preview = new Image;
         // var file    = document.querySelector('input[type=file]').files[0];
         var file    = this.pwaphoto.nativeElement.files[0];
@@ -183,7 +185,7 @@ export class AreaPage implements OnInit {
                     //     type: 'image/jpeg',
                     //     lastModified: Date.now()
                     // });
-                  }, 'image/jpeg', 1);
+                  });
                     // var base64Image = canvas.toDataURL('image/png');
                 }
             }, false);
@@ -192,8 +194,147 @@ export class AreaPage implements OnInit {
             reader.readAsDataURL(file);
         }
     }
+
+    takeCamera() {
+      let self= this;
+          var preview:any = document.querySelector('#imgtmp');
+          console.log("preview", preview);
+          // var preview = new Image;
+          // var file    = document.querySelector('input[type=file]').files[0];
+          var file    = this.pwacamera.nativeElement.files[0];
+          var reader  = new FileReader();
+          var percentage = 1.0;
+              reader.addEventListener("load", function () {
+                  preview.src = reader.result;
+                  preview.onload = function () {
+                      var canvas:any = window.document.getElementById("canvas");
+                      var ctx = canvas.getContext("2d");
+                      canvas.height = canvas.width * (preview.height / preview.width);
+                      var oc = window.document.createElement('canvas');
+                      var octx = oc.getContext('2d');
+                      oc.width = preview.width * percentage;
+                      oc.height = preview.height * percentage;
+                      canvas.width = oc.width;
+                      canvas.height = oc.height;
+                      octx.drawImage(preview, 0, 0, oc.width, oc.height);
+                      octx.drawImage(oc, 0, 0, oc.width, oc.height);
+                      ctx.drawImage(oc, 0, 0, oc.width, oc.height,0, 0, canvas.width, canvas.height);
+                      console.log("canvas", canvas);
+                      console.log("ctx", ctx);
+                      console.log("oc", oc);
+                      console.log("octx", octx);
+                      ctx.canvas.toBlob(async (blob) => {
+                        console.log("blob", blob);
+
+                        let work:any = await self.pouchdbService.createDoc({
+                          'docType': 'work',
+                          'date': new Date().toISOString(),
+                          'area_id': self.areaForm.value._id,
+                          'area_name': self.areaForm.value.name,
+                          'crop_id': self.areaForm.value.crop._id,
+                          'crop_name': self.areaForm.value.crop.name,
+                          'activity_name': "Anotacion",
+                          'activity_id': "activity.anotation",
+                          'note': "Fotinho",
+                          'image': URL.createObjectURL(self.pwacamera.nativeElement.files[0]),
+                          // 'image': resPath+"/"+filePath+
+                        })
+                        self.areaForm.value.note = null;
+                        console.log("work s", work);
+                        await self.pouchdbService.attachFile(work.id, 'image.png', blob);
+                        setTimeout(() => {
+                          // if (this.content){
+                            // this.showImages();
+                            this.content.scrollToBottom();
+                            this.ref.detectChanges();
+                            // }
+                        }, 500);
+                        // this.images = [newEntry, ...this.images];
+                        // this.ref.detectChanges();
+                      // const file = new File([blob], fileName, {
+                      //     type: 'image/jpeg',
+                      //     lastModified: Date.now()
+                      // });
+                    });
+                      // var base64Image = canvas.toDataURL('image/png');
+                  }
+              }, false);
+
+          if (file) {
+              reader.readAsDataURL(file);
+          }
+      }
     // document.getElementById('fileOpload').addEventListener('change', previewFile);
 
+  takeGalery() {
+    let self= this;
+        var preview:any = document.querySelector('#imgtmp');
+        console.log("preview", preview);
+        // var preview = new Image;
+        // var file    = document.querySelector('input[type=file]').files[0];
+        var file    = this.pwagalery.nativeElement.files[0];
+        var reader  = new FileReader();
+        var percentage = 1.0;
+            reader.addEventListener("load", function () {
+                preview.src = reader.result;
+                preview.onload = function () {
+                    var canvas:any = window.document.getElementById("canvas");
+                    var ctx = canvas.getContext("2d");
+                    canvas.height = canvas.width * (preview.height / preview.width);
+                    var oc = window.document.createElement('canvas');
+                    var octx = oc.getContext('2d');
+                    oc.width = preview.width * percentage;
+                    oc.height = preview.height * percentage;
+                    canvas.width = oc.width;
+                    canvas.height = oc.height;
+                    octx.drawImage(preview, 0, 0, oc.width, oc.height);
+                    octx.drawImage(oc, 0, 0, oc.width, oc.height);
+                    ctx.drawImage(oc, 0, 0, oc.width, oc.height,0, 0, canvas.width, canvas.height);
+                    console.log("canvas", canvas);
+                    console.log("ctx", ctx);
+                    console.log("oc", oc);
+                    console.log("octx", octx);
+                    ctx.canvas.toBlob(async (blob) => {
+                      console.log("blob", blob);
+
+                      let work:any = await self.pouchdbService.createDoc({
+                        'docType': 'work',
+                        'date': new Date().toISOString(),
+                        'area_id': self.areaForm.value._id,
+                        'area_name': self.areaForm.value.name,
+                        'crop_id': self.areaForm.value.crop._id,
+                        'crop_name': self.areaForm.value.crop.name,
+                        'activity_name': "Anotacion",
+                        'activity_id': "activity.anotation",
+                        'note': "Fotinho",
+                        'image': URL.createObjectURL(self.pwagalery.nativeElement.files[0]),
+                        // 'image': resPath+"/"+filePath+
+                      })
+                      self.areaForm.value.note = null;
+                      console.log("work s", work);
+                      await self.pouchdbService.attachFile(work.id, 'image.png', blob);
+                      setTimeout(() => {
+                        // if (this.content){
+                          // this.showImages();
+                          this.content.scrollToBottom();
+                          this.ref.detectChanges();
+                          // }
+                      }, 500);
+                      // this.images = [newEntry, ...this.images];
+                      // this.ref.detectChanges();
+                    // const file = new File([blob], fileName, {
+                    //     type: 'image/jpeg',
+                    //     lastModified: Date.now()
+                    // });
+                  });
+                    // var base64Image = canvas.toDataURL('image/png');
+                }
+            }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
 
   openPWAPhotoPicker() {
     if (this.pwaphoto == null) {
@@ -203,25 +344,41 @@ export class AreaPage implements OnInit {
     this.pwaphoto.nativeElement.click();
   }
 
-  uploadPWA() {
-
-    if (this.pwaphoto == null) {
+  openPWACamera() {
+    if (this.pwacamera == null) {
       return;
     }
 
-    const fileList: FileList = this.pwaphoto.nativeElement.files;
-
-    if (fileList && fileList.length > 0) {
-      this.firstFileToBase64(fileList[0]).then((result: string) => {
-        this.imgURI = result;
-        // console.log("result", result);
-      }, (err: any) => {
-        // Ignore error, do nothing
-        // console.log("nulo", err);
-        this.imgURI = null;
-      });
-    }
+    this.pwacamera.nativeElement.click();
   }
+
+  openPWAGalery() {
+    if (this.pwagalery == null) {
+      return;
+    }
+
+    this.pwagalery.nativeElement.click();
+  }
+
+  // uploadPWA() {
+  //
+  //   if (this.pwaphoto == null) {
+  //     return;
+  //   }
+  //
+  //   const fileList: FileList = this.pwaphoto.nativeElement.files;
+  //
+  //   if (fileList && fileList.length > 0) {
+  //     this.firstFileToBase64(fileList[0]).then((result: string) => {
+  //       this.imgURI = result;
+  //       // console.log("result", result);
+  //     }, (err: any) => {
+  //       // Ignore error, do nothing
+  //       // console.log("nulo", err);
+  //       this.imgURI = null;
+  //     });
+  //   }
+  // }
 
   private firstFileToBase64(fileImage): Promise<{}> {
     return new Promise((resolve, reject) => {
@@ -373,7 +530,7 @@ export class AreaPage implements OnInit {
         var timeDiff = Math.abs(date2.getTime() - date1.getTime());
         var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
         this.diffDays = diffDays - 1;
-
+        this.showImages();
         this.loading.dismiss();
         setTimeout(() => {
           if (this.content){
@@ -385,6 +542,18 @@ export class AreaPage implements OnInit {
       this.showForm = true;
       this.loading.dismiss();
     }
+  }
+
+  showImages(){
+    this.areaForm.value.moves.forEach(async work=>{
+      let image = await this.pouchdbService.getAttachment(work._id, 'image.png');
+      if (image){
+        this.firstFileToBase64(image).then((result: string) => {
+          // console.log("result", result);
+          work.image = result;
+        });
+      }
+    })
   }
 
   buttonSave() {
@@ -547,18 +716,18 @@ export class AreaPage implements OnInit {
         buttons: [{
                 text: 'Galeria',
                 handler: () => {
-                    this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
+                  this.openPWAGalery();
+                    // this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
+
                 }
             },
             {
                 text: 'Camera',
                 handler: () => {
-                    this.takePicture(this.camera.PictureSourceType.CAMERA);
+                  // this.takeCamera();
+                  this.openPWACamera();
+                    // this.takePicture(this.camera.PictureSourceType.CAMERA);
                 }
-            },
-            {
-                text: 'Cancelar',
-                role: 'cancel'
             }
         ]
     });
