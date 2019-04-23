@@ -124,6 +124,27 @@ export class AreaPage implements OnInit {
     });
   }
 
+  resizeImage(){
+    var canvas = document.createElement('canvas')
+    var canvasContext = canvas.getContext('2d')
+    canvas.setAttribute("style", 'opacity:0;position:absolute;z-index:-1;top: -100000000;left:-1000000000;width:320px;height:240px;')
+    document.body.appendChild(canvas);
+    let self = this;
+    var img = new Image;
+    img.onload = function() {
+      canvasContext.drawImage(img, 0, 0);
+      var base64Image = canvas.toDataURL('image/png')
+      console.log(base64Image)
+      self.imgURI = base64Image;
+      // Post to server
+      // sendImage(base64Image)
+
+      document.body.removeChild(canvas)
+      URL.revokeObjectURL(img.src)
+    }
+    img.src = URL.createObjectURL(this.pwaphoto.nativeElement.files[0]);
+  }
+
 
   openPWAPhotoPicker() {
     if (this.pwaphoto == null) {
