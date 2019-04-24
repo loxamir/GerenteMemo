@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild, NgZone, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { NavController,  ModalController, LoadingController,
-   AlertController, Events, PopoverController, Platform,
-   ActionSheetController, ToastController } from '@ionic/angular';
+import {
+  NavController, ModalController, LoadingController,
+  AlertController, Events, PopoverController, Platform,
+  ActionSheetController, ToastController
+} from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import 'rxjs/Rx';
@@ -43,10 +45,10 @@ const STORAGE_KEY = 'my_images';
   styleUrls: ['./area.page.scss'],
 })
 export class AreaPage implements OnInit {
-@ViewChild('content') content;
-@ViewChild('pwaphoto') pwaphoto: ElementRef;
-@ViewChild('pwacamera') pwacamera: ElementRef;
-@ViewChild('pwagalery') pwagalery: ElementRef;
+  @ViewChild('content') content;
+  @ViewChild('pwaphoto') pwaphoto: ElementRef;
+  @ViewChild('pwacamera') pwacamera: ElementRef;
+  @ViewChild('pwagalery') pwagalery: ElementRef;
   areaForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -96,29 +98,29 @@ export class AreaPage implements OnInit {
     this._id = this.route.snapshot.paramMap.get('_id');
     this.create = this.route.snapshot.paramMap.get('create');
     this.select = this.route.snapshot.paramMap.get('select');
-    this.events.subscribe('changed-work', (change)=>{
+    this.events.subscribe('changed-work', (change) => {
       console.log("chaNGE WORK", change);
       this.areaService.handleChange(this.areaForm.value.moves, change);
       setTimeout(() => {
         console.log("acounteceu");
-        if (this.content){
+        if (this.content) {
           this.showImages();
           this.content.scrollToBottom();
         }
       }, 500);
     })
     platform.ready().then(() => {
-      if (this.platform.is('cordova')){
+      if (this.platform.is('cordova')) {
         this.isCordova = true;
         ApiAIPromises.init({
           clientAccessToken: "9f4e551a24734d02b3242c6e365c49a5"
         })
-        .then((result) =>  console.log("result1", result))
+          .then((result) => console.log("result1", result))
       }
     })
   }
 
-  async getImage(){
+  async getImage() {
     let avatar = await this.pouchdbService.getAttachment(this._id, 'avatar.png');
     // console.log("avatar", avatar);
     this.firstFileToBase64(avatar).then((result: string) => {
@@ -127,7 +129,7 @@ export class AreaPage implements OnInit {
     });
   }
 
-  resizeImage(){
+  resizeImage() {
     var canvas = document.createElement('canvas')
     var canvasContext = canvas.getContext('2d')
     canvas.setAttribute("style", 'opacity:0;position:absolute;z-index:-1;top: -100000000;left:-1000000000;width:320px;height:240px;')
@@ -148,200 +150,163 @@ export class AreaPage implements OnInit {
     img.src = URL.createObjectURL(this.pwaphoto.nativeElement.files[0]);
   }
 
-  goBack(){
+  goBack() {
     this.navCtrl.navigateBack(['/agro-tabs/area-list']);
   }
 
   previewFile() {
-    let self= this;
-        var preview:any = document.querySelector('#imgtmp');
-        // var preview = new Image;
-        // var file    = document.querySelector('input[type=file]').files[0];
-        var file    = this.pwaphoto.nativeElement.files[0];
-        var reader  = new FileReader();
-        var percentage = 1.0;
-            reader.addEventListener("load", function () {
-                preview.src = reader.result;
-                preview.onload = function () {
-                    var canvas:any = window.document.getElementById("canvas");
-                    var ctx = canvas.getContext("2d");
-                    canvas.height = canvas.width * (preview.height / preview.width);
-                    var oc = window.document.createElement('canvas');
-                    var octx = oc.getContext('2d');
-                    oc.width = preview.width * percentage;
-                    oc.height = preview.height * percentage;
-                    canvas.width = oc.width;
-                    canvas.height = oc.height;
-                    octx.drawImage(preview, 0, 0, oc.width, oc.height);
-                    octx.drawImage(oc, 0, 0, oc.width, oc.height);
-                    ctx.drawImage(oc, 0, 0, oc.width, oc.height,0, 0, canvas.width, canvas.height);
-                    console.log("canvas", canvas);
-                    console.log("ctx", ctx);
-                    console.log("oc", oc);
-                    console.log("octx", octx);
-                    ctx.canvas.toBlob((blob) => {
-                      console.log("blob", blob);
-                      self.pouchdbService.attachFile(self._id, 'avatar.png', blob);
-                    // const file = new File([blob], fileName, {
-                    //     type: 'image/jpeg',
-                    //     lastModified: Date.now()
-                    // });
-                  });
-                    // var base64Image = canvas.toDataURL('image/png');
-                }
-            }, false);
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+    let self = this;
+    var preview: any = document.querySelector('#imgtmp');
+    // var preview = new Image;
+    // var file    = document.querySelector('input[type=file]').files[0];
+    var file = this.pwaphoto.nativeElement.files[0];
+    var reader = new FileReader();
+    var percentage = 1.0;
+    // reader.addEventListener("load", function() {
+    reader.onload = (event: Event) => {
+      preview.src = reader.result;
+      preview.onload = function() {
+        var canvas: any = window.document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.height = canvas.width * (preview.height / preview.width);
+        var oc = window.document.createElement('canvas');
+        var octx = oc.getContext('2d');
+        oc.width = preview.width * percentage;
+        oc.height = preview.height * percentage;
+        canvas.width = oc.width;
+        canvas.height = oc.height;
+        octx.drawImage(preview, 0, 0, oc.width, oc.height);
+        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+        ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+        console.log("canvas", canvas);
+        console.log("ctx", ctx);
+        console.log("oc", oc);
+        console.log("octx", octx);
+        ctx.canvas.toBlob((blob) => {
+          console.log("blob", blob);
+          self.pouchdbService.attachFile(self._id, 'avatar.png', blob);
+          // const file = new File([blob], fileName, {
+          //     type: 'image/jpeg',
+          //     lastModified: Date.now()
+          // });
+        });
+        // var base64Image = canvas.toDataURL('image/png');
+      }
     }
 
-    takeCamera() {
-      let self= this;
-          var preview:any = document.querySelector('#imgtmp');
-          console.log("preview", preview);
-          // var preview = new Image;
-          // var file    = document.querySelector('input[type=file]').files[0];
-          var file    = this.pwacamera.nativeElement.files[0];
-          var reader  = new FileReader();
-          var percentage = 1.0;
-              reader.addEventListener("load", function () {
-                  preview.src = reader.result;
-                  preview.onload = function () {
-                      var canvas:any = window.document.getElementById("canvas");
-                      var ctx = canvas.getContext("2d");
-                      canvas.height = canvas.width * (preview.height / preview.width);
-                      var oc = window.document.createElement('canvas');
-                      var octx = oc.getContext('2d');
-                      oc.width = preview.width * percentage;
-                      oc.height = preview.height * percentage;
-                      canvas.width = oc.width;
-                      canvas.height = oc.height;
-                      octx.drawImage(preview, 0, 0, oc.width, oc.height);
-                      octx.drawImage(oc, 0, 0, oc.width, oc.height);
-                      ctx.drawImage(oc, 0, 0, oc.width, oc.height,0, 0, canvas.width, canvas.height);
-                      console.log("canvas", canvas);
-                      console.log("ctx", ctx);
-                      console.log("oc", oc);
-                      console.log("octx", octx);
-                      ctx.canvas.toBlob(async (blob) => {
-                        console.log("blob", blob);
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  }
 
-                        let work:any = await self.pouchdbService.createDoc({
-                          'docType': 'work',
-                          'date': new Date().toISOString(),
-                          'area_id': self.areaForm.value._id,
-                          'area_name': self.areaForm.value.name,
-                          'crop_id': self.areaForm.value.crop._id,
-                          'crop_name': self.areaForm.value.crop.name,
-                          'activity_name': "Anotacion",
-                          'activity_id': "activity.anotation",
-                          'note': "Fotinho",
-                          'image': URL.createObjectURL(self.pwacamera.nativeElement.files[0]),
-                          // 'image': resPath+"/"+filePath+
-                        })
-                        self.areaForm.value.note = null;
-                        console.log("work s", work);
-                        await self.pouchdbService.attachFile(work.id, 'image.png', blob);
-                        setTimeout(() => {
-                          // if (this.content){
-                            // this.showImages();
-                            this.content.scrollToBottom();
-                            this.ref.detectChanges();
-                            // }
-                        }, 500);
-                        // this.images = [newEntry, ...this.images];
-                        // this.ref.detectChanges();
-                      // const file = new File([blob], fileName, {
-                      //     type: 'image/jpeg',
-                      //     lastModified: Date.now()
-                      // });
-                    });
-                      // var base64Image = canvas.toDataURL('image/png');
-                  }
-              }, false);
-
-          if (file) {
-              reader.readAsDataURL(file);
-          }
+  takeCamera() {
+    let self = this;
+    var preview: any = document.querySelector('#imgtmp');
+    console.log("preview", preview);
+    // var preview = new Image;
+    // var file    = document.querySelector('input[type=file]').files[0];
+    var file = this.pwacamera.nativeElement.files[0];
+    var reader = new FileReader();
+    var percentage = 1.0;
+    reader.onload = (event: Event) => {
+      preview.src = reader.result;
+      preview.onload = function() {
+        var canvas: any = window.document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.height = canvas.width * (preview.height / preview.width);
+        var oc = window.document.createElement('canvas');
+        var octx = oc.getContext('2d');
+        oc.width = preview.width * percentage;
+        oc.height = preview.height * percentage;
+        canvas.width = oc.width;
+        canvas.height = oc.height;
+        octx.drawImage(preview, 0, 0, oc.width, oc.height);
+        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+        ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+        ctx.canvas.toBlob(async (blob) => {
+          let work: any = await self.pouchdbService.createDoc({
+            'docType': 'work',
+            'date': new Date().toISOString(),
+            'area_id': self.areaForm.value._id,
+            'area_name': self.areaForm.value.name,
+            'crop_id': self.areaForm.value.crop._id,
+            'crop_name': self.areaForm.value.crop.name,
+            'activity_name': "Anotacion",
+            'activity_id': "activity.anotation",
+            'note': "Fotinho"
+          })
+          self.areaForm.value.note = null;
+          await self.pouchdbService.attachFile(work.id, 'image.png', blob);
+          setTimeout(() => {
+            this.content.scrollToBottom();
+            // this.ref.detectChanges();
+          }, 500);
+        });
       }
-    // document.getElementById('fileOpload').addEventListener('change', previewFile);
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  }
+  // document.getElementById('fileOpload').addEventListener('change', previewFile);
 
   takeGalery() {
-    let self= this;
-        var preview:any = document.querySelector('#imgtmp');
-        console.log("preview", preview);
-        // var preview = new Image;
-        // var file    = document.querySelector('input[type=file]').files[0];
-        var file    = this.pwagalery.nativeElement.files[0];
-        var reader  = new FileReader();
-        var percentage = 1.0;
-            reader.addEventListener("load", function () {
-                preview.src = reader.result;
-                preview.onload = function () {
-                    var canvas:any = window.document.getElementById("canvas");
-                    var ctx = canvas.getContext("2d");
-                    canvas.height = canvas.width * (preview.height / preview.width);
-                    var oc = window.document.createElement('canvas');
-                    var octx = oc.getContext('2d');
-                    oc.width = preview.width * percentage;
-                    oc.height = preview.height * percentage;
-                    canvas.width = oc.width;
-                    canvas.height = oc.height;
-                    octx.drawImage(preview, 0, 0, oc.width, oc.height);
-                    octx.drawImage(oc, 0, 0, oc.width, oc.height);
-                    ctx.drawImage(oc, 0, 0, oc.width, oc.height,0, 0, canvas.width, canvas.height);
-                    console.log("canvas", canvas);
-                    console.log("ctx", ctx);
-                    console.log("oc", oc);
-                    console.log("octx", octx);
-                    ctx.canvas.toBlob(async (blob) => {
-                      console.log("blob", blob);
-                      let attachment = document['_attachments'] || {};
-                      attachment['image.png'] = {
-                        content_type: 'image/png',
-                        data: blob
-                      }
-
-                      let work:any = await self.pouchdbService.createDoc({
-                        'docType': 'work',
-                        'date': new Date().toISOString(),
-                        'area_id': self.areaForm.value._id,
-                        'area_name': self.areaForm.value.name,
-                        'crop_id': self.areaForm.value.crop._id,
-                        'crop_name': self.areaForm.value.crop.name,
-                        'activity_name': "Anotacion",
-                        'activity_id': "activity.anotation",
-                        'note': "Fotinho",
-                        // 'image': URL.createObjectURL(self.pwagalery.nativeElement.files[0]),
-                        '_attachments': attachment
-                        // 'image': resPath+"/"+filePath+
-                      })
-                      self.areaForm.value.note = null;
-                      console.log("work s", work);
-                      // await self.pouchdbService.attachFile(work.id, 'image.png', blob);
-                      setTimeout(() => {
-                        // if (this.content){
-                          // this.showImages();
-                          this.content.scrollToBottom();
-                          // this.ref.detectChanges();
-                          // }
-                      }, 500);
-                      // this.images = [newEntry, ...this.images];
-                      // this.ref.detectChanges();
-                    // const file = new File([blob], fileName, {
-                    //     type: 'image/jpeg',
-                    //     lastModified: Date.now()
-                    // });
-                  });
-                    // var base64Image = canvas.toDataURL('image/png');
-                }
-            }, false);
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+    let self = this;
+    var preview: any = document.querySelector('#imgtmp');
+    var file = this.pwagalery.nativeElement.files[0];
+    var reader = new FileReader();
+    var percentage = 1.0;
+    if (file) {
+      reader.readAsDataURL(file);
     }
+    // console.log("reader", reader)
+    reader.onload = (event: Event) => {
+    // reader.addEventListener("loadend", function() {
+      preview.src = reader.result;
+      preview.onload = function() {
+        var canvas: any = window.document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.height = canvas.width * (preview.height / preview.width);
+        var oc = window.document.createElement('canvas');
+        var octx = oc.getContext('2d');
+        oc.width = preview.width * percentage;
+        oc.height = preview.height * percentage;
+        canvas.width = oc.width;
+        canvas.height = oc.height;
+        octx.drawImage(preview, 0, 0, oc.width, oc.height);
+        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+        ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+        ctx.canvas.toBlob(async (blob) => {
+          let attachment = document['_attachments'] || {};
+          attachment['image.png'] = {
+            content_type: 'image/png',
+            data: blob
+          }
+          let work: any = await self.pouchdbService.createDoc({
+            'docType': 'work',
+            'date': new Date().toISOString(),
+            'area_id': self.areaForm.value._id,
+            'area_name': self.areaForm.value.name,
+            'crop_id': self.areaForm.value.crop._id,
+            'crop_name': self.areaForm.value.crop.name,
+            'activity_name': "Anotacion",
+            'activity_id': "activity.anotation",
+            'note': "Fotinho",
+            '_attachments': attachment
+          })
+          self.areaForm.value.note = null;
+          setTimeout(() => {
+            if (this.content){
+              this.content.scrollToBottom();
+            }
+          }, 500);
+        });
+      }
+    };
+
+
+  }
 
   openPWAPhotoPicker() {
     if (this.pwaphoto == null) {
@@ -409,7 +374,7 @@ export class AreaPage implements OnInit {
   }
 
 
-  showEdit (){
+  showEdit() {
     this.showForm = !this.showForm;
   }
 
@@ -419,41 +384,43 @@ export class AreaPage implements OnInit {
     console.log("question", question);
     ApiAIPromises.requestText({
       query: question,
-      contexts: [{ name: "Area", parameters: {
-        "area_name": this.areaForm.value.name,
-        "area_id": this.areaForm.value._id
-      }}]
+      contexts: [{
+        name: "Area", parameters: {
+          "area_name": this.areaForm.value.name,
+          "area_id": this.areaForm.value._id
+        }
+      }]
     })
-    .then((result) => {
-      console.log("resultad", result);
-       this.ngZone.run(()=> {
-         // this.answer = speech;
-         // this.areaForm.value.moves.push({
-         //   'docType': 'work',
-         //   'date': new Date().toISOString(),
-         //   'area_id': this.areaForm.value._id,
-         //   'area_name': this.areaForm.value.name,
-         //   'activity_name': "Memo",
-         //   'note': result.result.fulfillment.speech,
-         // })
-         setTimeout(() => {
-           if (this.content){
-             this.content.scrollToBottom();
-           }
-         }, 200);
-         this.tts.speak({
-           text: result.result.fulfillment.speech,
-           //rate: this.rate/10,
-           locale: "pt-BR"
-         }).then(()=>{
-           if (result.result.actionIncomplete){
-             this.listenRequest();
-           }
-         })
-       });
-    }, (tset)=>{
-      console.log("return", tset);
-    })
+      .then((result) => {
+        console.log("resultad", result);
+        this.ngZone.run(() => {
+          // this.answer = speech;
+          // this.areaForm.value.moves.push({
+          //   'docType': 'work',
+          //   'date': new Date().toISOString(),
+          //   'area_id': this.areaForm.value._id,
+          //   'area_name': this.areaForm.value.name,
+          //   'activity_name': "Memo",
+          //   'note': result.result.fulfillment.speech,
+          // })
+          setTimeout(() => {
+            if (this.content) {
+              this.content.scrollToBottom();
+            }
+          }, 200);
+          this.tts.speak({
+            text: result.result.fulfillment.speech,
+            //rate: this.rate/10,
+            locale: "pt-BR"
+          }).then(() => {
+            if (result.result.actionIncomplete) {
+              this.listenRequest();
+            }
+          })
+        });
+      }, (tset) => {
+        console.log("return", tset);
+      })
   }
 
   listenRequest() {
@@ -461,29 +428,29 @@ export class AreaPage implements OnInit {
       language: 'pt-BR'
     }
     this.speechRecognition.hasPermission()
-    .then((hasPermission: boolean) => {
-      if (!hasPermission) {
-        this.speechRecognition.requestPermission();
-      } else {
-        this.speechRecognition.startListening(options).subscribe(matches => {
-          console.log("matches", matches);
-          this.ask(matches[0]);
-          // this.areaForm.value.moves.push({
-          //   'docType': 'work',
-          //   'date': new Date().toISOString(),
-          //   'area_id': this.areaForm.value._id,
-          //   'area_name': this.areaForm.value.name,
-          //   'activity_name': "Anotacion",
-          //   'note': matches[0],
-          // })
-          setTimeout(() => {
-            if (this.content){
-              this.content.scrollToBottom();
-            }
-          }, 200);
-        });
-      }
-    });
+      .then((hasPermission: boolean) => {
+        if (!hasPermission) {
+          this.speechRecognition.requestPermission();
+        } else {
+          this.speechRecognition.startListening(options).subscribe(matches => {
+            console.log("matches", matches);
+            this.ask(matches[0]);
+            // this.areaForm.value.moves.push({
+            //   'docType': 'work',
+            //   'date': new Date().toISOString(),
+            //   'area_id': this.areaForm.value._id,
+            //   'area_name': this.areaForm.value.name,
+            //   'activity_name': "Anotacion",
+            //   'note': matches[0],
+            // })
+            setTimeout(() => {
+              if (this.content) {
+                this.content.scrollToBottom();
+              }
+            }, 200);
+          });
+        }
+      });
   }
 
   async presentPopover(myEvent) {
@@ -527,7 +494,7 @@ export class AreaPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     this.loadStoredImages();
     await this.loading.present();
-    if (this._id){
+    if (this._id) {
       this.getImage();
       this.areaService.getArea(this._id).then((data) => {
         data.note = null;
@@ -540,7 +507,7 @@ export class AreaPage implements OnInit {
         this.showImages();
         this.loading.dismiss();
         setTimeout(() => {
-          if (this.content){
+          if (this.content) {
             this.content.scrollToBottom();
           }
         }, 200);
@@ -551,11 +518,11 @@ export class AreaPage implements OnInit {
     }
   }
 
-  showImages(){
-    this.areaForm.value.moves.forEach(async work=>{
-      if (!work.image){
+  showImages() {
+    this.areaForm.value.moves.forEach(async work => {
+      if (!work.image) {
         let image = await this.pouchdbService.getAttachment(work._id, 'image.png');
-        if (image){
+        if (image) {
           this.firstFileToBase64(image).then((result: string) => {
             work.image = result;
           });
@@ -565,11 +532,11 @@ export class AreaPage implements OnInit {
   }
 
   buttonSave() {
-    if (this._id){
+    if (this._id) {
       this.areaService.updateArea(this.areaForm.value);
       // this.navCtrl.navigateBack().then(() => {
-        this.events.publish('open-area', this.areaForm.value);
-        this.navCtrl.navigateBack('/agro-tabs/area-list');
+      this.events.publish('open-area', this.areaForm.value);
+      this.navCtrl.navigateBack('/agro-tabs/area-list');
       // });
     } else {
       this.areaService.createArea(this.areaForm.value).then(doc => {
@@ -579,16 +546,16 @@ export class AreaPage implements OnInit {
         });
         this._id = doc['id'];
         // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('create-area', this.areaForm.value);
-          this.navCtrl.navigateBack('/agro-tabs/area-list');
+        this.events.publish('create-area', this.areaForm.value);
+        this.navCtrl.navigateBack('/agro-tabs/area-list');
         // });
       });
     }
   }
 
-  setLanguage(lang: LanguageModel){
+  setLanguage(lang: LanguageModel) {
     let language_to_set = this.translate.getDefaultLang();
-    if(lang){
+    if (lang) {
       language_to_set = lang.code;
     }
     this.translate.setDefaultLang(language_to_set);
@@ -623,11 +590,11 @@ export class AreaPage implements OnInit {
   //   return summary;
   // }
 
-  async addActivity(activity_id){
+  async addActivity(activity_id) {
     let componentProps = {
       "area": this.areaForm.value,
     }
-    if (activity_id){
+    if (activity_id) {
       componentProps['activity'] = await this.pouchdbService.getDoc(activity_id);
       componentProps['note'] = this.areaForm.value.note;
     }
@@ -648,51 +615,51 @@ export class AreaPage implements OnInit {
     }, 200);
   }
 
-  doRefreshList(){
+  doRefreshList() {
     this.areaService.getArea(this._id).then((data) => {
       this.areaForm.patchValue(data);
       //this.loading.dismiss();
     });
   }
 
-  onSubmit(values){
+  onSubmit(values) {
     //console.log(values);
   }
 
   selectCrop() {
-      return new Promise(async resolve => {
-        this.events.unsubscribe('select-crop');
-        this.events.subscribe('select-crop', (data) => {
-          this.areaForm.patchValue({
-            crop: data,
-            crop_name: data.name,
-          });
-          this.areaForm.markAsDirty();
-          this.events.unsubscribe('select-crop');
-          profileModal.dismiss();
-          resolve(true);
-        })
-        let profileModal = await this.modalCtrl.create({
-          component: CropsPage,
-          componentProps: {
-            "select": true,
-          }
+    return new Promise(async resolve => {
+      this.events.unsubscribe('select-crop');
+      this.events.subscribe('select-crop', (data) => {
+        this.areaForm.patchValue({
+          crop: data,
+          crop_name: data.name,
         });
-        profileModal.present();
+        this.areaForm.markAsDirty();
+        this.events.unsubscribe('select-crop');
+        profileModal.dismiss();
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: CropsPage,
+        componentProps: {
+          "select": true,
+        }
       });
+      profileModal.present();
+    });
   }
 
-  addButton(){
+  addButton() {
     this.showBotom = !this.showBotom;
-    if (this.showBotom){
+    if (this.showBotom) {
       setTimeout(() => {
-        if (this.content){
+        if (this.content) {
           this.content.scrollToBottom();
         }
       }, 200);
     }
   }
-  sendButton(){
+  sendButton() {
     console.log("send");
     // this.addActivity('activity.1536168428011');
     this.pouchdbService.createDoc({
@@ -708,7 +675,7 @@ export class AreaPage implements OnInit {
     })
     this.areaForm.value.note = null;
     setTimeout(() => {
-      if (this.content){
+      if (this.content) {
         this.content.scrollToBottom();
       }
     }, 500);
@@ -720,198 +687,198 @@ export class AreaPage implements OnInit {
 
   async selectImage() {
     const actionSheet = await this.actionSheetController.create({
-        header: "Pegar imagem da ",
-        buttons: [{
-                text: 'Galeria',
-                handler: () => {
-                  this.openPWAGalery();
-                    // this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
+      header: "Pegar imagem da ",
+      buttons: [{
+        text: 'Galeria',
+        handler: () => {
+          this.openPWAGalery();
+          // this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
 
-                }
-            },
-            {
-                text: 'Camera',
-                handler: () => {
-                  // this.takeCamera();
-                  this.openPWACamera();
-                    // this.takePicture(this.camera.PictureSourceType.CAMERA);
-                }
-            }
-        ]
+        }
+      },
+      {
+        text: 'Camera',
+        handler: () => {
+          // this.takeCamera();
+          this.openPWACamera();
+          // this.takePicture(this.camera.PictureSourceType.CAMERA);
+        }
+      }
+      ]
     });
     await actionSheet.present();
-}
+  }
 
-takePicture(sourceType: PictureSourceType) {
+  takePicture(sourceType: PictureSourceType) {
     var options: CameraOptions = {
-        quality: 100,
-        sourceType: sourceType,
-        saveToPhotoAlbum: false,
-        correctOrientation: true
+      quality: 100,
+      sourceType: sourceType,
+      saveToPhotoAlbum: false,
+      correctOrientation: true
     };
 
     this.camera.getPicture(options).then(imagePath => {
-        if (this.platform.is('android') && sourceType === this.camera.PictureSourceType.PHOTOLIBRARY) {
-            this.filePath.resolveNativePath(imagePath)
-                .then(filePath => {
-                    let correctPath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
-                    let currentName = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.lastIndexOf('?'));
-                    this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-                });
-        } else {
-            var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-            var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
+      if (this.platform.is('android') && sourceType === this.camera.PictureSourceType.PHOTOLIBRARY) {
+        this.filePath.resolveNativePath(imagePath)
+          .then(filePath => {
+            let correctPath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
+            let currentName = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.lastIndexOf('?'));
             this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-        }
-    });
-
-}
-
-createFileName() {
-    var d = new Date(),
-        n = d.getTime(),
-        newFileName = n + ".jpg";
-    return newFileName;
-}
-
-
-copyFileToLocalDir(namePath, currentName, newFileName) {
-    this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
-        this.updateStoredImages(newFileName);
-    }, error => {
-        this.presentToast('Error while storing file.');
-    });
-}
-
-updateStoredImages(name) {
-    this.storage.get(STORAGE_KEY).then(images => {
-        let arr = JSON.parse(images);
-        if (!arr) {
-            let newImages = [name];
-            this.storage.set(STORAGE_KEY, JSON.stringify(newImages));
-        } else {
-            arr.push(name);
-            this.storage.set(STORAGE_KEY, JSON.stringify(arr));
-        }
-
-        let filePath = this.file.dataDirectory + name;
-        let resPath = this.pathForImage(filePath);
-
-        let newEntry = {
-            name: name,
-            path: resPath,
-            filePath: filePath
-        };
-        console.log("newEntry", newEntry);
-        this.pouchdbService.createDoc({
-          'docType': 'work',
-          'date': new Date().toISOString(),
-          'area_id': this.areaForm.value._id,
-          'area_name': this.areaForm.value.name,
-          'crop_id': this.areaForm.value.crop._id,
-          'crop_name': this.areaForm.value.crop.name,
-          'activity_name': "Anotacion",
-          'activity_id': "activity.anotation",
-          'note': this.areaForm.value.note,
-          'image': resPath,
-          // 'image': resPath+"/"+filePath+
-        })
-        this.areaForm.value.note = null;
-        setTimeout(() => {
-          if (this.content){
-            this.content.scrollToBottom();
-          }
-        }, 500);
-        this.images = [newEntry, ...this.images];
-        this.ref.detectChanges(); // trigger change detection cycle
-    });
-}
-
-openPreview(img) {
-   this.modalCtrl.create({
-     component: ImageModalPage,
-     componentProps: {
-       img: img
-     }
-   }).then(modal => {
-     modal.present();
-   });
- }
-
-loadStoredImages() {
-  this.storage.get(STORAGE_KEY).then(images => {
-    if (images) {
-      let arr = JSON.parse(images);
-      this.images = [];
-      for (let img of arr) {
-        let filePath = this.file.dataDirectory + img;
-        let resPath = this.pathForImage(filePath);
-        this.images.push({ name: img, path: resPath, filePath: filePath });
+          });
+      } else {
+        var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+        var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
+        this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
       }
-    }
-  });
-}
+    });
 
-pathForImage(img) {
-  if (img === null) {
-    return '';
-  } else {
-    let converted = this.webview.convertFileSrc(img);
-    return converted;
   }
-}
 
-deleteImage(imgEntry, position) {
+  createFileName() {
+    var d = new Date(),
+      n = d.getTime(),
+      newFileName = n + ".jpg";
+    return newFileName;
+  }
+
+
+  copyFileToLocalDir(namePath, currentName, newFileName) {
+    this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
+      this.updateStoredImages(newFileName);
+    }, error => {
+      this.presentToast('Error while storing file.');
+    });
+  }
+
+  updateStoredImages(name) {
+    this.storage.get(STORAGE_KEY).then(images => {
+      let arr = JSON.parse(images);
+      if (!arr) {
+        let newImages = [name];
+        this.storage.set(STORAGE_KEY, JSON.stringify(newImages));
+      } else {
+        arr.push(name);
+        this.storage.set(STORAGE_KEY, JSON.stringify(arr));
+      }
+
+      let filePath = this.file.dataDirectory + name;
+      let resPath = this.pathForImage(filePath);
+
+      let newEntry = {
+        name: name,
+        path: resPath,
+        filePath: filePath
+      };
+      console.log("newEntry", newEntry);
+      this.pouchdbService.createDoc({
+        'docType': 'work',
+        'date': new Date().toISOString(),
+        'area_id': this.areaForm.value._id,
+        'area_name': this.areaForm.value.name,
+        'crop_id': this.areaForm.value.crop._id,
+        'crop_name': this.areaForm.value.crop.name,
+        'activity_name': "Anotacion",
+        'activity_id': "activity.anotation",
+        'note': this.areaForm.value.note,
+        'image': resPath,
+        // 'image': resPath+"/"+filePath+
+      })
+      this.areaForm.value.note = null;
+      setTimeout(() => {
+        if (this.content) {
+          this.content.scrollToBottom();
+        }
+      }, 500);
+      this.images = [newEntry, ...this.images];
+      this.ref.detectChanges(); // trigger change detection cycle
+    });
+  }
+
+  openPreview(img) {
+    this.modalCtrl.create({
+      component: ImageModalPage,
+      componentProps: {
+        img: img
+      }
+    }).then(modal => {
+      modal.present();
+    });
+  }
+
+  loadStoredImages() {
+    this.storage.get(STORAGE_KEY).then(images => {
+      if (images) {
+        let arr = JSON.parse(images);
+        this.images = [];
+        for (let img of arr) {
+          let filePath = this.file.dataDirectory + img;
+          let resPath = this.pathForImage(filePath);
+          this.images.push({ name: img, path: resPath, filePath: filePath });
+        }
+      }
+    });
+  }
+
+  pathForImage(img) {
+    if (img === null) {
+      return '';
+    } else {
+      let converted = this.webview.convertFileSrc(img);
+      return converted;
+    }
+  }
+
+  deleteImage(imgEntry, position) {
     this.images.splice(position, 1);
 
     this.storage.get(STORAGE_KEY).then(images => {
-        let arr = JSON.parse(images);
-        let filtered = arr.filter(name => name != imgEntry.name);
-        this.storage.set(STORAGE_KEY, JSON.stringify(filtered));
+      let arr = JSON.parse(images);
+      let filtered = arr.filter(name => name != imgEntry.name);
+      this.storage.set(STORAGE_KEY, JSON.stringify(filtered));
 
-        var correctPath = imgEntry.filePath.substr(0, imgEntry.filePath.lastIndexOf('/') + 1);
+      var correctPath = imgEntry.filePath.substr(0, imgEntry.filePath.lastIndexOf('/') + 1);
 
-        this.file.removeFile(correctPath, imgEntry.name).then(res => {
-            this.presentToast('File removed.');
-        });
+      this.file.removeFile(correctPath, imgEntry.name).then(res => {
+        this.presentToast('File removed.');
+      });
     });
-}
+  }
 
-startUpload(imgEntry) {
+  startUpload(imgEntry) {
     this.file.resolveLocalFilesystemUrl(imgEntry.filePath)
-        .then(entry => {
-            ( < FileEntry > entry).file(file => this.readFile(file))
-        })
-        .catch(err => {
-            this.presentToast('Error while reading file.');
-        });
-}
+      .then(entry => {
+        (<FileEntry>entry).file(file => this.readFile(file))
+      })
+      .catch(err => {
+        this.presentToast('Error while reading file.');
+      });
+  }
 
-async presentToast(text) {
-  const toast = await this.toastCtrl.create({
+  async presentToast(text) {
+    const toast = await this.toastCtrl.create({
       message: text,
       position: 'bottom',
       duration: 3000
-  });
-  toast.present();
-}
+    });
+    toast.present();
+  }
 
-readFile(file: any) {
+  readFile(file: any) {
     const reader = new FileReader();
     reader.onloadend = () => {
-        const formData = new FormData();
-        const imgBlob = new Blob([reader.result], {
-            type: file.type
-        });
-        formData.append('file', imgBlob, file.name);
-        this.uploadImageData(formData);
+      const formData = new FormData();
+      const imgBlob = new Blob([reader.result], {
+        type: file.type
+      });
+      formData.append('file', imgBlob, file.name);
+      this.uploadImageData(formData);
     };
     reader.readAsArrayBuffer(file);
-}
+  }
 
-async uploadImageData(formData: FormData) {
+  async uploadImageData(formData: FormData) {
     const loading = await this.loadingCtrl.create({
-        message: 'Uploading image...',
+      message: 'Uploading image...',
     });
     await loading.present();
     console.log("upload to nowhere");
@@ -928,10 +895,10 @@ async uploadImageData(formData: FormData) {
     //             this.presentToast('File upload failed.')
     //         }
     //     });
-}
+  }
 
-  getAudio(){
-    if (this.content){
+  getAudio() {
+    if (this.content) {
       this.content.scrollToBottom();
     }
     console.log("get audio");
@@ -941,65 +908,65 @@ async uploadImageData(formData: FormData) {
 
 
   selectContact() {
-      return new Promise(async resolve => {
-        this.events.unsubscribe('select-contact');
-        this.events.subscribe('select-contact', (data) => {
-          this.areaForm.patchValue({
-            contact: data,
-            contact_name: data.name,
-          });
-          this.areaForm.markAsDirty();
-          this.events.unsubscribe('select-contact');
-          profileModal.dismiss();
-          resolve(true);
-        })
-        let profileModal = await this.modalCtrl.create({
-          component: ContactListPage,
-          componentProps: {
-            "select": true,
-          }
+    return new Promise(async resolve => {
+      this.events.unsubscribe('select-contact');
+      this.events.subscribe('select-contact', (data) => {
+        this.areaForm.patchValue({
+          contact: data,
+          contact_name: data.name,
         });
-        profileModal.present();
+        this.areaForm.markAsDirty();
+        this.events.unsubscribe('select-contact');
+        profileModal.dismiss();
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ContactListPage,
+        componentProps: {
+          "select": true,
+        }
       });
+      profileModal.present();
+    });
   }
 
 
-  discard(){
+  discard() {
     this.canDeactivate();
   }
   async canDeactivate() {
-      if(this.areaForm.dirty) {
-          let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
-              buttons: [{
-                      text: 'Si',
-                      handler: () => {
-                          // alertPopup.dismiss().then(() => {
-                              this.exitPage();
-                          // });
-                      }
-                  },
-                  {
-                      text: 'No',
-                      handler: () => {
-                          // need to do something if the user stays?
-                      }
-                  }]
-          });
+    if (this.areaForm.dirty) {
+      let alertPopup = await this.alertCtrl.create({
+        header: 'Descartar',
+        message: '¿Deseas salir sin guardar?',
+        buttons: [{
+          text: 'Si',
+          handler: () => {
+            // alertPopup.dismiss().then(() => {
+            this.exitPage();
+            // });
+          }
+        },
+        {
+          text: 'No',
+          handler: () => {
+            // need to do something if the user stays?
+          }
+        }]
+      });
 
-          // Show the alert
-          alertPopup.present();
+      // Show the alert
+      alertPopup.present();
 
-          // Return false to avoid the page to be popped up
-          return false;
-      } else {
-        this.exitPage();
-      }
+      // Return false to avoid the page to be popped up
+      return false;
+    } else {
+      this.exitPage();
+    }
   }
 
   private exitPage() {
-    if (this.select){
+    if (this.select) {
       this.modalCtrl.dismiss();
     } else {
       this.areaForm.markAsPristine();
@@ -1007,7 +974,7 @@ async uploadImageData(formData: FormData) {
     }
   }
 
-  deleteWork(work){
+  deleteWork(work) {
     let index = this.areaForm.value.moves.indexOf(work);
     // this.works.splice(index, 1);
     this.worksService.deleteWork(work);

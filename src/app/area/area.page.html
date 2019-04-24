@@ -57,9 +57,9 @@
   <!-- <img /> -->
   <img id="imgtmp" #imgtmp style="display: none;">
   <div id="pwa">
-    <input type="file"  #pwaphoto accept="image/x-png,image/jpeg" (change)="previewFile()"  style="display: none;">
-    <input type="file"  #pwacamera accept="image/*" capture="camera"  (change)="takeCamera()" style="display: none;"/>
-    <input type="file"  #pwagalery accept="image/x-png,image/jpeg" (change)="takeGalery()" style="display: none;">
+    <input type="file" #pwaphoto accept="image/*" (change)="previewFile()"  style="display: none;">
+    <input type="file" #pwacamera accept="image/*" capture="camera"  (change)="takeCamera()" style="display: none;"/>
+    <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
   </div>
   <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!showForm">
     <ion-refresher-content></ion-refresher-content>

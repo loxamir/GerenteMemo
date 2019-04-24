@@ -139,11 +139,10 @@ export class AreasPage implements OnInit {
     ).then(async (areas) => {
       this.areas = areas;
       this.page = 1;
-      // setTimeout(() => {
-      // }, 500);
-        // resolve(true)
       await this.loading.dismiss();
-      this.putImages();
+      setTimeout(() => {
+        this.putImages();
+      }, 500);
     });
   }
 
