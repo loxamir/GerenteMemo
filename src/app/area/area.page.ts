@@ -109,45 +109,15 @@ export class AreaPage implements OnInit {
         }
       }, 500);
     })
-    platform.ready().then(() => {
-      if (this.platform.is('cordova')) {
-        this.isCordova = true;
-        ApiAIPromises.init({
-          clientAccessToken: "9f4e551a24734d02b3242c6e365c49a5"
-        })
-          .then((result) => console.log("result1", result))
-      }
-    })
-  }
-
-  // async getImage() {
-  //   let avatar = await this.pouchdbService.getAttachment(this._id, 'avatar.png');
-  //   console.log("avatar1", avatar);
-  //   this.firstFileToBase64(avatar).then((result: string) => {
-  //     // console.log("result", result);
-  //     this.imgURI = result;
-  //   });
-  // }
-
-  resizeImage() {
-    var canvas = document.createElement('canvas')
-    var canvasContext = canvas.getContext('2d')
-    canvas.setAttribute("style", 'opacity:0;position:absolute;z-index:-1;top: -100000000;left:-1000000000;width:320px;height:240px;')
-    document.body.appendChild(canvas);
-    let self = this;
-    var img = new Image;
-    img.onload = function() {
-      canvasContext.drawImage(img, 0, 0, 360, 480);
-      var base64Image = canvas.toDataURL('image/png')
-      console.log(base64Image)
-      self.imgURI = base64Image;
-      // Post to server
-      // sendImage(base64Image)
-
-      document.body.removeChild(canvas)
-      URL.revokeObjectURL(img.src)
-    }
-    img.src = URL.createObjectURL(this.pwaphoto.nativeElement.files[0]);
+    // platform.ready().then(() => {
+    //   if (this.platform.is('cordova')) {
+    //     this.isCordova = true;
+    //     ApiAIPromises.init({
+    //       clientAccessToken: "9f4e551a24734d02b3242c6e365c49a5"
+    //     })
+    //       .then((result) => console.log("result1", result))
+    //   }
+    // })
   }
 
   goBack() {
@@ -178,19 +148,9 @@ export class AreaPage implements OnInit {
         octx.drawImage(preview, 0, 0, oc.width, oc.height);
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-        console.log("canvas", canvas);
-        console.log("ctx", ctx);
-        console.log("oc", oc);
-        console.log("octx", octx);
         ctx.canvas.toBlob((blob) => {
-          console.log("blob", blob);
           self.pouchdbService.attachFile(self._id, 'avatar.png', blob);
-          // const file = new File([blob], fileName, {
-          //     type: 'image/jpeg',
-          //     lastModified: Date.now()
-          // });
         });
-        // var base64Image = canvas.toDataURL('image/png');
       }
     }
 
@@ -352,26 +312,26 @@ export class AreaPage implements OnInit {
   //   }
   // }
 
-  private firstFileToBase64(fileImage): Promise<{}> {
-    return new Promise((resolve, reject) => {
-      let fileReader: FileReader = new FileReader();
-      if (fileReader && fileImage != null) {
-        fileReader.readAsDataURL(fileImage);
-        fileReader.onload = () => {
-          let resultado = fileReader.result.toString().split(',')[1];
-          console.log("to64", fileImage);
-          // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
-          resolve(fileReader.result);
-        };
-
-        fileReader.onerror = (error) => {
-          reject(error);
-        };
-      } else {
-        reject(new Error('No file found'));
-      }
-    });
-  }
+  // private firstFileToBase64(fileImage): Promise<{}> {
+  //   return new Promise((resolve, reject) => {
+  //     let fileReader: FileReader = new FileReader();
+  //     if (fileReader && fileImage != null) {
+  //       fileReader.readAsDataURL(fileImage);
+  //       fileReader.onload = () => {
+  //         let resultado = fileReader.result.toString().split(',')[1];
+  //         console.log("to64", fileImage);
+  //         // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
+  //         resolve(fileReader.result);
+  //       };
+  //
+  //       fileReader.onerror = (error) => {
+  //         reject(error);
+  //       };
+  //     } else {
+  //       reject(new Error('No file found'));
+  //     }
+  //   });
+  // }
 
 
   showEdit() {
