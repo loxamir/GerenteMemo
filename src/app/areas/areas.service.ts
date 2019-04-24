@@ -25,6 +25,8 @@ export class AreasService {
               this.firstFileToBase64(image).then((result: string) => {
                 area.image = result;
               });
+            } else {
+              area.image = "./assets/icons/field.jpg";
             }
 
             this.pouchdbService.getView(
@@ -58,9 +60,6 @@ export class AreasService {
       if (fileReader && fileImage != null) {
         fileReader.readAsDataURL(fileImage);
         fileReader.onload = () => {
-          let resultado = fileReader.result.toString().split(',')[1];
-          console.log("to64", fileImage);
-          // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
           resolve(fileReader.result);
         };
 

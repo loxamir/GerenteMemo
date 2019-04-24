@@ -35,11 +35,14 @@ export class AreaService {
         // promise_ids.push(this.pouchdbService.getDoc(doc_id));
         let area: any = await this.pouchdbService.getDoc(doc_id, true);
         console.log("area", area);
-
-        let avatar = area._attachments['avatar.png'].data;
-        this.firstFileToBase64(avatar).then((result: string) => {
-          area.image = result;
-        })
+        if (area._attachments){
+          let avatar = area._attachments['avatar.png'].data;
+          this.firstFileToBase64(avatar).then((result: string) => {
+            area.image = result;
+          })
+        } else {
+          area.image = "./assets/icons/field.jpg";
+        }
         let docs: any = await this.pouchdbService.getList(getList, true);
         console.log("docs", docs);
 
@@ -48,9 +51,7 @@ export class AreaService {
         docs.forEach(row=>{
           delete row.doc.image;
           if (row.doc._attachments){
-            // console.log("rowasdf", row.doc);
             let image = row.doc._attachments['image.png'].data;
-            // console.log("image", image);
             this.firstFileToBase64(image).then((result: string) => {
               row.doc.image = result;
             });
