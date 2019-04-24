@@ -18,7 +18,7 @@
       <!-- <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button> -->
       <ion-icon name="arrow-back" style="font-size: 20px;"></ion-icon>
       <ion-thumbnail style="--border-radius:10px;">
-        <img [src]="imgURI" alt="Imagem no Encontrada">
+        <img [src]="areaForm.value.image" alt="Imagem no Encontrada">
       </ion-thumbnail>
     </ion-buttons>
     <ion-title style="padding-left: 5px;">{{areaForm.value.name}}

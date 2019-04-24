@@ -104,7 +104,7 @@ export class AreaPage implements OnInit {
       setTimeout(() => {
         console.log("acounteceu");
         if (this.content) {
-          this.showImages();
+          // this.showImages();
           this.content.scrollToBottom();
         }
       }, 500);
@@ -120,14 +120,14 @@ export class AreaPage implements OnInit {
     })
   }
 
-  async getImage() {
-    let avatar = await this.pouchdbService.getAttachment(this._id, 'avatar.png');
-    // console.log("avatar", avatar);
-    this.firstFileToBase64(avatar).then((result: string) => {
-      // console.log("result", result);
-      this.imgURI = result;
-    });
-  }
+  // async getImage() {
+  //   let avatar = await this.pouchdbService.getAttachment(this._id, 'avatar.png');
+  //   console.log("avatar1", avatar);
+  //   this.firstFileToBase64(avatar).then((result: string) => {
+  //     // console.log("result", result);
+  //     this.imgURI = result;
+  //   });
+  // }
 
   resizeImage() {
     var canvas = document.createElement('canvas')
@@ -480,6 +480,8 @@ export class AreaPage implements OnInit {
       rentingAmount: new FormControl(0),
       contact: new FormControl({}),
       contact_name: new FormControl(''),
+
+      image: new FormControl(''),
       // currency_name: new FormControl(''),
       moves: new FormControl([]),
       // checks: new FormControl([]),
@@ -492,11 +494,11 @@ export class AreaPage implements OnInit {
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
-    this.loadStoredImages();
+    // this.loadStoredImages();
     await this.loading.present();
     if (this._id) {
-      this.getImage();
       this.areaService.getArea(this._id).then((data) => {
+        // this.getImage();
         data.note = null;
         this.areaForm.patchValue(data);
         var date1 = new Date(this.areaForm.value.lastRainDate);
@@ -504,7 +506,7 @@ export class AreaPage implements OnInit {
         var timeDiff = Math.abs(date2.getTime() - date1.getTime());
         var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
         this.diffDays = diffDays - 1;
-        this.showImages();
+        // this.showImages();
         this.loading.dismiss();
         setTimeout(() => {
           if (this.content) {
@@ -518,18 +520,18 @@ export class AreaPage implements OnInit {
     }
   }
 
-  showImages() {
-    this.areaForm.value.moves.forEach(async work => {
-      if (!work.image) {
-        let image = await this.pouchdbService.getAttachment(work._id, 'image.png');
-        if (image) {
-          this.firstFileToBase64(image).then((result: string) => {
-            work.image = result;
-          });
-        }
-      }
-    })
-  }
+  // showImages() {
+  //   this.areaForm.value.moves.forEach(async work => {
+  //     if (!work.image) {
+  //       let image = await this.pouchdbService.getAttachment(work._id, 'image.png');
+  //       if (image) {
+  //         this.firstFileToBase64(image).then((result: string) => {
+  //           work.image = result;
+  //         });
+  //       }
+  //     }
+  //   })
+  // }
 
   buttonSave() {
     if (this._id) {

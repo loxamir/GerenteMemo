@@ -17,6 +17,16 @@ export class AreasService {
           console.log("areas", areas);
 
           areas.forEach(area=>{
+            delete area.image;
+            if (area._attachments){
+              console.log("areaaasdf", area);
+              let image = area._attachments['avatar.png'].data;
+              console.log("image", image);
+              this.firstFileToBase64(image).then((result: string) => {
+                area.image = result;
+              });
+            }
+
             this.pouchdbService.getView(
               'Informes/AreaDiario', 3,
               [area._id],
@@ -40,6 +50,27 @@ export class AreasService {
 
   handleChange(list, change){
     this.pouchdbService.localHandleChangeData(list, change)
+  }
+
+  private firstFileToBase64(fileImage): Promise<{}> {
+    return new Promise((resolve, reject) => {
+      let fileReader: FileReader = new FileReader();
+      if (fileReader && fileImage != null) {
+        fileReader.readAsDataURL(fileImage);
+        fileReader.onload = () => {
+          let resultado = fileReader.result.toString().split(',')[1];
+          console.log("to64", fileImage);
+          // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
+          resolve(fileReader.result);
+        };
+
+        fileReader.onerror = (error) => {
+          reject(error);
+        };
+      } else {
+        reject(new Error('No file found'));
+      }
+    });
   }
 
   handleViewChange(list, change){

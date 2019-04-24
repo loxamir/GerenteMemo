@@ -49,34 +49,9 @@ export class PouchdbService {
 
   attachFile(doc_id, file_name, file_data){
     return new Promise(async (resolve, reject)=>{
-
       let document: any = await this.getDoc(doc_id);
-      console.log("docs", document);
       let attach = await this.db.putAttachment(doc_id, file_name, document._rev, file_data, 'image/png');
-      console.log("attach", attach);
-      // let self= this;
-      // let attachment = document['_attachments'] || {};
-      // attachment[file_name] = {
-      //   content_type: 'image/png',
-      //   data: file_data
-      // }
-      // document['_attachments'] = attachment;
-      // console.log("documento", document);
-      // self.db.put(document).then(async function () {
-      //   let data = await self.db.getAttachment(doc_id, file_name);
-      //   console.log("data", data);
-      //   resolve(data);
-      //   // return this.db.getAttachment(doc_id, file_name);
-      // }).then((blob) => {
-      //   // var url = window.URL.createObjectURL(blob);
-      //   console.log("url", blob);
-      //   resolve(blob);
-      //   // var img = document.createElement('img');
-      //   // img.src = url;
-      //   // document.body.appendChild(img);
-      // }).catch(function (err) {
-      //   console.log(err);
-      // });
+      resolve(attach);
     })
   }
 
@@ -235,10 +210,13 @@ export class PouchdbService {
     });
   }
 
-  getDoc(doc_id) {
+  getDoc(doc_id, attachments=false) {
     return new Promise((resolve, reject)=>{
       if (typeof doc_id === "string"){
-        resolve(this.db.get(doc_id));
+        resolve(this.db.get(doc_id, {
+          attachments: attachments,
+          binary: true
+        }));
       } else {
         resolve({})
       }
@@ -328,6 +306,8 @@ export class PouchdbService {
         this.db.allDocs({
           include_docs : true,
           startkey: docType+".",
+          attachments: true,
+          binary: true,
           endkey: docType+".z",
         }).then((res) => {
           let docs = [];
@@ -341,10 +321,12 @@ export class PouchdbService {
     });
   }
 
-  getList(list) {
+  getList(list, includeAttach=false) {
     return new Promise((resolve, reject)=>{
         this.db.allDocs({
           include_docs : true,
+          attachments: includeAttach,
+          binary: true,
           keys: list
         }).then((res) => {
           resolve(res.rows);

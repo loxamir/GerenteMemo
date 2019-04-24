@@ -33,19 +33,35 @@ export class AreaService {
           // balance += parseFloat(item.value);
         })
         // promise_ids.push(this.pouchdbService.getDoc(doc_id));
-        let area: any = await this.pouchdbService.getDoc(doc_id);
-        let docs: any = await this.pouchdbService.getList(getList);
+        let area: any = await this.pouchdbService.getDoc(doc_id, true);
+        console.log("area", area);
+
+        let avatar = area._attachments['avatar.png'].data;
+        this.firstFileToBase64(avatar).then((result: string) => {
+          area.image = result;
+        })
+        let docs: any = await this.pouchdbService.getList(getList, true);
+        console.log("docs", docs);
+
         // var doc_dict = {};
         area.moves = [];
         docs.forEach(row=>{
           delete row.doc.image;
+          if (row.doc._attachments){
+            // console.log("rowasdf", row.doc);
+            let image = row.doc._attachments['image.png'].data;
+            // console.log("image", image);
+            this.firstFileToBase64(image).then((result: string) => {
+              row.doc.image = result;
+            });
+          }
           area.moves.push(row.doc);
           if (row.doc.activity_id == 'activity.rain' && !area.lastRain){
             area.lastRain = row.doc.quantity;
             area.lastRainDate = row.doc.date;
           }
         })
-        console.log("area22", area);
+        // console.log("area22", area);
 
 
         // let docList = await this.pouchdbService.getList(getList);
@@ -61,6 +77,27 @@ export class AreaService {
           resolve(area);
         // })
       });
+    });
+  }
+
+  private firstFileToBase64(fileImage): Promise<{}> {
+    return new Promise((resolve, reject) => {
+      let fileReader: FileReader = new FileReader();
+      if (fileReader && fileImage != null) {
+        fileReader.readAsDataURL(fileImage);
+        fileReader.onload = () => {
+          let resultado = fileReader.result.toString().split(',')[1];
+          console.log("to64", fileImage);
+          // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
+          resolve(fileReader.result);
+        };
+
+        fileReader.onerror = (error) => {
+          reject(error);
+        };
+      } else {
+        reject(new Error('No file found'));
+      }
     });
   }
 
