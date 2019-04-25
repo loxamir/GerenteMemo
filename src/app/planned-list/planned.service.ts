@@ -31,7 +31,8 @@ export class PlannedService {
               pts.push(item);
               promise_ids.push(this.pouchdbService.getDoc(item.key[2]));
             } else if (item.value > 0) {
-              item.value = agrupado[item.name].value;
+              // REMOVED BECOUSE ITS CHANGING VALUES and giving problems
+              // item.value = agrupado[item.name].value;
               pts.push(item);
               promise_ids.push(this.pouchdbService.getDoc(item.key[2]));
             }
