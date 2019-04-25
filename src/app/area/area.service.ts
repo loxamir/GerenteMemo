@@ -145,7 +145,7 @@ export class AreaService {
     this.pouchdbService.localHandleChangeData(list, change)
   }
 
-  getWorksPage(area_id, startkey): Promise<any> {
+  getWorksPage(area_id, startkey, skip=0): Promise<any> {
     return new Promise(async (resolve, reject)=>{
       // let area: any = await this.pouchdbService.getDoc(doc_id, true);
       let payableList = [];
@@ -156,7 +156,8 @@ export class AreaService {
         [area_id+"z", "z"],
         true,
         true,
-        5
+        5,
+        skip
       ).then(async (planneds: any[]) => {
         let getList = [];
         planneds.forEach(item => {

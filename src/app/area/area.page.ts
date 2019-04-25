@@ -485,31 +485,19 @@ export class AreaPage implements OnInit {
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
-      // this.getSalesPage(
-      //   this.searchTerm,
-      //   this.page
-      // ).then((sales: any[]) => {
-      //   sales.forEach(sale => {
-      //     this.sales.push(sale);
-      //   });
-      //   this.page += 1;
-      // });
+      let skip = undefined;
+      if (infiniteScroll){
+        skip = 1;
+      }
       console.log("sigue a pagina", this.lastWork);
-      this.areaService.getWorksPage(this._id, this.lastWork).then((works: any[]) => {
-        // console.log('start', works[0]);
-      //   sales.forEach(sale => {
-      //     this.sales.push(sale);
-      //   });
-      //   this.page += 1;
-        // let moves = [];
+      this.areaService.getWorksPage(this._id, this.lastWork, skip).then((works: any[]) => {
         works.forEach(wor=>{
           this.areaForm.value.moves.unshift(wor);
         })
-        // this.areaForm.patchValue({
-        //   moves: this.areaForm.value.moves
-        // })
-        this.lastWork = works[works.length-1].date;
-        console.log('last', works, this.lastWork);
+        if (works.length){
+          this.lastWork = works[works.length-1].date;
+          console.log('last', works, this.lastWork);
+        }
 
       });
       if (infiniteScroll){
