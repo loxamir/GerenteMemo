@@ -64,7 +64,7 @@ export class AreaPage implements OnInit {
   showBotom = false;
   imgURI: string = null;
   images = [];
-
+  skip = 0;
   lastWork = '0';
   constructor(
     public navCtrl: NavController,
@@ -485,19 +485,11 @@ export class AreaPage implements OnInit {
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
-      let skip = undefined;
-      if (infiniteScroll){
-        skip = 1;
-      }
-      console.log("sigue a pagina", this.lastWork);
-      this.areaService.getWorksPage(this._id, this.lastWork, skip).then((works: any[]) => {
+      this.areaService.getWorksPage(this._id, this.skip).then((works: any[]) => {
         works.forEach(wor=>{
           this.areaForm.value.moves.unshift(wor);
         })
-        if (works.length){
-          this.lastWork = works[works.length-1].date;
-          console.log('last', works, this.lastWork);
-        }
+        this.skip += 5;
 
       });
       if (infiniteScroll){

@@ -145,15 +145,15 @@ export class AreaService {
     this.pouchdbService.localHandleChangeData(list, change)
   }
 
-  getWorksPage(area_id, startkey, skip=0): Promise<any> {
+  getWorksPage(area_id, skip=0): Promise<any> {
     return new Promise(async (resolve, reject)=>{
       // let area: any = await this.pouchdbService.getDoc(doc_id, true);
       let payableList = [];
-      console.log("startkey", startkey);
-      this.pouchdbService.getView(
+      // console.log("startkey", startkey);
+      this.pouchdbService.getViewInv(
         'stock/AreaDiario', 4,
-        [area_id, startkey],
         [area_id+"z", "z"],
+        [area_id, "0"],
         true,
         true,
         5,
