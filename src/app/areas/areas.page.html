@@ -48,7 +48,7 @@
         <ion-card class="list-card">
           <ion-row>
             <ion-thumbnail style="--border-radius:10px;">
-              <img [src]="item.image" alt="Imagem no Encontrada">
+              <img [src]="item.image" *ngIf="item.image">
             </ion-thumbnail>
             <ion-col>
               <ion-row>

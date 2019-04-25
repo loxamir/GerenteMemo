@@ -15,12 +15,13 @@ export class AreaService {
 
 
   getArea(doc_id): Promise<any> {
-    return new Promise((resolve, reject)=>{
+    return new Promise(async (resolve, reject)=>{
+      let area: any = await this.pouchdbService.getDoc(doc_id, true);
       let payableList = [];
       this.pouchdbService.getView(
-        'stock/Areas', 2,
-        [doc_id, '0'],
-        [doc_id, 'z']
+        'stock/AreaDiario', 4,
+        ['0', doc_id, '0'],
+        ['z', doc_id, 'z']
       ).then(async (planneds: any[]) => {
         // let promise_ids = [];
         // let pts = [];
@@ -29,26 +30,27 @@ export class AreaService {
         planneds.forEach(item => {
           // pts.push(item);
           // promise_ids.push(this.pouchdbService.getDoc(item.key[1]));
-          getList.push(item.key[1]);
+          getList.push(item.key[3]);
           // balance += parseFloat(item.value);
         })
+        // console.log("getList", getList);
         // promise_ids.push(this.pouchdbService.getDoc(doc_id));
-        let area: any = await this.pouchdbService.getDoc(doc_id, true);
-        console.log("area", area);
+        // console.log("area", area);
         if (area._attachments){
           let avatar = area._attachments['avatar.png'].data;
-          this.firstFileToBase64(avatar).then((result: string) => {
+          await   this.firstFileToBase64(avatar).then((result: string) => {
             area.image = result;
           })
         } else {
           area.image = "./assets/icons/field.jpg";
         }
         let docs: any = await this.pouchdbService.getList(getList, true);
-        console.log("docs", docs);
+        // console.log("docs", docs.slice(0, 1));
+
 
         // var doc_dict = {};
         area.moves = [];
-        docs.forEach(row=>{
+        docs.slice(0, 5).forEach(row=>{
           delete row.doc.image;
           if (row.doc._attachments){
             let image = row.doc._attachments['image.png'].data;
@@ -62,6 +64,7 @@ export class AreaService {
             area.lastRainDate = row.doc.date;
           }
         })
+        resolve(area);
         // console.log("area22", area);
 
 
@@ -75,7 +78,6 @@ export class AreaService {
         //   for(let i=0;i<pts.length;i++){
         //     area.moves.unshift(areaMoves[i]);
         //   }
-          resolve(area);
         // })
       });
     });

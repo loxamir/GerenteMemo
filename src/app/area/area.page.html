@@ -18,7 +18,7 @@
       <!-- <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button> -->
       <ion-icon name="arrow-back" style="font-size: 20px;"></ion-icon>
       <ion-thumbnail style="--border-radius:10px;">
-        <img [src]="areaForm.value.image" alt="Imagem no Encontrada">
+        <img [src]="areaForm.value.image" *ngIf="areaForm.value.image">
       </ion-thumbnail>
     </ion-buttons>
     <ion-title style="padding-left: 5px;">{{areaForm.value.name}}
@@ -152,23 +152,29 @@
       style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
         <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
             <ion-row no-padding>
-              <ion-col size="2">
-                <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'" class="activity-img"></ion-img>
-              </ion-col>
-              <ion-col size="8" no-padding>
-                <h3 class="activity-name">
-                  {{ item.activity_name || 'No Informado'}}
-                </h3>
-                <!-- {{ itemSumary(item) }} -->
-                <div [innerHTML]="item.summary"></div>
-                <h1 class="activity-note">
-                  {{item.note}}
-                </h1>
-              </ion-col>
+              <ion-thumbnail style="--border-radius:10px;">
+                <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
+              </ion-thumbnail>
               <ion-col>
-                <h3 class="schedule-month" style="font-size:12px;margin-left: 5px">
-                  {{item.date|date: 'HH:mm'}}
-                </h3>
+                <ion-row>
+                  <ion-col size="8.5" no-padding>
+                    <h3 class="activity-name">
+                      {{ item.activity_name || 'No Informado'}}
+                    </h3>
+                    <div [innerHTML]="item.summary"></div>
+                    <h1 class="activity-note">
+                      {{item.note}}
+                    </h1>
+                  </ion-col>
+                  <ion-col>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'HH:mm'}}
+                    </h3>
+                  </ion-col>
+                </ion-row>
               </ion-col>
             </ion-row>
        <ion-row no-padding class="content-row one-line">
