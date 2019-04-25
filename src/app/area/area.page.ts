@@ -64,6 +64,8 @@ export class AreaPage implements OnInit {
   showBotom = false;
   imgURI: string = null;
   images = [];
+
+  lastWork = '0';
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -105,7 +107,7 @@ export class AreaPage implements OnInit {
         console.log("acounteceu");
         if (this.content) {
           // this.showImages();
-          this.content.scrollToBottom();
+          // this.content.scrollToBottom();
         }
       }, 500);
     })
@@ -198,7 +200,7 @@ export class AreaPage implements OnInit {
           self.areaForm.value.note = null;
           await self.pouchdbService.attachFile(work.id, 'image.png', blob);
           setTimeout(() => {
-            this.content.scrollToBottom();
+            // this.content.scrollToBottom();
             // this.ref.detectChanges();
           }, 500);
         });
@@ -258,7 +260,7 @@ export class AreaPage implements OnInit {
           self.areaForm.value.note = null;
           setTimeout(() => {
             if (this.content){
-              this.content.scrollToBottom();
+              // this.content.scrollToBottom();
             }
           }, 500);
         });
@@ -365,7 +367,7 @@ export class AreaPage implements OnInit {
           // })
           setTimeout(() => {
             if (this.content) {
-              this.content.scrollToBottom();
+              // this.content.scrollToBottom();
             }
           }, 200);
           this.tts.speak({
@@ -405,7 +407,7 @@ export class AreaPage implements OnInit {
             // })
             setTimeout(() => {
               if (this.content) {
-                this.content.scrollToBottom();
+                // this.content.scrollToBottom();
               }
             }, 200);
           });
@@ -458,6 +460,7 @@ export class AreaPage implements OnInit {
     await this.loading.present();
     if (this._id) {
       this.areaService.getArea(this._id).then((data) => {
+        this.doInfinite(false);
         // this.getImage();
         data.note = null;
         this.areaForm.patchValue(data);
@@ -470,7 +473,7 @@ export class AreaPage implements OnInit {
         this.loading.dismiss();
         setTimeout(() => {
           if (this.content) {
-            this.content.scrollToBottom();
+            // this.content.scrollToBottom();
           }
         }, 200);
       });
@@ -478,6 +481,41 @@ export class AreaPage implements OnInit {
       this.showForm = true;
       this.loading.dismiss();
     }
+  }
+
+  doInfinite(infiniteScroll) {
+    setTimeout(() => {
+      // this.getSalesPage(
+      //   this.searchTerm,
+      //   this.page
+      // ).then((sales: any[]) => {
+      //   sales.forEach(sale => {
+      //     this.sales.push(sale);
+      //   });
+      //   this.page += 1;
+      // });
+      console.log("sigue a pagina", this.lastWork);
+      this.areaService.getWorksPage(this._id, this.lastWork).then((works: any[]) => {
+        // console.log('start', works[0]);
+      //   sales.forEach(sale => {
+      //     this.sales.push(sale);
+      //   });
+      //   this.page += 1;
+        // let moves = [];
+        works.forEach(wor=>{
+          this.areaForm.value.moves.unshift(wor);
+        })
+        // this.areaForm.patchValue({
+        //   moves: this.areaForm.value.moves
+        // })
+        this.lastWork = works[works.length-1].date;
+        console.log('last', works, this.lastWork);
+
+      });
+      if (infiniteScroll){
+        infiniteScroll.target.complete();
+      }
+    }, 50);
   }
 
   // showImages() {
@@ -616,7 +654,7 @@ export class AreaPage implements OnInit {
     if (this.showBotom) {
       setTimeout(() => {
         if (this.content) {
-          this.content.scrollToBottom();
+          // this.content.scrollToBottom();
         }
       }, 200);
     }
@@ -638,7 +676,7 @@ export class AreaPage implements OnInit {
     this.areaForm.value.note = null;
     setTimeout(() => {
       if (this.content) {
-        this.content.scrollToBottom();
+        // this.content.scrollToBottom();
       }
     }, 500);
   }
@@ -671,30 +709,30 @@ export class AreaPage implements OnInit {
     await actionSheet.present();
   }
 
-  takePicture(sourceType: PictureSourceType) {
-    var options: CameraOptions = {
-      quality: 100,
-      sourceType: sourceType,
-      saveToPhotoAlbum: false,
-      correctOrientation: true
-    };
-
-    this.camera.getPicture(options).then(imagePath => {
-      if (this.platform.is('android') && sourceType === this.camera.PictureSourceType.PHOTOLIBRARY) {
-        this.filePath.resolveNativePath(imagePath)
-          .then(filePath => {
-            let correctPath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
-            let currentName = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.lastIndexOf('?'));
-            this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-          });
-      } else {
-        var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-        var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
-        this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-      }
-    });
-
-  }
+  // takePicture(sourceType: PictureSourceType) {
+  //   var options: CameraOptions = {
+  //     quality: 100,
+  //     sourceType: sourceType,
+  //     saveToPhotoAlbum: false,
+  //     correctOrientation: true
+  //   };
+  //
+  //   this.camera.getPicture(options).then(imagePath => {
+  //     if (this.platform.is('android') && sourceType === this.camera.PictureSourceType.PHOTOLIBRARY) {
+  //       this.filePath.resolveNativePath(imagePath)
+  //         .then(filePath => {
+  //           let correctPath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
+  //           let currentName = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.lastIndexOf('?'));
+  //           this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
+  //         });
+  //     } else {
+  //       var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+  //       var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
+  //       this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
+  //     }
+  //   });
+  //
+  // }
 
   createFileName() {
     var d = new Date(),
@@ -704,57 +742,57 @@ export class AreaPage implements OnInit {
   }
 
 
-  copyFileToLocalDir(namePath, currentName, newFileName) {
-    this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
-      this.updateStoredImages(newFileName);
-    }, error => {
-      this.presentToast('Error while storing file.');
-    });
-  }
-
-  updateStoredImages(name) {
-    this.storage.get(STORAGE_KEY).then(images => {
-      let arr = JSON.parse(images);
-      if (!arr) {
-        let newImages = [name];
-        this.storage.set(STORAGE_KEY, JSON.stringify(newImages));
-      } else {
-        arr.push(name);
-        this.storage.set(STORAGE_KEY, JSON.stringify(arr));
-      }
-
-      let filePath = this.file.dataDirectory + name;
-      let resPath = this.pathForImage(filePath);
-
-      let newEntry = {
-        name: name,
-        path: resPath,
-        filePath: filePath
-      };
-      console.log("newEntry", newEntry);
-      this.pouchdbService.createDoc({
-        'docType': 'work',
-        'date': new Date().toISOString(),
-        'area_id': this.areaForm.value._id,
-        'area_name': this.areaForm.value.name,
-        'crop_id': this.areaForm.value.crop._id,
-        'crop_name': this.areaForm.value.crop.name,
-        'activity_name': "Anotacion",
-        'activity_id': "activity.anotation",
-        'note': this.areaForm.value.note,
-        'image': resPath,
-        // 'image': resPath+"/"+filePath+
-      })
-      this.areaForm.value.note = null;
-      setTimeout(() => {
-        if (this.content) {
-          this.content.scrollToBottom();
-        }
-      }, 500);
-      this.images = [newEntry, ...this.images];
-      this.ref.detectChanges(); // trigger change detection cycle
-    });
-  }
+  // copyFileToLocalDir(namePath, currentName, newFileName) {
+  //   this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
+  //     this.updateStoredImages(newFileName);
+  //   }, error => {
+  //     this.presentToast('Error while storing file.');
+  //   });
+  // }
+  //
+  // updateStoredImages(name) {
+  //   this.storage.get(STORAGE_KEY).then(images => {
+  //     let arr = JSON.parse(images);
+  //     if (!arr) {
+  //       let newImages = [name];
+  //       this.storage.set(STORAGE_KEY, JSON.stringify(newImages));
+  //     } else {
+  //       arr.push(name);
+  //       this.storage.set(STORAGE_KEY, JSON.stringify(arr));
+  //     }
+  //
+  //     let filePath = this.file.dataDirectory + name;
+  //     let resPath = this.pathForImage(filePath);
+  //
+  //     let newEntry = {
+  //       name: name,
+  //       path: resPath,
+  //       filePath: filePath
+  //     };
+  //     console.log("newEntry", newEntry);
+  //     this.pouchdbService.createDoc({
+  //       'docType': 'work',
+  //       'date': new Date().toISOString(),
+  //       'area_id': this.areaForm.value._id,
+  //       'area_name': this.areaForm.value.name,
+  //       'crop_id': this.areaForm.value.crop._id,
+  //       'crop_name': this.areaForm.value.crop.name,
+  //       'activity_name': "Anotacion",
+  //       'activity_id': "activity.anotation",
+  //       'note': this.areaForm.value.note,
+  //       'image': resPath,
+  //       // 'image': resPath+"/"+filePath+
+  //     })
+  //     this.areaForm.value.note = null;
+  //     setTimeout(() => {
+  //       if (this.content) {
+  //         // this.content.scrollToBottom();
+  //       }
+  //     }, 500);
+  //     this.images = [newEntry, ...this.images];
+  //     this.ref.detectChanges(); // trigger change detection cycle
+  //   });
+  // }
 
   openPreview(img) {
     this.modalCtrl.create({
@@ -767,54 +805,54 @@ export class AreaPage implements OnInit {
     });
   }
 
-  loadStoredImages() {
-    this.storage.get(STORAGE_KEY).then(images => {
-      if (images) {
-        let arr = JSON.parse(images);
-        this.images = [];
-        for (let img of arr) {
-          let filePath = this.file.dataDirectory + img;
-          let resPath = this.pathForImage(filePath);
-          this.images.push({ name: img, path: resPath, filePath: filePath });
-        }
-      }
-    });
-  }
+  // loadStoredImages() {
+  //   this.storage.get(STORAGE_KEY).then(images => {
+  //     if (images) {
+  //       let arr = JSON.parse(images);
+  //       this.images = [];
+  //       for (let img of arr) {
+  //         let filePath = this.file.dataDirectory + img;
+  //         let resPath = this.pathForImage(filePath);
+  //         this.images.push({ name: img, path: resPath, filePath: filePath });
+  //       }
+  //     }
+  //   });
+  // }
 
-  pathForImage(img) {
-    if (img === null) {
-      return '';
-    } else {
-      let converted = this.webview.convertFileSrc(img);
-      return converted;
-    }
-  }
+  // pathForImage(img) {
+  //   if (img === null) {
+  //     return '';
+  //   } else {
+  //     let converted = this.webview.convertFileSrc(img);
+  //     return converted;
+  //   }
+  // }
 
-  deleteImage(imgEntry, position) {
-    this.images.splice(position, 1);
+  // deleteImage(imgEntry, position) {
+  //   this.images.splice(position, 1);
+  //
+  //   this.storage.get(STORAGE_KEY).then(images => {
+  //     let arr = JSON.parse(images);
+  //     let filtered = arr.filter(name => name != imgEntry.name);
+  //     this.storage.set(STORAGE_KEY, JSON.stringify(filtered));
+  //
+  //     var correctPath = imgEntry.filePath.substr(0, imgEntry.filePath.lastIndexOf('/') + 1);
+  //
+  //     this.file.removeFile(correctPath, imgEntry.name).then(res => {
+  //       this.presentToast('File removed.');
+  //     });
+  //   });
+  // }
 
-    this.storage.get(STORAGE_KEY).then(images => {
-      let arr = JSON.parse(images);
-      let filtered = arr.filter(name => name != imgEntry.name);
-      this.storage.set(STORAGE_KEY, JSON.stringify(filtered));
-
-      var correctPath = imgEntry.filePath.substr(0, imgEntry.filePath.lastIndexOf('/') + 1);
-
-      this.file.removeFile(correctPath, imgEntry.name).then(res => {
-        this.presentToast('File removed.');
-      });
-    });
-  }
-
-  startUpload(imgEntry) {
-    this.file.resolveLocalFilesystemUrl(imgEntry.filePath)
-      .then(entry => {
-        (<FileEntry>entry).file(file => this.readFile(file))
-      })
-      .catch(err => {
-        this.presentToast('Error while reading file.');
-      });
-  }
+  // startUpload(imgEntry) {
+  //   this.file.resolveLocalFilesystemUrl(imgEntry.filePath)
+  //     .then(entry => {
+  //       (<FileEntry>entry).file(file => this.readFile(file))
+  //     })
+  //     .catch(err => {
+  //       this.presentToast('Error while reading file.');
+  //     });
+  // }
 
   async presentToast(text) {
     const toast = await this.toastCtrl.create({
@@ -861,7 +899,7 @@ export class AreaPage implements OnInit {
 
   getAudio() {
     if (this.content) {
-      this.content.scrollToBottom();
+      // this.content.scrollToBottom();
     }
     console.log("get audio");
 

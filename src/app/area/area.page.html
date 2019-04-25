@@ -146,7 +146,7 @@
 
     <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;">
       <ion-item-sliding class="list-item"
-      *ngFor="let item of areaForm.value.moves.sort(this.formatService.compare)">
+      *ngFor="let item of areaForm.value.moves">
       <ion-item no-padding
       (click)="openItem(item)" *ngIf="!item.image"
       style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
@@ -193,10 +193,12 @@
     style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
       <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
           <ion-row no-padding>
-            <!-- <ion-col size="2">
-              <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'" class="activity-img"></ion-img>
-            </ion-col> -->
-            <ion-col  no-padding>
+            <!-- <ion-thumbnail style="--border-radius:10px;">
+              <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
+            </ion-thumbnail> -->
+            <ion-col>
+              <ion-row>
+            <ion-col size="8.5" no-padding>
               <h3 class="activity-name">
                 Foto
               </h3>
@@ -206,11 +208,16 @@
                 {{item.note}}
               </h1> -->
             </ion-col>
-            <ion-col size="2">
-              <h3 class="schedule-month" style="font-size:12px;margin-left: 5px">
+            <ion-col>
+              <h3 class="item-title-second">
+                {{item.date|date: 'dd/MM/yyyy'}}
+              </h3>
+              <h3 class="item-title-second">
                 {{item.date|date: 'HH:mm'}}
               </h3>
             </ion-col>
+          </ion-row>
+          </ion-col>
           </ion-row>
      <ion-row no-padding class="content-row one-line">
         <ion-col no-padding size="12" style="height: 200px;">
@@ -231,6 +238,9 @@
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 
 <ion-row style="height:15px;">
 </ion-row>

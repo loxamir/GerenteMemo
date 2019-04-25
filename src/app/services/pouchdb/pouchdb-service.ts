@@ -300,6 +300,40 @@ export class PouchdbService {
     });
   }
 
+  getViewInv(
+    viewName,
+    level=undefined,
+    startkey=undefined,
+    endkey=undefined,
+    reduce=true,
+    group=true,
+    limit=undefined,
+    skip=undefined,
+    include_docs=false,
+    keys=undefined
+  ){
+    return new Promise((resolve, reject)=>{
+      let options = {
+        'reduce': reduce,
+        'group': group,
+        'group_level':level,
+        'startkey': startkey,
+        'endkey': endkey,
+        'limit': limit,
+        'skip': skip,
+        'include_docs': include_docs,
+        'keys': keys,
+        'descending': true,
+        'inclusive_end': true,
+      }
+      this.db.query(viewName, options).then(function (res) {
+        resolve(res.rows);
+      }).catch(function (err) {
+        console.log("error", err);
+      });
+    });
+  }
+
   getDocType(docType) {
     return new Promise((resolve, reject)=>{
       let self = this;

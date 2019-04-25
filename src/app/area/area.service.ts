@@ -18,10 +18,13 @@ export class AreaService {
     return new Promise(async (resolve, reject)=>{
       let area: any = await this.pouchdbService.getDoc(doc_id, true);
       let payableList = [];
-      this.pouchdbService.getView(
+      this.pouchdbService.getViewInv(
         'stock/AreaDiario', 4,
+        ['z', doc_id, 'z'],
         ['0', doc_id, '0'],
-        ['z', doc_id, 'z']
+        true,
+        true,
+        5
       ).then(async (planneds: any[]) => {
         // let promise_ids = [];
         // let pts = [];
@@ -44,26 +47,26 @@ export class AreaService {
         } else {
           area.image = "./assets/icons/field.jpg";
         }
-        let docs: any = await this.pouchdbService.getList(getList, true);
-        // console.log("docs", docs.slice(0, 1));
-
-
-        // var doc_dict = {};
-        area.moves = [];
-        docs.slice(0, 5).forEach(row=>{
-          delete row.doc.image;
-          if (row.doc._attachments){
-            let image = row.doc._attachments['image.png'].data;
-            this.firstFileToBase64(image).then((result: string) => {
-              row.doc.image = result;
-            });
-          }
-          area.moves.push(row.doc);
-          if (row.doc.activity_id == 'activity.rain' && !area.lastRain){
-            area.lastRain = row.doc.quantity;
-            area.lastRainDate = row.doc.date;
-          }
-        })
+        // let docs: any = await this.pouchdbService.getList(getList, true);
+        // console.log("docs", docs);
+        //
+        //
+        // // var doc_dict = {};
+        // area.moves = [];
+        // docs.forEach(row=>{
+        //   delete row.doc.image;
+        //   if (row.doc._attachments){
+        //     let image = row.doc._attachments['image.png'].data;
+        //     this.firstFileToBase64(image).then((result: string) => {
+        //       row.doc.image = result;
+        //     });
+        //   }
+        //   area.moves.push(row.doc);
+        //   if (row.doc.activity_id == 'activity.rain' && !area.lastRain){
+        //     area.lastRain = row.doc.quantity;
+        //     area.lastRainDate = row.doc.date;
+        //   }
+        // })
         resolve(area);
         // console.log("area22", area);
 
@@ -90,7 +93,7 @@ export class AreaService {
         fileReader.readAsDataURL(fileImage);
         fileReader.onload = () => {
           let resultado = fileReader.result.toString().split(',')[1];
-          console.log("to64", fileImage);
+          // console.log("to64", fileImage);
           // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
           resolve(fileReader.result);
         };
@@ -140,5 +143,44 @@ export class AreaService {
 
   handleChange(list, change){
     this.pouchdbService.localHandleChangeData(list, change)
+  }
+
+  getWorksPage(area_id, startkey): Promise<any> {
+    return new Promise(async (resolve, reject)=>{
+      // let area: any = await this.pouchdbService.getDoc(doc_id, true);
+      let payableList = [];
+      console.log("startkey", startkey);
+      this.pouchdbService.getView(
+        'stock/AreaDiario', 4,
+        [area_id, startkey],
+        [area_id+"z", "z"],
+        true,
+        true,
+        5
+      ).then(async (planneds: any[]) => {
+        let getList = [];
+        planneds.forEach(item => {
+          getList.push(item.key[3]);
+        })
+        let docs: any = await this.pouchdbService.getList(getList, true);
+        // console.log("docs", docs);
+
+        // var doc_dict = {};
+        let moves = [];
+        docs.forEach(row=>{
+          // console.log("rowla", row);
+          delete row.doc.image;
+          if (row.doc._attachments){
+            let image = row.doc._attachments['image.png'].data;
+            this.firstFileToBase64(image).then((result: string) => {
+              row.doc.image = result;
+            });
+          }
+          moves.push(row.doc);
+        })
+        console.log("moves", moves);
+        resolve(moves);
+      });
+    });
   }
 }
