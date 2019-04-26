@@ -52,7 +52,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="list-mini-content" #content style="transform: rotate(180deg);">
+<ion-content class="list-mini-content"  *ngIf="!showForm" style="transform: rotate(180deg);">
 
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
   <!-- <img /> -->
@@ -64,83 +64,13 @@
   </div>
   <div style="height:100px;">
   </div>
+  <div style="height:200px;" *ngIf="showBotom">
+  </div>
   <form class="sample-form validations-form"
   [formGroup]="areaForm"
   (ngSubmit)="onSubmit(areaForm.value)">
 
-    <ion-row *ngIf="showForm" style="transform: rotate(180deg);">
 
-        <!-- <h2 (click)="openPWAPhotoPicker()">Tire uma foto da area</h2> -->
-        <ion-button class="button-100" color="success" (click)="openPWAPhotoPicker()">Escolher/Tirar Foto</ion-button>
-
-        <!-- <ion-button (click)="openPWAPhotoPicker()">Let's go!</ion-button> -->
-
-        <div>
-          <img [src]="imgURI" #imageSrc style="width: 200px;">
-        </div>
-
-
-      <ion-item
-      no-padding
-      class="field-100">
-      <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-      <ion-input #name type="text"
-      formControlName="name"></ion-input>
-    </ion-item>
-    <ion-item no-padding class="field-50">
-      <ion-label position="floating">{{'Area(ha)' | translate}}</ion-label>
-      <ion-input type="number" formControlName="surface"></ion-input>
-    </ion-item>
-    <ion-item no-padding (click)="selectCrop()" class="field-50">
-      <div class="field-many2one">
-        <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
-        <h4 class="field-value">
-          {{areaForm.value.crop && areaForm.value.crop.name || 'Selecionar'}}
-        </h4>
-      </div>
-    </ion-item>
-    <ion-item
-     no-padding
-     class="field-100">
-       <ion-label>{{'Area Propria' | translate}}</ion-label>
-       <ion-toggle formControlName="own"></ion-toggle>
-    </ion-item>
-    <ion-item no-padding (click)="selectContact()"
-    *ngIf="!areaForm.value.own"
-    class="field-100">
-      <div class="field-many2one">
-        <h4 class="field-label">{{'Proprietario' | translate}}</h4>
-        <h4 class="field-value">
-          {{areaForm.value.contact && areaForm.value.contact.name || 'Selecionar'}}
-        </h4>
-      </div>
-    </ion-item>
-    <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
-      <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
-      <ion-select #type (ionChange)="getDefaultCategory()"
-      formControlName="rentingType"
-      cancelText="{{ 'CANCEL' | translate }}"
-      okText="{{ 'OK' | translate }}"
-      interface="popover">
-        <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
-        <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
-        <ion-select-option value="percent">Porcentage</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
-      <ion-label position="floating"
-      *ngIf="areaForm.value.rentingType == 'fixedAmount'">
-      {{'Valor em $' | translate}}</ion-label>
-      <ion-label position="floating"
-      *ngIf="areaForm.value.rentingType == 'fixedWeight'">
-      {{'Peso em Kg' | translate}}</ion-label>
-      <ion-label position="floating"
-      *ngIf="areaForm.value.rentingType == 'percent'">
-      {{'Porcentage %' | translate}}</ion-label>
-      <ion-input type="number" formControlName="rentingAmount"></ion-input>
-    </ion-item>
-    <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
-    </ion-row>
 
     <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;    transform: rotate(180deg);">
       <ion-item-sliding class="list-item"
@@ -328,4 +258,83 @@
   </ion-row>
 </ion-fab>
 
+</ion-content>
+
+<ion-content class="list-mini-content" *ngIf="showForm">
+
+  <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
+  <!-- <img /> -->
+  <img id="imgtmp" #imgtmp style="display: none;">
+  <div id="pwa">
+    <input type="file" #pwaphoto accept="image/*" (change)="previewFile()"  style="display: none;">
+    <input type="file" #pwacamera accept="image/*" capture="camera"  (change)="takeCamera()" style="display: none;"/>
+    <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
+  </div>
+
+  <ion-row>
+      <ion-button class="button-100" color="success" (click)="openPWAPhotoPicker()">Escolher/Tirar Foto</ion-button>
+      <div>
+        <img [src]="imgURI" #imageSrc style="width: 200px;">
+      </div>
+    <ion-item
+    no-padding
+    class="field-100">
+    <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+    <ion-input #name type="text"
+    formControlName="name"></ion-input>
+  </ion-item>
+  <ion-item no-padding class="field-50">
+    <ion-label position="floating">{{'Area(ha)' | translate}}</ion-label>
+    <ion-input type="number" formControlName="surface"></ion-input>
+  </ion-item>
+  <ion-item no-padding (click)="selectCrop()" class="field-50">
+    <div class="field-many2one">
+      <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
+      <h4 class="field-value">
+        {{areaForm.value.crop && areaForm.value.crop.name || 'Selecionar'}}
+      </h4>
+    </div>
+  </ion-item>
+  <ion-item
+   no-padding
+   class="field-100">
+     <ion-label>{{'Area Propria' | translate}}</ion-label>
+     <ion-toggle formControlName="own"></ion-toggle>
+  </ion-item>
+  <ion-item no-padding (click)="selectContact()"
+  *ngIf="!areaForm.value.own"
+  class="field-100">
+    <div class="field-many2one">
+      <h4 class="field-label">{{'Proprietario' | translate}}</h4>
+      <h4 class="field-value">
+        {{areaForm.value.contact && areaForm.value.contact.name || 'Selecionar'}}
+      </h4>
+    </div>
+  </ion-item>
+  <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
+    <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
+    <ion-select #type (ionChange)="getDefaultCategory()"
+    formControlName="rentingType"
+    cancelText="{{ 'CANCEL' | translate }}"
+    okText="{{ 'OK' | translate }}"
+    interface="popover">
+      <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
+      <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
+      <ion-select-option value="percent">Porcentage</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
+    <ion-label position="floating"
+    *ngIf="areaForm.value.rentingType == 'fixedAmount'">
+    {{'Valor em $' | translate}}</ion-label>
+    <ion-label position="floating"
+    *ngIf="areaForm.value.rentingType == 'fixedWeight'">
+    {{'Peso em Kg' | translate}}</ion-label>
+    <ion-label position="floating"
+    *ngIf="areaForm.value.rentingType == 'percent'">
+    {{'Porcentage %' | translate}}</ion-label>
+    <ion-input type="number" formControlName="rentingAmount"></ion-input>
+  </ion-item>
+  <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
+  </ion-row>
 </ion-content>
