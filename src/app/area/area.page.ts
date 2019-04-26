@@ -357,17 +357,21 @@ export class AreaPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     if (this._id) {
-      this.areaService.getArea(this._id).then((data) => {
+      this.areaService.getArea(this._id).then(async (data) => {
         this.doInfinite(false);
         data.note = null;
         this.areaForm.patchValue(data);
-        var date1 = new Date(this.areaForm.value.lastRainDate);
-        var date2 = new Date();
-        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        this.diffDays = diffDays - 1;
-        // this.showImages();
         this.loading.dismiss();
+        let rain = await this.areaService.getAreaRain(this._id);
+        if (rain){
+          this.areaForm.value.lastRainDate = rain['date'];
+          this.areaForm.value.lastRain = rain['quantity'];
+          var date1 = new Date(this.areaForm.value.lastRainDate);
+          var date2 = new Date();
+          var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+          var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+          this.diffDays = diffDays - 1;
+        }
       });
     } else {
       this.showForm = true;
@@ -447,10 +451,6 @@ export class AreaPage implements OnInit {
       componentProps: componentProps
     });
     profileModal.present();
-  }
-
-  onSubmit(values) {
-    //console.log(values);
   }
 
   selectCrop() {

@@ -9,7 +9,6 @@
   </ion-toolbar>
   <ion-toolbar *ngIf="!showForm" color="primary">
     <ion-buttons slot="start" (click)="goBack()">
-      <!-- <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button> -->
       <ion-icon name="arrow-back" style="font-size: 20px;"></ion-icon>
       <ion-thumbnail style="--border-radius:10px;">
         <img [src]="areaForm.value.image" id="avatarImage" #avatarImage *ngIf="areaForm.value.image">
@@ -18,15 +17,12 @@
     <ion-title style="padding-left: 5px;">{{areaForm.value.name}}
       <h1 class="subtitle" *ngIf="areaForm.value.lastRain && diffDays  > 1">
         Ultima chuva {{areaForm.value.lastRain}}mm a {{ diffDays }} dias
-        <!-- Ultima chuva 15mm a 6 dias -->
       </h1>
       <h1 class="subtitle" *ngIf="areaForm.value.lastRain && diffDays == 1">
         Ultima chuva {{areaForm.value.lastRain}}mm a {{ diffDays }} dia
-        <!-- Ultima chuva 15mm a 6 dias -->
       </h1>
       <h1 class="subtitle" *ngIf="areaForm.value.lastRain && !diffDays">
         Ultima chuva {{areaForm.value.lastRain}}mm hoje
-        <!-- Ultima chuva 15mm a 6 dias -->
       </h1>
       <h1 class="subtitle" *ngIf="!areaForm.value.lastRain">
         Sem dados de Chuva
@@ -41,7 +37,6 @@
 </ion-header>
 
 <ion-content class="list-mini-content" *ngIf="!showForm" style="transform: rotate(180deg);">
-
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
   <img id="imgtmp" #imgtmp style="transform: rotate(180deg);" style="display:none">
   <div id="pwa">
@@ -52,10 +47,7 @@
   </div>
   <div style="height:200px;" *ngIf="showBotom">
   </div>
-  <form class="sample-form validations-form" [formGroup]="areaForm" (ngSubmit)="onSubmit(areaForm.value)">
-
-
-
+  <form class="sample-form validations-form" [formGroup]="areaForm">
     <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;    transform: rotate(180deg);">
       <ion-item-sliding class="list-item" *ngFor="let item of areaForm.value.moves">
         <ion-item no-padding (click)="openItem(item)" *ngIf="!item.image" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
@@ -223,15 +215,10 @@
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
   <div id="pwa">
     <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
-    <!-- <input type="file" id="pwacamera" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
-    <input type="file" id="pwagalery" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;"> -->
   </div>
-  <form class="sample-form validations-form" [formGroup]="areaForm" (ngSubmit)="onSubmit(areaForm.value)">
+  <form class="sample-form validations-form" [formGroup]="areaForm">
     <ion-row>
-      <!-- <ion-button class="button-100" color="success" >Escolher/Tirar Foto</ion-button> -->
-      <!-- <div> -->
         <img [src]="areaForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
-      <!-- </div> -->
       <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input #name type="text" formControlName="name"></ion-input>
