@@ -103,13 +103,6 @@ export class AreaPage implements OnInit {
     this.events.subscribe('changed-work', (change) => {
       console.log("chaNGE WORK", change);
       this.areaService.handleChange(this.areaForm.value.moves, change);
-      setTimeout(() => {
-        console.log("acounteceu");
-        if (this.content) {
-          // this.showImages();
-          // this.content.scrollToBottom();
-        }
-      }, 500);
     })
     // platform.ready().then(() => {
     //   if (this.platform.is('cordova')) {
@@ -199,10 +192,6 @@ export class AreaPage implements OnInit {
           })
           self.areaForm.value.note = null;
           await self.pouchdbService.attachFile(work.id, 'image.png', blob);
-          setTimeout(() => {
-            // this.content.scrollToBottom();
-            // this.ref.detectChanges();
-          }, 500);
         });
       }
     };
@@ -258,11 +247,6 @@ export class AreaPage implements OnInit {
             '_attachments': attachment
           })
           self.areaForm.value.note = null;
-          setTimeout(() => {
-            if (this.content){
-              // this.content.scrollToBottom();
-            }
-          }, 500);
         });
       }
     };
@@ -365,11 +349,6 @@ export class AreaPage implements OnInit {
           //   'activity_name': "Memo",
           //   'note': result.result.fulfillment.speech,
           // })
-          setTimeout(() => {
-            if (this.content) {
-              // this.content.scrollToBottom();
-            }
-          }, 200);
           this.tts.speak({
             text: result.result.fulfillment.speech,
             //rate: this.rate/10,
@@ -405,11 +384,6 @@ export class AreaPage implements OnInit {
             //   'activity_name': "Anotacion",
             //   'note': matches[0],
             // })
-            setTimeout(() => {
-              if (this.content) {
-                // this.content.scrollToBottom();
-              }
-            }, 200);
           });
         }
       });
@@ -471,11 +445,6 @@ export class AreaPage implements OnInit {
         this.diffDays = diffDays - 1;
         // this.showImages();
         this.loading.dismiss();
-        setTimeout(() => {
-          if (this.content) {
-            // this.content.scrollToBottom();
-          }
-        }, 200);
       });
     } else {
       this.showForm = true;
@@ -487,15 +456,17 @@ export class AreaPage implements OnInit {
     setTimeout(() => {
       this.areaService.getWorksPage(this._id, this.skip).then((works: any[]) => {
         works.forEach(wor=>{
-          this.areaForm.value.moves.unshift(wor);
+          this.areaForm.value.moves.push(wor);
         })
         this.skip += 5;
-
+        if (infiniteScroll){
+          infiniteScroll.target.complete();
+          if (!works.length){
+            infiniteScroll.target.disabled = true;
+          }
+        }
       });
-      if (infiniteScroll){
-        infiniteScroll.target.complete();
-      }
-    }, 50);
+    }, 500);
   }
 
   // showImages() {
@@ -631,13 +602,6 @@ export class AreaPage implements OnInit {
 
   addButton() {
     this.showBotom = !this.showBotom;
-    if (this.showBotom) {
-      setTimeout(() => {
-        if (this.content) {
-          // this.content.scrollToBottom();
-        }
-      }, 200);
-    }
   }
   sendButton() {
     console.log("send");
@@ -654,16 +618,7 @@ export class AreaPage implements OnInit {
       'note': this.areaForm.value.note,
     })
     this.areaForm.value.note = null;
-    setTimeout(() => {
-      if (this.content) {
-        // this.content.scrollToBottom();
-      }
-    }, 500);
   }
-
-  // getPicture(){
-  //   console.log("take picture");
-  // }
 
   async selectImage() {
     const actionSheet = await this.actionSheetController.create({
@@ -672,16 +627,12 @@ export class AreaPage implements OnInit {
         text: 'Galeria',
         handler: () => {
           this.openPWAGalery();
-          // this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
-
         }
       },
       {
         text: 'Camera',
         handler: () => {
-          // this.takeCamera();
           this.openPWACamera();
-          // this.takePicture(this.camera.PictureSourceType.CAMERA);
         }
       }
       ]
@@ -689,90 +640,12 @@ export class AreaPage implements OnInit {
     await actionSheet.present();
   }
 
-  // takePicture(sourceType: PictureSourceType) {
-  //   var options: CameraOptions = {
-  //     quality: 100,
-  //     sourceType: sourceType,
-  //     saveToPhotoAlbum: false,
-  //     correctOrientation: true
-  //   };
-  //
-  //   this.camera.getPicture(options).then(imagePath => {
-  //     if (this.platform.is('android') && sourceType === this.camera.PictureSourceType.PHOTOLIBRARY) {
-  //       this.filePath.resolveNativePath(imagePath)
-  //         .then(filePath => {
-  //           let correctPath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
-  //           let currentName = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.lastIndexOf('?'));
-  //           this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-  //         });
-  //     } else {
-  //       var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-  //       var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
-  //       this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-  //     }
-  //   });
-  //
-  // }
-
   createFileName() {
     var d = new Date(),
       n = d.getTime(),
       newFileName = n + ".jpg";
     return newFileName;
   }
-
-
-  // copyFileToLocalDir(namePath, currentName, newFileName) {
-  //   this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
-  //     this.updateStoredImages(newFileName);
-  //   }, error => {
-  //     this.presentToast('Error while storing file.');
-  //   });
-  // }
-  //
-  // updateStoredImages(name) {
-  //   this.storage.get(STORAGE_KEY).then(images => {
-  //     let arr = JSON.parse(images);
-  //     if (!arr) {
-  //       let newImages = [name];
-  //       this.storage.set(STORAGE_KEY, JSON.stringify(newImages));
-  //     } else {
-  //       arr.push(name);
-  //       this.storage.set(STORAGE_KEY, JSON.stringify(arr));
-  //     }
-  //
-  //     let filePath = this.file.dataDirectory + name;
-  //     let resPath = this.pathForImage(filePath);
-  //
-  //     let newEntry = {
-  //       name: name,
-  //       path: resPath,
-  //       filePath: filePath
-  //     };
-  //     console.log("newEntry", newEntry);
-  //     this.pouchdbService.createDoc({
-  //       'docType': 'work',
-  //       'date': new Date().toISOString(),
-  //       'area_id': this.areaForm.value._id,
-  //       'area_name': this.areaForm.value.name,
-  //       'crop_id': this.areaForm.value.crop._id,
-  //       'crop_name': this.areaForm.value.crop.name,
-  //       'activity_name': "Anotacion",
-  //       'activity_id': "activity.anotation",
-  //       'note': this.areaForm.value.note,
-  //       'image': resPath,
-  //       // 'image': resPath+"/"+filePath+
-  //     })
-  //     this.areaForm.value.note = null;
-  //     setTimeout(() => {
-  //       if (this.content) {
-  //         // this.content.scrollToBottom();
-  //       }
-  //     }, 500);
-  //     this.images = [newEntry, ...this.images];
-  //     this.ref.detectChanges(); // trigger change detection cycle
-  //   });
-  // }
 
   openPreview(img) {
     this.modalCtrl.create({
@@ -784,55 +657,6 @@ export class AreaPage implements OnInit {
       modal.present();
     });
   }
-
-  // loadStoredImages() {
-  //   this.storage.get(STORAGE_KEY).then(images => {
-  //     if (images) {
-  //       let arr = JSON.parse(images);
-  //       this.images = [];
-  //       for (let img of arr) {
-  //         let filePath = this.file.dataDirectory + img;
-  //         let resPath = this.pathForImage(filePath);
-  //         this.images.push({ name: img, path: resPath, filePath: filePath });
-  //       }
-  //     }
-  //   });
-  // }
-
-  // pathForImage(img) {
-  //   if (img === null) {
-  //     return '';
-  //   } else {
-  //     let converted = this.webview.convertFileSrc(img);
-  //     return converted;
-  //   }
-  // }
-
-  // deleteImage(imgEntry, position) {
-  //   this.images.splice(position, 1);
-  //
-  //   this.storage.get(STORAGE_KEY).then(images => {
-  //     let arr = JSON.parse(images);
-  //     let filtered = arr.filter(name => name != imgEntry.name);
-  //     this.storage.set(STORAGE_KEY, JSON.stringify(filtered));
-  //
-  //     var correctPath = imgEntry.filePath.substr(0, imgEntry.filePath.lastIndexOf('/') + 1);
-  //
-  //     this.file.removeFile(correctPath, imgEntry.name).then(res => {
-  //       this.presentToast('File removed.');
-  //     });
-  //   });
-  // }
-
-  // startUpload(imgEntry) {
-  //   this.file.resolveLocalFilesystemUrl(imgEntry.filePath)
-  //     .then(entry => {
-  //       (<FileEntry>entry).file(file => this.readFile(file))
-  //     })
-  //     .catch(err => {
-  //       this.presentToast('Error while reading file.');
-  //     });
-  // }
 
   async presentToast(text) {
     const toast = await this.toastCtrl.create({
@@ -878,11 +702,7 @@ export class AreaPage implements OnInit {
   }
 
   getAudio() {
-    if (this.content) {
-      // this.content.scrollToBottom();
-    }
     console.log("get audio");
-
   }
 
 
