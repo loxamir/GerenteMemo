@@ -57,6 +57,7 @@ export class AreaPage implements OnInit {
   images = [];
   skip = 0;
   lastWork = '0';
+  avatar = undefined;
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -132,8 +133,8 @@ export class AreaPage implements OnInit {
         octx.drawImage(preview, 0, 0, oc.width, oc.height);
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-        ctx.canvas.toBlob((blob) => {
-          self.pouchdbService.attachFile(self._id, 'avatar.png', blob);
+        ctx.canvas.toBlob(async (blob) => {
+          self.avatar = blob;
         });
       }
     }
@@ -266,6 +267,14 @@ export class AreaPage implements OnInit {
     this.showForm = !this.showForm;
   }
 
+  backEdit() {
+    if (this._id){
+      this.showForm = false;
+    } else {
+      this.navCtrl.navigateBack(['/agro-tabs/area-list']);
+    }
+  }
+
   ask(question) {
     console.log("question", question);
     ApiAIPromises.requestText({
@@ -342,6 +351,7 @@ export class AreaPage implements OnInit {
       lastRainDate: new FormControl(),
       note: new FormControl(null),
       code: new FormControl(''),
+      _attachments: new FormControl({}),
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
@@ -384,11 +394,11 @@ export class AreaPage implements OnInit {
 
   buttonSave() {
     if (this._id) {
-      this.areaService.updateArea(this.areaForm.value);
+      this.areaService.updateArea(this.areaForm.value, this.avatar);
       this.events.publish('open-area', this.areaForm.value);
       this.showForm = false;
     } else {
-      this.areaService.createArea(this.areaForm.value).then(doc => {
+      this.areaService.createArea(this.areaForm.value, this.avatar).then(doc => {
         this.areaForm.patchValue({
           _id: doc['id'],
         });

@@ -108,11 +108,12 @@ export class AreaService {
     });
   }
 
-  createArea(viewData){
+  createArea(viewData, blob=undefined){
     let area = Object.assign({}, viewData);
     area.docType = 'area';
     delete area.moves;
     delete area.area;
+    delete area.image;
     return new Promise((resolve, reject)=>{
       if (area.code && area.code != ''){
         this.pouchdbService.createDoc(area).then(doc => {
@@ -121,7 +122,11 @@ export class AreaService {
       } else {
         this.configService.getSequence('area').then((code) => {
           area['code'] = code;
-          this.pouchdbService.createDoc(area).then(doc => {
+          this.pouchdbService.createDoc(area).then(async doc => {
+            if (blob){
+              console.log("blob", doc);
+              let avai = await this.pouchdbService.attachFile(doc['id'], 'avatar.png', blob);
+            }
             resolve({doc: doc, area: area});
           });
         });
@@ -130,11 +135,19 @@ export class AreaService {
     });
   }
 
-  updateArea(viewData){
+  async updateArea(viewData, blob=undefined){
     let area = Object.assign({}, viewData);
     area.docType = 'area';
     delete area.moves;
     delete area.area;
+    delete area.image;
+    if (blob){
+      let avai = await this.pouchdbService.attachFile(area._id, 'avatar.png', blob);
+      console.log("avai", avai);
+      let data:any = await this.pouchdbService.getDoc(area._id);
+      let attachments = data._attachments;
+      area._attachments = attachments;
+    }
     return this.pouchdbService.updateDoc(area);
   }
 
