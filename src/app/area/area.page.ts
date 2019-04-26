@@ -110,12 +110,15 @@ export class AreaPage implements OnInit {
 
   previewFile() {
     let self = this;
-    var preview: any = document.querySelector('#imgtmp');
+    var preview: any = document.querySelector('#imageSrc');
     var file = this.pwaphoto.nativeElement.files[0];
     var reader = new FileReader();
     var percentage = 1.0;
     reader.onload = (event: Event) => {
       preview.src = reader.result;
+      this.areaForm.patchValue({
+        image: reader.result,
+      })
       preview.onload = function() {
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
@@ -171,7 +174,8 @@ export class AreaPage implements OnInit {
             'crop_name': self.areaForm.value.crop.name,
             'activity_name': "Anotacion",
             'activity_id': "activity.anotation",
-            'note': "Fotinho"
+            'note': "Fotinho",
+            'image': reader.result
           })
           self.areaForm.value.note = null;
           await self.pouchdbService.attachFile(work.id, 'image.png', blob);
@@ -382,7 +386,7 @@ export class AreaPage implements OnInit {
     if (this._id) {
       this.areaService.updateArea(this.areaForm.value);
       this.events.publish('open-area', this.areaForm.value);
-      this.showForm = true;
+      this.showForm = false;
     } else {
       this.areaService.createArea(this.areaForm.value).then(doc => {
         this.areaForm.patchValue({
@@ -390,7 +394,7 @@ export class AreaPage implements OnInit {
         });
         this._id = doc['id'];
         this.events.publish('create-area', this.areaForm.value);
-        this.showForm = true;
+        this.showForm = false;
       });
     }
   }

@@ -105,7 +105,9 @@ export class PouchdbService {
             this.db.changes({
               live: true,
               since: 'now',
-              include_docs: true
+              include_docs: true,
+              attachments: true,
+              // binary: true,
             }).on('change', (change) => {
               console.log("changed", change);
               this.handleChangeData(change);
@@ -215,7 +217,7 @@ export class PouchdbService {
       if (typeof doc_id === "string"){
         resolve(this.db.get(doc_id, {
           attachments: attachments,
-          binary: true
+          // binary: true
         }));
       } else {
         resolve({})
@@ -341,7 +343,7 @@ export class PouchdbService {
           include_docs : true,
           startkey: docType+".",
           attachments: true,
-          binary: true,
+          // binary: true,
           endkey: docType+".z",
         }).then((res) => {
           let docs = [];
@@ -360,7 +362,7 @@ export class PouchdbService {
         this.db.allDocs({
           include_docs : true,
           attachments: includeAttach,
-          binary: true,
+          // binary: true,
           keys: list
         }).then((res) => {
           resolve(res.rows);
@@ -550,6 +552,14 @@ export class PouchdbService {
         changedIndex = index;
       }
     });
+    if (change.doc._attachments && change.doc._attachments['image.png']){
+      let image = change.doc._attachments['image.png'].data;
+      change.doc.image = "data:image/png;base64,"+image;
+    }
+    // console.log("image", image);
+    // this.firstFileToBase64(image).then((result: string) => {
+    //   area.image = result;
+    // });
     //A document was deleted
     if(change.deleted){
       list.splice(changedIndex, 1);

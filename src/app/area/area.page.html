@@ -12,7 +12,7 @@
       <!-- <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button> -->
       <ion-icon name="arrow-back" style="font-size: 20px;"></ion-icon>
       <ion-thumbnail style="--border-radius:10px;">
-        <img [src]="areaForm.value.image" *ngIf="areaForm.value.image">
+        <img [src]="areaForm.value.image" id="avatarImage" #avatarImage *ngIf="areaForm.value.image">
       </ion-thumbnail>
     </ion-buttons>
     <ion-title style="padding-left: 5px;">{{areaForm.value.name}}
@@ -43,9 +43,8 @@
 <ion-content class="list-mini-content" *ngIf="!showForm" style="transform: rotate(180deg);">
 
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
-  <img id="imgtmp" #imgtmp style="display: none;">
+  <img id="imgtmp" #imgtmp style="transform: rotate(180deg);" style="display:none">
   <div id="pwa">
-    <input type="file" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
     <input type="file" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
     <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
   </div>
@@ -222,25 +221,24 @@
 
 <ion-content class="list-mini-content" *ngIf="showForm">
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
-  <img id="imgtmp" #imgtmp style="display: none;">
   <div id="pwa">
-    <input type="file" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
-    <input type="file" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
-    <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
+    <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
+    <!-- <input type="file" id="pwacamera" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
+    <input type="file" id="pwagalery" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;"> -->
   </div>
   <form class="sample-form validations-form" [formGroup]="areaForm" (ngSubmit)="onSubmit(areaForm.value)">
     <ion-row>
       <!-- <ion-button class="button-100" color="success" >Escolher/Tirar Foto</ion-button> -->
-      <div>
-        <img [src]="areaForm.value.image || './assets/icons/field.jpg'" #imageSrc style="width: 200px;" (click)="openPWAPhotoPicker()">
-      </div>
+      <!-- <div> -->
+        <img [src]="areaForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+      <!-- </div> -->
       <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input #name type="text" formControlName="name"></ion-input>
       </ion-item>
       <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'Area(ha)' | translate}}</ion-label>
-        <ion-input type="number" formControlName="surface"></ion-input>
+        <ion-input type="number" style="height: 47px;" formControlName="surface"></ion-input>
       </ion-item>
       <ion-item no-padding (click)="selectCrop()" class="field-50">
         <div class="field-many2one">

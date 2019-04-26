@@ -41,9 +41,10 @@ export class AreaService {
         // console.log("area", area);
         if (area._attachments){
           let avatar = area._attachments['avatar.png'].data;
-          await   this.firstFileToBase64(avatar).then((result: string) => {
-            area.image = result;
-          })
+          // await   this.firstFileToBase64(avatar).then((result: string) => {
+          //   area.image = result;
+          // })
+          area.image = "data:image/png;base64,"+avatar;
         } else {
           area.image = "./assets/icons/field.jpg";
         }
@@ -173,9 +174,10 @@ export class AreaService {
           delete row.doc.image;
           if (row.doc._attachments){
             let image = row.doc._attachments['image.png'].data;
-            this.firstFileToBase64(image).then((result: string) => {
-              row.doc.image = result;
-            });
+            // this.firstFileToBase64(image).then((result: string) => {
+            //   row.doc.image = result;
+            // });
+            row.doc.image = "data:image/png;base64,"+image;
           }
           moves.push(row.doc);
         })

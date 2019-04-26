@@ -21,10 +21,11 @@ export class AreasService {
             if (area._attachments){
               console.log("areaaasdf", area);
               let image = area._attachments['avatar.png'].data;
-              console.log("image", image);
-              this.firstFileToBase64(image).then((result: string) => {
-                area.image = result;
-              });
+              // console.log("image", image);
+              // this.firstFileToBase64(image).then((result: string) => {
+              //   area.image = result;
+              // });
+              area.image = "data:image/png;base64,"+image;
             } else {
               area.image = "./assets/icons/field.jpg";
             }
