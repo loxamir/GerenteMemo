@@ -62,12 +62,8 @@
     <input type="file" #pwacamera accept="image/*" capture="camera"  (change)="takeCamera()" style="display: none;"/>
     <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
   </div>
-  <!-- <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!showForm">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher> -->
-    <!-- <ion-card class="date-card" *ngIf="!showForm">
-      {{today|date: 'dd/MM/yyyy'}}
-    </ion-card> -->
+  <div style="height:100px;">
+  </div>
   <form class="sample-form validations-form"
   [formGroup]="areaForm"
   (ngSubmit)="onSubmit(areaForm.value)">
@@ -332,14 +328,4 @@
   </ion-row>
 </ion-fab>
 
-<ion-footer *ngIf="showBotom" style="height:250px;">
-  <!-- <ion-toolbar>
-    <ion-title>Footer</ion-title>
-  </ion-toolbar> -->
-</ion-footer>
-<ion-footer *ngIf="!showBotom" style="height:50px;">
-  <!-- <ion-toolbar>
-    <ion-title>Footer</ion-title>
-  </ion-toolbar> -->
-</ion-footer>
 </ion-content>
