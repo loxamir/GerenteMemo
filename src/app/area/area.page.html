@@ -1,19 +1,13 @@
-
 <ion-header>
-  <ion-toolbar *ngIf="showSearch" color="light">
-    <ion-buttons slot="start">
-      <ion-button (click)="changeSearch()" color="primary">
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
+  <ion-toolbar *ngIf="showForm" color="primary" style="font-size: 20px;">
+    <ion-buttons slot="start" (click)="showEdit()">
+      <ion-icon name="arrow-back" style="font-size: 20px;"></ion-icon>
     </ion-buttons>
-  <ion-searchbar
-  placeholder="Buscar Area"
-  [(ngModel)]="searchTerm"
-  #searchBar
-  (ionChange)="setFilteredItems()">
-  </ion-searchbar>
+    <ion-title style="padding-left: 5px;">
+      Editar Area
+    </ion-title>
   </ion-toolbar>
-  <ion-toolbar *ngIf="!showSearch" color="primary">
+  <ion-toolbar *ngIf="!showForm" color="primary">
     <ion-buttons slot="start" (click)="goBack()">
       <!-- <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button> -->
       <ion-icon name="arrow-back" style="font-size: 20px;"></ion-icon>
@@ -39,12 +33,6 @@
       </h1>
     </ion-title>
     <ion-buttons slot="end">
-      <!-- <ion-button (click)="showEdit()">
-        <ion-icon name="videocam"></ion-icon>
-      </ion-button> -->
-      <!-- <ion-button  (click)="showEdit()">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
       <ion-button (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
@@ -52,33 +40,27 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="list-mini-content"  *ngIf="!showForm" style="transform: rotate(180deg);">
+<ion-content class="list-mini-content" *ngIf="!showForm" style="transform: rotate(180deg);">
 
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
-  <!-- <img /> -->
   <img id="imgtmp" #imgtmp style="display: none;">
   <div id="pwa">
-    <input type="file" #pwaphoto accept="image/*" (change)="previewFile()"  style="display: none;">
-    <input type="file" #pwacamera accept="image/*" capture="camera"  (change)="takeCamera()" style="display: none;"/>
+    <input type="file" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
+    <input type="file" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
     <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
   </div>
   <div style="height:100px;">
   </div>
   <div style="height:200px;" *ngIf="showBotom">
   </div>
-  <form class="sample-form validations-form"
-  [formGroup]="areaForm"
-  (ngSubmit)="onSubmit(areaForm.value)">
+  <form class="sample-form validations-form" [formGroup]="areaForm" (ngSubmit)="onSubmit(areaForm.value)">
 
 
 
     <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;    transform: rotate(180deg);">
-      <ion-item-sliding class="list-item"
-      *ngFor="let item of areaForm.value.moves">
-      <ion-item no-padding
-      (click)="openItem(item)" *ngIf="!item.image"
-      style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
-        <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
+      <ion-item-sliding class="list-item" *ngFor="let item of areaForm.value.moves">
+        <ion-item no-padding (click)="openItem(item)" *ngIf="!item.image" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
             <ion-row no-padding>
               <ion-thumbnail style="--border-radius:10px;">
                 <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
@@ -105,236 +87,199 @@
                 </ion-row>
               </ion-col>
             </ion-row>
-       <ion-row no-padding class="content-row one-line">
-          <ion-col no-padding size="12">
-            <ion-img *ngIf="item.image" [src]="item.image" (click)="openPreview(item.image)"></ion-img>
-          </ion-col>
-          <ion-col no-padding size="6" align-self-center>
-          </ion-col>
-        </ion-row>
-      </ion-card>
-    </ion-item>
+            <ion-row no-padding class="content-row one-line">
+              <ion-col no-padding size="12">
+                <ion-img *ngIf="item.image" [src]="item.image" (click)="openPreview(item.image)"></ion-img>
+              </ion-col>
+              <ion-col no-padding size="6" align-self-center>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
 
-    <ion-item no-padding
-    (click)="openPreview(item.image)"
-    *ngIf="item.image"
-    style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
-      <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
-          <ion-row no-padding>
-            <!-- <ion-thumbnail style="--border-radius:10px;">
+        <ion-item no-padding (click)="openPreview(item.image)" *ngIf="item.image" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
+            <ion-row no-padding>
+              <!-- <ion-thumbnail style="--border-radius:10px;">
               <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
             </ion-thumbnail> -->
-            <ion-col>
-              <ion-row>
-            <ion-col size="8.5" no-padding>
-              <h3 class="activity-name">
-                Foto
-              </h3>
-              <!-- {{ itemSumary(item) }} -->
-              <!-- <div [innerHTML]="item.summary"></div> -->
-              <!-- <h1 class="activity-note">
+              <ion-col>
+                <ion-row>
+                  <ion-col size="8.5" no-padding>
+                    <h3 class="activity-name">
+                      Foto
+                    </h3>
+                    <!-- {{ itemSumary(item) }} -->
+                    <!-- <div [innerHTML]="item.summary"></div> -->
+                    <!-- <h1 class="activity-note">
                 {{item.note}}
               </h1> -->
-            </ion-col>
-            <ion-col>
-              <h3 class="item-title-second">
-                {{item.date|date: 'dd/MM/yyyy'}}
-              </h3>
-              <h3 class="item-title-second">
-                {{item.date|date: 'HH:mm'}}
-              </h3>
-            </ion-col>
-          </ion-row>
-          </ion-col>
-          </ion-row>
-     <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding size="12" style="height: 200px;">
-          <ion-img *ngIf="item.image" style="height: 200%;" [src]="item.image"></ion-img>
-        </ion-col>
-        <ion-col no-padding size="6" align-self-center>
-        </ion-col>
-      </ion-row>
-    </ion-card>
-  </ion-item>
-
-
+                  </ion-col>
+                  <ion-col>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'HH:mm'}}
+                    </h3>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+            <ion-row no-padding class="content-row one-line">
+              <ion-col no-padding size="12" style="height: 200px;">
+                <ion-img *ngIf="item.image" style="height: 200%;" [src]="item.image"></ion-img>
+              </ion-col>
+              <ion-col no-padding size="6" align-self-center>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
         <ion-item-options>
-          <ion-item-option (click)="deleteWork(item)"
-          *ngIf="!item.fixed">
+          <ion-item-option (click)="deleteWork(item)" *ngIf="!item.fixed">
             Borrar
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
-    <!-- <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll> -->
     <ion-infinite-scroll threshold="100px" position="bottom" (ionInfinite)="doInfinite($event)">
-      <ion-infinite-scroll-content
-        style="transform: rotate(180deg);"
-        loadingSpinner="bubbles"
-        loadingText="Cargando mas atividades...">
+      <ion-infinite-scroll-content style="transform: rotate(180deg);" loadingSpinner="bubbles" loadingText="Cargando mas atividades...">
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
 
-<ion-row style="height:15px;">
-</ion-row>
-</form>
+    <ion-row style="height:15px;">
+    </ion-row>
+  </form>
 
 
-<ion-fab vertical="top" style="left: 0px;right:0px;top: 0px;background: #dddddd;transform: rotate(180deg);" horizontal="start" slot="fixed">
-  <ion-row style="padding-bottom:5px;padding-top: 5px;">
-    <ion-col [class.left-round]="!areaForm.value.note"
-    [class.all-round]="areaForm.value.note">
-      <ion-textarea #note [(ngModel)]="areaForm.value.note"
-      placeholder="Escrever Anotação" style="--padding-top: 11px;"
-        rows="1">
-      </ion-textarea>
-    </ion-col>
-    <ion-col size="3" *ngIf="!areaForm.value.note" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;">
-        <!-- <ion-icon name="attach" (click)="showButtons()"
-        style="font-size: 26px;color: gray;transform: rotate(0.38turn);margin-right: 9px;"></ion-icon> -->
-        <ion-icon name="camera" (click)="selectImage()"
-        style="font-size: 26px;margin-top: 7px;color: gray;margin-right: 9px;"></ion-icon>
-        <ion-icon name="add" *ngIf="!showBotom" (click)="addButton()"
-        style="font-size: 26px;color: gray;padding-left: 9px;"></ion-icon>
-        <ion-icon name="close" *ngIf="showBotom" (click)="addButton()"
-        style="font-size: 26px;color: gray;padding-left: 9px;">
+  <ion-fab vertical="top" style="left: 0px;right:0px;top: 0px;background: #dddddd;transform: rotate(180deg);" horizontal="start" slot="fixed">
+    <ion-row style="padding-bottom:5px;padding-top: 5px;">
+      <ion-col [class.left-round]="!areaForm.value.note" [class.all-round]="areaForm.value.note">
+        <ion-textarea #note [(ngModel)]="areaForm.value.note" placeholder="Escrever Anotação" style="--padding-top: 11px;" rows="1">
+        </ion-textarea>
+      </ion-col>
+      <ion-col size="3" *ngIf="!areaForm.value.note" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;">
+        <ion-icon name="camera" (click)="selectImage()" style="font-size: 26px;margin-top: 7px;color: gray;margin-right: 9px;"></ion-icon>
+        <ion-icon name="add" *ngIf="!showBotom" (click)="addButton()" style="font-size: 26px;color: gray;padding-left: 9px;"></ion-icon>
+        <ion-icon name="close" *ngIf="showBotom" (click)="addButton()" style="font-size: 26px;color: gray;padding-left: 9px;">
         </ion-icon>
 
-    </ion-col>
-    <ion-col size="2" *ngIf="isCordova || areaForm.value.note">
-      <ion-fab-button *ngIf="!areaForm.value.note"
-      style="width:40px;height:40px;margin-left: 5px;">
-        <ion-icon name="mic" (click)="listenRequest()">
-        </ion-icon>
-      </ion-fab-button>
-      <ion-fab-button *ngIf="areaForm.value.note" (click)="sendButton()"
-      style="width:40px;height:40px;margin-left: 5px;">
-        <ion-icon name="send" style="font-size: 22px;margin-left: 3px;">
-        </ion-icon>
-      </ion-fab-button>
-    </ion-col>
-  </ion-row>
-  <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-    <ion-col size="4" (click)="addActivity('activity.plant')">
-      <ion-img [src]="'./assets/icons/activity.plant.png'" class="activity-menu"></ion-img>
-      <h1 class="activity-title">
-        Plantio
-      </h1>
-    </ion-col>
-    <ion-col size="4" (click)="addActivity('activity.spray')">
-      <ion-img [src]="'./assets/icons/activity.spray.png'" class="activity-menu"></ion-img>
-      <h1 class="activity-title">
-        Pulverização
-      </h1>
-    </ion-col>
-    <ion-col size="4" (click)="addActivity('activity.work')">
-      <ion-img [src]="'./assets/icons/activity.work.png'" class="activity-menu"></ion-img>
-      <h1 class="activity-title">
-        Trabajo
-      </h1>
-    </ion-col>
-  </ion-row>
-  <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-    <ion-col size="4" (click)="addActivity('activity.harvest')">
-      <ion-img [src]="'./assets/icons/activity.harvest.png'" class="activity-menu"></ion-img>
-      <h1 class="activity-title">
-        Colheita
-      </h1>
-    </ion-col>
-    <ion-col size="4" (click)="addActivity('activity.rain')">
-      <ion-img [src]="'./assets/icons/activity.rain.png'" class="activity-menu"></ion-img>
-      <h1 class="activity-title">
-        Chuva
-      </h1>
-    </ion-col>
-    <ion-col size="4" (click)="addActivity('activity.analisis')">
-      <ion-img [src]="'./assets/icons/activity.analisis.png'" class="activity-menu"></ion-img>
-      <h1 class="activity-title">
-        Analise
-      </h1>
-    </ion-col>
-  </ion-row>
-</ion-fab>
+      </ion-col>
+      <ion-col size="2" *ngIf="isCordova || areaForm.value.note">
+        <ion-fab-button *ngIf="!areaForm.value.note" style="width:40px;height:40px;margin-left: 5px;">
+          <ion-icon name="mic" (click)="listenRequest()">
+          </ion-icon>
+        </ion-fab-button>
+        <ion-fab-button *ngIf="areaForm.value.note" (click)="sendButton()" style="width:40px;height:40px;margin-left: 5px;">
+          <ion-icon name="send" style="font-size: 22px;margin-left: 3px;">
+          </ion-icon>
+        </ion-fab-button>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
+      <ion-col size="4" (click)="addActivity('activity.plant')">
+        <ion-img [src]="'./assets/icons/activity.plant.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Plantio
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.spray')">
+        <ion-img [src]="'./assets/icons/activity.spray.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Pulverização
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.work')">
+        <ion-img [src]="'./assets/icons/activity.work.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Trabajo
+        </h1>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
+      <ion-col size="4" (click)="addActivity('activity.harvest')">
+        <ion-img [src]="'./assets/icons/activity.harvest.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Colheita
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.rain')">
+        <ion-img [src]="'./assets/icons/activity.rain.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Chuva
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.analisis')">
+        <ion-img [src]="'./assets/icons/activity.analisis.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Analise
+        </h1>
+      </ion-col>
+    </ion-row>
+  </ion-fab>
 
 </ion-content>
 
 <ion-content class="list-mini-content" *ngIf="showForm">
-
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
-  <!-- <img /> -->
   <img id="imgtmp" #imgtmp style="display: none;">
   <div id="pwa">
-    <input type="file" #pwaphoto accept="image/*" (change)="previewFile()"  style="display: none;">
-    <input type="file" #pwacamera accept="image/*" capture="camera"  (change)="takeCamera()" style="display: none;"/>
+    <input type="file" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
+    <input type="file" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
     <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
   </div>
-
-  <ion-row>
-      <ion-button class="button-100" color="success" (click)="openPWAPhotoPicker()">Escolher/Tirar Foto</ion-button>
+  <form class="sample-form validations-form" [formGroup]="areaForm" (ngSubmit)="onSubmit(areaForm.value)">
+    <ion-row>
+      <!-- <ion-button class="button-100" color="success" >Escolher/Tirar Foto</ion-button> -->
       <div>
-        <img [src]="imgURI" #imageSrc style="width: 200px;">
+        <img [src]="areaForm.value.image || './assets/icons/field.jpg'" #imageSrc style="width: 200px;" (click)="openPWAPhotoPicker()">
       </div>
-    <ion-item
-    no-padding
-    class="field-100">
-    <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-    <ion-input #name type="text"
-    formControlName="name"></ion-input>
-  </ion-item>
-  <ion-item no-padding class="field-50">
-    <ion-label position="floating">{{'Area(ha)' | translate}}</ion-label>
-    <ion-input type="number" formControlName="surface"></ion-input>
-  </ion-item>
-  <ion-item no-padding (click)="selectCrop()" class="field-50">
-    <div class="field-many2one">
-      <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
-      <h4 class="field-value">
-        {{areaForm.value.crop && areaForm.value.crop.name || 'Selecionar'}}
-      </h4>
-    </div>
-  </ion-item>
-  <ion-item
-   no-padding
-   class="field-100">
-     <ion-label>{{'Area Propria' | translate}}</ion-label>
-     <ion-toggle formControlName="own"></ion-toggle>
-  </ion-item>
-  <ion-item no-padding (click)="selectContact()"
-  *ngIf="!areaForm.value.own"
-  class="field-100">
-    <div class="field-many2one">
-      <h4 class="field-label">{{'Proprietario' | translate}}</h4>
-      <h4 class="field-value">
-        {{areaForm.value.contact && areaForm.value.contact.name || 'Selecionar'}}
-      </h4>
-    </div>
-  </ion-item>
-  <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
-    <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
-    <ion-select #type (ionChange)="getDefaultCategory()"
-    formControlName="rentingType"
-    cancelText="{{ 'CANCEL' | translate }}"
-    okText="{{ 'OK' | translate }}"
-    interface="popover">
-      <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
-      <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
-      <ion-select-option value="percent">Porcentage</ion-select-option>
-    </ion-select>
-  </ion-item>
-  <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
-    <ion-label position="floating"
-    *ngIf="areaForm.value.rentingType == 'fixedAmount'">
-    {{'Valor em $' | translate}}</ion-label>
-    <ion-label position="floating"
-    *ngIf="areaForm.value.rentingType == 'fixedWeight'">
-    {{'Peso em Kg' | translate}}</ion-label>
-    <ion-label position="floating"
-    *ngIf="areaForm.value.rentingType == 'percent'">
-    {{'Porcentage %' | translate}}</ion-label>
-    <ion-input type="number" formControlName="rentingAmount"></ion-input>
-  </ion-item>
-  <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
-  </ion-row>
+      <ion-item no-padding class="field-100">
+        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+        <ion-input #name type="text" formControlName="name"></ion-input>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <ion-label position="floating">{{'Area(ha)' | translate}}</ion-label>
+        <ion-input type="number" formControlName="surface"></ion-input>
+      </ion-item>
+      <ion-item no-padding (click)="selectCrop()" class="field-50">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
+          <h4 class="field-value">
+            {{areaForm.value.crop && areaForm.value.crop.name || 'Selecionar'}}
+          </h4>
+        </div>
+      </ion-item>
+      <ion-item no-padding class="field-100">
+        <ion-label>{{'Area Propria' | translate}}</ion-label>
+        <ion-toggle formControlName="own"></ion-toggle>
+      </ion-item>
+      <ion-item no-padding (click)="selectContact()" *ngIf="!areaForm.value.own" class="field-100">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Proprietario' | translate}}</h4>
+          <h4 class="field-value">
+            {{areaForm.value.contact && areaForm.value.contact.name || 'Selecionar'}}
+          </h4>
+        </div>
+      </ion-item>
+      <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
+        <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
+        <ion-select #type (ionChange)="getDefaultCategory()" formControlName="rentingType" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
+          <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
+          <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
+          <ion-select-option value="percent">Porcentage</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
+        <ion-label position="floating" *ngIf="areaForm.value.rentingType == 'fixedAmount'">
+          {{'Valor em $' | translate}}</ion-label>
+        <ion-label position="floating" *ngIf="areaForm.value.rentingType == 'fixedWeight'">
+          {{'Peso em Kg' | translate}}</ion-label>
+        <ion-label position="floating" *ngIf="areaForm.value.rentingType == 'percent'">
+          {{'Porcentage %' | translate}}</ion-label>
+        <ion-input type="number" formControlName="rentingAmount"></ion-input>
+      </ion-item>
+      <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
+    </ion-row>
+  </form>
 </ion-content>

@@ -15,12 +15,8 @@ import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
 import { AreaService } from './area.service';
 import { WorkPage } from '../work/work.page';
-// import { AreaMoveService } from './move/area-move.service';
-// import { CurrencyListPage } from '../currency/list/currency-list';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { FormatService } from "../services/format.service";
 import { CropsPage } from '../crops/crops.page';
@@ -45,7 +41,6 @@ const STORAGE_KEY = 'my_images';
   styleUrls: ['./area.page.scss'],
 })
 export class AreaPage implements OnInit {
-  @ViewChild('content') content;
   @ViewChild('pwaphoto') pwaphoto: ElementRef;
   @ViewChild('pwacamera') pwacamera: ElementRef;
   @ViewChild('pwagalery') pwagalery: ElementRef;
@@ -53,12 +48,8 @@ export class AreaPage implements OnInit {
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
-  create;
-  select;
   today: any;
   showForm = false;
-  showSearch;
-  answer;
   isCordova = false;
   diffDays = 0;
   showBotom = false;
@@ -98,8 +89,6 @@ export class AreaPage implements OnInit {
     this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
-    this.create = this.route.snapshot.paramMap.get('create');
-    this.select = this.route.snapshot.paramMap.get('select');
     this.events.subscribe('changed-work', (change) => {
       console.log("chaNGE WORK", change);
       this.areaService.handleChange(this.areaForm.value.moves, change);
@@ -122,12 +111,9 @@ export class AreaPage implements OnInit {
   previewFile() {
     let self = this;
     var preview: any = document.querySelector('#imgtmp');
-    // var preview = new Image;
-    // var file    = document.querySelector('input[type=file]').files[0];
     var file = this.pwaphoto.nativeElement.files[0];
     var reader = new FileReader();
     var percentage = 1.0;
-    // reader.addEventListener("load", function() {
     reader.onload = (event: Event) => {
       preview.src = reader.result;
       preview.onload = function() {
@@ -157,9 +143,6 @@ export class AreaPage implements OnInit {
   takeCamera() {
     let self = this;
     var preview: any = document.querySelector('#imgtmp');
-    console.log("preview", preview);
-    // var preview = new Image;
-    // var file    = document.querySelector('input[type=file]').files[0];
     var file = this.pwacamera.nativeElement.files[0];
     var reader = new FileReader();
     var percentage = 1.0;
@@ -200,7 +183,6 @@ export class AreaPage implements OnInit {
       reader.readAsDataURL(file);
     }
   }
-  // document.getElementById('fileOpload').addEventListener('change', previewFile);
 
   takeGalery() {
     let self = this;
@@ -211,9 +193,7 @@ export class AreaPage implements OnInit {
     if (file) {
       reader.readAsDataURL(file);
     }
-    // console.log("reader", reader)
     reader.onload = (event: Event) => {
-    // reader.addEventListener("loadend", function() {
       preview.src = reader.result;
       preview.onload = function() {
         var canvas: any = window.document.getElementById("canvas");
@@ -278,55 +258,11 @@ export class AreaPage implements OnInit {
     this.pwagalery.nativeElement.click();
   }
 
-  // uploadPWA() {
-  //
-  //   if (this.pwaphoto == null) {
-  //     return;
-  //   }
-  //
-  //   const fileList: FileList = this.pwaphoto.nativeElement.files;
-  //
-  //   if (fileList && fileList.length > 0) {
-  //     this.firstFileToBase64(fileList[0]).then((result: string) => {
-  //       this.imgURI = result;
-  //       // console.log("result", result);
-  //     }, (err: any) => {
-  //       // Ignore error, do nothing
-  //       // console.log("nulo", err);
-  //       this.imgURI = null;
-  //     });
-  //   }
-  // }
-
-  // private firstFileToBase64(fileImage): Promise<{}> {
-  //   return new Promise((resolve, reject) => {
-  //     let fileReader: FileReader = new FileReader();
-  //     if (fileReader && fileImage != null) {
-  //       fileReader.readAsDataURL(fileImage);
-  //       fileReader.onload = () => {
-  //         let resultado = fileReader.result.toString().split(',')[1];
-  //         console.log("to64", fileImage);
-  //         // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
-  //         resolve(fileReader.result);
-  //       };
-  //
-  //       fileReader.onerror = (error) => {
-  //         reject(error);
-  //       };
-  //     } else {
-  //       reject(new Error('No file found'));
-  //     }
-  //   });
-  // }
-
-
   showEdit() {
     this.showForm = !this.showForm;
   }
 
-
   ask(question) {
-    // question = question.replace('r$', 'reais');
     console.log("question", question);
     ApiAIPromises.requestText({
       query: question,
@@ -340,15 +276,6 @@ export class AreaPage implements OnInit {
       .then((result) => {
         console.log("resultad", result);
         this.ngZone.run(() => {
-          // this.answer = speech;
-          // this.areaForm.value.moves.push({
-          //   'docType': 'work',
-          //   'date': new Date().toISOString(),
-          //   'area_id': this.areaForm.value._id,
-          //   'area_name': this.areaForm.value.name,
-          //   'activity_name': "Memo",
-          //   'note': result.result.fulfillment.speech,
-          // })
           this.tts.speak({
             text: result.result.fulfillment.speech,
             //rate: this.rate/10,
@@ -376,21 +303,12 @@ export class AreaPage implements OnInit {
           this.speechRecognition.startListening(options).subscribe(matches => {
             console.log("matches", matches);
             this.ask(matches[0]);
-            // this.areaForm.value.moves.push({
-            //   'docType': 'work',
-            //   'date': new Date().toISOString(),
-            //   'area_id': this.areaForm.value._id,
-            //   'area_name': this.areaForm.value.name,
-            //   'activity_name': "Anotacion",
-            //   'note': matches[0],
-            // })
           });
         }
       });
   }
 
   async presentPopover(myEvent) {
-    console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: AreaPopover,
       event: myEvent,
@@ -400,9 +318,7 @@ export class AreaPage implements OnInit {
       }
     });
     popover.present();
-
   }
-
 
   async ngOnInit() {
     this.areaForm = this.formBuilder.group({
@@ -416,13 +332,8 @@ export class AreaPage implements OnInit {
       rentingAmount: new FormControl(0),
       contact: new FormControl({}),
       contact_name: new FormControl(''),
-
       image: new FormControl(''),
-      // currency_name: new FormControl(''),
       moves: new FormControl([]),
-      // checks: new FormControl([]),
-      // type: new FormControl('liquidity'),
-      // sequence: new FormControl(1),
       lastRain: new FormControl(0),
       lastRainDate: new FormControl(),
       note: new FormControl(null),
@@ -430,12 +341,10 @@ export class AreaPage implements OnInit {
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
-    // this.loadStoredImages();
     await this.loading.present();
     if (this._id) {
       this.areaService.getArea(this._id).then((data) => {
         this.doInfinite(false);
-        // this.getImage();
         data.note = null;
         this.areaForm.patchValue(data);
         var date1 = new Date(this.areaForm.value.lastRainDate);
@@ -455,13 +364,13 @@ export class AreaPage implements OnInit {
   doInfinite(infiniteScroll) {
     setTimeout(() => {
       this.areaService.getWorksPage(this._id, this.skip).then((works: any[]) => {
-        works.forEach(wor=>{
+        works.forEach(wor => {
           this.areaForm.value.moves.push(wor);
         })
         this.skip += 5;
-        if (infiniteScroll){
+        if (infiniteScroll) {
           infiniteScroll.target.complete();
-          if (!works.length){
+          if (!works.length) {
             infiniteScroll.target.disabled = true;
           }
         }
@@ -469,37 +378,19 @@ export class AreaPage implements OnInit {
     }, 500);
   }
 
-  // showImages() {
-  //   this.areaForm.value.moves.forEach(async work => {
-  //     if (!work.image) {
-  //       let image = await this.pouchdbService.getAttachment(work._id, 'image.png');
-  //       if (image) {
-  //         this.firstFileToBase64(image).then((result: string) => {
-  //           work.image = result;
-  //         });
-  //       }
-  //     }
-  //   })
-  // }
-
   buttonSave() {
     if (this._id) {
       this.areaService.updateArea(this.areaForm.value);
-      // this.navCtrl.navigateBack().then(() => {
       this.events.publish('open-area', this.areaForm.value);
-      this.navCtrl.navigateBack('/agro-tabs/area-list');
-      // });
+      this.showForm = true;
     } else {
       this.areaService.createArea(this.areaForm.value).then(doc => {
-        //console.log("docss", doc);
         this.areaForm.patchValue({
           _id: doc['id'],
         });
         this._id = doc['id'];
-        // this.navCtrl.navigateBack().then(() => {
         this.events.publish('create-area', this.areaForm.value);
-        this.navCtrl.navigateBack('/agro-tabs/area-list');
-        // });
+        this.showForm = true;
       });
     }
   }
@@ -529,18 +420,6 @@ export class AreaPage implements OnInit {
     profileModal.present();
   }
 
-  // itemSumary(item){
-  //   let summary = item && item.summary || "";
-  //   if (summary){
-  //     let list = summary.split("${").splice(1);
-  //     list.forEach(variable=>{
-  //         variable = variable.split("}")[0];
-  //         summary = summary.replace("${"+variable+"}", item[variable]);
-  //     })
-  //   }
-  //   return summary;
-  // }
-
   async addActivity(activity_id) {
     let componentProps = {
       "area": this.areaForm.value,
@@ -554,23 +433,6 @@ export class AreaPage implements OnInit {
       componentProps: componentProps
     });
     profileModal.present();
-  }
-
-  doRefresh(refresher) {
-    setTimeout(() => {
-      this.areaService.getArea(this._id).then((data) => {
-        this.areaForm.patchValue(data);
-        //this.loading.dismiss();
-      });
-      refresher.target.complete();
-    }, 200);
-  }
-
-  doRefreshList() {
-    this.areaService.getArea(this._id).then((data) => {
-      this.areaForm.patchValue(data);
-      //this.loading.dismiss();
-    });
   }
 
   onSubmit(values) {
@@ -605,7 +467,6 @@ export class AreaPage implements OnInit {
   }
   sendButton() {
     console.log("send");
-    // this.addActivity('activity.1536168428011');
     this.pouchdbService.createDoc({
       'docType': 'work',
       'date': new Date().toISOString(),
@@ -667,45 +528,9 @@ export class AreaPage implements OnInit {
     toast.present();
   }
 
-  readFile(file: any) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const formData = new FormData();
-      const imgBlob = new Blob([reader.result], {
-        type: file.type
-      });
-      formData.append('file', imgBlob, file.name);
-      this.uploadImageData(formData);
-    };
-    reader.readAsArrayBuffer(file);
-  }
-
-  async uploadImageData(formData: FormData) {
-    const loading = await this.loadingCtrl.create({
-      message: 'Uploading image...',
-    });
-    await loading.present();
-    console.log("upload to nowhere");
-    // this.http.post("http://localhost:8888/upload.php", formData)
-    //     .pipe(
-    //         finalize(() => {
-    //             loading.dismiss();
-    //         })
-    //     )
-    //     .subscribe(res => {
-    //         if (res['success']) {
-    //             this.presentToast('File upload complete.')
-    //         } else {
-    //             this.presentToast('File upload failed.')
-    //         }
-    //     });
-  }
-
   getAudio() {
     console.log("get audio");
   }
-
-
 
   selectContact() {
     return new Promise(async resolve => {
@@ -730,7 +555,6 @@ export class AreaPage implements OnInit {
     });
   }
 
-
   discard() {
     this.canDeactivate();
   }
@@ -742,9 +566,7 @@ export class AreaPage implements OnInit {
         buttons: [{
           text: 'Si',
           handler: () => {
-            // alertPopup.dismiss().then(() => {
             this.exitPage();
-            // });
           }
         },
         {
@@ -766,17 +588,12 @@ export class AreaPage implements OnInit {
   }
 
   private exitPage() {
-    if (this.select) {
-      this.modalCtrl.dismiss();
-    } else {
-      this.areaForm.markAsPristine();
-      this.navCtrl.navigateBack('/agro-tabs/area-list');
-    }
+    this.areaForm.markAsPristine();
+    this.navCtrl.navigateBack('/agro-tabs/area-list');
   }
 
   deleteWork(work) {
     let index = this.areaForm.value.moves.indexOf(work);
-    // this.works.splice(index, 1);
     this.worksService.deleteWork(work);
   }
 
