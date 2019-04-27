@@ -590,28 +590,36 @@ export class MachineReportPage implements OnInit {
           });
           let products: any = await this.pouchdbService.getList(getList);
           var doc_dict = {};
-          products.forEach(row=>{
-            doc_dict[row.doc.name] = row.doc;
+          products.forEach((row, index)=>{
+            console.log("row.doc.name", row);
+            if (row.doc){
+              doc_dict[row.doc.name] = row.doc;
+            }
+            else {
+              products = products.slice(index, 1);
+            }
           })
           let categories = {};
           let litems = [];
           items.forEach(item=>{
             console.log("item", item.name,doc_dict,  doc_dict[item.name]);
-            if (categories.hasOwnProperty(doc_dict[item.name].name)) {
-              litems[categories[doc_dict[item.name].name]] = {
-                'name': doc_dict[item.name].name,
-                // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
-                'quantity': doc_dict[item.name].surface,
-                'total': litems[categories[doc_dict[item.name].name]].total + item.total,
-              };
-            } else {
-              litems.push({
-                'name': doc_dict[item.name].name,
-                'quantity': doc_dict[item.name].surface,
-                // 'area': doc_dict[item.name].surface,
-                'total': item.total,
-              });
-              categories[doc_dict[item.name].name] = litems.length-1;
+            if (doc_dict[item.name]){              
+              if (categories.hasOwnProperty(doc_dict[item.name].name)) {
+                litems[categories[doc_dict[item.name].name]] = {
+                  'name': doc_dict[item.name].name,
+                  // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
+                  'quantity': doc_dict[item.name].surface,
+                  'total': litems[categories[doc_dict[item.name].name]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item.name].name,
+                  'quantity': doc_dict[item.name].surface,
+                  // 'area': doc_dict[item.name].surface,
+                  'total': item.total,
+                });
+                categories[doc_dict[item.name].name] = litems.length-1;
+              }
             }
           })
           let self = this;
