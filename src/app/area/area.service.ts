@@ -28,7 +28,7 @@ export class AreaService {
         planneds.forEach(item => {
           getList.push(item.key[3]);
         })
-        if (area._attachments){
+        if (area._attachments && area._attachments['avatar.png']){
           let avatar = area._attachments['avatar.png'].data;
           area.image = "data:image/png;base64,"+avatar;
         } else {

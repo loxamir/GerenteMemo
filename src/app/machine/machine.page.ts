@@ -1,24 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { NavController,  ModalController, LoadingController,
-   AlertController, Events } from '@ionic/angular';
+import {
+  NavController, ModalController, LoadingController,
+  AlertController, Events, PopoverController, Platform,
+  ActionSheetController, ToastController
+} from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import 'rxjs/Rx';
+import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
+import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
 import { MachineService } from './machine.service';
 import { WorkPage } from '../work/work.page';
-// import { MachineMoveService } from './move/machine-move.service';
-// import { CurrencyListPage } from '../currency/list/currency-list';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { FormatService } from "../services/format.service";
-// import { AccountsPage } from './move/account/list/accounts';
+// import { CropsPage } from '../crops/crops.page';
+import { ContactListPage } from '../contact-list/contact-list.page';
+import { MachinePopover } from './machine.popover';
+declare var ApiAIPromises: any;
+
+import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
+import { File, FileEntry } from '@ionic-native/file/ngx';
+import { HttpClient } from '@angular/common/http';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { Storage } from '@ionic/storage';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { ImageModalPage } from '../image-modal/image-modal.page';
+import { WorksService } from '../works/works.service';
+
+const STORAGE_KEY = 'my_images';
 
 @Component({
   selector: 'app-machine',
@@ -26,95 +41,382 @@ import { FormatService } from "../services/format.service";
   styleUrls: ['./machine.page.scss'],
 })
 export class MachinePage implements OnInit {
-
+  @ViewChild('pwaphoto') pwaphoto: ElementRef;
+  @ViewChild('pwacamera') pwacamera: ElementRef;
+  @ViewChild('pwagalery') pwagalery: ElementRef;
   machineForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
-  select;
-  create;
+  today: any;
+  showForm = false;
+  isCordova = false;
+  diffDays = 0;
+  showBotom = false;
+  imgURI: string = null;
+  images = [];
+  skip = 0;
+  lastWork = '0';
+  avatar = undefined;
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    // public imagePicker: ImagePicker,
-    // public cropService: Crop,
-    // public platform: Platform,
+    public popoverCtrl: PopoverController,
     public machineService: MachineService,
-    // public machineMoveService: MachineMoveService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
+    public worksService: WorksService,
     public pouchdbService: PouchdbService,
     public events: Events,
     public formatService: FormatService,
+    public ngZone: NgZone,
+    public platform: Platform,
+    public speechRecognition: SpeechRecognition,
+    public tts: TextToSpeech,
+    public actionSheetController: ActionSheetController,
+    private camera: Camera,
+    private file: File,
+    private http: HttpClient,
+    private webview: WebView,
+    private filePath: FilePath,
+    public toastCtrl: ToastController,
+    private storage: Storage,
+    private ref: ChangeDetectorRef,
   ) {
+    this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
-    this.select = this.route.snapshot.paramMap.get('select');
-    this.create = this.route.snapshot.paramMap.get('create');
-    this.events.subscribe('changed-machine-move', (change)=>{
+    this.events.subscribe('changed-work', (change) => {
+      console.log("chaNGE WORK", change);
       this.machineService.handleChange(this.machineForm.value.moves, change);
     })
+    // platform.ready().then(() => {
+    //   if (this.platform.is('cordova')) {
+    //     this.isCordova = true;
+    //     ApiAIPromises.init({
+    //       clientAccessToken: "9f4e551a24734d02b3242c6e365c49a5"
+    //     })
+    //       .then((result) => console.log("result1", result))
+    //   }
+    // })
+  }
+
+  goBack() {
+    this.navCtrl.navigateBack(['/agro-tabs/machine-list']);
+  }
+
+  previewFile() {
+    let self = this;
+    var preview: any = document.querySelector('#imageSrc');
+    var file = this.pwaphoto.nativeElement.files[0];
+    var reader = new FileReader();
+    var percentage = 1.0;
+    reader.onload = (event: Event) => {
+      preview.src = reader.result;
+      this.machineForm.patchValue({
+        image: reader.result,
+      })
+      preview.onload = function() {
+        var canvas: any = window.document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.height = canvas.width * (preview.height / preview.width);
+        var oc = window.document.createElement('canvas');
+        var octx = oc.getContext('2d');
+        oc.width = preview.width * percentage;
+        oc.height = preview.height * percentage;
+        canvas.width = oc.width;
+        canvas.height = oc.height;
+        octx.drawImage(preview, 0, 0, oc.width, oc.height);
+        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+        ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+        ctx.canvas.toBlob(async (blob) => {
+          self.avatar = blob;
+        });
+      }
+    }
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  }
+
+  takeCamera() {
+    let self = this;
+    var preview: any = document.querySelector('#imgtmp');
+    var file = this.pwacamera.nativeElement.files[0];
+    var reader = new FileReader();
+    var percentage = 1.0;
+    reader.onload = (event: Event) => {
+      preview.src = reader.result;
+      preview.onload = function() {
+        var canvas: any = window.document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.height = canvas.width * (preview.height / preview.width);
+        var oc = window.document.createElement('canvas');
+        var octx = oc.getContext('2d');
+        oc.width = preview.width * percentage;
+        oc.height = preview.height * percentage;
+        canvas.width = oc.width;
+        canvas.height = oc.height;
+        octx.drawImage(preview, 0, 0, oc.width, oc.height);
+        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+        ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+        ctx.canvas.toBlob(async (blob) => {
+          let work: any = await self.pouchdbService.createDoc({
+            'docType': 'work',
+            'date': new Date().toISOString(),
+            'machine_id': self.machineForm.value._id,
+            'machine_name': self.machineForm.value.name,
+            // 'crop_id': self.machineForm.value.crop._id,
+            // 'crop_name': self.machineForm.value.crop.name,
+            'activity_name': "Anotacion",
+            'activity_id': "activity.anotation",
+            'note': "Fotinho",
+            'image': reader.result
+          })
+          self.machineForm.value.note = null;
+          await self.pouchdbService.attachFile(work.id, 'image.png', blob);
+        });
+      }
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  }
+
+  takeGalery() {
+    let self = this;
+    var preview: any = document.querySelector('#imgtmp');
+    var file = this.pwagalery.nativeElement.files[0];
+    var reader = new FileReader();
+    var percentage = 1.0;
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+    reader.onload = (event: Event) => {
+      preview.src = reader.result;
+      preview.onload = function() {
+        var canvas: any = window.document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.height = canvas.width * (preview.height / preview.width);
+        var oc = window.document.createElement('canvas');
+        var octx = oc.getContext('2d');
+        oc.width = preview.width * percentage;
+        oc.height = preview.height * percentage;
+        canvas.width = oc.width;
+        canvas.height = oc.height;
+        octx.drawImage(preview, 0, 0, oc.width, oc.height);
+        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+        ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+        ctx.canvas.toBlob(async (blob) => {
+          let attachment = document['_attachments'] || {};
+          attachment['image.png'] = {
+            content_type: 'image/png',
+            data: blob
+          }
+          let work: any = await self.pouchdbService.createDoc({
+            'docType': 'work',
+            'date': new Date().toISOString(),
+            'machine_id': self.machineForm.value._id,
+            'machine_name': self.machineForm.value.name,
+            // 'crop_id': self.machineForm.value.crop._id,
+            // 'crop_name': self.machineForm.value.crop.name,
+            'activity_name': "Anotacion",
+            'activity_id': "activity.anotation",
+            'note': "Fotinho",
+            '_attachments': attachment
+          })
+          self.machineForm.value.note = null;
+        });
+      }
+    };
+
+
+  }
+
+  openPWAPhotoPicker() {
+    if (this.pwaphoto == null) {
+      return;
+    }
+
+    this.pwaphoto.nativeElement.click();
+  }
+
+  openPWACamera() {
+    if (this.pwacamera == null) {
+      return;
+    }
+
+    this.pwacamera.nativeElement.click();
+  }
+
+  openPWAGalery() {
+    if (this.pwagalery == null) {
+      return;
+    }
+
+    this.pwagalery.nativeElement.click();
+  }
+
+  showEdit() {
+    this.showForm = !this.showForm;
+  }
+
+  backEdit() {
+    if (this._id){
+      this.showForm = false;
+    } else {
+      this.navCtrl.navigateBack(['/agro-tabs/machine-list']);
+    }
+  }
+
+  ask(question) {
+    console.log("question", question);
+    ApiAIPromises.requestText({
+      query: question,
+      contexts: [{
+        name: "Machine", parameters: {
+          "machine_name": this.machineForm.value.name,
+          "machine_id": this.machineForm.value._id
+        }
+      }]
+    })
+      .then((result) => {
+        console.log("resultad", result);
+        this.ngZone.run(() => {
+          this.tts.speak({
+            text: result.result.fulfillment.speech,
+            //rate: this.rate/10,
+            locale: "pt-BR"
+          }).then(() => {
+            if (result.result.actionIncomplete) {
+              this.listenRequest();
+            }
+          })
+        });
+      }, (tset) => {
+        console.log("return", tset);
+      })
+  }
+
+  listenRequest() {
+    let options = {
+      language: 'pt-BR'
+    }
+    this.speechRecognition.hasPermission()
+      .then((hasPermission: boolean) => {
+        if (!hasPermission) {
+          this.speechRecognition.requestPermission();
+        } else {
+          this.speechRecognition.startListening(options).subscribe(matches => {
+            console.log("matches", matches);
+            this.ask(matches[0]);
+          });
+        }
+      });
+  }
+
+  async presentPopover(myEvent) {
+    let popover = await this.popoverCtrl.create({
+      component: MachinePopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
   }
 
   async ngOnInit() {
     this.machineForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
-      balance: new FormControl(0),
+      // crop: new FormControl({}),
+      // crop_name: new FormControl(''),
+      own: new FormControl(true),
+      rentingType: new FormControl('fixedAmount'),
+      rentingAmount: new FormControl(0),
+      contact: new FormControl({}),
+      contact_name: new FormControl(''),
+      image: new FormControl(''),
+      moves: new FormControl([]),
+      lastRain: new FormControl(0), //Abastecimento
+      lastRainDate: new FormControl(),
+      note: new FormControl(null),
+      code: new FormControl(''),
+      _attachments: new FormControl({}),
+      _id: new FormControl(''),
       hourCost: new FormControl(0),
       horimeter: new FormControl(0),
       type: new FormControl('tractor'),
-      // currency_name: new FormControl(''),
-      moves: new FormControl([]),
-      // checks: new FormControl([]),
-      // type: new FormControl('liquidity'),
-      // sequence: new FormControl(1),
-      // note: new FormControl(''),
-      code: new FormControl(''),
-      _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
-    if (this._id){
-      this.machineService.getMachine(this._id).then((data) => {
+    if (this._id) {
+      this.machineService.getMachine(this._id).then(async (data) => {
+        this.doInfinite(false);
+        data.note = null;
         this.machineForm.patchValue(data);
         this.loading.dismiss();
+        let rain = await this.machineService.getMachineRain(this._id);
+        if (rain){
+          this.machineForm.value.lastRainDate = rain['date'];
+          this.machineForm.value.lastRain = rain['quantity'];
+          var date1 = new Date(this.machineForm.value.lastRainDate);
+          var date2 = new Date();
+          var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+          var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+          this.diffDays = diffDays - 1;
+        }
       });
     } else {
+      this.showForm = true;
       this.loading.dismiss();
     }
   }
 
+  doInfinite(infiniteScroll) {
+    setTimeout(() => {
+      this.machineService.getWorksPage(this._id, this.skip).then((works: any[]) => {
+        works.forEach(wor => {
+          this.machineForm.value.moves.push(wor);
+        })
+        this.skip += 5;
+        if (infiniteScroll) {
+          infiniteScroll.target.complete();
+          if (!works.length) {
+            infiniteScroll.target.disabled = true;
+          }
+        }
+      });
+    }, 500);
+  }
+
   buttonSave() {
-    if (this._id){
-      this.machineService.updateMachine(this.machineForm.value);
-      // this.navCtrl.navigateBack().then(() => {
-        this.events.publish('open-machine', this.machineForm.value);
-        this.navCtrl.navigateBack('/agro-tabs/machine-list');
-      // });
+    if (this._id) {
+      this.machineService.updateMachine(this.machineForm.value, this.avatar);
+      this.events.publish('open-machine', this.machineForm.value);
+      this.showForm = false;
     } else {
-      this.machineService.createMachine(this.machineForm.value).then(doc => {
-        //console.log("docss", doc);
+      this.machineService.createMachine(this.machineForm.value, this.avatar).then(doc => {
         this.machineForm.patchValue({
           _id: doc['id'],
         });
         this._id = doc['id'];
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('create-machine', this.machineForm.value);
-          this.navCtrl.navigateBack('/agro-tabs/machine-list');
-        // });
+        this.events.publish('create-machine', this.machineForm.value);
+        this.showForm = false;
       });
     }
   }
 
-  setLanguage(lang: LanguageModel){
+  setLanguage(lang: LanguageModel) {
     let language_to_set = this.translate.getDefaultLang();
-    if(lang){
+    if (lang) {
       language_to_set = lang.code;
     }
     this.translate.setDefaultLang(language_to_set);
@@ -129,7 +431,7 @@ export class MachinePage implements OnInit {
       this.events.unsubscribe('open-machine-move');
     });
     let profileModal = await this.modalCtrl.create({
-      component:WorkPage,
+      component: WorkPage,
       componentProps: {
         "_id": item._id,
       }
@@ -137,78 +439,177 @@ export class MachinePage implements OnInit {
     profileModal.present();
   }
 
-  async addActivity(){
+  async addActivity(activity_id) {
+    let componentProps = {
+      "machine": this.machineForm.value,
+    }
+    if (activity_id) {
+      componentProps['activity'] = await this.pouchdbService.getDoc(activity_id);
+      componentProps['note'] = this.machineForm.value.note;
+    }
     let profileModal = await this.modalCtrl.create({
       component: WorkPage,
-      componentProps: {
-        "machine": this.machineForm.value,
-      }
+      componentProps: componentProps
     });
     profileModal.present();
   }
 
-  doRefresh(refresher) {
-    setTimeout(() => {
-      this.machineService.getMachine(this._id).then((data) => {
-        this.machineForm.patchValue(data);
-        //this.loading.dismiss();
-      });
-      refresher.target.complete();
-    }, 200);
+  // selectCrop() {
+  //   return new Promise(async resolve => {
+  //     this.events.unsubscribe('select-crop');
+  //     this.events.subscribe('select-crop', (data) => {
+  //       this.machineForm.patchValue({
+  //         crop: data,
+  //         crop_name: data.name,
+  //       });
+  //       this.machineForm.markAsDirty();
+  //       this.events.unsubscribe('select-crop');
+  //       profileModal.dismiss();
+  //       resolve(true);
+  //     })
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: CropsPage,
+  //       componentProps: {
+  //         "select": true,
+  //       }
+  //     });
+  //     profileModal.present();
+  //   });
+  // }
+
+  addButton() {
+    this.showBotom = !this.showBotom;
+  }
+  sendButton() {
+    console.log("send");
+    this.pouchdbService.createDoc({
+      'docType': 'work',
+      'date': new Date().toISOString(),
+      'machine_id': this.machineForm.value._id,
+      'machine_name': this.machineForm.value.name,
+      // 'crop_id': this.machineForm.value.crop._id,
+      // 'crop_name': this.machineForm.value.crop.name,
+      'activity_name': "Anotacion",
+      'activity_id': "activity.anotation",
+      'note': this.machineForm.value.note,
+    })
+    this.machineForm.value.note = null;
   }
 
-  doRefreshList(){
-    this.machineService.getMachine(this._id).then((data) => {
-      this.machineForm.patchValue(data);
-      //this.loading.dismiss();
+  async selectImage() {
+    const actionSheet = await this.actionSheetController.create({
+      header: "Pegar imagem da ",
+      buttons: [{
+        text: 'Galeria',
+        handler: () => {
+          this.openPWAGalery();
+        }
+      },
+      {
+        text: 'Camera',
+        handler: () => {
+          this.openPWACamera();
+        }
+      }
+      ]
+    });
+    await actionSheet.present();
+  }
+
+  createFileName() {
+    var d = new Date(),
+      n = d.getTime(),
+      newFileName = n + ".jpg";
+    return newFileName;
+  }
+
+  openPreview(img) {
+    this.modalCtrl.create({
+      component: ImageModalPage,
+      componentProps: {
+        img: img
+      }
+    }).then(modal => {
+      modal.present();
     });
   }
 
-  onSubmit(values){
-    //console.log(values);
+  async presentToast(text) {
+    const toast = await this.toastCtrl.create({
+      message: text,
+      position: 'bottom',
+      duration: 3000
+    });
+    toast.present();
   }
 
-  discard(){
+  getAudio() {
+    console.log("get audio");
+  }
+
+  selectContact() {
+    return new Promise(async resolve => {
+      this.events.unsubscribe('select-contact');
+      this.events.subscribe('select-contact', (data) => {
+        this.machineForm.patchValue({
+          contact: data,
+          contact_name: data.name,
+        });
+        this.machineForm.markAsDirty();
+        this.events.unsubscribe('select-contact');
+        profileModal.dismiss();
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ContactListPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
+
+  discard() {
     this.canDeactivate();
   }
   async canDeactivate() {
-      if(this.machineForm.dirty) {
-          let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
-              buttons: [{
-                      text: 'Si',
-                      handler: () => {
-                          // alertPopup.dismiss().then(() => {
-                              this.exitPage();
-                          // });
-                      }
-                  },
-                  {
-                      text: 'No',
-                      handler: () => {
-                          // need to do something if the user stays?
-                      }
-                  }]
-          });
+    if (this.machineForm.dirty) {
+      let alertPopup = await this.alertCtrl.create({
+        header: 'Descartar',
+        message: '¿Deseas salir sin guardar?',
+        buttons: [{
+          text: 'Si',
+          handler: () => {
+            this.exitPage();
+          }
+        },
+        {
+          text: 'No',
+          handler: () => {
+            // need to do something if the user stays?
+          }
+        }]
+      });
 
-          // Show the alert
-          alertPopup.present();
+      // Show the alert
+      alertPopup.present();
 
-          // Return false to avoid the page to be popped up
-          return false;
-      } else {
-        this.exitPage();
-      }
+      // Return false to avoid the page to be popped up
+      return false;
+    } else {
+      this.exitPage();
+    }
   }
 
   private exitPage() {
-    if (this.select){
-      this.modalCtrl.dismiss();
-    } else {
-      this.machineForm.markAsPristine();
-      this.navCtrl.navigateBack('/agro-tabs/machine-list');
-    }
+    this.machineForm.markAsPristine();
+    this.navCtrl.navigateBack('/agro-tabs/machine-list');
+  }
+
+  deleteWork(work) {
+    let index = this.machineForm.value.moves.indexOf(work);
+    this.worksService.deleteWork(work);
   }
 
 }

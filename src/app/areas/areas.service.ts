@@ -18,7 +18,7 @@ export class AreasService {
 
           areas.forEach(area=>{
             delete area.image;
-            if (area._attachments){
+            if (area._attachments && area._attachments['avatar.png']){
               console.log("areaaasdf", area);
               let image = area._attachments['avatar.png'].data;
               // console.log("image", image);

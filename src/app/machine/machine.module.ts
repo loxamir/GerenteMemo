@@ -21,6 +21,12 @@ const routes: Routes = [
   }
 ];
 
+import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
+import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
+
+import { MachinePopover } from './machine.popover';
+
+
 @NgModule({
   imports: [
     ReactiveFormsModule,
@@ -37,7 +43,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [MachinePage],
-  providers: [MachineService]
+  declarations: [MachinePage, MachinePopover],
+  providers: [MachineService, SpeechRecognition, TextToSpeech],
+  entryComponents: [MachinePopover]
 })
 export class MachinePageModule {}

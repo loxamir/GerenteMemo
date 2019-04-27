@@ -171,11 +171,11 @@ export class AreaPage implements OnInit {
             'date': new Date().toISOString(),
             'area_id': self.areaForm.value._id,
             'area_name': self.areaForm.value.name,
-            'crop_id': self.areaForm.value.crop._id,
-            'crop_name': self.areaForm.value.crop.name,
+            // 'crop_id': self.areaForm.value.crop._id,
+            // 'crop_name': self.areaForm.value.crop.name,
             'activity_name': "Anotacion",
             'activity_id': "activity.anotation",
-            'note': "Fotinho",
+            'note': self.areaForm.value.note,
             'image': reader.result
           })
           self.areaForm.value.note = null;
@@ -224,11 +224,11 @@ export class AreaPage implements OnInit {
             'date': new Date().toISOString(),
             'area_id': self.areaForm.value._id,
             'area_name': self.areaForm.value.name,
-            'crop_id': self.areaForm.value.crop._id,
-            'crop_name': self.areaForm.value.crop.name,
+            // 'crop_id': self.areaForm.value.crop._id,
+            // 'crop_name': self.areaForm.value.crop.name,
             'activity_name': "Anotacion",
             'activity_id': "activity.anotation",
-            'note': "Fotinho",
+            'note': self.areaForm.value.note,
             '_attachments': attachment
           })
           self.areaForm.value.note = null;
@@ -336,7 +336,6 @@ export class AreaPage implements OnInit {
   async ngOnInit() {
     this.areaForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
-      balance: new FormControl(0),
       crop: new FormControl({}),
       crop_name: new FormControl(''),
       surface: new FormControl(0),
@@ -486,8 +485,8 @@ export class AreaPage implements OnInit {
       'date': new Date().toISOString(),
       'area_id': this.areaForm.value._id,
       'area_name': this.areaForm.value.name,
-      'crop_id': this.areaForm.value.crop._id,
-      'crop_name': this.areaForm.value.crop.name,
+      // 'crop_id': this.areaForm.value.crop._id,
+      // 'crop_name': this.areaForm.value.crop.name,
       'activity_name': "Anotacion",
       'activity_id': "activity.anotation",
       'note': this.areaForm.value.note,

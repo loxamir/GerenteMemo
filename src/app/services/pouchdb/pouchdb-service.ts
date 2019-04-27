@@ -86,10 +86,10 @@ export class PouchdbService {
           }
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
-          PouchDB.plugin(cordovaSqlitePlugin);
+          // PouchDB.plugin(cordovaSqlitePlugin);
           // this.db = new PouchDB(database);
           this.db = new PouchDB(database, {
-          adapter: 'cordova-sqlite',
+          // adapter: 'cordova-sqlite',
           location: 'default',
           androidDatabaseImplementation: 2
          });

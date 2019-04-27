@@ -14,7 +14,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { MachinesPage } from './machines.page';
 import { MachinesPopover } from './machines.popover';
-
 const routes: Routes = [
   {
     path: '',

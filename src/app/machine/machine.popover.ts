@@ -4,11 +4,15 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item class="popover-item" (click)="gotoReport()">Relatorio de Maquinas</ion-item>
+    <ion-item class="popover-item" (click)="editMachine()">Editar Machine</ion-item>
+    <!--<ion-item class="popover-item" (click)="invoice()">Facturas</ion-item>
+    <ion-item class="popover-item" (click)="receipts()">Recibos</ion-item>
+    <ion-item class="popover-item" (click)="importer()">Importador Ventas</ion-item>
+    <ion-item class="popover-item" (click)="importerLine()">Importador Lineas</ion-item-->
   </ion-list>
   `
 })
-export class MachinesPopover {
+export class MachinePopover {
   pop: PopoverController;
   today;
 
@@ -24,20 +28,9 @@ export class MachinesPopover {
     this.pop.dismiss();
   }
 
-  // gotoCrops(){
-  //   // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
-  //   this.navCtrl.navigateForward(['/crops', {}]);
-  //   this.pop.dismiss();
-  // }
-
-  gotoReport(){
+  editMachine(){
     // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
-    this.navCtrl.navigateForward(['/activity-report', {}]);
-    this.pop.dismiss();
-  }
-
-  gotoActivities(){
-    this.navCtrl.navigateForward(['/activitys', {}]);
+    this.navParams.data.doc.showEdit();
     this.pop.dismiss();
   }
 

@@ -1,114 +1,298 @@
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/agro-tabs/machine-list"></ion-back-button>
+  <ion-toolbar *ngIf="showForm" color="primary" style="font-size: 20px;">
+    <ion-buttons slot="start" (click)="backEdit()">
+      <ion-icon name="arrow-back" style="font-size: 24px;padding-right: 10px;padding-left: 10px;"></ion-icon>
     </ion-buttons>
-    <ion-title>
-        {{ 'MACHINE' | translate }}: {{machineForm.value.name}}
+    <ion-title style="padding-left: 5px;">
+      Editar Machine
     </ion-title>
-    <ion-buttons slot="end" >
+  </ion-toolbar>
+  <ion-toolbar *ngIf="!showForm" color="primary">
+    <ion-buttons slot="start" (click)="goBack()">
+      <ion-icon name="arrow-back" style="font-size: 20px;"></ion-icon>
+      <ion-thumbnail style="--border-radius:10px;">
+        <img [src]="machineForm.value.image" id="avatarImage" #avatarImage *ngIf="machineForm.value.image">
+      </ion-thumbnail>
+    </ion-buttons>
+    <ion-title style="padding-left: 5px;">{{machineForm.value.name}}
+      <h1 class="subtitle" *ngIf="machineForm.value.lastRain && diffDays  > 1">
+        Ultima chuva {{machineForm.value.lastRain}}mm a {{ diffDays }} dias
+      </h1>
+      <h1 class="subtitle" *ngIf="machineForm.value.lastRain && diffDays == 1">
+        Ultima chuva {{machineForm.value.lastRain}}mm a {{ diffDays }} dia
+      </h1>
+      <h1 class="subtitle" *ngIf="machineForm.value.lastRain && !diffDays">
+        Ultima chuva {{machineForm.value.lastRain}}mm hoje
+      </h1>
+      <h1 class="subtitle" *ngIf="!machineForm.value.lastRain">
+        Sem dados de Chuva
+      </h1>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
-
 </ion-header>
 
-<ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-  <form class="sample-form validations-form" [formGroup]="machineForm" (ngSubmit)="onSubmit(machineForm.value)">
-    <ion-row>
-    <ion-item
-     no-padding
-     class="field-100">
-      <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-      <ion-input #name type="text"
-      formControlName="name"></ion-input>
-    </ion-item>
-    <ion-item no-padding class="field-100">
-      <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
-      <ion-select #type
-      formControlName="type"
-      cancelText="{{ 'CANCEL' | translate }}"
-      okText="{{ 'OK' | translate }}"
-      interface="popover">
-        <ion-select-option value="TRACTOR">{{ 'TRACTOR' | translate }}</ion-select-option>
-        <ion-select-option value="PLANTER">{{ 'PLANTER' | translate }}</ion-select-option>
-        <ion-select-option value="SPRAYER">{{ 'SPRAYER' | translate }}</ion-select-option>
-        <ion-select-option value="FERTILIZER">{{ 'FERTILIZER' | translate }}</ion-select-option>
-        <ion-select-option value="VEHICLE">{{ 'VEHICLE' | translate }}</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item
-     no-padding
-     class="field-50">
-      <ion-label position="floating">{{'Horimetro' | translate}}</ion-label>
-      <ion-input #horimeter type="number"
-      formControlName="horimeter"></ion-input>
-    </ion-item>
-    <ion-item
-     no-padding
-     class="field-50">
-      <ion-label position="floating">{{'Costo por Hora' | translate}}</ion-label>
-      <ion-input #hourCost type="number"
-      formControlName="hourCost"></ion-input>
-    </ion-item>
-</ion-row>
-    <ion-list no-lines>
-      <ion-item-sliding class="list-item" *ngFor="let item of machineForm.value.moves.sort(this.formatService.compare)">
-      <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
-        <ion-card class="list-card" style="">
-            <ion-row>
+<ion-content class="list-mini-content" *ngIf="!showForm" style="transform: rotate(180deg);">
+  <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
+  <img id="imgtmp" #imgtmp style="transform: rotate(180deg);" style="display:none">
+  <div id="pwa">
+    <input type="file" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
+    <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
+  </div>
+  <div style="height:100px;">
+  </div>
+  <div style="height:200px;" *ngIf="showBotom">
+  </div>
+  <form class="sample-form validations-form" [formGroup]="machineForm">
+    <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;    transform: rotate(180deg);">
+      <ion-item-sliding class="list-item" *ngFor="let item of machineForm.value.moves">
+        <ion-item no-padding (click)="openItem(item)" *ngIf="!item.image" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
+            <ion-row no-padding>
+              <ion-thumbnail style="--border-radius:10px;">
+                <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
+              </ion-thumbnail>
               <ion-col>
-                <h3 class="item-name"><b>{{ item.activity_name || 'No Informado'}}</b></h3>
+                <ion-row>
+                  <ion-col size="8.5" no-padding>
+                    <h3 class="activity-name">
+                      {{ item.activity_name || 'No Informado'}}
+                    </h3>
+                    <div [innerHTML]="item.summary"></div>
+                    <h1 class="activity-note">
+                      {{item.note}}
+                    </h1>
+                  </ion-col>
+                  <ion-col>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'HH:mm'}}
+                    </h3>
+                  </ion-col>
+                </ion-row>
               </ion-col>
             </ion-row>
-       <ion-row no-padding class="content-row one-line">
-          <ion-col no-padding size="6">
-            <h3 class="item-title" style="font-size:15px;font-weight: bold">{{item.area_name | translate}}</h3>
-            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateStart|date: 'dd/MM/yyyy'}}</h3>
-            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateEnd|date: 'dd/MM/yyyy'}}</h3>
-          </ion-col>
-          <ion-col no-padding size="6" align-self-center>
-            <h2 class="list-big-number" style="color: green;">{{item.line.key[2]| number:'1.0'}} hs</h2>
-          </ion-col>
-        </ion-row>
-      </ion-card>
-    </ion-item>
+            <ion-row no-padding class="content-row one-line">
+              <ion-col no-padding size="12">
+                <ion-img *ngIf="item.image" [src]="item.image" (click)="openPreview(item.image)"></ion-img>
+              </ion-col>
+              <ion-col no-padding size="6" align-self-center>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
 
+        <ion-item no-padding (click)="openPreview(item.image)" *ngIf="item.image" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
+            <ion-row no-padding>
+              <!-- <ion-thumbnail style="--border-radius:10px;">
+              <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
+            </ion-thumbnail> -->
+              <ion-col>
+                <ion-row>
+                  <ion-col size="8.5" no-padding>
+                    <h3 class="activity-name">
+                      Foto
+                    </h3>
+                    <!-- {{ itemSumary(item) }} -->
+                    <!-- <div [innerHTML]="item.summary"></div> -->
+                    <!-- <h1 class="activity-note">
+                {{item.note}}
+              </h1> -->
+                  </ion-col>
+                  <ion-col>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'HH:mm'}}
+                    </h3>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+            <ion-row no-padding class="content-row one-line">
+              <ion-col no-padding size="12" style="height: 200px;">
+                <ion-img *ngIf="item.image" style="height: 200%;" [src]="item.image"></ion-img>
+              </ion-col>
+              <ion-col no-padding size="6" align-self-center>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
         <ion-item-options>
-          <ion-item-option (click)="deleteMachineMove(item)">
+          <ion-item-option (click)="deleteWork(item)" *ngIf="!item.fixed">
             Borrar
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
+    <ion-infinite-scroll threshold="100px" position="bottom" (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content style="transform: rotate(180deg);" loadingSpinner="bubbles" loadingText="Cargando mas atividades...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 
-<ion-row style="height:15px;">
-</ion-row>
-</form>
+    <ion-row style="height:15px;">
+    </ion-row>
+  </form>
 
-<ion-fab vertical="bottom" horizontal="center" slot="fixed" class="add-product-button">
-<ion-fab-button (click)="addActivity()">
-  <ion-icon name="add">
-  </ion-icon>
-</ion-fab-button>
-</ion-fab>
-<ion-fab vertical="bottom" horizontal="start" slot="fixed">
-  <ion-button (click)="discard()" color="danger" class="discard-button">
-    <ion-icon name="backspace" *ngIf="machineForm.dirty"> </ion-icon>
-    <ion-icon name="arrow-back" *ngIf="!machineForm.dirty"> </ion-icon>
-    <span *ngIf="machineForm.dirty">Descartar</span>
-    <span *ngIf="!machineForm.dirty">Volver</span>
-  </ion-button>
-</ion-fab>
 
-<ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="machineForm.dirty">
-  <ion-button (click)="buttonSave()"  color="success" class="save-button">
-    <ion-icon name="save"> </ion-icon>
-    Guardar
-  </ion-button>
-</ion-fab>
-<div style="height: 100px;">
-</div>
+  <ion-fab vertical="top" style="left: 0px;right:0px;top: 0px;background: #dddddd;transform: rotate(180deg);" horizontal="start" slot="fixed">
+    <ion-row style="padding-bottom:5px;padding-top: 5px;">
+      <ion-col [class.left-round]="!machineForm.value.note" [class.all-round]="machineForm.value.note">
+        <ion-textarea #note [(ngModel)]="machineForm.value.note" placeholder="Escrever Anotação" style="--padding-top: 11px;" rows="1">
+        </ion-textarea>
+      </ion-col>
+      <ion-col size="3" *ngIf="!machineForm.value.note" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;">
+        <ion-icon name="camera" (click)="selectImage()" style="font-size: 26px;margin-top: 7px;color: gray;margin-right: 9px;"></ion-icon>
+        <ion-icon name="add" *ngIf="!showBotom" (click)="addButton()" style="font-size: 26px;color: gray;padding-left: 9px;"></ion-icon>
+        <ion-icon name="close" *ngIf="showBotom" (click)="addButton()" style="font-size: 26px;color: gray;padding-left: 9px;">
+        </ion-icon>
+
+      </ion-col>
+      <ion-col size="2" *ngIf="isCordova || machineForm.value.note">
+        <ion-fab-button *ngIf="!machineForm.value.note" style="width:40px;height:40px;margin-left: 5px;">
+          <ion-icon name="mic" (click)="listenRequest()">
+          </ion-icon>
+        </ion-fab-button>
+        <ion-fab-button *ngIf="machineForm.value.note" (click)="sendButton()" style="width:40px;height:40px;margin-left: 5px;">
+          <ion-icon name="send" style="font-size: 22px;margin-left: 3px;">
+          </ion-icon>
+        </ion-fab-button>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
+      <ion-col size="6" (click)="addActivity('activity.fuel')">
+        <ion-img [src]="'./assets/icons/activity.fuel.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Abastecimento
+        </h1>
+      </ion-col>
+      <ion-col size="6" (click)="addActivity('activity.maintenance')">
+        <ion-img [src]="'./assets/icons/activity.maintenance.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Mantenimiento
+        </h1>
+      </ion-col>
+      <!-- <ion-col size="4" (click)="addActivity('activity.work')">
+        <ion-img [src]="'./assets/icons/activity.work.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Trabajo
+        </h1>
+      </ion-col> -->
+    </ion-row>
+    <!-- <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
+      <ion-col size="4" (click)="addActivity('activity.harvest')">
+        <ion-img [src]="'./assets/icons/activity.harvest.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Colheita
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.rain')">
+        <ion-img [src]="'./assets/icons/activity.rain.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Chuva
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.analisis')">
+        <ion-img [src]="'./assets/icons/activity.analisis.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Analise
+        </h1>
+      </ion-col>
+    </ion-row> -->
+  </ion-fab>
+
+</ion-content>
+
+<ion-content class="list-mini-content" *ngIf="showForm">
+  <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
+  <div id="pwa">
+    <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
+  </div>
+  <form class="sample-form validations-form" [formGroup]="machineForm">
+    <ion-row>
+        <img [src]="machineForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+      <ion-item no-padding class="field-100">
+        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+        <ion-input #name type="text" formControlName="name"></ion-input>
+      </ion-item>
+      <!-- <ion-item no-padding class="field-50">
+        <ion-label position="floating">{{'Machine(ha)' | translate}}</ion-label>
+        <ion-input type="number" style="height: 47px;" formControlName="surface"></ion-input>
+      </ion-item> -->
+      <!-- <ion-item no-padding (click)="selectCrop()" class="field-50">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
+          <h4 class="field-value">
+            {{machineForm.value.crop && machineForm.value.crop.name || 'Selecionar'}}
+          </h4>
+        </div>
+      </ion-item> -->
+      <ion-item no-padding class="field-100">
+        <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
+        <ion-select #type
+        formControlName="type"
+        cancelText="{{ 'CANCEL' | translate }}"
+        okText="{{ 'OK' | translate }}"
+        interface="popover">
+          <ion-select-option value="TRACTOR">{{ 'TRACTOR' | translate }}</ion-select-option>
+          <ion-select-option value="PLANTER">{{ 'PLANTER' | translate }}</ion-select-option>
+          <ion-select-option value="SPRAYER">{{ 'SPRAYER' | translate }}</ion-select-option>
+          <ion-select-option value="FERTILIZER">{{ 'FERTILIZER' | translate }}</ion-select-option>
+          <ion-select-option value="VEHICLE">{{ 'VEHICLE' | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating">{{'Horimetro' | translate}}</ion-label>
+        <ion-input #horimeter type="number"
+        formControlName="horimeter"></ion-input>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating">{{'Costo por Hora' | translate}}</ion-label>
+        <ion-input #hourCost type="number"
+        formControlName="hourCost"></ion-input>
+      </ion-item>
+      <ion-item no-padding class="field-100">
+        <ion-label>{{'Maquina Propria' | translate}}</ion-label>
+        <ion-toggle formControlName="own"></ion-toggle>
+      </ion-item>
+      <ion-item no-padding (click)="selectContact()" *ngIf="!machineForm.value.own" class="field-100">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Proprietario' | translate}}</h4>
+          <h4 class="field-value">
+            {{machineForm.value.contact && machineForm.value.contact.name || 'Selecionar'}}
+          </h4>
+        </div>
+      </ion-item>
+      <ion-item no-padding class="field-50" *ngIf="!machineForm.value.own">
+        <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
+        <ion-select #type (ionChange)="getDefaultCategory()" formControlName="rentingType" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
+          <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
+          <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
+          <ion-select-option value="percent">Porcentage</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item no-padding class="field-50" *ngIf="!machineForm.value.own">
+        <ion-label position="floating" *ngIf="machineForm.value.rentingType == 'fixedAmount'">
+          {{'Valor em $' | translate}}</ion-label>
+        <ion-label position="floating" *ngIf="machineForm.value.rentingType == 'fixedWeight'">
+          {{'Peso em Kg' | translate}}</ion-label>
+        <ion-label position="floating" *ngIf="machineForm.value.rentingType == 'percent'">
+          {{'Porcentage %' | translate}}</ion-label>
+        <ion-input type="number" formControlName="rentingAmount"></ion-input>
+      </ion-item>
+      <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
+    </ion-row>
+  </form>
 </ion-content>
