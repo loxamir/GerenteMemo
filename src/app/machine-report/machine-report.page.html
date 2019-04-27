@@ -44,13 +44,14 @@
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
-          <ion-select-option value="area">Costos por Lugar</ion-select-option>
-          <ion-select-option value="crop">Costos por Safra</ion-select-option>
-          <ion-select-option value="machine">Costos por Atividade</ion-select-option>
-          <ion-select-option value="name">Costos por Item</ion-select-option>
+          <ion-select-option value="machine">Costos por Maquina</ion-select-option>
+          <!-- <ion-select-option value="area">Costos por Lugar</ion-select-option>
+          <ion-select-option value="crop">Costos por Safra</ion-select-option> -->
+          <ion-select-option value="activity">Costos por Atividade</ion-select-option>
+          <!-- <ion-select-option value="name">Costos por Item</ion-select-option>
           <ion-select-option value="date">Costos por Fecha</ion-select-option>
           <ion-select-option value="yieldCrop">Rendimiento por Safra</ion-select-option>
-          <ion-select-option value="yieldArea">Rendimiento por Lugar</ion-select-option>
+          <ion-select-option value="yieldArea">Rendimiento por Lugar</ion-select-option> -->
           <!-- <ion-select-option value="yieldDate">Rendimiento por Fecha</ion-select-option> -->
         </ion-select>
       </ion-item>
@@ -87,7 +88,7 @@
       <ion-item *ngIf="reportMachineForm.value.showFilter" no-padding (click)="selectMachine()" class="field-100">
         <div class="field-many2one">
           <h4 class="field-label">{{'Actividade' | translate}}</h4>
-          <h4 class="field-value">{{reportMachineForm.value.machine && reportMachineForm.value.machine.name || 'Todos'}}</h4>
+          <h4 class="field-value">{{reportMachineForm.value.activity && reportMachineForm.value.activity.name || 'Todos'}}</h4>
         </div>
       </ion-item>
       <!-- <ion-button class="button-100" color="success" (click)="setFilter()">Filtrar</ion-button> -->
@@ -274,7 +275,7 @@
                 </ion-col>
               </ion-row>
             </ion-list>
-            <ion-list no-lines *ngIf="reportMachineForm.value.groupBy == 'machine'">
+            <ion-list no-lines *ngIf="reportMachineForm.value.groupBy == 'activity'">
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
                   Actividad
@@ -322,6 +323,50 @@
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
                   Lugar
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
+                  Costo/ha
+                </ion-col>
+                <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
+                  Area
+                </ion-col>
+                <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
+                  Total
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let item of reportMachineForm.value.items">
+                <ion-col width-60 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.name}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  $ {{item.total/item.quantity|number:'1.2-2'}}
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  {{item.quantity|number:'1.0-2'}} ha
+                </ion-col>
+                <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  $ {{item.total|number:'1.2-2'}}
+                </ion-col>
+              </ion-row>
+              <ion-row class="report-title">
+                <ion-col  width-40>
+                  TOTAL
+                </ion-col>
+                <ion-col width-20 style="text-align: right">
+                  $ {{total/items_quantity|number:'1.2-2'}}
+                </ion-col>
+                <ion-col width-15 style="text-align: right">
+                  {{items_quantity|number:'1.0-2'}} ha
+                </ion-col>
+                <ion-col width-25 style="text-align: right">
+                  $ {{total|number:'1.2-2'}}
+                </ion-col>
+              </ion-row>
+            </ion-list>
+            <ion-list no-lines *ngIf="reportMachineForm.value.groupBy == 'machine'">
+              <ion-row class="report-title">
+                <ion-col width-60 (click)="orderByName()">
+                  Maquina
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
                   Costo/ha

@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, LoadingController, AlertController, Events,
-  ModalController, ToastController } from '@ionic/angular';
+import {
+  NavController, LoadingController, AlertController, Events,
+  ModalController, ToastController
+} from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -101,8 +103,8 @@ export class MachineReportPage implements OnInit {
       lines[val][sum] = lines[val][sum] || 0
       lines[val][sum] += item[sum]
       lines[val][sum2] = lines[val][sum2] || 0
-      item.lines.forEach(line=>{
-        lines[val][sum2] += (line[sum3] - line[sum4])*line['quantity']
+      item.lines.forEach(line => {
+        lines[val][sum2] += (line[sum3] - line[sum4]) * line['quantity']
       })
       return lines
     }, {})
@@ -119,8 +121,8 @@ export class MachineReportPage implements OnInit {
         lines[val][sum] += parseFloat(item[sum])
       }
       lines[val][sum2] = lines[val][sum2] || 0
-      item.lines.forEach(line=>{
-        lines[val][sum2] += (line[sum3] - line[sum4])*line['quantity']
+      item.lines.forEach(line => {
+        lines[val][sum2] += (line[sum3] - line[sum4]) * line['quantity']
       })
       lines[val]['list'] = lines[val]['list'] || []
       lines[val]['list'].push(item)
@@ -166,196 +168,197 @@ export class MachineReportPage implements OnInit {
     await this.loading.present();
     return new Promise(resolve => {
       // if (this.reportMachineForm.value.reportType == 'machine') {
-        this.pouchdbService.getView(
-          'Informes/Agro',
-          10,
-        ).then(async (machines1: any[]) => {
-          console.log("machine1", Object.keys(this.reportMachineForm.value.crop).length, machines1);
-          let machines = machines1;
-          if (Object.keys(this.reportMachineForm.value.crop).length > 0) {
-            machines = machines.filter(word => word['key'][0] == this.reportMachineForm.value.crop.name);
-          }
-          if (Object.keys(this.reportMachineForm.value.area).length > 0) {
-            machines = machines.filter(word => word['key'][1] == this.reportMachineForm.value.area.name);
-          }
-          if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
-            machines = machines.filter(word => word['key'][2] == this.reportMachineForm.value.machine.name);
-          }
-          if (Object.keys(this.reportMachineForm.value.input).length > 0) {
-            machines = machines.filter(word => word['key'][6] == this.reportMachineForm.value.input._id);
-          }
-          if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
-            machines = machines.filter(word => word['key'][6] == this.reportMachineForm.value.input._id);
-          }
-          console.log("machine lines", this.reportMachineForm.value.crop, machines);
+      this.pouchdbService.getView(
+        'Informes/Machine',
+        10,
+      ).then(async (machines1: any[]) => {
+        console.log("machine1", machines1);
+        let machines = machines1;
+        //This is the filter
+        if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
+          machines = machines.filter(word => word['key'][0] == this.reportMachineForm.value.machine._id);
+        }
+        if (Object.keys(this.reportMachineForm.value.activity).length > 0) {
+          machines = machines.filter(word => word['key'][1] == this.reportMachineForm.value.activity._id);
+        }
+        // if (Object.keys(this.reportMachineForm.value.crop).length > 0) {
+        //   machines = machines.filter(word => word['key'][0] == this.reportMachineForm.value.crop._id);
+        // }
+        // if (Object.keys(this.reportMachineForm.value.area).length > 0) {
+        //   machines = machines.filter(word => word['key'][1] == this.reportMachineForm.value.area._id);
+        // }
+        // if (Object.keys(this.reportMachineForm.value.input).length > 0) {
+        //   machines = machines.filter(word => word['key'][6] == this.reportMachineForm.value.input._id);
+        // }
+        console.log("machine lines", machines);
 
-          let items = [];
-          let promise_ids = [];
-          let result = {};
-          if (this.reportMachineForm.value.groupBy == 'category') {
-            items = [];
-            let getList = [];
-            machines.forEach(machineLine => {
-              if (result.hasOwnProperty(machineLine.key[9])) {
-                // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
-                items[result[machineLine.key[9]]] = {
-                  'name': items[result[machineLine.key[9]]].name,
-                  'quantity': items[result[machineLine.key[9]]].quantity + parseFloat(machineLine.key[4]),
-                  'margin': items[result[machineLine.key[9]]].margin + parseFloat(machineLine.key[3]),
-                  'total': items[result[machineLine.key[9]]].total + parseFloat(machineLine.key[4])*machineLine.key[5],
-                };
-              } else {
-                items.push({
-                  'name': machineLine.key[9],
-                  'quantity': parseFloat(machineLine.key[4]),
-                  'margin': parseFloat(machineLine.key[3]),
-                  'total': parseFloat(machineLine.key[4])*machineLine.key[5],
-                });
-                getList.push(machineLine.key[9]);
-                result[machineLine.key[9]] = items.length-1;
-              }
-            });
+        let items = [];
+        let promise_ids = [];
+        let result = {};
+        if (this.reportMachineForm.value.groupBy == 'category') {
+          items = [];
+          let getList = [];
+          machines.forEach(machineLine => {
+            if (result.hasOwnProperty(machineLine.key[9])) {
+              // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
+              items[result[machineLine.key[9]]] = {
+                'name': items[result[machineLine.key[9]]].name,
+                'quantity': items[result[machineLine.key[9]]].quantity + parseFloat(machineLine.key[4]),
+                'margin': items[result[machineLine.key[9]]].margin + parseFloat(machineLine.key[3]),
+                'total': items[result[machineLine.key[9]]].total + parseFloat(machineLine.key[4]) * machineLine.key[5],
+              };
+            } else {
+              items.push({
+                'name': machineLine.key[9],
+                'quantity': parseFloat(machineLine.key[4]),
+                'margin': parseFloat(machineLine.key[3]),
+                'total': parseFloat(machineLine.key[4]) * machineLine.key[5],
+              });
+              getList.push(machineLine.key[9]);
+              result[machineLine.key[9]] = items.length - 1;
+            }
+          });
 
-            let products: any = await this.pouchdbService.getList(getList);
-            var doc_dict = {};
-            products.forEach(row=>{
-              doc_dict[row.id] = row.doc;
-            })
-            let categories = {};
-            let litems = [];
-            items.forEach(item=>{
-              if (categories.hasOwnProperty(doc_dict[item.name].category_name)) {
-                litems[categories[doc_dict[item.name].category_name]] = {
-                  'name': doc_dict[item.name].category_name,
-                  'quantity': litems[categories[doc_dict[item.name].category_name]].quantity + parseFloat(item.quantity),
-                  'margin': litems[categories[doc_dict[item.name].category_name]].margin + item.margin,
-                  'total': litems[categories[doc_dict[item.name].category_name]].total + item.total,
-                };
-              } else {
-                litems.push({
-                  'name': doc_dict[item.name].category_name,
-                  'quantity': item.quantity,
-                  'margin': item.margin,
-                  'total': item.total,
-                });
-                categories[doc_dict[item.name].category_name] = litems.length-1;
-              }
-            })
-            let self = this;
-            let output = litems.sort(function(a, b) {
-              return self.compare(a, b, self.reportMachineForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            this.loading.dismiss();
-            resolve(output);
-          }
-          else if (this.reportMachineForm.value.groupBy == 'brand') {
-            items = [];
-            let getList = [];
-            machines.forEach(machineLine => {
-              if (result.hasOwnProperty(machineLine.key[9])) {
-                // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
-                items[result[machineLine.key[9]]] = {
-                  'name': items[result[machineLine.key[9]]].name,
-                  'quantity': items[result[machineLine.key[9]]].quantity + parseFloat(machineLine.key[4]),
-                  'margin': items[result[machineLine.key[9]]].margin + parseFloat(machineLine.key[3]),
-                  'total': items[result[machineLine.key[9]]].total + parseFloat(machineLine.key[4])*machineLine.key[5],
-                };
-              } else {
-                items.push({
-                  'name': machineLine.key[9],
-                  'quantity': parseFloat(machineLine.key[4]),
-                  'margin': parseFloat(machineLine.key[3]),
-                  'total': parseFloat(machineLine.key[4])*machineLine.key[5],
-                });
-                getList.push(machineLine.key[9]);
-                result[machineLine.key[9]] = items.length-1;
-              }
-            });
+          let products: any = await this.pouchdbService.getList(getList);
+          var doc_dict = {};
+          products.forEach(row => {
+            doc_dict[row.id] = row.doc;
+          })
+          let categories = {};
+          let litems = [];
+          items.forEach(item => {
+            if (categories.hasOwnProperty(doc_dict[item.name].category_name)) {
+              litems[categories[doc_dict[item.name].category_name]] = {
+                'name': doc_dict[item.name].category_name,
+                'quantity': litems[categories[doc_dict[item.name].category_name]].quantity + parseFloat(item.quantity),
+                'margin': litems[categories[doc_dict[item.name].category_name]].margin + item.margin,
+                'total': litems[categories[doc_dict[item.name].category_name]].total + item.total,
+              };
+            } else {
+              litems.push({
+                'name': doc_dict[item.name].category_name,
+                'quantity': item.quantity,
+                'margin': item.margin,
+                'total': item.total,
+              });
+              categories[doc_dict[item.name].category_name] = litems.length - 1;
+            }
+          })
+          let self = this;
+          let output = litems.sort(function(a, b) {
+            return self.compare(a, b, self.reportMachineForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          resolve(output);
+        }
+        else if (this.reportMachineForm.value.groupBy == 'brand') {
+          items = [];
+          let getList = [];
+          machines.forEach(machineLine => {
+            if (result.hasOwnProperty(machineLine.key[9])) {
+              // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
+              items[result[machineLine.key[9]]] = {
+                'name': items[result[machineLine.key[9]]].name,
+                'quantity': items[result[machineLine.key[9]]].quantity + parseFloat(machineLine.key[4]),
+                'margin': items[result[machineLine.key[9]]].margin + parseFloat(machineLine.key[3]),
+                'total': items[result[machineLine.key[9]]].total + parseFloat(machineLine.key[4]) * machineLine.key[5],
+              };
+            } else {
+              items.push({
+                'name': machineLine.key[9],
+                'quantity': parseFloat(machineLine.key[4]),
+                'margin': parseFloat(machineLine.key[3]),
+                'total': parseFloat(machineLine.key[4]) * machineLine.key[5],
+              });
+              getList.push(machineLine.key[9]);
+              result[machineLine.key[9]] = items.length - 1;
+            }
+          });
 
-            let products: any = await this.pouchdbService.getList(getList);
-            var doc_dict = {};
-            products.forEach(row=>{
-              doc_dict[row.id] = row.doc;
-            })
-            let brands = {};
-            let litems = [];
-            items.forEach(item=>{
-              if (brands.hasOwnProperty(doc_dict[item.name].brand_name)) {
-                litems[brands[doc_dict[item.name].brand_name]] = {
-                  'name': doc_dict[item.name].brand_name,
-                  'quantity': litems[brands[doc_dict[item.name].brand_name]].quantity + parseFloat(item.quantity),
-                  'margin': litems[brands[doc_dict[item.name].brand_name]].margin + item.margin,
-                  'total': litems[brands[doc_dict[item.name].brand_name]].total + item.total,
-                };
-              } else {
-                litems.push({
-                  'name': doc_dict[item.name].brand_name,
-                  'quantity': item.quantity,
-                  'margin': item.margin,
-                  'total': item.total,
-                });
-                brands[doc_dict[item.name].brand_name] = litems.length-1;
-              }
-            })
-            let self = this;
-            let output = litems.sort(function(a, b) {
-              return self.compare(a, b, self.reportMachineForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            this.loading.dismiss();
-            resolve(output);
-          }
-          else if (this.reportMachineForm.value.groupBy == 'name') {
-            items = [];
-            machines.forEach(machineLine => {
-              if (result.hasOwnProperty(machineLine.key[3])) {
-                // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
-                items[result[machineLine.key[3]]] = {
-                  'name': items[result[machineLine.key[3]]].name,
-                  'quantity': items[result[machineLine.key[3]]].quantity + parseFloat(machineLine.key[4]),
-                  'margin': items[result[machineLine.key[3]]].margin + parseFloat(machineLine.key[3]),
-                  'total': items[result[machineLine.key[3]]].total + parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
-                };
-              } else {
-                items.push({
-                  'name': machineLine.key[3],
-                  'quantity': parseFloat(machineLine.key[4]),
-                  'margin': parseFloat(machineLine.key[5]),
-                  'total': parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
-                });
-                result[machineLine.key[3]] = items.length-1;
-              }
-            });
+          let products: any = await this.pouchdbService.getList(getList);
+          var doc_dict = {};
+          products.forEach(row => {
+            doc_dict[row.id] = row.doc;
+          })
+          let brands = {};
+          let litems = [];
+          items.forEach(item => {
+            if (brands.hasOwnProperty(doc_dict[item.name].brand_name)) {
+              litems[brands[doc_dict[item.name].brand_name]] = {
+                'name': doc_dict[item.name].brand_name,
+                'quantity': litems[brands[doc_dict[item.name].brand_name]].quantity + parseFloat(item.quantity),
+                'margin': litems[brands[doc_dict[item.name].brand_name]].margin + item.margin,
+                'total': litems[brands[doc_dict[item.name].brand_name]].total + item.total,
+              };
+            } else {
+              litems.push({
+                'name': doc_dict[item.name].brand_name,
+                'quantity': item.quantity,
+                'margin': item.margin,
+                'total': item.total,
+              });
+              brands[doc_dict[item.name].brand_name] = litems.length - 1;
+            }
+          })
+          let self = this;
+          let output = litems.sort(function(a, b) {
+            return self.compare(a, b, self.reportMachineForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          resolve(output);
+        }
+        else if (this.reportMachineForm.value.groupBy == 'name') {
+          items = [];
+          machines.forEach(machineLine => {
+            if (result.hasOwnProperty(machineLine.key[3])) {
+              // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
+              items[result[machineLine.key[3]]] = {
+                'name': items[result[machineLine.key[3]]].name,
+                'quantity': items[result[machineLine.key[3]]].quantity + parseFloat(machineLine.key[4]),
+                'margin': items[result[machineLine.key[3]]].margin + parseFloat(machineLine.key[3]),
+                'total': items[result[machineLine.key[3]]].total + parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
+              };
+            } else {
+              items.push({
+                'name': machineLine.key[3],
+                'quantity': parseFloat(machineLine.key[4]),
+                'margin': parseFloat(machineLine.key[5]),
+                'total': parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
+              });
+              result[machineLine.key[3]] = items.length - 1;
+            }
+          });
 
-            let self = this;
-            let output = items.sort(function(a, b) {
-              return self.compare(a, b, self.reportMachineForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            this.loading.dismiss();
-            resolve(output);
-          }
-          else if (this.reportMachineForm.value.groupBy == 'yieldCrop') {
-            // console.log("crop", );
+          let self = this;
+          let output = items.sort(function(a, b) {
+            return self.compare(a, b, self.reportMachineForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          resolve(output);
+        }
+        else if (this.reportMachineForm.value.groupBy == 'yieldCrop') {
+          // console.log("crop", );
           items = [];
           machines.forEach(machineLine => {
             if (result.hasOwnProperty(machineLine.key[0])) {
@@ -363,16 +366,16 @@ export class MachineReportPage implements OnInit {
                 'name': items[result[machineLine.key[0]]].name,
                 'quantity': items[result[machineLine.key[0]]].quantity + parseFloat(machineLine.key[4]),
                 'margin': items[result[machineLine.key[0]]].margin + parseFloat(machineLine.key[5]),
-                'total': items[result[machineLine.key[0]]].total + parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
+                'total': items[result[machineLine.key[0]]].total + parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
               };
             } else {
               items.push({
                 'name': machineLine.key[0],
                 'quantity': parseFloat(machineLine.key[4]),
                 'margin': parseFloat(machineLine.key[5]),
-                'total': parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
+                'total': parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
               });
-              result[machineLine.key[0]] = items.length-1;
+              result[machineLine.key[0]] = items.length - 1;
             }
           });
 
@@ -389,7 +392,7 @@ export class MachineReportPage implements OnInit {
           });
           this.loading.dismiss();
           console.log("output", output);
-          let yields:any = await this.pouchdbService.getView('Informes/AgroRend',10);
+          let yields: any = await this.pouchdbService.getView('Informes/AgroRend', 10);
           // if (Object.keys(this.reportMachineForm.value.crop).length > 0) {
           //   yields = yields.filter(word => word['key'][0] == this.reportMachineForm.value.crop.name);
           // }
@@ -402,10 +405,10 @@ export class MachineReportPage implements OnInit {
           console.log("yields", yields);
           let listas = [];
           // let otro = output
-          output.forEach((doc: any, index)=>{
+          output.forEach((doc: any, index) => {
             doc['margin'] = 0;
-            yields.forEach((yie: any)=>{
-              if (doc.name == yie.key[0]){
+            yields.forEach((yie: any) => {
+              if (doc.name == yie.key[0]) {
                 doc['margin'] += yie.value;
               }
             })
@@ -415,70 +418,70 @@ export class MachineReportPage implements OnInit {
         }
         else if (this.reportMachineForm.value.groupBy == 'yieldArea') {
           // console.log("crop", );
-        items = [];
-        machines.forEach(machineLine => {
-          if (result.hasOwnProperty(machineLine.key[1])) {
-            items[result[machineLine.key[1]]] = {
-              'name': items[result[machineLine.key[1]]].name,
-              'quantity': items[result[machineLine.key[1]]].quantity + parseFloat(machineLine.key[4]),
-              'margin': items[result[machineLine.key[1]]].margin + parseFloat(machineLine.key[5]),
-              'total': items[result[machineLine.key[1]]].total + parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
-            };
-          } else {
-            items.push({
-              'name': machineLine.key[1],
-              'quantity': parseFloat(machineLine.key[4]),
-              'margin': parseFloat(machineLine.key[5]),
-              'total': parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
-            });
-            result[machineLine.key[1]] = items.length-1;
-          }
-        });
-
-        let self = this;
-        let output = items.sort(function(a, b) {
-          return self.compare(a, b, self.reportMachineForm.value.orderBy);
-        })
-        let marker = false;
-        let total = 0;
-        output.forEach(item => {
-          item['marker'] = marker,
-            marker = !marker;
-          total += parseFloat(item['total']);
-        });
-        this.loading.dismiss();
-        console.log("output", output);
-        let yields:any = await this.pouchdbService.getView('Informes/AgroRend',10);
-        if (Object.keys(this.reportMachineForm.value.crop).length > 0) {
-          yields = yields.filter(word => word['key'][0] == this.reportMachineForm.value.crop.name);
-        }
-        if (Object.keys(this.reportMachineForm.value.area).length > 0) {
-          yields = yields.filter(word => word['key'][1] == this.reportMachineForm.value.area.name);
-        }
-        if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
-          yields = yields.filter(word => word['key'][2] == this.reportMachineForm.value.machine.name);
-        }
-        console.log("yields", yields);
-        let listas = [];
-        // let otro = output
-        output.forEach((doc: any, index)=>{
-          doc['margin'] = 0;
-          yields.forEach((yie: any)=>{
-            if (doc.name == yie.key[1]){
-              doc['margin'] += yie.value;
+          items = [];
+          machines.forEach(machineLine => {
+            if (result.hasOwnProperty(machineLine.key[1])) {
+              items[result[machineLine.key[1]]] = {
+                'name': items[result[machineLine.key[1]]].name,
+                'quantity': items[result[machineLine.key[1]]].quantity + parseFloat(machineLine.key[4]),
+                'margin': items[result[machineLine.key[1]]].margin + parseFloat(machineLine.key[5]),
+                'total': items[result[machineLine.key[1]]].total + parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
+              };
+            } else {
+              items.push({
+                'name': machineLine.key[1],
+                'quantity': parseFloat(machineLine.key[4]),
+                'margin': parseFloat(machineLine.key[5]),
+                'total': parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
+              });
+              result[machineLine.key[1]] = items.length - 1;
             }
+          });
+
+          let self = this;
+          let output = items.sort(function(a, b) {
+            return self.compare(a, b, self.reportMachineForm.value.orderBy);
           })
-        })
-        console.log("output", output);
-        resolve(output);
-      }
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          console.log("output", output);
+          let yields: any = await this.pouchdbService.getView('Informes/AgroRend', 10);
+          if (Object.keys(this.reportMachineForm.value.crop).length > 0) {
+            yields = yields.filter(word => word['key'][0] == this.reportMachineForm.value.crop.name);
+          }
+          if (Object.keys(this.reportMachineForm.value.area).length > 0) {
+            yields = yields.filter(word => word['key'][1] == this.reportMachineForm.value.area.name);
+          }
+          if (Object.keys(this.reportMachineForm.value.activity).length > 0) {
+            yields = yields.filter(word => word['key'][2] == this.reportMachineForm.value.activity.name);
+          }
+          console.log("yields", yields);
+          let listas = [];
+          // let otro = output
+          output.forEach((doc: any, index) => {
+            doc['margin'] = 0;
+            yields.forEach((yie: any) => {
+              if (doc.name == yie.key[1]) {
+                doc['margin'] += yie.value;
+              }
+            })
+          })
+          console.log("output", output);
+          resolve(output);
+        }
         else if (this.reportMachineForm.value.groupBy == 'crop') {
-            console.log("crop", );
+          console.log("crop", );
           items = [];
           let getList = [];
           let crops = {};
           machines.forEach(machineLine => {
-            if (getList.indexOf(machineLine.key[10]) == -1){
+            if (getList.indexOf(machineLine.key[10]) == -1) {
               getList.push(machineLine.key[10]);
             }
             if (result.hasOwnProperty(machineLine.key[0])) {
@@ -486,7 +489,7 @@ export class MachineReportPage implements OnInit {
                 'name': items[result[machineLine.key[0]]].name,
                 'quantity': items[result[machineLine.key[0]]].quantity + parseFloat(machineLine.key[4]),
                 'margin': items[result[machineLine.key[0]]].margin + parseFloat(machineLine.key[5]),
-                'total': items[result[machineLine.key[0]]].total + parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
+                'total': items[result[machineLine.key[0]]].total + parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
               };
               crops
             } else {
@@ -494,12 +497,12 @@ export class MachineReportPage implements OnInit {
                 'name': machineLine.key[0],
                 'quantity': parseFloat(machineLine.key[4]),
                 'margin': parseFloat(machineLine.key[5]),
-                'total': parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
+                'total': parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
               });
-              result[machineLine.key[0]] = items.length-1;
+              result[machineLine.key[0]] = items.length - 1;
             }
 
-            if (crops.hasOwnProperty(machineLine.key[0])){
+            if (crops.hasOwnProperty(machineLine.key[0])) {
               if (crops[machineLine.key[0]].hasOwnProperty(machineLine.key[1])) {
                 // crops[machineLine.key[0]][machineLine.key[10]] = 0;
               } else {
@@ -513,16 +516,16 @@ export class MachineReportPage implements OnInit {
           console.log("crops", crops);
           let products: any = await this.pouchdbService.getList(getList);
           var doc_dict = {};
-          products.forEach(row=>{
+          products.forEach(row => {
             doc_dict[row.doc._id] = row.doc;
           })
           console.log("doc_dict", doc_dict);
           let categories = {};
           let litems = [];
           let cropList = {};
-          Object.keys(crops).forEach(item=>{
+          Object.keys(crops).forEach(item => {
             console.log("item", item, doc_dict, crops[item]);
-            Object.keys(crops[item]).forEach(are=>{
+            Object.keys(crops[item]).forEach(are => {
               console.log("doc_dict[are]", are, doc_dict[are]);
               if (categories.hasOwnProperty(doc_dict[are].name)) {
                 litems[categories[doc_dict[are].name]] = {
@@ -539,13 +542,13 @@ export class MachineReportPage implements OnInit {
                   // 'area': doc_dict[item.name].surface,
                   // 'total': 0,
                 });
-                categories[doc_dict[are].name] = litems.length-1;
+                categories[doc_dict[are].name] = litems.length - 1;
                 cropList[item] = doc_dict[are].surface;
               }
             })
           })
           console.log("litens", items);
-          items.forEach(item=>{
+          items.forEach(item => {
             item.quantity = cropList[item.name];
           })
           let self = this;
@@ -562,13 +565,12 @@ export class MachineReportPage implements OnInit {
           this.loading.dismiss();
           resolve(output);
         }
-
         else if (this.reportMachineForm.value.groupBy == 'area') {
           console.log("area", );
           let getList = [];
           items = [];
           machines.forEach(machineLine => {
-            if (getList.indexOf(machineLine.key[10]) == -1){
+            if (getList.indexOf(machineLine.key[10]) == -1) {
               getList.push(machineLine.key[10]);
             }
             if (result.hasOwnProperty(machineLine.key[1])) {
@@ -576,23 +578,23 @@ export class MachineReportPage implements OnInit {
                 'name': items[result[machineLine.key[1]]].name,
                 'quantity': items[result[machineLine.key[1]]].quantity + parseFloat(machineLine.key[4]),
                 'margin': items[result[machineLine.key[1]]].margin + parseFloat(machineLine.key[5]),
-                'total': items[result[machineLine.key[1]]].total + parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
+                'total': items[result[machineLine.key[1]]].total + parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
               };
             } else {
               items.push({
                 'name': machineLine.key[1],
                 'quantity': parseFloat(machineLine.key[4]),
                 'margin': parseFloat(machineLine.key[5]),
-                'total': parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
+                'total': parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
               });
-              result[machineLine.key[1]] = items.length-1;
+              result[machineLine.key[1]] = items.length - 1;
             }
           });
           let products: any = await this.pouchdbService.getList(getList);
           var doc_dict = {};
-          products.forEach((row, index)=>{
+          products.forEach((row, index) => {
             console.log("row.doc.name", row);
-            if (row.doc){
+            if (row.doc) {
               doc_dict[row.doc.name] = row.doc;
             }
             else {
@@ -601,9 +603,9 @@ export class MachineReportPage implements OnInit {
           })
           let categories = {};
           let litems = [];
-          items.forEach(item=>{
-            console.log("item", item.name,doc_dict,  doc_dict[item.name]);
-            if (doc_dict[item.name]){              
+          items.forEach(item => {
+            console.log("item", item.name, doc_dict, doc_dict[item.name]);
+            if (doc_dict[item.name]) {
               if (categories.hasOwnProperty(doc_dict[item.name].name)) {
                 litems[categories[doc_dict[item.name].name]] = {
                   'name': doc_dict[item.name].name,
@@ -615,10 +617,10 @@ export class MachineReportPage implements OnInit {
                 litems.push({
                   'name': doc_dict[item.name].name,
                   'quantity': doc_dict[item.name].surface,
-                  // 'area': doc_dict[item.name].surface,
+                  // 'machine': doc_dict[item.name].surface,
                   'total': item.total,
                 });
-                categories[doc_dict[item.name].name] = litems.length-1;
+                categories[doc_dict[item.name].name] = litems.length - 1;
               }
             }
           })
@@ -639,184 +641,312 @@ export class MachineReportPage implements OnInit {
           this.loading.dismiss();
           console.log("ouch put", output);
           resolve(output);
-      }
+        }
+        else if (this.reportMachineForm.value.groupBy == 'machine') {
+          let tmpDict = {};
 
-      else if (this.reportMachineForm.value.groupBy == 'machine') {
-        console.log("area", );
-      items = [];
-      let getList = [];
-      let machineArea = {};
-      machines.forEach(machineLine => {
-        if (result.hasOwnProperty(machineLine.key[2])) {
-          items[result[machineLine.key[2]]] = {
-            'name': items[result[machineLine.key[2]]].name,
-            'quantity': items[result[machineLine.key[2]]].quantity + parseFloat(machineLine.key[4]),
-            'margin': items[result[machineLine.key[2]]].margin + parseFloat(machineLine.key[5]),
-            'total': items[result[machineLine.key[2]]].total + parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
-          };
-          if (machineArea.hasOwnProperty(machineLine.key[1])) {
-            machineArea[machineLine.key[2]][machineLine.key[1]] += 1;
-          } else {
-            machineArea[machineLine.key[2]][machineLine.key[1]] = 1;
-          }
-        } else {
-          items.push({
-            'name': machineLine.key[2],
-            'quantity': parseFloat(machineLine.key[4]),
-            'margin': parseFloat(machineLine.key[5]),
-            'total': parseFloat(machineLine.key[4])*parseFloat(machineLine.key[5]),
+
+          console.log("machine");
+          let getList = [];
+          items = [];
+          machines.forEach(machineLine => {
+            if (getList.indexOf(machineLine.key[0]) == -1) {
+              getList.push(machineLine.key[0]);
+            }
+
+            if (tmpDict.hasOwnProperty(machineLine.key[0])) {
+              items[tmpDict[machineLine.key[0]]] = {
+                'id': machineLine.key[0],
+                // 'quantity': items[result[machineLine.key[1]]].quantity + parseFloat(machineLine.key[4]),
+                // 'margin': items[result[machineLine.key[1]]].margin + parseFloat(machineLine.key[5]),
+                'total': items[tmpDict[machineLine.key[0]]].total + machineLine.value,
+              };
+            } else {
+              items.push({
+                'id': machineLine.key[0],
+                // 'quantity': parseFloat(machineLine.key[4]),
+                // 'margin': parseFloat(machineLine.key[5]),
+                'total': machineLine.value,
+              });
+              tmpDict[machineLine.key[0]] = items.length - 1;
+            }
           });
-          result[machineLine.key[2]] = items.length-1;
-          machineArea[machineLine.key[2]] = {}
-          machineArea[machineLine.key[2]][machineLine.key[1]] = 1;
+          // console.log("result", result);
+          let products: any = await this.pouchdbService.getList(getList);
+          var doc_dict = {};
+          products.forEach((row, index) => {
+            console.log("row.doc.name", row);
+            if (row.doc) {
+              doc_dict[row.doc._id] = row.doc;
+            }
+            else {
+              products = products.slice(index, 1);
+            }
+          })
+          tmpDict = {};
+          let litems = [];
+          items.forEach(item => {
+            console.log("item", item.id, doc_dict, doc_dict[item.id]);
+            if (doc_dict[item.id]) {
+              if (tmpDict.hasOwnProperty(doc_dict[item.id].name)) {
+                litems[tmpDict[doc_dict[item.id].name]] = {
+                  'name': doc_dict[item.id].name,
+                  // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
+                  // 'quantity': doc_dict[item.name].surface,
+                  'total': litems[tmpDict[doc_dict[item.id].name]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item.id].name,
+                  // 'quantity': doc_dict[item.name].surface,
+                  // 'machine': doc_dict[item.name].surface,
+                  'total': item.total,
+                });
+                tmpDict[doc_dict[item.id].name] = litems.length - 1;
+              }
+            }
+          })
+          console.log("litems", litems);
+          let self = this;
+          // let output = items.sort(function(a, b) {
+          //   return self.compare(a, b, self.reportMachineForm.value.orderBy);
+          // })
+          let output = litems.sort(function(a, b) {
+            return self.compare(a, b, self.reportMachineForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          console.log("ouch put", output);
+          resolve(output);
+
+
+
+
         }
-        if (getList.indexOf(machineLine.key[10]) == -1){
-          getList.push(machineLine.key[10]);
+        else if (this.reportMachineForm.value.groupBy == 'activity') {
+          console.log("activity", );
+          let tmpDict = {};
+          let getList = [];
+          items = [];
+          machines.forEach(machineLine => {
+            if (getList.indexOf(machineLine.key[1]) == -1) {
+              getList.push(machineLine.key[1]);
+            }
+
+            if (tmpDict.hasOwnProperty(machineLine.key[1])) {
+              items[tmpDict[machineLine.key[1]]] = {
+                'id': machineLine.key[1],
+                // 'quantity': items[result[machineLine.key[1]]].quantity + parseFloat(machineLine.key[4]),
+                // 'margin': items[result[machineLine.key[1]]].margin + parseFloat(machineLine.key[5]),
+                'total': items[tmpDict[machineLine.key[1]]].total + machineLine.value,
+              };
+            } else {
+              items.push({
+                'id': machineLine.key[1],
+                // 'quantity': parseFloat(machineLine.key[4]),
+                // 'margin': parseFloat(machineLine.key[5]),
+                'total': machineLine.value,
+              });
+              tmpDict[machineLine.key[1]] = items.length - 1;
+            }
+          });
+          // console.log("result", result);
+          let products: any = await this.pouchdbService.getList(getList);
+          var doc_dict = {};
+          products.forEach((row, index) => {
+            console.log("row.doc.name", row);
+            if (row.doc) {
+              doc_dict[row.doc._id] = row.doc;
+            }
+            else {
+              products = products.slice(index, 1);
+            }
+          })
+          tmpDict = {};
+          let litems = [];
+          items.forEach(item => {
+            console.log("item", item.id, doc_dict, doc_dict[item.id]);
+            if (doc_dict[item.id]) {
+              if (tmpDict.hasOwnProperty(doc_dict[item.id].name)) {
+                litems[tmpDict[doc_dict[item.id].name]] = {
+                  'name': doc_dict[item.id].name,
+                  // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
+                  // 'quantity': doc_dict[item.name].surface,
+                  'total': litems[tmpDict[doc_dict[item.id].name]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item.id].name,
+                  // 'quantity': doc_dict[item.name].surface,
+                  // 'machine': doc_dict[item.name].surface,
+                  'total': item.total,
+                });
+                tmpDict[doc_dict[item.id].name] = litems.length - 1;
+              }
+            }
+          })
+          console.log("litems", litems);
+          let self = this;
+          // let output = items.sort(function(a, b) {
+          //   return self.compare(a, b, self.reportMachineForm.value.orderBy);
+          // })
+          let output = litems.sort(function(a, b) {
+            return self.compare(a, b, self.reportMachineForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          console.log("ouch put", output);
+          resolve(output);
+
+
+          // items = [];
+          // let getList = [];
+          // let machineArea = {};
+          // machines.forEach(machineLine => {
+          //   if (result.hasOwnProperty(machineLine.key[2])) {
+          //     items[result[machineLine.key[2]]] = {
+          //       'name': items[result[machineLine.key[2]]].name,
+          //       'quantity': items[result[machineLine.key[2]]].quantity + parseFloat(machineLine.key[4]),
+          //       'margin': items[result[machineLine.key[2]]].margin + parseFloat(machineLine.key[5]),
+          //       'total': items[result[machineLine.key[2]]].total + parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
+          //     };
+          //     if (machineArea.hasOwnProperty(machineLine.key[1])) {
+          //       machineArea[machineLine.key[2]][machineLine.key[1]] += 1;
+          //     } else {
+          //       machineArea[machineLine.key[2]][machineLine.key[1]] = 1;
+          //     }
+          //   } else {
+          //     items.push({
+          //       'name': machineLine.key[2],
+          //       'quantity': parseFloat(machineLine.key[4]),
+          //       'margin': parseFloat(machineLine.key[5]),
+          //       'total': parseFloat(machineLine.key[4]) * parseFloat(machineLine.key[5]),
+          //     });
+          //     result[machineLine.key[2]] = items.length - 1;
+          //     machineArea[machineLine.key[2]] = {}
+          //     machineArea[machineLine.key[2]][machineLine.key[1]] = 1;
+          //   }
+          //   if (getList.indexOf(machineLine.key[10]) == -1) {
+          //     getList.push(machineLine.key[10]);
+          //   }
+          // });
+          // console.log("machineArea", machineArea);
+          //
+          // let products: any = await this.pouchdbService.getList(getList);
+          // var doc_dict = {};
+          // products.forEach(row => {
+          //   doc_dict[row.doc.name] = row.doc;
+          // })
+          // Object.keys(machineArea).forEach((item) => {
+          //   let counter = 0;
+          //   Object.keys(machineArea[item]).forEach((machine) => {
+          //     counter += machineArea[item][machine] * doc_dict[machine].surface;
+          //     machineArea[item][machine] = machineArea[item][machine] * doc_dict[machine].surface;
+          //   })
+          //   machineArea[item] = counter;
+          // })
+          // console.log("machineArea2", machineArea);
+          //
+          // let self = this;
+          // let output = items.sort(function(a, b) {
+          //   return self.compare(a, b, self.reportMachineForm.value.orderBy);
+          // })
+          // let marker = false;
+          // let total = 0;
+          // output.forEach(item => {
+          //   item['marker'] = marker,
+          //     marker = !marker;
+          //   total += parseFloat(item['total']);
+          //   item['quantity'] = machineArea[item['name']];
+          // });
+          // this.loading.dismiss();
+          // resolve(output);
+        }
+        else if (this.reportMachineForm.value.groupBy == 'contact') {
+          items = [];
+          machines.forEach(machineLine => {
+            if (result.hasOwnProperty(machineLine.key[2])) {
+              // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
+              items[result[machineLine.key[2]]] = {
+                'name': items[result[machineLine.key[2]]].name,
+                'quantity': items[result[machineLine.key[2]]].quantity + parseFloat(machineLine.key[4]),
+                'margin': items[result[machineLine.key[2]]].margin + machineLine.key[5],
+                'total': items[result[machineLine.key[2]]].total + parseFloat(machineLine.key[4]) * machineLine.key[5],
+              };
+            } else {
+              items.push({
+                'name': machineLine.key[2],
+                'quantity': parseFloat(machineLine.key[4]),
+                'margin': machineLine.key[5],
+                'total': parseFloat(machineLine.key[4]) * machineLine.key[5],
+              });
+              result[machineLine.key[2]] = items.length - 1;
+            }
+          });
+
+          let self = this;
+          let output = items.sort(function(a, b) {
+            return self.compare(a, b, self.reportMachineForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          resolve(output);
+        }
+        else if (this.reportMachineForm.value.groupBy == 'date') {
+          items = [];
+          machines.forEach(machineLine => {
+            if (result.hasOwnProperty(machineLine.key[7])) {
+              // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
+              items[result[machineLine.key[7]]] = {
+                'name': items[result[machineLine.key[7]]].name,
+                'quantity': items[result[machineLine.key[7]]].quantity + parseFloat(machineLine.key[4]),
+                'margin': items[result[machineLine.key[7]]].margin + machineLine.key[5],
+                'total': items[result[machineLine.key[7]]].total + parseFloat(machineLine.key[4]) * machineLine.key[5],
+              };
+            } else {
+              items.push({
+                'name': machineLine.key[7],
+                'quantity': parseFloat(machineLine.key[4]),
+                'margin': machineLine.key[5],
+                'total': parseFloat(machineLine.key[4]) * machineLine.key[5],
+              });
+              result[machineLine.key[7]] = items.length - 1;
+            }
+          });
+
+          let self = this;
+          let output = items.sort(function(a, b) {
+            return self.compare(a, b, self.reportMachineForm.value.orderBy);
+          })
+          let marker = false;
+          let total = 0;
+          output.forEach(item => {
+            item['marker'] = marker,
+              marker = !marker;
+            total += parseFloat(item['total']);
+          });
+          this.loading.dismiss();
+          resolve(output);
         }
       });
-      console.log("machineArea", machineArea);
-
-      let products: any = await this.pouchdbService.getList(getList);
-      var doc_dict = {};
-      products.forEach(row=>{
-        doc_dict[row.doc.name] = row.doc;
-      })
-      Object.keys(machineArea).forEach((item)=>{
-        let counter = 0;
-        Object.keys(machineArea[item]).forEach((area)=>{
-          counter += machineArea[item][area]*doc_dict[area].surface;
-          machineArea[item][area] = machineArea[item][area]*doc_dict[area].surface;
-        })
-        machineArea[item] = counter;
-      })
-      console.log("machineArea2", machineArea);
-
-      let self = this;
-      let output = items.sort(function(a, b) {
-        return self.compare(a, b, self.reportMachineForm.value.orderBy);
-      })
-      let marker = false;
-      let total = 0;
-      output.forEach(item => {
-        item['marker'] = marker,
-          marker = !marker;
-        total += parseFloat(item['total']);
-        item['quantity'] = machineArea[item['name']];
-      });
-      this.loading.dismiss();
-      resolve(output);
-    }
-          else if (this.reportMachineForm.value.groupBy == 'contact') {
-            items = [];
-            machines.forEach(machineLine => {
-              if (result.hasOwnProperty(machineLine.key[2])) {
-                // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
-                items[result[machineLine.key[2]]] = {
-                  'name': items[result[machineLine.key[2]]].name,
-                  'quantity': items[result[machineLine.key[2]]].quantity + parseFloat(machineLine.key[4]),
-                  'margin': items[result[machineLine.key[2]]].margin + machineLine.key[5],
-                  'total': items[result[machineLine.key[2]]].total + parseFloat(machineLine.key[4])*machineLine.key[5],
-                };
-              } else {
-                items.push({
-                  'name': machineLine.key[2],
-                  'quantity': parseFloat(machineLine.key[4]),
-                  'margin': machineLine.key[5],
-                  'total': parseFloat(machineLine.key[4])*machineLine.key[5],
-                });
-                result[machineLine.key[2]] = items.length-1;
-              }
-            });
-
-            let self = this;
-            let output = items.sort(function(a, b) {
-              return self.compare(a, b, self.reportMachineForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            this.loading.dismiss();
-            resolve(output);
-          }
-          else if (this.reportMachineForm.value.groupBy == 'date') {
-            items = [];
-            machines.forEach(machineLine => {
-              if (result.hasOwnProperty(machineLine.key[7])) {
-                // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
-                items[result[machineLine.key[7]]] = {
-                  'name': items[result[machineLine.key[7]]].name,
-                  'quantity': items[result[machineLine.key[7]]].quantity + parseFloat(machineLine.key[4]),
-                  'margin': items[result[machineLine.key[7]]].margin + machineLine.key[5],
-                  'total': items[result[machineLine.key[7]]].total + parseFloat(machineLine.key[4])*machineLine.key[5],
-                };
-              } else {
-                items.push({
-                  'name': machineLine.key[7],
-                  'quantity': parseFloat(machineLine.key[4]),
-                  'margin': machineLine.key[5],
-                  'total': parseFloat(machineLine.key[4])*machineLine.key[5],
-                });
-                result[machineLine.key[7]] = items.length-1;
-              }
-            });
-
-            let self = this;
-            let output = items.sort(function(a, b) {
-              return self.compare(a, b, self.reportMachineForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            this.loading.dismiss();
-            resolve(output);
-
-          }
-
-          else if (this.reportMachineForm.value.groupBy == 'seller') {
-            items = [];
-            machines.forEach(machineLine => {
-              if (result.hasOwnProperty(machineLine.key[8])) {
-                // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
-                items[result[machineLine.key[8]]] = {
-                  'name': items[result[machineLine.key[8]]].name,
-                  'quantity': items[result[machineLine.key[8]]].quantity + parseFloat(machineLine.key[4]),
-                  'margin': items[result[machineLine.key[8]]].margin + machineLine.key[3],
-                  'total': items[result[machineLine.key[8]]].total + parseFloat(machineLine.key[4])*machineLine.key[5],
-                };
-              } else {
-                items.push({
-                  'name': machineLine.key[8],
-                  'quantity': parseFloat(machineLine.key[4]),
-                  'margin': machineLine.key[3],
-                  'total': parseFloat(machineLine.key[4])*machineLine.key[5],
-                });
-                result[machineLine.key[8]] = items.length-1;
-              }
-            });
-
-            let self = this;
-            let output = items.sort(function(a, b) {
-              return self.compare(a, b, self.reportMachineForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            this.loading.dismiss();
-            resolve(output);
-          }
-        });
       // }
     });
   }
@@ -868,7 +998,7 @@ export class MachineReportPage implements OnInit {
     this.goNextStep();
   }
 
-  selectCrop(){
+  selectCrop() {
     return new Promise(async resolve => {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('select-crop');
@@ -892,7 +1022,7 @@ export class MachineReportPage implements OnInit {
     });
   }
 
-  selectArea(){
+  selectArea() {
     return new Promise(async resolve => {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('select-area');
@@ -916,7 +1046,7 @@ export class MachineReportPage implements OnInit {
       profileModal.present();
     });
   }
-  selectInput(){
+  selectInput() {
     return new Promise(async resolve => {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('select-input');
@@ -940,17 +1070,17 @@ export class MachineReportPage implements OnInit {
       profileModal.present();
     });
   }
-  selectMachine(){
+  selectActivity() {
     return new Promise(async resolve => {
       this.avoidAlertMessage = true;
-      this.events.unsubscribe('select-machine');
-      this.events.subscribe('select-machine', (data) => {
+      this.events.unsubscribe('select-activity');
+      this.events.subscribe('select-activity', (data) => {
         this.reportMachineForm.patchValue({
-          machine: data,
+          activity: data,
         });
         this.reportMachineForm.markAsDirty();
         this.avoidAlertMessage = false;
-        this.events.unsubscribe('select-machine');
+        this.events.unsubscribe('select-activity');
         resolve(true);
         this.goNextStep();
       })
@@ -964,7 +1094,7 @@ export class MachineReportPage implements OnInit {
     });
   }
 
-  selectMachine(){
+  selectMachine() {
     return new Promise(async resolve => {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('select-machine');
@@ -994,18 +1124,18 @@ export class MachineReportPage implements OnInit {
     this.reportMachineForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
       name: new FormControl(''),
-      dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.getFirstDateOfMonth()),
+      dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart') || this.getFirstDateOfMonth()),
       dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today),
       total: new FormControl(0),
       area: new FormControl({}),
       machine: new FormControl({}),
       input: new FormControl({}),
       showFilter: new FormControl(false),
-      machine: new FormControl({}),
+      activity: new FormControl({}),
       crop: new FormControl({}),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'area'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'machine'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
@@ -1084,7 +1214,7 @@ export class MachineReportPage implements OnInit {
     var dataset = this.reportMachineForm.value.items;
     var width = 320;
     var height = 200;
-    var color:any = d3Scale.scaleOrdinal()
+    var color: any = d3Scale.scaleOrdinal()
       .range(d3.schemeCategory10);
 
 
@@ -1121,24 +1251,24 @@ export class MachineReportPage implements OnInit {
         return "rotate(-45)"
       });
     svg.append("g")
-        .attr("class", "axis axis--y")
-        // .call(d3Axis.axisLeft(this.y).ticks(10))
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("x", -height/2)
-        .attr("dy", "-5em")
-        .style("text-anchor", "middle")
-        .text("Valor Vendido");
+      .attr("class", "axis axis--y")
+      // .call(d3Axis.axisLeft(this.y).ticks(10))
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -height / 2)
+      .attr("dy", "-5em")
+      .style("text-anchor", "middle")
+      .text("Valor Vendido");
 
-      svg.append("g")
-          .attr("class", "axis axis--y")
-          .call(d3Axis.axisLeft(this.y).ticks(10))
-          .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("x", -height/2)
-          .attr("dy", "-3em")
-          .style("text-anchor", "middle");
-          // .text("Amount Dispensed");
+    svg.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3Axis.axisLeft(this.y).ticks(10))
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -height / 2)
+      .attr("dy", "-3em")
+      .style("text-anchor", "middle");
+    // .text("Amount Dispensed");
 
     // define tooltip
     var tooltip = d3.select('#barChart') // select element in the DOM with id 'chart'
@@ -1162,11 +1292,11 @@ export class MachineReportPage implements OnInit {
       .attr("y", (d: any) => this.y(d.total))
       .attr("width", this.x.bandwidth())
       .style("fill", (d: any) => color(d['name']))
-      .attr("height", (d:any) => height - this.y(d.total))
-      .each(function(d:any) { self._current - d; });
+      .attr("height", (d: any) => height - this.y(d.total))
+      .each(function(d: any) { self._current - d; });
 
-    path.on('mouseover', function(d:any) {  // when mouse enters div
-      d3.sum(dataset.map(function(d:any) { // calculate the total number of tickets in the dataset
+    path.on('mouseover', function(d: any) {  // when mouse enters div
+      d3.sum(dataset.map(function(d: any) { // calculate the total number of tickets in the dataset
         return (d.enabled) ? d.total : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase
       }));
       tooltip.select('.label').html(d.name); // set current label
@@ -1194,11 +1324,11 @@ export class MachineReportPage implements OnInit {
 
     var legendRectSize = 10; // defines the size of the colored squares in legend
     var legendSpacing = 10;
-    var color:any = d3Scale.scaleOrdinal()
+    var color: any = d3Scale.scaleOrdinal()
       .range(d3.schemeCategory10);
 
     if (d3.select("#chart").select('svg').nodes()[0]) {
-      let node:any = d3.select("#chart").select('svg').nodes()[0];
+      let node: any = d3.select("#chart").select('svg').nodes()[0];
       node.remove();
     }
     var svg = d3.select('#chart')
@@ -1208,12 +1338,12 @@ export class MachineReportPage implements OnInit {
       .append('g')
       .attr('transform', 'translate(' + (width / 3.5) + ',' + (height / 2) + ')'); // our reference is now to the 'g' element. centerting the 'g' element to the svg element
 
-    var arc:any = d3Shape.arc()
+    var arc: any = d3Shape.arc()
       .innerRadius(0) // none for pie chart
       .outerRadius(radius); // size of overall chart
 
     var pie = d3Shape.pie() // start and end angles of the segments
-      .value(function(d:any) { return d.total; }) // how to extract the numerical data from each entry in our dataset
+      .value(function(d: any) { return d.total; }) // how to extract the numerical data from each entry in our dataset
       .sort(null); // by default, data sorts in oescending value. this will mess with our animation so we set it to null
 
     // define tooltip
@@ -1240,12 +1370,12 @@ export class MachineReportPage implements OnInit {
       .enter() //creates placeholder nodes for each of the values
       .append('path') // replace placeholders with path elements
       .attr('d', arc) // define d attribute with arc function above
-      .attr('fill', function(d:any) { return color(d['data'].name); }) // use color scale to define fill of each label in dataset
-      .each(function(d:any) { self._current - d; }); // creates a smooth animation for each track
+      .attr('fill', function(d: any) { return color(d['data'].name); }) // use color scale to define fill of each label in dataset
+      .each(function(d: any) { self._current - d; }); // creates a smooth animation for each track
 
     // mouse event handlers are attached to path so they need to come after its definition
-    path.on('mouseover', function(d:any) {  // when mouse enters div
-      var total = d3.sum(dataset.map(function(d:any) { // calculate the total number of tickets in the dataset
+    path.on('mouseover', function(d: any) {  // when mouse enters div
+      var total = d3.sum(dataset.map(function(d: any) { // calculate the total number of tickets in the dataset
         return (d.enabled) ? d.total : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase
       }));
       var percent = Math.round(1000 * d.data.total / total) / 10; // calculate percent
@@ -1288,7 +1418,7 @@ export class MachineReportPage implements OnInit {
       .on('click', function(label) {
         var rect = d3.select(this); // this refers to the colored squared just clicked
         var enabled = true; // set enabled true to default
-        var totalEnabled = d3.sum(dataset.map(function(d:any) { // can't disable all options
+        var totalEnabled = d3.sum(dataset.map(function(d: any) { // can't disable all options
           return (d.enabled) ? 1 : 0; // return 1 for each enabled entry. and summing it up
         }));
 
@@ -1300,7 +1430,7 @@ export class MachineReportPage implements OnInit {
           enabled = false; // set enabled to false
         }
 
-        pie.value(function(d:any) {
+        pie.value(function(d: any) {
           if (d.name === label) d.enabled = enabled; // if entry label matches legend label
           return (d.enabled) ? d.total : 0; // update enabled property and return count or 0 based on the entry's status
         });
@@ -1454,9 +1584,9 @@ export class MachineReportPage implements OnInit {
       .range([0, width]);
 
     const y = d3.scaleLinear().domain([0, 30]).range([height, 0]);
-    const line:any = d3.line().x((d: any) => x(new Date(d.date))).y((d:any) => y(d.total));
+    const line: any = d3.line().x((d: any) => x(new Date(d.date))).y((d: any) => y(d.total));
     if (d3.select("#svg").select('g').nodes()[0]) {
-      let node:any = d3.select("#svg").select('g').nodes()[0];
+      let node: any = d3.select("#svg").select('g').nodes()[0];
       node.remove();
     }
     const chart = d3.select('#svg').append('g')
@@ -1498,7 +1628,7 @@ export class MachineReportPage implements OnInit {
         var x0 = x.invert(d3.mouse(d3.event.currentTarget)[0]),
           i = bisectDate(states[0].history, x0, 1),
           d0 = states[0].history[i - 1];
-          // d1 = states[0].history[i];
+        // d1 = states[0].history[i];
         let date: any = new Date(d0.date);
 
         states.sort((a, b) => {
@@ -1519,8 +1649,8 @@ export class MachineReportPage implements OnInit {
         var x0 = x.invert(d3.mouse(d3.event.currentTarget)[0]),
           i = bisectDate(states[0].history, x0, 1),
           d0 = states[0].history[i - 1];
-          // d1 = states[0].history[i];
-        let date:any = new Date(d0.date);
+        // d1 = states[0].history[i];
+        let date: any = new Date(d0.date);
 
         states.sort((a, b) => {
           return self.compare(a, b, "date");
