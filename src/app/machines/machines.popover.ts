@@ -32,7 +32,7 @@ export class MachinesPopover {
 
   gotoReport(){
     // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
-    this.navCtrl.navigateForward(['/activity-report', {}]);
+    this.navCtrl.navigateForward(['/machine-report', {}]);
     this.pop.dismiss();
   }
 
