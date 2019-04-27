@@ -19,7 +19,7 @@ import { MachineService } from './machine.service';
 import { WorkPage } from '../work/work.page';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { FormatService } from "../services/format.service";
-// import { CropsPage } from '../crops/crops.page';
+import { ProductListPage } from '../product-list/product-list.page';
 import { ContactListPage } from '../contact-list/contact-list.page';
 import { MachinePopover } from './machine.popover';
 declare var ApiAIPromises: any;
@@ -336,8 +336,8 @@ export class MachinePage implements OnInit {
   async ngOnInit() {
     this.machineForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
-      // crop: new FormControl({}),
-      // crop_name: new FormControl(''),
+      fuel: new FormControl({}),
+      fuel_name: new FormControl(''),
       own: new FormControl(true),
       rentingType: new FormControl('fixedAmount'),
       rentingAmount: new FormControl(0),
@@ -345,8 +345,8 @@ export class MachinePage implements OnInit {
       contact_name: new FormControl(''),
       image: new FormControl(''),
       moves: new FormControl([]),
-      lastRain: new FormControl(0), //Abastecimento
-      lastRainDate: new FormControl(),
+      // lastReview: new FormControl(0), //Abastecimento
+      lastReviewDate: new FormControl(),
       note: new FormControl(null),
       code: new FormControl(''),
       _attachments: new FormControl({}),
@@ -363,11 +363,11 @@ export class MachinePage implements OnInit {
         data.note = null;
         this.machineForm.patchValue(data);
         this.loading.dismiss();
-        let rain = await this.machineService.getMachineRain(this._id);
-        if (rain){
-          this.machineForm.value.lastRainDate = rain['date'];
-          this.machineForm.value.lastRain = rain['quantity'];
-          var date1 = new Date(this.machineForm.value.lastRainDate);
+        let review = await this.machineService.getMachineReview(this._id);
+        if (review){
+          this.machineForm.value.lastReviewDate = review['date'];
+          // this.machineForm.value.lastReview = review['quantity'];
+          var date1 = new Date(this.machineForm.value.lastReviewDate);
           var date2 = new Date();
           var timeDiff = Math.abs(date2.getTime() - date1.getTime());
           var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -454,28 +454,28 @@ export class MachinePage implements OnInit {
     profileModal.present();
   }
 
-  // selectCrop() {
-  //   return new Promise(async resolve => {
-  //     this.events.unsubscribe('select-crop');
-  //     this.events.subscribe('select-crop', (data) => {
-  //       this.machineForm.patchValue({
-  //         crop: data,
-  //         crop_name: data.name,
-  //       });
-  //       this.machineForm.markAsDirty();
-  //       this.events.unsubscribe('select-crop');
-  //       profileModal.dismiss();
-  //       resolve(true);
-  //     })
-  //     let profileModal = await this.modalCtrl.create({
-  //       component: CropsPage,
-  //       componentProps: {
-  //         "select": true,
-  //       }
-  //     });
-  //     profileModal.present();
-  //   });
-  // }
+  selectFuel() {
+    return new Promise(async resolve => {
+      this.events.unsubscribe('select-product');
+      this.events.subscribe('select-product', (data) => {
+        this.machineForm.patchValue({
+          fuel: data,
+          fuel_name: data.name,
+        });
+        this.machineForm.markAsDirty();
+        this.events.unsubscribe('select-product');
+        profileModal.dismiss();
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ProductListPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
 
   addButton() {
     this.showBotom = !this.showBotom;

@@ -44,6 +44,7 @@ export class WorkPage implements OnInit {
   note;
   @Input() go = false;
   @Input() area: any;
+  @Input() machine: any;
   config;
   deleteList = [];
 
@@ -76,6 +77,7 @@ export class WorkPage implements OnInit {
     this._id = this.route.snapshot.paramMap.get('_id');
     this.activity = this.route.snapshot.paramMap.get('activity');
     this.area = eval(this.route.snapshot.paramMap.get('area'));
+    this.machine = eval(this.route.snapshot.paramMap.get('machine'));
     this.select = this.route.snapshot.paramMap.get('select');
     this.note = this.route.snapshot.paramMap.get('note');
     // console.log("note", this.route.snapshot.paramMap.get('note'));
@@ -373,6 +375,12 @@ export class WorkPage implements OnInit {
       this.workForm.patchValue({
         area: this.area,
         crop: this.area.crop,
+      });
+    }
+    if (this.machine){
+      this.workForm.patchValue({
+        machine: this.machine,
+        fuel: this.machine.fuel,
       });
     }
     this.workForm.patchValue({

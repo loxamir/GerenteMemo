@@ -15,17 +15,17 @@
       </ion-thumbnail>
     </ion-buttons>
     <ion-title style="padding-left: 5px;">{{machineForm.value.name}}
-      <h1 class="subtitle" *ngIf="machineForm.value.lastRain && diffDays  > 1">
-        Ultima chuva {{machineForm.value.lastRain}}mm a {{ diffDays }} dias
+      <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && diffDays  > 1">
+        Ultima revision a {{ diffDays }} dias
       </h1>
-      <h1 class="subtitle" *ngIf="machineForm.value.lastRain && diffDays == 1">
-        Ultima chuva {{machineForm.value.lastRain}}mm a {{ diffDays }} dia
+      <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && diffDays == 1">
+        Ultima revision a {{ diffDays }} dia
       </h1>
-      <h1 class="subtitle" *ngIf="machineForm.value.lastRain && !diffDays">
-        Ultima chuva {{machineForm.value.lastRain}}mm hoje
+      <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && !diffDays">
+        Ultima revision hoy
       </h1>
-      <h1 class="subtitle" *ngIf="!machineForm.value.lastRain">
-        Sem dados de Chuva
+      <h1 class="subtitle" *ngIf="!machineForm.value.lastReviewDate">
+        Sin datos de revision
       </h1>
     </ion-title>
     <ion-buttons slot="end">
@@ -51,7 +51,7 @@
     <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;    transform: rotate(180deg);">
       <ion-item-sliding class="list-item" *ngFor="let item of machineForm.value.moves">
         <ion-item no-padding (click)="openItem(item)" *ngIf="!item.image" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
-          <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
+          <ion-card [class.area-card]="item.activity_name!='Memo'" [class.sent-card]="item.activity_name=='Abastecimento'">
             <ion-row no-padding>
               <ion-thumbnail style="--border-radius:10px;">
                 <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
@@ -89,7 +89,7 @@
         </ion-item>
 
         <ion-item no-padding (click)="openPreview(item.image)" *ngIf="item.image" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
-          <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
+          <ion-card [class.area-card]="item.activity_name!='Memo'" [class.sent-card]="item.activity_name=='Abastecimento'">
             <ion-row no-padding>
               <!-- <ion-thumbnail style="--border-radius:10px;">
               <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
@@ -168,24 +168,24 @@
       </ion-col>
     </ion-row>
     <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-      <ion-col size="6" (click)="addActivity('activity.fuel')">
+      <ion-col size="4" (click)="addActivity('activity.fuel')">
         <ion-img [src]="'./assets/icons/activity.fuel.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
           Abastecimento
         </h1>
       </ion-col>
-      <ion-col size="6" (click)="addActivity('activity.maintenance')">
+      <ion-col size="4" (click)="addActivity('activity.maintenance')">
         <ion-img [src]="'./assets/icons/activity.maintenance.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
           Mantenimiento
         </h1>
       </ion-col>
-      <!-- <ion-col size="4" (click)="addActivity('activity.work')">
-        <ion-img [src]="'./assets/icons/activity.work.png'" class="activity-menu"></ion-img>
+      <ion-col size="4" (click)="addActivity('activity.review')">
+        <ion-img [src]="'./assets/icons/activity.review.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Trabajo
+          Revision
         </h1>
-      </ion-col> -->
+      </ion-col>
     </ion-row>
     <!-- <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
       <ion-col size="4" (click)="addActivity('activity.harvest')">
@@ -227,14 +227,14 @@
         <ion-label position="floating">{{'Machine(ha)' | translate}}</ion-label>
         <ion-input type="number" style="height: 47px;" formControlName="surface"></ion-input>
       </ion-item> -->
-      <!-- <ion-item no-padding (click)="selectCrop()" class="field-50">
+      <ion-item no-padding (click)="selectFuel()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
+          <h4 class="field-label">{{'Combustible' | translate}}</h4>
           <h4 class="field-value">
-            {{machineForm.value.crop && machineForm.value.crop.name || 'Selecionar'}}
+            {{machineForm.value.fuel && machineForm.value.fuel.name || 'Selecionar'}}
           </h4>
         </div>
-      </ion-item> -->
+      </ion-item>
       <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
         <ion-select #type
@@ -259,7 +259,7 @@
       <ion-item
        no-padding
        class="field-50">
-        <ion-label position="floating">{{'Costo por Hora' | translate}}</ion-label>
+        <ion-label position="floating">{{'Precio por Hora' | translate}}</ion-label>
         <ion-input #hourCost type="number"
         formControlName="hourCost"></ion-input>
       </ion-item>

@@ -39,21 +39,21 @@ export class MachineService {
     });
   }
 
-  getMachineRain(doc_id): Promise<any> {
+  getMachineReview(doc_id): Promise<any> {
     return new Promise(async (resolve, reject)=>{
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/Chuva', 2,
+        'Informes/Revisao', 2,
         [doc_id, 'z'],
         [doc_id, '0'],
         true,
         true,
         1
-      ).then(async (rains: any[]) => {
-        if (rains.length){
+      ).then(async (reviews: any[]) => {
+        if (reviews.length){
           resolve({
-            date: rains[0].key[1],
-            quantity: rains[0].value
+            date: reviews[0].key[1],
+            quantity: reviews[0].value
           });
         } else {
           resolve(false)
@@ -116,7 +116,7 @@ export class MachineService {
     return new Promise(async (resolve, reject)=>{
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/MachineDiario', 4,
+        'Informes/MachineDiario', 4,
         [machine_id+"z", "z"],
         [machine_id, "0"],
         true,
