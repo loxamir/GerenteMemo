@@ -467,7 +467,7 @@ export class LoginPage implements OnInit {
         "campaign": {"value": this.campaign, "type": "String"}
       }};
       // console.log("variables", variables);
-      this.restProvider.startProcess("Process_1", body).then((data:any)=>{
+      this.restProvider.startProcess("ProcessoAgroCreation", body).then((data:any)=>{
         // console.log("DATA startProcess", data);
         resolve(data);
       })
