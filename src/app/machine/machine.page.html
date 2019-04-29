@@ -1,15 +1,15 @@
 <ion-header>
   <ion-toolbar *ngIf="showForm" color="primary" style="font-size: 20px;">
     <ion-buttons slot="start" (click)="backEdit()">
-      <ion-icon name="arrow-back" style="font-size: 24px;padding-right: 10px;padding-left: 10px;"></ion-icon>
+      <ion-icon name="arrow-back" style="font-size: 25px;padding-right: 10px;padding-left: 10px;"></ion-icon>
     </ion-buttons>
     <ion-title style="padding-left: 5px;">
-      Editar Machine
+      Editar Maquina
     </ion-title>
   </ion-toolbar>
   <ion-toolbar *ngIf="!showForm" color="primary">
     <ion-buttons slot="start" (click)="goBack()">
-      <ion-icon name="arrow-back" style="font-size: 20px;"></ion-icon>
+      <ion-icon name="arrow-back" style="font-size: 25px;"></ion-icon>
       <ion-thumbnail style="--border-radius:10px;">
         <img [src]="machineForm.value.image" id="avatarImage" #avatarImage *ngIf="machineForm.value.image">
       </ion-thumbnail>
