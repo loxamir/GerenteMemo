@@ -318,7 +318,6 @@ export class ReportListPage implements OnInit {
         'Informes/Agro',
         10,
       ).then(async (sales: any[]) => {
-        console.log("Agro", sales);
         let ag_produced = 0;
         let ag_produced_area = 0;
         let ag_production_labour = 0;
@@ -342,7 +341,6 @@ export class ReportListPage implements OnInit {
         let crops = {};
         let result = {};
         sales.forEach(activityLine => {
-          console.log("activityLine", activityLine);
           if (getList.indexOf(activityLine.key[10]) == -1){
             getList.push(activityLine.key[10]);
           }
@@ -375,41 +373,43 @@ export class ReportListPage implements OnInit {
             crops[activityLine.key[0]][activityLine.key[10]] = 0;
           }
         });
-        console.log("getList", getList);
         let products: any = await this.pouchdbService.getList(getList);
         var doc_dict = {};
-        products.forEach(row=>{
-          doc_dict[row.doc._id] = row.doc;
+        products.forEach((row, index)=>{
+          if (row.doc){
+            doc_dict[row.doc._id] = row.doc;
+          }
+          else {
+            products = products.slice(index, 1);
+          }
         })
-        console.log("doc_dict", doc_dict);
         let categories = {};
         let litems = [];
         let cropList = {};
         Object.keys(crops).forEach(item=>{
-          console.log("item", item, doc_dict, crops[item]);
           Object.keys(crops[item]).forEach(are=>{
-            console.log("doc_dict[are]", are, doc_dict[are]);
-            if (categories.hasOwnProperty(doc_dict[are].name)) {
-              litems[categories[doc_dict[are].name]] = {
-                // 'name': doc_dict[are].name,
-                // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
-                'quantity': doc_dict[are].surface,
-                // 'total': litems[categories[doc_dict[are].name]].total,
-              };
-              cropList[item] += doc_dict[are].surface;
-            } else {
-              litems.push({
-                'name': doc_dict[are].name,
-                'quantity': doc_dict[are].surface,
-                // 'area': doc_dict[item.name].surface,
-                // 'total': 0,
-              });
-              categories[doc_dict[are].name] = litems.length-1;
-              cropList[item] = doc_dict[are].surface;
+            if (doc_dict[are]){
+              if (categories.hasOwnProperty(doc_dict[are].name)) {
+                litems[categories[doc_dict[are].name]] = {
+                  // 'name': doc_dict[are].name,
+                  // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
+                  'quantity': doc_dict[are].surface,
+                  // 'total': litems[categories[doc_dict[are].name]].total,
+                };
+                cropList[item] += doc_dict[are].surface;
+              } else {
+                litems.push({
+                  'name': doc_dict[are].name,
+                  'quantity': doc_dict[are].surface,
+                  // 'area': doc_dict[item.name].surface,
+                  // 'total': 0,
+                });
+                categories[doc_dict[are].name] = litems.length-1;
+                cropList[item] = doc_dict[are].surface;
+              }
             }
           })
         })
-        console.log("litens", items);
         items.forEach(item=>{
           item.quantity = cropList[item.name];
         })
@@ -424,7 +424,6 @@ export class ReportListPage implements OnInit {
             marker = !marker;
           total += parseFloat(item['total']);
         });
-        console.log("outputu", items);
         this.ag_production_cost = items[0] && items[0]['total'] || 0;
         this.ag_produced_area = items[0] && items[0]['quantity'] || 0;
         resolve(true);
@@ -446,7 +445,6 @@ export class ReportListPage implements OnInit {
         undefined,
         false
       ).then(async (products: any[]) => {
-        // console.log("Stock", products);
         let stocked_cost = 0;
         let stocked_price = 0;
         let stocked_quantity = 0;
