@@ -3,7 +3,10 @@
     <ion-buttons slot="start" (click)="backEdit()">
       <ion-icon name="arrow-back" style="font-size: 25px;padding-right: 10px;padding-left: 10px;"></ion-icon>
     </ion-buttons>
-    <ion-title style="padding-left: 5px;">
+    <ion-title style="padding-left: 5px;" *ngIf="!_id">
+      Nueva Maquina
+    </ion-title>
+    <ion-title style="padding-left: 5px;" *ngIf="_id">
       Editar Maquina {{machineForm.value.code}}
     </ion-title>
   </ion-toolbar>
@@ -225,14 +228,6 @@
         <ion-label position="floating">{{'Machine(ha)' | translate}}</ion-label>
         <ion-input type="number" style="height: 47px;" formControlName="surface"></ion-input>
       </ion-item> -->
-      <ion-item no-padding (click)="selectFuel()" class="field-100">
-        <div class="field-many2one">
-          <h4 class="field-label">{{'Combustible' | translate}}</h4>
-          <h4 class="field-value">
-            {{machineForm.value.fuel && machineForm.value.fuel.name || 'Selecionar'}}
-          </h4>
-        </div>
-      </ion-item>
       <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
         <ion-select #type
@@ -240,12 +235,28 @@
         cancelText="{{ 'CANCEL' | translate }}"
         okText="{{ 'OK' | translate }}"
         interface="popover">
-          <ion-select-option value="TRACTOR">{{ 'TRACTOR' | translate }}</ion-select-option>
-          <ion-select-option value="PLANTER">{{ 'PLANTER' | translate }}</ion-select-option>
-          <ion-select-option value="SPRAYER">{{ 'SPRAYER' | translate }}</ion-select-option>
-          <ion-select-option value="FERTILIZER">{{ 'FERTILIZER' | translate }}</ion-select-option>
-          <ion-select-option value="VEHICLE">{{ 'VEHICLE' | translate }}</ion-select-option>
+          <ion-select-option value="MACHINE">{{ 'MACHINE' | translate }}</ion-select-option>
+          <ion-select-option value="IMPLEMENT">{{ 'IMPLEMENT' | translate }}</ion-select-option>
+          <!-- <ion-select-option value="SPRAYER">{{ 'SPRAYER' | translate }}</ion-select-option>
+          <ion-select-option value="FERTILIZER">{{ 'FERTILIZER' | translate }}</ion-select-option> -->
+          <!-- <ion-select-option value="VEHICLE">{{ 'VEHICLE' | translate }}</ion-select-option>
+          <ion-select-option value="OTHER">{{ 'OTHER' | translate }}</ion-select-option> -->
         </ion-select>
+      </ion-item>
+      <ion-item no-padding (click)="selectFuel()" class="field-100" *ngIf="machineForm.value.type != 'IMPLEMENT'">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Combustible' | translate}}</h4>
+          <h4 class="field-value">
+            {{machineForm.value.fuel && machineForm.value.fuel.name || 'Selecionar'}}
+          </h4>
+        </div>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-50">
+        <ion-label position="floating">{{'Costo por Hora' | translate}}</ion-label>
+        <ion-input #hourCost type="number"
+        formControlName="hourCost"></ion-input>
       </ion-item>
       <ion-item
        no-padding
@@ -254,14 +265,7 @@
         <ion-input #horimeter type="number"
         formControlName="horimeter"></ion-input>
       </ion-item>
-      <ion-item
-       no-padding
-       class="field-50">
-        <ion-label position="floating">{{'Precio por Hora' | translate}}</ion-label>
-        <ion-input #hourCost type="number"
-        formControlName="hourCost"></ion-input>
-      </ion-item>
-      <ion-item no-padding class="field-100">
+      <!-- <ion-item no-padding class="field-100">
         <ion-label>{{'Maquina Propria' | translate}}</ion-label>
         <ion-toggle formControlName="own"></ion-toggle>
       </ion-item>
@@ -289,7 +293,7 @@
         <ion-label position="floating" *ngIf="machineForm.value.rentingType == 'percent'">
           {{'Porcentage %' | translate}}</ion-label>
         <ion-input type="number" formControlName="rentingAmount"></ion-input>
-      </ion-item>
+      </ion-item> -->
       <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
     </ion-row>
   </form>

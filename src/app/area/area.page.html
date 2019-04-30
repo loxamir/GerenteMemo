@@ -3,8 +3,11 @@
     <ion-buttons slot="start" (click)="backEdit()">
       <ion-icon name="arrow-back" style="font-size: 25px;padding-right: 10px;padding-left: 10px;"></ion-icon>
     </ion-buttons>
-    <ion-title style="padding-left: 5px;">
+    <ion-title style="padding-left: 5px;" *ngIf="_id">
       {{ 'EDIT_PLACE' | translate }}
+    </ion-title>
+    <ion-title style="padding-left: 5px;" *ngIf="!_id">
+      {{ 'NEW_PLACE' | translate }}
     </ion-title>
   </ion-toolbar>
   <ion-toolbar *ngIf="!showForm" color="primary">
@@ -261,7 +264,7 @@
       </ion-item>
       <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
         <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
-        <ion-select #type (ionChange)="getDefaultCategory()" formControlName="rentingType" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
+        <ion-select #type formControlName="rentingType" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
           <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
           <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
           <ion-select-option value="percent">Porcentage</ion-select-option>

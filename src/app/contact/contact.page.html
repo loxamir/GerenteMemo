@@ -53,14 +53,14 @@
 
       <ion-item
        no-padding
-       class="field-50">
+       class="field-100">
         <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
         <ion-input type="text"
         #address
         formControlName="address"></ion-input>
       </ion-item>
 
-      <ion-item
+      <!-- <ion-item
        no-padding
        class="field-50">
         <ion-label position="floating">{{'EMAIL' | translate}}</ion-label>
@@ -87,9 +87,9 @@
        class="field-50">
          <ion-label>{{'Vendedor' | translate}}</ion-label>
          <ion-toggle formControlName="seller"></ion-toggle>
-      </ion-item>
+      </ion-item> -->
 
-      <ion-item
+      <!-- <ion-item
        no-padding
        class="field-50">
          <ion-label>{{'Funcionario' | translate}}</ion-label>
@@ -105,10 +105,10 @@
       </ion-item>
       <ion-col size="12" class="item-content" *ngIf="contactForm.value.user">
         <ion-button (click)="editUser(contactForm.value.user_details)" class="button-100">Configurar Usuario</ion-button>
-      </ion-col>
+      </ion-col> -->
     </ion-row>
       <ion-row>
-      <ion-item
+      <!-- <ion-item
        no-padding
        *ngIf="contactForm.value.employee"
        class="field-50">
@@ -130,7 +130,7 @@
         <ion-label position="floating" class="field-label">{{'HIRE_DATE' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="hire_date">
         </ion-datetime>
-      </ion-item>
+      </ion-item> -->
       <ion-item class="field-100">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-input type="text" formControlName="note"></ion-input>
@@ -211,12 +211,12 @@
     </div> -->
   </form>
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
       Proximo
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger">

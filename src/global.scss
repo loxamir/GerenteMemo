@@ -598,14 +598,16 @@ h3.activity-name {
 
 .sent-card {
   min-height: 48px;
-  width: 97%;
-  --background: #dcf8c6;
+  width: 100%;
+  --background: #fff;
+  // width: 97%;
+  // --background: #dcf8c6;
   border-radius: 7px;
   margin-top: 0px;
   margin-bottom: 3px;
   margin-right: 0px;
   padding-right: 0px;
-  margin-left: 3%;
+  margin-left: 0;
   padding-bottom: 0px;
   padding-top: 8px;
 }

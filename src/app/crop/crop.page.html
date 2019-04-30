@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/agro-tabs/crop-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
-        CROP {{cropForm.value.name}}
+        Zafra - {{cropForm.value.code}}
     </ion-title>
     <ion-buttons slot="end" >
     </ion-buttons>
@@ -25,7 +25,7 @@
       <ion-input #name type="text"
       formControlName="name"></ion-input>
     </ion-item>
-    <ion-item no-padding class="field-50">
+    <!-- <ion-item no-padding class="field-50">
       <h4 class="field-label">{{'Fecha de Inicio' | translate }}</h4>
       <ion-datetime class="field-50-datetime"
       displayFormat="DD/MM/YYYY"
@@ -40,10 +40,12 @@
       pickerFormat="DD/MM/YYYY"
       formControlName="dateEnd">
       </ion-datetime>
-    </ion-item>
+    </ion-item> -->
     <ion-item no-padding (click)="selectProduct()" class="field-100">
-      <h4 class="field-label">{{'Producto' | translate}}</h4>
-      <h4 class="field-value">{{cropForm.value.product && cropForm.value.product.name || 'Selecionar'}}</h4>
+      <div class="field-many2one">
+        <h4 class="field-label">{{'Producto Producido' | translate}}</h4>
+        <h4 class="field-value">{{cropForm.value.product && cropForm.value.product.name || 'Selecionar'}}</h4>
+      </div>
     </ion-item>
     </ion-row>
     <ion-list no-lines>

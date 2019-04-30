@@ -30,7 +30,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
   @ViewChild('cost') cost;
   @ViewChild('type') type;
   @ViewChild('stock') stock;
-  @ViewChild('barcode') barcode;
+  @ViewChild('#barcode') barcode;
 
   @ViewChild('category') category;
   @ViewChild('brand') brand;
@@ -113,7 +113,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         brand: new FormControl({}),
         cost: new FormControl(this.cost||null),
         code: new FormControl(''),
-        barcode: new FormControl(this.barcode),
+        barcode: new FormControl(this.barcode||undefined),
         tax: new FormControl(this.route.snapshot.paramMap.get('iva')||'iva10'),
         type: new FormControl(this.route.snapshot.paramMap.get('type')||'product'),
         stock: new FormControl(this.stock||null),
