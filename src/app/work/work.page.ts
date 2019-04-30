@@ -407,7 +407,9 @@ export class WorkPage implements OnInit {
       this.workForm.value.note = this.note;
       this.buttonSave();
     } else {
-      this.goNextStep();
+      setTimeout(function(){
+        self.goNextStep();
+      }, 200);
     }
   }
 
@@ -570,20 +572,16 @@ export class WorkPage implements OnInit {
       if (field.type == 'float'
       || field.type == 'integer'
       || field.type == 'string'){
-        // console.log("field.name", field.name);
-        // console.log("pageFields", this.elementRef.nativeElement);
-        // this.pageFields['el'].children[0].setFocus();
-        // let element = this.pageFields;
-        // let element = this.elementRef.nativeElement.querySelector(
-        //   '#teste'
-        // );
-        // console.log("element", element);
-        // if (element.value=="0" || element.value==""){
-        //   // this.renderer.invokeElementMethod(element, 'focus', []);
-        //   element.select();
-        //   done = false;
-        //   break;
-        // }
+        let element = this.elementRef.nativeElement.querySelector(
+          '#'+field.name+' > input'
+        );
+        console.log("element", element);
+        if (element.value=="0" || element.value==""){
+          element.select();
+          // element.focus();
+          done = false;
+          break;
+        }
         if (this.list && ! this.go){
           done = false;
           this.go = true;
