@@ -89,6 +89,8 @@ export class AreaPage implements OnInit {
   ) {
     this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.events.subscribe('changed-work', (change) => {
       console.log("chaNGE WORK", change);

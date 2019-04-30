@@ -203,5 +203,9 @@
   "PLANTER": "Plantadera",
   "FERTILIZER": "Adubadera",
   "VEHICLE": "Vehiculo",
+  "OWN_PLACE": "Area Propria",
+  "EDIT_PLACE": "Editar Area",
+  "PLACES": "Areas",
+  "SEARCH_AREA": "Buscar Area",
   "RESULT": "Resultado"
 }

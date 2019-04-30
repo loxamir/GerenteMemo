@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NavController, LoadingController,  Events, PopoverController,
   AlertController, ModalController } from '@ionic/angular';
 import { MachinePage } from '../machine/machine.page';
-
+import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/Rx';
 import { MachinesService } from './machines.service';
 import { MachineService } from '../machine/machine.service';
@@ -42,9 +42,12 @@ export class MachinesPage implements OnInit {
     public workService: WorkService,
     public machineService: MachineService,
     public alertCtrl: AlertController,
+    public translate: TranslateService,
   ) {
     this.today = new Date().toISOString();
     this.select = this.route.snapshot.paramMap.get('select');
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
   }
 
   changeSearch(){

@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
   <ion-searchbar
-  placeholder="Buscar Area"
+  [placeholder]="'SEARCH_AREA'|translate"
   [(ngModel)]="searchTerm"
   #searchBar
   (ionChange)="setFilteredItems()">
@@ -16,7 +16,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title style="padding-inline-start: 10px;">AgroMemo - Areas</ion-title>
+    <ion-title style="padding-inline-start: 10px;">AgroMemo - {{'PLACES'|translate}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="changeSearch()">
         <ion-icon name="search"></ion-icon>

@@ -4,7 +4,7 @@
       <ion-icon name="arrow-back" style="font-size: 25px;padding-right: 10px;padding-left: 10px;"></ion-icon>
     </ion-buttons>
     <ion-title style="padding-left: 5px;">
-      Editar Area
+      {{ 'EDIT_PLACE' | translate }}
     </ion-title>
   </ion-toolbar>
   <ion-toolbar *ngIf="!showForm" color="primary">
@@ -248,7 +248,7 @@
         </div>
       </ion-item>
       <ion-item no-padding class="field-100">
-        <ion-label>{{'Area Propria' | translate}}</ion-label>
+        <ion-label>{{'OWN_PLACE' | translate}}</ion-label>
         <ion-toggle formControlName="own"></ion-toggle>
       </ion-item>
       <ion-item no-padding (click)="selectContact()" *ngIf="!areaForm.value.own" class="field-100">

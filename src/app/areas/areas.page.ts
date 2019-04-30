@@ -13,6 +13,7 @@ import { WorkService } from '../work/work.service';
 import { FilterPage } from '../filter/filter.page';
 import { AreasPopover } from './areas.popover';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-areas',
@@ -42,9 +43,12 @@ export class AreasPage implements OnInit {
     public workService: WorkService,
     public areaService: AreaService,
     public alertCtrl: AlertController,
+    public translate: TranslateService,
   ) {
     this.today = new Date().toISOString();
     this.select = this.route.snapshot.paramMap.get('select');
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
   }
 
   changeSearch(){
