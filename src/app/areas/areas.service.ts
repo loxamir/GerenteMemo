@@ -22,10 +22,10 @@ export class AreasService {
             } else {
               area.image = "./assets/icons/field.jpg";
             }
-            this.pouchdbService.getView(
+            this.pouchdbService.getViewInv(
               'Informes/AreaDiario', 3,
-              [area._id],
               [area._id+'z'],
+              [area._id],
               true,
               true,
               1

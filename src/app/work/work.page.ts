@@ -202,14 +202,20 @@ export class WorkPage implements OnInit {
   }
 
   async buttonSave() {
+    let dict = {}
+    this.workForm.value.fields.forEach(field=>{
+      console.log("field", field);
+      if (field.type == 'formula'){
+        console.log("this.fields", this.fields[field.name]);
+        // this.workForm.value[field.name] = this.fields[field.name];
+        dict[field.name] = this.fields[field.name]
+        console.log("this.workForm", this.workForm.value[field.name]);
+      }
+    })
+    this.workForm.patchValue(dict);
     if (this.select && this.list) {
       this.dismissData();
     } else {
-      this.workForm.value.fields.forEach(field=>{
-        if (field.type == 'formula'){
-          this.workForm.value[field.name] = this.fields[field.name];
-        }
-      })
       console.log("inicio");
       await this.preSave();
       this.setSummary();

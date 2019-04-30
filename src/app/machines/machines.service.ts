@@ -23,10 +23,10 @@ export class MachinesService {
               machine.image = "./assets/icons/field.jpg";
             }
 
-            this.pouchdbService.getView(
+            this.pouchdbService.getViewInv(
               'Informes/MachineDiario', 3,
-              [machine._id],
               [machine._id+'z'],
+              [machine._id],
               true,
               true,
               1
