@@ -369,6 +369,11 @@ export class LoginPage implements OnInit {
       // });
       // toast.present();
       this.pouchdbService.getConnect();
+      let toast = await this.toastCtrl.create({
+        message: "Sincronizando...",
+      });
+      await toast.present();
+
       // if (this.navParams.data.current_db){
       //   this.navCtrl.pop()
       // }
@@ -378,9 +383,10 @@ export class LoginPage implements OnInit {
         // toast.dismiss();
         let viewExist = await this.storage.get('optimize-'+database);
         if(viewExist){
+          toast.dismiss();
           this.loading.dismiss();
         } else {
-          this.initiateViews();
+          // this.initiateViews();
           this.storage.set('optimize-'+database, true);
         }
         // this.navCtrl.setRoot(TabsNavigationPage);

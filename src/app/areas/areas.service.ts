@@ -45,8 +45,8 @@ export class AreasService {
               areaList.push(area);
             // }
           })
-          resolve(areaList);
         });
+        resolve(areaList);
       });
     });
   }
