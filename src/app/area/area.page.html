@@ -148,12 +148,12 @@
 
   <ion-fab vertical="top" style="left: 0px;right:0px;top: 0px;background: #dddddd;transform: rotate(180deg);" horizontal="start" slot="fixed">
     <ion-row style="padding-bottom:5px;padding-top: 5px;">
-      <ion-col [class.left-round]="!areaForm.value.note" [class.all-round]="areaForm.value.note">
-        <ion-textarea #note [(ngModel)]="areaForm.value.note" placeholder="Escrever Anotação" style="--padding-top: 11px;" rows="1">
+      <ion-col [class.left-round]="true" [class.all-round]="false">
+        <ion-textarea #note [(ngModel)]="areaForm.value.note" placeholder="Escribir Lembrete" style="margin-top: 2px;" rows="1">
         </ion-textarea>
       </ion-col>
       <div size="1.6" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;    width: 40px;padding-top: 5px;">
-        <ion-icon name="camera" (click)="selectImage()" style="font-size: 26px;color: gray;margin-top:10px;"></ion-icon>
+        <ion-icon name="camera" (click)="selectImage()" style="font-size: 26px;color: gray;margin-top:7px;"></ion-icon>
         <!-- <ion-icon name="add" *ngIf="!showBotom" (click)="addButton()" style="font-size: 26px;color: gray;padding-left: 9px;"></ion-icon> -->
         <!-- <ion-icon name="close" *ngIf="showBotom && !areaForm.value.note" (click)="addButton()" style="font-size: 26px;color: gray;padding-left: 9px;"> -->
         <!-- </ion-icon> -->
@@ -169,7 +169,7 @@
           </ion-icon>
         </ion-fab-button>
       </ion-col> -->
-      <div size="2" style="padding-top: 9px;padding-right: 5px;">
+      <div size="2" style="padding-top: 6px;padding-right: 5px;">
         <ion-fab-button *ngIf="!areaForm.value.note" style="width:40px;height:40px;margin-left: 5px;">
           <ion-icon name="add" (click)="addButton()" *ngIf="!showBotom">
           </ion-icon>
