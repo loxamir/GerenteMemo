@@ -58,6 +58,7 @@
               <ion-input type="number"
               [disabled]="calculate(field.readonly)"
               [formControlName]="field.name"
+              [id]="field.name"
               text-center>
               </ion-input>
             </ion-item>
@@ -75,7 +76,10 @@
             </ion-item>
             <ion-item class="field-100" *ngIf="field.type == 'string'">
               <ion-label position="floating">{{field.label || field.name}}</ion-label>
-              <ion-input type="text" [formControlName]="field.name" text-center>
+              <ion-input type="text"
+              [formControlName]="field.name"
+              text-center
+              [id]="field.name">
               </ion-input>
             </ion-item>
             <ion-item class="field-100" *ngIf="field.type == 'progress'">
