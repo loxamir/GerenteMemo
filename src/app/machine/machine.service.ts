@@ -74,7 +74,9 @@ export class MachineService {
           resolve({doc: doc, machine: machine});
         });
       } else {
+        console.log("getSequence");
         this.configService.getSequence('machine').then((code) => {
+          console.log("getCode", code);
           machine['code'] = code;
           this.pouchdbService.createDoc(machine).then(async doc => {
             if (blob){

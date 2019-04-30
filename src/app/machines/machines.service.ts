@@ -45,8 +45,8 @@ export class MachinesService {
               machineList.push(machine);
             // }
           })
-          resolve(machineList);
         });
+        resolve(machineList);
       });
     });
   }

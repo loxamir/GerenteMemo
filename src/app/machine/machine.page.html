@@ -4,7 +4,7 @@
       <ion-icon name="arrow-back" style="font-size: 25px;padding-right: 10px;padding-left: 10px;"></ion-icon>
     </ion-buttons>
     <ion-title style="padding-left: 5px;">
-      Editar Maquina
+      Editar Maquina {{machineForm.value.code}}
     </ion-title>
   </ion-toolbar>
   <ion-toolbar *ngIf="!showForm" color="primary">
@@ -149,23 +149,21 @@
         <ion-textarea #note [(ngModel)]="machineForm.value.note" placeholder="Escrever Anotação" style="--padding-top: 11px;" rows="1">
         </ion-textarea>
       </ion-col>
-      <ion-col size="3" *ngIf="!machineForm.value.note" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;">
-        <ion-icon name="camera" (click)="selectImage()" style="font-size: 26px;margin-top: 7px;color: gray;margin-right: 9px;"></ion-icon>
-        <ion-icon name="add" *ngIf="!showBotom" (click)="addButton()" style="font-size: 26px;color: gray;padding-left: 9px;"></ion-icon>
-        <ion-icon name="close" *ngIf="showBotom" (click)="addButton()" style="font-size: 26px;color: gray;padding-left: 9px;">
-        </ion-icon>
-
-      </ion-col>
-      <ion-col size="2" *ngIf="isCordova || machineForm.value.note">
+      <div size="1.6" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;    width: 40px;padding-top: 5px;">
+        <ion-icon name="camera" (click)="selectImage()" style="font-size: 26px;color: gray;margin-top:10px;"></ion-icon>
+      </div>
+      <div size="2" style="padding-top: 9px;padding-right: 5px;">
         <ion-fab-button *ngIf="!machineForm.value.note" style="width:40px;height:40px;margin-left: 5px;">
-          <ion-icon name="mic" (click)="listenRequest()">
+          <ion-icon name="add" (click)="addButton()" *ngIf="!showBotom">
+          </ion-icon>
+          <ion-icon name="close" (click)="addButton()" *ngIf="showBotom">
           </ion-icon>
         </ion-fab-button>
         <ion-fab-button *ngIf="machineForm.value.note" (click)="sendButton()" style="width:40px;height:40px;margin-left: 5px;">
           <ion-icon name="send" style="font-size: 22px;margin-left: 3px;">
           </ion-icon>
         </ion-fab-button>
-      </ion-col>
+      </div>
     </ion-row>
     <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
       <ion-col size="4" (click)="addActivity('activity.fuel')">

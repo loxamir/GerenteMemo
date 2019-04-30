@@ -353,7 +353,7 @@ export class MachinePage implements OnInit {
       _id: new FormControl(''),
       hourCost: new FormControl(0),
       horimeter: new FormControl(0),
-      type: new FormControl('tractor'),
+      type: new FormControl('TRACTOR'),
     });
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
