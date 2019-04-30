@@ -379,18 +379,17 @@ export class LoginPage implements OnInit {
       // }
 
       this.events.subscribe('end-sync', async () => {
+        toast.dismiss();
+        this.loading.dismiss();
         this.events.unsubscribe('end-sync');
-        // toast.dismiss();
-        let viewExist = await this.storage.get('optimize-'+database);
-        if(viewExist){
-          toast.dismiss();
-          this.loading.dismiss();
-        } else {
-          // this.initiateViews();
-          this.storage.set('optimize-'+database, true);
-        }
-        // this.navCtrl.setRoot(TabsNavigationPage);
-        // this.loading.dismiss();
+        // let viewExist = await this.storage.get('optimize-'+database);
+        // if(viewExist){
+        //   toast.dismiss();
+        //   this.loading.dismiss();
+        // } else {
+        //   this.initiateViews();
+        //   this.storage.set('optimize-'+database, true);
+        // }
       })
       this.menuCtrl.enable(true);
       this.router.navigate(['/agro-tabs/area-list']);
