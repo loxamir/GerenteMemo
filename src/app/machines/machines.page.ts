@@ -88,7 +88,7 @@ export class MachinesPage implements OnInit {
     this.events.subscribe('changed-work', (change)=>{
       this.machinesService.handleViewChange(this.machines, change);
     })
-    this.events.subscribe('changed-product', (change)=>{
+    this.events.subscribe('changed-machine', (change)=>{
       // this.machinesService.handleChange(this.machines, change);
       this.setFilteredItems();
     })

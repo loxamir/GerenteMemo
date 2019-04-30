@@ -88,7 +88,7 @@ export class AreasPage implements OnInit {
     this.events.subscribe('changed-work', (change)=>{
       this.areasService.handleViewChange(this.areas, change);
     })
-    this.events.subscribe('changed-product', (change)=>{
+    this.events.subscribe('changed-area', (change)=>{
       // this.areasService.handleChange(this.areas, change);
       this.setFilteredItems();
     })
