@@ -65,12 +65,13 @@
             *ngIf="field.type == 'float'">
               <ion-label position="floating">{{field.label || field.name}}</ion-label>
               <ion-input type="number"
+              style="height: 47px"
               [formControlName]="field.name"
               [id]="field.name"
               [disabled]="calculate(field.readonly)"
               text-center
               (ionChange)="recomputeFields()">
-              </ion-input>
+            </ion-input>
             </ion-item>
             <ion-item class="field-100" *ngIf="field.type == 'string'">
               <ion-label position="floating">{{field.label || field.name}}</ion-label>
@@ -86,10 +87,10 @@
                 <ion-label slot="end">100%</ion-label>
               </ion-range>
             </ion-item>
-            <ion-item *ngIf="field.type == 'formula'" class="field-100">
-              <div class="field-many2one">
+            <ion-item *ngIf="field.type == 'formula'" class="field-100" style="--background: #dddddd;border:0px;">
+              <div class="field-many2one" style="border: 0px;">
                 <h4 class="field-label">{{field.label || field.name}}</h4>
-                <h4 class="field-value-bigger">{{ fields[field.name] }}</h4>
+                <h4 class="field-value-bigger" style="font-size: 20px;color: #1a73e8;margin-top: 10px;">{{ fields[field.name]|number:'1.'+currency_precision}}</h4>
               </div>
             </ion-item>
             <ion-item *ngIf="field.type == 'many2one'"  class="field-100" (click)="selectM2O(field, field.model, field.context)">
@@ -200,7 +201,7 @@
             </ion-col>
         </div>
     </div>
-    <ion-item  class="field-100" style="margin-top: 10px;">
+    <ion-item  class="field-100">
       <ion-label position="stacked">{{ 'NOTE' | translate }}</ion-label>
       <ion-textarea #note formControlName="note"
         rows="2">

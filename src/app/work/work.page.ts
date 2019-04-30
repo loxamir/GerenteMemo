@@ -47,6 +47,7 @@ export class WorkPage implements OnInit {
   @Input() machine: any;
   config;
   deleteList = [];
+  currency_precision = 2;
 
   constructor(
     public navCtrl: NavController,
@@ -147,6 +148,8 @@ export class WorkPage implements OnInit {
     });
 
     this.loading = await this.loadingCtrl.create();
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     this.config = await this.configService.getConfig();
     await this.loading.present();
     let self = this;
@@ -457,7 +460,10 @@ export class WorkPage implements OnInit {
         })
         this.workForm.patchValue(d);
       }
-      this.goNextStep();
+      // this.goNextStep();
+      setTimeout(function(){
+        self.goNextStep();
+      }, 200);
     })
     switch (model) {
       case 'contact':

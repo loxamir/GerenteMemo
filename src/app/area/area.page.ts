@@ -58,6 +58,7 @@ export class AreaPage implements OnInit {
   skip = 0;
   lastWork = '0';
   avatar = undefined;
+  currency_precision = 2;
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -356,6 +357,8 @@ export class AreaPage implements OnInit {
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
+    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
     await this.loading.present();
     if (this._id) {
       this.areaService.getArea(this._id).then(async (data) => {
