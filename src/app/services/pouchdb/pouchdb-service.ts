@@ -556,10 +556,6 @@ export class PouchdbService {
       let image = change.doc._attachments['image.png'].data;
       change.doc.image = "data:image/png;base64,"+image;
     }
-    // console.log("image", image);
-    // this.firstFileToBase64(image).then((result: string) => {
-    //   area.image = result;
-    // });
     //A document was deleted
     if(change.deleted){
       list.splice(changedIndex, 1);

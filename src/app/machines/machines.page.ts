@@ -85,9 +85,10 @@ export class MachinesPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     this.setFilteredItems();
-    this.events.subscribe('changed-work', (change)=>{
-      this.machinesService.handleViewChange(this.machines, change);
-    })
+    // this.events.subscribe('changed-work', (change)=>{
+    //   TODO: Should get the last event and update the view
+    //   this.machinesService.handleViewChange(this.machines, change);
+    // })
     this.events.subscribe('changed-machine', (change)=>{
       // this.machinesService.handleChange(this.machines, change);
       this.setFilteredItems();
@@ -147,27 +148,6 @@ export class MachinesPage implements OnInit {
       this.events.unsubscribe('open-machine');
     })
     this.navCtrl.navigateForward(['/machine', {'_id': machine._id}]);
-  }
-
-  private firstFileToBase64(fileImage): Promise<{}> {
-    return new Promise((resolve, reject) => {
-      let fileReader: FileReader = new FileReader();
-      if (fileReader && fileImage != null) {
-        fileReader.readAsDataURL(fileImage);
-        fileReader.onload = () => {
-          let resultado = fileReader.result.toString().split(',')[1];
-          console.log("to64", fileImage);
-          // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
-          resolve(fileReader.result);
-        };
-
-        fileReader.onerror = (error) => {
-          reject(error);
-        };
-      } else {
-        reject(new Error('No file found'));
-      }
-    });
   }
 
   selectMachine(machine) {

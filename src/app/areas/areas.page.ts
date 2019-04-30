@@ -85,9 +85,10 @@ export class AreasPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     this.setFilteredItems();
-    this.events.subscribe('changed-work', (change)=>{
-      this.areasService.handleViewChange(this.areas, change);
-    })
+    // this.events.subscribe('changed-work', (change)=>{
+    //   TODO: Should get the last event and update the view
+    //   this.areasService.handleViewChange(this.areas, change);
+    // })
     this.events.subscribe('changed-area', (change)=>{
       // this.areasService.handleChange(this.areas, change);
       this.setFilteredItems();
@@ -147,27 +148,6 @@ export class AreasPage implements OnInit {
       this.events.unsubscribe('open-area');
     })
     this.navCtrl.navigateForward(['/area', {'_id': area._id}]);
-  }
-
-  private firstFileToBase64(fileImage): Promise<{}> {
-    return new Promise((resolve, reject) => {
-      let fileReader: FileReader = new FileReader();
-      if (fileReader && fileImage != null) {
-        fileReader.readAsDataURL(fileImage);
-        fileReader.onload = () => {
-          let resultado = fileReader.result.toString().split(',')[1];
-          console.log("to64", fileImage);
-          // this.pouchdbService.attachFile(this._id, 'avatar.png', resultado);
-          resolve(fileReader.result);
-        };
-
-        fileReader.onerror = (error) => {
-          reject(error);
-        };
-      } else {
-        reject(new Error('No file found'));
-      }
-    });
   }
 
   selectArea(area) {
