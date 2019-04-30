@@ -636,24 +636,6 @@ export class WorkPage implements OnInit {
     }
   }
 
-  showNextButton(){
-    // console.log("stock",this.workForm.value.stock);
-    // if (this.workForm.value.name==null){
-      return true;
-    // }
-    // else if (this.workForm.value.price==null){
-    //   return true;
-    // }
-    // else if (this.workForm.value.cost==null){
-    //   return true;
-    // }
-    // else if (this.workForm.value.type=='product'&&this.workForm.value.stock==null){
-    //   return true;
-    // }
-    // else {
-    //   return false;
-    // }
-  }
   discard(){
     this.canDeactivate();
   }
