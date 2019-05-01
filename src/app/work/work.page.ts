@@ -520,7 +520,8 @@ export class WorkPage implements OnInit {
     profileModal.onDidDismiss().then(data => {
       if (data.data) {
         field.push(data.data);
-        this.workForm.markAsDirty();
+        // this.workForm.markAsDirty();
+        this.workForm.controls[field_name].markAsDirty();
         this.recomputeFields();
       }
       this.workForm.patchValue({
@@ -553,7 +554,8 @@ export class WorkPage implements OnInit {
     profileModal.onDidDismiss().then(data => {
       if (data.data) {
         field[item] = data.data;
-        this.workForm.markAsDirty();
+        // this.workForm.markAsDirty();
+        this.workForm.controls[field_name].markAsDirty();
       }
       this.recomputeFields();
       this.workForm.patchValue({
@@ -729,42 +731,45 @@ export class WorkPage implements OnInit {
     }
   }
 
-  stockMoveCreateList(list, name, qty_field="quantity", product_field="product"){
+  stockMoveCreateList(list_field, name, qty_field="quantity", product_field="product"){
     /*
     Create a list of stock moves based on a list
     */
-    this.formatService.asyncForEach(list, async (item)=>{
-      if(item.doc_id){
-        let update = await this.updateDoc(item.doc_id, [{
-          'quantity': parseFloat(item[qty_field]),
-        }]);
-      } else {
-        let move:any = await this.stockMoveCreate(name, item[qty_field], item[product_field])
-        item.doc_id = move.id;
-      }
-    }).then((data)=>{
-      console.log("data", data);
-      console.log("loads", list);
-    })
+    console.log("fieldsd ddd", this.workForm.controls[list_field].dirty);
+    if (this.workForm.controls[list_field].dirty){
+      this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
+        if(item.doc_id){
+          let update = await this.updateDoc(item.doc_id, [{
+            'quantity': parseFloat(item[qty_field]),
+          }]);
+        } else {
+          let move:any = await this.stockMoveCreate(name, item[qty_field], item[product_field])
+          item.doc_id = move.id;
+        }
+      }).then((data)=>{
+        console.log("data", data);
+      })
+    }
   }
 
-  stockMoveCreateListFixedProduct(list, name, product, qty_field="quantity"){
+  stockMoveCreateListFixedProduct(list_field, name, product, qty_field="quantity"){
     /*
     Create a list of stock moves based on a list with a fixed product
     */
-    this.formatService.asyncForEach(list, async (item)=>{
-      if(item.doc_id){
-        let update = await this.updateDoc(item.doc_id, [{
-          'quantity': parseFloat(item[qty_field]),
-        }]);
-      } else {
-        let move:any = await this.stockMoveCreate(name, item[qty_field], product)
-        item.doc_id = move.id;
-      }
-    }).then((data)=>{
-      console.log("data", data);
-      console.log("loads", list);
-    })
+    if (this.workForm.controls[list_field].dirty){
+      this.formatService.asyncForEach(this.workForm.controls[list_field], async (item)=>{
+        if(item.doc_id){
+          let update = await this.updateDoc(item.doc_id, [{
+            'quantity': parseFloat(item[qty_field]),
+          }]);
+        } else {
+          let move:any = await this.stockMoveCreate(name, item[qty_field], product)
+          item.doc_id = move.id;
+        }
+      }).then((data)=>{
+        console.log("data", data);
+      })
+    }
   }
 
 }
