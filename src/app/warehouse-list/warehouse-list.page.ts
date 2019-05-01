@@ -29,7 +29,6 @@ export class WarehouseListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public modalCtrl: ModalController,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
@@ -43,6 +42,8 @@ export class WarehouseListPage implements OnInit {
 
   async ngOnInit() {
     //this.loading.present();
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
     this.setFilteredItems();
@@ -80,7 +81,7 @@ export class WarehouseListPage implements OnInit {
       // //console.log("warehouses", warehouses);
       this.warehouses = warehouses;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 

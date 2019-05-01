@@ -682,6 +682,33 @@ export class WorkPage implements OnInit {
     }
   }
 
+  async stockMoveInCreate(name, quantity, product){
+    /*
+    Just create an iconming stock move
+    */
+    return new Promise(async (resolve, reject)=>{
+      let move:any = await this.createDoc({
+        'name': name,
+        'quantity': parseFloat(quantity),
+        'origin_id': this.workForm.value._id,
+        'contact_id': 'contact.myCompany',
+        'contact_name': this.config.name,
+        'product_id': product._id,
+        'product_name': product.name,
+        'docType': "stock-move",
+        'date': new Date(),
+        // 'cost': product.cost,
+        'cost': parseFloat(product.cost)*parseFloat(quantity),
+        'warehouseFrom_id': 'warehouse.production',
+        'warehouseFrom_name': "Producción",
+        'warehouseTo_id': this.config.warehouse_id,
+        'warehouseTo_name': this.config.warehouse_name,
+      });
+      // return move
+      resolve(move);
+    });
+  }
+
   async stockMoveCreate(name, quantity, product){
     /*
     Just create the stock move
@@ -697,11 +724,12 @@ export class WorkPage implements OnInit {
         'product_name': product.name,
         'docType': "stock-move",
         'date': new Date(),
-        'cost': product.cost,
+        // 'cost': product.cost,
+        'cost': parseFloat(product.cost)*parseFloat(quantity),
         'warehouseFrom_id': this.config.warehouse_id,
         'warehouseFrom_name': this.config.warehouse_name,
-        'warehouseTo_id': 'warehouse.client',
-        'warehouseTo_name': "Cliente",
+        'warehouseTo_id': 'warehouse.production',
+        'warehouseTo_name': "Producción",
       });
       // return move
       resolve(move);
@@ -766,7 +794,7 @@ export class WorkPage implements OnInit {
               'quantity': parseFloat(item[qty_field]),
             }]);
           } else {
-            let move:any = await this.stockMoveCreate(name, item[qty_field], product)
+            let move:any = await this.stockMoveInCreate(name, item[qty_field], product)
             item.doc_id = move.id;
           }
         }).then((data)=>{
