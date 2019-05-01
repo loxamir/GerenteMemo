@@ -552,10 +552,10 @@ export class PouchdbService {
         changedIndex = index;
       }
     });
-    if (change.doc._attachments && change.doc._attachments['image.png']){
-      let image = change.doc._attachments['image.png'].data;
-      change.doc.image = "data:image/png;base64,"+image;
-    }
+    // if (change.doc._attachments && change.doc._attachments['image.png']){
+    //   let image = change.doc._attachments['image.png'].data;
+    //   change.doc.image = "data:image/png;base64,"+image;
+    // }
     //A document was deleted
     if(change.deleted){
       list.splice(changedIndex, 1);

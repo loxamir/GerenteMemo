@@ -169,20 +169,24 @@ export class AreaPage implements OnInit {
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
         ctx.canvas.toBlob(async (blob) => {
+          let attachment = {};
+          attachment['image.png'] = {
+            content_type: 'image/png',
+            data: blob
+          }
           let work: any = await self.pouchdbService.createDoc({
             'docType': 'work',
             'date': new Date().toISOString(),
             'area_id': self.areaForm.value._id,
             'area_name': self.areaForm.value.name,
-            // 'crop_id': self.areaForm.value.crop._id,
-            // 'crop_name': self.areaForm.value.crop.name,
             'activity_name': "Anotacion",
             'activity_id': "activity.anotation",
             'note': self.areaForm.value.note,
+            '_attachments': attachment,
             'image': reader.result
           })
           self.areaForm.value.note = null;
-          await self.pouchdbService.attachFile(work.id, 'image.png', blob);
+          // self.pouchdbService.attachFile(work.id, 'image.png', blob);
         });
       }
     };
@@ -217,7 +221,7 @@ export class AreaPage implements OnInit {
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
         ctx.canvas.toBlob(async (blob) => {
-          let attachment = document['_attachments'] || {};
+          let attachment = {};
           attachment['image.png'] = {
             content_type: 'image/png',
             data: blob
@@ -227,14 +231,14 @@ export class AreaPage implements OnInit {
             'date': new Date().toISOString(),
             'area_id': self.areaForm.value._id,
             'area_name': self.areaForm.value.name,
-            // 'crop_id': self.areaForm.value.crop._id,
-            // 'crop_name': self.areaForm.value.crop.name,
             'activity_name': "Anotacion",
             'activity_id': "activity.anotation",
             'note': self.areaForm.value.note,
-            '_attachments': attachment
+            'image': reader.result,
+            '_attachments': attachment,
           })
           self.areaForm.value.note = null;
+          // self.pouchdbService.attachFile(work.id, 'image.png', blob);
         });
       }
     };
