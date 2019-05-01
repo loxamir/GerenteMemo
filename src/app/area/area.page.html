@@ -84,50 +84,22 @@
                 </ion-row>
               </ion-col>
             </ion-row>
-            <ion-row no-padding class="content-row one-line">
-              <ion-col no-padding size="12">
-                <ion-img *ngIf="item.image" [src]="item.image" (click)="openPreview(item.image)"></ion-img>
-              </ion-col>
-              <ion-col no-padding size="6" align-self-center>
-              </ion-col>
-            </ion-row>
           </ion-card>
         </ion-item>
 
         <ion-item no-padding (click)="openPreview(item.image)" *ngIf="item.image" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
           <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
             <ion-row no-padding>
-              <!-- <ion-thumbnail style="--border-radius:10px;">
-              <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
-            </ion-thumbnail> -->
-              <ion-col>
-                <ion-row>
-                  <ion-col size="8.5" no-padding>
-                    <h3 class="activity-name">
-                      Foto
-                    </h3>
-                    <!-- {{ itemSumary(item) }} -->
-                    <!-- <div [innerHTML]="item.summary"></div> -->
-                    <!-- <h1 class="activity-note">
-                {{item.note}}
-              </h1> -->
-                  </ion-col>
-                  <ion-col>
-                    <h3 class="item-title-second">
-                      {{item.date|date: 'dd/MM/yyyy'}}
-                    </h3>
-                    <h3 class="item-title-second">
-                      {{item.date|date: 'HH:mm'}}
-                    </h3>
-                  </ion-col>
-                </ion-row>
+              <ion-col no-padding>
+                <ion-img *ngIf="item.image" style="max-height: 200px;width: 100%;" [src]="item.image"></ion-img>
               </ion-col>
             </ion-row>
-            <ion-row no-padding class="content-row one-line">
-              <ion-col no-padding size="12" style="height: 200px;">
-                <ion-img *ngIf="item.image" [src]="item.image"></ion-img>
-              </ion-col>
-              <ion-col no-padding size="6" align-self-center>
+            <ion-row>
+              <ion-col>
+                <h3 class="item-title-second" style="color: #0090ea;">
+                  {{item.date|date: 'dd/MM/yyyy'}}
+                  {{item.date|date: 'HH:mm'}}
+                </h3>
               </ion-col>
             </ion-row>
           </ion-card>
@@ -236,7 +208,7 @@
   </div>
   <form class="sample-form validations-form" [formGroup]="areaForm">
     <ion-row>
-        <img [src]="areaForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+      <img [src]="areaForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
       <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input #name type="text" formControlName="name"></ion-input>
