@@ -447,7 +447,7 @@ export class WorkPage implements OnInit {
       this.workForm.patchValue(field);
       this.recomputeFields();
       this.events.unsubscribe('select-' + model);
-      this.workForm.markAsDirty();
+      this.workForm.controls[fielD.name].markAsDirty();
       let self = this;
       let d = {}
       if(fielD.onchange){
@@ -709,18 +709,18 @@ export class WorkPage implements OnInit {
     Create a stock move for an activity
     */
     let item = this.workForm.value;
-    if(item.doc_id){
-      let update = await this.updateDoc(item.doc_id, [{
-        'quantity': parseFloat(item[qty_field]),
-      }]);
-      // return update
-    } else {
-      let move:any = await this.stockMoveCreate(name, item[qty_field], item[product_field])
-      item.doc_id = move.id;
-      this.workForm.patchValue({
-        doc_id: move.id
-      })
-      // return move;
+    if (this.workForm.controls[qty_field].dirty || this.workForm.controls[product_field].dirty){
+      if(item.doc_id){
+        let update = await this.updateDoc(item.doc_id, [{
+          'quantity': parseFloat(item[qty_field]),
+        }]);
+      } else {
+        let move:any = await this.stockMoveCreate(name, item[qty_field], item[product_field])
+        item.doc_id = move.id;
+        this.workForm.patchValue({
+          doc_id: move.id
+        })
+      }
     }
   }
 
