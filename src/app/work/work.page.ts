@@ -692,23 +692,26 @@ export class WorkPage implements OnInit {
     /*
     Just create the stock move
     */
-    let move:any = await this.createDoc({
-      'name': name,
-      'quantity': parseFloat(quantity),
-      'origin_id': this.workForm.value._id,
-      'contact_id': 'contact.myCompany',
-      'contact_name': this.config.name,
-      'product_id': product._id,
-      'product_name': product.name,
-      'docType': "stock-move",
-      'date': new Date(),
-      'cost': product.cost,
-      'warehouseFrom_id': this.config.warehouse_id,
-      'warehouseFrom_name': this.config.warehouse_name,
-      'warehouseTo_id': 'warehouse.client',
-      'warehouseTo_name': "Cliente",
+    return new Promise(async (resolve, reject)=>{
+      let move:any = await this.createDoc({
+        'name': name,
+        'quantity': parseFloat(quantity),
+        'origin_id': this.workForm.value._id,
+        'contact_id': 'contact.myCompany',
+        'contact_name': this.config.name,
+        'product_id': product._id,
+        'product_name': product.name,
+        'docType': "stock-move",
+        'date': new Date(),
+        'cost': product.cost,
+        'warehouseFrom_id': this.config.warehouse_id,
+        'warehouseFrom_name': this.config.warehouse_name,
+        'warehouseTo_id': 'warehouse.client',
+        'warehouseTo_name': "Cliente",
+      });
+      // return move
+      resolve(move);
     });
-    return move
   }
 
   async stockMove(name, qty_field="quantity", product_field="product"){
@@ -735,41 +738,51 @@ export class WorkPage implements OnInit {
     /*
     Create a list of stock moves based on a list
     */
-    console.log("fieldsd ddd", this.workForm.controls[list_field].dirty);
-    if (this.workForm.controls[list_field].dirty){
-      this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
-        if(item.doc_id){
-          let update = await this.updateDoc(item.doc_id, [{
-            'quantity': parseFloat(item[qty_field]),
-          }]);
-        } else {
-          let move:any = await this.stockMoveCreate(name, item[qty_field], item[product_field])
-          item.doc_id = move.id;
-        }
-      }).then((data)=>{
-        console.log("data", data);
-      })
-    }
+    return new Promise(async (resolve, reject)=>{
+      console.log("fieldsd ddd", this.workForm.controls[list_field].dirty);
+      if (this.workForm.controls[list_field].dirty){
+        this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
+          if(item.doc_id){
+            let update = await this.updateDoc(item.doc_id, [{
+              'quantity': parseFloat(item[qty_field]),
+            }]);
+          } else {
+            let move:any = await this.stockMoveCreate(name, item[qty_field], item[product_field])
+            item.doc_id = move.id;
+          }
+        }).then((data)=>{
+          console.log("data", data);
+          resolve(true);
+        })
+      } else {
+        resolve(false)
+      }
+    })
   }
 
   stockMoveCreateListFixedProduct(list_field, name, product, qty_field="quantity"){
     /*
     Create a list of stock moves based on a list with a fixed product
     */
-    if (this.workForm.controls[list_field].dirty){
-      this.formatService.asyncForEach(this.workForm.controls[list_field], async (item)=>{
-        if(item.doc_id){
-          let update = await this.updateDoc(item.doc_id, [{
-            'quantity': parseFloat(item[qty_field]),
-          }]);
-        } else {
-          let move:any = await this.stockMoveCreate(name, item[qty_field], product)
-          item.doc_id = move.id;
-        }
-      }).then((data)=>{
-        console.log("data", data);
-      })
-    }
+    return new Promise(async (resolve, reject)=>{
+      if (this.workForm.controls[list_field].dirty){
+        this.formatService.asyncForEach(this.workForm.controls[list_field], async (item)=>{
+          if(item.doc_id){
+            let update = await this.updateDoc(item.doc_id, [{
+              'quantity': parseFloat(item[qty_field]),
+            }]);
+          } else {
+            let move:any = await this.stockMoveCreate(name, item[qty_field], product)
+            item.doc_id = move.id;
+          }
+        }).then((data)=>{
+          console.log("data", data);
+          resolve(true);
+        })
+      } else {
+        resolve(false)
+      }
+    })
   }
 
 }
