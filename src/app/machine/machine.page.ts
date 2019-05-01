@@ -358,9 +358,9 @@ export class MachinePage implements OnInit {
       type: new FormControl('TRACTOR'),
     });
     this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    await this.loading.present();
     if (this._id) {
       this.machineService.getMachine(this._id).then(async (data) => {
         this.doInfinite(false);

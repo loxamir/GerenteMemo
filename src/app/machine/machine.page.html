@@ -19,16 +19,16 @@
     </ion-buttons>
     <ion-title style="padding-left: 5px;">{{machineForm.value.name}}
       <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && diffDays  > 1">
-        Ultima revision a {{ diffDays }} dias
+        Ultimo mantenimiento a {{ diffDays }} dias
       </h1>
       <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && diffDays == 1">
-        Ultima revision a {{ diffDays }} dia
+        Ultimo mantenimiento a {{ diffDays }} dia
       </h1>
       <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && !diffDays">
-        Ultima revision hoy
+        Ultimo mantenimiento hoy
       </h1>
       <h1 class="subtitle" *ngIf="!machineForm.value.lastReviewDate">
-        Sin datos de revision
+        Sin datos de mantenimiento
       </h1>
     </ion-title>
     <ion-buttons slot="end">
@@ -63,14 +63,14 @@
                 <ion-row>
                   <ion-col size="8.5" no-padding>
                     <h3 class="activity-name">
-                      {{ item.activity_name || 'No Informado'}}
+                      {{ item.name || item.activity_name || 'No Informado'}}
                     </h3>
                     <div [innerHTML]="item.summary"></div>
-                    <h1 class="activity-note">
-                      {{item.note}}
+                    <h1 class="activity-note" *ngIf="item.cost">
+                      Costo: $ {{item.cost|number:'1.'+currency_precision}}
                     </h1>
                     <h1 class="activity-note">
-                      {{item.cost|number:'1.'+currency_precision}}
+                      {{item.note}}
                     </h1>
                   </ion-col>
                   <ion-col>
@@ -181,13 +181,13 @@
       <ion-col (click)="addActivity('activity.maintenance')">
         <ion-img [src]="'./assets/icons/activity.maintenance.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Reparo
+          Mantenimiento
         </h1>
       </ion-col>
-      <ion-col (click)="addActivity('activity.review')">
-        <ion-img [src]="'./assets/icons/activity.review.png'" class="activity-menu"></ion-img>
+      <ion-col (click)="addActivity('activity.workMachine')">
+        <ion-img [src]="'./assets/icons/activity.workMachine.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Revision
+          Otro Servicio
         </h1>
       </ion-col>
     </ion-row>

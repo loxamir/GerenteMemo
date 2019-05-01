@@ -150,10 +150,10 @@ export class WorkPage implements OnInit {
     });
 
     this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
     this.config = await this.configService.getConfig();
-    await this.loading.present();
     let self = this;
     let defaultTab = '';
       if (this._id) {
@@ -204,6 +204,10 @@ export class WorkPage implements OnInit {
           this.setActivity(this.activity);
         }
       }
+  }
+
+  cleanSection(){
+    this.workForm.controls.section.markAsPristine();
   }
 
   async buttonSave() {
@@ -568,9 +572,7 @@ export class WorkPage implements OnInit {
   async removeFieldItem(field_name, item){
     let doc = this.workForm.value[field_name][item];
     this.workForm.value[field_name].splice(item, 1);
-    console.log("remove", doc);
     if (doc.doc_id){
-      console.log("add to delete", doc);
       let remove = await this.pouchdbService.getDoc(doc.doc_id);
       this.deleteList.push(remove);
     }
@@ -590,7 +592,6 @@ export class WorkPage implements OnInit {
         let element = this.elementRef.nativeElement.querySelector(
           '#'+field.name+' > input'
         );
-        console.log("element", element);
         if (element.value=="0" || element.value==""){
           element.select();
           // element.focus();
@@ -618,17 +619,11 @@ export class WorkPage implements OnInit {
         }
       }
       else if (field.type == 'list' || field.type == 'tab'){
-        if (this.workForm.value[field.name].length === 0){
-          // this.addFieldItem(field.name)
-          // this.workForm.patchValue({
-          //   "section": field.name,
-          // });
           if (! defaultTab){
             defaultTab = field.name;
           }
           done = false;
           break;
-        }
       }
       // else if (field.type == 'button'){
       //   this.buttonPress(field);
@@ -636,11 +631,10 @@ export class WorkPage implements OnInit {
       //   break;
       // }
     }
-    this.workForm.patchValue({
-      'section': defaultTab,
-    });
+    // this.workForm.patchValue({
+    //   'section': defaultTab,
+    // });
     if (done && this.list) {
-
       this.dismissData()
     }
   }

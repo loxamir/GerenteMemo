@@ -63,14 +63,14 @@
                 <ion-row>
                   <ion-col size="8.5" no-padding>
                     <h3 class="activity-name">
-                      {{ item.activity_name || 'No Informado'}}
+                      {{ item.name || item.activity_name || 'No Informado'}}
                     </h3>
                     <div [innerHTML]="item.summary"></div>
-                    <h1 class="activity-note">
-                      {{item.note}}
+                    <h1 class="activity-note" *ngIf="item.cost">
+                      Costo: $ {{item.cost|number:'1.'+currency_precision}}
                     </h1>
                     <h1 class="activity-note">
-                      {{item.cost|number:'1.'+currency_precision}}
+                      {{item.note}}
                     </h1>
                   </ion-col>
                   <ion-col>
@@ -201,7 +201,7 @@
       <ion-col size="4" (click)="addActivity('activity.work')">
         <ion-img [src]="'./assets/icons/activity.work.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Trabajo
+          Otro Servicio
         </h1>
       </ion-col>
     </ion-row>

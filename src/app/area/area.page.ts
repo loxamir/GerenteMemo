@@ -357,9 +357,9 @@ export class AreaPage implements OnInit {
       _id: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    await this.loading.present();
     if (this._id) {
       this.areaService.getArea(this._id).then(async (data) => {
         this.doInfinite(false);
@@ -437,6 +437,7 @@ export class AreaPage implements OnInit {
       component: WorkPage,
       componentProps: {
         "_id": item._id,
+        "select": true,
       }
     });
     profileModal.present();
@@ -445,6 +446,7 @@ export class AreaPage implements OnInit {
   async addActivity(activity_id) {
     let componentProps = {
       "area": this.areaForm.value,
+      "select": true,
     }
     if (activity_id) {
       componentProps['activity'] = await this.pouchdbService.getDoc(activity_id);
