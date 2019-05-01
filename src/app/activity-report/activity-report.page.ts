@@ -988,8 +988,7 @@ export class ActivityReportPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    //var today = new Date().toISOString();
+  async ngOnInit() {
     this.reportActivityForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
       name: new FormControl(''),
@@ -1009,17 +1008,10 @@ export class ActivityReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
-    if (this._id) {
-      this.reportService.getReport(this._id).then((data) => {
-        //console.log("data", data);
-        this.reportActivityForm.patchValue(data);
-        //this.loading.dismiss();
-      });
-    } else {
-      //this.loading.dismiss();
-    }
-    // if (this.route.snapshot.paramMap.get('compute){
-    this.goNextStep();
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
+    await this.goNextStep();
+    this.loading.dismiss();
   }
 
   getFirstDateOfMonth() {
