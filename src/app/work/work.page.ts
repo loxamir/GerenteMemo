@@ -144,6 +144,7 @@ export class WorkPage implements OnInit {
       fields: new FormControl([]),
       summary: new FormControl(""),
       section: new FormControl(null),
+      doc_id: new FormControl(''),
       _id: new FormControl(''),
     });
 
@@ -207,23 +208,17 @@ export class WorkPage implements OnInit {
   async buttonSave() {
     let dict = {}
     this.workForm.value.fields.forEach(field=>{
-      console.log("field", field);
       if (field.type == 'formula'){
-        console.log("this.fields", this.fields[field.name]);
-        // this.workForm.value[field.name] = this.fields[field.name];
         dict[field.name] = this.fields[field.name]
-        console.log("this.workForm", this.workForm.value[field.name]);
       }
     })
     this.workForm.patchValue(dict);
     if (this.select && this.list) {
       this.dismissData();
     } else {
-      console.log("inicio");
       await this.preSave();
       this.setSummary();
       this.deleteRemoved();
-      console.log("fin");
       if (this._id) {
         this.workService.updateWork(this.workForm.value);
         this.events.publish('open-work', this.workForm.value);
@@ -384,13 +379,20 @@ export class WorkPage implements OnInit {
       this.workForm.patchValue({
         area: this.area,
         crop: this.area.crop,
+        // surface: this.area.surface, //Enabled to complete the surface field
       });
     }
     if (this.machine){
-      this.workForm.patchValue({
-        machine: this.machine,
-        fuel: this.machine.fuel,
-      });
+      if (this.activity._id == 'activity.fuel'){
+        this.workForm.patchValue({
+          machine: this.machine,
+          product: this.machine.fuel,
+        });
+      } else {
+        this.workForm.patchValue({
+          machine: this.machine,
+        });
+      }
     }
     this.workForm.patchValue({
       activity: data,
@@ -677,6 +679,87 @@ export class WorkPage implements OnInit {
       this.workForm.markAsPristine();
       this.navCtrl.navigateBack('/agro-tabs/work-list');
     }
+  }
+
+  async stockMoveCreate(name, quantity, product){
+    /*
+    Just create the stock move
+    */
+    let move:any = await this.createDoc({
+      'name': name,
+      'quantity': parseFloat(quantity),
+      'origin_id': this.workForm.value._id,
+      'contact_id': 'contact.myCompany',
+      'contact_name': this.config.name,
+      'product_id': product._id,
+      'product_name': product.name,
+      'docType': "stock-move",
+      'date': new Date(),
+      'cost': product.cost,
+      'warehouseFrom_id': this.config.warehouse_id,
+      'warehouseFrom_name': this.config.warehouse_name,
+      'warehouseTo_id': 'warehouse.client',
+      'warehouseTo_name': "Cliente",
+    });
+    return move
+  }
+
+  async stockMove(name, qty_field="quantity", product_field="product"){
+    /*
+    Create a stock move for an activity
+    */
+    let item = this.workForm.value;
+    if(item.doc_id){
+      let update = await this.updateDoc(item.doc_id, [{
+        'quantity': parseFloat(item[qty_field]),
+      }]);
+      // return update
+    } else {
+      let move:any = await this.stockMoveCreate(name, item[qty_field], item[product_field])
+      item.doc_id = move.id;
+      this.workForm.patchValue({
+        doc_id: move.id
+      })
+      // return move;
+    }
+  }
+
+  stockMoveCreateList(list, name, qty_field="quantity", product_field="product"){
+    /*
+    Create a list of stock moves based on a list
+    */
+    this.formatService.asyncForEach(list, async (item)=>{
+      if(item.doc_id){
+        let update = await this.updateDoc(item.doc_id, [{
+          'quantity': parseFloat(item[qty_field]),
+        }]);
+      } else {
+        let move:any = await this.stockMoveCreate(name, item[qty_field], item[product_field])
+        item.doc_id = move.id;
+      }
+    }).then((data)=>{
+      console.log("data", data);
+      console.log("loads", list);
+    })
+  }
+
+  stockMoveCreateListFixedProduct(list, name, product, qty_field="quantity"){
+    /*
+    Create a list of stock moves based on a list with a fixed product
+    */
+    this.formatService.asyncForEach(list, async (item)=>{
+      if(item.doc_id){
+        let update = await this.updateDoc(item.doc_id, [{
+          'quantity': parseFloat(item[qty_field]),
+        }]);
+      } else {
+        let move:any = await this.stockMoveCreate(name, item[qty_field], product)
+        item.doc_id = move.id;
+      }
+    }).then((data)=>{
+      console.log("data", data);
+      console.log("loads", list);
+    })
   }
 
 }
