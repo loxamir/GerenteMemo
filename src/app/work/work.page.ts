@@ -115,6 +115,7 @@ export class WorkPage implements OnInit {
 
   calculate(formula) {
     if (formula) {
+      let form = this.workForm.value;
       console.log("eval", formula);
       let result = eval(formula);
       return result;
@@ -263,6 +264,7 @@ export class WorkPage implements OnInit {
 
   preSave() {
     return new Promise(async (resolve, reject)=>{
+      let form = this.workForm.value;
       let result = await eval(this.activity.saveScript);
       console.log("resultads", result)
       resolve(result);
@@ -419,6 +421,7 @@ export class WorkPage implements OnInit {
   }
 
   buttonPress(field) {
+    let form = this.workForm.value;
     let result = eval(field.script);
     return result;
   }
@@ -433,9 +436,11 @@ export class WorkPage implements OnInit {
 
   sumListFieldMulti(field_name, field1='quantity', field2='cost'){
     let total = 0;
-    let value = this.workForm.value[field_name].forEach((item: any)=>{
-      total += parseFloat(item[field1])*parseFloat(item[field2])
-    })
+    if (this.workForm.value[field_name]){
+      let value = this.workForm.value[field_name].forEach((item: any)=>{
+        total += parseFloat(item[field1])*parseFloat(item[field2])
+      })
+    }
     return total;
   }
 
