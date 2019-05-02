@@ -115,13 +115,26 @@ export class AreaPage implements OnInit {
     var preview: any = document.querySelector('#imageSrc');
     var file = this.pwaphoto.nativeElement.files[0];
     var reader = new FileReader();
-    var percentage = 1.0;
     reader.onload = (event: Event) => {
       preview.src = reader.result;
       this.areaForm.patchValue({
         image: reader.result,
       })
       preview.onload = function() {
+
+        var percentage = 1;
+        let max_diameter = (800**2 + 600**2)**(1/2);
+        var image_diameter = (preview.height**2 + preview.width**2)**(1/2)
+        console.log("preview.height", preview.height)
+        console.log("preview.width", preview.width)
+        console.log("image_diameter", image_diameter)
+        console.log("max_diameter", max_diameter)
+        console.log("max_diameter/image_diameter", max_diameter/image_diameter)
+        if (image_diameter>max_diameter){
+          percentage = max_diameter/image_diameter
+        }
+        console.log("percent", percentage);
+
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         canvas.height = canvas.width * (preview.height / preview.width);
@@ -134,9 +147,12 @@ export class AreaPage implements OnInit {
         octx.drawImage(preview, 0, 0, oc.width, oc.height);
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-        ctx.canvas.toBlob(async (blob) => {
-          self.avatar = blob;
-        });
+
+        let jpg = ctx.canvas.toDataURL("image/jpeg");
+        console.log("jpg", jpg);
+        fetch(jpg)
+        .then(res => res.blob())
+        .then(blob => self.avatar = blob)
       }
     }
 
@@ -150,20 +166,16 @@ export class AreaPage implements OnInit {
     var preview: any = document.querySelector('#imgtmp');
     var file = this.pwacamera.nativeElement.files[0];
     var reader = new FileReader();
-    var percentage = 1;
-    let max_diameter = (800^2 + 600^2)^(1/2);
-    console.log("preview.height", preview.height)
-    console.log("preview.width", preview.width)
-    console.log("image_diameter", image_diameter)
-    console.log("max_diameter", max_diameter)
-    var image_diameter = (preview.height^2 + preview.width^2)^(1/2)
-    if (image_diameter>max_diameter){
-      percentage = 1 - max_diameter/image_diameter
-    }
-    console.log("percent", percentage);
     reader.onload = (event: Event) => {
       preview.src = reader.result;
       preview.onload = async function() {
+        var percentage = 1;
+        let max_diameter = (800**2 + 600**2)**(1/2);
+        var image_diameter = (preview.height**2 + preview.width**2)**(1/2)
+
+        if (image_diameter>max_diameter){
+          percentage = max_diameter/image_diameter
+        }
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         canvas.height = canvas.width * (preview.height / preview.width);
@@ -215,14 +227,13 @@ export class AreaPage implements OnInit {
 
       preview.onload = async function() {
         var percentage = 1;
-        let max_diameter = 1000;
-        var image_diameter = (preview.height^2 + preview.width^2)^(1/2)
+        let max_diameter = (800**2 + 600**2)**(1/2);
+        var image_diameter = (preview.height**2 + preview.width**2)**(1/2)
         console.log("preview.height", preview.height)
         console.log("preview.width", preview.width)
         console.log("image_diameter", image_diameter)
         console.log("max_diameter", max_diameter)
         console.log("max_diameter/image_diameter", max_diameter/image_diameter)
-
         if (image_diameter>max_diameter){
           percentage = max_diameter/image_diameter
         }
