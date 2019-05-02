@@ -390,10 +390,10 @@ export class MachinePage implements OnInit {
         works.forEach(wor => {
           this.machineForm.value.moves.push(wor);
         })
-        this.skip += 5;
+        this.skip += 15;
         if (infiniteScroll) {
           infiniteScroll.target.complete();
-          if (!works.length) {
+          if (works.length<15) {
             infiniteScroll.target.disabled = true;
           }
         }

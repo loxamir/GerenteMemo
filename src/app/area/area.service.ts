@@ -121,7 +121,7 @@ export class AreaService {
         [area_id, "0"],
         true,
         true,
-        5,
+        15,
         skip
       ).then(async (planneds: any[]) => {
         let getList = [];

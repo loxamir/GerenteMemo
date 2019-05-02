@@ -44,6 +44,7 @@ export class AreaPage implements OnInit {
   @ViewChild('pwaphoto') pwaphoto: ElementRef;
   @ViewChild('pwacamera') pwacamera: ElementRef;
   @ViewChild('pwagalery') pwagalery: ElementRef;
+  @ViewChild('infload') infload: ElementRef;
   areaForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -393,10 +394,10 @@ export class AreaPage implements OnInit {
         works.forEach(wor => {
           this.areaForm.value.moves.push(wor);
         })
-        this.skip += 5;
+        this.skip += 15;
         if (infiniteScroll) {
           infiniteScroll.target.complete();
-          if (!works.length) {
+          if (works.length<15) {
             infiniteScroll.target.disabled = true;
           }
         }
