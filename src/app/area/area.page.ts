@@ -150,10 +150,20 @@ export class AreaPage implements OnInit {
     var preview: any = document.querySelector('#imgtmp');
     var file = this.pwacamera.nativeElement.files[0];
     var reader = new FileReader();
-    var percentage = 1.0;
+    var percentage = 1;
+    let max_diameter = (800^2 + 600^2)^(1/2);
+    console.log("preview.height", preview.height)
+    console.log("preview.width", preview.width)
+    console.log("image_diameter", image_diameter)
+    console.log("max_diameter", max_diameter)
+    var image_diameter = (preview.height^2 + preview.width^2)^(1/2)
+    if (image_diameter>max_diameter){
+      percentage = 1 - max_diameter/image_diameter
+    }
+    console.log("percent", percentage);
     reader.onload = (event: Event) => {
       preview.src = reader.result;
-      preview.onload = function() {
+      preview.onload = async function() {
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         canvas.height = canvas.width * (preview.height / preview.width);
@@ -166,26 +176,24 @@ export class AreaPage implements OnInit {
         octx.drawImage(preview, 0, 0, oc.width, oc.height);
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-        ctx.canvas.toBlob(async (blob) => {
-          let attachment = {};
-          attachment['image.png'] = {
-            content_type: 'image/png',
-            data: blob
-          }
-          let work: any = await self.pouchdbService.createDoc({
-            'docType': 'picture',
-            'date': new Date().toISOString(),
-            'area_id': self.areaForm.value._id,
-            'area_name': self.areaForm.value.name,
-            'activity_name': "Foto",
-            'activity_id': "activity.anotation",
-            'note': self.areaForm.value.note,
-            '_attachments': attachment,
-            // 'image': reader.result
-          })
-          self.areaForm.value.note = '';
-          // self.pouchdbService.attachFile(work.id, 'image.png', blob);
-        });
+        let jpg = ctx.canvas.toDataURL("image/jpeg");
+        console.log("jpg", jpg);
+        let attachment = {};
+        attachment['image.png'] = {
+          content_type: 'image/jpg',
+          data: jpg.split(';base64,')[1]
+        }
+        let work: any = await self.pouchdbService.createDoc({
+          'docType': 'picture',
+          'date': new Date().toISOString(),
+          'area_id': self.areaForm.value._id,
+          'area_name': self.areaForm.value.name,
+          'activity_name': "Foto",
+          'activity_id': "activity.anotation",
+          'note': self.areaForm.value.note,
+          '_attachments': attachment,
+        })
+        self.areaForm.value.note = "";
       }
     };
 
@@ -199,18 +207,32 @@ export class AreaPage implements OnInit {
     var preview: any = document.querySelector('#imgtmp');
     var file = this.pwagalery.nativeElement.files[0];
     var reader = new FileReader();
-    var percentage = 1.0;
     if (file) {
       reader.readAsDataURL(file);
     }
     reader.onload = (event: Event) => {
       preview.src = reader.result;
-      preview.onload = function() {
+
+      preview.onload = async function() {
+        var percentage = 1;
+        let max_diameter = 1000;
+        var image_diameter = (preview.height^2 + preview.width^2)^(1/2)
+        console.log("preview.height", preview.height)
+        console.log("preview.width", preview.width)
+        console.log("image_diameter", image_diameter)
+        console.log("max_diameter", max_diameter)
+        console.log("max_diameter/image_diameter", max_diameter/image_diameter)
+
+        if (image_diameter>max_diameter){
+          percentage = max_diameter/image_diameter
+        }
+        console.log("percent", percentage);
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         canvas.height = canvas.width * (preview.height / preview.width);
         var oc = window.document.createElement('canvas');
         var octx = oc.getContext('2d');
+
         oc.width = preview.width * percentage;
         oc.height = preview.height * percentage;
         canvas.width = oc.width;
@@ -218,41 +240,44 @@ export class AreaPage implements OnInit {
         octx.drawImage(preview, 0, 0, oc.width, oc.height);
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-        ctx.canvas.toBlob(async (blob) => {
-          let attachment = {};
-          attachment['image.png'] = {
-            content_type: 'image/png',
-            data: blob
-          }
-          let work: any = await self.pouchdbService.createDoc({
-            'docType': 'picture',
-            'date': new Date().toISOString(),
-            'area_id': self.areaForm.value._id,
-            'area_name': self.areaForm.value.name,
-            'activity_name': "Foto",
-            'activity_id': "activity.anotation",
-            'note': self.areaForm.value.note,
-            '_attachments': attachment,
-          })
-          self.areaForm.value.note = "";
-          // let dones = await
-          // self.pouchdbService.attachFile(work.id, 'image.png', blob).then(async don=>{
-            // let done: any = await self.pouchdbService.getDoc(work.id, true);
-            // self.areaForm.value.moves.unshift(done);
-            // console.log("done", done);
-          // })
-          // let moves = self.areaForm.value.moves
-          // moves.unshift(done);
-          // console.log("moves", moves);
-          // self.areaForm.patchValue({
-          //   moves: moves
-          // })
+        let jpg = ctx.canvas.toDataURL("image/jpeg");
+        console.log("jpg", jpg);
+        let attachment = {};
+        attachment['image.png'] = {
+          content_type: 'image/jpg',
+          data: jpg.split(';base64,')[1]
+        }
+        let work: any = await self.pouchdbService.createDoc({
+          'docType': 'picture',
+          'date': new Date().toISOString(),
+          'area_id': self.areaForm.value._id,
+          'area_name': self.areaForm.value.name,
+          'activity_name': "Foto",
+          'activity_id': "activity.anotation",
+          'note': self.areaForm.value.note,
+          '_attachments': attachment,
+        })
+        self.areaForm.value.note = "";
 
-          // let done = await self.pouchdbService.attachFile(work.id, 'image.png', blob);
-          // setTimeout(() => {
-          //   self.Refresh();
-          // }, 200);
-        });
+
+        // ctx.canvas.toBlob(async (blob) => {
+        //   let attachment = {};
+        //   attachment['image.png'] = {
+        //     content_type: 'image/png',
+        //     data: blob
+        //   }
+        //   let work: any = await self.pouchdbService.createDoc({
+        //     'docType': 'picture',
+        //     'date': new Date().toISOString(),
+        //     'area_id': self.areaForm.value._id,
+        //     'area_name': self.areaForm.value.name,
+        //     'activity_name': "Foto",
+        //     'activity_id': "activity.anotation",
+        //     'note': self.areaForm.value.note,
+        //     '_attachments': attachment,
+        //   })
+        //   self.areaForm.value.note = "";
+        // });
       }
     };
 
