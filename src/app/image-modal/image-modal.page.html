@@ -1,7 +1,16 @@
 <ion-header>
 
-  <ion-toolbar>
-    <ion-title>Foto</ion-title>
+  <ion-toolbar style="--background: black;--color: white;">
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Foto
+      <h1 class="subtitle">
+        {{ date|date: 'dd/MM/yyyy HH:mm' }}
+      </h1>
+    </ion-title>
     <ion-buttons slot="end">
       <!-- <ion-button (click)="showEdit()">
         <ion-icon name="videocam"></ion-icon>
@@ -9,9 +18,9 @@
       <!-- <ion-button  (click)="showEdit()">
         <ion-icon name="more"></ion-icon>
       </ion-button> -->
-      <ion-button (click)="close()">
+      <!-- <ion-button (click)="close()">
         <ion-icon name="close"></ion-icon>
-      </ion-button>
+      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -30,12 +39,26 @@
     </ion-button> -->
   <!-- </ion-item> -->
 
-  <ion-slides [options]="sliderOpts" #slider>
+  <ion-slides [options]="sliderOpts" #slider style="background: black;">
     <ion-slide>
       <div class="swiper-zoom-container">
-        <img [src]="img">
+        <img [src]="'data:image/png;base64,'+img">
       </div>
     </ion-slide>
   </ion-slides>
+  <ion-row style="padding-bottom:5px;padding-top: 5px;">
+    <ion-col>
+      {{ note }}
+    </ion-col>
+  </ion-row>
+
+  <ion-fab vertical="top" style="left: 0px;right:0px;bottom: 0px;background: black; color: white;" vertical="bottom" horizontal="start" slot="fixed">
+    <ion-row style="padding-bottom:5px;padding-top: 5px;">
+      <ion-col>
+        {{ note }}
+      </ion-col>
+    </ion-row>
+
+  </ion-fab>
 
 </ion-content>

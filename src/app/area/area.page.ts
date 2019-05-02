@@ -393,11 +393,9 @@ export class AreaPage implements OnInit {
           var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
           this.diffDays = diffDays - 1;
           this.events.subscribe('changed-work', (change) => {
-            console.log("chaNGE WORK", change);
             this.areaService.handleChange(this.areaForm.value.moves, change);
           })
           this.events.subscribe('changed-picture', (change) => {
-            console.log("chaNGE Picture", change);
             this.areaService.handleChange(this.areaForm.value.moves, change);
           })
         }
@@ -558,11 +556,13 @@ export class AreaPage implements OnInit {
     await actionSheet.present();
   }
 
-  openPreview(img) {
+  openPreview(img, date, note) {
     this.modalCtrl.create({
       component: ImageModalPage,
       componentProps: {
-        img: img
+        img: img,
+        note: note,
+        date: date
       }
     }).then(modal => {
       modal.present();

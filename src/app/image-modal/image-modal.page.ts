@@ -26,6 +26,8 @@ export class ImageModalPage implements OnInit {
 
   @ViewChild('slider', { read: ElementRef })slider: ElementRef;
   img: any;
+  note: any;
+  date: any;
 
   sliderOpts = {
     zoom: {
@@ -37,6 +39,8 @@ export class ImageModalPage implements OnInit {
 
   ngOnInit() {
     this.img = this.navParams.get('img');
+    this.note = this.navParams.get('note');
+    this.date = this.navParams.get('date');
   }
 
   zoom(zoomIn: boolean) {
