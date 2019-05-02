@@ -92,10 +92,6 @@ export class MachinePage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
-    this.events.subscribe('changed-work', (change) => {
-      console.log("chaNGE WORK", change);
-      this.machineService.handleChange(this.machineForm.value.moves, change);
-    })
     // platform.ready().then(() => {
     //   if (this.platform.is('cordova')) {
     //     this.isCordova = true;
@@ -116,13 +112,26 @@ export class MachinePage implements OnInit {
     var preview: any = document.querySelector('#imageSrc');
     var file = this.pwaphoto.nativeElement.files[0];
     var reader = new FileReader();
-    var percentage = 1.0;
     reader.onload = (event: Event) => {
       preview.src = reader.result;
       this.machineForm.patchValue({
         image: reader.result,
       })
       preview.onload = function() {
+
+        var percentage = 1;
+        let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
+        var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
+        console.log("preview.height", preview.height)
+        console.log("preview.width", preview.width)
+        console.log("image_diameter", image_diameter)
+        console.log("max_diameter", max_diameter)
+        console.log("max_diameter/image_diameter", max_diameter / image_diameter)
+        if (image_diameter > max_diameter) {
+          percentage = max_diameter / image_diameter
+        }
+        console.log("percent", percentage);
+
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         canvas.height = canvas.width * (preview.height / preview.width);
@@ -135,9 +144,12 @@ export class MachinePage implements OnInit {
         octx.drawImage(preview, 0, 0, oc.width, oc.height);
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-        ctx.canvas.toBlob(async (blob) => {
-          self.avatar = blob;
-        });
+
+        let jpg = ctx.canvas.toDataURL("image/jpeg");
+        console.log("jpg", jpg);
+        fetch(jpg)
+          .then(res => res.blob())
+          .then(blob => self.avatar = blob)
       }
     }
 
@@ -151,10 +163,16 @@ export class MachinePage implements OnInit {
     var preview: any = document.querySelector('#imgtmp');
     var file = this.pwacamera.nativeElement.files[0];
     var reader = new FileReader();
-    var percentage = 1.0;
     reader.onload = (event: Event) => {
       preview.src = reader.result;
-      preview.onload = function() {
+      preview.onload = async function() {
+        var percentage = 1;
+        let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
+        var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
+
+        if (image_diameter > max_diameter) {
+          percentage = max_diameter / image_diameter
+        }
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         canvas.height = canvas.width * (preview.height / preview.width);
@@ -167,22 +185,24 @@ export class MachinePage implements OnInit {
         octx.drawImage(preview, 0, 0, oc.width, oc.height);
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-        ctx.canvas.toBlob(async (blob) => {
-          let work: any = await self.pouchdbService.createDoc({
-            'docType': 'work',
-            'date': new Date().toISOString(),
-            'machine_id': self.machineForm.value._id,
-            'machine_name': self.machineForm.value.name,
-            // 'crop_id': self.machineForm.value.crop._id,
-            // 'crop_name': self.machineForm.value.crop.name,
-            'activity_name': "Anotacion",
-            'activity_id': "activity.anotation",
-            'note': "Fotinho",
-            'image': reader.result
-          })
-          self.machineForm.value.note = null;
-          await self.pouchdbService.attachFile(work.id, 'image.png', blob);
-        });
+        let jpg = ctx.canvas.toDataURL("image/jpeg");
+        console.log("jpg", jpg);
+        let attachment = {};
+        attachment['image.png'] = {
+          content_type: 'image/jpg',
+          data: jpg.split(';base64,')[1]
+        }
+        let work: any = await self.pouchdbService.createDoc({
+          'docType': 'picture',
+          'date': new Date().toISOString(),
+          'machine_id': self.machineForm.value._id,
+          'machine_name': self.machineForm.value.name,
+          'activity_name': "Foto",
+          'activity_id': "activity.anotation",
+          'note': self.machineForm.value.note,
+          '_attachments': attachment,
+        })
+        self.machineForm.value.note = "";
       }
     };
 
@@ -196,13 +216,25 @@ export class MachinePage implements OnInit {
     var preview: any = document.querySelector('#imgtmp');
     var file = this.pwagalery.nativeElement.files[0];
     var reader = new FileReader();
-    var percentage = 1.0;
     if (file) {
       reader.readAsDataURL(file);
     }
     reader.onload = (event: Event) => {
       preview.src = reader.result;
-      preview.onload = function() {
+
+      preview.onload = async function() {
+        var percentage = 1;
+        let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
+        var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
+        console.log("preview.height", preview.height)
+        console.log("preview.width", preview.width)
+        console.log("image_diameter", image_diameter)
+        console.log("max_diameter", max_diameter)
+        console.log("max_diameter/image_diameter", max_diameter / image_diameter)
+        if (image_diameter > max_diameter) {
+          percentage = max_diameter / image_diameter
+        }
+        console.log("percent", percentage);
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         canvas.height = canvas.width * (preview.height / preview.width);
@@ -215,26 +247,26 @@ export class MachinePage implements OnInit {
         octx.drawImage(preview, 0, 0, oc.width, oc.height);
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-        ctx.canvas.toBlob(async (blob) => {
-          let attachment = document['_attachments'] || {};
-          attachment['image.png'] = {
-            content_type: 'image/png',
-            data: blob
-          }
-          let work: any = await self.pouchdbService.createDoc({
-            'docType': 'work',
-            'date': new Date().toISOString(),
-            'machine_id': self.machineForm.value._id,
-            'machine_name': self.machineForm.value.name,
-            // 'crop_id': self.machineForm.value.crop._id,
-            // 'crop_name': self.machineForm.value.crop.name,
-            'activity_name': "Anotacion",
-            'activity_id': "activity.anotation",
-            'note': "Fotinho",
-            '_attachments': attachment
-          })
-          self.machineForm.value.note = null;
-        });
+        let jpg = ctx.canvas.toDataURL("image/jpeg");
+        console.log("jpg", jpg);
+        let attachment = {};
+        attachment['image.png'] = {
+          content_type: 'image/jpg',
+          data: jpg.split(';base64,')[1]
+        }
+        let work: any = await self.pouchdbService.createDoc({
+          'docType': 'picture',
+          'date': new Date().toISOString(),
+          'machine_id': self.machineForm.value._id,
+          'machine_name': self.machineForm.value.name,
+          'activity_name': "Foto",
+          'activity_id': "activity.anotation",
+          'note': self.machineForm.value.note,
+          '_attachments': attachment,
+        })
+        self.machineForm.value.note = "";
+
+
       }
     };
 
@@ -270,7 +302,7 @@ export class MachinePage implements OnInit {
   }
 
   backEdit() {
-    if (this._id){
+    if (this._id) {
       this.showForm = false;
     } else {
       this.navCtrl.navigateBack(['/agro-tabs/machine-list']);
@@ -359,7 +391,7 @@ export class MachinePage implements OnInit {
     });
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
-    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    let config: any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
     if (this._id) {
       this.machineService.getMachine(this._id).then(async (data) => {
@@ -368,7 +400,7 @@ export class MachinePage implements OnInit {
         this.machineForm.patchValue(data);
         this.loading.dismiss();
         let review = await this.machineService.getMachineReview(this._id);
-        if (review){
+        if (review) {
           this.machineForm.value.lastReviewDate = review['date'];
           // this.machineForm.value.lastReview = review['quantity'];
           var date1 = new Date(this.machineForm.value.lastReviewDate);
@@ -376,6 +408,12 @@ export class MachinePage implements OnInit {
           var timeDiff = Math.abs(date2.getTime() - date1.getTime());
           var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
           this.diffDays = diffDays - 1;
+          this.events.subscribe('changed-work', (change) => {
+            this.machineService.handleChange(this.machineForm.value.moves, change);
+          })
+          this.events.subscribe('changed-picture', (change) => {
+            this.machineService.handleChange(this.machineForm.value.moves, change);
+          })
         }
       });
     } else {
@@ -393,7 +431,7 @@ export class MachinePage implements OnInit {
         this.skip += 15;
         if (infiniteScroll) {
           infiniteScroll.target.complete();
-          if (works.length<15) {
+          if (works.length < 15) {
             infiniteScroll.target.disabled = true;
           }
         }
@@ -438,6 +476,7 @@ export class MachinePage implements OnInit {
       component: WorkPage,
       componentProps: {
         "_id": item._id,
+        "select": true,
       }
     });
     profileModal.present();
@@ -446,6 +485,7 @@ export class MachinePage implements OnInit {
   async addActivity(activity_id) {
     let componentProps = {
       "machine": this.machineForm.value,
+      "select": true,
     }
     if (activity_id) {
       componentProps['activity'] = await this.pouchdbService.getDoc(activity_id);
@@ -520,18 +560,14 @@ export class MachinePage implements OnInit {
     await actionSheet.present();
   }
 
-  createFileName() {
-    var d = new Date(),
-      n = d.getTime(),
-      newFileName = n + ".jpg";
-    return newFileName;
-  }
-
-  openPreview(img) {
+  openPreview(item) {
     this.modalCtrl.create({
       component: ImageModalPage,
       componentProps: {
-        img: img
+        img: 'data:image/png;base64,' + item._attachments['image.png'].data,
+        name: this.machineForm.value.name,
+        note: item.note,
+        date: item.date
       }
     }).then(modal => {
       modal.present();

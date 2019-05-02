@@ -44,7 +44,6 @@ export class AreaPage implements OnInit {
   @ViewChild('pwaphoto') pwaphoto: ElementRef;
   @ViewChild('pwacamera') pwacamera: ElementRef;
   @ViewChild('pwagalery') pwagalery: ElementRef;
-  @ViewChild('infload') infload: ElementRef;
   areaForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -90,7 +89,6 @@ export class AreaPage implements OnInit {
     private ref: ChangeDetectorRef,
   ) {
     this.today = new Date().toISOString();
-    this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
@@ -123,15 +121,15 @@ export class AreaPage implements OnInit {
       preview.onload = function() {
 
         var percentage = 1;
-        let max_diameter = (800**2 + 600**2)**(1/2);
-        var image_diameter = (preview.height**2 + preview.width**2)**(1/2)
+        let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
+        var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
         console.log("preview.height", preview.height)
         console.log("preview.width", preview.width)
         console.log("image_diameter", image_diameter)
         console.log("max_diameter", max_diameter)
-        console.log("max_diameter/image_diameter", max_diameter/image_diameter)
-        if (image_diameter>max_diameter){
-          percentage = max_diameter/image_diameter
+        console.log("max_diameter/image_diameter", max_diameter / image_diameter)
+        if (image_diameter > max_diameter) {
+          percentage = max_diameter / image_diameter
         }
         console.log("percent", percentage);
 
@@ -151,8 +149,8 @@ export class AreaPage implements OnInit {
         let jpg = ctx.canvas.toDataURL("image/jpeg");
         console.log("jpg", jpg);
         fetch(jpg)
-        .then(res => res.blob())
-        .then(blob => self.avatar = blob)
+          .then(res => res.blob())
+          .then(blob => self.avatar = blob)
       }
     }
 
@@ -170,11 +168,11 @@ export class AreaPage implements OnInit {
       preview.src = reader.result;
       preview.onload = async function() {
         var percentage = 1;
-        let max_diameter = (800**2 + 600**2)**(1/2);
-        var image_diameter = (preview.height**2 + preview.width**2)**(1/2)
+        let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
+        var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
 
-        if (image_diameter>max_diameter){
-          percentage = max_diameter/image_diameter
+        if (image_diameter > max_diameter) {
+          percentage = max_diameter / image_diameter
         }
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
@@ -227,15 +225,15 @@ export class AreaPage implements OnInit {
 
       preview.onload = async function() {
         var percentage = 1;
-        let max_diameter = (800**2 + 600**2)**(1/2);
-        var image_diameter = (preview.height**2 + preview.width**2)**(1/2)
+        let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
+        var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
         console.log("preview.height", preview.height)
         console.log("preview.width", preview.width)
         console.log("image_diameter", image_diameter)
         console.log("max_diameter", max_diameter)
-        console.log("max_diameter/image_diameter", max_diameter/image_diameter)
-        if (image_diameter>max_diameter){
-          percentage = max_diameter/image_diameter
+        console.log("max_diameter/image_diameter", max_diameter / image_diameter)
+        if (image_diameter > max_diameter) {
+          percentage = max_diameter / image_diameter
         }
         console.log("percent", percentage);
         var canvas: any = window.document.getElementById("canvas");
@@ -243,7 +241,6 @@ export class AreaPage implements OnInit {
         canvas.height = canvas.width * (preview.height / preview.width);
         var oc = window.document.createElement('canvas');
         var octx = oc.getContext('2d');
-
         oc.width = preview.width * percentage;
         oc.height = preview.height * percentage;
         canvas.width = oc.width;
@@ -271,24 +268,6 @@ export class AreaPage implements OnInit {
         self.areaForm.value.note = "";
 
 
-        // ctx.canvas.toBlob(async (blob) => {
-        //   let attachment = {};
-        //   attachment['image.png'] = {
-        //     content_type: 'image/png',
-        //     data: blob
-        //   }
-        //   let work: any = await self.pouchdbService.createDoc({
-        //     'docType': 'picture',
-        //     'date': new Date().toISOString(),
-        //     'area_id': self.areaForm.value._id,
-        //     'area_name': self.areaForm.value.name,
-        //     'activity_name': "Foto",
-        //     'activity_id': "activity.anotation",
-        //     'note': self.areaForm.value.note,
-        //     '_attachments': attachment,
-        //   })
-        //   self.areaForm.value.note = "";
-        // });
       }
     };
 
@@ -324,7 +303,7 @@ export class AreaPage implements OnInit {
   }
 
   backEdit() {
-    if (this._id){
+    if (this._id) {
       this.showForm = false;
     } else {
       this.navCtrl.navigateBack(['/agro-tabs/area-list']);
@@ -411,7 +390,7 @@ export class AreaPage implements OnInit {
     });
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
-    let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    let config: any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
     if (this._id) {
       this.areaService.getArea(this._id).then(async (data) => {
@@ -420,7 +399,7 @@ export class AreaPage implements OnInit {
         this.areaForm.patchValue(data);
         this.loading.dismiss();
         let rain = await this.areaService.getAreaRain(this._id);
-        if (rain){
+        if (rain) {
           this.areaForm.value.lastRainDate = rain['date'];
           this.areaForm.value.lastRain = rain['quantity'];
           var date1 = new Date(this.areaForm.value.lastRainDate);
@@ -451,25 +430,13 @@ export class AreaPage implements OnInit {
         this.skip += 15;
         if (infiniteScroll) {
           infiniteScroll.target.complete();
-          if (works.length<15) {
+          if (works.length < 15) {
             infiniteScroll.target.disabled = true;
           }
         }
       });
     }, 500);
   }
-
-  Refresh() {
-    this.skip = 0;
-    this.areaService.getWorksPage(this._id, this.skip).then((works: any[]) => {
-      this.areaForm.value.moves = [];
-      works.forEach(wor => {
-        this.areaForm.value.moves.push(wor);
-      })
-      this.skip += 15;
-    });
-  }
-
 
   buttonSave() {
     if (this._id) {
@@ -596,7 +563,7 @@ export class AreaPage implements OnInit {
     this.modalCtrl.create({
       component: ImageModalPage,
       componentProps: {
-        img: 'data:image/png;base64,'+item._attachments['image.png'].data,
+        img: 'data:image/png;base64,' + item._attachments['image.png'].data,
         name: this.areaForm.value.name,
         note: item.note,
         date: item.date

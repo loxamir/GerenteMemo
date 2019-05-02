@@ -3,11 +3,11 @@
     <ion-buttons slot="start" (click)="backEdit()">
       <ion-icon name="arrow-back" style="font-size: 25px;padding-right: 10px;padding-left: 10px;"></ion-icon>
     </ion-buttons>
-    <ion-title style="padding-left: 5px;" *ngIf="!_id">
-      Nueva Maquina
-    </ion-title>
     <ion-title style="padding-left: 5px;" *ngIf="_id">
-      Editar Maquina {{machineForm.value.code}}
+      {{ 'EDIT_MACHINE' | translate }} - {{machineForm.value.code}}
+    </ion-title>
+    <ion-title style="padding-left: 5px;" *ngIf="!_id">
+      {{ 'NEW_MACHINE' | translate }}
     </ion-title>
   </ion-toolbar>
   <ion-toolbar *ngIf="!showForm" color="primary">
@@ -53,7 +53,7 @@
   <form class="sample-form validations-form" [formGroup]="machineForm">
     <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;    transform: rotate(180deg);">
       <ion-item-sliding class="list-item" *ngFor="let item of machineForm.value.moves">
-        <ion-item no-padding (click)="openItem(item)" *ngIf="!item.image" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        <ion-item no-padding (click)="openItem(item)" *ngIf="!(item._attachments && item._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
           <ion-card [class.area-card]="item.activity_name!='Memo'" [class.sent-card]="item.activity_name=='Abastecimento'">
             <ion-row no-padding>
               <ion-thumbnail style="--border-radius:10px;">
@@ -84,50 +84,25 @@
                 </ion-row>
               </ion-col>
             </ion-row>
-            <ion-row no-padding class="content-row one-line">
-              <ion-col no-padding size="12">
-                <ion-img *ngIf="item.image" [src]="item.image" (click)="openPreview(item.image)"></ion-img>
-              </ion-col>
-              <ion-col no-padding size="6" align-self-center>
-              </ion-col>
-            </ion-row>
           </ion-card>
         </ion-item>
 
-        <ion-item no-padding (click)="openPreview(item.image)" *ngIf="item.image" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        <ion-item no-padding (click)="openPreview(item)" *ngIf="item._attachments && item._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
           <ion-card [class.area-card]="item.activity_name!='Memo'" [class.sent-card]="item.activity_name=='Abastecimento'">
             <ion-row no-padding>
-              <!-- <ion-thumbnail style="--border-radius:10px;">
-              <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
-            </ion-thumbnail> -->
-              <ion-col>
-                <ion-row>
-                  <ion-col size="8.5" no-padding>
-                    <h3 class="activity-name">
-                      Foto
-                    </h3>
-                    <!-- {{ itemSumary(item) }} -->
-                    <!-- <div [innerHTML]="item.summary"></div> -->
-                    <!-- <h1 class="activity-note">
-                {{item.note}}
-              </h1> -->
-                  </ion-col>
-                  <ion-col>
-                    <h3 class="item-title-second">
-                      {{item.date|date: 'dd/MM/yyyy'}}
-                    </h3>
-                    <h3 class="item-title-second">
-                      {{item.date|date: 'HH:mm'}}
-                    </h3>
-                  </ion-col>
-                </ion-row>
+              <ion-col no-padding>
+                <ion-img *ngIf="item._attachments['image.png'].data" style="max-height: 200px;width: 100%;" [src]="'data:image/png;base64,'+item._attachments['image.png'].data"></ion-img>
               </ion-col>
             </ion-row>
-            <ion-row no-padding class="content-row one-line">
-              <ion-col no-padding size="12" style="height: 200px;">
-                <ion-img *ngIf="item.image" style="height: 200%;" [src]="item.image"></ion-img>
+            <ion-row style="background: white">
+              <ion-col size="8.5" style="background: white" *ngIf="item.note">
+                {{item.note}}
               </ion-col>
-              <ion-col no-padding size="6" align-self-center>
+              <ion-col style="background: white">
+                <h3 class="item-title-second">
+                  {{item.date|date: 'dd/MM/yyyy'}}
+                  {{item.date|date: 'HH:mm'}}
+                </h3>
               </ion-col>
             </ion-row>
           </ion-card>
@@ -151,7 +126,7 @@
 
   <ion-fab vertical="top" style="left: 0px;right:0px;top: 0px;background: #dddddd;transform: rotate(180deg);" horizontal="start" slot="fixed">
     <ion-row style="padding-bottom:5px;padding-top: 5px;">
-      <ion-col [class.left-round]="true" [class.all-round]="false" style="height: 50px;">
+      <ion-col [class.left-round]="true" [class.all-round]="false">
         <ion-textarea #note [(ngModel)]="machineForm.value.note" placeholder="Escribir Lembrete" style="margin-top: 2px;" rows="1">
         </ion-textarea>
       </ion-col>
@@ -191,26 +166,6 @@
         </h1>
       </ion-col>
     </ion-row>
-    <!-- <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-      <ion-col size="4" (click)="addActivity('activity.harvest')">
-        <ion-img [src]="'./assets/icons/activity.harvest.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Colheita
-        </h1>
-      </ion-col>
-      <ion-col size="4" (click)="addActivity('activity.rain')">
-        <ion-img [src]="'./assets/icons/activity.rain.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Chuva
-        </h1>
-      </ion-col>
-      <ion-col size="4" (click)="addActivity('activity.analisis')">
-        <ion-img [src]="'./assets/icons/activity.analisis.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Analise
-        </h1>
-      </ion-col>
-    </ion-row> -->
   </ion-fab>
 
 </ion-content>
@@ -222,7 +177,7 @@
   </div>
   <form class="sample-form validations-form" [formGroup]="machineForm">
     <ion-row>
-        <img [src]="machineForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+      <img [src]="machineForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
       <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input #name type="text" formControlName="name"></ion-input>
@@ -233,11 +188,7 @@
       </ion-item> -->
       <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
-        <ion-select #type
-        formControlName="type"
-        cancelText="{{ 'CANCEL' | translate }}"
-        okText="{{ 'OK' | translate }}"
-        interface="popover">
+        <ion-select #type formControlName="type" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
           <ion-select-option value="MACHINE">{{ 'MACHINE' | translate }}</ion-select-option>
           <ion-select-option value="IMPLEMENT">{{ 'IMPLEMENT' | translate }}</ion-select-option>
           <!-- <ion-select-option value="SPRAYER">{{ 'SPRAYER' | translate }}</ion-select-option>
@@ -254,19 +205,13 @@
           </h4>
         </div>
       </ion-item>
-      <ion-item
-       no-padding
-       class="field-50">
+      <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'Costo por Hora' | translate}}</ion-label>
-        <ion-input #hourCost type="number"
-        formControlName="hourCost"></ion-input>
+        <ion-input #hourCost type="number" formControlName="hourCost"></ion-input>
       </ion-item>
-      <ion-item
-       no-padding
-       class="field-50">
+      <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'Horimetro' | translate}}</ion-label>
-        <ion-input #horimeter type="number"
-        formControlName="horimeter"></ion-input>
+        <ion-input #horimeter type="number" formControlName="horimeter"></ion-input>
       </ion-item>
       <!-- <ion-item no-padding class="field-100">
         <ion-label>{{'Maquina Propria' | translate}}</ion-label>

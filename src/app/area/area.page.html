@@ -4,7 +4,7 @@
       <ion-icon name="arrow-back" style="font-size: 25px;padding-right: 10px;padding-left: 10px;"></ion-icon>
     </ion-buttons>
     <ion-title style="padding-left: 5px;" *ngIf="_id">
-      {{ 'EDIT_PLACE' | translate }}
+      {{ 'EDIT_PLACE' | translate }} - {{areaForm.value.code}}
     </ion-title>
     <ion-title style="padding-left: 5px;" *ngIf="!_id">
       {{ 'NEW_PLACE' | translate }}
@@ -95,7 +95,7 @@
               </ion-col>
             </ion-row>
             <ion-row style="background: white">
-              <ion-col  size="8.5" style="background: white" *ngIf="item.note">
+              <ion-col size="8.5" style="background: white" *ngIf="item.note">
                 {{item.note}}
               </ion-col>
               <ion-col style="background: white">
@@ -132,21 +132,7 @@
       </ion-col>
       <div size="1.6" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;    width: 40px;padding-top: 5px;">
         <ion-icon name="camera" (click)="selectImage()" style="font-size: 26px;color: gray;margin-top:7px;"></ion-icon>
-        <!-- <ion-icon name="add" *ngIf="!showBotom" (click)="addButton()" style="font-size: 26px;color: gray;padding-left: 9px;"></ion-icon> -->
-        <!-- <ion-icon name="close" *ngIf="showBotom && !areaForm.value.note" (click)="addButton()" style="font-size: 26px;color: gray;padding-left: 9px;"> -->
-        <!-- </ion-icon> -->
-
       </div>
-      <!-- <ion-col size="2" *ngIf="isCordova || areaForm.value.note">
-        <ion-fab-button *ngIf="!areaForm.value.note" style="width:40px;height:40px;margin-left: 5px;">
-          <ion-icon name="mic" (click)="listenRequest()">
-          </ion-icon>
-        </ion-fab-button>
-        <ion-fab-button *ngIf="areaForm.value.note" (click)="sendButton()" style="width:40px;height:40px;margin-left: 5px;">
-          <ion-icon name="send" style="font-size: 22px;margin-left: 3px;">
-          </ion-icon>
-        </ion-fab-button>
-      </ion-col> -->
       <div size="2" style="padding-top: 6px;padding-right: 5px;">
         <ion-fab-button *ngIf="!areaForm.value.note" style="width:40px;height:40px;margin-left: 5px;">
           <ion-icon name="add" (click)="addButton()" *ngIf="!showBotom">
