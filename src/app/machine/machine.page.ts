@@ -92,6 +92,12 @@ export class MachinePage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
+    this.events.subscribe('changed-work', (change) => {
+      this.machineService.handleChange(this.machineForm.value.moves, change);
+    })
+    this.events.subscribe('changed-picture', (change) => {
+      this.machineService.handleChange(this.machineForm.value.moves, change);
+    })
     // platform.ready().then(() => {
     //   if (this.platform.is('cordova')) {
     //     this.isCordova = true;
@@ -408,12 +414,6 @@ export class MachinePage implements OnInit {
           var timeDiff = Math.abs(date2.getTime() - date1.getTime());
           var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
           this.diffDays = diffDays - 1;
-          this.events.subscribe('changed-work', (change) => {
-            this.machineService.handleChange(this.machineForm.value.moves, change);
-          })
-          this.events.subscribe('changed-picture', (change) => {
-            this.machineService.handleChange(this.machineForm.value.moves, change);
-          })
         }
       });
     } else {
