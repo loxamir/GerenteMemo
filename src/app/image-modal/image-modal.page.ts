@@ -1,19 +1,3 @@
-// import { Component, OnInit } from '@angular/core';
-//
-// @Component({
-//   selector: 'app-image-modal',
-//   templateUrl: './image-modal.page.html',
-//   styleUrls: ['./image-modal.page.scss'],
-// })
-// export class ImageModalPage implements OnInit {
-//
-//   constructor() { }
-//
-//   ngOnInit() {
-//   }
-//
-// }
-
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
 
@@ -28,6 +12,7 @@ export class ImageModalPage implements OnInit {
   img: any;
   note: any;
   date: any;
+  name: any;
 
   sliderOpts = {
     zoom: {
@@ -41,6 +26,7 @@ export class ImageModalPage implements OnInit {
     this.img = this.navParams.get('img');
     this.note = this.navParams.get('note');
     this.date = this.navParams.get('date');
+    this.name = this.navParams.get('name');
   }
 
   zoom(zoomIn: boolean) {

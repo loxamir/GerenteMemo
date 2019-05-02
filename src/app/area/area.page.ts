@@ -556,13 +556,14 @@ export class AreaPage implements OnInit {
     await actionSheet.present();
   }
 
-  openPreview(img, date, note) {
+  openPreview(item) {
     this.modalCtrl.create({
       component: ImageModalPage,
       componentProps: {
-        img: img,
-        note: note,
-        date: date
+        img: 'data:image/png;base64,'+item._attachments['image.png'].data,
+        name: this.areaForm.value.name,
+        note: item.note,
+        date: item.date
       }
     }).then(modal => {
       modal.present();

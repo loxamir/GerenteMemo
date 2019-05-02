@@ -87,7 +87,7 @@
           </ion-card>
         </ion-item>
 
-        <ion-item no-padding (click)="openPreview(item._attachments['image.png'].data, item.date, item.note)" *ngIf="item._attachments && item._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        <ion-item no-padding (click)="openPreview(item)" *ngIf="item._attachments && item._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
           <ion-card [class.area-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
             <ion-row no-padding>
               <ion-col no-padding>
