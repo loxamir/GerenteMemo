@@ -5,6 +5,7 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
   template: `
   <ion-list>
     <ion-item class="popover-item" (click)="editArea()">Editar Area</ion-item>
+    <ion-item class="popover-item" (click)="Refresh()">Refresh</ion-item>
     <!--<ion-item class="popover-item" (click)="invoice()">Facturas</ion-item>
     <ion-item class="popover-item" (click)="receipts()">Recibos</ion-item>
     <ion-item class="popover-item" (click)="importer()">Importador Ventas</ion-item>
@@ -25,6 +26,11 @@ export class AreaPopover {
   }
 
   close() {
+    this.pop.dismiss();
+  }
+
+  Refresh(){
+    this.navParams.data.doc.Refresh();
     this.pop.dismiss();
   }
 

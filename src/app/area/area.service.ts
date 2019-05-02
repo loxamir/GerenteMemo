@@ -131,11 +131,6 @@ export class AreaService {
         let docs: any = await this.pouchdbService.getList(getList, true);
         let moves = [];
         docs.forEach(row=>{
-          delete row.doc.image;
-          if (row.doc._attachments){
-            let image = row.doc._attachments['image.png'].data;
-            row.doc.image = "data:image/png;base64,"+image;
-          }
           moves.push(row.doc);
         })
         resolve(moves);

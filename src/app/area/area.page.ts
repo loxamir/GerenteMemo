@@ -94,10 +94,7 @@ export class AreaPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
-    this.events.subscribe('changed-work', (change) => {
-      console.log("chaNGE WORK", change);
-      this.areaService.handleChange(this.areaForm.value.moves, change);
-    })
+
     // platform.ready().then(() => {
     //   if (this.platform.is('cordova')) {
     //     this.isCordova = true;
@@ -176,17 +173,17 @@ export class AreaPage implements OnInit {
             data: blob
           }
           let work: any = await self.pouchdbService.createDoc({
-            'docType': 'work',
+            'docType': 'picture',
             'date': new Date().toISOString(),
             'area_id': self.areaForm.value._id,
             'area_name': self.areaForm.value.name,
-            'activity_name': "Anotacion",
+            'activity_name': "Foto",
             'activity_id': "activity.anotation",
             'note': self.areaForm.value.note,
             '_attachments': attachment,
-            'image': reader.result
+            // 'image': reader.result
           })
-          self.areaForm.value.note = null;
+          self.areaForm.value.note = '';
           // self.pouchdbService.attachFile(work.id, 'image.png', blob);
         });
       }
@@ -228,18 +225,33 @@ export class AreaPage implements OnInit {
             data: blob
           }
           let work: any = await self.pouchdbService.createDoc({
-            'docType': 'work',
+            'docType': 'picture',
             'date': new Date().toISOString(),
             'area_id': self.areaForm.value._id,
             'area_name': self.areaForm.value.name,
-            'activity_name': "Anotacion",
+            'activity_name': "Foto",
             'activity_id': "activity.anotation",
             'note': self.areaForm.value.note,
-            'image': reader.result,
             '_attachments': attachment,
           })
-          self.areaForm.value.note = null;
-          // self.pouchdbService.attachFile(work.id, 'image.png', blob);
+          self.areaForm.value.note = "";
+          // let dones = await
+          // self.pouchdbService.attachFile(work.id, 'image.png', blob).then(async don=>{
+            // let done: any = await self.pouchdbService.getDoc(work.id, true);
+            // self.areaForm.value.moves.unshift(done);
+            // console.log("done", done);
+          // })
+          // let moves = self.areaForm.value.moves
+          // moves.unshift(done);
+          // console.log("moves", moves);
+          // self.areaForm.patchValue({
+          //   moves: moves
+          // })
+
+          // let done = await self.pouchdbService.attachFile(work.id, 'image.png', blob);
+          // setTimeout(() => {
+          //   self.Refresh();
+          // }, 200);
         });
       }
     };
@@ -356,7 +368,7 @@ export class AreaPage implements OnInit {
       moves: new FormControl([]),
       lastRain: new FormControl(0),
       lastRainDate: new FormControl(),
-      note: new FormControl(null),
+      note: new FormControl(""),
       code: new FormControl(''),
       _attachments: new FormControl({}),
       _id: new FormControl(''),
@@ -368,7 +380,7 @@ export class AreaPage implements OnInit {
     if (this._id) {
       this.areaService.getArea(this._id).then(async (data) => {
         this.doInfinite(false);
-        data.note = null;
+        data.note = '';
         this.areaForm.patchValue(data);
         this.loading.dismiss();
         let rain = await this.areaService.getAreaRain(this._id);
@@ -380,6 +392,14 @@ export class AreaPage implements OnInit {
           var timeDiff = Math.abs(date2.getTime() - date1.getTime());
           var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
           this.diffDays = diffDays - 1;
+          this.events.subscribe('changed-work', (change) => {
+            console.log("chaNGE WORK", change);
+            this.areaService.handleChange(this.areaForm.value.moves, change);
+          })
+          this.events.subscribe('changed-picture', (change) => {
+            console.log("chaNGE Picture", change);
+            this.areaService.handleChange(this.areaForm.value.moves, change);
+          })
         }
       });
     } else {
@@ -404,6 +424,18 @@ export class AreaPage implements OnInit {
       });
     }, 500);
   }
+
+  Refresh() {
+    this.skip = 0;
+    this.areaService.getWorksPage(this._id, this.skip).then((works: any[]) => {
+      this.areaForm.value.moves = [];
+      works.forEach(wor => {
+        this.areaForm.value.moves.push(wor);
+      })
+      this.skip += 15;
+    });
+  }
+
 
   buttonSave() {
     if (this._id) {
@@ -503,7 +535,7 @@ export class AreaPage implements OnInit {
       'activity_id': "activity.anotation",
       'note': this.areaForm.value.note,
     })
-    this.areaForm.value.note = null;
+    this.areaForm.value.note = '';
   }
 
   async selectImage() {
@@ -524,13 +556,6 @@ export class AreaPage implements OnInit {
       ]
     });
     await actionSheet.present();
-  }
-
-  createFileName() {
-    var d = new Date(),
-      n = d.getTime(),
-      newFileName = n + ".jpg";
-    return newFileName;
   }
 
   openPreview(img) {
@@ -618,7 +643,7 @@ export class AreaPage implements OnInit {
   }
 
   deleteWork(work) {
-    let index = this.areaForm.value.moves.indexOf(work);
+    // let index = this.areaForm.value.moves.indexOf(work);
     this.worksService.deleteWork(work);
   }
 
