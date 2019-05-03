@@ -204,7 +204,7 @@ export class MachinePage implements OnInit {
           'machine_id': self.machineForm.value._id,
           'machine_name': self.machineForm.value.name,
           'activity_name': "Foto",
-          'activity_id': "activity.anotation",
+          'activity_id': "activity.picture",
           'note': self.machineForm.value.note,
           '_attachments': attachment,
         })
@@ -266,7 +266,7 @@ export class MachinePage implements OnInit {
           'machine_id': self.machineForm.value._id,
           'machine_name': self.machineForm.value.name,
           'activity_name': "Foto",
-          'activity_id': "activity.anotation",
+          'activity_id': "activity.picture",
           'note': self.machineForm.value.note,
           '_attachments': attachment,
         })
@@ -387,7 +387,7 @@ export class MachinePage implements OnInit {
       moves: new FormControl([]),
       // lastReview: new FormControl(0), //Abastecimento
       lastReviewDate: new FormControl(),
-      note: new FormControl(null),
+      note: new FormControl(''),
       code: new FormControl(''),
       _attachments: new FormControl({}),
       _id: new FormControl(''),
@@ -402,7 +402,7 @@ export class MachinePage implements OnInit {
     if (this._id) {
       this.machineService.getMachine(this._id).then(async (data) => {
         this.doInfinite(false);
-        data.note = null;
+        data.note = '';
         this.machineForm.patchValue(data);
         this.loading.dismiss();
         let review = await this.machineService.getMachineReview(this._id);
@@ -537,7 +537,7 @@ export class MachinePage implements OnInit {
       'activity_id': "activity.anotation",
       'note': this.machineForm.value.note,
     })
-    this.machineForm.value.note = null;
+    this.machineForm.value.note = "";
   }
 
   async selectImage() {

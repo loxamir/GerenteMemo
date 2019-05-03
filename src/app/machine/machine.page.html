@@ -129,7 +129,7 @@
   <ion-fab vertical="top" style="left: 0px;right:0px;top: 0px;background: #dddddd;transform: rotate(180deg);" horizontal="start" slot="fixed">
     <ion-row style="padding-bottom:5px;padding-top: 5px;">
       <ion-col [class.left-round]="true" [class.all-round]="false">
-        <ion-textarea #note [(ngModel)]="machineForm.value.note" placeholder="Escribir Lembrete" style="margin-top: 2px;" rows="1">
+        <ion-textarea #note [(ngModel)]="machineForm.value.note" placeholder="Escribir Anotación" style="margin-top: 2px;" rows="1">
         </ion-textarea>
       </ion-col>
       <div size="1.6" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;    width: 40px;padding-top: 5px;">
@@ -152,7 +152,7 @@
       <ion-col (click)="addActivity('activity.fuel')" *ngIf="machineForm.value.type!='IMPLEMENT'">
         <ion-img [src]="'./assets/icons/activity.fuel.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Abastecimento
+          Abastecimiento
         </h1>
       </ion-col>
       <ion-col (click)="addActivity('activity.maintenance')">

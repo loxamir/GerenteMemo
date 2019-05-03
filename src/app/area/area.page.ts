@@ -204,7 +204,7 @@ export class AreaPage implements OnInit {
           'area_id': self.areaForm.value._id,
           'area_name': self.areaForm.value.name,
           'activity_name': "Foto",
-          'activity_id': "activity.anotation",
+          'activity_id': "activity.picture",
           'note': self.areaForm.value.note,
           '_attachments': attachment,
         })
@@ -266,7 +266,7 @@ export class AreaPage implements OnInit {
           'area_id': self.areaForm.value._id,
           'area_name': self.areaForm.value.name,
           'activity_name': "Foto",
-          'activity_id': "activity.anotation",
+          'activity_id': "activity.picture",
           'note': self.areaForm.value.note,
           '_attachments': attachment,
         })
@@ -531,7 +531,7 @@ export class AreaPage implements OnInit {
       'area_name': this.areaForm.value.name,
       // 'crop_id': this.areaForm.value.crop._id,
       // 'crop_name': this.areaForm.value.crop.name,
-      'activity_name': "Anotacion",
+      'activity_name': "Anotación",
       'activity_id': "activity.anotation",
       'note': this.areaForm.value.note,
     })
