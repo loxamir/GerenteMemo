@@ -96,7 +96,11 @@ export class CropPage implements OnInit {
       this.cropService.updateCrop(this.cropForm.value);
       // this.navCtrl.navigateBack().then(() => {
         this.events.publish('open-crop', this.cropForm.value);
-        this.navCtrl.navigateBack('/agro-tabs/crop-list');
+        if (this.select){
+          this.modalCtrl.dismiss();
+        } else {
+          this.navCtrl.navigateBack('/agro-tabs/crop-list');
+        }
       // });
     } else {
       this.cropService.createCrop(this.cropForm.value).then(doc => {
@@ -108,7 +112,11 @@ export class CropPage implements OnInit {
         // this.navCtrl.navigateBack().then(() => {
           this.events.publish('create-crop', this.cropForm.value);
         // });
-        this.navCtrl.navigateBack('/agro-tabs/crop-list');
+        if (this.select){
+          this.modalCtrl.dismiss();
+        } else {
+          this.navCtrl.navigateBack('/agro-tabs/crop-list');
+        }
       });
     }
   }
