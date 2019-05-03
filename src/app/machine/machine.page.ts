@@ -59,6 +59,7 @@ export class MachinePage implements OnInit {
   lastWork = '0';
   avatar = undefined;
   showAll = false;
+  select;
   currency_precision = 2;
   constructor(
     public navCtrl: NavController,
@@ -92,6 +93,7 @@ export class MachinePage implements OnInit {
     this.today = new Date().toISOString();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
+    this.select = this.route.snapshot.paramMap.get('select');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.events.subscribe('changed-work', (change) => {
       this.machineService.handleChange(this.machineForm.value.moves, change);
@@ -466,7 +468,11 @@ export class MachinePage implements OnInit {
     if (this._id) {
       this.machineService.updateMachine(this.machineForm.value, this.avatar);
       this.events.publish('open-machine', this.machineForm.value);
-      this.showForm = false;
+      if (this.select){
+        this.modalCtrl.dismiss();
+      } else {
+        this.showForm = false;
+      }
     } else {
       this.machineService.createMachine(this.machineForm.value, this.avatar).then(doc => {
         this.machineForm.patchValue({
@@ -474,7 +480,11 @@ export class MachinePage implements OnInit {
         });
         this._id = doc['id'];
         this.events.publish('create-machine', this.machineForm.value);
-        this.showForm = false;
+        if (this.select){
+          this.modalCtrl.dismiss();
+        } else {
+          this.showForm = false;
+        }
       });
     }
   }

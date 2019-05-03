@@ -3,13 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { NavController,  LoadingController,  Events, PopoverController,
   AlertController, ModalController } from '@ionic/angular';
-import { CropPage } from '../crop/crop.page';
 
 import 'rxjs/Rx';
 import { CropsService } from './crops.service';
 // import { CropsPopover } from './crops.popover';
 // import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { CropService } from '../crop/crop.service';
+import { CropPage } from '../crop/crop.page';
 import { WorkService } from '../work/work.service';
 // import { ProjectPage } from '../../project/project';
 import { FilterPage } from '../filter/filter.page';
@@ -142,10 +142,31 @@ export class CropsPage implements OnInit {
     }
   }
 
-  createCrop() {
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(CropPage, {});
-    this.navCtrl.navigateForward(['/crop', {"create": true}]);
+  // createCrop() {
+  //   this.navCtrl.navigateForward(['/crop', {"create": true}]);
+  // }
+
+  async createCrop(){
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: CropPage,
+        componentProps: {
+          select: true,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/crop', {}]);
+    }
+    this.events.subscribe('create-crop', (data) => {
+      console.log("select", data);
+      if (this.select){
+        this.events.publish('select-crop', data);
+        console.log("dismiss");
+        this.modalCtrl.dismiss();
+      }
+      this.events.unsubscribe('create-crop');
+    })
   }
 
   deleteCrop(crop){

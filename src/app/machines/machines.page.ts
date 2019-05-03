@@ -162,8 +162,31 @@ export class MachinesPage implements OnInit {
     }
   }
 
-  createMachine() {
-    this.navCtrl.navigateForward(['/machine', {'create': true}]);
+  // createMachine() {
+  //   this.navCtrl.navigateForward(['/machine', {'create': true}]);
+  // }
+
+  async createMachine(){
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: MachinePage,
+        componentProps: {
+          select: true,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/machine', {}]);
+    }
+    this.events.subscribe('create-machine', (data) => {
+      console.log("select", data);
+      if (this.select){
+        this.events.publish('select-machine', data);
+        console.log("dismiss");
+        this.modalCtrl.dismiss();
+      }
+      this.events.unsubscribe('create-machine');
+    })
   }
 
   deleteMachine(machine){

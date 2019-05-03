@@ -163,8 +163,31 @@ export class AreasPage implements OnInit {
     }
   }
 
-  createArea() {
-    this.navCtrl.navigateForward(['/area', {'create': true}]);
+  // createArea() {
+  //   this.navCtrl.navigateForward(['/area', {'create': true}]);
+  // }
+
+  async createArea(){
+    if (this.select){
+      let profileModal = await this.modalCtrl.create({
+        component: AreaPage,
+        componentProps: {
+          select: true,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/area', {}]);
+    }
+    this.events.subscribe('create-area', (data) => {
+      console.log("select", data);
+      if (this.select){
+        this.events.publish('select-area', data);
+        console.log("dismiss");
+        this.modalCtrl.dismiss();
+      }
+      this.events.unsubscribe('create-area');
+    })
   }
 
   deleteArea(area){
