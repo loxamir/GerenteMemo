@@ -184,9 +184,14 @@ export class PouchdbService {
   }
 
   getDoc(doc_id) {
-    return new Promise((resolve, reject)=>{
+    return new Promise(async (resolve, reject)=>{
       if (typeof doc_id === "string"){
-        resolve(this.db.get(doc_id));
+        try {
+          let test = await this.db.get(doc_id);
+          resolve(test);
+        } catch {
+          resolve({})
+        }
       } else {
         resolve({})
       }
