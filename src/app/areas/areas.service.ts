@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { FormatService } from '../services/format.service';
 
 @Injectable()
 export class AreasService {
   constructor(
     public pouchdbService: PouchdbService,
+    public formatService: FormatService,
   ) {}
 
   getAreas(keyword, page){
@@ -13,16 +15,9 @@ export class AreasService {
         let areaList = [];
         this.pouchdbService.searchDocTypeData(
           'area', keyword, page
-        ).then((areas: any[]) => {
-          areas.forEach(area=>{
-            delete area.image;
-            if (area._attachments && area._attachments['avatar.png']){
-              let image = area._attachments['avatar.png'].data;
-              area.image = "data:image/png;base64,"+image;
-            } else {
-              area.image = "./assets/icons/field.jpg";
-            }
-            this.pouchdbService.getViewInv(
+        ).then(async (areas: any[]) => {
+          await this.formatService.asyncForEach(areas, async area=>{
+            await this.pouchdbService.getViewInv(
               'Informes/AreaDiario', 3,
               [area._id+'z'],
               [area._id],
@@ -35,7 +30,11 @@ export class AreasService {
               areaList.push(area);
           })
         });
-        resolve(areaList);
+        let self=this;
+        let listOrdered= areaList.sort(function(a, b) {
+          return self.formatService.compareField(a, b, 'lastDate', 'decrease');
+        })
+        resolve(listOrdered);
       });
     });
   }

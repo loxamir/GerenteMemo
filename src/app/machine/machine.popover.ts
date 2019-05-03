@@ -4,7 +4,7 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item class="popover-item" (click)="editMachine()">Editar Machine</ion-item>
+    <ion-item class="popover-item" (click)="editMachine()">Editar Maquina</ion-item>
     <!--<ion-item class="popover-item" (click)="invoice()">Facturas</ion-item>
     <ion-item class="popover-item" (click)="receipts()">Recibos</ion-item>
     <ion-item class="popover-item" (click)="importer()">Importador Ventas</ion-item>

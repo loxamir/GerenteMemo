@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { FormatService } from '../services/format.service';
 
 @Injectable()
 export class MachinesService {
   constructor(
     public pouchdbService: PouchdbService,
+    public formatService: FormatService,
   ) {}
 
   getMachines(keyword, page){
@@ -15,14 +17,6 @@ export class MachinesService {
           'machine', keyword, page
         ).then((machines: any[]) => {
           machines.forEach(machine=>{
-            delete machine.image;
-            if (machine._attachments && machine._attachments['avatar.png']){
-              let image = machine._attachments['avatar.png'].data;
-              machine.image = "data:image/png;base64,"+image;
-            } else {
-              machine.image = "./assets/icons/field.jpg";
-            }
-
             this.pouchdbService.getViewInv(
               'Informes/MachineDiario', 3,
               [machine._id+'z'],
@@ -36,7 +30,11 @@ export class MachinesService {
               machineList.push(machine);
           })
         });
-        resolve(machineList);
+        let self=this;
+        let listOrdered= machineList.sort(function(a, b) {
+          return self.formatService.compareField(a, b, 'lastDate', 'decrease');
+        })
+        resolve(listOrdered);
       });
     });
   }

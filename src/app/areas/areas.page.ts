@@ -13,6 +13,7 @@ import { WorkService } from '../work/work.service';
 import { FilterPage } from '../filter/filter.page';
 import { AreasPopover } from './areas.popover';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
+import { FormatService } from "../services/format.service";
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -44,11 +45,23 @@ export class AreasPage implements OnInit {
     public areaService: AreaService,
     public alertCtrl: AlertController,
     public translate: TranslateService,
+    public formatService: FormatService,
   ) {
     this.today = new Date().toISOString();
     this.select = this.route.snapshot.paramMap.get('select');
     this.translate.setDefaultLang('es');
     this.translate.use('es');
+    // this.events.subscribe('changed-work', (change)=>{
+    //   TODO: Should get the last event and update the view
+    //   this.areasService.handleViewChange(this.areas, change);
+    // })
+    this.events.subscribe('changed-area', (change)=>{
+      // this.areasService.handleChange(this.areas, change);
+      this.setFilteredItems();
+    })
+    this.events.subscribe('got-database', ()=>{
+      this.setFilteredItems();
+    })
   }
 
   changeSearch(){
@@ -62,7 +75,6 @@ export class AreasPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: AreasPopover,
       event: myEvent,
@@ -84,22 +96,9 @@ export class AreasPage implements OnInit {
   }
 
   async ngOnInit() {
-
-
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     this.setFilteredItems();
-    // this.events.subscribe('changed-work', (change)=>{
-    //   TODO: Should get the last event and update the view
-    //   this.areasService.handleViewChange(this.areas, change);
-    // })
-    this.events.subscribe('changed-area', (change)=>{
-      // this.areasService.handleChange(this.areas, change);
-      this.setFilteredItems();
-    })
-    this.events.subscribe('got-database', ()=>{
-      this.setFilteredItems();
-    })
   }
 
   async showFilter() {
@@ -138,9 +137,10 @@ export class AreasPage implements OnInit {
   }
 
   setFilteredItems() {
+    let self = this;
     this.areasService.getAreas(
       this.searchTerm, 0
-    ).then(async (areas) => {
+    ).then(async (areas: any) => {
       this.areas = areas;
       this.page = 1;
       this.loading.dismiss();

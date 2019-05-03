@@ -593,8 +593,8 @@ export class WorkPage implements OnInit {
           '#'+field.name+' > input'
         );
         if (element.value=="0" || element.value==""){
+          element.focus();
           element.select();
-          // element.focus();
           done = false;
           break;
         }

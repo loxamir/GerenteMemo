@@ -17,7 +17,9 @@
         <img [src]="areaForm.value.image" id="avatarImage" #avatarImage *ngIf="areaForm.value.image">
       </ion-thumbnail>
     </ion-buttons>
-    <ion-title style="padding-left: 5px;">{{areaForm.value.name}}
+    <ion-title
+    (click)="showEdit()"
+    style="padding-left: 5px;">{{areaForm.value.name}}
       <h1 class="subtitle" *ngIf="areaForm.value.lastRain && diffDays  > 1">
         Ultima chuva {{areaForm.value.lastRain}}mm a {{ diffDays }} dias
       </h1>
@@ -204,7 +206,7 @@
       </ion-item>
       <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'Area(ha)' | translate}}</ion-label>
-        <ion-input type="number" style="height: 47px;" formControlName="surface"></ion-input>
+        <ion-input type="number" style="--padding-top: 21px;" formControlName="surface"></ion-input>
       </ion-item>
       <ion-item no-padding (click)="selectCrop()" class="field-50">
         <div class="field-many2one">

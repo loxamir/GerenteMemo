@@ -436,7 +436,7 @@ export class MachinePage implements OnInit {
           }
         }
       });
-    }, 500);
+    }, 50);
   }
 
   buttonSave() {

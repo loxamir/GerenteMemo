@@ -17,7 +17,9 @@
         <img [src]="machineForm.value.image" id="avatarImage" #avatarImage *ngIf="machineForm.value.image">
       </ion-thumbnail>
     </ion-buttons>
-    <ion-title style="padding-left: 5px;">{{machineForm.value.name}}
+    <ion-title
+    (click)="showEdit()"
+    style="padding-left: 5px;">{{machineForm.value.name}}
       <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && diffDays  > 1">
         Ultimo mantenimiento a {{ diffDays }} dias
       </h1>
