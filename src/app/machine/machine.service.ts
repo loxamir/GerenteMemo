@@ -137,4 +137,30 @@ export class MachineService {
       });
     });
   }
+
+  getWorksPageAll(machine_id, skip = 0): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      let payableList = [];
+      this.pouchdbService.getViewInv(
+        'Informes/MachineDiarioAll', 4,
+        [machine_id + "z", "z"],
+        [machine_id, "0"],
+        true,
+        true,
+        15,
+        skip
+      ).then(async (planneds: any[]) => {
+        let getList = [];
+        planneds.forEach(item => {
+          getList.push(item.key[3]);
+        })
+        let docs: any = await this.pouchdbService.getList(getList, true);
+        let moves = [];
+        docs.forEach(row => {
+          moves.push(row.doc);
+        })
+        resolve(moves);
+      });
+    });
+  }
 }

@@ -58,6 +58,7 @@ export class MachinePage implements OnInit {
   skip = 0;
   lastWork = '0';
   avatar = undefined;
+  showAll = false;
   currency_precision = 2;
   constructor(
     public navCtrl: NavController,
@@ -111,6 +112,13 @@ export class MachinePage implements OnInit {
 
   goBack() {
     this.navCtrl.navigateBack(['/agro-tabs/machine-list']);
+  }
+
+  changeShowAlll(){
+    this.machineForm.value.moves = [];
+    this.skip = 0;
+    this.showAll = !this.showAll;
+    this.doInfinite(false);
   }
 
   previewFile() {
@@ -424,18 +432,33 @@ export class MachinePage implements OnInit {
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
-      this.machineService.getWorksPage(this._id, this.skip).then((works: any[]) => {
-        works.forEach(wor => {
-          this.machineForm.value.moves.push(wor);
-        })
-        this.skip += 15;
-        if (infiniteScroll) {
-          infiniteScroll.target.complete();
-          if (works.length < 15) {
-            infiniteScroll.target.disabled = true;
+      if (this.showAll){
+        this.machineService.getWorksPageAll(this._id, this.skip).then((works: any[]) => {
+          works.forEach(wor => {
+            this.machineForm.value.moves.push(wor);
+          })
+          this.skip += 15;
+          if (infiniteScroll) {
+            infiniteScroll.target.complete();
+            if (works.length < 15) {
+              infiniteScroll.target.disabled = true;
+            }
           }
-        }
-      });
+        });
+      } else {
+        this.machineService.getWorksPage(this._id, this.skip).then((works: any[]) => {
+          works.forEach(wor => {
+            this.machineForm.value.moves.push(wor);
+          })
+          this.skip += 15;
+          if (infiniteScroll) {
+            infiniteScroll.target.complete();
+            if (works.length < 15) {
+              infiniteScroll.target.disabled = true;
+            }
+          }
+        });
+      }
     }, 50);
   }
 

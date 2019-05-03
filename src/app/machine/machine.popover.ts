@@ -4,11 +4,8 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item class="popover-item" (click)="editMachine()">Editar Maquina</ion-item>
-    <!--<ion-item class="popover-item" (click)="invoice()">Facturas</ion-item>
-    <ion-item class="popover-item" (click)="receipts()">Recibos</ion-item>
-    <ion-item class="popover-item" (click)="importer()">Importador Ventas</ion-item>
-    <ion-item class="popover-item" (click)="importerLine()">Importador Lineas</ion-item-->
+    <ion-item class="popover-item" (click)="changeShowAlll()" *ngIf="!this.navParams.data.doc.showAll">Incluir Trabajos</ion-item>
+    <ion-item class="popover-item" (click)="changeShowAlll()" *ngIf="this.navParams.data.doc.showAll">Esconder Trabajos</ion-item>
   </ion-list>
   `
 })
@@ -29,33 +26,12 @@ export class MachinePopover {
   }
 
   editMachine(){
-    // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
     this.navParams.data.doc.showEdit();
     this.pop.dismiss();
   }
 
-  // importerLine(){
-  //   this.navCtrl.navigateForward(['/importer', {'docType': 'sale-line'}]);
-  //   this.pop.dismiss();
-  // }
-  // invoice() {
-  //   this.navCtrl.navigateForward(['/invoice-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // contact() {
-  //   this.navCtrl.navigateForward(['/contact-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // products() {
-  //   this.navCtrl.navigateForward(['/product-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // receivable() {
-  //   this.navCtrl.navigateForward(['/planned-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // receipts() {
-  //   this.pop.dismiss();
-  //   this.navCtrl.navigateForward(['/receipt-list', {}]);
-  // }
+  changeShowAlll(){
+    this.navParams.data.doc.changeShowAlll();
+    this.pop.dismiss();
+  }
 }
