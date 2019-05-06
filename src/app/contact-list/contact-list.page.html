@@ -1,8 +1,11 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
+        <ion-menu-button *ngIf="!select"></ion-menu-button>
         <!-- <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button> -->
+        <ion-button (click)="discard()" *ngIf="select">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
     </ion-buttons>
     <ion-searchbar
       placeholder="Buscar Contato"

@@ -331,4 +331,13 @@ export class ContactListPage implements OnInit {
       this.events.unsubscribe('create-contact');
     })
   }
+
+  private discard() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      // this.receiptForm.markAsPristine();
+      this.navCtrl.navigateBack('/agro-tabs/area-list');
+    }
+  }
 }

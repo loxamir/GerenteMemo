@@ -8,6 +8,9 @@ import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductListPopover} from './product-list.popover';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
+import { LanguageModel } from "../services/language/language.model";
 
 @Component({
   selector: 'app-product-list',
@@ -38,9 +41,13 @@ export class ProductListPage implements OnInit {
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
     public file: File,
+    public translate: TranslateService,
+    public languageService: LanguageService,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
     this.operation = this.route.snapshot.paramMap.get('operation') || this.operation;
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this.type = this.route.snapshot.paramMap.get('type') || 'all';
     this.events.subscribe('changed-product', (change) => {
       this.handleChange(this.products, change);
@@ -300,5 +307,15 @@ export class ProductListPage implements OnInit {
       })
     });
   }
+
+  private discard() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      // this.receiptForm.markAsPristine();
+      this.navCtrl.navigateBack('/agro-tabs/area-list');
+    }
+  }
+
 
 }

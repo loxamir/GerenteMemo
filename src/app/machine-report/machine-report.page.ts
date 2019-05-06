@@ -167,239 +167,338 @@ export class MachineReportPage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     return new Promise(resolve => {
-      // if (this.reportMachineForm.value.reportType == 'machine') {
-      this.pouchdbService.getView(
-        'Informes/Machine',
-        10,
-      ).then(async (machines1: any[]) => {
-        console.log("machine1", machines1);
-        let machines = machines1;
-        //This is the filter
-        if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
-          machines = machines.filter(word => word['key'][0] == this.reportMachineForm.value.machine._id);
-        }
-        if (Object.keys(this.reportMachineForm.value.activity).length > 0) {
-          machines = machines.filter(word => word['key'][1] == this.reportMachineForm.value.activity._id);
-        }
-        // if (Object.keys(this.reportMachineForm.value.crop).length > 0) {
-        //   machines = machines.filter(word => word['key'][0] == this.reportMachineForm.value.crop._id);
-        // }
-        // if (Object.keys(this.reportMachineForm.value.area).length > 0) {
-        //   machines = machines.filter(word => word['key'][1] == this.reportMachineForm.value.area._id);
-        // }
-        // if (Object.keys(this.reportMachineForm.value.input).length > 0) {
-        //   machines = machines.filter(word => word['key'][6] == this.reportMachineForm.value.input._id);
-        // }
-        console.log("machine lines", machines);
+      let items = [];
+      let promise_ids = [];
+      let result = {};
 
-        let items = [];
-        let promise_ids = [];
-        let result = {};
-        if (this.reportMachineForm.value.groupBy == 'machine') {
-          let tmpDict = {};
+      if (this.reportMachineForm.value.groupBy == 'name') {
+        this.pouchdbService.getView(
+          'Informes/MachineItems',
+          10,
+        ).then(async (machines1: any[]) => {
+          console.log("machine1", machines1);
+          let machines = machines1;
+          //This is the filter
+          if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
+            machines = machines.filter(word => word['key'][0] == this.reportMachineForm.value.machine._id);
+          }
+          if (Object.keys(this.reportMachineForm.value.activity).length > 0) {
+            machines = machines.filter(word => word['key'][1] == this.reportMachineForm.value.activity._id);
+          }
+
+        items = [];
+        machines.forEach(activityLine => {
+          console.log
+          if (result.hasOwnProperty(activityLine.key[6])) {
+            // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+            items[result[activityLine.key[6]]] = {
+              'name': items[result[activityLine.key[6]]].name,
+              'quantity': items[result[activityLine.key[6]]].quantity + parseFloat(activityLine.key[7]),
+              'margin': items[result[activityLine.key[6]]].margin + parseFloat(activityLine.key[6]),
+              'total': items[result[activityLine.key[6]]].total + activityLine.value,
+            };
+          } else {
+            items.push({
+              'name': activityLine.key[6],
+              'quantity': parseFloat(activityLine.key[7]),
+              'margin': parseFloat(activityLine.key[6]),
+              'total': parseFloat(activityLine.value),
+            });
+            result[activityLine.key[6]] = items.length-1;
+          }
+        });
+
+        let self = this;
+        let output = items.sort(function(a, b) {
+          return self.compare(a, b, self.reportMachineForm.value.orderBy);
+        })
+        let marker = false;
+        let total = 0;
+        output.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+          total += parseFloat(item['total']);
+        });
+        this.loading.dismiss();
+        resolve(output);
+      })
+      // } else {
 
 
-          console.log("machine");
-          let getList = [];
-          items = [];
-          machines.forEach(machineLine => {
-            if (getList.indexOf(machineLine.key[0]) == -1) {
-              getList.push(machineLine.key[0]);
-            }
 
-            if (tmpDict.hasOwnProperty(machineLine.key[0])) {
-              items[tmpDict[machineLine.key[0]]] = {
-                'id': machineLine.key[0],
-                // 'quantity': items[result[machineLine.key[1]]].quantity + parseFloat(machineLine.key[4]),
-                // 'margin': items[result[machineLine.key[1]]].margin + parseFloat(machineLine.key[5]),
-                'total': items[tmpDict[machineLine.key[0]]].total + machineLine.value,
-              };
-            } else {
-              items.push({
-                'id': machineLine.key[0],
-                // 'quantity': parseFloat(machineLine.key[4]),
-                // 'margin': parseFloat(machineLine.key[5]),
-                'total': machineLine.value,
-              });
-              tmpDict[machineLine.key[0]] = items.length - 1;
-            }
-          });
-          // console.log("result", result);
-          let products: any = await this.pouchdbService.getList(getList);
-          var doc_dict = {};
-          products.forEach((row, index) => {
-            console.log("row.doc.name", row);
-            if (row.doc) {
-              doc_dict[row.doc._id] = row.doc;
-            }
-            else {
-              products = products.slice(index, 1);
-            }
-          })
-          tmpDict = {};
-          let litems = [];
-          items.forEach(item => {
-            console.log("item", item.id, doc_dict, doc_dict[item.id]);
-            if (doc_dict[item.id]) {
-              if (tmpDict.hasOwnProperty(doc_dict[item.id].name)) {
-                litems[tmpDict[doc_dict[item.id].name]] = {
-                  'name': doc_dict[item.id].name,
-                  // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
-                  // 'quantity': doc_dict[item.name].surface,
-                  'total': litems[tmpDict[doc_dict[item.id].name]].total + item.total,
+      } else {
+
+        this.pouchdbService.getView(
+          'Informes/Machine',
+          10,
+        ).then(async (machines1: any[]) => {
+          console.log("machine1", machines1);
+          let machines = machines1;
+          //This is the filter
+          if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
+            machines = machines.filter(word => word['key'][0] == this.reportMachineForm.value.machine._id);
+          }
+          if (Object.keys(this.reportMachineForm.value.activity).length > 0) {
+            machines = machines.filter(word => word['key'][1] == this.reportMachineForm.value.activity._id);
+          }
+          // if (Object.keys(this.reportMachineForm.value.crop).length > 0) {
+          //   machines = machines.filter(word => word['key'][0] == this.reportMachineForm.value.crop._id);
+          // }
+          // if (Object.keys(this.reportMachineForm.value.area).length > 0) {
+          //   machines = machines.filter(word => word['key'][1] == this.reportMachineForm.value.area._id);
+          // }
+          // if (Object.keys(this.reportMachineForm.value.input).length > 0) {
+          //   machines = machines.filter(word => word['key'][6] == this.reportMachineForm.value.input._id);
+          // }
+          console.log("machine lines", machines);
+
+          if (this.reportMachineForm.value.groupBy == 'machine') {
+            let tmpDict = {};
+
+
+            console.log("machine");
+            let getList = [];
+            items = [];
+            machines.forEach(machineLine => {
+              if (getList.indexOf(machineLine.key[0]) == -1) {
+                getList.push(machineLine.key[0]);
+              }
+
+              if (tmpDict.hasOwnProperty(machineLine.key[0])) {
+                items[tmpDict[machineLine.key[0]]] = {
+                  'id': machineLine.key[0],
+                  // 'quantity': items[result[machineLine.key[1]]].quantity + parseFloat(machineLine.key[4]),
+                  // 'margin': items[result[machineLine.key[1]]].margin + parseFloat(machineLine.key[5]),
+                  'total': items[tmpDict[machineLine.key[0]]].total + machineLine.value,
                 };
               } else {
-                litems.push({
-                  'name': doc_dict[item.id].name,
-                  // 'quantity': doc_dict[item.name].surface,
-                  // 'machine': doc_dict[item.name].surface,
-                  'total': item.total,
+                items.push({
+                  'id': machineLine.key[0],
+                  // 'quantity': parseFloat(machineLine.key[4]),
+                  // 'margin': parseFloat(machineLine.key[5]),
+                  'total': machineLine.value,
                 });
-                tmpDict[doc_dict[item.id].name] = litems.length - 1;
+                tmpDict[machineLine.key[0]] = items.length - 1;
               }
-            }
-          })
-          console.log("litems", litems);
-          let self = this;
-          // let output = items.sort(function(a, b) {
-          //   return self.compare(a, b, self.reportMachineForm.value.orderBy);
-          // })
-          let output = litems.sort(function(a, b) {
-            return self.compare(a, b, self.reportMachineForm.value.orderBy);
-          })
-          let marker = false;
-          let total = 0;
-          output.forEach(item => {
-            item['marker'] = marker,
-              marker = !marker;
-            total += parseFloat(item['total']);
-          });
-          this.loading.dismiss();
-          console.log("ouch put", output);
-          resolve(output);
+            });
+            // console.log("result", result);
+            let products: any = await this.pouchdbService.getList(getList);
+            var doc_dict = {};
+            products.forEach((row, index) => {
+              console.log("row.doc.name", row);
+              if (row.doc) {
+                doc_dict[row.doc._id] = row.doc;
+              }
+              else {
+                products = products.slice(index, 1);
+              }
+            })
+            tmpDict = {};
+            let litems = [];
+            items.forEach(item => {
+              console.log("item", item.id, doc_dict, doc_dict[item.id]);
+              if (doc_dict[item.id]) {
+                if (tmpDict.hasOwnProperty(doc_dict[item.id].name)) {
+                  litems[tmpDict[doc_dict[item.id].name]] = {
+                    'name': doc_dict[item.id].name,
+                    // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
+                    // 'quantity': doc_dict[item.name].surface,
+                    'total': litems[tmpDict[doc_dict[item.id].name]].total + item.total,
+                  };
+                } else {
+                  litems.push({
+                    'name': doc_dict[item.id].name,
+                    // 'quantity': doc_dict[item.name].surface,
+                    // 'machine': doc_dict[item.name].surface,
+                    'total': item.total,
+                  });
+                  tmpDict[doc_dict[item.id].name] = litems.length - 1;
+                }
+              }
+            })
+            console.log("litems", litems);
+            let self = this;
+            // let output = items.sort(function(a, b) {
+            //   return self.compare(a, b, self.reportMachineForm.value.orderBy);
+            // })
+            let output = litems.sort(function(a, b) {
+              return self.compare(a, b, self.reportMachineForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            console.log("ouch put", output);
+            resolve(output);
 
 
 
 
-        }
-        else if (this.reportMachineForm.value.groupBy == 'activity') {
-          console.log("activity", );
-          let tmpDict = {};
-          let getList = [];
-          items = [];
-          machines.forEach(machineLine => {
-            if (getList.indexOf(machineLine.key[1]) == -1) {
-              getList.push(machineLine.key[1]);
-            }
+          }
+          else if (this.reportMachineForm.value.groupBy == 'activity') {
+            console.log("activity", );
+            // let tmpDict = {};
+            // let getList = [];
+            // items = [];
+            // machines.forEach(machineLine => {
+            //   if (getList.indexOf(machineLine.key[1]) == -1) {
+            //     getList.push(machineLine.key[1]);
+            //   }
+            //
+            //   if (tmpDict.hasOwnProperty(machineLine.key[1])) {
+            //     items[tmpDict[machineLine.key[1]]] = {
+            //       'id': machineLine.key[1],
+            //       'quantity': items[tmpDict[machineLine.key[1]]].quantity + 1,
+            //       // 'margin': items[result[machineLine.key[1]]].margin + parseFloat(machineLine.key[5]),
+            //       'total': items[tmpDict[machineLine.key[1]]].total + machineLine.value,
+            //     };
+            //   } else {
+            //     items.push({
+            //       'id': machineLine.key[1],
+            //       'quantity': 1,
+            //       // 'margin': parseFloat(machineLine.key[5]),
+            //       'total': machineLine.value,
+            //     });
+            //     tmpDict[machineLine.key[1]] = items.length - 1;
+            //   }
+            // });
+            // // console.log("result", result);
+            // let products: any = await this.pouchdbService.getList(getList);
+            // var doc_dict = {};
+            // products.forEach((row, index) => {
+            //   console.log("row.doc.name", row);
+            //   if (row.doc) {
+            //     doc_dict[row.doc._id] = row.doc;
+            //   }
+            //   else {
+            //     products = products.slice(index, 1);
+            //   }
+            // })
+            // tmpDict = {};
+            // let litems = [];
+            // items.forEach(item => {
+            //   console.log("item", item.id, doc_dict, doc_dict[item.id]);
+            //   if (doc_dict[item.id]) {
+            //     if (tmpDict.hasOwnProperty(doc_dict[item.id].name)) {
+            //       litems[tmpDict[doc_dict[item.id].name]] = {
+            //         'name': doc_dict[item.id].name,
+            //         // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
+            //         'quantity': doc_dict[item.id].quantity,
+            //         'total': litems[tmpDict[doc_dict[item.id].name]].total + item.total,
+            //       };
+            //     } else {
+            //       litems.push({
+            //         'name': doc_dict[item.id].name,
+            //         'quantity': doc_dict[item.id].quantity,
+            //         // 'machine': doc_dict[item.name].surface,
+            //         'total': item.total,
+            //       });
+            //       tmpDict[doc_dict[item.id].name] = litems.length - 1;
+            //     }
+            //   }
+            // })
+            // console.log("litems", litems);
+            // let self = this;
+            // // let output = items.sort(function(a, b) {
+            // //   return self.compare(a, b, self.reportMachineForm.value.orderBy);
+            // // })
+            // let output = litems.sort(function(a, b) {
+            //   return self.compare(a, b, self.reportMachineForm.value.orderBy);
+            // })
+            // let marker = false;
+            // let total = 0;
+            // output.forEach(item => {
+            //   item['marker'] = marker,
+            //     marker = !marker;
+            //   total += parseFloat(item['total']);
+            // });
+            // this.loading.dismiss();
+            // console.log("ouch put", output);
+            // resolve(output);
 
-            if (tmpDict.hasOwnProperty(machineLine.key[1])) {
-              items[tmpDict[machineLine.key[1]]] = {
-                'id': machineLine.key[1],
-                // 'quantity': items[result[machineLine.key[1]]].quantity + parseFloat(machineLine.key[4]),
-                // 'margin': items[result[machineLine.key[1]]].margin + parseFloat(machineLine.key[5]),
-                'total': items[tmpDict[machineLine.key[1]]].total + machineLine.value,
-              };
-            } else {
-              items.push({
-                'id': machineLine.key[1],
-                // 'quantity': parseFloat(machineLine.key[4]),
-                // 'margin': parseFloat(machineLine.key[5]),
-                'total': machineLine.value,
-              });
-              tmpDict[machineLine.key[1]] = items.length - 1;
-            }
-          });
-          // console.log("result", result);
-          let products: any = await this.pouchdbService.getList(getList);
-          var doc_dict = {};
-          products.forEach((row, index) => {
-            console.log("row.doc.name", row);
-            if (row.doc) {
-              doc_dict[row.doc._id] = row.doc;
-            }
-            else {
-              products = products.slice(index, 1);
-            }
-          })
-          tmpDict = {};
-          let litems = [];
-          items.forEach(item => {
-            console.log("item", item.id, doc_dict, doc_dict[item.id]);
-            if (doc_dict[item.id]) {
-              if (tmpDict.hasOwnProperty(doc_dict[item.id].name)) {
-                litems[tmpDict[doc_dict[item.id].name]] = {
-                  'name': doc_dict[item.id].name,
-                  // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
-                  // 'quantity': doc_dict[item.name].surface,
-                  'total': litems[tmpDict[doc_dict[item.id].name]].total + item.total,
+            items = [];
+            machines.forEach(activityLine => {
+              console.log
+              if (result.hasOwnProperty(activityLine.key[4])) {
+                // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                items[result[activityLine.key[4]]] = {
+                  'name': items[result[activityLine.key[4]]].name,
+                  'quantity': items[result[activityLine.key[4]]].quantity + 1,
+                  // 'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[1]),
+                  'total': items[result[activityLine.key[4]]].total + activityLine.value,
                 };
               } else {
-                litems.push({
-                  'name': doc_dict[item.id].name,
-                  // 'quantity': doc_dict[item.name].surface,
-                  // 'machine': doc_dict[item.name].surface,
-                  'total': item.total,
+                items.push({
+                  'name': activityLine.key[4],
+                  'quantity': 1,
+                  // 'margin': parseFloat(activityLine.key[6]),
+                  'total': parseFloat(activityLine.value),
                 });
-                tmpDict[doc_dict[item.id].name] = litems.length - 1;
+                result[activityLine.key[4]] = items.length-1;
               }
-            }
-          })
-          console.log("litems", litems);
-          let self = this;
-          // let output = items.sort(function(a, b) {
-          //   return self.compare(a, b, self.reportMachineForm.value.orderBy);
-          // })
-          let output = litems.sort(function(a, b) {
-            return self.compare(a, b, self.reportMachineForm.value.orderBy);
-          })
-          let marker = false;
-          let total = 0;
-          output.forEach(item => {
-            item['marker'] = marker,
-              marker = !marker;
-            total += parseFloat(item['total']);
-          });
-          this.loading.dismiss();
-          console.log("ouch put", output);
-          resolve(output);
-        }
-        else if (this.reportMachineForm.value.groupBy == 'date') {
-          items = [];
-          machines.forEach(machineLine => {
-            if (result.hasOwnProperty(machineLine.key[7])) {
-              // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
-              items[result[machineLine.key[7]]] = {
-                'name': items[result[machineLine.key[7]]].name,
-                'quantity': items[result[machineLine.key[7]]].quantity + parseFloat(machineLine.key[4]),
-                'margin': items[result[machineLine.key[7]]].margin + machineLine.key[5],
-                'total': items[result[machineLine.key[7]]].total + parseFloat(machineLine.key[4]) * machineLine.key[5],
-              };
-            } else {
-              items.push({
-                'name': machineLine.key[7],
-                'quantity': parseFloat(machineLine.key[4]),
-                'margin': machineLine.key[5],
-                'total': parseFloat(machineLine.key[4]) * machineLine.key[5],
-              });
-              result[machineLine.key[7]] = items.length - 1;
-            }
-          });
+            });
 
-          let self = this;
-          let output = items.sort(function(a, b) {
-            return self.compare(a, b, self.reportMachineForm.value.orderBy);
-          })
-          let marker = false;
-          let total = 0;
-          output.forEach(item => {
-            item['marker'] = marker,
-              marker = !marker;
-            total += parseFloat(item['total']);
-          });
-          this.loading.dismiss();
-          resolve(output);
-        }
-      });
+            let self = this;
+            let output = items.sort(function(a, b) {
+              return self.compare(a, b, self.reportMachineForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
+          else if (this.reportMachineForm.value.groupBy == 'date') {
+            items = [];
+            machines.forEach(machineLine => {
+              if (result.hasOwnProperty(machineLine.key[7])) {
+                // console.log("items[result[machineLine.key[1]]]", items[result[machineLine.key[1]]]);
+                items[result[machineLine.key[7]]] = {
+                  'name': items[result[machineLine.key[7]]].name,
+                  'quantity': items[result[machineLine.key[7]]].quantity + parseFloat(machineLine.key[4]),
+                  'margin': items[result[machineLine.key[7]]].margin + machineLine.key[5],
+                  'total': items[result[machineLine.key[7]]].total + parseFloat(machineLine.key[4]) * machineLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': machineLine.key[7],
+                  'quantity': parseFloat(machineLine.key[4]),
+                  'margin': machineLine.key[5],
+                  'total': parseFloat(machineLine.key[4]) * machineLine.key[5],
+                });
+                result[machineLine.key[7]] = items.length - 1;
+              }
+            });
+
+            let self = this;
+            let output = items.sort(function(a, b) {
+              return self.compare(a, b, self.reportMachineForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
+        });
+
+
+      }
+
+
+
       // }
     });
   }

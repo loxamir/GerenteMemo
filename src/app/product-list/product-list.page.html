@@ -46,7 +46,7 @@
                       Codigo: <b style="  margin-left: 5px">{{item.code}}</b>
                   </h3>
                   <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
-                      Stock: <b style="color: green;margin-left: 5px">{{item.stock}}</b>
+                      Stock: <b style="color: green;margin-left: 5px">{{item.stock+' '}}{{item.unity|translate}}</b>
                   </h3>
                 </ion-col>
                 <ion-col no-padding size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
