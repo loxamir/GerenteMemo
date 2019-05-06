@@ -79,7 +79,7 @@ export class PouchdbService {
           resolve(false);
           return;
         }
-        this.storage.get("database").then(database => {
+        this.storage.get("database").then(async database => {
           if (! database){
             resolve(false);
             return;
@@ -95,12 +95,42 @@ export class PouchdbService {
          });
           console.log("database", database);
           self.events.publish('got-database');
+          let loadDemo = await this.storage.get('loadDemo');
           this.storage.get('password').then(password => {
             this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
-            let options = {
-              live: true,
-              retry: true
-            };
+            if (database != 'agromemo' || !loadDemo){
+              let options = {
+                live: true,
+                retry: true
+              };
+              let syncJob = this.db.sync(this.remote, options);
+
+              syncJob
+              .on('change', function (info) {
+                // handle change
+                console.log("sync change", info);
+              }).on('paused', function (err) {
+                console.log("sync paused", err);
+                if (username == 'agromemo'){
+                  self.storage.set('loadDemo', true);
+                  syncJob.cancel();
+                }
+                self.events.publish('end-sync');
+                // replication paused (e.g. replication up to date, user went offline)
+              }).on('active', function () {
+                console.log("sync activated");
+                // replicate resumed (e.g. new changes replicating, user went back online)
+              }).on('denied', function (err) {
+                console.log("sync no permissions", err);
+                // a document failed to replicate (e.g. due to permissions)
+              }).on('complete', function (info) {
+                console.log("sync complete", info);
+                // handle complete
+              }).on('error', function (err) {
+                console.log("sync other error", err);
+                // handle error
+              });
+            }
 
             this.db.changes({
               live: true,
@@ -118,27 +148,6 @@ export class PouchdbService {
               // resolve(false)
             });
 
-            this.db.sync(this.remote, options)
-            .on('change', function (info) {
-              // handle change
-              console.log("sync change", info);
-            }).on('paused', function (err) {
-              console.log("sync paused", err);
-              self.events.publish('end-sync');
-              // replication paused (e.g. replication up to date, user went offline)
-            }).on('active', function () {
-              console.log("sync activated");
-              // replicate resumed (e.g. new changes replicating, user went back online)
-            }).on('denied', function (err) {
-              console.log("sync no permissions", err);
-              // a document failed to replicate (e.g. due to permissions)
-            }).on('complete', function (info) {
-              console.log("sync complete", info);
-              // handle complete
-            }).on('error', function (err) {
-              console.log("sync other error", err);
-              // handle error
-            });
           })
         });
       });
