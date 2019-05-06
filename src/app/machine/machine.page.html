@@ -41,9 +41,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="list-mini-content" *ngIf="!showForm" style="transform: rotate(180deg);">
+<ion-content class="list-mini-content rotate180" *ngIf="!showForm">
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
-  <img id="imgtmp" #imgtmp style="transform: rotate(180deg);" style="display:none">
+  <img id="imgtmp" #imgtmp class="rotate180" style="display:none">
   <div id="pwa">
     <input type="file" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
     <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
@@ -53,7 +53,7 @@
   <div style="height:200px;" *ngIf="showBotom">
   </div>
   <form class="sample-form validations-form" [formGroup]="machineForm">
-    <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;    transform: rotate(180deg);">
+    <ion-list no-lines class="rotate180" style="overflow: auto;display: flex;flex-direction: column-reverse;">
       <ion-item-sliding class="list-item" *ngFor="let item of machineForm.value.moves">
         <ion-item no-padding (click)="openItem(item)" *ngIf="!(item._attachments && item._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
           <ion-card [class.area-card]="item.activity_name!='Memo'" [class.sent-card]="item.activity_name=='Abastecimento'">
@@ -117,7 +117,7 @@
       </ion-item-sliding>
     </ion-list>
     <ion-infinite-scroll threshold="100px" position="bottom" (ionInfinite)="doInfinite($event)">
-      <ion-infinite-scroll-content style="transform: rotate(180deg);" loadingSpinner="bubbles" loadingText="Cargando mas atividades...">
+      <ion-infinite-scroll-content class="rotate180" loadingSpinner="bubbles" loadingText="Cargando mas atividades...">
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
 
@@ -126,7 +126,7 @@
   </form>
 
 
-  <ion-fab vertical="top" style="left: 0px;right:0px;top: 0px;background: #dddddd;transform: rotate(180deg);" horizontal="start" slot="fixed">
+  <ion-fab class="rotate180" vertical="top" style="left: 0px;right:0px;top: 0px;background: #dddddd;" horizontal="start" slot="fixed">
     <ion-row style="padding-bottom:5px;padding-top: 5px;">
       <ion-col [class.left-round]="true" [class.all-round]="false">
         <ion-textarea #note [(ngModel)]="machineForm.value.note" placeholder="Escribir Anotación" style="margin-top: 2px;" rows="1">
