@@ -390,9 +390,9 @@ export class LoginPage implements OnInit {
         //   this.initiateViews();
         //   this.storage.set('optimize-'+database, true);
         // }
+        this.menuCtrl.enable(true);
+        this.router.navigate(['/agro-tabs/area-list']);
       })
-      this.menuCtrl.enable(true);
-      this.router.navigate(['/agro-tabs/area-list']);
     // }
   }
 
