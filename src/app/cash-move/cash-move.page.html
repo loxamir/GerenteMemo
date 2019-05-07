@@ -174,7 +174,7 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
     </ion-button>
   </ion-fab>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="cashMoveForm.dirty">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showSave()">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
       Guardar

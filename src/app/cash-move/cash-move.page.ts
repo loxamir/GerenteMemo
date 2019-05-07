@@ -193,6 +193,15 @@ export class CashMovePage implements OnInit {
     }
   }
 
+  showSave(){
+    return (
+      this.cashMoveForm.dirty
+      && this.cashMoveForm.value.amount
+      && JSON.stringify(this.cashMoveForm.value.accountFrom) != '{}'
+      && JSON.stringify(this.cashMoveForm.value.accountTo) != '{}'
+    )
+  }
+
   async goNextStep() {
     if (this.cashMoveForm.value.state == 'DRAFT'){
       if (this.cashMoveForm.value.amount == ''){
