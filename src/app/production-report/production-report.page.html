@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'Producciones' | translate }}: {{reportProductionForm.value.code}}
+        {{ 'Fabricaciones' | translate }}: {{reportProductionForm.value.code}}
       </ion-row>
     </ion-title>
     <ion-buttons slot="end">
@@ -45,7 +45,7 @@
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
-          <ion-select-option value="product">Producto Producido</ion-select-option>
+          <ion-select-option value="product">Producto Fabricado</ion-select-option>
           <ion-select-option value="component">Componente</ion-select-option>
           <ion-select-option value="category">Categoria</ion-select-option>
           <ion-select-option value="brand">Marca</ion-select-option>
