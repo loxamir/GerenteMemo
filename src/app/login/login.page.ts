@@ -48,7 +48,6 @@ export class LoginPage implements OnInit {
     public storage: Storage,
     public events: Events,
     public popoverCtrl: PopoverController,
-    // public appConfig: AppConfig,
     public menuCtrl: MenuController,
     public pouchdbService: PouchdbService,
     public toastCtrl: ToastController,
@@ -77,8 +76,6 @@ export class LoginPage implements OnInit {
   }
 
   async ngOnInit() {
-
-
     this.loginForm = new FormGroup({
       name: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.compose([
@@ -120,12 +117,12 @@ export class LoginPage implements OnInit {
     } else {
       let filter = this.filter;
     }
-    this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
-        console.log("helps", helps);
-        this.helps = helps;
-      // this.helps = helps;
-      this.page = 1;
-    });
+    // this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
+    //     console.log("helps", helps);
+    //     this.helps = helps;
+    //   // this.helps = helps;
+    //   this.page = 1;
+    // });
   }
 
   // doInfinite(infiniteScroll) {
@@ -164,13 +161,13 @@ export class LoginPage implements OnInit {
   //   }, 500);
   // }
   //
-  getHelpsPage(keyword, page, field=''){
-    console.log("getHelpsPage(",keyword, page, field);
-    return new Promise(resolve => {
-      this.restProvider.getDatabaseDoc('helps', '_design/Vistas/_view/videos?include_docs=true').then((helps: any[]) => {
-        console.log("helps", helps['rows']);
-        resolve(helps['rows']);
-      });
+  // getHelpsPage(keyword, page, field=''){
+  //   console.log("getHelpsPage(",keyword, page, field);
+  //   return new Promise(resolve => {
+  //     this.restProvider.getDatabaseDoc('helps', '_design/Vistas/_view/videos?include_docs=true').then((helps: any[]) => {
+  //       console.log("helps", helps['rows']);
+  //       resolve(helps['rows']);
+  //     });
     //   let list = [
     //     {
     //       "name": "Como Crear Nuevo Contacto",
@@ -205,8 +202,8 @@ export class LoginPage implements OnInit {
     // // console.log("keyword", keyword);
     // // console.log("this.searchTerm", this.searchTerm);
     // resolve(otro);
-  });
-  }
+  // });
+  // }
 
   async presentPopover(myEvent) {
     // console.log("teste my event");
@@ -335,11 +332,10 @@ export class LoginPage implements OnInit {
     this.events.publish('get-user', {"user": this.loginForm.value.user.toLowerCase()});
     this.selected_user = true;
     this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
-    // this.selectDatabase();
     this.username = this.loginForm.value.user.toLowerCase();
+    this.selectDatabase(this.username);
     this.menuCtrl.enable(false);
     this.loading.dismiss();
-
   }
 
   async showDatabaseList(username, password){
@@ -369,25 +365,30 @@ export class LoginPage implements OnInit {
       // });
       // toast.present();
       this.pouchdbService.getConnect();
+      let toast = await this.toastCtrl.create({
+        message: "Sincronizando...",
+      });
+      await toast.present();
+
       // if (this.navParams.data.current_db){
       //   this.navCtrl.pop()
       // }
 
       this.events.subscribe('end-sync', async () => {
+        toast.dismiss();
+        this.loading.dismiss();
         this.events.unsubscribe('end-sync');
-        // toast.dismiss();
-        let viewExist = await this.storage.get('optimize-'+database);
-        if(viewExist){
-          this.loading.dismiss();
-        } else {
-          this.initiateViews();
-          this.storage.set('optimize-'+database, true);
-        }
-        // this.navCtrl.setRoot(TabsNavigationPage);
-        // this.loading.dismiss();
+        // let viewExist = await this.storage.get('optimize-'+database);
+        // if(viewExist){
+        //   toast.dismiss();
+        //   this.loading.dismiss();
+        // } else {
+        //   this.initiateViews();
+        //   this.storage.set('optimize-'+database, true);
+        // }
+        this.menuCtrl.enable(true);
+        this.router.navigate(['/tabs/sale-list']);
       })
-      this.menuCtrl.enable(true);
-      this.router.navigate(['/tabs/sale-list']);
     // }
   }
 
