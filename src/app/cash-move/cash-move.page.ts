@@ -17,6 +17,7 @@ import { ConfigService } from '../config/config.service';
 import { CheckListPage } from '../check-list/check-list.page';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 
 @Component({
   selector: 'app-cash-move',
@@ -72,6 +73,7 @@ export class CashMovePage implements OnInit {
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public cashMoveService: CashMoveService,
+    public pouchdbService: PouchdbService,
     // public cashService: CashService,
     // public navParams: NavParams,
     public events: Events,
@@ -94,7 +96,7 @@ export class CashMovePage implements OnInit {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     var today = new Date().toISOString();
     setTimeout(() => {
       this.amount.setFocus();
@@ -102,7 +104,7 @@ export class CashMovePage implements OnInit {
     }, 200);
 
     this.cashMoveForm = this.formBuilder.group({
-      name: new FormControl(this.default_name, Validators.required),
+      name: new FormControl(this.default_name),
       amount: new FormControl(this.default_amount||'', Validators.required),
       date: new FormControl(today, Validators.required),
       dateDue: new FormControl(today, Validators.required),
@@ -147,6 +149,9 @@ export class CashMovePage implements OnInit {
     if (this.transfer){
       // console.log("from cash");
       this.transfer = true;
+      this.contact = await this.pouchdbService.getDoc('contact.myCompany');
+    } else {
+      this.contact = await this.pouchdbService.getDoc('contact.unknown');
     }
 
     if (this._id){
@@ -193,20 +198,20 @@ export class CashMovePage implements OnInit {
       if (this.cashMoveForm.value.amount == ''){
         this.amount.setFocus();
       }
-      else if (!this.transfer && Object.keys(this.cashMoveForm.value.contact).length === 0){
-        this.selectContact();
-        return;
-      }
-      else if (!this.cashMoveForm.value.name){
-        this.description.setFocus();
-        return;
-      }
       else if (Object.keys(this.cashMoveForm.value.accountFrom).length === 0){
         this.selectAccountFrom();
         return;
       }
       else if (Object.keys(this.cashMoveForm.value.accountTo).length === 0){
         this.selectAccountTo();
+        return;
+      }
+      else if (!this.transfer && Object.keys(this.cashMoveForm.value.contact).length === 0){
+        this.selectContact();
+        return;
+      }
+      else if (!this.cashMoveForm.value.name){
+        this.description.setFocus();
         return;
       }
       else if (
@@ -474,9 +479,9 @@ export class CashMovePage implements OnInit {
     if (this.cashMoveForm.value.amount==null){
       return true;
     }
-    else if (this.cashMoveForm.value.name==null){
-      return true;
-    }
+    // else if (this.cashMoveForm.value.name==null){
+    //   return true;
+    // }
     else if (Object.keys(this.cashMoveForm.value.contact).length==0){
     // else if (this.cashMoveForm.value.contact.toJSON()=='{}'){
       return true;

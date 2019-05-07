@@ -36,18 +36,6 @@
         formControlName="amount"></ion-input>
       </ion-item> -->
       <ion-item
-      no-padding
-      *ngIf="!transfer"
-      (click)="selectContact()"
-       class="field-100">
-        <h4 class="field-label">{{'CONTACT' | translate}}</h4>
-        <h4 class="field-value">{{cashMoveForm.value.contact && cashMoveForm.value.contact.name || 'Selecionar'}}</h4>
-      </ion-item>
-      <ion-item class="field-100">
-        <ion-label position="floating" style="font-size:14px">{{'DESCRIPTION' | translate}}</ion-label>
-        <ion-input #description type="text" formControlName="name"></ion-input>
-      </ion-item>
-      <ion-item
        no-padding
        (click)="selectAccountFrom()"
        *ngIf="!from_cash"
@@ -62,6 +50,18 @@
        class="field-100">
         <h4 class="field-label">{{'Destino' | translate }}</h4>
         <h4 class="field-value">{{cashMoveForm.value.accountTo && cashMoveForm.value.accountTo.name || 'Selecionar'}}</h4>
+      </ion-item>
+      <ion-item
+      no-padding
+      *ngIf="!transfer"
+      (click)="selectContact()"
+       class="field-100">
+        <h4 class="field-label">{{'CONTACT' | translate}}</h4>
+        <h4 class="field-value">{{cashMoveForm.value.contact && cashMoveForm.value.contact.name || 'Selecionar'}}</h4>
+      </ion-item>
+      <ion-item class="field-100">
+        <ion-label position="floating" style="font-size:14px">{{'OBSERVATION' | translate}}</ion-label>
+        <ion-input #description type="text" formControlName="name"></ion-input>
       </ion-item>
       <!-- *ngIf="cashMoveForm.value.accountFrom.type=='payable' || cashMoveForm.value.accountTo.type=='payable' || cashMoveForm.value.accountFrom.type=='receivable' || cashMoveForm.value.accountTo.type=='receivable'" -->
       <ion-item no-padding class="item-content"
