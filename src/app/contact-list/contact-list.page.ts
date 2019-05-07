@@ -147,46 +147,6 @@ export class ContactListPage implements OnInit {
     });
   }
 
-
-  saveAsCsv() {
-    var csv: any = this.convertToCSV(this.contacts)
-    var fileName: any = "contacts.csv"
-    this.file.writeFile(
-      this.file.externalRootDirectory, fileName, csv, {replace:true}
-    ).then(_ => {
-              alert('Success ;-)')
-      }).catch(err => {
-              this.file.writeExistingFile(
-                this.file.externalRootDirectory, fileName, csv
-              ).then(_ => {
-        alert('Success ;-)')
-          }).catch(err => {
-            alert('Failure')
-          })
-      })
-
-  }
-
-  convertToCSV(contacts) {
-    var csv: any = 'Codigo,Nombre,Telefone,RUC,Direccion,Email,Es Cliente,Es Proveedor,Es Empleado,Es Vendedor,Anotación\r\n';
-
-    contacts.forEach(contact => {
-      csv += contact.code + "," +
-      contact.name + "," +
-      contact.phone + "," +
-      contact.document + "," +
-      contact.address + "," +
-      contact.email + "," +
-      contact.client + "," +
-      contact.supplier + "," +
-      contact.employee + "," +
-      contact.seller + "," +
-      '"' + contact.note + '"' +
-      '\r\n';
-    });
-    return csv
-  }
-
   doInfinite(infiniteScroll) {
     setTimeout(() => {
       this.getContactsPage(this.searchTerm, this.page).then((contacts: any[]) => {
