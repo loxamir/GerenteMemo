@@ -60,6 +60,7 @@ import { ProductCategoryPageModule } from './product-category/product-category.m
 import { BrandPageModule } from './brand/brand.module';
 import { ContactPageModule } from './contact/contact.module';
 import { ProductPageModule } from './product/product.module';
+import { DiscountPageModule } from './discount/discount.module';
 
 import { CheckListPageModule } from './check-list/check-list.module';
 import { CheckPageModule } from './check/check.module';
@@ -100,6 +101,7 @@ import { environment } from '../environments/environment';
   imports: [
     LoginPageModule,
     ContactPageModule,
+    DiscountPageModule,
     CashMovePageModule,
     BrandListPageModule,
     ProductCategoryListPageModule,

@@ -37,7 +37,7 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 // declare var cordova:any;
 // import * as jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
-
+import { DiscountPage } from '../discount/discount.page';
 
 @Component({
   selector: 'app-sale',
@@ -218,6 +218,30 @@ export class SalePage implements OnInit {
       if (this.return){
         this.recomputeValues();
       }
+    }
+
+    setDiscount() {
+      return new Promise(async resolve => {
+        this.events.subscribe('set-discount', (data) => {
+          this.saleForm.patchValue({
+            total: data,
+            // cash_id: data._id,
+          });
+          this.saleForm.markAsDirty();
+          this.events.unsubscribe('set-discount');
+          // profileModal.dismiss();
+          resolve(true);
+        })
+        let profileModal = await this.modalCtrl.create({
+          component: DiscountPage,
+          componentProps: {
+            "select": true,
+            "amount_original": this.saleForm.value.total,
+            "currency_precision": this.currency_precision
+          }
+        });
+        profileModal.present();
+      });
     }
 
     selectCurrency() {

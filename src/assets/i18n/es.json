@@ -302,5 +302,8 @@
   "SERVICE_NOTE": "Nota Impresa en servicios",
   "TOTAL_COST": "Costo Total",
   "OBSERVATION": "Observación",
+  "DISCOUNT_PERCENT": "Descuento en %",
+  "DISCOUNT_AMOUNT": "Descuento en Valor",
+  "NEW_AMOUNT": "Nuevo Valor",
   "RESULT": "Resultado"
 }

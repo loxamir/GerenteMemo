@@ -18,7 +18,8 @@
   <ion-row>
     <ion-item
     no-padding
-     class="summary-50">
+     class="summary-50"
+     (click)="setDiscount()">
       <h4 class="field-label">{{'TOTAL' | translate}}</h4>
       <h4 class="field-value" style="color:blue">$ {{saleForm.value.total|number:'1.'+currency_precision}}</h4>
     </ion-item>
