@@ -1,59 +1,48 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/discount-list"></ion-back-button>
-    </ion-buttons>
     <ion-title>{{ 'DISCOUNT'| translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-  <form [formGroup]="discountForm"  (ngSubmit)="onSubmit(discountForm.value)">
+  <form [formGroup]="discountForm" (ngSubmit)="onSubmit(discountForm.value)">
     <ion-row>
-      <ion-item
-       no-padding
-       class="field-50">
+      <ion-item no-padding class="field-100">
+        <h4 class="field-label">{{'AMOUNT_ORIGINAL' | translate}}</h4>
+        <h4 class="field-value"
+        style="color:blue">$ {{amount_original|number:'1.'+currency_precision}}</h4>
+      </ion-item>
+      <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'DISCOUNT_PERCENT' | translate}}</ion-label>
-        <ion-input type="text"
+        <ion-input type="number"
         (ngModelChange)="changedPercent()"
         #discount_percent
         formControlName="discount_percent"></ion-input>
       </ion-item>
+      <ion-item no-padding class="field-50">
+        <ion-label position="floating">{{'DISCOUNT_AMOUNT' | translate}}</ion-label>
+        <ion-input type="number"
+        #discount_amount
+        (ngModelChange)="changedAmount()"
+        formControlName="discount_amount"></ion-input>
+      </ion-item>
+      <ion-item no-padding class="field-100">
+        <ion-label position="floating">{{'NEW_AMOUNT' | translate}}</ion-label>
+        <ion-input type="number"
+        #new_amount
+        (ngModelChange)="changedNew()"
+        formControlName="new_amount"></ion-input>
+      </ion-item>
       <ion-item
-      no-padding
-      class="field-50">
-      <ion-label position="floating">{{'DISCOUNT_AMOUNT' | translate}}</ion-label>
-      <ion-input type="text"
-      #discount_amount
-      (ngModelChange)="changedAmount()"
-      formControlName="discount_amount"></ion-input>
-    </ion-item>
-    <ion-item
-    no-padding
-    class="field-100"
-    >
-    <ion-label position="floating">{{'NEW_AMOUNT' | translate}}</ion-label>
-    <ion-input type="text"
-    #new_amount
-    (ngModelChange)="changedNew()"
-    formControlName="new_amount"></ion-input>
-  </ion-item>
-      <!-- <ion-item
+      *ngIf="showProduct"
        no-padding
        class="field-100">
-         <ion-label>{{'Vendedor' | translate}}</ion-label>
-         <ion-toggle formControlName="seller"></ion-toggle>
-      </ion-item> -->
+         <ion-label>{{'Agregar como Producto' | translate}}</ion-label>
+         <ion-toggle formControlName="discountProduct"></ion-toggle>
+      </ion-item>
     </ion-row>
   </form>
-
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
-    <ion-button (click)="goNextStep()"  class="next-button">
-      <ion-icon name="fastforward"> </ion-icon>
-      Proximo
-    </ion-button>
-  </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger">
@@ -63,13 +52,10 @@
       <span *ngIf="!discountForm.dirty">Volver</span>
     </ion-button>
   </ion-fab>
-
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="discountForm.dirty">
-    <ion-button (click)="buttonSave()"  color="success">
+    <ion-button (click)="buttonSave()" color="success">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      Confirmar
     </ion-button>
   </ion-fab>
-  <div style="height: 100px;">
-  </div>
 </ion-content>

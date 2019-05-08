@@ -188,7 +188,7 @@ export class SalePage implements OnInit {
         residual: new FormControl(0),
         note: new FormControl(''),
         state: new FormControl('QUOTATION'),
-        // tab: new FormControl('products'),
+        discount: new FormControl(0),
         items: new FormControl(this.items||[], Validators.required),
         payments: new FormControl([]),
         planned: new FormControl([]),
@@ -221,13 +221,82 @@ export class SalePage implements OnInit {
     }
 
     setDiscount() {
+      let self= this;
+      return new Promise(async resolve => {
+        this.events.subscribe('set-discount', async (data) => {
+          if (data.discountProduct && this.saleForm.value.discount != null){
+            let product:any = await this.pouchdbService.getDoc('product.discount');
+            self.saleForm.value.items.unshift({
+              'quantity': 1,
+              'price': -data.discount_amount,
+              'cost': data.discount_amount,
+              'product': product,
+              'description': product.name,
+            })
+            this.saleForm.patchValue({
+              discount: null,
+            });
+          } else if (data.discountProduct && this.saleForm.value.discount == null){
+            self.saleForm.value.items.forEach(item=>{
+              if (item.product._id == 'product.discount'){
+                discountProduct = true;
+                item.price = -data.discount_amount;
+                item.cost = -data.discount_amount;
+              }
+              return;
+            })
+          } else if (!data.discountProduct && this.saleForm.value.discount == null){
+            self.saleForm.value.items.forEach((item, index)=>{
+              if (item.product._id == 'product.discount'){
+                // discountProduct = true;
+                // item.price = -data.discount_amount;
+                // item.cost = -data.discount_amount;
+                self.saleForm.value.items.splice(index, 1)
+              }
+              return;
+            })
+            this.saleForm.patchValue({
+              discount: data.discount_amount,
+            });
+          } else {
+            this.saleForm.patchValue({
+              discount: data.discount_amount,
+            });
+          }
+          self.recomputeValues();
+          this.events.unsubscribe('set-discount');
+          resolve(true);
+        })
+        let discountProduct = false;
+        let amount_original = parseFloat(this.saleForm.value.total) + parseFloat(this.saleForm.value.discount || 0);
+        let new_amount = parseFloat(this.saleForm.value.total);
+        this.saleForm.value.items.forEach(item=>{
+          if (item.product._id == 'product.discount'){
+            discountProduct = true;
+            amount_original = amount_original - item.price;
+          }
+          return;
+        })
+        let profileModal = await this.modalCtrl.create({
+          component: DiscountPage,
+          componentProps: {
+            "amount_original": amount_original,
+            "new_amount": new_amount,
+            "currency_precision": this.currency_precision,
+            "showProduct": true,
+            "discountProduct": discountProduct
+          },
+          cssClass: "discount-modal"
+        });
+        profileModal.present();
+      });
+    }
+
+    setLineDiscount(line) {
       return new Promise(async resolve => {
         this.events.subscribe('set-discount', (data) => {
-          this.saleForm.patchValue({
-            total: data,
-            // cash_id: data._id,
-          });
-          this.saleForm.markAsDirty();
+          line.price_original = line.price_original || line.price;
+          line.price = data.new_amount;
           this.events.unsubscribe('set-discount');
           // profileModal.dismiss();
           resolve(true);
@@ -235,10 +304,11 @@ export class SalePage implements OnInit {
         let profileModal = await this.modalCtrl.create({
           component: DiscountPage,
           componentProps: {
-            "select": true,
-            "amount_original": this.saleForm.value.total,
-            "currency_precision": this.currency_precision
-          }
+            "amount_original": line.price_original || line.price,
+            "new_amount": line.price,
+            "currency_precision": this.currency_precision,
+          },
+          cssClass: "discount-modal"
         });
         profileModal.present();
       });
@@ -423,6 +493,7 @@ export class SalePage implements OnInit {
         this.saleForm.value.items.forEach((item) => {
           total = total + item.quantity*item.price;
         });
+        total -= this.saleForm.value.discount;
         console.log("total", total);
         this.saleForm.patchValue({
           total: total,
@@ -459,9 +530,6 @@ export class SalePage implements OnInit {
     }
 
     async addItem(){
-      // if(!this.saleForm.value._id){
-      //   this.buttonSave();
-      // }
       let self = this;
       if (this.saleForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
@@ -479,69 +547,6 @@ export class SalePage implements OnInit {
           self.avoidAlertMessage = false;
           self.events.unsubscribe('select-product');
           profileModal.dismiss();
-          // let prompt = await self.alertCtrl.create({
-          //   header: 'Cantidad del Producto',
-          //   message: 'Cual es el Cantidad de este producto?',
-          //   inputs: [
-          //     {
-          //       type: 'number',
-          //       name: 'quantity',
-          //       value: "1"
-          //   },
-          //
-          //   ],
-          //   buttons: [
-          //     {
-          //       text: 'Cancel'
-          //     },
-          //     {
-          //       text: 'Confirmar',
-          //       handler: async data => {
-          //         // console.log("vars", data);
-          //         self.saleForm.value.items.unshift({
-          //           'quantity': data.quantity,
-          //           'price': product.price,
-          //           'cost': product.cost,
-          //           'product': product,
-          //           'description': product.name,
-          //         })
-          //         self.recomputeValues();
-          //         self.saleForm.markAsDirty();
-          //         self.avoidAlertMessage = false;
-          //         self.events.unsubscribe('select-product');
-          //         profileModal.dismiss();
-          //
-          //
-          //         // this.addItem();
-          //
-          //         let prompt2 = await self.alertCtrl.create({
-          //           header: 'Agregar otro Producto?',
-          //           // message: 'Cual es el Cantidad de este producto?',
-          //           buttons: [
-          //             {
-          //               text: 'No'
-          //             },
-          //             // {
-          //             //   text: 'Concluir Venta',
-          //             //   handler: data => {
-          //             //     this.goNextStep();
-          //             //   }
-          //             // },
-          //             {
-          //               text: 'Si',
-          //               handler: data => {
-          //                 this.addItem();
-          //               }
-          //             }
-          //           ]
-          //         });
-          //         prompt2.present();
-          //
-          //       }
-          //     }
-          //   ]
-          // });
-          // prompt.present();
         })
         let profileModal = await this.modalCtrl.create({
           component: ProductListPage,

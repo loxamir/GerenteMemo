@@ -303,7 +303,9 @@
   "TOTAL_COST": "Costo Total",
   "OBSERVATION": "Observación",
   "DISCOUNT_PERCENT": "Descuento en %",
+  "DISCOUNT": "Descuento",
   "DISCOUNT_AMOUNT": "Descuento en Valor",
   "NEW_AMOUNT": "Nuevo Valor",
+  "AMOUNT_ORIGINAL": "Valor Original",
   "RESULT": "Resultado"
 }
