@@ -53,6 +53,22 @@ h4.field-value {
   width: 100%;
   text-align: center;
 }
+
+h4.field-label-col {
+  position: absolute;
+  margin-left: 5px;
+  font-size: 13px;
+  margin-top: 0px;
+  width: 100%;
+  text-align: left;
+}
+h4.field-value-col {
+  font-size: 18px;
+  margin-top: 20px;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+}
 @media screen and (max-width: 770px){
   .sc-ion-modal-md-h {
     --width: 95%;
@@ -143,7 +159,7 @@ h4.field-value {
     margin-left: 10%;
 }
 .summary-50 {
-    width: 50%;
+    // width: 50%;
     // background-color: #fff;
     // border: 1px solid #ddd;
 }
