@@ -26,7 +26,7 @@
   </ion-col>
   <ion-col
   (click)="setDiscount()"
-  *ngIf="saleForm.value.discount || saleForm.value.discount_lines">
+  *ngIf="saleForm.value.discount.value || saleForm.value.discount.lines">
     <!-- <ion-item
       no-padding
       class="summary-100"> -->
@@ -166,8 +166,31 @@
     </section>
     </ion-list>
 
+    <ion-item class="field-100" *ngIf="saleForm.value.note != undefined">
+        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+        <ion-textarea autoGrow="true" rows="1" #note formControlName="note"></ion-textarea>
+    </ion-item>
+
     <ion-list no-lines *ngIf="saleForm.value.items.length">
       <section>
+        <ion-item-sliding  class="list-item" *ngFor="let item of saleForm.value.items" #slidingItem>
+          <ion-item *ngIf="item.product._id=='product.discount'" class="internal-item">
+            <ion-card class="list-card" style="--background: #ffe38a" (click)="setDiscount()">
+              <ion-row class="product-name-row">
+                <ion-col size="6" style="white-space: normal;">
+                  Descuento sobre Total
+                </ion-col>
+                <ion-col size="6" style="white-space: normal;">
+                  <div style="font-size: 20px;color:red;">
+                    $ {{item.price*item.quantity|number:'1.'+currency_precision}}
+                    <ion-icon name="arrow-down">
+                    </ion-icon>{{computeDiscountPercent()}}%
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-card>
+          </ion-item>
+        </ion-item-sliding>
       <h2 class="section-title">{{'Itenes de la Venta' | translate}}</h2>
       <ion-item-sliding  class="list-item" *ngFor="let item of saleForm.value.items" #slidingItem>
         <ion-item *ngIf="item.product._id!='product.discount'" class="internal-item">
@@ -177,23 +200,23 @@
             </ion-row>
         <ion-row>
           <ion-col size="6" style="white-space: normal;">
-            <ion-row style="margin-top: -5px;">
-              <ion-col  size="12" (click)="setLineDiscount(item)" >
+            <ion-row style="margin-top: -5px;" (click)="setLineDiscount(item)">
+              <ion-col size="12">
                 <span class="price-label">Precio:</span>
                 <div *ngIf="item.price_original" style="font-size: 12px;display: contents; color:red;    text-decoration: line-through;">
                    ${{item.price_original |number:'1.'+currency_precision}}
                 </div>
                 <div *ngIf="item.price_original" style="font-size: 12px;display: contents; color:red;">
                   <ion-icon name="arrow-down" style="padding-top:2px;">
-                  </ion-icon>10%
+                  </ion-icon>{{lineDiscountPercent(item)}}%
                 </div>
                 <div style="font-size: 15px;display: contents; color:red">
                    ${{item.price|number:'1.'+currency_precision}}
                 </div>
               </ion-col>
             </ion-row>
-            <ion-row (click)="openItem(item)">
-              <ion-col  size="12" class="item-content price-tag" (click)="editItemPrice(item)" >
+            <ion-row (click)="setLineDiscount(item)">
+              <ion-col  size="12" class="item-content price-tag">
                 <span class="price-label">SubTotal:</span>
                 <div style="font-size: 20px;color:green;">
                    ${{item.price*item.quantity|number:'1.'+currency_precision}}
@@ -223,48 +246,6 @@
         </ion-row>
       </ion-card>
       </ion-item>
-
-
-
-      <ion-item *ngIf="item.product._id=='product.discount'" class="internal-item">
-        <ion-card class="list-card" style="--background: #ffe38a" (click)="setDiscount()">
-          <ion-row class="product-name-row">
-            <ion-col size="6" style="white-space: normal;">
-              <!-- {{item.product && item.product.code}} - {{item.product && item.product.name}} -->
-              Descuento sobre Total
-            </ion-col>
-          <!-- </ion-row> -->
-      <!-- <ion-row> -->
-        <ion-col size="6" style="white-space: normal;">
-            <div style="font-size: 20px;color:red;">
-               $ {{item.price*item.quantity|number:'1.'+currency_precision}}
-               <div>
-               <ion-icon name="arrow-down">
-               </ion-icon>{{computeDiscountPercent()}}%
-            </div>
-        </ion-col>
-        <!-- <ion-col size="6">
-
-          <ion-row>
-            <ion-col style="text-align: center;">
-              Cantidad
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="3">
-              <ion-button class="quantity-button" (click)="remItem(item)">-</ion-button>
-            </ion-col>
-            <ion-col size="6" (click)="editItemQuantity(item)" style="text-align: center;font-size: 20px;margin-top: 8px;">
-              {{item.quantity}}
-            </ion-col>
-            <ion-col size="3">
-              <ion-button class="quantity-button" (click)="sumItem(item)">+</ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-col> -->
-      </ion-row>
-    </ion-card>
-    </ion-item>
         <ion-item-options  side="end">
           <ion-item-option (click)="deleteItem(slidingItem, item)"  *ngIf="saleForm.value.state=='QUOTATION'">
             Borrar

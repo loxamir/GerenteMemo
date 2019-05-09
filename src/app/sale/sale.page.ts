@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController,  LoadingController, Platform, AlertController, Events, ToastController, ModalController, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -45,7 +45,7 @@ import { DiscountPage } from '../discount/discount.page';
   styleUrls: ['./sale.page.scss'],
 })
 export class SalePage implements OnInit {
-  // @ViewChild(Select) select: Select;
+  @ViewChild('note') note;
   @HostListener('document:keypress', ['$event'])
     async handleKeyboardEvent(event: KeyboardEvent) {
       //this.key = event.key;
@@ -172,30 +172,24 @@ export class SalePage implements OnInit {
     }
 
     async ngOnInit() {
-      //var today = new Date().toISOString();
       this.saleForm = this.formBuilder.group({
         contact: new FormControl(this.contact||{}, Validators.required),
         contact_name: new FormControl(this.contact_name||''),
-
-        // project: new FormControl(this.route.snapshot.paramMap.get('project||{}),
-        // project_name: new FormControl(this.route.snapshot.paramMap.get('project_name||''),
-
         name: new FormControl(''),
         code: new FormControl(''),
         date: new FormControl(this.route.snapshot.paramMap.get('date')||this.today),
         origin_id: new FormControl(this.origin_id),
         total: new FormControl(0),
         residual: new FormControl(0),
-        note: new FormControl(''),
+        note: new FormControl(undefined),
         state: new FormControl('QUOTATION'),
-        discount: new FormControl(0),
+        discount: new FormControl({value: 0, discountProduct: true}),
         items: new FormControl(this.items||[], Validators.required),
         payments: new FormControl([]),
         planned: new FormControl([]),
         paymentCondition: new FormControl({}),
         payment_name: new FormControl(''),
         invoice: new FormControl(''),
-        discount_lines: new FormControl(0),
         invoices: new FormControl([]),
         amount_unInvoiced: new FormControl(0),
         seller: new FormControl(this.route.snapshot.paramMap.get('seller')||{}, Validators.required),
@@ -223,45 +217,54 @@ export class SalePage implements OnInit {
 
     computePercent(){
       return (
-        (100*(
-          parseFloat(this.saleForm.value.discount) +
-          parseFloat(this.saleForm.value.discount_lines)
-        )/
         (
-          parseFloat(this.saleForm.value.discount) + parseFloat(this.saleForm.value.discount_lines) + this.saleForm.value.total
-        )).toFixed(0)
+          100*
+          (
+            parseFloat(this.saleForm.value.discount.value) +
+            parseFloat(this.saleForm.value.discount.lines)
+          )/
+          (
+            parseFloat(this.saleForm.value.discount.value) +
+            parseFloat(this.saleForm.value.discount.lines) +
+            this.saleForm.value.total
+          )
+        ).toFixed(0)
       )
     }
 
     computeDiscount(){
-      return parseFloat(this.saleForm.value.discount)+parseFloat(this.saleForm.value.discount_lines);
+      return (
+        parseFloat(this.saleForm.value.discount.value) +
+        parseFloat(this.saleForm.value.discount.lines)
+      )
     }
 
     computeDiscountPercent(){
       return (
         (100*(
-          parseFloat(this.saleForm.value.discount)
+          parseFloat(this.saleForm.value.discount.value)
         )/
         (
-          parseFloat(this.saleForm.value.discount) + this.saleForm.value.total
+          parseFloat(this.saleForm.value.discount.value) +
+          this.saleForm.value.total
         )).toFixed(0)
       )
     }
 
     setDiscount() {
-      if (this.saleForm.value.state == 'QUOTATION'){
+      // if (this.saleForm.value.state == 'QUOTATION'){
         let self= this;
         return new Promise(async resolve => {
-          let discountProduct = false;
-          let amount_original = parseFloat(this.saleForm.value.total) + parseFloat(this.saleForm.value.discount || 0);
+          let discountProduct = this.saleForm.value.discount.discountProduct;
+          let amount_original = parseFloat(this.saleForm.value.total) + parseFloat(this.saleForm.value.discount.value || 0);
           let new_amount = parseFloat(this.saleForm.value.total);
-          this.saleForm.value.items.forEach(item=>{
-            if (item.product._id == 'product.discount'){
-              discountProduct = true;
-              // amount_original = amount_original + item.quantity*item.price;
-            }
-            return;
-          })
+          // this.saleForm.value.items.forEach(item=>{
+          //   if (item.product._id == 'product.discount'){
+          //     discountProduct = true;
+          //     // amount_original = amount_original + item.quantity*item.price;
+          //   }
+          //   return;
+          // })
           let profileModal = await this.modalCtrl.create({
             component: DiscountPage,
             componentProps: {
@@ -275,9 +278,9 @@ export class SalePage implements OnInit {
           });
           profileModal.present();
 
-
+          let previous = this.saleForm.value.discount.value;
           this.events.subscribe('set-discount', async (data) => {
-            if (parseFloat(data.discount_amount) && ! discountProduct){
+            if (parseFloat(data.discount_amount) && ! previous){
               let product:any = await this.pouchdbService.getDoc('product.discount');
               self.saleForm.value.items.unshift({
                 'quantity': -1,
@@ -286,7 +289,7 @@ export class SalePage implements OnInit {
                 'product': product,
                 'description': product.name,
               })
-            } else if (parseFloat(data.discount_amount) && discountProduct){
+            } else if (parseFloat(data.discount_amount) && previous){
               self.saleForm.value.items.forEach(item=>{
                 if (item.product._id == 'product.discount'){
                   discountProduct = true;
@@ -295,7 +298,7 @@ export class SalePage implements OnInit {
                 }
                 return;
               })
-            } else if (!parseFloat(data.discount_amount)){
+            } else if (previous && !parseFloat(data.discount_amount)){
               self.saleForm.value.items.forEach((item, index)=>{
                 if (item.product._id == 'product.discount'){
                   self.saleForm.value.items.splice(index, 1)
@@ -304,14 +307,17 @@ export class SalePage implements OnInit {
               })
             }
             this.saleForm.patchValue({
-              discount: data.discount_amount,
+              discount: {
+                value: data.discount_amount,
+                discountProduct: data.discountProduct
+              }
             });
             self.recomputeValues();
             this.events.unsubscribe('set-discount');
             resolve(true);
           })
         });
-      }
+      // }
     }
 
     setLineDiscount(line) {
@@ -515,7 +521,7 @@ export class SalePage implements OnInit {
         this.saleForm.value.items.forEach((item) => {
           total = total + item.quantity*item.price;
         });
-        // total -= this.saleForm.value.discount;
+        // total -= this.saleForm.value.discount.value;
         console.log("total", total);
         this.saleForm.patchValue({
           total: total,
@@ -535,10 +541,19 @@ export class SalePage implements OnInit {
         if (!discount_lines){
           discount_lines = 0;
         }
+        this.saleForm.value.discount['lines'] = discount_lines
         this.saleForm.patchValue({
-          discount_lines: discount_lines,
+          discount: this.saleForm.value.discount,
         });
       }
+    }
+
+    lineDiscountPercent(line){
+      return (
+        100*(
+          1 - parseFloat(line.price)/parseFloat(line.price_original)
+        )
+      ).toFixed(0)
     }
 
     recomputeUnInvoiced(){
@@ -1084,6 +1099,18 @@ export class SalePage implements OnInit {
       if (this.saleForm.value.paymentCondition._id == 'payment-condition.cash'){
         paymentType = 'Contado';
       }
+      let discount = 0;
+      let items = []
+      if (this.saleForm.value.discount.discountProduct){
+        items = this.saleForm.value.items;
+      } else {
+        discount = this.saleForm.value.discount.value;
+        this.saleForm.value.items.forEach(item=>{
+          if (item.product._id != 'product.discount'){
+            items.push(item);
+          }
+        })
+      }
       let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
@@ -1094,7 +1121,9 @@ export class SalePage implements OnInit {
           "date": this.saleForm.value.date,
           "paymentCondition": paymentType,
           "origin_id": this.saleForm.value._id,
-          "items": this.saleForm.value.items,
+          "items": items,
+          "note": this.saleForm.value.note,
+          "discount": discount,
           'type': 'out',
         }
       });

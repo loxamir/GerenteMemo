@@ -7,19 +7,19 @@
 	{{ 'INVOICE' | translate }}: {{invoiceForm.value.code||invoiceForm.value.number}}
     </ion-title>
   </ion-toolbar>
-  <ion-row>
-    <ion-item
+  <ion-row style="height: 50px;">
+    <!-- <ion-item
     no-padding
-     class="summary-50">
-      <h4 class="field-label">{{'TOTAL' | translate}}</h4>
-      <h4 class="field-value" style="color:blue">$ {{invoiceForm.value.total|number:'1.'+currency_precision}}</h4>
-    </ion-item>
-    <ion-item
-    no-padding
-     class="summary-50">
-      <h4 class="field-label">{{'IVA' | translate}}</h4>
-      <h4 class="field-value" style="color:red">$ {{invoiceForm.value.tax|number:'1.'+currency_precision}}</h4>
-    </ion-item>
+     class="summary-50"> -->
+     <ion-col>
+       <h4 class="field-label-col">{{'TOTAL' | translate}}</h4>
+       <h4 class="field-value-col" style="color:blue">$ {{invoiceForm.value.total|number:'1.'+currency_precision}}</h4>
+     </ion-col>
+    <!-- </ion-item> -->
+    <ion-col>
+      <h4 class="field-label-col">{{'IVA' | translate}}</h4>
+      <h4 class="field-value-col" style="color:red">$ {{invoiceForm.value.tax|number:'1.'+currency_precision}}</h4>
+    </ion-col>
   </ion-row>
 
   <ion-row  class="state-header">
@@ -107,6 +107,10 @@
         <ion-button class="button-100" color="success" (click)="setNumber()">Confirmar Factura</ion-button>
       </ion-col>
 </ion-row>
+<ion-item class="field-100" *ngIf="invoiceForm.value.note != undefined">
+    <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+    <ion-textarea autoGrow="true" rows="1" #note formControlName="note"></ion-textarea>
+</ion-item>
 <ion-row>
   <ion-col size="12" *ngIf="invoiceForm.value.state == 'QUOTATION'">
     <ion-button class="button-100" (click)="addItem()">+ Agregar Item</ion-button>

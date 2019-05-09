@@ -96,11 +96,10 @@ export class InvoicePage implements OnInit {
     invoiceForm: FormGroup;
     loading: any;
     today: any;
-    // _id: string;
+    note;
     avoidAlertMessage: boolean;
-
+    discount;
     languages: Array<LanguageModel>;
-    // type: any = 'out';
 
     constructor(
       public navCtrl: NavController,
@@ -127,6 +126,8 @@ export class InvoicePage implements OnInit {
       this.translate.setDefaultLang('es');
       this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.note = this.route.snapshot.paramMap.get('note');
+      this.discount = this.route.snapshot.paramMap.get('discount');
       this.select = this.route.snapshot.paramMap.get('select');
       this.type = this.route.snapshot.paramMap.get('type');
       this.avoidAlertMessage = false;
@@ -166,7 +167,8 @@ export class InvoicePage implements OnInit {
         total: new FormControl(0),
         residual: new FormControl(0),
         tax: new FormControl(0),
-        note: new FormControl(),
+        note: new FormControl(this.note||undefined),
+        discount: new FormControl(this.discount||0),
         state: new FormControl('QUOTATION'),
         // tab: new FormControl(this.route.snapshot.paramMap.get('tab||'products'),
         items: new FormControl(items||[], Validators.required),
@@ -372,6 +374,7 @@ export class InvoicePage implements OnInit {
         this.invoiceForm.value.items.forEach((item) => {
           total = total + item.quantity*item.price;
         });
+        total -= this.invoiceForm.value.discount;
         this.invoiceForm.patchValue({
           total: total,
         });
