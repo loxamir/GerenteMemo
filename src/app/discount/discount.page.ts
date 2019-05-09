@@ -123,6 +123,11 @@ export class DiscountPage implements OnInit {
 
   buttonSave() {
     this.modalCtrl.dismiss();
+    if (!this.discountForm.value.discount_percent){
+      this.discountForm.patchValue({
+        'discountProduct': false
+      })
+    }
     this.events.publish('set-discount', this.discountForm.value);
   }
 
