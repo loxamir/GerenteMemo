@@ -22,20 +22,16 @@
   </ion-toolbar>
 
 
-  <ion-row>
-    <ion-item
-     no-padding
-     class="summary-50">
-      <h4 class="field-label">{{'TOTAL_COST' | translate}}</h4>
-      <h4 class="field-value" style="color:blue">$ {{productionForm.value.total|number:'1.'+currency_precision}}</h4>
-    </ion-item>
+  <ion-row style="height:50px;">
+    <ion-col>
+      <h4 class="field-label-col">{{'TOTAL_COST' | translate}}</h4>
+      <h4 class="field-value-col" style="color:blue">$ {{productionForm.value.total|number:'1.'+currency_precision}}</h4>
+    </ion-col>
 
-    <ion-item
-    no-padding
-     class="summary-50">
-      <h4 class="field-label">{{'Valor Agregado' | translate}}</h4>
-      <h4 class="field-value" style="color:green">$ {{productionForm.value.price*productionForm.value.quantity-productionForm.value.total|number:'1.'+currency_precision}}</h4>
-    </ion-item>
+    <ion-col>
+      <h4 class="field-label-col">{{'Valor Agregado' | translate}}</h4>
+      <h4 class="field-value-col" style="color:green">$ {{productionForm.value.price*productionForm.value.quantity-productionForm.value.total|number:'1.'+currency_precision}}</h4>
+    </ion-col>
     <!-- <ion-item
     *ngIf="productionForm.value.production"
     no-padding

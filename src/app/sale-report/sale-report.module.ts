@@ -10,7 +10,7 @@ export function createTranslateLoader(http: HttpClient) {
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
-import { SocialSharing } from '@ionic-native/social-sharing';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { SaleReportPage } from './sale-report.page';
 
 const routes: Routes = [

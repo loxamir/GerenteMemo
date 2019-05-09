@@ -6,7 +6,7 @@ import { NavController, LoadingController,
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 //import { DecimalPipe } from '@angular/common';
-import { Printer } from '@ionic-native/printer';
+import { Printer } from '@ionic-native/printer/ngx';
 
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
@@ -20,7 +20,7 @@ import { CashMovePage } from '../cash-move/cash-move.page';
 import { CashMoveService } from '../cash-move/cash-move.service';
 import { CashListPage } from '../cash-list/cash-list.page';
 // import { ProductsPage } from '../product/list/products';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 // import { PlannedService } from '../planned/list/planned-list.service';
 import { ConfigService } from '../config/config.service';
 // import { HostListener } from '@angular/core';

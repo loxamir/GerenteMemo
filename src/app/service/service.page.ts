@@ -4,7 +4,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { NavController, Platform, LoadingController, AlertController, Events, ToastController, ModalController, PopoverController} from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-import { Printer } from '@ionic-native/printer';
+import { Printer } from '@ionic-native/printer/ngx';
 // import { SpeechRecognition } from '@ionic-native/speech-recognition';
 // import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,7 +13,7 @@ import { LanguageModel } from "../services/language/language.model";
 import { ContactListPage } from '../contact-list/contact-list.page';
 import { ProductService } from '../product/product.service';
 import { ProductListPage } from '../product-list/product-list.page';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { ConfigService } from '../config/config.service';
 import { HostListener } from '@angular/core';
 import { FormatService } from '../services/format.service';
@@ -23,7 +23,7 @@ import { InvoicePage } from '../invoice/invoice.page';
 import { ReceiptPage } from '../receipt/receipt.page';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 import { ServicePopover } from './service.popover';
-import { SocialSharing } from '@ionic-native/social-sharing';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import * as html2canvas from 'html2canvas';
 
 @Component({

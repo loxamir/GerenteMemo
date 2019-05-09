@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, LoadingController, ModalController, Events, PopoverController } from '@ionic/angular';
 import { ProductPage } from '../product/product.page';
 import 'rxjs/Rx';
-import { File } from '@ionic-native/file';
+import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductListPopover } from './product-list.popover';

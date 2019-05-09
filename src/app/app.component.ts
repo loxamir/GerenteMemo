@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Platform, MenuController, ModalController } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { StatusBar } from '@ionic-native/status-bar';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
 

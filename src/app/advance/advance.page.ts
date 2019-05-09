@@ -13,7 +13,7 @@ import { ContactListPage } from '../contact-list/contact-list.page';
 import { CashMoveService } from '../cash-move/cash-move.service';
 import { ReceiptPage } from '../receipt/receipt.page';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
-import { Printer, PrintOptions } from '@ionic-native/printer';
+import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
 import { ConfigService } from '../config/config.service';
 
 @Component({

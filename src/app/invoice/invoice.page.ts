@@ -4,7 +4,7 @@ import { NavController, Platform, LoadingController, AlertController,
   PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-import { Printer, PrintOptions } from '@ionic-native/printer';
+import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -15,7 +15,7 @@ import { ContactListPage } from '../contact-list/contact-list.page';
 import { ContactPage } from '../contact/contact.page';
 // import { ProductService } from '../product/product.service';
 import { ProductListPage } from '../product-list/product-list.page';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { ConfigService } from '../config/config.service';
 import { HostListener } from '@angular/core';
 import { FormatService } from '../services/format.service';

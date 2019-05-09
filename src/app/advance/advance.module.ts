@@ -8,8 +8,8 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
 import { Routes, RouterModule } from '@angular/router';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
-import { Printer } from '@ionic-native/printer';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+import { Printer } from '@ionic-native/printer/ngx';
 
 import { IonicModule } from '@ionic/angular';
 
