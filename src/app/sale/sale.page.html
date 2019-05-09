@@ -20,22 +20,20 @@
       <h4 class="field-label-col">{{'TOTAL' | translate}}</h4>
       <h4 class="field-value-col" style="color:blue">$ {{saleForm.value.total|number:'1.'+currency_precision}}</h4>
   </ion-col>
-  <ion-col *ngIf="saleForm.value.state=='CONFIRMED'">
-      <h4 class="field-label-col">{{'Cobrar' | translate}}</h4>
-      <h4 class="field-value-col" style="color:red">$ {{saleForm.value.residual|number:'1.'+currency_precision}}</h4>
-  </ion-col>
   <ion-col
   (click)="setDiscount()"
   *ngIf="saleForm.value.discount.value || saleForm.value.discount.lines">
-    <!-- <ion-item
-      no-padding
-      class="summary-100"> -->
       <h4 class="field-label-col">{{'Descuento' | translate}}</h4>
       <h4 class="field-value-col" style="color:red">
         $ {{computeDiscount()|number:'1.'+currency_precision}}
         <ion-icon name="arrow-down">
       </ion-icon>{{computePercent()}}%</h4>
-    <!-- </ion-item> -->
+  </ion-col>
+  <ion-col
+  (click)="setDiscount()"
+  *ngIf="saleForm.value.state=='CONFIRMED'">
+      <h4 class="field-label-col">{{'Cobrar' | translate}}</h4>
+      <h4 class="field-value-col" style="color:red">$ {{saleForm.value.residual|number:'1.'+currency_precision}}</h4>
   </ion-col>
   </ion-row>
   <ion-row  class="state-header">
