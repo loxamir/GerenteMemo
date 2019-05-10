@@ -56,6 +56,11 @@ export class AccountCategoryPage implements OnInit {
         code: new FormControl(''),
         title: new FormControl({}),
         title_id: new FormControl(""),
+        cash_out: new FormControl(false),
+        cash_in: new FormControl(false),
+        transfer: new FormControl(false),
+        payable: new FormControl(false),
+        receivable: new FormControl(false),
         _id: new FormControl(''),
       });
       //this.loading.present();

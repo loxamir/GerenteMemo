@@ -10,6 +10,7 @@ import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 // import { AccountService } from './account.service';
 import { AccountCategoryListPage } from '../account-category-list/account-category-list.page';
+import { AccountCategoryPage } from '../account-category/account-category.page';
 import { ConfigService } from '../config/config.service';
 
 @Component({
@@ -143,9 +144,18 @@ export class AccountPage implements OnInit {
       // this.avoidAlertMessage = true;
       this.events.unsubscribe('select-accountCategory');
       this.events.subscribe('select-accountCategory', (data) => {
+        let type = data.type;
+        if (type == 'liquidity'){
+          type='cash';
+        }
         this.accountForm.patchValue({
           category: data,
-          type: data.type,
+          cash_out: data.cash_out,
+          cash_in: data.cash_in,
+          transfer: data.transfer,
+          payable: data.payable,
+          receivable: data.receivable,
+          type: type,
         });
         this.accountForm.markAsDirty();
         // this.avoidAlertMessage = false;
@@ -157,6 +167,35 @@ export class AccountPage implements OnInit {
         componentProps: {
           "select": true,
           "filter": "customer"
+        }
+      });
+      profileModal.present();
+    });
+  }
+
+  editCategory() {
+    return new Promise(async resolve => {
+      this.events.unsubscribe('open-accountCategory');
+      this.events.subscribe('open-accountCategory', (data) => {
+        this.accountForm.patchValue({
+          category: data,
+          type: data.type,
+          cash_out: data.cash_out,
+          cash_in: data.cash_in,
+          transfer: data.transfer,
+          payable: data.payable,
+          receivable: data.receivable,
+        });
+        this.accountForm.markAsDirty();
+        // this.avoidAlertMessage = false;
+        this.events.unsubscribe('open-accountCategory');
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: AccountCategoryPage,
+        componentProps: {
+          "select": true,
+          "_id": this.accountForm.value.category._id,
         }
       });
       profileModal.present();

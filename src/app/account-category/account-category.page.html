@@ -49,6 +49,38 @@
         <h4 class="field-value">{{accountCategoryForm.value.title && accountCategoryForm.value.title.name || 'Selecionar'}}</h4>
       </div>
       </ion-item>
+
+      <ion-item
+       no-padding
+       class="field-100">
+         <ion-label>{{'Entra de Caja' | translate}}</ion-label>
+         <ion-toggle formControlName="cash_in"></ion-toggle>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-100">
+         <ion-label>{{'Salida de Caja' | translate}}</ion-label>
+         <ion-toggle formControlName="cash_out"></ion-toggle>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-100">
+         <ion-label>{{'Transferencia' | translate}}</ion-label>
+         <ion-toggle formControlName="transfer"></ion-toggle>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-100">
+         <ion-label>{{'Conta A Pagar' | translate}}</ion-label>
+         <ion-toggle formControlName="payable"></ion-toggle>
+      </ion-item>
+      <ion-item
+       no-padding
+       class="field-100">
+         <ion-label>{{'Conta a Cobrar' | translate}}</ion-label>
+         <ion-toggle formControlName="receivable"></ion-toggle>
+      </ion-item>
+      
       <ion-item class="field-100">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-textarea rows="2" formControlName="note"></ion-textarea>
