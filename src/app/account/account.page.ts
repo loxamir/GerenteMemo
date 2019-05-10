@@ -79,6 +79,12 @@ export class AccountPage implements OnInit {
     }
   }
 
+  ionViewDidEnter() {
+    setTimeout(() => {
+      this.name.setFocus();
+    }, 200);
+  }
+
   buttonSave() {
     if (this._id){
       this.updateAccount(this.accountForm.value);
@@ -97,26 +103,29 @@ export class AccountPage implements OnInit {
   }
 
   goNextStep() {
-      if (this.accountForm.value.name==null){
+      if (!this.accountForm.value.name){
         this.name.setFocus();
       }
-      else if (this.accountForm.value.type==null){
-        this.type.open();
-      }
-      else if (this.accountForm.value.bank_name==null&&this.accountForm.value.type=='bank'){
-        this.bank_name.open();
-      }
-      else if (Object.keys(this.accountForm.value.category).length==0){
-        // this.cost.setFocus();
+      else if (
+        Object.keys(this.accountForm.value.category).length==0
+      ){
         this.selectCategory();
       }
-      else if (this.accountForm.value.code==null){
+      else if (!this.accountForm.value.code){
         this.code.setFocus();
-        return;
       }
-      else if (this.accountForm.dirty) {
-        this.buttonSave();
+      else if (!this.accountForm.value.type){
+        this.type.open();
       }
+      else if (
+        this.accountForm.value.bank_name==null
+        && this.accountForm.value.type=='bank'
+      ){
+        this.bank_name.open();
+      }
+      // else if (this.accountForm.dirty) {
+      //   this.buttonSave();
+      // }
   }
 
   setLanguage(lang: LanguageModel){
@@ -140,6 +149,7 @@ export class AccountPage implements OnInit {
 
   selectCategory() {
     console.log("selectContact");
+    let self=this;
     return new Promise(async resolve => {
       // this.avoidAlertMessage = true;
       this.events.unsubscribe('select-accountCategory');
@@ -156,10 +166,14 @@ export class AccountPage implements OnInit {
           payable: data.payable,
           receivable: data.receivable,
           type: type,
+          code: data.code+"."
         });
         this.accountForm.markAsDirty();
         // this.avoidAlertMessage = false;
         this.events.unsubscribe('select-accountCategory');
+        setTimeout(() => {
+          self.code.setFocus();
+        }, 200);
         resolve(true);
       })
       let profileModal = await this.modalCtrl.create({
@@ -289,22 +303,54 @@ export class AccountPage implements OnInit {
   }
   showNextButton(){
     // console.log("stock",this.accountForm.value.stock);
-    if (this.accountForm.value.name==null){
+    if (!this.accountForm.value.name){
       return true;
     }
-    else if (this.accountForm.value.type==null){
+    else if (
+      !Object.keys(this.accountForm.value.category).length
+    ){
       return true;
     }
-    else if (this.accountForm.value.bank_name==null&&this.accountForm.value.type=='bank'){
+    else if (!this.accountForm.value.code){
       return true;
     }
-    else if (Object.keys(this.accountForm.value.category).length==0){
+    else if (!this.accountForm.value.type){
       return true;
     }
-    else if (this.accountForm.value.code==null){
+    else if (
+      this.accountForm.value.bank_name==null
+      && this.accountForm.value.type=='bank'
+    ){
       return true;
     }
     else {
+      return false;
+    }
+  }
+
+  showSaveButton(){
+    // console.log("stock",this.accountForm.value.stock);
+    if (this.accountForm.dirty){
+      if (!this.accountForm.value.name){
+        return false;
+      }
+      else if (!Object.keys(this.accountForm.value.category).length){
+        return false;
+      }
+      else if (!this.accountForm.value.code){
+        return false;
+      }
+      else if (!this.accountForm.value.type){
+        return false;
+      }
+      else if (this.accountForm.value.bank_name==null
+        &&this.accountForm.value.type=='bank'){
+        return false;
+      }
+      else {
+        return true;
+      }
+    } else {
       return false;
     }
   }

@@ -183,6 +183,8 @@ export class AccountListPage implements OnInit {
   }
 
   deleteAccount(account) {
+    let index = this.accounts.indexOf(account);
+    this.accounts.slice(index, 1)
     return this.pouchdbService.deleteDoc(account);
   }
 

@@ -25,7 +25,7 @@
       </div>
     </ion-row>
     <ion-row>
-      <ion-col no-padding class="item-content" (click)="selectCategory()" style="background: white;">
+      <ion-col no-padding class="field-many2one-edit" (click)="selectCategory()">
         <h4 class="field-label-col">{{'CATEGORY' | translate }}</h4>
         <h4 class="field-value-col">{{accountForm.value.category && accountForm.value.category.name || 'Selecionar'}}</h4>
       </ion-col>
@@ -107,7 +107,7 @@
     </ion-button>
   </ion-fab>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="accountForm.dirty">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showSaveButton()">
     <ion-button (click)="buttonSave()"  color="success" class="save-button">
       <ion-icon name="save"> </ion-icon>
       Guardar
