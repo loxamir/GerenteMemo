@@ -30,7 +30,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
   @ViewChild('cost') cost;
   @ViewChild('type') type;
   @ViewChild('stock') stock;
-  @ViewChild('barcode') barcode;
+  // @ViewChild('barcode') barcodeField;
 
   @ViewChild('category') category;
   @ViewChild('brand') brand;
@@ -42,6 +42,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     theoreticalStock: number = 0;
     opened: boolean = false;
     select;
+    barcode = '';
 
     constructor(
       public navCtrl: NavController,
