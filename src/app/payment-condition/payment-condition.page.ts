@@ -65,6 +65,10 @@ export class PaymentConditionPage implements OnInit {
         accountFrom_id: new FormControl(''),
         items: new FormControl([]),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       //this.loading.present();
       if (this._id){

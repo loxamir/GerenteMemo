@@ -123,6 +123,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         unity: new FormControl(this.route.snapshot.paramMap.get('unity')||'un'),
         fixed: new FormControl(false),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();

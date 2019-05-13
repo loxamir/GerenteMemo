@@ -169,6 +169,10 @@ export class AccountsReportPage implements OnInit {
         showCateg: new FormControl(true),
         showTitle: new FormControl(true),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();

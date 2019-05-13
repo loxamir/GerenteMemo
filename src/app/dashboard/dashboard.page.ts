@@ -104,6 +104,10 @@ export class DashboardPage implements OnInit {
         groupBy: new FormControl(''),
         sortBy: new FormControl('value_decrease'),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;

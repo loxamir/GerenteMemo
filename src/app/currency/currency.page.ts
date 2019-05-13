@@ -56,6 +56,10 @@ export class CurrencyPage implements OnInit {
         sale_rate: new FormControl(1),
         purchase_rate: new FormControl(1),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       //this.loading.present();
       if (this._id){

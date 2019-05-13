@@ -47,6 +47,10 @@ export class ProductCategoryPage implements OnInit {
       // dre:  new FormControl('sale'),
       note: new FormControl(''),
       _id: new FormControl(''),
+      create_user: new FormControl(''),
+      create_time: new FormControl(''),
+      write_user: new FormControl(''),
+      write_time: new FormControl(''),
     });
     if (this._id){
       this.getCategory(this._id).then((data) => {

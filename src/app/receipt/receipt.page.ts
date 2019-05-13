@@ -144,6 +144,10 @@ export class ReceiptPage implements OnInit {
         signal: new FormControl(this.signal||'+'),
         exchange_rate: new FormControl(this.exchange_rate||'1'),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();

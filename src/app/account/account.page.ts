@@ -66,6 +66,10 @@ export class AccountPage implements OnInit {
       payable: new FormControl(false),
       receivable: new FormControl(false),
       _id: new FormControl(''),
+      create_user: new FormControl(''),
+      create_time: new FormControl(''),
+      write_user: new FormControl(''),
+      write_time: new FormControl(''),
     });
     //this.loading.present();
     if (this._id){

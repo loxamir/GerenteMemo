@@ -14,6 +14,7 @@ export class PouchdbService {
   db: any;
   remote: any;
   docTypes = {};
+  username = undefined;
 
   constructor(
     public http: HttpClient,
@@ -56,6 +57,7 @@ export class PouchdbService {
           resolve(false);
           return;
         }
+        this.username = username;
         this.storage.get("database").then(database => {
           if (! database){
             resolve(false);
@@ -207,7 +209,7 @@ export class PouchdbService {
     return new Promise((resolve, reject)=>{
       let returns = [];
       let processedList = [];
-        list.forEach((item: any)=>{
+      list.forEach((item: any)=>{
         if (!item._id){
           item._id = item.docType+"."+this.getUUID();
         }
@@ -215,16 +217,26 @@ export class PouchdbService {
           delete item._return;
           returns.push(item);
         }
+        let time = new Date().toJSON();
         processedList.push(item);
-        this.db.bulkDocs(processedList).then(createdDocs=>{
-          resolve(returns);
-        })
+        item.create_user = this.username;
+        item.create_time = time;
+        item.write_user = this.username;
+        item.write_time = time;
+      })
+      this.db.bulkDocs(processedList).then(createdDocs=>{
+        resolve(returns);
       })
     })
   }
 
   updateDocList(list){
     return new Promise((resolve, reject)=>{
+      let time = new Date().toJSON();
+      list.forEach((item: any)=>{
+        item.write_user = this.username;
+        item.write_time = time;
+      })
       this.db.bulkDocs(list).then(createdDocs=>{
         resolve(createdDocs);
       })
@@ -239,6 +251,11 @@ export class PouchdbService {
     if (!data['_id']){
       data['_id'] = data['docType']+"."+this.getUUID();;
     }
+    let time = new Date().toJSON();
+    data.create_user = this.username;
+    data.create_time = time;
+    data.write_user = this.username;
+    data.write_time = time;
     return new Promise((resolve, reject)=>{
       this.db.put(data).then(res=>{
         resolve(res);
@@ -250,6 +267,9 @@ export class PouchdbService {
 
   updateDoc(doc){
     return new Promise((resolve, reject)=>{
+      let time = new Date().toJSON();
+      doc.write_user = this.username;
+      doc.write_time = time;
       this.db.upsert(doc._id, function () {
         return doc;
       }).then(function (res) {

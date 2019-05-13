@@ -137,6 +137,10 @@ export class CashMovePage implements OnInit {
       currency_amount: new FormControl(this.currency_amount||0),
       currency_residual: new FormControl(this.currency_residual||0),
       _id: new FormControl(''),
+      create_user: new FormControl(''),
+      create_time: new FormControl(''),
+      write_user: new FormControl(''),
+      write_time: new FormControl(''),
     });
     if (this.accountTo && (this.accountTo['_id'].split('.')[1]=='cash' || this.accountTo['_id'].split('.')[1]=='bank' || this.accountTo['_id'].split('.')[1]=='check')){
       // console.log("to cash");

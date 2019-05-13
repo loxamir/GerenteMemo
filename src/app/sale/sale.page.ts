@@ -196,6 +196,10 @@ export class SalePage implements OnInit {
         seller_name: new FormControl(this.route.snapshot.paramMap.get('seller_name')||''),
         currency: new FormControl(this.route.snapshot.paramMap.get('currency')||{}),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
@@ -479,6 +483,10 @@ export class SalePage implements OnInit {
             this.saleForm.patchValue({
               _id: doc['doc'].id,
               code: doc['sale'].code,
+              create_time: doc['sale'].create_time,
+              create_user: doc['sale'].create_user,
+              write_time: doc['sale'].write_time,
+              write_user: doc['sale'].write_user,
             });
             this._id = doc['doc'].id;
             this.saleForm.markAsPristine();

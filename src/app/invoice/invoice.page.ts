@@ -181,6 +181,10 @@ export class InvoicePage implements OnInit {
         number: new FormControl(''),
         currency: new FormControl({}),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
         origin_id: new FormControl(this.origin_id||''),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
       });
