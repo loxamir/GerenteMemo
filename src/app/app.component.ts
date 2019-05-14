@@ -5,12 +5,14 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
+import { PouchdbService } from './services/pouchdb/pouchdb-service';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit {
+  user = {};
   public appPages = [
     {
       title: 'Operativo',
@@ -20,13 +22,9 @@ export class AppComponent implements OnInit {
     {
       title: 'Informes',
       url: '/report-list',
-      icon: 'stats'
+      icon: 'stats',
+      restrict: true
     },
-    // {
-    //   title: 'Ayuda',
-    //   url: '/help-list',
-    //   icon: 'help-circle'
-    // },
     {
       title: 'Productos',
       url: '/product-list',
@@ -40,7 +38,13 @@ export class AppComponent implements OnInit {
     {
       title: 'Ajustes',
       url: '/config',
-      icon: 'settings'
+      icon: 'settings',
+      restrict: true
+    },
+    {
+      title: 'Dudas',
+      url: '/help-list',
+      icon: 'help-circle'
     },
     {
       title: 'Salir',
@@ -57,6 +61,7 @@ export class AppComponent implements OnInit {
     public router: Router,
     public menuCtrl: MenuController,
     public modalCtrl: ModalController,
+    public pouchdbService: PouchdbService,
   ) {
     this.initializeApp();
     this.backButtonListener();
@@ -87,7 +92,8 @@ export class AppComponent implements OnInit {
     }
   }
 
-  ngOnInit(){
+ async ngOnInit(){
+    this.user = (await this.pouchdbService.getUser());
     this.router.events.subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
         // if (event.url === '/login') {

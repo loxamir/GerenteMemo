@@ -1,27 +1,33 @@
 <ion-tabs>
 
-  <ion-tab-bar slot="bottom" color="primary">
+  <ion-tab-bar slot="bottom" color="primary"
+  *ngIf="user.useSale">
     <ion-tab-button tab="sale-list">
       <ion-icon name="pricetag"></ion-icon>
       <ion-label>Ventas</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="purchase-list">
+    <ion-tab-button tab="purchase-list"
+    *ngIf="user.usePurchase">
       <ion-icon name="cart"></ion-icon>
       <ion-label>Compras</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="cash-list">
+    <ion-tab-button tab="cash-list"
+    *ngIf="user.useFinance">
       <ion-icon name="cash"></ion-icon>
       <ion-label>Finanzas</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="production-list" style="--padding-start: 0px; --padding-end: 0px;">
+    <ion-tab-button
+    *ngIf="user.useProduction"
+     tab="production-list" style="--padding-start: 0px; --padding-end: 0px;">
       <ion-icon name="construct"></ion-icon>
       <ion-label>Fabricación</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="service-list">
+    <ion-tab-button tab="service-list"
+    *ngIf="user.useService">
       <ion-icon name="construct"></ion-icon>
       <ion-label>Servicios</ion-label>
     </ion-tab-button>

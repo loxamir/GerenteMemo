@@ -118,6 +118,10 @@ export class PouchdbService {
     });
   }
 
+  getUser(){
+    return this.getDoc('user.'+this.username);
+  }
+
   getDisConnect(){
     this.db.close();
     this.docTypes = {};

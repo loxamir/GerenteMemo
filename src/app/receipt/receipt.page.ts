@@ -57,7 +57,7 @@ export class ReceiptPage implements OnInit {
   @Input() exchange_rate: any;
   @Input() origin_id: any;
   currency_precision = 2;
-
+  user:any = {};
 
 
     constructor(
@@ -151,25 +151,35 @@ export class ReceiptPage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      this.user = (await this.pouchdbService.getUser());
+      let config:any = await this.configService.getConfig();
+      this.currency_precision = config.currency_precision;
       this.recomputeValues();
-        this.configService.getConfig().then(async config => {
-          this.currency_precision = config.currency_precision;
-          this.receiptForm.patchValue({
-            "cash_paid": config.cash,
-            "exchange_rate": config.currency.sale_rate,
-          });
-
-          this.recomputeValues();
-          if (this._id){
-            this.receiptService.getReceipt(this._id).then((data) => {
-              //console.log("data", data);
-              this.receiptForm.patchValue(data);
-              this.loading.dismiss();
-            });
-          } else {
-            this.loading.dismiss();
-          }
+      if (this._id){
+        this.receiptService.getReceipt(this._id).then((data) => {
+          this.receiptForm.patchValue(data);
+          this.loading.dismiss();
         });
+      } else {
+        let cashier:any;
+        if (this.user.cash_id) {
+          cashier = await this.pouchdbService.getDoc(this.user.cash_id);
+        } else {
+          cashier = config.cash;
+        }
+        this.receiptForm.patchValue({
+          "cash_paid": cashier,
+          // "exchange_rate": config.currency.sale_rate,
+        });
+        this.recomputeValues();
+        this.loading.dismiss();
+      }
+
+
+
+
+
+
     }
 
     goNextStep() {

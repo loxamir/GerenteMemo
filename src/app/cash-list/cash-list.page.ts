@@ -23,6 +23,7 @@ export class CashListPage implements OnInit {
   select;
   page = 0;
   currency_precision = 2;
+  user = {};
   constructor(
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
@@ -46,6 +47,7 @@ export class CashListPage implements OnInit {
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
+    this.user = (await this.pouchdbService.getUser());
     this.setFilteredItems();
     this.events.subscribe('changed-cash-move', (change)=>{
       this.handleViewChange(this.cashList, change);
@@ -279,11 +281,22 @@ export class CashListPage implements OnInit {
           'account', keyword
         ).then((cashList: any[]) => {
           cashList.forEach(cashier=>{
-            cashier.balance = 0;
-            if (cashier._id.split('.')[1] == 'cash' || cashier._id.split('.')[1] == 'check' || cashier._id.split('.')[1] == 'bank'){
-              let cashReport = planneds.filter(x => x.key[0]==cashier._id)[0]
-              cashier.balance = cashReport && cashReport.value || 0;
-              cashiers.push(cashier);
+            if (this.user['admin']){
+              cashier.balance = 0;
+              if (cashier._id.split('.')[1] == 'cash' || cashier._id.split('.')[1] == 'check' || cashier._id.split('.')[1] == 'bank'){
+                let cashReport = planneds.filter(x => x.key[0]==cashier._id)[0]
+                cashier.balance = cashReport && cashReport.value || 0;
+                cashiers.push(cashier);
+              }
+            } else {
+              if (cashier.users && cashier.users.indexOf(this.user['username'])>=0){
+                cashier.balance = 0;
+                if (cashier._id.split('.')[1] == 'cash' || cashier._id.split('.')[1] == 'check' || cashier._id.split('.')[1] == 'bank'){
+                  let cashReport = planneds.filter(x => x.key[0]==cashier._id)[0]
+                  cashier.balance = cashReport && cashReport.value || 0;
+                  cashiers.push(cashier);
+                }
+              }
             }
           })
           resolve(cashiers);

@@ -8,8 +8,10 @@
         {{cashForm.value.name}}
       </ion-row>
     </ion-title>
-    <ion-buttons slot="end" >
-      <ion-button (click)="editAccount()">
+    <ion-buttons slot="end">
+      <ion-button
+      *ngIf="user.admin"
+      (click)="editAccount()">
         <ion-icon name="create"></ion-icon>
       </ion-button>
     </ion-buttons>
