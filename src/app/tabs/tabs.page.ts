@@ -7,7 +7,7 @@ import { LoadingController } from '@ionic/angular';
   styleUrls: ['tabs.page.scss']
 })
 export class TabsPage implements OnInit {
-  user = {};
+  user: any = {};
   loading: any;
 
   constructor(public pouchdbService: PouchdbService,

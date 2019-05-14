@@ -37,7 +37,7 @@ export class CashPage implements OnInit {
     @Input() _id: string;
     changes = {};
     currency_precision = 2;
-    user = {};
+    user:any = {};
     constructor(
       public navCtrl: NavController,
       public modalCtrl: ModalController,

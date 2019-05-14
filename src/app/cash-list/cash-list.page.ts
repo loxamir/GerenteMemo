@@ -23,7 +23,7 @@ export class CashListPage implements OnInit {
   select;
   page = 0;
   currency_precision = 2;
-  user = {};
+  user:any = {};
   constructor(
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,

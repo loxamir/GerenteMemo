@@ -27,7 +27,7 @@ export class AccountListPage implements OnInit {
   receivable;
   payable;
   transfer;
-  user = {};
+  user:any = {};
 
   constructor(
     public navCtrl: NavController,
