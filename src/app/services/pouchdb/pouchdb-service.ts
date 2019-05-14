@@ -118,8 +118,23 @@ export class PouchdbService {
     });
   }
 
-  getUser(){
-    return this.getDoc('user.'+this.username);
+  async getUser(){
+    let user = await this.getDoc('user.'+this.username);
+    if (JSON.stringify(user)!='{}'){
+      return user
+    }
+    return {
+      "username": this.username,
+      "useSale": true,
+      "useService": true,
+      "usePurchase": true,
+      "useProduction": true,
+      "useFinance": true,
+      "contact_id": "contact.myCompany",
+      "admin": true,
+      "cash_id": "",
+      "warehouse_id": "warehouse.physical.my"
+    }
   }
 
   getDisConnect(){
