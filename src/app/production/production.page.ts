@@ -825,6 +825,10 @@ export class ProductionPage implements OnInit {
           this.productionForm.patchValue({
             _id: doc['doc'].id,
             code: doc['production'].code,
+            create_time: doc['production'].create_time,
+            create_user: doc['production'].create_user,
+            write_time: doc['production'].write_time,
+            write_user: doc['production'].write_user,
           });
           this._id = doc['doc'].id;
           this.events.publish('create-production', this.productionForm.value);

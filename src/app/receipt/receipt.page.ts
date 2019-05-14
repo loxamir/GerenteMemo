@@ -395,6 +395,10 @@ export class ReceiptPage implements OnInit {
           this.receiptForm.patchValue({
             _id: doc['doc'].id,
             code: doc.code,
+            create_time: doc.create_time,
+            create_user: doc.create_user,
+            write_time: doc.write_time,
+            write_user: doc.write_user,
           });
           this._id = doc['doc'].id;
           this.receiptForm.markAsPristine();
@@ -417,6 +421,10 @@ export class ReceiptPage implements OnInit {
           this.receiptForm.patchValue({
             _id: doc['doc'].id,
             code: doc['receipt'].code,
+            create_time: doc['receipt'].create_time,
+            create_user: doc['receipt'].create_user,
+            write_time: doc['receipt'].write_time,
+            write_user: doc['receipt'].write_user,
           });
           this._id = doc['doc'].id;
           this.receiptForm.markAsPristine();

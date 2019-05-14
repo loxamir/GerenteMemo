@@ -324,6 +324,10 @@ export class InvoicePage implements OnInit {
           this.invoiceForm.patchValue({
             _id: doc['doc'].id,
             code: doc['invoice'].code,
+            create_time: doc['invoice'].create_time,
+            create_user: doc['invoice'].create_user,
+            write_time: doc['invoice'].write_time,
+            write_user: doc['invoice'].write_user,
           });
           this._id = doc['doc'].id;
           this.invoiceForm.markAsPristine();
@@ -346,6 +350,10 @@ export class InvoicePage implements OnInit {
           this.invoiceForm.patchValue({
             _id: doc['doc'].id,
             code: doc['invoice'].code,
+            create_time: doc['invoice'].create_time,
+            create_user: doc['invoice'].create_user,
+            write_time: doc['invoice'].write_time,
+            write_user: doc['invoice'].write_user,
           });
           this._id = doc['doc'].id;
           this.invoiceForm.markAsPristine();

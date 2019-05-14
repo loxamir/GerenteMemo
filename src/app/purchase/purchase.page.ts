@@ -423,6 +423,10 @@ export class PurchasePage implements OnInit {
             this.purchaseForm.patchValue({
               _id: doc['doc'].id,
               code: doc['purchase'].code,
+              create_time: doc['purchase'].create_time,
+              create_user: doc['purchase'].create_user,
+              write_time: doc['purchase'].write_time,
+              write_user: doc['purchase'].write_user,
             });
             this._id = doc['doc'].id;
             console.log("this.purchaseForm", this.purchaseForm.value);

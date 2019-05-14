@@ -884,6 +884,10 @@ export class ServicePage implements OnInit {
           this.serviceForm.patchValue({
             _id: doc['doc'].id,
             code: doc['service'].code,
+            create_time: doc['service'].create_time,
+            create_user: doc['service'].create_user,
+            write_time: doc['service'].write_time,
+            write_user: doc['service'].write_user,
           });
           this._id = doc['doc'].id;
           this.events.publish('create-service', this.serviceForm.value);
