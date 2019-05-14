@@ -287,9 +287,9 @@ export class SalePage implements OnInit {
             if (parseFloat(data.discount_amount) && ! previous){
               let product:any = await this.pouchdbService.getDoc('product.discount');
               self.saleForm.value.items.unshift({
-                'quantity': -1,
-                'price': data.discount_amount,
-                'cost': data.discount_amount,
+                'quantity': 1,
+                'price': -data.discount_amount,
+                'cost': 0,
                 'product': product,
                 'description': product.name,
               })
@@ -297,8 +297,7 @@ export class SalePage implements OnInit {
               self.saleForm.value.items.forEach(item=>{
                 if (item.product._id == 'product.discount'){
                   discountProduct = true;
-                  item.price = data.discount_amount;
-                  item.cost = data.discount_amount;
+                  item.price = -data.discount_amount;
                 }
                 return;
               })
