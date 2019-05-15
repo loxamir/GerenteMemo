@@ -101,17 +101,17 @@ export class ReportListPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select');
-    this.today = new Date().toISOString();
+    this.today = new Date();
   }
 
   async ngOnInit() {
     this.reportsForm = this.formBuilder.group({
       dateStart: new FormControl(
         this.route.snapshot.paramMap.get('dateStart')
-        || this.today),
+        || this.today.toISOString()),
       dateEnd: new FormControl(
         this.route.snapshot.paramMap.get('dateEnd')
-        || this.today),
+        || this.today.toISOString()),
       // sales: new FormControl(0),
       // purchases: new FormControl(0),
     });

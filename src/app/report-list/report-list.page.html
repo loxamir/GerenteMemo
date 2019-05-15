@@ -13,7 +13,8 @@
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY"
         pickerFormat="DD/MM/YYYY"
         (ionChange)="recomputeValues()"
-        [(ngModel)]="reportsForm.value.dateStart">
+        [(ngModel)]="reportsForm.value.dateStart"
+        [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-col>
       <ion-col no-padding size="6">
@@ -22,7 +23,8 @@
         displayFormat="DD/MM/YYYY"
         pickerFormat="DD/MM/YYYY"
         (ionChange)="recomputeValues()"
-        [(ngModel)]="reportsForm.value.dateEnd">
+        [(ngModel)]="reportsForm.value.dateEnd"
+        [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-col>
     </ion-row>

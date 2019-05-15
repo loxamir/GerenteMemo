@@ -31,6 +31,7 @@
           displayFormat="DD/MM/YYYY"
           pickerFormat="DD/MM/YYYY"
           (ionChange)="goNextStep()"
+          [max]="today.getFullYear()+5"
           formControlName="dateStart">
         </ion-datetime>
       </ion-col>
@@ -45,6 +46,7 @@
            displayFormat="DD/MM/YYYY"
            pickerFormat="DD/MM/YYYY"
            (ionChange)="goNextStep()"
+           [max]="today.getFullYear()+5"
            formControlName="dateEnd">
          </ion-datetime>
        </ion-col>

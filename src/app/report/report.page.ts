@@ -76,7 +76,7 @@ export class ReportPage implements OnInit {
       public pouchdbService: PouchdbService,
     ) {
       //this.loading = //this.loadingCtrl.create();
-      this.today = new Date().toISOString();
+      this.today = new Date();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
       this.avoidAlertMessage = false;
@@ -824,15 +824,14 @@ export class ReportPage implements OnInit {
     }
 
     async ngOnInit() {
-      //var today = new Date().toISOString();
       this.reportForm = this.formBuilder.group({
         contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
         name: new FormControl(''),
         contact_name: new FormControl(this.route.snapshot.paramMap.get('contact_name')||''),
         code: new FormControl(''),
-        date: new FormControl(this.route.snapshot.paramMap.get('date')||this.today),
+        date: new FormControl(this.route.snapshot.paramMap.get('date')||this.today.toISOString()),
         dateStart: new FormControl(this.route.snapshot.paramMap.get('dateEnd')||this.getFirstDateOfMonth()),
-        dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd')||this.today),
+        dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd')||this.today.toISOString()),
         origin_id: new FormControl(this.route.snapshot.paramMap.get('origin_id')),
         total: new FormControl(0),
         residual: new FormControl(0),
@@ -1484,35 +1483,7 @@ export class ReportPage implements OnInit {
             </div>
       </div>
   `
-
-
-      //console.log("Ponto2");
-      // cordova.plugins.pdf.htmlToPDF({
-      //   data: htmlTemplate,
-      //   documentSize: "A4",
-      //   landscape: "portrait",
-      //   type: "base64"
-      // },
-      // (sucess) => {
-      //     // To define the type of the Blob
-      //     //console.log("Ponto3");
-      //     var contentType = "application/pdf";
-      //     //console.log("share sucess");
-      //     // if cordova.file is not available use instead :
-      //     // var folderpath = "file:///storage/emulated/0/Download/";
-      //     var folderpath = cordova.file.externalRootDirectory + "Download/"; //you can select other folders
-      //     //console.log("folderpath", folderpath);
-      //     savebase64AsPDF(folderpath, "myPdfFile.pdf", sucess, contentType);
-      //     this.socialSharing.share("teste de message", "sunto", folderpath+"myPdfFile.pdf")
-      // },
-      // (error) => console.log('error:', error));
-      //console.log("Ponto4");
     }
-
-    // private exitPage() {
-    //     this.reportForm.markAsPristine();
-    //     this.navCtrl.navigateBack();
-    // }
 
     goNextStep() {
       this.getData().then(data => {
@@ -1521,74 +1492,6 @@ export class ReportPage implements OnInit {
       })
       this.recomputeValues();
     }
-
-    // beforeConfirm(){
-    //   if (this.reportForm.value.items.length == 0){
-    //     this.addItem();
-    //   } else {
-    //     // this.reportForm.patchValue({
-    //     //   tab: "report",
-    //     // });
-    //     if (Object.keys(this.reportForm.value.contact).length === 0){
-    //       this.selectContact().then( teste => {
-    //         if (Object.keys(this.reportForm.value.paymentCondition).length === 0){
-    //           this.selectPaymentCondition();
-    //         }
-    //       });
-    //     } else if (Object.keys(this.reportForm.value.paymentCondition).length === 0){
-    //       this.selectPaymentCondition();
-    //     } else {
-    //       this.reportConfimation();
-    //     }
-    //   }
-    // }
-    //
-    // addDays(date, days) {
-    //   days = parseInt(days);
-    //   var result = new Date(date);
-    //   result.setDate(result.getDate() + days);
-    //   return result;
-    // }
-    //
-    // createQuotes(){
-    //   return new Promise(resolve => {
-    //     let date = new Date();
-    //     let promise_ids = [];
-    //     this.reportForm.value.paymentCondition.items.forEach(item => {
-    //       date = this.addDays(this.today, item.days);
-    //       let amount = (item.percent/100)*this.reportForm.value.total;
-    //       let data = {
-    //         'name': "cuota",
-    //         'contact_id': this.reportForm.value.contact._id,
-    //         'amount': amount,
-    //         'amount_residual': amount,
-    //         'origin_id': this._id,
-    //         'date': date,
-    //         'state': 'WAIT',
-    //         'signal': '+',
-    //       }
-    //       promise_ids.push(
-    //         this.plannedService.createPlanned(data).then(plan => {
-    //           //console.log("Plan", plan);
-    //           data['_id'] = plan.id;
-    //           this.reportForm.value.planned.push(data);
-    //         })
-    //       );
-    //     });
-    //     Promise.all(promise_ids).then(data => {
-    //       //console.log("created quotes");
-    //       resolve(data);
-    //     })
-    //   });
-    //
-    // }
-
-    // showPayments() {
-    //   this.reportForm.patchValue({
-    //     tab: "payment",
-    //   });
-    //   this.addPayment();
-    // }
 
     ionViewWillLeave(){
       //console.log("ionViewWillLeave");
