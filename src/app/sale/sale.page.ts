@@ -1318,9 +1318,14 @@ export class SalePage implements OnInit {
           ticket += head_code+"|"+head_quantity+"|"+head_price+"|"+head_subtotal+"\n";
           ticket += lines;
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
+          ticket += "Descuento"+this.formatService.string_pad(data.ticketPrint.paperWidth-9, "$ "+this.computeDiscount().toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
           ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.paperWidth-5, "$ "+this.saleForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
           ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
+          if (this.saleForm.value.note){
+            ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "| Anotacion |", 'center', '-')+"\n";
+            ticket += this.formatService.breakString(this.saleForm.value.note, data.ticketPrint.paperWidth)+"\n";
+          }
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
           if (data.ticketPrint.showSignSeller){
             ticket += "\n";
@@ -1418,12 +1423,23 @@ export class SalePage implements OnInit {
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += lines;
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
+        if (this.computePercent()){
+          // ticket += "Descuento"+this.formatService.string_pad(data.ticketPrint.paperWidth-9, this.computePercent()+"%", "right")+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.paperWidth,
+            "Descuento:"+this.formatService.string_pad(
+              14, "$ "+this.computeDiscount().toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+" ",
+             'right', ' '
+          )+"\n";
+        }
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth,
           "Valor Total:"+this.formatService.string_pad(
             14, "$ "+this.saleForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+" ",
            'right', ' '
         )+"\n";
         ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
+        if (this.saleForm.value.note){
+          ticket += this.formatService.breakString("Anotacion: "+this.saleForm.value.note, data.ticketPrint.paperWidth - 11)+"\n";
+        }
         if (data.ticketPrint.showSignSeller || data.ticketPrint.showSignClient){
           ticket += "\n";
           ticket += "\n";
@@ -1485,9 +1501,16 @@ export class SalePage implements OnInit {
         ticket += head_code+"|"+head_quantity+"|"+head_price+"|"+head_subtotal+"\n";
         ticket += lines;
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
+        if (this.computePercent()){
+          ticket += "Descuento"+this.formatService.string_pad(data.ticketPrint.paperWidth-9, "$ "+this.computeDiscount().toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+        }
         ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.paperWidth-5, "$ "+this.saleForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
+        if (this.saleForm.value.note){
+          ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "| Anotacion |", 'center', '-')+"\n";
+          ticket += this.formatService.breakString(this.saleForm.value.note, data.ticketPrint.paperWidth)+"\n";
+        }
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         if (data.ticketPrint.showSignSeller){
           ticket += "\n";
