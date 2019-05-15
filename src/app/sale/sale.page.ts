@@ -1109,7 +1109,17 @@ export class SalePage implements OnInit {
       let discount = 0;
       let items = []
       if (this.saleForm.value.discount.discountProduct){
-        items = this.saleForm.value.items;
+        let discountItem;
+        this.saleForm.value.items.forEach(item=>{
+          if (item.product._id != 'product.discount'){
+            items.push(item);
+          } else {
+            discountItem = item;
+          }
+        })
+        if (discountItem){
+          items.push(discountItem);
+        }
       } else {
         discount = this.saleForm.value.discount.value;
         this.saleForm.value.items.forEach(item=>{

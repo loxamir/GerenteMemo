@@ -173,6 +173,22 @@
                     </ion-item>
 </ion-row>
 
+<h2 class="section-title">{{'Anotación' | translate}}</h2>
+<ion-row>
+  <ion-item class="field-33">
+    <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+    <ion-input type="number" formControlName="invoiceNote_top"></ion-input>
+  </ion-item>
+  <ion-item class="field-33">
+    <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+    <ion-input type="number" formControlName="invoiceNote_left"></ion-input>
+  </ion-item>
+  <ion-item class="field-33">
+    <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+    <ion-input type="number" formControlName="invoiceNote_width"></ion-input>
+  </ion-item>
+</ion-row>
+
 
 
                     <h2 class="section-title">{{'Lineas de la Factura' | translate}}</h2>
@@ -307,7 +323,21 @@
                               <ion-input type="number" formControlName="amountInWords_width"></ion-input>
                             </ion-item>
 </ion-row>
-
+<h2 class="section-title">{{'Descuento' | translate}}</h2>
+<ion-row>
+                              <ion-item class="field-33">
+                                <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+                                <ion-input type="number" formControlName="invoiceDiscount_top"></ion-input>
+                              </ion-item>
+                              <ion-item class="field-33">
+                                <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+                                <ion-input type="number" formControlName="invoiceDiscount_left"></ion-input>
+                              </ion-item>
+                              <ion-item class="field-33">
+                                <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+                                <ion-input type="number" formControlName="invoiceDiscount_width"></ion-input>
+                              </ion-item>
+</ion-row>
                             <h2 class="section-title">{{'Total de la Factura' | translate}}</h2>
 <ion-row>
                               <ion-item class="field-33">
@@ -323,6 +353,7 @@
                                 <ion-input type="number" formControlName="invoiceTotal_width"></ion-input>
                               </ion-item>
 </ion-row>
+
 
                               <h2 class="section-title">{{'Total IVA 5%' | translate}}</h2>
 <ion-row>

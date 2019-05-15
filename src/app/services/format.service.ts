@@ -359,6 +359,7 @@ export class FormatService {
     var street = partner.address;
     var phone = partner.phone;
     var max_lines = layout.lines_limit;
+    var note = order.note;
     // var lines_count = 0;
     var lines = "";
     var subtotal_10 = 0;
@@ -507,7 +508,16 @@ export class FormatService {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
     }
-
+    //put note
+    marginTop = layout.invoiceNote_top / 4.4;
+    marginLeft = layout.invoiceNote_left / 1.35;
+    marginTop = parseInt(marginTop);
+    marginLeft = parseInt(marginLeft);
+    dataModel = note || "";
+    for (var x = 0; x < dataModel.toString().length; x++) {
+      let b = marginLeft;
+      page_printed[marginTop][x + b] = dataModel.toString()[x];
+    }
 
     //put lines
     marginTop = layout.lines_top / 4.4;
@@ -618,7 +628,7 @@ export class FormatService {
     marginLeft = layout.subTotalTax5_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = subtotal_05.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = subtotal_05.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -628,17 +638,35 @@ export class FormatService {
     marginLeft = layout.subTotalTax10_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = subtotal_10.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = subtotal_10.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
     }
+    //put discount
+    let width = 0;
+    if (order.discount){
+      marginTop = layout.invoiceDiscount_top / 4.4;
+      marginLeft = layout.invoiceDiscount_left / 1.35;
+      width = layout.invoiceDiscount_width / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      if (width){
+        dataModel = this.string_pad(width, parseFloat(order.discount).toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        for (var x = 0; x < dataModel.toString().length; x++) {
+          let b = marginLeft;
+          page_printed[marginTop][x + b] = dataModel.toString()[x];
+        }
+      }
+    }
     //put total
     marginTop = layout.invoiceTotal_top / 4.4;
     marginLeft = layout.invoiceTotal_left / 1.35;
+    width = layout.invoiceTotal_width / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = order.total.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    // dataModel = order.total.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    dataModel = this.string_pad(width, parseFloat(order.total).toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];

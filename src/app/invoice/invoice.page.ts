@@ -135,20 +135,10 @@ export class InvoicePage implements OnInit {
       history.pushState(foo, "Anything", " ");
     }
 
-    // presentPopover(myEvent) {
-    //   let popover = this.popoverCtrl.create(InvoicePopover, {doc: this});
-    //   popover.present({
-    //     ev: myEvent
-    //   });
-    // }
-
     async ngOnInit() {
-      //var today = new Date().toISOString();
-      //console.log("this.route.snapshot.paramMap.get('origin_ids", this.route.snapshot.paramMap.get('contact);
       let items = [];
       if (this.items){
         let lista: any = this.items;
-        console.log("lista", lista);
         lista.forEach(item=>{
           items.push({
             'product': item.product,
@@ -193,21 +183,8 @@ export class InvoicePage implements OnInit {
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
       this.recomputeValues();
-      //this.loading.present();
-      // console.log("id", this._id);
-      // if (this._id){
-      //   this.pouchdbService.getDoc(this._id).then((data) => {
-      //     console.log("data invoice", data);
-      //     this.invoiceForm.patchValue(data);
-      //     //this.loading.dismiss();
-      //   });
-      // } else {
-      //   //this.loading.dismiss();
-      // }
-      console.log("id", this._id);
       if (this._id){
         this.getInvoice(this._id).then((data) => {
-          console.log("data invoice", data);
           this.invoiceForm.patchValue(data);
           this.loading.dismiss();
         });
@@ -704,89 +681,9 @@ export class InvoicePage implements OnInit {
       }
     }
 
-    // changeTab() {
-    //   ////console.log("changeTab", this.invoiceForm);
-    //   this.invoiceForm.controls.tab.markAsPristine();
-    // }
-
-    // addPayment() {
-    //   this.avoidAlertMessage = true;
-    //   let plannedItems = [];
-    //   //let planned.amount_paid = this.invoiceForm.value.planned[0].amount;
-    //
-    //   this.invoiceForm.value.planned.forEach(planned => {
-    //     //planned.amount_paid = planned.amount;
-    //     if (planned.state == 'WAIT'){
-    //       plannedItems.push(planned);
-    //     }
-    //   })
-    //
-    //   this.events.unsubscribe('create-receipt');
-    //   this.events.subscribe('create-receipt', (data) => {
-    //     //console.log("receipt", data);
-    //     //if (data.amount > 0){
-    //       // let index = this.invoiceForm.value.planned.indexOf(plannedItems[0])
-    //       // //console.log("plannedItems[0]", index);
-    //       // this.invoiceForm.value.payments.splice(index, 1);
-    //     //}
-    //       this.invoiceForm.value.payments.push({
-    //         'total': data.total,
-    //         'date': data.date,
-    //         'cash': data.cash,
-    //         'state': data.state,
-    //         '_id': data._id,
-    //       });
-    //     //}
-    //     this.recomputeValues();
-    //     this.avoidAlertMessage = false;
-    //     this.justSave();
-    //     this.events.unsubscribe('create-receipt');
-    //   });
-    //   //console.log("this.invoiceForm.value.planned", this.invoiceForm.value.planned);
-    //   plannedItems = [plannedItems[0]];
-    //   this.navCtrl.navigateForward(ReceiptPage, {
-    //     //"default_amount": default_amount,
-    //     //"default_name": "Pago Venta",
-    //     "addPayment": true,
-    //     "contact": this.invoiceForm.value.contact,
-    //     "items": plannedItems,
-    //     "origin_ids": [this.invoiceForm.value._id],
-    //   });
-    // //}
-    // }
-
-    // openPayment(item) {
-    //   this.events.unsubscribe('open-receipt');
-    //   this.events.subscribe('open-receipt', (data) => {
-    //     this.events.unsubscribe('open-receipt');
-    //   });
-    //   this.navCtrl.navigateForward(ReceiptPage, {
-    //     "_id": item._id,
-    //   });
-    // }
-
     onSubmit(values){
       //console.log(values);
     }
-
-    // selectContact() {
-    //   if (this.invoiceForm.value.state=='QUOTATION'){
-    //     return new Promise(resolve => {
-    //       this.avoidAlertMessage = true;
-    //       this.events.subscribe('select-contact', (contact) => {
-    //         this.invoiceForm.patchValue({
-    //           contact: contact,
-    //           contact_name: contact.name,
-    //         });
-    //         this.invoiceForm.markAsDirty();
-    //         this.avoidAlertMessage = false;
-    //         this.events.unsubscribe('select-contact');
-    //         resolve(true);
-    //       })
-    //       this.navCtrl.navigateForward(ContactsPage, {"select": true});
-    //     });
-    //   }
-    // }
 
     selectContact() {
       if (this.invoiceForm.value.state=='QUOTATION'){
@@ -854,6 +751,7 @@ export class InvoicePage implements OnInit {
           let doc = this.invoiceForm.value.contact.document || "";
           let direction = this.invoiceForm.value.contact.address || "";
           let phone = this.invoiceForm.value.contact.phone || "";
+          let note = this.invoiceForm.value.note || "";
           let totalExentas = 0;
           let totalIva5 = 0;
           let totalIva10 = 0;
@@ -884,6 +782,7 @@ export class InvoicePage implements OnInit {
           docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top + topo);
           docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top + topo);
           docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top + topo);
+          docPdf.text(note, data.invoicePrint.invoiceNote_left, data.invoicePrint.invoiceNote_top + topo);
           let lines_top = data.invoicePrint.lines_top + topo;
           let margin = 0;
           this.invoiceForm.value.items.forEach(item => {
@@ -933,6 +832,9 @@ export class InvoicePage implements OnInit {
           docPdf.text(totalIva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top + topo, 'right');
 
           docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top + topo);
+          if (this.invoiceForm.value.discount && data.invoicePrint.invoiceDiscount_width){
+            docPdf.text(parseFloat(this.invoiceForm.value.discount).toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceDiscount_left + data.invoicePrint.invoiceDiscount_width, data.invoicePrint.invoiceDiscount_top + topo, 'right');
+          }
           docPdf.text(totalAmount.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top + topo, 'right');
           docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top + topo);
           docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top + topo);
@@ -960,6 +862,7 @@ export class InvoicePage implements OnInit {
               doc = this.invoiceForm.value.contact.document || "";
               direction = this.invoiceForm.value.contact.address || "";
               phone = this.invoiceForm.value.contact.phone || "";
+              note = this.invoiceForm.value.note || "";
               totalExentas = 0;
               totalIva5 = 0;
               totalIva10 = 0;
@@ -975,7 +878,7 @@ export class InvoicePage implements OnInit {
               docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top + topo);
               docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top + topo);
               docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top + topo);
-
+              docPdf.text(note, data.invoicePrint.invoiceNote_left, data.invoicePrint.invoiceNote_top + topo);
               lines_top = data.invoicePrint.lines_top + topo;
               margin = 0;
               this.invoiceForm.value.items.forEach(item => {
@@ -1025,6 +928,9 @@ export class InvoicePage implements OnInit {
               docPdf.text(totalIva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top + topo, 'right');
 
               docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top + topo);
+              if (this.invoiceForm.value.discount && data.invoicePrint.invoiceDiscount_width){
+                docPdf.text(parseFloat(this.invoiceForm.value.discount).toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceDiscount_left + data.invoicePrint.invoiceDiscount_width, data.invoicePrint.invoiceDiscount_top + topo, 'right');
+              }
               docPdf.text(totalAmount.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top + topo, 'right');
               docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top + topo);
               docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top + topo);
@@ -1053,6 +959,7 @@ export class InvoicePage implements OnInit {
               doc = this.invoiceForm.value.contact.document || "";
               direction = this.invoiceForm.value.contact.address || "";
               phone = this.invoiceForm.value.contact.phone || "";
+              note = this.invoiceForm.value.note || "";
               totalExentas = 0;
               totalIva5 = 0;
               totalIva10 = 0;
@@ -1070,7 +977,7 @@ export class InvoicePage implements OnInit {
               docPdf.text(doc, data.invoicePrint.contactDocument_left, data.invoicePrint.contactDocument_top + topo);
               docPdf.text(direction, data.invoicePrint.contactAddress_left, data.invoicePrint.contactAddress_top + topo);
               docPdf.text(phone, data.invoicePrint.contactPhone_left, data.invoicePrint.contactPhone_top + topo);
-
+              docPdf.text(note, data.invoicePrint.invoiceNote_left, data.invoicePrint.invoiceNote_top + topo);
               lines_top = data.invoicePrint.lines_top + topo;
               margin = 0;
               this.invoiceForm.value.items.forEach(item => {
@@ -1120,6 +1027,9 @@ export class InvoicePage implements OnInit {
               docPdf.text(totalIva10.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.subTotalTax10_left + data.invoicePrint.subTotalTax10_width, data.invoicePrint.subTotalTax10_top + topo, 'right');
 
               docPdf.text(totalInWords, data.invoicePrint.amountInWords_left, data.invoicePrint.amountInWords_top + topo);
+              if (this.invoiceForm.value.discount && data.invoicePrint.invoiceDiscount_width){
+                docPdf.text(parseFloat(this.invoiceForm.value.discount).toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceDiscount_left + data.invoicePrint.invoiceDiscount_width, data.invoicePrint.invoiceDiscount_top + topo, 'right');
+              }
               docPdf.text(totalAmount.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.invoiceTotal_left + data.invoicePrint.invoiceTotal_width, data.invoicePrint.invoiceTotal_top + topo, 'right');
               docPdf.text(amountIva5.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax5_left, data.invoicePrint.totalTax5_top + topo);
               docPdf.text(amountIva10.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), data.invoicePrint.totalTax10_left, data.invoicePrint.totalTax10_top + topo);
@@ -1170,6 +1080,7 @@ export class InvoicePage implements OnInit {
           let doc = this.invoiceForm.value.contact.document || "";
           let direction = this.invoiceForm.value.contact.address || "";
           let phone = this.invoiceForm.value.contact.phone || "";
+          let note = this.invoiceForm.value.note || "";
           let lines = ""
           let totalExentas = 0;
           let totalIva5 = 0;
@@ -1264,146 +1175,6 @@ export class InvoicePage implements OnInit {
            //})
       });
     }
-
-  //   async posprint() {
-  //     let invoice = this.invoiceForm.value;
-  //     var partner_name = invoice.contact.name_legal || invoice.contact.name;
-  //     let contact = invoice.contact;
-  //     var max_lines = 10;
-  //     var lines_count = 0;
-  //     var lines = "";
-  //     var subtotal_10 = 0;
-  //     var subtotal_05 = 0;
-  //     var subtotal_00 = 0;
-  //     var iva_10 = 0;
-  //     var iva_05 = 0;
-  //     let invoiceLines = ""
-  //     invoice.items.forEach((line: any, index) => {
-  //       let line_amount_00 = 0;
-  //       let line_amount_05 = 0;
-  //       let line_amount_10 = 0;
-  //       let iva = "10%";
-  //       //IVA Exento
-  //       if (line.product.tax == 'iva0') {
-  //         line_amount_00 = line.quantity * line.price;
-  //         subtotal_00 += line_amount_00;
-  //         iva = "0%";
-  //       }
-  //       //IVA 5%
-  //       if (line.product.tax == 'iva5') {
-  //         line_amount_05 = line.quantity * line.price;
-  //         subtotal_05 += line_amount_05;
-  //         iva_05 += line_amount_05 / 21;
-  //         iva = "5%";
-  //       }
-  //       //IVA 10%
-  //       if (line.product.tax == 'iva10') {
-  //         line_amount_10 = line.quantity * line.price;
-  //         subtotal_10 += line_amount_10;
-  //         iva_10 = iva_10 + line_amount_10 / 11;
-  //         iva = "10%";
-  //       }
-  //       let productCode =this.formatService.string_pad(8, line.product.code.substring(0, 8), 'right');
-  //       let productName =this.formatService.string_pad(38, line.description.substring(0, 38));
-  //
-  //       let productQuantity =this.formatService.string_pad(9, line.quantity, 'right');
-  //       let productPrice =this.formatService.string_pad(14, parseFloat(line.price).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-  //       let subTotal =this.formatService.string_pad(16, (line.price*line.quantity).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
-  //       let tax =this.formatService.string_pad(6, iva, 'right');
-  //       invoiceLines += productCode+" "+productName+"\n";
-  //       invoiceLines += productQuantity+" "+productPrice+" "+subTotal+" "+tax+"\n";
-  //       invoiceLines += "----------------------------------------------\n";
-  //       // invoiceLines += "0001  Limpia Porcelanato 5L\n";
-  //       // ticket += "   5  11.035.000 55.175.000  10%\n";
-  //       // ticket += "   5  11.035.000 55.175.000  10%\n";
-  //       lines_count = lines_count + 1;
-  //     })
-  //     while (lines_count < max_lines) {
-  //       invoiceLines += "     \n";
-  //       invoiceLines += "     \n";
-  //       invoiceLines += "     \n";
-  //       lines_count = lines_count + 1;
-  //     }
-  //     let ticket = "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     // ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += this.formatService.string_pad(48,(new Date(invoice.date)).toLocaleDateString('es-PY') , 'right', ' ')+"\n";
-  //     ticket += "         "+this.formatService.string_pad(55, partner_name.substring(0, 87), 'left', ' ')+"\n";
-  //     ticket += this.formatService.string_pad(48, (contact.document|| ""), 'right', ' ')+"\n";
-  //     ticket += "           "+this.formatService.string_pad(53, (contact.address || "").substring(0, 85), 'left', ' ')+"\n";
-  //     ticket += this.formatService.string_pad(48, (contact.phone|| "").substring(0, 38), 'right', ' ')+"\n";
-  //     ticket += this.formatService.string_pad(48, invoice.paymentCondition, 'right', ' ')+"\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "|----------------------------------------------|\n";
-  //     ticket += invoiceLines;
-  //     ticket += "\n";
-  //     ticket += this.formatService.string_pad(48, invoice.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-  //     ticket += this.formatService.string_pad(48, subtotal_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-  //     ticket += this.formatService.string_pad(48, subtotal_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-  //     ticket += this.formatService.string_pad(48, subtotal_00.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += this.formatService.string_pad(48, iva_10.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-  //     ticket += this.formatService.string_pad(48, iva_05.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-  //     ticket += this.formatService.string_pad(48, (iva_05+iva_10).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right', ' ')+"\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     ticket += "\n";
-  //     console.log("ticket", ticket);
-  //
-  //     // Print to bluetooth printer
-  //     let toast = await this.toastCtrl.create({
-  //     message: "Imprimiendo...",
-  //     duration: 3000
-  //   });
-  //   toast.present();
-  //   this.bluetoothSerial.isEnabled().then(res => {
-  //     this.bluetoothSerial.list().then((data)=> {
-  //       this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
-  //         this.bluetoothSerial.isConnected().then(res => {
-  //           // |---- 32 characteres ----|
-  //           this.bluetoothSerial.write(ticket);
-  //
-  //           setTimeout(function(){
-  //               // this.barcode = ""
-  //               this.bluetoothSerial.disconnect();
-  //           }, 2000);
-  //         }).catch(res => {
-  //           //console.log("res1", res);
-  //         });
-  //       },error=>{
-  //         //console.log("error", error);
-  //       });
-  //     })
-  //   }).catch(res => {
-  //     //console.log("res", res);
-  //   });
-  // }
 
     getInvoice(doc_id): Promise<any> {
       return new Promise((resolve, reject)=>{
