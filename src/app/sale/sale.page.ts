@@ -541,7 +541,7 @@ export class SalePage implements OnInit {
         let discount_lines = 0;
         this.saleForm.value.items.forEach((item) => {
           if (item.product._id != "product.discount"){
-            discount_lines = discount_lines + parseFloat(item.quantity)*((parseFloat(item.price_original)-parseFloat(item.price)));
+            discount_lines += parseFloat(item.quantity)*(parseFloat(item.price_original || item.price)-parseFloat(item.price));
           }
         });
         console.log("discount_lines", discount_lines);
