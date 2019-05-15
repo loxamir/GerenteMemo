@@ -6,9 +6,10 @@ import { LanguageModel } from "../../services/language/language.model";
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormatService } from "../../services/format.service";
 import { ModalController, Events, LoadingController, NavController,
-  AlertController } from '@ionic/angular';
+  AlertController, ToastController } from '@ionic/angular';
 import { CloseService } from "./close.service";
 import { PouchdbService } from '../../services/pouchdb/pouchdb-service';
+import { ConfigService } from '../../config/config.service';
 
 @Component({
   selector: 'app-close',
@@ -36,11 +37,13 @@ export class ClosePage implements OnInit {
     public formBuilder: FormBuilder,
     public translate: TranslateService,
     public route: ActivatedRoute,
+    public toastCtrl: ToastController,
     public formatService: FormatService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public closeService: CloseService,
     public events: Events,
+    public configService: ConfigService,
     public pouchdbService: PouchdbService,
   ) {
     this.amount_theoretical = this.route.snapshot.paramMap.get('amount_theoretical');
@@ -240,24 +243,98 @@ export class ClosePage implements OnInit {
   })
   }
 
-  print(){
+  async print(){
+    let data = await this.configService.getConfigDoc();
     let date = this.closeForm.value.date.split('T')[0];
-    let content = "Cierre de Caja";
-    content += "Fecha: "+date+"\n";
-    content += "Monto Inicial: $ "+this.closeForm.value.amount_open.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-    content += "Monto Recebido: $ "+this.closeForm.value.amount_income.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-    content += "Monto Entregado: $ "+this.closeForm.value.amount_expense.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-    content += "Monto Final: $ "+this.closeForm.value.amount_physical.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-    content += "Variación: $ "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")+"\n";
-    // content += "---------| Movimentos |---------\n";
-    content += this.formatService.string_pad(60, "| Movimentos |", 'center', '-')+"\n";
-    content += this.formatService.string_pad(20, "Contacto")+this.formatService.string_pad(30, "Descripcion")+this.formatService.string_pad(10,"Valor", 'right')+"\n";
-    content += this.formatService.string_pad(60, "", 'center', '-')+"\n";
-    this.closeForm.value.accountMoves.forEach(move=>{
-      content += this.formatService.string_pad(20, move.contact_name)+this.formatService.string_pad(30, move.name)+this.formatService.string_pad(10, move.amount, 'right')+"\n";
-    })
+    let content = this.formatService.string_pad(data.ticketPrint.closePaperWidth, "| Cierre de Caja |", 'center', '-')+"\n";
+    if (data.ticketPrint.closePaperWidth >= 80){
+      content += "Monto Inicial: "+this.formatService.string_pad(15, "$ "+this.closeForm.value.amount_open.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-30, " ");
+      content += "Fecha: "+this.formatService.string_pad(25, (new Date(this.closeForm.value.date).toLocaleDateString('es-PY')).substring(0, data.ticketPrint.closePaperWidth-5), "right");
+      content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-22, " ")+"\n";
+      content += "Monto Final:   "+this.formatService.string_pad(15, "$ "+this.closeForm.value.amount_physical.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-30, " ");
+      content += "Valor Recebido: "+this.formatService.string_pad(16, "$ "+this.closeForm.value.amount_income.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-31, " ")+"\n";
+      content += "Variación:     "+this.formatService.string_pad(15, "$ "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open).toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-30, " ");
+      content += "Monto Entregado: "+this.formatService.string_pad(15, "$ "+this.closeForm.value.amount_expense.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-32, " ")+"\n";
+
+      content += this.formatService.string_pad(data.ticketPrint.closePaperWidth, "| Movimentos |", 'center', '-')+"\n";
+      content += this.formatService.string_pad(data.ticketPrint.closePaperWidth/3, "Contacto")+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2, "Descripcion")+this.formatService.string_pad(data.ticketPrint.closePaperWidth/6-1,"Valor", 'right')+"\n";
+      content += this.formatService.string_pad(data.ticketPrint.closePaperWidth, "", 'center', '-')+"\n";
+      this.closeForm.value.accountMoves.forEach(move=>{
+        content += this.formatService.string_pad(data.ticketPrint.closePaperWidth/3, move.contact_name)+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2, move.name)+this.formatService.string_pad(data.ticketPrint.closePaperWidth/6-1, move.amount, 'right')+"\n";
+      })
+      content += this.formatService.string_pad(data.ticketPrint.closePaperWidth, "", 'center', '-')+"\n";
+      if (data.ticketPrint.showCloseSign || data.ticketPrint.showCloseSignSuper){
+        content += "\n";
+        content += "\n";
+      }
+      if (data.ticketPrint.showCloseSign){
+        content += this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-5, "", 'center', '_');
+        content += "          ";
+      }
+      if (data.ticketPrint.showCloseSignSuper){
+        content += this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-5, "", 'center', '_')+"\n";
+      }
+      if (data.ticketPrint.showCloseSign){
+        content += this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-5, "Firma del Cajero", 'center', ' ');
+        content += "          ";
+      }
+      if (data.ticketPrint.showCloseSignSuper){
+        content += this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-5, "Firma del Supervisor", 'center', ' ')+"\n";
+      }
+      let i = data.ticketPrint.closeMarginBottom;
+      while(i>0){
+        content += "\n";
+        i--;
+      }
+
+    } else {
+      content += "Fecha"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-5, (new Date(this.closeForm.value.date).toLocaleDateString('es-PY')).substring(0, data.ticketPrint.closePaperWidth-5), "right")+"\n";
+      content += "Monto Inicial"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-13, "$ "+this.closeForm.value.amount_open.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      content += "Valor Recebido"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-14, "$ "+this.closeForm.value.amount_income.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      content += "Monto Entregado"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-15, "$ "+this.closeForm.value.amount_expense.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      content += "Monto Final"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-11, "$ "+this.closeForm.value.amount_physical.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      content += "Variación"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-9, "$ "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open).toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+
+      content += this.formatService.string_pad(data.ticketPrint.closePaperWidth, "| Movimentos |", 'center', '-')+"\n";
+      content += this.formatService.string_pad(data.ticketPrint.closePaperWidth/3, "Contacto")+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-1, "Descripcion")+this.formatService.string_pad(data.ticketPrint.closePaperWidth/6,"Valor", 'right')+"\n";
+      content += this.formatService.string_pad(data.ticketPrint.closePaperWidth, "", 'center', '-')+"\n";
+      this.closeForm.value.accountMoves.forEach(move=>{
+        content += this.formatService.string_pad(data.ticketPrint.closePaperWidth/3, (move.contact_name || "").substring(0, data.ticketPrint.closePaperWidth/3))+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-1, (move.name || "").substring(0, data.ticketPrint.closePaperWidth/2-1))+this.formatService.string_pad(data.ticketPrint.closePaperWidth/6, move.amount, 'right')+"\n";
+      })
+      content += this.formatService.string_pad(data.ticketPrint.closePaperWidth, "", 'center', '-')+"\n";
+      if (data.ticketPrint.showCloseSign){
+        content += "\n";
+        content += "\n";
+        content += "\n";
+        content += this.formatService.string_pad(data.ticketPrint.closePaperWidth, "", 'center', '-')+"\n";
+        content += "Firma del Cajero\n";
+      }
+      if (data.ticketPrint.showCloseSignSuper){
+        content += "\n";
+        content += "\n";
+        content += "\n";
+        content += this.formatService.string_pad(data.ticketPrint.closePaperWidth, "", 'center', '-')+"\n";
+        content += "Firma del Supervisor\n";
+      }
+      let i = data.ticketPrint.closeMarginBottom;
+      while(i>0){
+        content += "\n";
+        i--;
+      }
+
+    }
     let filename = "Cierre_"+date+".prt";
     this.formatService.printMatrix(content, filename);
+    let toast = await this.toastCtrl.create({
+      message: "Imprimiendo...",
+      duration: 3000
+    });
+    toast.present();
   }
 
   hideCashMoves(){

@@ -103,6 +103,36 @@
              <ion-toggle formControlName="showServiceSignClient"></ion-toggle>
           </ion-item>
         </ion-row>
+
+        <h2 class="section-title" style="margin-top: 10px;">{{'Ciere de Caja' | translate}}</h2>
+        <ion-row>
+          <ion-item class="field-100">
+            <ion-label position="floating">{{'Letras por linea' | translate}}</ion-label>
+            <ion-input type="number" formControlName="closePaperWidth"></ion-input>
+          </ion-item>
+          <ion-item class="field-100">
+            <ion-label position="floating">{{'Lineas de Margin Inferior' | translate}}</ion-label>
+            <ion-input type="number" formControlName="closeMarginBottom"></ion-input>
+          </ion-item>
+          <!-- <ion-item  class="field-100">
+            <ion-label position="stacked">{{ 'Comentario en Servicio' | translate }}</ion-label>
+            <ion-textarea #clrequest formControlName="serviceComment"
+              rows="3">
+            </ion-textarea>
+          </ion-item> -->
+          <ion-item
+           no-padding
+           class="field-100">
+             <ion-label>{{'Exibir Firma del Cajero' | translate}}</ion-label>
+             <ion-toggle formControlName="showCloseSign"></ion-toggle>
+          </ion-item>
+          <ion-item
+           no-padding
+           class="field-100">
+             <ion-label>{{'Exibir Firma del Supervisor' | translate}}</ion-label>
+             <ion-toggle formControlName="showCloseSignSuper"></ion-toggle>
+          </ion-item>
+        </ion-row>
     </section>
   </form>
 
