@@ -685,15 +685,18 @@ export class FormatService {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
     }
-
-    let invoice = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a";
-    for (var y = 0; y < 43 + layout.lines_limit; y++) {
+    let invoice = "";
+    for (var y = 0; y < layout.invoice_height/4.4 + layout.lines_limit; y++) {
       for (var x = 0; x < 160; x++) {
         invoice += page_printed[y][x];
       }
       invoice += "\n";
     }
-    var blob = new Blob([invoice], { type: "text/plain;charset=utf-8" });
+    let final = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a";
+    for (var y = 0; y < layout.copy_count; y++) {
+      final += invoice;
+    }
+    var blob = new Blob([final], { type: "text/plain;charset=utf-8" });
     saveAs(blob, prefix + order.code + extension);
   }
 
