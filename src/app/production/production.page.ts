@@ -911,7 +911,7 @@ export class ProductionPage implements OnInit {
         await profileModal.present();
         let data: any = await profileModal.onDidDismiss();//data => {
           console.log("Work", data);
-          if (data) {
+          if (data.data) {
             data.data.cost = this.labor_product['cost'];
             data.data.price = this.labor_product['price'];
             this.productionForm.value.works.unshift(data.data)
@@ -932,7 +932,7 @@ export class ProductionPage implements OnInit {
         });
         await profileModal.present();
         let data = await profileModal.onDidDismiss()
-          if (data) {
+          if (data.data) {
             //console.log("asdf", data);
             Object.keys(data.data).forEach(key => {
               item[key] = data.data[key];
