@@ -721,6 +721,10 @@ export class SaleReportPage implements OnInit {
       this.reportSaleForm.patchValue({
         'orderBy': 'name'
       });
+    } else {
+      this.reportSaleForm.patchValue({
+        'orderBy': 'total'
+      });
     }
 
     this.getData().then(data => {
