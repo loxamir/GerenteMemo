@@ -133,7 +133,7 @@ export class ClosePage implements OnInit {
           this.events.publish('create-close', this.closeForm.value);
           resolve(this._id);
           if (this.select){
-            this.modalCtrl.dismiss();
+            // this.modalCtrl.dismiss();
           }
         });
       }
