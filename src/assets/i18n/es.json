@@ -308,5 +308,7 @@
   "NEW_AMOUNT": "Nuevo Valor",
   "AMOUNT_ORIGINAL": "Valor Original",
   "FABRICATION": "Fabricación",
+  "AMOUNT_COMPANY_CURRENCY": "Monto Moneda Empresa",
+  "CURRENCY_EXCHANGE": "Tasa de Cambio",
   "RESULT": "Resultado"
 }

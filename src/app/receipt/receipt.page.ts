@@ -856,7 +856,6 @@ export class ReceiptPage implements OnInit {
             "amount": toCreateCashMoves[account_id],
             "name": this.receiptForm.value.name,
             "date": this.today,
-            // "project_id": this.receiptForm.value.project_id,
             "accountFrom_id": account_id,
             "contact_id": this.receiptForm.value.contact._id,
             "check_id": this.receiptForm.value.check._id,
@@ -870,13 +869,10 @@ export class ReceiptPage implements OnInit {
       } else {
         Object.keys(toCreateCashMoves).forEach(account_id => {
           promise_ids.push(this.cashMoveService.createCashMove({
-            // "amount": item.amount,
             "amount": toCreateCashMoves[account_id],
             "name": this.receiptForm.value.name,
             "date": this.today,
-            // "accountFrom": item.cash,
             "check_id": this.receiptForm.value.check._id,
-            // "project_id": this.receiptForm.value.project_id,
             "accountFrom_id": this.receiptForm.value.cash_paid._id,
             "contact_id": this.receiptForm.value.contact._id,
             "accountTo_id": account_id,

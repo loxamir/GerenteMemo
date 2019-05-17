@@ -42,9 +42,11 @@ export class CashMovePage implements OnInit {
 @Input() contact_id;
 @Input() signal;
 @Input() check;
+@Input() company_currency = {};
 @Input() currency;
 @Input() currency_amount;
 @Input() currency_residual;
+@Input() currency_exchange;
 @Input() payable;
 @Input() receivable;
 @Input() select;
@@ -97,17 +99,14 @@ export class CashMovePage implements OnInit {
   }
 
   async ngOnInit() {
-    var today = new Date().toISOString();
-    setTimeout(() => {
-      this.amount.setFocus();
-      this.cashMoveForm.markAsPristine();
-    }, 200);
+    // var today = new Date().toISOString();
+
 
     this.cashMoveForm = this.formBuilder.group({
       name: new FormControl(this.default_name),
       amount: new FormControl(this.default_amount||'', Validators.required),
-      date: new FormControl(today, Validators.required),
-      dateDue: new FormControl(today, Validators.required),
+      date: new FormControl(this.today.toISOString(), Validators.required),
+      dateDue: new FormControl(this.today.toISOString(), Validators.required),
       state: new FormControl('DRAFT'),
       // cash: new FormControl({}),
       // cash_id: new FormControl(this.cash_id')),
@@ -134,14 +133,22 @@ export class CashMovePage implements OnInit {
       is_other_currency:  new FormControl(false),
       close_id: new FormControl(),
       currency: new FormControl(this.currency||{}),
+      currency_id: new FormControl(''),
       currency_amount: new FormControl(this.currency_amount||0),
       currency_residual: new FormControl(this.currency_residual||0),
+      currency_exchange: new FormControl(this.currency_exchange||1),
       _id: new FormControl(''),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
+    setTimeout(() => {
+       this.amount.setFocus();
+      this.cashMoveForm.markAsPristine();
+    }, 200);
     if (this.accountTo && (this.accountTo['_id'].split('.')[1]=='cash' || this.accountTo['_id'].split('.')[1]=='bank' || this.accountTo['_id'].split('.')[1]=='check')){
       // console.log("to cash");
       this.to_cash = true;
@@ -162,7 +169,7 @@ export class CashMovePage implements OnInit {
       this.cashMoveService.getCashMove(this._id).then((data) => {
         // data.date = Date(data.date)
         this.cashMoveForm.patchValue(data);
-        //this.loading.dismiss();
+        this.loading.dismiss();
       });
     } else {
       this.cashMoveForm.markAsDirty();
@@ -174,26 +181,29 @@ export class CashMovePage implements OnInit {
       //   });
       // } else {
         // this.configService.getConfig().then(config => {
+        let config = await this.configService.getConfig();
+        this.company_currency = config.currency._id;
           let accountFrom = this.accountFrom || {};
           let accountTo = this.accountTo || {};
           let contact = this.contact || {};
           //console.log("configconfig", config);
           this.cashMoveForm.patchValue({
-            // cash: config.cash,
-            // cash_id: config.cash['_id'],
+            currency: config.currency,
+            currency_id: config.currency['_id'],
             accountFrom: accountFrom,
             accountFrom_id: accountFrom['_id'],
             accountTo: accountTo,
             accountTo_id: accountTo['_id'],
             contact: contact,
             contact_id: contact['_id'],
+
           });
         // });
         // this.cashService.getDefaultCash().then(default_cash => {
         //
         // });
       // }
-      //this.loading.dismiss();
+      this.loading.dismiss();
     }
   }
 
@@ -369,9 +379,22 @@ export class CashMovePage implements OnInit {
       });
       profileModal.present();
       this.events.subscribe('select-currency', (data) => {
+        let amount = this.cashMoveForm.value.amount;
+        let amountCurrency = this.cashMoveForm.value.amount;
+        if (data._id != this.company_currency){
+          amountCurrency = this.cashMoveForm.value.amount;
+          amount = this.cashMoveForm.value.amount*parseFloat(data.sale_rate);
+        }
+        console.log("data", data);
+        console.log("amount", amount);
+        console.log("amountCurrency", amountCurrency);
+        console.log("this.company_currency", this.company_currency);
         this.cashMoveForm.patchValue({
+          amount: amount,
+          currency_amount: amountCurrency,
+          currency_exchange: data.sale_rate,
           currency: data,
-          // cash_id: data._id,
+          currency_id: data._id,
         });
         this.cashMoveForm.markAsDirty();
         profileModal.dismiss();
