@@ -27,6 +27,7 @@
        class="field-50" *ngIf="cashMoveForm.value.currency._id != company_currency">
         <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
         <ion-input #currency_amount type="number"
+        (ngModelChange)="changedCurrencyAmount()"
         formControlName="currency_amount"></ion-input>
       </ion-item>
       <ion-item
@@ -52,6 +53,7 @@
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'AMOUNT_COMPANY_CURRENCY' | translate}}</ion-label>
         <ion-input #amount2 type="number"
+        (ngModelChange)="changedAmount()"
         formControlName="amount"></ion-input>
       </ion-item>
       <ion-item
@@ -60,6 +62,7 @@
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'CURRENCY_EXCHANGE' | translate}}</ion-label>
         <ion-input #currency_exchange type="number"
+        (ngModelChange)="changedExchange()"
         formControlName="currency_exchange"></ion-input>
       </ion-item>
       <!-- <ion-item

@@ -62,6 +62,8 @@ export class CashMovePage implements OnInit {
   from_cash: boolean = false;
   to_cash: boolean = false;
   transfer: boolean = false;
+  changing = false;
+  currency_precision = 2;
   constructor(
 
     public navCtrl: NavController,
@@ -182,6 +184,8 @@ export class CashMovePage implements OnInit {
       // } else {
         // this.configService.getConfig().then(config => {
         let config = await this.configService.getConfig();
+        // let config:any = (await this.pouchdbService.getDoc('config.profile'));
+        this.currency_precision = config.currency_precision;
         this.company_currency = config.currency._id;
           let accountFrom = this.accountFrom || {};
           let accountTo = this.accountTo || {};
@@ -381,9 +385,18 @@ export class CashMovePage implements OnInit {
       this.events.subscribe('select-currency', (data) => {
         let amount = this.cashMoveForm.value.amount;
         let amountCurrency = this.cashMoveForm.value.amount;
-        if (data._id != this.company_currency){
+        if (
+          data._id != this.company_currency &&
+          this.cashMoveForm.value.currency._id == this.company_currency
+        ){
           amountCurrency = this.cashMoveForm.value.amount;
           amount = this.cashMoveForm.value.amount*parseFloat(data.sale_rate);
+        } else if (
+          data._id == this.company_currency &&
+          this.cashMoveForm.value.currency._id != this.company_currency
+        ){
+          amount = this.cashMoveForm.value.currency_amount;
+          amountCurrency = amount;
         }
         console.log("data", data);
         console.log("amount", amount);
@@ -398,7 +411,11 @@ export class CashMovePage implements OnInit {
         });
         this.cashMoveForm.markAsDirty();
         profileModal.dismiss();
-        this.currency_amount.setFocus();
+        setTimeout(() => {
+           // this.amount.setFocus();
+           this.currency_amountField.setFocus();
+          // this.cashMoveForm.markAsPristine();
+        }, 200);
         this.events.unsubscribe('select-currency');
         resolve(true);
       })
@@ -593,6 +610,57 @@ export class CashMovePage implements OnInit {
     } else {
       // this.cashMoveForm.markAsPristine();
       this.navCtrl.navigateBack('/cash-move-list');
+    }
+  }
+
+
+  changedCurrencyAmount() {
+    if (this.cashMoveForm.value.currency._id != this.company_currency){
+      if (!this.changing) {
+        this.changing = true;
+        let amountExchange = parseFloat(this.cashMoveForm.value.currency_exchange);
+        let amountCompanyCurrency = this.cashMoveForm.value.currency_amount * amountExchange;
+        this.cashMoveForm.patchValue({
+          amount: amountCompanyCurrency.toFixed(this.currency_precision),
+          currency_exchange: amountExchange.toFixed(this.currency_precision),
+        })
+        setTimeout(() => {
+          this.changing = false;
+        }, 10);
+      }
+    }
+  }
+
+  changedAmount() {
+    if (this.cashMoveForm.value.currency._id != this.company_currency){
+      if (!this.changing) {
+        this.changing = true;
+        let amountCurrency = this.cashMoveForm.value.currency_amount;
+        let amountExchange = this.cashMoveForm.value.amount/amountCurrency;
+        this.cashMoveForm.patchValue({
+          // currency_amount: amountCompanyCurrency.toFixed(this.currency_precision),
+          currency_exchange: amountExchange.toFixed(this.currency_precision),
+        })
+        setTimeout(() => {
+          this.changing = false;
+        }, 10);
+      }
+    }
+  }
+  changedExchange() {
+    if (this.cashMoveForm.value.currency._id != this.company_currency){
+      if (!this.changing) {
+        this.changing = true;
+        let amountExchange = this.cashMoveForm.value.currency_exchange;
+        let amountCompanyCurrency = this.cashMoveForm.value.currency_amount * amountExchange;
+        this.cashMoveForm.patchValue({
+          amount: amountCompanyCurrency.toFixed(this.currency_precision),
+          // currency_exchange: amountExchange.toFixed(this.currency_precision),
+        })
+        setTimeout(() => {
+          this.changing = false;
+        }, 10);
+      }
     }
   }
 
