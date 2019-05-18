@@ -74,9 +74,13 @@
             </ion-col>
           </ion-row>
         </ion-col>
-        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        <!-- <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
           <h2 *ngIf="item.accountFrom_id != _id" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
           <h2 *ngIf="item.accountTo_id != _id" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+        </ion-col> -->
+        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+          <h2 *ngIf="item.accountFrom_id != _id" class="list-big-number" style="color: green;">$ {{item.currency_amount|| item.amount| number:'1.'+currency_precision}}</h2>
+          <h2 *ngIf="item.accountTo_id != _id" class="list-big-number" style="color: red;">$ {{item.currency_amount|| item.amount| number:'1.'+currency_precision}}</h2>
         </ion-col>
       </ion-row>
       <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">

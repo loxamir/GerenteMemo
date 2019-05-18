@@ -59,7 +59,7 @@ export class ReceiptPage implements OnInit {
   currency_precision = 2;
   cash_precision = 2;
   user:any = {};
-
+  company_currency_id = {};
 
     constructor(
       public navCtrl: NavController,
@@ -137,13 +137,14 @@ export class ReceiptPage implements OnInit {
         amount_unInvoiced: new FormControl(''),
         receipt: new FormControl(''),
         amount_paid: new FormControl(null),
+        amount_paid_currency: new FormControl(''),
+        exchange_rate: new FormControl(this.exchange_rate||'1'),
         // createInvoice: new FormControl(false),
         payables: new FormControl([]),
         receivables: new FormControl([]),
         cash_paid: new FormControl({}),
         check: new FormControl({}),
         signal: new FormControl(this.signal||'+'),
-        exchange_rate: new FormControl(this.exchange_rate||'1'),
         _id: new FormControl(''),
         create_user: new FormControl(''),
         create_time: new FormControl(''),
@@ -155,6 +156,7 @@ export class ReceiptPage implements OnInit {
       this.user = (await this.pouchdbService.getUser());
       let config:any = await this.configService.getConfig();
       this.currency_precision = config.currency_precision;
+      this.company_currency_id = config.currency_id;
       this.recomputeValues();
       if (this._id){
         this.receiptService.getReceipt(this._id).then((data) => {
@@ -787,16 +789,16 @@ export class ReceiptPage implements OnInit {
     });
     // console.log("details", details);
     this.receiptForm.value.payments.push({
-      'amount': this.receiptForm.value.amount_paid-this.receiptForm.value.change,
+      'amount': (this.receiptForm.value.amount_paid-this.receiptForm.value.change).toFixed(2),
       'date': this.today,
-      'cash': this.receiptForm.value.cash_paid,
+      // 'cash': this.receiptForm.value.cash_paid,
       'state': 'done',
+      'accountTo_name': this.receiptForm.value.cash_paid.name,
+      'accountFrom_name': this.receiptForm.value.cash_paid.name,
       // 'items_details': details,
     });
-    this.receiptForm.patchValue({
-      "change": 0,
-      "paid": this.receiptForm.value.paid-this.receiptForm.value.change,
-    });
+    // let amount_paid1 = this.receiptForm.value.amount_paid-this.receiptForm.value.change;
+
     let promise_ids = [];
     let credit = 0;
     this.receiptForm.value.items.forEach(ite=>{
@@ -804,8 +806,12 @@ export class ReceiptPage implements OnInit {
         credit += Math.abs(ite.amount_residual)
       }
     })
-
-    let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change + credit;
+    let amount_paid = (this.receiptForm.value.amount_paid-this.receiptForm.value.change + credit)*this.receiptForm.value.exchange_rate;
+    let amount_paid2 = this.receiptForm.value.amount_paid-this.receiptForm.value.change + credit;
+    this.receiptForm.patchValue({
+      "change": 0,
+      "paid": ((this.receiptForm.value.paid-this.receiptForm.value.change)*this.receiptForm.value.exchange_rate).toFixed(this.currency_precision),
+    });
     this.receiptForm.value.payments.forEach((item) => {
       let payments = [];
       let toCreateCashMoves = {};
@@ -854,8 +860,8 @@ export class ReceiptPage implements OnInit {
       })
       if (this.receiptForm.value.signal == "+"){
         Object.keys(toCreateCashMoves).forEach(account_id => {
-          promise_ids.push(this.cashMoveService.createCashMove({
-            "amount": toCreateCashMoves[account_id],
+          let doc = {
+            "amount": (amount_paid2*this.receiptForm.value.exchange_rate).toFixed(this.currency_precision),
             "name": this.receiptForm.value.name,
             "date": this.today,
             "accountFrom_id": account_id,
@@ -865,10 +871,18 @@ export class ReceiptPage implements OnInit {
             'signal': this.receiptForm.value.signal,
             "payments": paymentAccount[account_id],
             "origin_id": this.receiptForm.value._id,
-          }));
+          }
+          if (this.receiptForm.value.cash_paid.currency_id != this.company_currency_id){
+            doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency.precision || 0);
+            doc['currency'] = this.receiptForm.value.cash_paid.currency;
+            doc['currency_exchange'] = this.receiptForm.value.exchange_rate;
+          }
+          console.log("Movimento", doc);
+          promise_ids.push(this.cashMoveService.createCashMove(doc));
 
         });
       } else {
+        console.log("ERR Movimento");
         Object.keys(toCreateCashMoves).forEach(account_id => {
           promise_ids.push(this.cashMoveService.createCashMove({
             "amount": toCreateCashMoves[account_id],
@@ -896,7 +910,7 @@ export class ReceiptPage implements OnInit {
     });
     Promise.all(promise_ids).then((promise_data) => {
       // console.log("promise_data",promise_data);
-      let amount_paid = this.receiptForm.value.amount_paid-this.receiptForm.value.change + credit;
+      let amount_paid = (this.receiptForm.value.amount_paid-this.receiptForm.value.change + credit)*this.receiptForm.value.exchange_rate;
       // let amount_invoiced = amount_paid;
       let promise_ids2 = [];
       this.receiptForm.value.items.forEach(async (item1, index) => {

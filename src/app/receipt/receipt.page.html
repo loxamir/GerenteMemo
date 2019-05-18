@@ -48,6 +48,12 @@
           <h4 class="field-label">{{'CASH' | translate}}</h4>
           <h4 class="field-value">{{receiptForm.value.cash_paid && receiptForm.value.cash_paid.name}}</h4>
         </ion-col>
+        <ion-col *ngIf="receiptForm.value.cash_paid.currency_id != company_currency_id">
+          <ion-item>
+            <ion-label position="floating" style="font-size:14px">{{'CURRENCY' | translate}}</ion-label>
+            <ion-input #exchange_rate type="number" formControlName="exchange_rate" (ionChange)="recomputeValues()" [disabled]="!this.isEmpty(receiptForm.value.check) || receiptForm.value.cash_paid.type == 'check'"></ion-input>
+          </ion-item>
+        </ion-col>
       </ion-row>
       <ion-row *ngIf="receiptForm.value.cash_paid.type != 'cash'">
         <ion-col size="6" (click)="selectCheck()">

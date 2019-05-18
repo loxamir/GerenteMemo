@@ -335,8 +335,12 @@ export class ReportListPage implements OnInit {
         products.forEach(product => {
           // if (doc_dict[product.key[1]] && product.value > 0){
             stocked_quantity += parseFloat(product.value);
-            stocked_cost += product.value * doc_dict[product.key[1]].cost;
-            stocked_price += product.value * doc_dict[product.key[1]].price;;
+            // if (!doc_dict[product.key[1]]){
+            //   console.log("product.key[1]", product.key[1]);
+            // } else {
+              stocked_cost += product.value * doc_dict[product.key[1]].cost;
+              stocked_price += product.value * doc_dict[product.key[1]].price;;
+            // }
           // }
         })
         this.stocked_quantity = stocked_quantity;
