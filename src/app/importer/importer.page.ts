@@ -276,6 +276,8 @@ export class ImporterPage implements OnInit {
         this.checkType(doc[9], lines, counter, 9);
         // this.checkType(doc[8], lines, counter, 10);
         this.checkTrue(lines, counter, 10)
+        this.checkExist('product', doc[11], 'barcode', lines, counter, 11, "Error: Ya existe un Producto con el Codigo de Barras '"+doc[11]+"'");
+
       } else if (this.docType == 'contact'){
         console.log("check contact");
         this.checkExist('contact', doc[0], 'code', lines, counter, 0, "Error: Ya existe un Contato con el Codigo '"+doc[0]+"'");
@@ -780,6 +782,7 @@ export class ImporterPage implements OnInit {
         stock_min,
         type,
         note,
+        barcode,
          obj = [];
      let promise_ids = [];
      let docs = [];
@@ -814,6 +817,7 @@ export class ImporterPage implements OnInit {
             stock_min: doc[8],
             type: doc[9],
             note: doc[10],
+            barcode: doc[11],
          });
        })
        console.log("obj", obj);

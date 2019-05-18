@@ -12,6 +12,7 @@ import { LanguageModel } from "../services/language/language.model";
 import { AccountCategoryListPage } from '../account-category-list/account-category-list.page';
 import { AccountCategoryPage } from '../account-category/account-category.page';
 import { ConfigService } from '../config/config.service';
+import { CurrencyListPage } from '../currency-list/currency-list.page';
 
 @Component({
   selector: 'app-account',
@@ -56,6 +57,7 @@ export class AccountPage implements OnInit {
     this.accountForm = this.formBuilder.group({
       name: new FormControl(null, Validators.required),
       category: new FormControl({}),
+      currency: new FormControl({}),
       bank_name: new FormControl(null),
       note: new FormControl(''),
       code: new FormControl(null),
@@ -130,6 +132,30 @@ export class AccountPage implements OnInit {
       // else if (this.accountForm.dirty) {
       //   this.buttonSave();
       // }
+  }
+
+  selectCurrency() {
+    return new Promise(async resolve => {
+      // this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-currency');
+      this.events.subscribe('select-currency', (data) => {
+        this.accountForm.patchValue({
+          currency: data,
+          // currency_name: data.name,
+        });
+        this.accountForm.markAsDirty();
+        // this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-currency');
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: CurrencyListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      profileModal.present();
+    });
   }
 
   setLanguage(lang: LanguageModel){

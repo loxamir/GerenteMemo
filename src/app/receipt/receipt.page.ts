@@ -57,6 +57,7 @@ export class ReceiptPage implements OnInit {
   @Input() exchange_rate: any;
   @Input() origin_id: any;
   currency_precision = 2;
+  cash_precision = 2;
   user:any = {};
 
 
@@ -169,8 +170,9 @@ export class ReceiptPage implements OnInit {
         }
         this.receiptForm.patchValue({
           "cash_paid": cashier,
-          // "exchange_rate": config.currency.sale_rate,
+          "exchange_rate": cashier.currency && cashier.currency.sale_rate || 1,
         });
+        // receiptForm.value.cash.precision
         this.recomputeValues();
         this.loading.dismiss();
       }

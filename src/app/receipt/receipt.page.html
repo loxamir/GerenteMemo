@@ -20,15 +20,16 @@
   <ion-row style="height: 43px;margin-top: 15px;">
     <ion-col size="4" no-padding>
       <h4 class="field-label" style="text-align: center;">{{'TOTAL' | translate }}</h4>
-      <h4 class="field-value" style="color:blue;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.total|number:'1.'+currency_precision}}</h4>
+      <h4 class="field-value" style="color:blue;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.total|number:'1.'+currency_precision+'-2'}}</h4>
+      <!-- <h4 class="field-value" style="color:blue;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.exchange_rate|number:'1.'+currency_precision}}</h4> -->
     </ion-col>
     <ion-col size="4" no-padding>
       <h4 class="field-label" style="text-align: center;">{{'A Cobrar' | translate }}</h4>
-      <h4 class="field-value" style="color:red;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.residual|number:'1.'+currency_precision}}</h4>
+      <h4 class="field-value" style="color:red;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.residual|number:'1.'+currency_precision+'-2'}}</h4>
     </ion-col>
     <ion-col size="4" no-padding>
       <h4 class="field-label" style="text-align: center;">{{'Troco' | translate }}</h4>
-      <h4 class="field-value" style="color:green;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.change|number:'1.'+currency_precision}}</h4>
+      <h4 class="field-value" style="color:green;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.change|number:'1.'+currency_precision+'-2'}}</h4>
     </ion-col>
   </ion-row>
 </ion-header>
