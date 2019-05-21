@@ -232,16 +232,16 @@ export class PouchdbService {
         if (!item._id){
           item._id = item.docType+"."+this.getUUID();
         }
-        if (item._return){
-          delete item._return;
-          returns.push(item);
-        }
         let time = new Date().toJSON();
-        processedList.push(item);
         item.create_user = this.username;
         item.create_time = time;
         item.write_user = this.username;
         item.write_time = time;
+        if (item._return){
+          delete item._return;
+          returns.push(item);
+        }
+        processedList.push(item);
       })
       this.db.bulkDocs(processedList).then(createdDocs=>{
         resolve(returns);
