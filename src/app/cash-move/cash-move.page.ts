@@ -301,6 +301,10 @@ export class CashMovePage implements OnInit {
     ]
   };
 
+  async saveCashMove(){
+    await this.buttonSave();
+  }
+
   buttonSave() {
     // var today = new Date().toISOString();
     // this.cashMoveForm.value.date = this.cashMoveForm.value.date;
@@ -309,36 +313,43 @@ export class CashMovePage implements OnInit {
     // } else {
     //   this.cashMoveForm.value.state = 'DRAFT';
     // }
-    if (this._id){
-      this.cashMoveService.updateCashMove(this.cashMoveForm.value);
-      this.cashMoveForm.markAsPristine();
-      if (this.select){
-        this.modalCtrl.dismiss()
-      } else {
-        this.navCtrl.navigateBack('/cash-move-list');
-      }
-    } else {
-      this.cashMoveService.createCashMove(this.cashMoveForm.value).then(doc => {
-        //console.log("the_doc", doc);
+    return new Promise(async resolve => {
+      if (this._id){
+        await this.cashMoveService.updateCashMove(this.cashMoveForm.value);
+        this.cashMoveForm.markAsPristine();
         if (this.select){
-          this.modalCtrl.dismiss()
+          this.modalCtrl.dismiss();
+          resolve(true);
         } else {
-          this.cashMoveForm.value._id = doc['id'];
-          this.cashMoveForm.markAsPristine();
           this.navCtrl.navigateBack('/cash-move-list');
+          resolve(true);
         }
-      });
-    }
+      } else {
+        this.cashMoveService.createCashMove(this.cashMoveForm.value).then(doc => {
+          //console.log("the_doc", doc);
+          this.cashMoveForm.value._id = doc['id'];
+          this._id = doc['id'];
+          if (this.select){
+            this.modalCtrl.dismiss()
+            resolve(true);
+          } else {
+            this.cashMoveForm.markAsPristine();
+            this.navCtrl.navigateBack('/cash-move-list');
+            resolve(true);
+          }
+        });
+      }
+    })
   }
 
-  confirmState(){
-    this.cashMoveForm.patchValue({
-      'state': 'DONE',
-    });
-    this.buttonSave();
-  }
+  // confirmState(){
+  //   this.cashMoveForm.patchValue({
+  //     'state': 'DONE',
+  //   });
+  //   this.buttonSave();
+  // }
 
-  confirmCashMove(){
+  async confirmCashMove(){
     let state = 'DONE';
     if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'bank'){
       state = 'WAITING'
@@ -346,7 +357,7 @@ export class CashMovePage implements OnInit {
     this.cashMoveForm.patchValue({
       'state': state,
     });
-    this.buttonSave();
+    await this.buttonSave();
   }
 
   selectCheck() {

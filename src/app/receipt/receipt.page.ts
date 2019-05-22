@@ -396,9 +396,9 @@ export class ReceiptPage implements OnInit {
       return result;
     }
 
-    buttonSave() {
+    async buttonSave() {
       if (this._id){
-        this.receiptService.updateReceipt(this.receiptForm.value);
+        await this.receiptService.updateReceipt(this.receiptForm.value);
         this.receiptForm.markAsPristine();
         // this.navCtrl.navigateBack('/receipt-list').then(() => {
           this.events.publish('open-receipt', this.receiptForm.value);
@@ -766,17 +766,21 @@ export class ReceiptPage implements OnInit {
           },
           {
             text: 'Confirmar',
-            handler: data => {
+            handler: async data => {
               //console.log("Confirmar");
-              this.afterConfirm();
+              await this.afterConfirm();
             }
           }
         ]
       });
-      prompt.present();
+      await prompt.present();
     }
 
-  afterConfirm(){
+  async afterConfirm(){
+    return new Promise(async resolve => {
+    let self = this;
+    self.loading = await self.loadingCtrl.create();
+    await self.loading.present();
     let details = {};
     this.receiptForm.value.items.forEach(variable => {
       details[variable._id] = {
@@ -987,8 +991,11 @@ export class ReceiptPage implements OnInit {
       Promise.all(promise_ids2).then(res=>{
         this.events.publish('create-receipt', this.receiptForm.value);
         this.justSave();
+        self.loading.dismiss();
+        resolve(true);
       });
     });
+  });
   }
 
     onSubmit(values){

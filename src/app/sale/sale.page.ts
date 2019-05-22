@@ -472,9 +472,9 @@ export class SalePage implements OnInit {
 
 
     buttonSave() {
-      return new Promise(resolve => {
+      return new Promise(async resolve => {
         if (this._id){
-          this.saleService.updateSale(this.saleForm.value);
+          await this.saleService.updateSale(this.saleForm.value);
           this.saleForm.markAsPristine();
           resolve(true);
         } else {
@@ -798,13 +798,13 @@ export class SalePage implements OnInit {
           },
           {
             text: 'Confirmar',
-            handler: data => {
-              this.afterConfirm();
+            handler: async data => {
+              await this.afterConfirm();
             }
           }
         ]
       });
-      prompt.present();
+      await prompt.present();
     }
 
     // presentPopover(myEvent) {
