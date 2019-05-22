@@ -11,17 +11,57 @@
     <ion-buttons slot="end">
     </ion-buttons>
   </ion-toolbar>
+  <ion-row justify-content-center>
+    <ion-item no-padding class="field-50">
+      <ion-buttons slot="start">
+        <ion-button (click)="goPeriodBack()">
+          <ion-icon name="arrow-round-back" style="">
+          </ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <h4 class="field-label">{{'Desde' | translate }}</h4>
+      <ion-datetime class="field-50-datetime"
+      (ngModelChange)="changeDateStart()"
+      displayFormat="DD/MM/YYYY HH:mm:ss"
+      pickerFormat="DD/MM/YYYY HH:mm:ss"
+      [(ngModel)]="reportSaleForm.value.dateStart"
+      [max]="today.getFullYear()+5">
+      </ion-datetime>
+    </ion-item>
+    <ion-item no-padding class="field-50">
+      <h4 class="field-label">{{'Hasta' | translate }}</h4>
+      <ion-datetime class="field-50-datetime"
+      (ngModelChange)="changeDateEnd()"
+      displayFormat="DD/MM/YYYY HH:mm:ss"
+      pickerFormat="DD/MM/YYYY HH:mm:ss"
+      [(ngModel)]="reportSaleForm.value.dateEnd"
+      [max]="today.getFullYear()+5">
+      </ion-datetime>
+      <ion-buttons slot="end">
+        <ion-button (click)="goPeriodForward()">
+          <ion-icon name="arrow-round-forward" style="">
+          </ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-row>
 </ion-header>
 
 <ion-content class="report-content" style="background-color: #ddd">
   <form class="sample-form validations-form" [formGroup]="reportSaleForm" (ngSubmit)="onSubmit(reportSaleForm.value)">
     <ion-row justify-content-center>
-      <ion-item no-padding class="field-50">
+      <!-- <ion-item no-padding class="field-50">
+        <ion-buttons slot="start">
+          <ion-button (click)="goPeriodBack()">
+            <ion-icon name="arrow-round-back" style="">
+            </ion-icon>
+          </ion-button>
+        </ion-buttons>
         <h4 class="field-label">{{'Desde' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
-        (ionChange)="goNextStep()"
-        displayFormat="DD/MM/YYYY"
-        pickerFormat="DD/MM/YYYY"
+        (ionChange)="changeDateStart()"
+        displayFormat="DD/MM/YYYY HH:mm:ss"
+        pickerFormat="DD/MM/YYYY HH:mm:ss"
         formControlName="dateStart"
         [max]="today.getFullYear()+5">
         </ion-datetime>
@@ -29,13 +69,19 @@
       <ion-item no-padding class="field-50">
         <h4 class="field-label">{{'Hasta' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
-        (ionChange)="goNextStep()"
-        displayFormat="DD/MM/YYYY"
-        pickerFormat="DD/MM/YYYY"
+        (ionChange)="changeDateEnd()"
+        displayFormat="DD/MM/YYYY HH:mm:ss"
+        pickerFormat="DD/MM/YYYY HH:mm:ss"
         formControlName="dateEnd"
         [max]="today.getFullYear()+5">
         </ion-datetime>
-      </ion-item>
+        <ion-buttons slot="end">
+          <ion-button (click)="goPeriodForward()">
+            <ion-icon name="arrow-round-forward" style="">
+            </ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item> -->
       <ion-item
       *ngIf="reportSaleForm.value.reportType == 'sale'"
       no-padding

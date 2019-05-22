@@ -10,8 +10,8 @@
     <ion-row justify-content-center class="headerstyle">
       <ion-col no-padding size="6">
         <ion-label>{{'Desde' | translate }}</ion-label>
-        <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY"
-        pickerFormat="DD/MM/YYYY"
+        <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY HH:mm:ss"
+        pickerFormat="DD/MM/YYYY HH:mm:ss"
         (ionChange)="recomputeValues()"
         [(ngModel)]="reportsForm.value.dateStart"
         [max]="today.getFullYear()+5">
@@ -20,8 +20,8 @@
       <ion-col no-padding size="6">
         <ion-label>{{'Hasta' | translate }}</ion-label>
         <ion-datetime class="sale-date"
-        displayFormat="DD/MM/YYYY"
-        pickerFormat="DD/MM/YYYY"
+        displayFormat="DD/MM/YYYY HH:mm:ss"
+        pickerFormat="DD/MM/YYYY HH:mm:ss"
         (ionChange)="recomputeValues()"
         [(ngModel)]="reportsForm.value.dateEnd"
         [max]="today.getFullYear()+5">

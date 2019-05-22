@@ -105,13 +105,18 @@ export class ReportListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let today = new Date().toISOString();
+    console.log("today", today);
+    let timezone = new Date().toString().split(" ")[5].split('-')[1];
+    let start_date = new Date(today.split("T")[0]+"T00:00:00.000"+timezone).toISOString();
+    let end_date = new Date(today.split("T")[0]+"T23:59:59.999"+timezone).toISOString();
     this.reportsForm = this.formBuilder.group({
       dateStart: new FormControl(
         this.route.snapshot.paramMap.get('dateStart')
-        || this.today.toISOString()),
+        || start_date),
       dateEnd: new FormControl(
         this.route.snapshot.paramMap.get('dateEnd')
-        || this.today.toISOString()),
+        || end_date),
       // sales: new FormControl(0),
       // purchases: new FormControl(0),
     });
@@ -198,11 +203,15 @@ export class ReportListPage implements OnInit {
   computeSaleValues() {
     let self = this;
     return new Promise((resolve, reject)=>{
+      console.log("dateStart", this.reportsForm.value.dateStart);
+      console.log("dateEnd", this.reportsForm.value.dateEnd);
+      let startkey=(new Date(this.reportsForm.value.dateStart.split("T")[0]+"T00:00:00")).toJSON();
+      let endkey=(new Date(this.reportsForm.value.dateEnd.split("T")[0]+"T23:59:59")).toJSON();
       this.pouchdbService.getView(
         'Informes/VentaDiaria',
         4,
-        [this.reportsForm.value.dateStart.split("T")[0], "0", "0"],
-        [this.reportsForm.value.dateEnd.split("T")[0], "z", "z"],
+        [startkey, "0", "0"],
+        [endkey, "z", "z"],
         true,
         true,
         undefined,
@@ -310,7 +319,7 @@ export class ReportListPage implements OnInit {
       let self = this;
       this.pouchdbService.getView(
         'stock/Depositos',
-        10,
+        3,
         ["warehouse.physical.my" ,"0", "0"],
         ["warehouse.physical.my", "z", "z"],
         true,
@@ -324,9 +333,13 @@ export class ReportListPage implements OnInit {
         let stocked_price = 0;
         let stocked_quantity = 0;
         let getList = [];
+        products = products.slice(1, 1000);
         products.forEach(sale => {
-          getList.push(sale.key[1])
+          if (getList.indexOf(sale.key[1]) < 0){
+            getList.push(sale.key[1])
+          }
         });
+        // console.log("productGetList", getList);
         let productList:any = await this.pouchdbService.getList(getList);
         var doc_dict = {};
         productList.forEach(row=>{
@@ -335,12 +348,12 @@ export class ReportListPage implements OnInit {
         products.forEach(product => {
           // if (doc_dict[product.key[1]] && product.value > 0){
             stocked_quantity += parseFloat(product.value);
-            // if (!doc_dict[product.key[1]]){
-            //   console.log("product.key[1]", product.key[1]);
-            // } else {
+            if (!doc_dict[product.key[1]]){
+              console.log("product.key[1]", product.key[1]);
+            } else {
               stocked_cost += product.value * doc_dict[product.key[1]].cost;
               stocked_price += product.value * doc_dict[product.key[1]].price;;
-            // }
+            }
           // }
         })
         this.stocked_quantity = stocked_quantity;
@@ -596,7 +609,10 @@ export class ReportListPage implements OnInit {
   goPeriodBack() {
     let start_date = new Date(this.reportsForm.value.dateStart).getTime();
     let end_date = new Date(this.reportsForm.value.dateEnd).getTime();
-    let period = end_date - start_date;
+    console.log("start_date", new Date(start_date).toJSON());
+    console.log("end_date", new Date(end_date).toJSON());
+    let period = end_date - start_date + 1;
+    console.log("period", period);
     this.reportsForm.patchValue({
       dateStart: new Date(start_date - period).toJSON(),
       dateEnd: new Date(end_date - period).toJSON(),
@@ -607,7 +623,7 @@ export class ReportListPage implements OnInit {
   goPeriodForward() {
     let start_date = new Date(this.reportsForm.value.dateStart).getTime();
     let end_date = new Date(this.reportsForm.value.dateEnd).getTime();
-    let period = end_date - start_date;
+    let period = end_date - start_date + 1;
     this.reportsForm.patchValue({
       dateStart: new Date(start_date + period).toJSON(),
       dateEnd: new Date(end_date + period).toJSON(),

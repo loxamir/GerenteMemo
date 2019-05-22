@@ -58,6 +58,8 @@ export class SaleReportPage implements OnInit {
   g: any;
 
   line: d3Shape.Line<[number, number]>;
+
+  updating = false;
   constructor(
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
@@ -156,16 +158,69 @@ export class SaleReportPage implements OnInit {
     }, {})
   }
 
+  goPeriodBack() {
+    let start_date = new Date(this.reportSaleForm.value.dateStart).getTime();
+    let end_date = new Date(this.reportSaleForm.value.dateEnd).getTime();
+    console.log("start_date", new Date(start_date).toJSON());
+    console.log("end_date", new Date(end_date).toJSON());
+    let period = end_date - start_date + 1;
+    console.log("period", period);
+    this.updating = true;
+    this.reportSaleForm.patchValue({
+      dateStart: new Date(start_date - period).toISOString(),
+      dateEnd: new Date(end_date - period).toISOString(),
+    })
+    setTimeout(() => {
+      this.updating = false;
+    }, 10);
+    // this.recomputeValues();
+    this.goNextStep();
+    // this.loading.dismiss();
+  }
+
+  changeDateStart(){
+    if (!this.updating){
+      console.log("changeDateStart");
+      this.goNextStep();
+    }
+  }
+
+  changeDateEnd(){
+    if (!this.updating){
+      console.log("changeDateEnd");
+      this.goNextStep();
+    }
+  }
+
+  goPeriodForward() {
+    let start_date = new Date(this.reportSaleForm.value.dateStart).getTime();
+    let end_date = new Date(this.reportSaleForm.value.dateEnd).getTime();
+    let period = end_date - start_date + 1;
+    this.updating = true;
+    this.reportSaleForm.patchValue({
+      dateStart: new Date(start_date + period).toJSON(),
+      dateEnd: new Date(end_date + period).toJSON(),
+    })
+    setTimeout(() => {
+      this.updating = false;
+    }, 10);
+    // this.updating = false;
+    // this.recomputeValues();
+    this.goNextStep();
+  }
+
   async getData() {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     return new Promise(resolve => {
       if (this.reportSaleForm.value.reportType == 'sale') {
+        let startkey=(new Date(this.reportSaleForm.value.dateStart)).toJSON();
+        let endkey=(new Date(this.reportSaleForm.value.dateEnd)).toJSON();
         this.pouchdbService.getView(
           'Informes/ProductoDiario',
           10,
-          [this.reportSaleForm.value.dateStart.split("T")[0], "0", "0"],
-          [this.reportSaleForm.value.dateEnd.split("T")[0], "z", "z"],
+          [startkey, "0", "0"],
+          [endkey, "z", "z"],
           true,
           true,
           undefined,
@@ -339,40 +394,40 @@ export class SaleReportPage implements OnInit {
             resolve(output);
           }
           else if (this.reportSaleForm.value.groupBy == 'payment') {
-          items = [];
-          sales.forEach(saleLine => {
-            if (result.hasOwnProperty(saleLine.key[7])) {
-              items[result[saleLine.key[7]]] = {
-                'name': items[result[saleLine.key[7]]].name,
-                'quantity': items[result[saleLine.key[7]]].quantity + parseFloat(saleLine.key[4]),
-                'margin': items[result[saleLine.key[7]]].margin + saleLine.key[3],
-                'total': items[result[saleLine.key[7]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
-              };
-            } else {
-              items.push({
-                'name': saleLine.key[7],
-                'quantity': parseFloat(saleLine.key[4]),
-                'margin': saleLine.key[3],
-                'total': parseFloat(saleLine.key[4])*saleLine.key[5],
-              });
-              result[saleLine.key[7]] = items.length-1;
-            }
-          });
+            items = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[7])) {
+                items[result[saleLine.key[7]]] = {
+                  'name': items[result[saleLine.key[7]]].name,
+                  'quantity': items[result[saleLine.key[7]]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[saleLine.key[7]]].margin + saleLine.key[3],
+                  'total': items[result[saleLine.key[7]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[7],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': saleLine.key[3],
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[saleLine.key[7]] = items.length-1;
+              }
+            });
 
-          let self = this;
-          let output = items.sort(function(a, b) {
-            return self.compare(a, b, self.reportSaleForm.value.orderBy);
-          })
-          let marker = false;
-          let total = 0;
-          output.forEach(item => {
-            item['marker'] = marker,
-              marker = !marker;
-            total += parseFloat(item['total']);
-          });
-          this.loading.dismiss();
-          resolve(output);
-        }
+            let self = this;
+            let output = items.sort(function(a, b) {
+              return self.compare(a, b, self.reportSaleForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
           else if (this.reportSaleForm.value.groupBy == 'contact') {
             items = [];
             sales.forEach(saleLine => {
@@ -410,28 +465,42 @@ export class SaleReportPage implements OnInit {
             resolve(output);
           }
           else if (this.reportSaleForm.value.groupBy == 'date') {
+            // let resultado = 0;
+            // let acumulado = 0;
+            // let tmpMoves = [];
             items = [];
             sales.forEach(saleLine => {
-              let date = saleLine.key[0].split(" ")[0];
+              // let date = saleLine.key[0].split("T")[0];
+              let date:any = (new Date(saleLine.key[0])).toLocaleDateString();
+              // if (date == '5/20/2019'){
+              //   console.log("date", date, saleLine.key[4], saleLine.key[5], saleLine.value);
+              //   resultado += parseFloat(saleLine.key[4])*parseFloat(saleLine.key[5]);
+              //   console.log("resultado", resultado);
+              //   console.log("acumulado", acumulado);
+              //   if (tmpMoves.indexOf(saleLine.key[0])  < 0 ){
+              //     acumulado += saleLine.value;
+              //     tmpMoves.push(saleLine.key[0]);
+              //   }
+              // }
               if (result.hasOwnProperty(date)) {
                 // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
                 items[result[date]] = {
                   'name': items[result[date]].name,
                   'quantity': items[result[date]].quantity + parseFloat(saleLine.key[4]),
                   'margin': items[result[date]].margin + saleLine.key[3],
-                  'total': items[result[date]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                  'total': items[result[date]].total + parseFloat(saleLine.key[4])*parseFloat(saleLine.key[5]),
                 };
               } else {
                 items.push({
                   'name': date,
                   'quantity': parseFloat(saleLine.key[4]),
                   'margin': saleLine.key[3],
-                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                  'total': parseFloat(saleLine.key[4])*parseFloat(saleLine.key[5]),
                 });
                 result[date] = items.length-1;
               }
             });
-
+            // console.log("result", result[1]);
             let self = this;
             let output = items.sort(function(a, b) {
               return self.compare(b, a, self.reportSaleForm.value.orderBy);
@@ -678,15 +747,19 @@ export class SaleReportPage implements OnInit {
   }
 
   async ngOnInit() {
+    let today = new Date().toISOString();
+    let timezone = new Date().toString().split(" ")[5].split('-')[1];
+    let start_date = new Date(today.split("T")[0]+"T00:00:00.000"+timezone).toISOString();
+    let end_date = new Date(today.split("T")[0]+"T23:59:59.999"+timezone).toISOString();
     this.reportSaleForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
       name: new FormControl(''),
-      dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.getFirstDateOfMonth()),
-      dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today.toISOString()),
+      dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||start_date),
+      dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || end_date),
       total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'product'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'date'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
