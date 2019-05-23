@@ -924,14 +924,14 @@ export class SalePage implements OnInit {
               createList.push(cashMoveTemplate);
             });
             console.log("createList", createList);
-            this.pouchdbService.createDocList(createList).then((created: any)=>{
+            this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.saleForm.patchValue({
                 state: 'CONFIRMED',
                 amount_unInvoiced: this.saleForm.value.total,
                 planned: created,
               });
               console.log("Sale created", created);
-              this.buttonSave();
+              await this.buttonSave();
               resolve(true);
             })
           })
