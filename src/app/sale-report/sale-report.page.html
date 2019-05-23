@@ -112,35 +112,50 @@
         <ion-label>{{'Filtros' | translate}}</ion-label>
         <ion-toggle formControlName="showFilter"></ion-toggle>
       </ion-item>
-      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding (click)="selectContact()" class="field-100">
-        <div class="field-many2one">
+      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
+        <div class="field-many2one" (click)="selectContact()">
           <h4 class="field-label">{{'Cliente' | translate}}</h4>
           <h4 class="field-value">{{reportSaleForm.value.contact && reportSaleForm.value.contact.name || 'Todos'}}</h4>
         </div>
+        <ion-button (click)="clearContact()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
       </ion-item>
-      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding (click)="selectProduct()" class="field-100">
-        <div class="field-many2one">
+      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
+        <div class="field-many2one" (click)="selectProduct()">
           <h4 class="field-label">{{'Producto' | translate}}</h4>
           <h4 class="field-value">{{reportSaleForm.value.product && reportSaleForm.value.product.name || 'Todos'}}</h4>
         </div>
+        <ion-button (click)="clearProduct()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
       </ion-item>
-      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding (click)="selectCategory()" class="field-100">
-        <div class="field-many2one">
+      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
+        <div class="field-many2one" (click)="selectCategory()">
           <h4 class="field-label">{{'Categoria' | translate}}</h4>
           <h4 class="field-value">{{reportSaleForm.value.category && reportSaleForm.value.category.name || 'Todos'}}</h4>
         </div>
+        <ion-button (click)="clearCategory()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
       </ion-item>
-      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding (click)="selectPaymentCondition()" class="field-100">
-        <div class="field-many2one">
+      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
+        <div class="field-many2one" (click)="selectPaymentCondition()">
           <h4 class="field-label">{{'Condición de Pago' | translate}}</h4>
           <h4 class="field-value">{{reportSaleForm.value.paymentCondition && reportSaleForm.value.paymentCondition.name || 'Todos'}}</h4>
         </div>
+        <ion-button (click)="clearPaymentCondition()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
       </ion-item>
-      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding (click)="selectSeller()" class="field-100">
-        <div class="field-many2one">
+      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
+        <div class="field-many2one" (click)="selectSeller()">
           <h4 class="field-label">{{'Vendedor' | translate}}</h4>
           <h4 class="field-value">{{reportSaleForm.value.seller && reportSaleForm.value.seller.name || 'Todos'}}</h4>
         </div>
+        <ion-button (click)="clearSeller()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
       </ion-item>
     <!-- </ion-row> -->
       <ion-card class="list-card">

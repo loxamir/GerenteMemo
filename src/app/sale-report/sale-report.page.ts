@@ -183,10 +183,10 @@ export class SaleReportPage implements OnInit {
     // this.loading.dismiss();
   }
 
-  changeDateStart(){
+  async changeDateStart(){
     if (!this.updating){
       console.log("changeDateStart");
-      this.goNextStep();
+      await this.goNextStep();
     }
   }
 
@@ -785,7 +785,7 @@ export class SaleReportPage implements OnInit {
       dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||start_date),
       dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || end_date),
       total: new FormControl(0),
-      items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
+      items: new FormControl(this.route.snapshot.paramMap.get('items') || []),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
       groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'product'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
@@ -800,22 +800,48 @@ export class SaleReportPage implements OnInit {
     });
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    if (this._id) {
-      this.reportService.getReport(this._id).then((data) => {
-        //console.log("data", data);
-        this.reportSaleForm.patchValue(data);
-        //this.loading.dismiss();
-      });
-    } else {
-      //this.loading.dismiss();
-    }
-    // if (this.route.snapshot.paramMap.get('compute){
+    //this.loading.dismiss();
     this.goNextStep();
   }
 
   getFirstDateOfMonth() {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  }
+
+  clearContact(){
+    this.reportSaleForm.patchValue({
+      contact: {},
+    });
+    this.goNextStep();
+  }
+
+  clearProduct(){
+    this.reportSaleForm.patchValue({
+      product: {},
+    });
+    this.goNextStep();
+  }
+
+  clearCategory(){
+    this.reportSaleForm.patchValue({
+      category: {},
+    });
+    this.goNextStep();
+  }
+
+  clearPaymentCondition(){
+    this.reportSaleForm.patchValue({
+      paymentCondition: {},
+    });
+    this.goNextStep();
+  }
+
+  clearSeller(){
+    this.reportSaleForm.patchValue({
+      seller: {},
+    });
+    this.goNextStep();
   }
 
   selectContact(){
@@ -939,31 +965,30 @@ export class SaleReportPage implements OnInit {
   }
 
   goNextStep() {
-    if (
-      this.reportSaleForm.value.groupBy == 'date'
-      || this.reportSaleForm.value.groupBy == 'month'
-      || this.reportSaleForm.value.groupBy == 'week'
-      || this.reportSaleForm.value.groupBy == 'year'
-    ){
-      this.reportSaleForm.patchValue({
-        'orderBy': 'name'
-      });
-    } else {
-      this.reportSaleForm.patchValue({
-        'orderBy': 'total'
-      });
-    }
-
-    this.getData().then(data => {
-      let self = this;
-      new Promise((resolve, reject) => {
-        self.reportSaleForm.patchValue({
-          "items": data,
+    new Promise(async (resolve, reject) => {
+      if (
+        this.reportSaleForm.value.groupBy == 'date'
+        || this.reportSaleForm.value.groupBy == 'month'
+        || this.reportSaleForm.value.groupBy == 'week'
+        || this.reportSaleForm.value.groupBy == 'year'
+      ){
+        this.reportSaleForm.patchValue({
+          'orderBy': 'name'
         });
-        resolve(true);
-      }).then(() => {
-        this.recomputeValues();
+      } else {
+        this.reportSaleForm.patchValue({
+          'orderBy': 'total'
+        });
+      }
+
+      let data: any = await this.getData();
+      this.reportSaleForm.patchValue({
+        "items": data,
+        "dateStart": this.reportSaleForm.value.dateStart,
+        "dateEnd": this.reportSaleForm.value.dateEnd,
       });
+      this.recomputeValues();
+      resolve(true);
     })
   }
 
