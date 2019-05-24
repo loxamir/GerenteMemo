@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
+    </ion-buttons>
+    <ion-searchbar
+      placeholder="Buscar Contrato"
+      [(ngModel)]="searchTerm"
+      #searchbar
+      (ionChange)="searchItems()">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button icon-only
+              (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list no-lines>
+    <ion-item-sliding *ngFor="let item of contracts" #slidingItem>
+      <ion-item no-padding (click)="openContract(item)">
+        <ion-card class="list-card" no-padding>
+          <ion-row>
+            <!-- <ion-col no-padding width-20 class="schedule-date">
+              <h2 class="list-big-number">{{item.code}}</h2>
+            </ion-col> -->
+            <ion-col>
+              <h3 class="item-name"><b>{{ item.contact_name || 'No Informado'}}</b></h3>
+            </ion-col>
+          </ion-row>
+     <ion-row no-padding class="content-row one-line">
+        <ion-col no-padding size="6">
+          <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.date|date: 'dd/MM/yyyy'}}</h3>
+          <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;">
+            <span style="margin-left: 5px">{{item.code}}</span>
+          </h3>
+          <h3 class="item-title" style="font-size:15px;">{{item.payment_name | translate}}</h3>
+        </ion-col>
+        <ion-col no-padding size="6" align-self-center>
+          <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.total| number:'1.0'}}</h2>
+          <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.0'}}</h2>
+          <div *ngIf="item.residual != 0 && item.state!='CANCELED'" class="residual-value">
+            $ {{ item.residual | number:'1.0' }}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row no-padding>
+        <ion-col no-padding class="list-tag"
+        [class.quotation]="item.state=='QUOTATION'"
+        [class.confirmed]="item.state=='CONFIRMED'"
+        [class.paid]="item.state=='PAID'"
+        [class.cancel]="item.state=='CANCELED'">
+            {{ item.state | translate }}
+        </ion-col>
+      </ion-row>
+      </ion-card>
+
+    </ion-item>
+      <ion-item-options  side="end">
+        <ion-item-option (click)="deleteContract(slidingItem, item)" *ngIf="item.state=='QUOTATION'">
+          Borrar
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-row style="height:15px;">
+  </ion-row>
+  <!-- <div>
+    <img style="background: #f6f5f5;border-radius:10px;margin-bottom:10px;" src="https://uc345e667ca43908d75a8cf2bc88.previews.dropboxusercontent.com/p/thumb/AATLtAiIK4RGYT7yj71W0syFKYCjVG3wSwkU69o92pa__72jG9r98BSj985Ul8Pj2LoK26vXBFn4pCZjlqzaCeHC8XwjeySykvxU3My3458ojVjEbPWBJAs26kZJJ7PZm3EU6Ylc-7lt78hU_Lbg-gIJ0UEprS2thP1e3kiLpwevJvK00WuzaXKljqO_Y11BgrnwGIn7bnaSnXo5ZdITcSpiqBe-RGM2ABYCL3VBDbNU2qBCZAUsJJg2Bfj-c5FlH_nyAs34o_75eLZ01YS4G37G/p.png?size=1600x1200&size_mode=3"/>
+  </div> -->
+
+  <ion-row *ngIf="!contracts.length">
+    <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
+      <ion-row>
+        <ion-col>
+          <h1>Aún no tienes ventas registradas</h1>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <h4>Para crear tu primera venta, pulsa el botón más</h4>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+  <!-- <ion-row>
+    <ion-col size="12" style="text-align: center;margin-top: 54px;">
+      <ion-icon name="arrow-round-down"  color="primary" style="font-size: 70px"></ion-icon>
+    </ion-col>
+  </ion-row> -->
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      <ion-fab-button (click)="createContract()" color="primary">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
+  </ion-fab>
+</ion-content>

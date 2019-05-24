@@ -68,6 +68,8 @@ import { PaymentConditionPageModule } from './payment-condition/payment-conditio
 import { ServiceWorkPageModule } from './service/work/work.module';
 import { ProductionWorkPageModule } from './production/work/work.module';
 import { ServiceTravelPageModule } from './service/travel/travel.module';
+import { ContractPageModule } from './contract/contract.module';
+import { ContractListPageModule } from './contract-list/contract-list.module';
 
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
@@ -101,6 +103,8 @@ import { environment } from '../environments/environment';
   imports: [
     LoginPageModule,
     ContactPageModule,
+    ContractPageModule,
+    ContractListPageModule,
     DiscountPageModule,
     CashMovePageModule,
     BrandListPageModule,

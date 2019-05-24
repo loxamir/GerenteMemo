@@ -6,6 +6,8 @@ const routes: Routes = [
   // { path: 'home', loadChildren: './home/home.module#HomePageModule' },
   { path: 'contact', loadChildren: './contact/contact.module#ContactPageModule' },
   { path: 'contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule' },
+  { path: 'contract', loadChildren: './contract/contract.module#ContractPageModule' },
+  { path: 'contract-list', loadChildren: './contract-list/contract-list.module#ContractListPageModule' },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
   // { path: 'menu', loadChildren: './menu/menu.module#MenuPageModule' },
   // { path: '', loadChildren: './menu/menu.module#MenuPageModule' },
