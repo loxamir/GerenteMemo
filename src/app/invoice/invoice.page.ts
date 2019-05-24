@@ -373,10 +373,14 @@ export class InvoicePage implements OnInit {
     recomputeTax(){
       let tax:number = 0;
       this.invoiceForm.value.items.forEach((item) => {
-        tax += parseFloat(item.price)*parseFloat(item.quantity)/11;
+        if (item.product.tax == 'iva10'){
+          tax += parseFloat(item.price)*parseFloat(item.quantity)/11;
+        } else if (item.product.tax == 'iva5'){
+          tax += parseFloat(item.price)*parseFloat(item.quantity)/21;
+        }
       });
       this.invoiceForm.patchValue({
-        tax: tax,
+        tax: tax.toFixed(this.currency_precision),
       });
     }
 
