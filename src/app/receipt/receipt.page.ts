@@ -140,6 +140,7 @@ export class ReceiptPage implements OnInit {
         amount_paid_currency: new FormControl(''),
         exchange_rate: new FormControl(this.exchange_rate||'1'),
         // createInvoice: new FormControl(false),
+        currency_id: new FormControl(this.company_currency_id||{}),
         payables: new FormControl([]),
         receivables: new FormControl([]),
         cash_paid: new FormControl({}),
@@ -178,12 +179,6 @@ export class ReceiptPage implements OnInit {
         this.recomputeValues();
         this.loading.dismiss();
       }
-
-
-
-
-
-
     }
 
     goNextStep() {
@@ -471,32 +466,45 @@ export class ReceiptPage implements OnInit {
       this.recomputePayment();
     }
 
-    recomputeTotal(){
-      if (this.receiptForm.value.state=='DRAFT'){
-        let total = 0;
-        // console.log("items", this.receiptForm.value.items);
-        let amount_unInvoiced = 0;
-        this.receiptForm.value.items.forEach((item: any) => {
-          if (item.currency_amount && this.receiptForm.value.cash_paid.currency){
-            // if (item.currency._id == this.receiptForm.value.cash_paid.currency._id){
-            //   total = total + parseFloat(item['currency_residual']);
-            // } else {
+    async recomputeTotal(){
+      return new Promise(async resolve =>{
+        if (this.receiptForm.value.state=='DRAFT'){
+          let total = 0;
+          // console.log("items", this.receiptForm.value.items);
+          let amount_unInvoiced = 0;
+          // this.receiptForm.value.items.forEach(async (item: any) => {
 
-              total = total + parseFloat(item['currency_residual'])*parseFloat(item.currency.sale_rate)/parseFloat(this.receiptForm.value.cash_paid.currency.sale_rate);
-            // }
-          } else {
-            total = total + parseFloat(item['amount_residual'])/(this.receiptForm.value.cash_paid.currency && parseFloat(this.receiptForm.value.cash_paid.currency.sale_rate) || 1);
+          await this.formatService.asyncForEach(this.receiptForm.value.items, async (item: any)=>{
+            if (item.currency_residual){
+              // if (item.currency._id == this.receiptForm.value.cash_paid.currency._id){
+              //   total = total + parseFloat(item['currency_residual']);
+              // } else {
+              if (this.receiptForm.value.cash_paid.currency_id == item.currency_id){
+              total += parseFloat(item['currency_residual']);// *parseFloat(item.currency.sale_rate)/parseFloat(this.receiptForm.value.cash_paid.currency.sale_rate);
+            } else {
+            let item_currency:any = await this.pouchdbService.getDoc(item.currency_id)
+            total += parseFloat(item['currency_residual'])*parseFloat(item_currency.sale_rate)/parseFloat(this.receiptForm.value.exchange_rate);
           }
-          amount_unInvoiced += parseFloat(item['amount_unInvoiced']);
-        });
-        if (amount_unInvoiced > (this.receiptForm.value.amount_paid - this.receiptForm.value.change)){
-          amount_unInvoiced = (this.receiptForm.value.amount_paid - this.receiptForm.value.change);
+          // }
+        } else {
+        if (this.receiptForm.value.exchange_rate){
+          total += parseFloat(item['amount_residual'])/(parseFloat(this.receiptForm.value.exchange_rate) || 1);
+        } else {
+          total += parseFloat(item['amount_residual']);
         }
-        this.receiptForm.patchValue({
-          total: total,
-          amount_unInvoiced: amount_unInvoiced,
-        });
       }
+      amount_unInvoiced += parseFloat(item['amount_unInvoiced']);
+    });
+    if (amount_unInvoiced > (this.receiptForm.value.amount_paid - this.receiptForm.value.change)){
+      amount_unInvoiced = (this.receiptForm.value.amount_paid - this.receiptForm.value.change);
+    }
+    this.receiptForm.patchValue({
+      total: total,
+      amount_unInvoiced: amount_unInvoiced,
+    });
+    resolve(true);
+  }
+      })
     }
 
     recomputePayment(){
@@ -701,12 +709,13 @@ export class ReceiptPage implements OnInit {
     async selectCash(){
       this.avoidAlertMessage = true;
       // if (default_amount != 0){
-        this.events.subscribe('select-cash',  (data: any) => {
+        this.events.subscribe('select-cash',  async (data: any) => {
           // this.receiptForm.value.cash = data;
           // console.log("selectCash", (await this.pouchdbService.getDoc(data.currency_id)))
+          let currency:any = await this.pouchdbService.getDoc(data.currency_id);
           this.receiptForm.patchValue({
             "cash_paid": data,
-            "exchange_rate": data.currency && data.currency.sale_rate || 1,
+            "exchange_rate": data.currency_id && currency.sale_rate || 1,
           })
           this.events.unsubscribe('select-cash');
           this.recomputeValues();
@@ -735,8 +744,8 @@ export class ReceiptPage implements OnInit {
       }
     }
 
-    recomputeValues() {
-      this.recomputeTotal();
+    async recomputeValues() {
+      await this.recomputeTotal();
       this.recomputePayment();
     }
 
