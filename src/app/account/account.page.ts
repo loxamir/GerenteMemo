@@ -278,6 +278,8 @@ export class AccountPage implements OnInit {
     }
     account.category_id = account.category && account.category._id || account.category_id;
     delete account.category;
+    account.currency_id = account.currency && account.currency._id || account.currency_id;
+    delete account.currency;
     return this.pouchdbService.createDoc(account);
   }
 
@@ -286,6 +288,8 @@ export class AccountPage implements OnInit {
     account.docType = 'account';
     account.category_id = account.category && account.category._id || account.category_id;
     delete account.category;
+    account.currency_id = account.currency && account.currency._id || account.currency_id;
+    delete account.currency;
     return this.pouchdbService.updateDoc(account);
   }
 

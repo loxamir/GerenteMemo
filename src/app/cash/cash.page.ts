@@ -321,6 +321,7 @@ export class CashPage implements OnInit {
           "select": true,
           "cash_in": true,
           "accountTo": this.cashForm.value,
+          "currency": this.cashForm.value.currency,
         }
       });
       profileModal.present();
@@ -334,6 +335,7 @@ export class CashPage implements OnInit {
           "select": true,
           "accountFrom": this.cashForm.value,
           "transfer": true,
+          "currency": this.cashForm.value.currency,
         }
       });
       profileModal.present();
@@ -347,6 +349,7 @@ export class CashPage implements OnInit {
           "select": true,
           "cash_out": true,
           "accountFrom": this.cashForm.value,
+          "currency": this.cashForm.value.currency,
         }
       });
       profileModal.present();

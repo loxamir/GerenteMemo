@@ -148,8 +148,12 @@ export class CashMovePage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     setTimeout(() => {
-       this.amount.setFocus();
-      this.cashMoveForm.markAsPristine();
+       if (!this.currency._id){
+         this.amount.setFocus();
+       } else {
+         this.currency_amountField.setFocus();
+       }
+       this.cashMoveForm.markAsPristine();
     }, 200);
     if (this.accountTo && (this.accountTo['_id'].split('.')[1]=='cash' || this.accountTo['_id'].split('.')[1]=='bank' || this.accountTo['_id'].split('.')[1]=='check')){
       // console.log("to cash");
@@ -191,16 +195,19 @@ export class CashMovePage implements OnInit {
           let accountTo = this.accountTo || {};
           let contact = this.contact || {};
           //console.log("configconfig", config);
+          let currency = config.currency
+          if (this.currency._id){
+            currency = this.currency
+          }
           this.cashMoveForm.patchValue({
-            currency: config.currency,
-            currency_id: config.currency['_id'],
+            currency: currency,
+            currency_id: currency['_id'],
             accountFrom: accountFrom,
             accountFrom_id: accountFrom['_id'],
             accountTo: accountTo,
             accountTo_id: accountTo['_id'],
             contact: contact,
             contact_id: contact['_id'],
-
           });
         // });
         // this.cashService.getDefaultCash().then(default_cash => {
@@ -223,7 +230,11 @@ export class CashMovePage implements OnInit {
   async goNextStep() {
     if (this.cashMoveForm.value.state == 'DRAFT'){
       if (this.cashMoveForm.value.amount == ''){
-        this.amount.setFocus();
+        if (!this.currency._id){
+          this.amount.setFocus();
+        } else {
+          this.currency_amountField.setFocus();
+        }
       }
       else if (Object.keys(this.cashMoveForm.value.accountFrom).length === 0){
         this.selectAccountFrom();
@@ -314,6 +325,11 @@ export class CashMovePage implements OnInit {
     //   this.cashMoveForm.value.state = 'DRAFT';
     // }
     return new Promise(async resolve => {
+      if (this.cashMoveForm.value.currency && this.cashMoveForm.value.currency._id != this.company_currency){
+        this.cashMoveForm.patchValue({
+          "currency_residual": this.cashMoveForm.value.currency_amount
+        })
+      }
       if (this._id){
         await this.cashMoveService.updateCashMove(this.cashMoveForm.value);
         this.cashMoveForm.markAsPristine();
