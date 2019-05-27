@@ -38,6 +38,7 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 // import * as jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
 import { DiscountPage } from '../discount/discount.page';
+import { CashMovePage } from '../cash-move/cash-move.page';
 
 @Component({
   selector: 'app-sale',
@@ -218,6 +219,45 @@ export class SalePage implements OnInit {
       if (this.return){
         this.recomputeValues();
       }
+    }
+
+    async selectCashMove(item) {
+      this.events.unsubscribe('open-cash-move');
+      this.events.subscribe('open-cash-move', (data) => {
+        this.events.unsubscribe('open-cash-move');
+        // profileModal.dismiss();
+      });
+      // this.events.subscribe('cancel-receipt', (data) => {
+      //   let newPayments = [];
+      //   let residual = this.saleForm.value.residual;
+      //   this.saleForm.value.payments.forEach((receipt, index)=>{
+      //     if (receipt._id != data){
+      //       this.saleForm.value.payments.slice(index, 1);
+      //       newPayments.push(receipt);
+      //     } else {
+      //       residual += receipt.paid;
+      //     }
+      //   })
+      //   this.pouchdbService.getRelated(
+      //   "cash-move", "origin_id", this.saleForm.value._id).then((planned) => {
+      //     this.saleForm.patchValue({
+      //       payments: newPayments,
+      //       residual: residual,
+      //       state: 'CONFIRMED',
+      //       planned: planned
+      //     })
+      //     this.buttonSave();
+      //   });
+      //   this.events.unsubscribe('cancel-receipt');
+      // });
+      let profileModal = await this.modalCtrl.create({
+        component: CashMovePage,
+        componentProps: {
+          "select": true,
+          "_id": item._id,
+        }
+      });
+      profileModal.present();
     }
 
     computePercent(){
