@@ -48,6 +48,8 @@ export class ReceiptService {
     delete receipt.cash_paid;
     receipt.contact_id = receipt.contact._id;
     delete receipt.contact;
+    receipt.check_id = receipt.check && receipt.check._id || receipt.check_id || '';
+    delete receipt.check;
     return receipt;
   }
 
@@ -56,7 +58,8 @@ export class ReceiptService {
       return this.pouchdbService.getDoc(doc_id).then(((pouchData: any) => {
         let getList = [
           pouchData['contact_id'],
-          pouchData['cash_id']
+          pouchData['cash_id'],
+          pouchData['check_id'],
         ];
         this.pouchdbService.getList(getList).then((docs: any[])=>{
           var doc_dict = {};

@@ -913,6 +913,9 @@ export class ReceiptPage implements OnInit {
             doc['currency'] = this.receiptForm.value.cash_paid.currency;
             doc['currency_exchange'] = this.receiptForm.value.exchange_rate;
           }
+          if (this.receiptForm.value.check){
+            doc['state'] = 'WAITING';
+          }
           console.log("Movimento", doc);
           promise_ids.push(this.cashMoveService.createCashMove(doc));
 

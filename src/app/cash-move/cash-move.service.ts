@@ -116,8 +116,8 @@ export class CashMoveService {
         delete cash.project;
         delete cash.accountTo;
         delete cash.accountFrom;
-        cash.currency_id = cash.currency && cash.currency._id || cash.currency_id || {};
-        cash.check_id = cash.check && cash.check._id || cash.check_id || {};
+        cash.currency_id = cash.currency && cash.currency._id || cash.currency_id || '';
+        cash.check_id = cash.check && cash.check._id || cash.check_id || '';
         delete cash.currency;
         delete cash.check;
         return this.pouchdbService.createDoc(cash).then((data: any) => {

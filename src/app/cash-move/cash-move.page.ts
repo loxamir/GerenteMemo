@@ -42,7 +42,7 @@ export class CashMovePage implements OnInit {
 @Input() contact_id;
 @Input() signal;
 @Input() check;
-@Input() company_currency = {};
+company_currency = 'currency.PYG';
 @Input() currency;
 @Input() currency_amount;
 @Input() currency_residual;
@@ -64,6 +64,7 @@ export class CashMovePage implements OnInit {
   transfer: boolean = false;
   changing = false;
   currency_precision = 2;
+  company_currency_name = "Guarani";
   constructor(
 
     public navCtrl: NavController,
@@ -148,7 +149,7 @@ export class CashMovePage implements OnInit {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     setTimeout(() => {
-       if (!this.currency._id){
+       if (JSON.stringify(this.cashMoveForm.value.currency) == '{}'){
          this.amount.setFocus();
        } else {
          this.currency_amountField.setFocus();
@@ -191,6 +192,7 @@ export class CashMovePage implements OnInit {
         // let config:any = (await this.pouchdbService.getDoc('config.profile'));
         this.currency_precision = config.currency_precision;
         this.company_currency = config.currency._id;
+        this.company_currency_name = config.currency.name;
           let accountFrom = this.accountFrom || {};
           let accountTo = this.accountTo || {};
           let contact = this.contact || {};
@@ -224,6 +226,14 @@ export class CashMovePage implements OnInit {
       && this.cashMoveForm.value.amount
       && JSON.stringify(this.cashMoveForm.value.accountFrom) != '{}'
       && JSON.stringify(this.cashMoveForm.value.accountTo) != '{}'
+    )
+  }
+
+  checkForeingCurrency(){
+    // console.log("este ", JSON.stringify(this.cashMoveForm.value.currency) != '{}', this.cashMoveForm.value.currency._id != this.company_currency);
+    return (
+      JSON.stringify(this.cashMoveForm.value.currency) != '{}'
+      && this.cashMoveForm.value.currency._id != this.company_currency
     )
   }
 
@@ -358,12 +368,12 @@ export class CashMovePage implements OnInit {
     })
   }
 
-  // confirmState(){
-  //   this.cashMoveForm.patchValue({
-  //     'state': 'DONE',
-  //   });
-  //   this.buttonSave();
-  // }
+  confirmState(){
+    this.cashMoveForm.patchValue({
+      'state': 'DONE',
+    });
+    this.buttonSave();
+  }
 
   async confirmCashMove(){
     let state = 'DONE';
@@ -440,7 +450,12 @@ export class CashMovePage implements OnInit {
         profileModal.dismiss();
         setTimeout(() => {
            // this.amount.setFocus();
-           this.currency_amountField.setFocus();
+           // this.currency_amountField.setFocus();
+           if (data && data._id == this.company_currency){
+             this.amount.setFocus();
+           } else {
+             this.currency_amountField.setFocus();
+           }
           // this.cashMoveForm.markAsPristine();
         }, 200);
         this.events.unsubscribe('select-currency');

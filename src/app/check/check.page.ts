@@ -122,9 +122,9 @@ export class CheckPage implements OnInit {
       } else {
         this.createCheck(this.checkForm.value).then((doc: any) => {
           this.checkForm.patchValue({
-            _id: doc.id,
+            _id: doc.check._id,
           });
-          this._id = doc.id;
+          this._id = doc.check._id;
           // this.navCtrl.navigateBack().then(() => {
             this.events.publish('create-check', this.checkForm.value);
             this.modalCtrl.dismiss();
