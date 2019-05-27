@@ -788,6 +788,7 @@ export class ReceiptPage implements OnInit {
           buttons: [
             {
               text: 'Cancelar',
+              role: 'cancel',
               handler: data => {
                 //console.log("Cancelar");
                 resolve(false);
