@@ -124,6 +124,7 @@ export class SalePage implements OnInit {
     origin_id;
     return;
     currency_precision = 2;
+    confirming = false;
 
     constructor(
       public navCtrl: NavController,
@@ -435,7 +436,11 @@ export class SalePage implements OnInit {
       //   await this.buttonSave();
       // }
       if (this.saleForm.value.state == 'QUOTATION'){
-        this.confirmSale();
+      if (! this.confirming){
+        this.confirming = true;
+        let teste = await this.confirmSale();
+        this.confirming = false;
+      }
       } else if (this.saleForm.value.state == 'CONFIRMED'){
           this.beforeAddPayment();
       } else if (this.saleForm.value.state == 'PAID'){
@@ -448,33 +453,39 @@ export class SalePage implements OnInit {
     }
 
     beforeConfirm(){
-      if (this.saleForm.value.items.length == 0){
-        this.addItem();
-      } else {
-        if (Object.keys(this.saleForm.value.contact).length === 0){
-          this.selectContact().then( teste => {
-            if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
-              this.selectPaymentCondition().then(()=>{
-                this.saleConfimation();
-              });
-            }
-          });
-        } else if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
-          this.selectPaymentCondition().then(()=>{
-            this.saleConfimation();
-          });
+      return new Promise(async resolve =>{
+        if (this.saleForm.value.items.length == 0){
+          this.addItem();
+          resolve(true);
         } else {
-          this.saleConfimation();
+          if (Object.keys(this.saleForm.value.contact).length === 0){
+            this.selectContact().then( teste => {
+              if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
+                this.selectPaymentCondition().then(async ()=>{
+                  await this.saleConfimation();
+                  resolve(true);
+                });
+              }
+            });
+          } else if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
+            this.selectPaymentCondition().then(async ()=>{
+              await this.saleConfimation();
+              resolve(true);
+            });
+          } else {
+            await this.saleConfimation();
+            resolve(true);
+          }
         }
-      }
+      })
     }
 
 
 
     buttonSave() {
-      return new Promise(resolve => {
+      return new Promise(async resolve => {
         if (this._id){
-          this.saleService.updateSale(this.saleForm.value);
+          await this.saleService.updateSale(this.saleForm.value);
           this.saleForm.markAsPristine();
           resolve(true);
         } else {
@@ -782,29 +793,40 @@ export class SalePage implements OnInit {
     };
 
     confirmSale() {
-      if (this.saleForm.value.state=='QUOTATION'){
-        this.beforeConfirm();
-      }
+      return new Promise(async resolve =>{
+        if (this.saleForm.value.state=='QUOTATION'){
+          await this.beforeConfirm();
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      })
     }
 
     async saleConfimation(){
-      let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas confirmar la venta?',
-        message: 'Si la confirmas no podras cambiar los productos ni el cliente',
-        buttons: [
-          {
-            text: 'Cancelar',
-            handler: data => {}
-          },
-          {
-            text: 'Confirmar',
-            handler: async data => {
-              await this.afterConfirm();
+      return new Promise(async resolve =>{
+        let prompt = await this.alertCtrl.create({
+          header: 'Estas seguro que deseas confirmar la venta?',
+          message: 'Si la confirmas no podras cambiar los productos ni el cliente',
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+              handler: data => {
+                resolve(false)
+              }
+            },
+            {
+              text: 'Confirmar',
+              handler: async data => {
+                await this.afterConfirm();
+                resolve(true);
+              }
             }
-          }
-        ]
-      });
-      await prompt.present();
+          ]
+        });
+        await prompt.present();
+      })
     }
 
     // presentPopover(myEvent) {
