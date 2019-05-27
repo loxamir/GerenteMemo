@@ -219,12 +219,37 @@ export class PouchdbService {
     })
   }
 
+  /*getDoc(doc_id) {
+    return new Promise((resolve, reject)=>{
+      if (typeof doc_id === "string"){
+        if (this.db){
+          resolve(this.db.get(doc_id));
+        } else {
+          resolve({})
+        }
+      } else {
+        resolve({})
+      }
+    })
+  }*/
+
+/*  getDoc(doc_id) {
+    let self = this;
+    return new Promise((resolve, reject)=>{
+      if (typeof doc_id === "string"){
+        resolve(self.db.get(doc_id));
+      } else {
+        resolve({})
+      }
+    })
+  }*/
+
   getUUID(){
     const uuidv4 = require('uuid/v4');
     return uuidv4();
   }
 
-  createDocList(list){
+/*  createDocList(list){
     return new Promise((resolve, reject)=>{
       let returns = [];
       let processedList = [];
@@ -247,7 +272,33 @@ export class PouchdbService {
         resolve(returns);
       })
     })
+  }*/
+
+  createDocList(list){
+    return new Promise((resolve, reject)=>{
+      let returns = [];
+      let processedList = [];
+      list.forEach((item: any)=>{
+        if (!item._id){
+          item._id = item.docType+"."+this.getUUID();
+        }
+        let time = new Date().toJSON();
+        item.create_user = this.username;
+        item.create_time = time;
+        item.write_user = this.username;
+        item.write_time = time;
+        if (item._return){
+          delete item._return;
+          returns.push(item);
+        }
+        processedList.push(item);
+      })
+      this.db.bulkDocs(processedList).then(createdDocs=>{
+        resolve(returns);
+      })
+    })
   }
+
 
   updateDocList(list){
     return new Promise((resolve, reject)=>{

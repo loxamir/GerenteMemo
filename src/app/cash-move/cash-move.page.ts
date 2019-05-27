@@ -287,6 +287,10 @@ export class CashMovePage implements OnInit {
     ]
   };
 
+  async saveCashMove(){
+    await this.buttonSave();
+  }
+
   buttonSave() {
     // var today = new Date().toISOString();
     // this.cashMoveForm.value.date = this.cashMoveForm.value.date;
@@ -295,26 +299,34 @@ export class CashMovePage implements OnInit {
     // } else {
     //   this.cashMoveForm.value.state = 'DRAFT';
     // }
+return new Promise(async resolve => {
     if (this._id){
       this.cashMoveService.updateCashMove(this.cashMoveForm.value);
       this.cashMoveForm.markAsPristine();
       if (this.select){
-        this.modalCtrl.dismiss()
+        this.modalCtrl.dismiss();
+resolve(true);
       } else {
         this.navCtrl.navigateBack('/cash-move-list');
+resolve(true);
       }
     } else {
       this.cashMoveService.createCashMove(this.cashMoveForm.value).then(doc => {
+this.cashMoveForm.value._id = doc['id'];
+          this._id = doc['id'];
         //console.log("the_doc", doc);
         if (this.select){
-          this.modalCtrl.dismiss()
+          this.modalCtrl.dismiss();
+resolve(true);
         } else {
-          this.cashMoveForm.value._id = doc['id'];
-          this.cashMoveForm.markAsPristine();
+          //this.cashMoveForm.value._id = doc['id'];
+          //this.cashMoveForm.markAsPristine();
           this.navCtrl.navigateBack('/cash-move-list');
+resolve(true);
         }
       });
     }
+})
   }
 
   confirmState(){
