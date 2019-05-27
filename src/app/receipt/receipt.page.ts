@@ -60,6 +60,7 @@ export class ReceiptPage implements OnInit {
   cash_precision = 2;
   user:any = {};
   company_currency_id = {};
+  confirming = false;
 
     constructor(
       public navCtrl: NavController,
@@ -181,16 +182,25 @@ export class ReceiptPage implements OnInit {
       }
     }
 
-    goNextStep() {
+    async goNextStep() {
       if (this.receiptForm.value.amount_paid==null){
         this.amount_paid.setFocus();
       } else if (this.receiptForm.value.amount_paid.toString() == "0" && this.receiptForm.value.total.toString() == "0"){
-        this.confirmReceipt();
+        if (! this.confirming){
+          this.confirming = true;
+          await this.confirmReceipt();
+          this.confirming = false;
+        }
       } else if (!this.receiptForm.value.amount_paid){
         this.amount_paid.setFocus();
       }
       else if (this.receiptForm.value.state == 'DRAFT'){
-        this.confirmReceipt();
+        // await this.confirmReceipt();
+        if (! this.confirming){
+          this.confirming = true;
+          await this.confirmReceipt();
+          this.confirming = false;
+        }
       }
       //  else {
       //     this.navCtrl.navigateBack('/receipt-list');
@@ -374,14 +384,17 @@ export class ReceiptPage implements OnInit {
     // }
 
     beforeConfirm(){
-      if(!this.receiptForm.value._id){
-        this.justSave();
-      }
-      if (this.receiptForm.value.items.length == 0){
-        // this.addItem();
-      } else {
-        this.receiptConfimation();
-      }
+      return new Promise(async resolve =>{
+        if(!this.receiptForm.value._id){
+          this.justSave();
+        }
+        if (this.receiptForm.value.items.length == 0){
+          // this.addItem();
+        } else {
+          await this.receiptConfimation();
+          resolve(true);
+        }
+      })
     }
 
     addDays(date, days) {
@@ -757,32 +770,41 @@ export class ReceiptPage implements OnInit {
 
     confirmReceipt() {
       //console.log("confirmReceipt", this.receiptForm.value);
-      if (this.receiptForm.value.state=='DRAFT'){
-        this.beforeConfirm();
-      }
+      return new Promise(async resolve =>{
+        if (this.receiptForm.value.state=='DRAFT'){
+          await this.beforeConfirm();
+          resolve(true);
+        } else {
+          resolve(false)
+        }
+      })
     }
 
     async receiptConfimation(){
-      let prompt = await this.alertCtrl.create({
-        header: 'Confirmar Recibo?',
-        message: 'Estas seguro que deseas confirmar la el recibo?',
-        buttons: [
-          {
-            text: 'Cancelar',
-            handler: data => {
-              //console.log("Cancelar");
+      return new Promise(async resolve =>{
+        let prompt = await this.alertCtrl.create({
+          header: 'Confirmar Recibo?',
+          message: 'Estas seguro que deseas confirmar la el recibo?',
+          buttons: [
+            {
+              text: 'Cancelar',
+              handler: data => {
+                //console.log("Cancelar");
+                resolve(false);
+              }
+            },
+            {
+              text: 'Confirmar',
+              handler: async data => {
+                //console.log("Confirmar");
+                await this.afterConfirm();
+                resolve(true);
+              }
             }
-          },
-          {
-            text: 'Confirmar',
-            handler: async data => {
-              //console.log("Confirmar");
-              await this.afterConfirm();
-            }
-          }
-        ]
+          ]
+        });
+        await prompt.present();
       });
-      await prompt.present();
     }
 
   async afterConfirm(){
