@@ -368,12 +368,39 @@ company_currency = 'currency.PYG';
     })
   }
 
-  confirmState(){
+ async confirmState(){
     this.cashMoveForm.patchValue({
       'state': 'DONE',
     });
-    this.buttonSave();
+    await this.buttonSave();
+    if (JSON.stringify(this.cashMoveForm.value.check) != '{}'){
+      let check = this.cashMoveForm.value.check;
+      check['state'] = 'CHANGED';
+      await this.pouchdbService.updateDoc(check);
+    }
   }
+
+  async rejectCheck(){
+     // this.cashMoveForm.patchValue({
+     //   'state': 'DONE',
+     // });
+     await this.buttonSave();
+     if (JSON.stringify(this.cashMoveForm.value.check) != '{}'){
+       let check = this.cashMoveForm.value.check;
+       check['state'] = 'REJECTED';
+       await this.pouchdbService.updateDoc(check);
+     }
+     let cashMove = Object.assign({}, this.cashMoveForm.value);
+     cashMove['accountTo'] = this.cashMoveForm.value.accountFrom;
+     cashMove['accountTo_id'] = this.cashMoveForm.value.accountFrom._id;
+     cashMove['accountTo_name'] = this.cashMoveForm.value.accountFrom.name;
+     cashMove['accountFrom'] = this.cashMoveForm.value.accountTo;
+     cashMove['accountFrom_id'] = this.cashMoveForm.value.accountTo._id;
+     cashMove['accountFrom_name'] = this.cashMoveForm.value.accountTo.name;
+     delete cashMove._id;
+     delete cashMove._rev;
+     this.pouchdbService.createDoc(cashMove)
+   }
 
   async confirmCashMove(){
     let state = 'DONE';
@@ -384,6 +411,20 @@ company_currency = 'currency.PYG';
       'state': state,
     });
     await this.buttonSave();
+    if (JSON.stringify(this.cashMoveForm.value.check) != '{}'){
+      let check = this.cashMoveForm.value.check;
+      if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'bank'){
+        check['state'] = 'DEPOSITED';
+        await this.pouchdbService.updateDoc(check);
+      } else if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'cash'){
+        check['state'] = 'CHANGED';
+        await this.pouchdbService.updateDoc(check);
+      }
+    }
+  }
+
+  printAccountText(){
+    console.log("accountText", this.cashMoveForm.value.accountTo.printedText);
   }
 
   selectCheck() {

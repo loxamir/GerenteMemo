@@ -72,7 +72,7 @@ export class CheckPage implements OnInit {
         emision_date: new FormControl(''),
         maturity_date: new FormControl(''),
         contact: new FormControl(this.contact||{}),
-        state: new FormControl('draft'),
+        state: new FormControl('NEW'),
         currency: new FormControl(this.route.snapshot.paramMap.get('currency')||{}),
         note: new FormControl(''),
         receipt: new FormControl(this.route.snapshot.paramMap.get('receipt')||{}),

@@ -913,9 +913,6 @@ export class ReceiptPage implements OnInit {
             doc['currency'] = this.receiptForm.value.cash_paid.currency;
             doc['currency_exchange'] = this.receiptForm.value.exchange_rate;
           }
-          if (this.receiptForm.value.check){
-            doc['state'] = 'WAITING';
-          }
           console.log("Movimento", doc);
           promise_ids.push(this.cashMoveService.createCashMove(doc));
 
@@ -923,7 +920,7 @@ export class ReceiptPage implements OnInit {
       } else {
         console.log("ERR Movimento");
         Object.keys(toCreateCashMoves).forEach(account_id => {
-          promise_ids.push(this.cashMoveService.createCashMove({
+          let doc = {
             "amount": toCreateCashMoves[account_id],
             "name": this.receiptForm.value.name,
             "date": this.today,
@@ -934,7 +931,30 @@ export class ReceiptPage implements OnInit {
             'signal': this.receiptForm.value.signal,
             "origin_id":this.receiptForm.value._id,
             "payments": payments,
-          }));
+          }
+          if (this.receiptForm.value.cash_paid.currency_id != this.company_currency_id){
+            doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency.precision || 0);
+            doc['currency'] = this.receiptForm.value.cash_paid.currency;
+            doc['currency_exchange'] = this.receiptForm.value.exchange_rate;
+          }
+          if (this.receiptForm.value.cash_paid.type == 'bank' && JSON.stringify(this.receiptForm.value.check) != '{}'){
+            doc['state'] = 'WAITING';
+          }
+          console.log("Movimento", doc);
+          promise_ids.push(this.cashMoveService.createCashMove(doc));
+
+          // promise_ids.push(this.cashMoveService.createCashMove({
+          //   "amount": toCreateCashMoves[account_id],
+          //   "name": this.receiptForm.value.name,
+          //   "date": this.today,
+          //   "check_id": this.receiptForm.value.check._id,
+          //   "accountFrom_id": this.receiptForm.value.cash_paid._id,
+          //   "contact_id": this.receiptForm.value.contact._id,
+          //   "accountTo_id": account_id,
+          //   'signal': this.receiptForm.value.signal,
+          //   "origin_id":this.receiptForm.value._id,
+          //   "payments": payments,
+          // }));
         });
       }
     });
@@ -969,6 +989,16 @@ export class ReceiptPage implements OnInit {
           "_id": promise_data[0].id, //FIXME: It's not showing the right move for multi account payments
           "amount": item_paid
         });
+        if (JSON.stringify(this.receiptForm.value.check) != '{}'){
+          let check = this.receiptForm.value.check;
+          if (this.receiptForm.value.signal == '+'){
+            check.state = 'RECEIVED';
+          } else {
+            check.state = 'DELIVERED';
+          }
+          promise_ids2.push(this.pouchdbService.updateDoc(check));
+        }
+
         promise_ids2.push(this.pouchdbService.updateDoc(item1));
         // console.log("item_residual1", item1.origin_id, item_residual);
         // console.log("ORIGIN", item1.origin_id.split('.')[0]);

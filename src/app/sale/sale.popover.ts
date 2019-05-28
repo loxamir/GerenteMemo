@@ -39,7 +39,7 @@ export class SalePopover {
       this.navParams.data.doc.saleForm.markAsDirty();
       let toast = await this.toastCtrl.create({
         message: "Venta Duplicada",
-        duration: 1000
+        duration: 500
       });
       toast.present();
       this.pop.dismiss();

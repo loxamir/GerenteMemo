@@ -181,6 +181,14 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
     formControlName="currency_amount"></ion-input>
   </ion-item> -->
     </ion-row>
+    <ion-button (click)="printAccountText()" color="success">
+      <ion-icon name="print"> </ion-icon>
+      Imprimir
+    </ion-button>
+    <ion-button (click)="rejectCheck()" color="danger">
+      <ion-icon name="print"> </ion-icon>
+      Rechazado
+    </ion-button>
   </form>
   <!-- <ion-row>
     <ion-col class="item-content" *ngIf="cashMoveForm.value.state=='WAITING'">
