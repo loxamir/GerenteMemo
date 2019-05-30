@@ -67,6 +67,8 @@ export class SalePage implements OnInit {
             this.saleForm.patchValue({
               "items": this.saleForm.value.items,
             });
+            this.recomputeValues();
+            this.saleForm.markAsDirty();
           } else {
             this.productService.getProductByCode(
               this.barcode
