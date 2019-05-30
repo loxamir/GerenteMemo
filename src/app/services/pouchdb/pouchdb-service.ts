@@ -81,7 +81,7 @@ export class PouchdbService {
           return;
         }
         this.username = username;
-        this.storage.get("database").then(database => {
+        this.storage.get("database").then(async database => {
           if (! database){
             resolve(false);
             return;
