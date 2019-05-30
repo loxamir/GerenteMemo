@@ -61,6 +61,7 @@
 </ion-header>
 
 <ion-content background="#ddd">
+  <ion-input #corpo style="height: 0px;--padding-top: 0px;--padding-bottom: 0px;--padding-start: 0px;"></ion-input>
   <form [formGroup]="saleForm" (ngSubmit)="onSubmit(saleForm.value)">
     <ion-row justify-content-center>
       <ion-item no-padding (click)="selectContact()" class="field-100">
