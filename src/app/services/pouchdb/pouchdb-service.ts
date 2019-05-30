@@ -132,6 +132,10 @@ export class PouchdbService {
                 console.log("sync other error", err);
                 // handle error
               });
+            } else {
+              setTimeout(function(){
+                self.events.publish('end-sync');
+              }, 500);
             }
 
             this.db.changes({
