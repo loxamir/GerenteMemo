@@ -47,69 +47,56 @@ import { CashMovePage } from '../cash-move/cash-move.page';
 })
 export class SalePage implements OnInit {
   @ViewChild('note') note;
+  @ViewChild('corpo') corpo;
   @HostListener('document:keypress', ['$event'])
     async handleKeyboardEvent(event: KeyboardEvent) {
-      //this.key = event.key;
-      ////console.log("key", event);
-      let timeStamp = event.timeStamp - this.timeStamp;
-      this.timeStamp = event.timeStamp;
-      //console.log("key", event.key);
-      if(event.which === 13){ //ignore returns
-            console.log("enter", this.barcode);
-            // let toast = await this.toastCtrl.create({
-            // message: "enter "+this.barcode,
-            // duration: 1000
-            // });
-            // toast.present();
-            let found = false;
-            this.saleForm.value.items.forEach(item => {
-              if (item.product.barcode == this.barcode){
-                this.sumItem(item);
-                //item.quantity += 1;
-                found = true;
+      if (this.listenBarcode){
+        this.corpo.setFocus();
+        let timeStamp = event.timeStamp - this.timeStamp;
+        this.timeStamp = event.timeStamp;
+        if(event.which === 13){
+          console.log("enter", this.barcode);
+          let found = false;
+          this.saleForm.value.items.forEach(item => {
+            if (item.product.barcode == this.barcode){
+              item.quantity += 1;
+              found = true;
+            }
+          });
+          if (found){
+            this.saleForm.patchValue({
+              "items": this.saleForm.value.items,
+            });
+          } else {
+            this.productService.getProductByCode(
+              this.barcode
+            ).then(data => {
+              if (data){
+                this.saleForm.value.items.unshift({
+                  'quantity': 1,
+                  'product': data,
+                  'price': data.price,
+                  'cost': data.cost,
+                })
+                this.recomputeValues();
+                this.saleForm.markAsDirty();
               }
             });
-            if (found){
-              this.saleForm.patchValue({
-                "items": this.saleForm.value.items,
-              });
-            } else {
-              this.productService.getProductByCode(
-                this.barcode
-              ).then(data => {
-                if (data){
-                  this.saleForm.value.items.unshift({
-                    'quantity': 1,
-                    'product': data,
-                    'price': data.price,
-                    'cost': data.cost,
-                  })
-                  this.recomputeValues();
-                  this.saleForm.markAsDirty();
-                }
-              });
-            }
-
-            this.barcode = "";
-            //return;
+          }
+          this.barcode = "";
         }
-        //console.log("timeStamp", timeStamp);
         if(!timeStamp || timeStamp < 5 || this.barcode == ""){
-            //code = "";
-            this.barcode += event.key;
+          this.barcode += event.key;
         }
         if( event.which < 48 || event.which >= 58 ){ // not a number
-            this.barcode = "";
+          this.barcode = "";
         }
-
         setTimeout(function(){
-            //console.log("end");
-            this.barcode = ""
+          this.barcode = ""
         }, 30);
-
+      }
     }
-
-
+    listenBarcode = true;
     timeStamp: any;
     barcode: string = "";
     saleForm: FormGroup;
@@ -388,6 +375,7 @@ export class SalePage implements OnInit {
 
     selectCurrency() {
       return new Promise(async resolve => {
+        this.listenBarcode = false;
         this.events.subscribe('select-currency', (data) => {
           this.saleForm.patchValue({
             currency: data,
@@ -404,7 +392,9 @@ export class SalePage implements OnInit {
             "select": true
           }
         });
-        profileModal.present();
+        await profileModal.present();
+        await profileModal.onDidDismiss();
+        this.listenBarcode = true;
       });
     }
 
@@ -646,6 +636,7 @@ export class SalePage implements OnInit {
       let self = this;
       if (this.saleForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
+        this.listenBarcode = false;
         this.events.unsubscribe('select-product');
         this.events.subscribe('select-product', async (product) => {
           self.saleForm.value.items.unshift({
@@ -667,13 +658,16 @@ export class SalePage implements OnInit {
             "select": true
           }
         });
-        profileModal.present();
+        await profileModal.present();
+        await profileModal.onDidDismiss();
+        this.listenBarcode = true;
       }
     }
 
     async openItem(item) {
       if (this.saleForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
+        this.listenBarcode = false;
         this.events.unsubscribe('select-product');
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
@@ -691,7 +685,9 @@ export class SalePage implements OnInit {
           componentProps: {
             "select": true,
           }});
-        profileModal.present();
+          await profileModal.present();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
       }
     }
 
@@ -1232,7 +1228,8 @@ export class SalePage implements OnInit {
     }
 
     selectContact() {
-      if (this.saleForm.value.state=='QUOTATION'){
+      if (this.saleForm.value.state=='QUOTATION' ){
+        this.listenBarcode = false;
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
           this.events.unsubscribe('select-contact');
@@ -1255,7 +1252,9 @@ export class SalePage implements OnInit {
               'customer': true,
             }
           });
-          profileModal.present();
+          await profileModal.present();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
         });
       }
     }
@@ -1286,6 +1285,7 @@ export class SalePage implements OnInit {
       // if (this.saleForm.value.state=='QUOTATION'){
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
+          this.listenBarcode = false;
           this.events.unsubscribe('select-contact');
           this.events.subscribe('select-contact', (data) => {
             this.saleForm.patchValue({
@@ -1306,7 +1306,9 @@ export class SalePage implements OnInit {
               'seller': true,
             }
           });
-          profileModal.present();
+          await profileModal.present();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
         });
       // }
     }
@@ -1315,6 +1317,7 @@ export class SalePage implements OnInit {
       return new Promise(async resolve => {
       if (this.saleForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
+        this.listenBarcode = false;
         this.events.unsubscribe('select-payment-condition');
         this.events.subscribe('select-payment-condition', (data) => {
           this.saleForm.patchValue({
@@ -1326,7 +1329,6 @@ export class SalePage implements OnInit {
           this.events.unsubscribe('select-payment-condition');
           profileModal.dismiss();
           resolve(data);
-          //this.beforeAddPayment();
         })
         let profileModal = await this.modalCtrl.create({
           component: PaymentConditionListPage,
@@ -1334,7 +1336,9 @@ export class SalePage implements OnInit {
             "select": true
           }
         });
-        profileModal.present();
+        await profileModal.present();
+        await profileModal.onDidDismiss();
+        this.listenBarcode = true;
       }
     });
     }

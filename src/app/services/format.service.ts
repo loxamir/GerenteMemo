@@ -373,7 +373,7 @@ export class FormatService {
 
     //Create matrix
     let page_printed = [];
-    for (var y = 0; y < 43 + layout.lines_limit; y++) {
+    for (var y = 0; y < layout.invoice_height/4.4 + layout.lines_limit; y++) {
       page_printed[y] = [];
       for (var x = 0; x < 160; x++) {
         page_printed[y][x] = ' ';
