@@ -62,6 +62,10 @@ export class TitlePage implements OnInit {
       // seller: new FormControl(false),
       // employee: new FormControl(false),
       _id: new FormControl(''),
+      create_user: new FormControl(''),
+      create_time: new FormControl(''),
+      write_user: new FormControl(''),
+      write_time: new FormControl(''),
     });
     if (this._id){
       this.getTitle(this._id).then((data) => {

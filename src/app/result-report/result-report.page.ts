@@ -115,11 +115,11 @@ export class ResultReportPage implements OnInit {
       || ''),
       code: new FormControl(''),
       date: new FormControl(this.route.snapshot.paramMap.get('date')
-      || this.today),
+      || this.today.toISOString()),
       dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')
       || this.getFirstDateOfMonth()),
       dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd')
-      || this.today),
+      || this.today.toISOString()),
       origin_id: new FormControl(this.route.snapshot.paramMap.get('origin_id')),
       total: new FormControl(0),
       residual: new FormControl(0),
@@ -140,6 +140,10 @@ export class ResultReportPage implements OnInit {
       filter: new FormControl(''),
       invoices: new FormControl([]),
       _id: new FormControl(''),
+      create_user: new FormControl(''),
+      create_time: new FormControl(''),
+      write_user: new FormControl(''),
+      write_time: new FormControl(''),
     });
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();

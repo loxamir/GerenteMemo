@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController,  LoadingController, Events, AlertController } from '@ionic/angular';
 import * as papa from 'papaparse';
-// import { Http } from '@angular/http';
-// import { FileChooser } from '@ionic-native/file-chooser';
-// import { FilePath } from '@ionic-native/file-path';
-// import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ProductService } from '../product/product.service';
 import { ProductCategoryService } from '../product-category/product-category.service';

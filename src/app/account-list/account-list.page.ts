@@ -27,6 +27,7 @@ export class AccountListPage implements OnInit {
   receivable;
   payable;
   transfer;
+  user:any = {};
 
   constructor(
     public navCtrl: NavController,
@@ -67,6 +68,7 @@ export class AccountListPage implements OnInit {
   async ngOnInit() {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
+    this.user = (await this.pouchdbService.getUser());
     if (this.transfer){
       this.field = null;
       this.filter = "transfer";
@@ -183,6 +185,8 @@ export class AccountListPage implements OnInit {
   }
 
   deleteAccount(account) {
+    let index = this.accounts.indexOf(account);
+    this.accounts.slice(index, 1)
     return this.pouchdbService.deleteDoc(account);
   }
 

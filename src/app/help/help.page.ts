@@ -61,6 +61,10 @@ export class HelpPage implements OnInit {
       content: new FormControl(''),
       editContent: new FormControl(true),
       _id: new FormControl(''),
+      create_user: new FormControl(''),
+      create_time: new FormControl(''),
+      write_user: new FormControl(''),
+      write_time: new FormControl(''),
     });
     //this.loading.present();
     if (this._id){

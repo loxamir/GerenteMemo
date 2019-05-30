@@ -69,6 +69,10 @@ export class WarehousePage implements OnInit {
       note: new FormControl(''),
       default: new FormControl(false),
       _id: new FormControl(''),
+      create_user: new FormControl(''),
+      create_time: new FormControl(''),
+      write_user: new FormControl(''),
+      write_time: new FormControl(''),
     });
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;

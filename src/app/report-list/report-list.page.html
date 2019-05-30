@@ -13,7 +13,8 @@
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY"
         pickerFormat="DD/MM/YYYY"
         (ionChange)="recomputeValues()"
-        [(ngModel)]="reportsForm.value.dateStart">
+        [(ngModel)]="reportsForm.value.dateStart"
+        [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-col>
       <ion-col no-padding size="6">
@@ -22,7 +23,8 @@
         displayFormat="DD/MM/YYYY"
         pickerFormat="DD/MM/YYYY"
         (ionChange)="recomputeValues()"
-        [(ngModel)]="reportsForm.value.dateEnd">
+        [(ngModel)]="reportsForm.value.dateEnd"
+        [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-col>
     </ion-row>
@@ -77,44 +79,42 @@
 
       <ion-card class="list-card"
       style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
-      (click)="showReportResult()">
+      (click)="showReportCashFlow()">
         <ion-row>
           <ion-col
           style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
-            Resultados
+            Flujo de Caja
           </ion-col>
         </ion-row>
         <ion-row style="margin-top: 15px;">
           <ion-col no-padding class="report-50">
-            <h4 class="field-label">{{'Total de Ingresos' | translate}}</h4>
-            <h4 class="field-value"
-            style="color:green">$ {{resultIncome|number:'1.'+currency_precision}}</h4>
+            <h4 class="field-label">{{'Total de Recibido' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              $ {{cashflowIncome|number:'1.'+currency_precision}}
+            </h4>
           </ion-col>
           <ion-col no-padding class="report-50">
-            <h4 class="field-label">{{'Total de Despesas' | translate}}</h4>
-            <h4 class="field-value"
-            style="color:red">
-              $ {{resultExpense|number:'1.'+currency_precision}}
+            <h4 class="field-label">{{'Total de Pagado' | translate}}</h4>
+            <h4 class="field-value" style="color:red">
+              $ {{cashflowExpense|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col no-padding class="report-50">
             <h4 class="field-label">{{'Resultado Liquido' | translate}}</h4>
-            <h4 class="field-value"
-            style="color:green">
-              $ {{resultIncome-resultExpense|number:'1.'+currency_precision}}
+            <h4 class="field-value" style="color:green">
+              $ {{cashflowIncome-cashflowExpense|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
           <ion-col no-padding class="report-50">
-            <h4 class="field-label">{{'Margen de Lucro' | translate}}</h4>
+            <h4 class="field-label">{{'Rentabilidad' | translate}}</h4>
             <h4 class="field-value" style="color:green">
-              {{100*(1 - resultExpense/resultIncome)||0|number:'1.0-1'}}%
+              {{100*cashflowIncome/cashflowExpense||0|number:'1.0-1'}}%
             </h4>
           </ion-col>
         </ion-row>
       </ion-card>
-
       <ion-card class="list-card"
       style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportSale()">
@@ -222,44 +222,7 @@
 
 
 
-      <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
-      (click)="showReportCashFlow()">
-        <ion-row>
-          <ion-col
-          style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
-            Flujo de Caja
-          </ion-col>
-        </ion-row>
-        <ion-row style="margin-top: 15px;">
-          <ion-col no-padding class="report-50">
-            <h4 class="field-label">{{'Total de Recibido' | translate}}</h4>
-            <h4 class="field-value" style="color:green">
-              $ {{cashflowIncome|number:'1.'+currency_precision}}
-            </h4>
-          </ion-col>
-          <ion-col no-padding class="report-50">
-            <h4 class="field-label">{{'Total de Pagado' | translate}}</h4>
-            <h4 class="field-value" style="color:red">
-              $ {{cashflowExpense|number:'1.'+currency_precision}}
-            </h4>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col no-padding class="report-50">
-            <h4 class="field-label">{{'Resultado Liquido' | translate}}</h4>
-            <h4 class="field-value" style="color:green">
-              $ {{cashflowIncome-cashflowExpense|number:'1.'+currency_precision}}
-            </h4>
-          </ion-col>
-          <ion-col no-padding class="report-50">
-            <h4 class="field-label">{{'Rentabilidad' | translate}}</h4>
-            <h4 class="field-value" style="color:green">
-              {{100*cashflowIncome/cashflowExpense||0|number:'1.0-1'}}%
-            </h4>
-          </ion-col>
-        </ion-row>
-      </ion-card>
+
 
       <ion-card class="list-card"
       style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
@@ -421,6 +384,45 @@
             <h4 class="field-label">{{'Total a Pagar' | translate}}</h4>
             <h4 class="field-value" style="color:red; font-size:30px;">
               $ {{ToPay|number:'1.'+currency_precision}}
+            </h4>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      <ion-card class="list-card"
+      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      (click)="showReportResult()">
+        <ion-row>
+          <ion-col
+          style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+            Resultados
+          </ion-col>
+        </ion-row>
+        <ion-row style="margin-top: 15px;">
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Total de Ingresos' | translate}}</h4>
+            <h4 class="field-value"
+            style="color:green">$ {{resultIncome|number:'1.'+currency_precision}}</h4>
+          </ion-col>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Total de Despesas' | translate}}</h4>
+            <h4 class="field-value"
+            style="color:red">
+              $ {{resultExpense|number:'1.'+currency_precision}}
+            </h4>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Resultado Liquido' | translate}}</h4>
+            <h4 class="field-value"
+            style="color:green">
+              $ {{resultIncome-resultExpense|number:'1.'+currency_precision}}
+            </h4>
+          </ion-col>
+          <ion-col no-padding class="report-50">
+            <h4 class="field-label">{{'Margen de Lucro' | translate}}</h4>
+            <h4 class="field-value" style="color:green">
+              {{100*(1 - resultExpense/resultIncome)||0|number:'1.0-1'}}%
             </h4>
           </ion-col>
         </ion-row>

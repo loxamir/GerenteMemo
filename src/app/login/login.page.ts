@@ -49,7 +49,6 @@ export class LoginPage implements OnInit {
     public storage: Storage,
     public events: Events,
     public popoverCtrl: PopoverController,
-    public authService: AuthService,
     public menuCtrl: MenuController,
     public pouchdbService: PouchdbService,
     public toastCtrl: ToastController,
@@ -333,26 +332,33 @@ export class LoginPage implements OnInit {
     this.storage.set("password", this.loginForm.value.password);
     this.events.publish('get-user', {"user": this.loginForm.value.user.toLowerCase()});
     this.selected_user = true;
-    this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
+    let dbList:any = await this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
+    console.log("dbList", dbList);
     this.username = this.loginForm.value.user.toLowerCase();
-    this.authService.login(this.username);
-    this.selectDatabase(this.username);
+    if (dbList.length == 1){
+      this.selectDatabase(dbList[0].database);
+    }
     this.menuCtrl.enable(false);
     this.loading.dismiss();
-
   }
 
   async showDatabaseList(username, password){
-    let list: any = await this.storage.get("dbList") || [];
-    this.databaseList = list;
-    let listOnline: any = await this.restProvider.getUserDbList(
-      username, password);
-    console.log("listOnline", listOnline);
-    if (listOnline.ok != false){
-      console.log("yes list");
-      this.storage.set("dbList", listOnline);
-      this.databaseList = listOnline;
-    }
+    return new Promise(async (resolve, reject)=>{
+
+      let list: any = await this.storage.get("dbList") || [];
+      this.databaseList = list;
+      let listOnline: any = await this.restProvider.getUserDbList(
+        username, password);
+        console.log("listOnline", listOnline);
+      if (listOnline.ok != false){
+        console.log("yes list");
+        this.storage.set("dbList", listOnline);
+        this.databaseList = listOnline;
+        resolve(this.databaseList)
+      } else {
+        resolve(this.databaseList)
+      }
+    })
   }
 
   async selectDatabase(database){

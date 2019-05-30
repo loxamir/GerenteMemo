@@ -25,7 +25,8 @@
         (ionChange)="recomputeValues()"
         displayFormat="DD/MM/YYYY"
         pickerFormat="DD/MM/YYYY"
-        formControlName="dateStart">
+        formControlName="dateStart"
+        [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-item>
       <ion-item no-padding class="field-50">
@@ -34,7 +35,8 @@
         (ionChange)="recomputeValues()"
         displayFormat="DD/MM/YYYY"
         pickerFormat="DD/MM/YYYY"
-        formControlName="dateEnd">
+        formControlName="dateEnd"
+        [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-item>
     </ion-row>

@@ -14,6 +14,7 @@ export class PouchdbService {
   db: any;
   remote: any;
   docTypes = {};
+  username = undefined;
 
   constructor(
     public http: HttpClient,
@@ -79,7 +80,8 @@ export class PouchdbService {
           resolve(false);
           return;
         }
-        this.storage.get("database").then(async database => {
+        this.username = username;
+        this.storage.get("database").then(database => {
           if (! database){
             resolve(false);
             return;
@@ -154,6 +156,25 @@ export class PouchdbService {
     });
   }
 
+  async getUser(){
+    let user = await this.getDoc('user.'+this.username);
+    if (JSON.stringify(user)!='{}'){
+      return user
+    }
+    return {
+      "username": this.username,
+      "useSale": true,
+      "useService": true,
+      "usePurchase": true,
+      "useProduction": true,
+      "useFinance": true,
+      "contact_id": "contact.myCompany",
+      "admin": true,
+      "cash_id": "",
+      "warehouse_id": "warehouse.physical.my"
+    }
+  }
+
   getDisConnect(){
     this.db.close();
     this.docTypes = {};
@@ -222,28 +243,58 @@ export class PouchdbService {
   }
 
   getDoc(doc_id, attachments=false) {
-    return new Promise((resolve, reject)=>{
+    return new Promise(async (resolve, reject)=>{
       if (typeof doc_id === "string"){
-        resolve(this.db.get(doc_id, {
-          attachments: attachments,
-          // binary: true
-        }));
+        try {
+          let test = await this.db.get(doc_id, {
+            attachments: attachments,
+            // binary: true
+          });
+          resolve(test);
+        } catch {
+          resolve({})
+        }
       } else {
         resolve({})
       }
     })
   }
 
+  /*getDoc(doc_id) {
+    return new Promise((resolve, reject)=>{
+      if (typeof doc_id === "string"){
+        if (this.db){
+          resolve(this.db.get(doc_id));
+        } else {
+          resolve({})
+        }
+      } else {
+        resolve({})
+      }
+    })
+  }*/
+
+/*  getDoc(doc_id) {
+    let self = this;
+    return new Promise((resolve, reject)=>{
+      if (typeof doc_id === "string"){
+        resolve(self.db.get(doc_id));
+      } else {
+        resolve({})
+      }
+    })
+  }*/
+
   getUUID(){
     const uuidv4 = require('uuid/v4');
     return uuidv4();
   }
 
-  createDocList(list){
+/*  createDocList(list){
     return new Promise((resolve, reject)=>{
       let returns = [];
       let processedList = [];
-        list.forEach((item: any)=>{
+      list.forEach((item: any)=>{
         if (!item._id){
           item._id = item.docType+"."+this.getUUID();
         }
@@ -251,16 +302,52 @@ export class PouchdbService {
           delete item._return;
           returns.push(item);
         }
+        let time = new Date().toJSON();
         processedList.push(item);
-        this.db.bulkDocs(processedList).then(createdDocs=>{
-          resolve(returns);
-        })
+        item.create_user = this.username;
+        item.create_time = time;
+        item.write_user = this.username;
+        item.write_time = time;
+      })
+      this.db.bulkDocs(processedList).then(createdDocs=>{
+        resolve(returns);
+      })
+    })
+  }*/
+
+  createDocList(list){
+    return new Promise((resolve, reject)=>{
+      let returns = [];
+      let processedList = [];
+      list.forEach((item: any)=>{
+        if (!item._id){
+          item._id = item.docType+"."+this.getUUID();
+        }
+        let time = new Date().toJSON();
+        item.create_user = this.username;
+        item.create_time = time;
+        item.write_user = this.username;
+        item.write_time = time;
+        if (item._return){
+          delete item._return;
+          returns.push(item);
+        }
+        processedList.push(item);
+      })
+      this.db.bulkDocs(processedList).then(createdDocs=>{
+        resolve(returns);
       })
     })
   }
 
+
   updateDocList(list){
     return new Promise((resolve, reject)=>{
+      let time = new Date().toJSON();
+      list.forEach((item: any)=>{
+        item.write_user = this.username;
+        item.write_time = time;
+      })
       this.db.bulkDocs(list).then(createdDocs=>{
         resolve(createdDocs);
       })
@@ -275,6 +362,11 @@ export class PouchdbService {
     if (!data['_id']){
       data['_id'] = data['docType']+"."+this.getUUID();;
     }
+    let time = new Date().toJSON();
+    data.create_user = this.username;
+    data.create_time = time;
+    data.write_user = this.username;
+    data.write_time = time;
     return new Promise((resolve, reject)=>{
       this.db.put(data).then(res=>{
         resolve(res);
@@ -286,6 +378,9 @@ export class PouchdbService {
 
   updateDoc(doc){
     return new Promise((resolve, reject)=>{
+      let time = new Date().toJSON();
+      doc.write_user = this.username;
+      doc.write_time = time;
       this.db.upsert(doc._id, function () {
         return doc;
       }).then(function (res) {

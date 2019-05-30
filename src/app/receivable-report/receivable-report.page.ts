@@ -74,7 +74,7 @@ export class ReceivableReportPage implements OnInit {
     public pouchdbService: PouchdbService,
     public modalCtrl: ModalController,
   ) {
-    this.today = new Date().toISOString();
+    this.today = new Date();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.avoidAlertMessage = false;
@@ -379,12 +379,11 @@ export class ReceivableReportPage implements OnInit {
   // }
 
   async ngOnInit() {
-    //var today = new Date().toISOString();
     this.receivableReportForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || undefined, Validators.required),
       name: new FormControl(''),
       dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.getFirstDateOfMonth()),
-      dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today),
+      dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today.toISOString()),
       total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),

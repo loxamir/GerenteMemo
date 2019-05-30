@@ -72,6 +72,10 @@ export class AdvancePage implements OnInit {
         cash_move: new FormControl(this.route.snapshot.paramMap.get('cash_move')||''),
         payments: new FormControl(this.route.snapshot.paramMap.get('payments')||[]),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       //this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));

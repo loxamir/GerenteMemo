@@ -73,7 +73,7 @@ export class SaleReportPage implements OnInit {
     public events: Events,
     public pouchdbService: PouchdbService,
   ) {
-    this.today = new Date().toISOString();
+    this.today = new Date();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.avoidAlertMessage = false;
@@ -412,28 +412,170 @@ export class SaleReportPage implements OnInit {
           else if (this.reportSaleForm.value.groupBy == 'date') {
             items = [];
             sales.forEach(saleLine => {
-              if (result.hasOwnProperty(saleLine.key[0])) {
+              let date = saleLine.key[0].split(" ")[0];
+              if (result.hasOwnProperty(date)) {
                 // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
-                items[result[saleLine.key[0]]] = {
-                  'name': items[result[saleLine.key[0]]].name,
-                  'quantity': items[result[saleLine.key[0]]].quantity + parseFloat(saleLine.key[4]),
-                  'margin': items[result[saleLine.key[0]]].margin + saleLine.key[3],
-                  'total': items[result[saleLine.key[0]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                items[result[date]] = {
+                  'name': items[result[date]].name,
+                  'quantity': items[result[date]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[date]].margin + saleLine.key[3],
+                  'total': items[result[date]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
                 };
               } else {
                 items.push({
-                  'name': saleLine.key[0],
+                  'name': date,
                   'quantity': parseFloat(saleLine.key[4]),
                   'margin': saleLine.key[3],
                   'total': parseFloat(saleLine.key[4])*saleLine.key[5],
                 });
-                result[saleLine.key[0]] = items.length-1;
+                result[date] = items.length-1;
               }
             });
 
             let self = this;
             let output = items.sort(function(a, b) {
-              return self.compare(a, b, self.reportSaleForm.value.orderBy);
+              return self.compare(b, a, self.reportSaleForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+
+          }
+          else if (this.reportSaleForm.value.groupBy == 'month') {
+            items = [];
+            sales.forEach(saleLine => {
+              let month:any = +(new Date(saleLine.key[0])).getMonth() + 1;
+              let year = (new Date(saleLine.key[0])).getFullYear();
+              if (month.toString().length == 1){
+                month = "0"+month;
+              }
+              let date = year+"-"+month;
+              let monthName = this.formatService.getMonth(month)+"-"+year;
+              if (result.hasOwnProperty(date)) {
+                // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
+                items[result[date]] = {
+                  'name': items[result[date]].name,
+                  'monthName': items[result[date]].monthName,
+                  'quantity': items[result[date]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[date]].margin + saleLine.key[3],
+                  'total': items[result[date]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                // let date = (new Date(saleLine.key[0])).getMonth();
+                // console.log("date", date);
+                items.push({
+                  'name': date,
+                  'monthName': monthName,
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': saleLine.key[3],
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[date] = items.length-1;
+              }
+            });
+
+            let self = this;
+            let output = items.sort(function(a, b) {
+              return self.compare(b, a, self.reportSaleForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+
+          }
+
+          else if (this.reportSaleForm.value.groupBy == 'week') {
+            items = [];
+            sales.forEach(saleLine => {
+              let week:any = this.getNumberOfWeek(saleLine.key[0]);
+
+              if (week.toString().length == 1){
+                week = "0"+week;
+              }
+              let year = (new Date(saleLine.key[0])).getFullYear();
+              let date = year+"-"+week;
+              // let date = (new Date(saleLine.key[0])).getWeekYear();
+              console.log("date", date);
+              if (result.hasOwnProperty(date)) {
+                // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
+                items[result[date]] = {
+                  'name': items[result[date]].name,
+                  'quantity': items[result[date]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[date]].margin + saleLine.key[3],
+                  'total': items[result[date]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                // let date = (new Date(saleLine.key[0])).getMonth();
+                // console.log("date", date);
+                items.push({
+                  'name': date,
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': saleLine.key[3],
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[date] = items.length-1;
+              }
+            });
+
+            let self = this;
+            let output = items.sort(function(a, b) {
+              // return self.compare(a, b, self.reportSaleForm.value.orderBy);
+              return self.compare(b, a, self.reportSaleForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+
+          }
+
+          else if (this.reportSaleForm.value.groupBy == 'year') {
+            items = [];
+            sales.forEach(saleLine => {
+              let date = (new Date(saleLine.key[0])).getFullYear();
+              console.log("date", date);
+              if (result.hasOwnProperty(date)) {
+                // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
+                items[result[date]] = {
+                  'name': items[result[date]].name,
+                  'quantity': items[result[date]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[date]].margin + saleLine.key[3],
+                  'total': items[result[date]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                // let date = (new Date(saleLine.key[0])).getMonth();
+                // console.log("date", date);
+                items.push({
+                  'name': date,
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': saleLine.key[3],
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[date] = items.length-1;
+              }
+            });
+
+            let self = this;
+            let output = items.sort(function(a, b) {
+              // return self.compare(a, b, self.reportSaleForm.value.orderBy);
+              return self.compare(b, a, self.reportSaleForm.value.orderBy);
             })
             let marker = false;
             let total = 0;
@@ -536,12 +678,11 @@ export class SaleReportPage implements OnInit {
   }
 
   async ngOnInit() {
-    //var today = new Date().toISOString();
     this.reportSaleForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
       name: new FormControl(''),
       dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.getFirstDateOfMonth()),
-      dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today),
+      dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today.toISOString()),
       total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
@@ -571,6 +712,21 @@ export class SaleReportPage implements OnInit {
   }
 
   goNextStep() {
+    if (
+      this.reportSaleForm.value.groupBy == 'date'
+      || this.reportSaleForm.value.groupBy == 'month'
+      || this.reportSaleForm.value.groupBy == 'week'
+      || this.reportSaleForm.value.groupBy == 'year'
+    ){
+      this.reportSaleForm.patchValue({
+        'orderBy': 'name'
+      });
+    } else {
+      this.reportSaleForm.patchValue({
+        'orderBy': 'total'
+      });
+    }
+
     this.getData().then(data => {
       let self = this;
       new Promise((resolve, reject) => {
@@ -711,7 +867,7 @@ export class SaleReportPage implements OnInit {
       d3.sum(dataset.map(function(d:any) { // calculate the total number of tickets in the dataset
         return (d.enabled) ? d.total : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase
       }));
-      tooltip.select('.label').html(d.name); // set current label
+      tooltip.select('.label').html(d.monthName || d.name); // set current label
       tooltip.select('.count').html('$' + d.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")); // set current count
       tooltip.style('display', 'block'); // set display
     });
@@ -1083,5 +1239,12 @@ export class SaleReportPage implements OnInit {
         if (tooltipLine) tooltipLine.attr('stroke', 'none');
       });
     console.log("fim");
+  }
+
+  getNumberOfWeek(date) {
+    const today:any = new Date(date);
+    const firstDayOfYear:any = new Date(today.getFullYear(), 0, 1);
+    const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
   }
 }

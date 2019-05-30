@@ -96,6 +96,15 @@ export class InvoiceConfigPage implements OnInit {
       invoiceTotal_top: new FormControl(this.navParams.data.invoiceTotal_top),
       invoiceTotal_left: new FormControl(this.navParams.data.invoiceTotal_left),
       invoiceTotal_width: new FormControl(this.navParams.data.invoiceTotal_width),
+
+      invoiceDiscount_top: new FormControl(this.navParams.data.invoiceDiscount_top),
+      invoiceDiscount_left: new FormControl(this.navParams.data.invoiceDiscount_left),
+      invoiceDiscount_width: new FormControl(this.navParams.data.invoiceDiscount_width),
+
+      invoiceNote_top: new FormControl(this.navParams.data.invoiceNote_top),
+      invoiceNote_left: new FormControl(this.navParams.data.invoiceNote_left),
+      invoiceNote_width: new FormControl(this.navParams.data.invoiceNote_width),
+
       totalTax5_top: new FormControl(this.navParams.data.totalTax5_top),
       totalTax5_left: new FormControl(this.navParams.data.totalTax5_left),
       totalTax5_width: new FormControl(this.navParams.data.totalTax5_width),

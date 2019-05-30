@@ -13,19 +13,15 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-row>
-    <ion-item
-    no-padding
-     class="summary-50">
-      <h4 class="field-label">{{'TOTAL' | translate}}</h4>
-      <h4 class="field-value" style="color:blue">$ {{purchaseForm.value.total|number:'1.'+currency_precision}}</h4>
-    </ion-item>
-    <ion-item
-    no-padding
-     class="summary-50">
-      <h4 class="field-label">{{'Pagar' | translate}}</h4>
-      <h4 class="field-value" style="color:red">$ {{purchaseForm.value.residual|number:'1.'+currency_precision}}</h4>
-    </ion-item>
+  <ion-row  style="height:50px;">
+    <ion-col>
+      <h4 class="field-label-col">{{'TOTAL' | translate}}</h4>
+      <h4 class="field-value-col" style="color:blue">$ {{purchaseForm.value.total|number:'1.'+currency_precision}}</h4>
+    </ion-col>
+    <ion-col>
+      <h4 class="field-label-col">{{'Pagar' | translate}}</h4>
+      <h4 class="field-value-col" style="color:red">$ {{purchaseForm.value.residual|number:'1.'+currency_precision}}</h4>
+    </ion-col>
   </ion-row>
   <ion-row  class="state-header">
     <ion-col size="4">

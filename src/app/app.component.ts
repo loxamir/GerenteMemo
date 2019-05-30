@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Platform, MenuController, ModalController } from '@ionic/angular';
+import { Platform, MenuController, ModalController, LoadingController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
+import { PouchdbService } from './services/pouchdb/pouchdb-service';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit {
+  user: any = {};
+  loading: any;
   public appPages = [
     {
       title: 'Agricultura',
@@ -25,7 +28,8 @@ export class AppComponent implements OnInit {
     {
       title: 'Informes',
       url: '/report-list',
-      icon: 'stats'
+      icon: 'stats',
+      restrict: true
     },
     {
       title: 'Productos',
@@ -45,7 +49,8 @@ export class AppComponent implements OnInit {
     {
       title: 'Ajustes',
       url: '/config',
-      icon: 'settings'
+      icon: 'settings',
+      restrict: true
     },
     {
       title: 'Salir',
@@ -62,6 +67,8 @@ export class AppComponent implements OnInit {
     public router: Router,
     public menuCtrl: MenuController,
     public modalCtrl: ModalController,
+    public loadingCtrl: LoadingController,
+    public pouchdbService: PouchdbService,
   ) {
     this.initializeApp();
     this.backButtonListener();
@@ -92,7 +99,34 @@ export class AppComponent implements OnInit {
     }
   }
 
-  ngOnInit(){
+  async ngOnInit(){
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
+    this.user = (await this.pouchdbService.getUser());
+    if (this.user && !this.user['admin']){
+      this.appPages = [
+        {
+          title: 'Operativo',
+          url: '/tabs',
+          icon: 'infinite'
+        },
+        {
+          title: 'Productos',
+          url: '/product-list',
+          icon: 'cube'
+        },
+        {
+          title: 'Personas',
+          url: '/contact-list',
+          icon: 'contacts'
+        },
+        {
+          title: 'Salir',
+          url: '/login',
+          icon: 'exit'
+        },
+    ];
+    }
     this.router.events.subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
         // if (event.url === '/login') {
@@ -103,5 +137,6 @@ export class AppComponent implements OnInit {
         });
       }
     })
+    this.loading.dismiss();
   }
 }

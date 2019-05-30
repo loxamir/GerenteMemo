@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController,  LoadingController, Platform, AlertController, Events, ToastController, ModalController, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -37,7 +37,7 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 // declare var cordova:any;
 // import * as jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
-
+import { DiscountPage } from '../discount/discount.page';
 
 @Component({
   selector: 'app-sale',
@@ -45,70 +45,61 @@ import * as html2canvas from 'html2canvas';
   styleUrls: ['./sale.page.scss'],
 })
 export class SalePage implements OnInit {
-  // @ViewChild(Select) select: Select;
+  @ViewChild('note') note;
+  @ViewChild('corpo') corpo;
   @HostListener('document:keypress', ['$event'])
     async handleKeyboardEvent(event: KeyboardEvent) {
-      //this.key = event.key;
-      ////console.log("key", event);
-      let timeStamp = event.timeStamp - this.timeStamp;
-      this.timeStamp = event.timeStamp;
-      //console.log("key", event.key);
-      if(event.which === 13){ //ignore returns
-            console.log("enter", this.barcode);
-            // let toast = await this.toastCtrl.create({
-            // message: "enter "+this.barcode,
-            // duration: 1000
-            // });
-            // toast.present();
-            let found = false;
-            this.saleForm.value.items.forEach(item => {
-              if (item.product.barcode == this.barcode){
-                this.sumItem(item);
-                //item.quantity += 1;
-                found = true;
+      if (this.listenBarcode && this.saleForm.value.state == 'QUOTATION'){
+        this.corpo.setFocus();
+        // console.log("corpo", this.corpo);
+        this.corpo.value = "";
+        let timeStamp = event.timeStamp - this.timeStamp;
+        this.timeStamp = event.timeStamp;
+        if(event.which === 13){
+          console.log("enter", this.barcode);
+          let found = false;
+          this.saleForm.value.items.forEach(item => {
+            if (item.product.barcode == this.barcode){
+              item.quantity += 1;
+              found = true;
+            }
+          });
+          if (found){
+            this.saleForm.patchValue({
+              "items": this.saleForm.value.items,
+            });
+            this.recomputeValues();
+            this.saleForm.markAsDirty();
+          } else {
+            this.productService.getProductByCode(
+              this.barcode
+            ).then(data => {
+              if (data){
+                this.saleForm.value.items.unshift({
+                  'quantity': 1,
+                  'product': data,
+                  'price': data.price,
+                  'cost': data.cost,
+                })
+                this.recomputeValues();
+                this.saleForm.markAsDirty();
               }
             });
-            if (found){
-              this.saleForm.patchValue({
-                "items": this.saleForm.value.items,
-              });
-            } else {
-              this.productService.getProductByCode(
-                this.barcode
-              ).then(data => {
-                if (data){
-                  this.saleForm.value.items.unshift({
-                    'quantity': 1,
-                    'product': data,
-                    'price': data.price,
-                    'cost': data.cost,
-                  })
-                  this.recomputeValues();
-                  this.saleForm.markAsDirty();
-                }
-              });
-            }
-
-            this.barcode = "";
-            //return;
+          }
+          this.barcode = "";
         }
-        //console.log("timeStamp", timeStamp);
         if(!timeStamp || timeStamp < 5 || this.barcode == ""){
-            //code = "";
-            this.barcode += event.key;
+          this.barcode += event.key;
         }
         if( event.which < 48 || event.which >= 58 ){ // not a number
-            this.barcode = "";
+          this.barcode = "";
         }
-
         setTimeout(function(){
-            //console.log("end");
-            this.barcode = ""
+          this.barcode = ""
         }, 30);
-
+      }
     }
-
-
+    listenBarcode = true;
     timeStamp: any;
     barcode: string = "";
     saleForm: FormGroup;
@@ -124,6 +115,7 @@ export class SalePage implements OnInit {
     origin_id;
     return;
     currency_precision = 2;
+    confirming = false;
 
     constructor(
       public navCtrl: NavController,
@@ -172,23 +164,18 @@ export class SalePage implements OnInit {
     }
 
     async ngOnInit() {
-      //var today = new Date().toISOString();
       this.saleForm = this.formBuilder.group({
         contact: new FormControl(this.contact||{}, Validators.required),
         contact_name: new FormControl(this.contact_name||''),
-
-        // project: new FormControl(this.route.snapshot.paramMap.get('project||{}),
-        // project_name: new FormControl(this.route.snapshot.paramMap.get('project_name||''),
-
         name: new FormControl(''),
         code: new FormControl(''),
         date: new FormControl(this.route.snapshot.paramMap.get('date')||this.today),
         origin_id: new FormControl(this.origin_id),
         total: new FormControl(0),
         residual: new FormControl(0),
-        note: new FormControl(''),
+        note: new FormControl(undefined),
         state: new FormControl('QUOTATION'),
-        // tab: new FormControl('products'),
+        discount: new FormControl({value: 0, discountProduct: true}),
         items: new FormControl(this.items||[], Validators.required),
         payments: new FormControl([]),
         planned: new FormControl([]),
@@ -201,6 +188,10 @@ export class SalePage implements OnInit {
         seller_name: new FormControl(this.route.snapshot.paramMap.get('seller_name')||''),
         currency: new FormControl(this.route.snapshot.paramMap.get('currency')||{}),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
@@ -220,8 +211,133 @@ export class SalePage implements OnInit {
       }
     }
 
+    computePercent(){
+      return (
+        (
+          100*
+          (
+            parseFloat(this.saleForm.value.discount.value) +
+            parseFloat(this.saleForm.value.discount.lines)
+          )/
+          (
+            parseFloat(this.saleForm.value.discount.value) +
+            parseFloat(this.saleForm.value.discount.lines) +
+            this.saleForm.value.total
+          )
+        ).toFixed(0)
+      )
+    }
+
+    computeDiscount(){
+      return (
+        parseFloat(this.saleForm.value.discount.value) +
+        parseFloat(this.saleForm.value.discount.lines)
+      )
+    }
+
+    computeDiscountPercent(){
+      return (
+        (100*(
+          parseFloat(this.saleForm.value.discount.value)
+        )/
+        (
+          parseFloat(this.saleForm.value.discount.value) +
+          this.saleForm.value.total
+        )).toFixed(0)
+      )
+    }
+
+    setDiscount() {
+      // if (this.saleForm.value.state == 'QUOTATION'){
+        let self= this;
+        this.listenBarcode = false;
+        return new Promise(async resolve => {
+          let previous = this.saleForm.value.discount.value;
+          this.events.subscribe('set-discount', async (data) => {
+            if (parseFloat(data.discount_amount) && ! previous){
+              let product:any = await this.pouchdbService.getDoc('product.discount');
+              self.saleForm.value.items.unshift({
+                'quantity': 1,
+                'price': -data.discount_amount,
+                'cost': 0,
+                'product': product,
+                'description': product.name,
+              })
+            } else if (parseFloat(data.discount_amount) && previous){
+              self.saleForm.value.items.forEach(item=>{
+                if (item.product._id == 'product.discount'){
+                  discountProduct = true;
+                  item.price = -data.discount_amount;
+                }
+                return;
+              })
+            } else if (previous && !parseFloat(data.discount_amount)){
+              self.saleForm.value.items.forEach((item, index)=>{
+                if (item.product._id == 'product.discount'){
+                  self.saleForm.value.items.splice(index, 1)
+                }
+                return;
+              })
+            }
+            this.saleForm.patchValue({
+              discount: {
+                value: data.discount_amount,
+                discountProduct: data.discountProduct
+              }
+            });
+            self.recomputeValues();
+            this.events.unsubscribe('set-discount');
+            resolve(true);
+          })
+          let discountProduct = this.saleForm.value.discount.discountProduct;
+          let amount_original = parseFloat(this.saleForm.value.total) + parseFloat(this.saleForm.value.discount.value || 0);
+          let new_amount = parseFloat(this.saleForm.value.total);
+          let profileModal = await this.modalCtrl.create({
+            component: DiscountPage,
+            componentProps: {
+              "amount_original": amount_original,
+              "new_amount": new_amount,
+              "currency_precision": this.currency_precision,
+              "showProduct": true,
+              "discountProduct": discountProduct
+            },
+            cssClass: "discount-modal"
+          });
+          await profileModal.present();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
+        });
+      // }
+    }
+
+    setLineDiscount(line) {
+      this.listenBarcode = false;
+      return new Promise(async resolve => {
+        this.events.subscribe('set-discount', (data) => {
+          line.price_original = parseFloat(line.price_original) || line.price;
+          line.price = parseFloat(data.new_amount);
+          this.events.unsubscribe('set-discount');
+          this.recomputeValues();
+          resolve(true);
+        })
+        let profileModal = await this.modalCtrl.create({
+          component: DiscountPage,
+          componentProps: {
+            "amount_original": line.price_original || line.price,
+            "new_amount": line.price,
+            "currency_precision": this.currency_precision,
+          },
+          cssClass: "discount-modal"
+        });
+        await profileModal.present();
+        await profileModal.onDidDismiss();
+        this.listenBarcode = true;
+      });
+    }
+
     selectCurrency() {
       return new Promise(async resolve => {
+        this.listenBarcode = false;
         this.events.subscribe('select-currency', (data) => {
           this.saleForm.patchValue({
             currency: data,
@@ -238,11 +354,14 @@ export class SalePage implements OnInit {
             "select": true
           }
         });
-        profileModal.present();
+        await profileModal.present();
+        await profileModal.onDidDismiss();
+        this.listenBarcode = true;
       });
     }
 
   async saleReturn(){
+    this.listenBarcode = false;
       let formValues = Object.assign({}, this.saleForm.value);
       let items = [];
       formValues.items.forEach((item: any)=>{
@@ -265,7 +384,9 @@ export class SalePage implements OnInit {
           "origin_id": this.saleForm.value._id,
         }
       });
-      profileModal.present();
+      await profileModal.present();
+      await profileModal.onDidDismiss();
+      this.listenBarcode = true;
     }
 
     // async ionViewCanLeave() {
@@ -310,7 +431,11 @@ export class SalePage implements OnInit {
       //   await this.buttonSave();
       // }
       if (this.saleForm.value.state == 'QUOTATION'){
-        this.confirmSale();
+      if (! this.confirming){
+        this.confirming = true;
+        let teste = await this.confirmSale();
+        this.confirming = false;
+      }
       } else if (this.saleForm.value.state == 'CONFIRMED'){
           this.beforeAddPayment();
       } else if (this.saleForm.value.state == 'PAID'){
@@ -323,33 +448,39 @@ export class SalePage implements OnInit {
     }
 
     beforeConfirm(){
-      if (this.saleForm.value.items.length == 0){
-        this.addItem();
-      } else {
-        if (Object.keys(this.saleForm.value.contact).length === 0){
-          this.selectContact().then( teste => {
-            if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
-              this.selectPaymentCondition().then(()=>{
-                this.saleConfimation();
-              });
-            }
-          });
-        } else if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
-          this.selectPaymentCondition().then(()=>{
-            this.saleConfimation();
-          });
+      return new Promise(async resolve =>{
+        if (this.saleForm.value.items.length == 0){
+          this.addItem();
+          resolve(true);
         } else {
-          this.saleConfimation();
+          if (Object.keys(this.saleForm.value.contact).length === 0){
+            this.selectContact().then( teste => {
+              if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
+                this.selectPaymentCondition().then(async ()=>{
+                  await this.saleConfimation();
+                  resolve(true);
+                });
+              }
+            });
+          } else if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
+            this.selectPaymentCondition().then(async ()=>{
+              await this.saleConfimation();
+              resolve(true);
+            });
+          } else {
+            await this.saleConfimation();
+            resolve(true);
+          }
         }
-      }
+      })
     }
 
 
 
     buttonSave() {
-      return new Promise(resolve => {
+      return new Promise(async resolve => {
         if (this._id){
-          this.saleService.updateSale(this.saleForm.value);
+          await this.saleService.updateSale(this.saleForm.value);
           this.saleForm.markAsPristine();
           resolve(true);
         } else {
@@ -357,6 +488,10 @@ export class SalePage implements OnInit {
             this.saleForm.patchValue({
               _id: doc['doc'].id,
               code: doc['sale'].code,
+              create_time: doc['sale'].create_time,
+              create_user: doc['sale'].create_user,
+              write_time: doc['sale'].write_time,
+              write_user: doc['sale'].write_user,
             });
             this._id = doc['doc'].id;
             this.saleForm.markAsPristine();
@@ -399,11 +534,39 @@ export class SalePage implements OnInit {
         this.saleForm.value.items.forEach((item) => {
           total = total + item.quantity*item.price;
         });
+        // total -= this.saleForm.value.discount.value;
         console.log("total", total);
         this.saleForm.patchValue({
           total: total,
         });
       }
+    }
+
+    recomputeDiscountLines(){
+      if (this.saleForm.value.state=='QUOTATION'){
+        let discount_lines = 0;
+        this.saleForm.value.items.forEach((item) => {
+          if (item.product._id != "product.discount"){
+            discount_lines += parseFloat(item.quantity)*(parseFloat(item.price_original || item.price)-parseFloat(item.price));
+          }
+        });
+        console.log("discount_lines", discount_lines);
+        if (!discount_lines){
+          discount_lines = 0;
+        }
+        this.saleForm.value.discount['lines'] = discount_lines
+        this.saleForm.patchValue({
+          discount: this.saleForm.value.discount,
+        });
+      }
+    }
+
+    lineDiscountPercent(line){
+      return (
+        100*(
+          1 - parseFloat(line.price)/parseFloat(line.price_original)
+        )
+      ).toFixed(0)
     }
 
     recomputeUnInvoiced(){
@@ -435,12 +598,10 @@ export class SalePage implements OnInit {
     }
 
     async addItem(){
-      // if(!this.saleForm.value._id){
-      //   this.buttonSave();
-      // }
       let self = this;
       if (this.saleForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
+        this.listenBarcode = false;
         this.events.unsubscribe('select-product');
         this.events.subscribe('select-product', async (product) => {
           self.saleForm.value.items.unshift({
@@ -455,69 +616,6 @@ export class SalePage implements OnInit {
           self.avoidAlertMessage = false;
           self.events.unsubscribe('select-product');
           profileModal.dismiss();
-          // let prompt = await self.alertCtrl.create({
-          //   header: 'Cantidad del Producto',
-          //   message: 'Cual es el Cantidad de este producto?',
-          //   inputs: [
-          //     {
-          //       type: 'number',
-          //       name: 'quantity',
-          //       value: "1"
-          //   },
-          //
-          //   ],
-          //   buttons: [
-          //     {
-          //       text: 'Cancel'
-          //     },
-          //     {
-          //       text: 'Confirmar',
-          //       handler: async data => {
-          //         // console.log("vars", data);
-          //         self.saleForm.value.items.unshift({
-          //           'quantity': data.quantity,
-          //           'price': product.price,
-          //           'cost': product.cost,
-          //           'product': product,
-          //           'description': product.name,
-          //         })
-          //         self.recomputeValues();
-          //         self.saleForm.markAsDirty();
-          //         self.avoidAlertMessage = false;
-          //         self.events.unsubscribe('select-product');
-          //         profileModal.dismiss();
-          //
-          //
-          //         // this.addItem();
-          //
-          //         let prompt2 = await self.alertCtrl.create({
-          //           header: 'Agregar otro Producto?',
-          //           // message: 'Cual es el Cantidad de este producto?',
-          //           buttons: [
-          //             {
-          //               text: 'No'
-          //             },
-          //             // {
-          //             //   text: 'Concluir Venta',
-          //             //   handler: data => {
-          //             //     this.goNextStep();
-          //             //   }
-          //             // },
-          //             {
-          //               text: 'Si',
-          //               handler: data => {
-          //                 this.addItem();
-          //               }
-          //             }
-          //           ]
-          //         });
-          //         prompt2.present();
-          //
-          //       }
-          //     }
-          //   ]
-          // });
-          // prompt.present();
         })
         let profileModal = await this.modalCtrl.create({
           component: ProductListPage,
@@ -525,13 +623,16 @@ export class SalePage implements OnInit {
             "select": true
           }
         });
-        profileModal.present();
+        await profileModal.present();
+        await profileModal.onDidDismiss();
+        this.listenBarcode = true;
       }
     }
 
     async openItem(item) {
       if (this.saleForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
+        this.listenBarcode = false;
         this.events.unsubscribe('select-product');
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
@@ -549,7 +650,9 @@ export class SalePage implements OnInit {
           componentProps: {
             "select": true,
           }});
-        profileModal.present();
+          await profileModal.present();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
       }
     }
 
@@ -603,6 +706,7 @@ export class SalePage implements OnInit {
 
     async editItemQuantity(item){
       if (this.saleForm.value.state=='QUOTATION'){
+        this.listenBarcode = false;
         let prompt = await this.alertCtrl.create({
           header: 'Cantidad del Producto',
           message: 'Cual es el Cantidad de este producto?',
@@ -629,11 +733,14 @@ export class SalePage implements OnInit {
           ]
         });
 
-        prompt.present();
+        await prompt.present();
+        await prompt.onDidDismiss();
+        this.listenBarcode = true;
       }
     }
 
     async openPayment(item) {
+      this.listenBarcode = false;
       this.events.unsubscribe('open-receipt');
       this.events.subscribe('open-receipt', (data) => {
         this.events.unsubscribe('open-receipt');
@@ -669,13 +776,16 @@ export class SalePage implements OnInit {
           "_id": item._id,
         }
       });
-      profileModal.present();
+      await profileModal.present();
+      await profileModal.onDidDismiss();
+      this.listenBarcode = true;
     }
 
     recomputeValues() {
       this.recomputeTotal();
       this.recomputeUnInvoiced();
       this.recomputeResidual();
+      this.recomputeDiscountLines()
       if (this.saleForm.value.total != 0 && this.saleForm.value.residual == 0){
         this.saleForm.patchValue({
           state: "PAID",
@@ -690,29 +800,40 @@ export class SalePage implements OnInit {
     };
 
     confirmSale() {
-      if (this.saleForm.value.state=='QUOTATION'){
-        this.beforeConfirm();
-      }
+      return new Promise(async resolve =>{
+        if (this.saleForm.value.state=='QUOTATION'){
+          await this.beforeConfirm();
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      })
     }
 
     async saleConfimation(){
-      let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas confirmar la venta?',
-        message: 'Si la confirmas no podras cambiar los productos ni el cliente',
-        buttons: [
-          {
-            text: 'Cancelar',
-            handler: data => {}
-          },
-          {
-            text: 'Confirmar',
-            handler: data => {
-              this.afterConfirm();
+      return new Promise(async resolve =>{
+        let prompt = await this.alertCtrl.create({
+          header: 'Estas seguro que deseas confirmar la venta?',
+          message: 'Si la confirmas no podras cambiar los productos ni el cliente',
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+              handler: data => {
+                resolve(false)
+              }
+            },
+            {
+              text: 'Confirmar',
+              handler: async data => {
+                await this.afterConfirm();
+                resolve(true);
+              }
             }
-          }
-        ]
-      });
-      prompt.present();
+          ]
+        });
+        await prompt.present();
+      })
     }
 
     // presentPopover(myEvent) {
@@ -832,14 +953,14 @@ export class SalePage implements OnInit {
               createList.push(cashMoveTemplate);
             });
             console.log("createList", createList);
-            this.pouchdbService.createDocList(createList).then((created: any)=>{
+            this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.saleForm.patchValue({
                 state: 'CONFIRMED',
                 amount_unInvoiced: this.saleForm.value.total,
                 planned: created,
               });
               console.log("Sale created", created);
-              this.buttonSave();
+              await this.buttonSave();
               resolve(true);
             })
           })
@@ -914,6 +1035,7 @@ export class SalePage implements OnInit {
 
     async addPayment() {
       this.avoidAlertMessage = true;
+      this.listenBarcode = false;
         this.events.unsubscribe('create-receipt');
         this.events.subscribe('create-receipt', (data) => {
             console.log("DDDDDDDATA", data);
@@ -961,11 +1083,14 @@ export class SalePage implements OnInit {
             // "origin_ids": origin_ids,
           }
         });
-        profileModal.present();
+        await profileModal.present();
+        await profileModal.onDidDismiss();
+        this.listenBarcode = true;
     }
 
     async addInvoice() {
       this.avoidAlertMessage = true;
+      this.listenBarcode = false;
       this.events.unsubscribe('create-invoice');
       this.events.subscribe('create-invoice', (data) => {
         this.saleForm.value.invoices.push({
@@ -1014,6 +1139,28 @@ export class SalePage implements OnInit {
       if (this.saleForm.value.paymentCondition._id == 'payment-condition.cash'){
         paymentType = 'Contado';
       }
+      let discount = 0;
+      let items = []
+      if (this.saleForm.value.discount.discountProduct){
+        let discountItem;
+        this.saleForm.value.items.forEach(item=>{
+          if (item.product._id != 'product.discount'){
+            items.push(item);
+          } else {
+            discountItem = item;
+          }
+        })
+        if (discountItem){
+          items.push(discountItem);
+        }
+      } else {
+        discount = this.saleForm.value.discount.value;
+        this.saleForm.value.items.forEach(item=>{
+          if (item.product._id != 'product.discount'){
+            items.push(item);
+          }
+        })
+      }
       let profileModal = await this.modalCtrl.create({
         component: InvoicePage,
         componentProps: {
@@ -1024,14 +1171,19 @@ export class SalePage implements OnInit {
           "date": this.saleForm.value.date,
           "paymentCondition": paymentType,
           "origin_id": this.saleForm.value._id,
-          "items": this.saleForm.value.items,
+          "items": items,
+          "note": this.saleForm.value.note,
+          "discount": discount,
           'type': 'out',
         }
       });
-      profileModal.present();
+      await profileModal.present();
+      await profileModal.onDidDismiss();
+      this.listenBarcode = true;
     }
 
     async openInvoice(item) {
+      this.listenBarcode = false;
       this.events.unsubscribe('open-invoice');
       this.events.subscribe('open-invoice', (data) => {
         this.avoidAlertMessage = false;
@@ -1046,7 +1198,9 @@ export class SalePage implements OnInit {
           "_id": item._id,
         }
       });
-      profileModal.present();
+      await profileModal.present();
+      await profileModal.onDidDismiss();
+      this.listenBarcode = true;
     }
 
     onSubmit(values){
@@ -1055,6 +1209,7 @@ export class SalePage implements OnInit {
 
     selectContact() {
       if (this.saleForm.value.state=='QUOTATION'){
+        this.listenBarcode = false;
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
           this.events.unsubscribe('select-contact');
@@ -1077,7 +1232,9 @@ export class SalePage implements OnInit {
               'customer': true,
             }
           });
-          profileModal.present();
+          await profileModal.present();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
         });
       }
     }
@@ -1108,6 +1265,7 @@ export class SalePage implements OnInit {
       // if (this.saleForm.value.state=='QUOTATION'){
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
+          this.listenBarcode = false;
           this.events.unsubscribe('select-contact');
           this.events.subscribe('select-contact', (data) => {
             this.saleForm.patchValue({
@@ -1128,7 +1286,9 @@ export class SalePage implements OnInit {
               'seller': true,
             }
           });
-          profileModal.present();
+          await profileModal.present();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
         });
       // }
     }
@@ -1137,6 +1297,7 @@ export class SalePage implements OnInit {
       return new Promise(async resolve => {
       if (this.saleForm.value.state=='QUOTATION'){
         this.avoidAlertMessage = true;
+        this.listenBarcode = false;
         this.events.unsubscribe('select-payment-condition');
         this.events.subscribe('select-payment-condition', (data) => {
           this.saleForm.patchValue({
@@ -1148,7 +1309,6 @@ export class SalePage implements OnInit {
           this.events.unsubscribe('select-payment-condition');
           profileModal.dismiss();
           resolve(data);
-          //this.beforeAddPayment();
         })
         let profileModal = await this.modalCtrl.create({
           component: PaymentConditionListPage,
@@ -1156,7 +1316,9 @@ export class SalePage implements OnInit {
             "select": true
           }
         });
-        profileModal.present();
+        await profileModal.present();
+        await profileModal.onDidDismiss();
+        this.listenBarcode = true;
       }
     });
     }
@@ -1212,9 +1374,14 @@ export class SalePage implements OnInit {
           ticket += head_code+"|"+head_quantity+"|"+head_price+"|"+head_subtotal+"\n";
           ticket += lines;
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
+          ticket += "Descuento"+this.formatService.string_pad(data.ticketPrint.paperWidth-9, "$ "+this.computeDiscount().toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
           ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.paperWidth-5, "$ "+this.saleForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
           ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
+          if (this.saleForm.value.note){
+            ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "| Anotacion |", 'center', '-')+"\n";
+            ticket += this.formatService.breakString(this.saleForm.value.note, data.ticketPrint.paperWidth)+"\n";
+          }
           ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
           if (data.ticketPrint.showSignSeller){
             ticket += "\n";
@@ -1312,12 +1479,23 @@ export class SalePage implements OnInit {
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += lines;
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
+        if (this.computePercent()){
+          // ticket += "Descuento"+this.formatService.string_pad(data.ticketPrint.paperWidth-9, this.computePercent()+"%", "right")+"\n";
+          ticket += this.formatService.string_pad(data.ticketPrint.paperWidth,
+            "Descuento:"+this.formatService.string_pad(
+              14, "$ "+this.computeDiscount().toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+" ",
+             'right', ' '
+          )+"\n";
+        }
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth,
           "Valor Total:"+this.formatService.string_pad(
             14, "$ "+this.saleForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+" ",
            'right', ' '
         )+"\n";
         ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
+        if (this.saleForm.value.note){
+          ticket += this.formatService.breakString("Anotacion: "+this.saleForm.value.note, data.ticketPrint.paperWidth - 11)+"\n";
+        }
         if (data.ticketPrint.showSignSeller || data.ticketPrint.showSignClient){
           ticket += "\n";
           ticket += "\n";
@@ -1379,9 +1557,16 @@ export class SalePage implements OnInit {
         ticket += head_code+"|"+head_quantity+"|"+head_price+"|"+head_subtotal+"\n";
         ticket += lines;
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
+        if (this.computePercent()){
+          ticket += "Descuento"+this.formatService.string_pad(data.ticketPrint.paperWidth-9, "$ "+this.computeDiscount().toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+        }
         ticket += "TOTAL"+this.formatService.string_pad(data.ticketPrint.paperWidth-5, "$ "+this.saleForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth)+"\n";
+        if (this.saleForm.value.note){
+          ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "| Anotacion |", 'center', '-')+"\n";
+          ticket += this.formatService.breakString(this.saleForm.value.note, data.ticketPrint.paperWidth)+"\n";
+        }
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-')+"\n";
         if (data.ticketPrint.showSignSeller){
           ticket += "\n";

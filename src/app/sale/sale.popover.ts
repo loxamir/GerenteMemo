@@ -9,6 +9,7 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
     <ion-item (click)="cancel()" *ngIf="navParams.data.doc.saleForm.value.state=='CONFIRMED' && !navParams.data.doc.saleForm.value.payments.length">Desconfirmar</ion-item>
     <ion-item (click)="share()">Compartir</ion-item>
     <ion-item (click)="print()">Imprimir</ion-item>
+    <ion-item (click)="addNote()">Agregar Anotación</ion-item>
   </ion-list>
   `
 })
@@ -30,6 +31,7 @@ export class SalePopover {
         state: 'QUOTATION',
         _id: '',
         code: '',
+        residual: this.navParams.data.doc.saleForm.value.total,
         planned: [],
         payments: [],
         invoices: [],
@@ -46,6 +48,14 @@ export class SalePopover {
 
     cancel(){
       this.navParams.data.doc.saleCancel();
+      this.pop.dismiss();
+    }
+
+    async addNote(){
+      await this.navParams.data.doc.saleForm.patchValue({note: ''});
+      setTimeout(() => {
+        this.navParams.data.doc.note.setFocus();
+      }, 300);
       this.pop.dismiss();
     }
 

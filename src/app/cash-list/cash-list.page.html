@@ -10,6 +10,7 @@
     </ion-searchbar>
     <ion-buttons slot="end">
       <ion-button icon-only
+        *ngIf="user.admin"
         class="more-button"
               (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
@@ -52,7 +53,8 @@
 
   <ion-row style="height:15px;">
   </ion-row>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed"
+  *ngIf="user.admin">
       <ion-fab-button (click)="createCash()" color="primary">
           <ion-icon name="add">
           </ion-icon>

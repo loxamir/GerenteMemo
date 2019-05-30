@@ -77,6 +77,10 @@ export class CheckPage implements OnInit {
         note: new FormControl(''),
         receipt: new FormControl(this.route.snapshot.paramMap.get('receipt')||{}),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       //this.loading.present();
       if (this._id){

@@ -57,8 +57,8 @@ export class ReceiptPage implements OnInit {
   @Input() exchange_rate: any;
   @Input() origin_id: any;
   currency_precision = 2;
-
-
+  user:any = {};
+  confirming = false;
 
     constructor(
       public navCtrl: NavController,
@@ -144,40 +144,57 @@ export class ReceiptPage implements OnInit {
         signal: new FormControl(this.signal||'+'),
         exchange_rate: new FormControl(this.exchange_rate||'1'),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      this.user = (await this.pouchdbService.getUser());
+      let config:any = await this.configService.getConfig();
+      this.currency_precision = config.currency_precision;
       this.recomputeValues();
-        this.configService.getConfig().then(async config => {
-          this.currency_precision = config.currency_precision;
-          this.receiptForm.patchValue({
-            "cash_paid": config.cash,
-            "exchange_rate": config.currency.sale_rate,
-          });
-
-          this.recomputeValues();
-          if (this._id){
-            this.receiptService.getReceipt(this._id).then((data) => {
-              //console.log("data", data);
-              this.receiptForm.patchValue(data);
-              this.loading.dismiss();
-            });
-          } else {
-            this.loading.dismiss();
-          }
+      if (this._id){
+        this.receiptService.getReceipt(this._id).then((data) => {
+          this.receiptForm.patchValue(data);
+          this.loading.dismiss();
         });
+      } else {
+        let cashier:any;
+        if (this.user.cash_id) {
+          cashier = await this.pouchdbService.getDoc(this.user.cash_id);
+        } else {
+          cashier = config.cash;
+        }
+        this.receiptForm.patchValue({
+          "cash_paid": cashier,
+          // "exchange_rate": config.currency.sale_rate,
+        });
+        this.recomputeValues();
+        this.loading.dismiss();
+      }
     }
 
-    goNextStep() {
+    async goNextStep() {
       if (this.receiptForm.value.amount_paid==null){
         this.amount_paid.setFocus();
       } else if (this.receiptForm.value.amount_paid.toString() == "0" && this.receiptForm.value.total.toString() == "0"){
-        this.confirmReceipt();
+        if (! this.confirming){
+          this.confirming = true;
+          await this.confirmReceipt();
+          this.confirming = false;
+        }
       } else if (!this.receiptForm.value.amount_paid){
         this.amount_paid.setFocus();
       }
       else if (this.receiptForm.value.state == 'DRAFT'){
-        this.confirmReceipt();
+        // await this.confirmReceipt();
+        if (! this.confirming){
+          this.confirming = true;
+          await this.confirmReceipt();
+          this.confirming = false;
+        }
       }
       //  else {
       //     this.navCtrl.navigateBack('/receipt-list');
@@ -361,14 +378,17 @@ export class ReceiptPage implements OnInit {
     // }
 
     beforeConfirm(){
-      if(!this.receiptForm.value._id){
-        this.justSave();
-      }
-      if (this.receiptForm.value.items.length == 0){
-        // this.addItem();
-      } else {
-        this.receiptConfimation();
-      }
+      return new Promise(async resolve =>{
+        if(!this.receiptForm.value._id){
+          this.justSave();
+        }
+        if (this.receiptForm.value.items.length == 0){
+          // this.addItem();
+        } else {
+          await this.receiptConfimation();
+          resolve(true);
+        }
+      })
     }
 
     addDays(date, days) {
@@ -378,9 +398,9 @@ export class ReceiptPage implements OnInit {
       return result;
     }
 
-    buttonSave() {
+    async buttonSave() {
       if (this._id){
-        this.receiptService.updateReceipt(this.receiptForm.value);
+        await this.receiptService.updateReceipt(this.receiptForm.value);
         this.receiptForm.markAsPristine();
         // this.navCtrl.navigateBack('/receipt-list').then(() => {
           this.events.publish('open-receipt', this.receiptForm.value);
@@ -391,6 +411,10 @@ export class ReceiptPage implements OnInit {
           this.receiptForm.patchValue({
             _id: doc['doc'].id,
             code: doc.code,
+            create_time: doc.create_time,
+            create_user: doc.create_user,
+            write_time: doc.write_time,
+            write_user: doc.write_user,
           });
           this._id = doc['doc'].id;
           this.receiptForm.markAsPristine();
@@ -413,6 +437,10 @@ export class ReceiptPage implements OnInit {
           this.receiptForm.patchValue({
             _id: doc['doc'].id,
             code: doc['receipt'].code,
+            create_time: doc['receipt'].create_time,
+            create_user: doc['receipt'].create_user,
+            write_time: doc['receipt'].write_time,
+            write_user: doc['receipt'].write_user,
           });
           this._id = doc['doc'].id;
           this.receiptForm.markAsPristine();
@@ -722,35 +750,49 @@ export class ReceiptPage implements OnInit {
 
     confirmReceipt() {
       //console.log("confirmReceipt", this.receiptForm.value);
-      if (this.receiptForm.value.state=='DRAFT'){
-        this.beforeConfirm();
-      }
+      return new Promise(async resolve =>{
+        if (this.receiptForm.value.state=='DRAFT'){
+          await this.beforeConfirm();
+          resolve(true);
+        } else {
+          resolve(false)
+        }
+      })
     }
 
     async receiptConfimation(){
-      let prompt = await this.alertCtrl.create({
-        header: 'Confirmar Recibo?',
-        message: 'Estas seguro que deseas confirmar la el recibo?',
-        buttons: [
-          {
-            text: 'Cancelar',
-            handler: data => {
-              //console.log("Cancelar");
+      return new Promise(async resolve =>{
+        let prompt = await this.alertCtrl.create({
+          header: 'Confirmar Recibo?',
+          message: 'Estas seguro que deseas confirmar la el recibo?',
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+              handler: data => {
+                //console.log("Cancelar");
+                resolve(false);
+              }
+            },
+            {
+              text: 'Confirmar',
+              handler: async data => {
+                //console.log("Confirmar");
+                await this.afterConfirm();
+                resolve(true);
+              }
             }
-          },
-          {
-            text: 'Confirmar',
-            handler: data => {
-              //console.log("Confirmar");
-              this.afterConfirm();
-            }
-          }
-        ]
+          ]
+        });
+        await prompt.present();
       });
-      prompt.present();
     }
 
-  afterConfirm(){
+  async afterConfirm(){
+    return new Promise(async resolve => {
+    let self = this;
+    self.loading = await self.loadingCtrl.create();
+    await self.loading.present();
     let details = {};
     this.receiptForm.value.items.forEach(variable => {
       details[variable._id] = {
@@ -953,8 +995,11 @@ export class ReceiptPage implements OnInit {
       Promise.all(promise_ids2).then(res=>{
         this.events.publish('create-receipt', this.receiptForm.value);
         this.justSave();
+        self.loading.dismiss();
+        resolve(true);
       });
     });
+});
   }
 
     onSubmit(values){

@@ -373,6 +373,7 @@ export class FormatService {
     var street = partner.address;
     var phone = partner.phone;
     var max_lines = layout.lines_limit;
+    var note = order.note;
     // var lines_count = 0;
     var lines = "";
     var subtotal_10 = 0;
@@ -521,7 +522,16 @@ export class FormatService {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
     }
-
+    //put note
+    marginTop = layout.invoiceNote_top / 4.4;
+    marginLeft = layout.invoiceNote_left / 1.35;
+    marginTop = parseInt(marginTop);
+    marginLeft = parseInt(marginLeft);
+    dataModel = note || "";
+    for (var x = 0; x < dataModel.toString().length; x++) {
+      let b = marginLeft;
+      page_printed[marginTop][x + b] = dataModel.toString()[x];
+    }
 
     //put lines
     marginTop = layout.lines_top / 4.4;
@@ -632,7 +642,7 @@ export class FormatService {
     marginLeft = layout.subTotalTax5_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = subtotal_05.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = subtotal_05.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -642,17 +652,35 @@ export class FormatService {
     marginLeft = layout.subTotalTax10_left / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = subtotal_10.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    dataModel = subtotal_10.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
     }
+    //put discount
+    let width = 0;
+    if (order.discount){
+      marginTop = layout.invoiceDiscount_top / 4.4;
+      marginLeft = layout.invoiceDiscount_left / 1.35;
+      width = layout.invoiceDiscount_width / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      if (width){
+        dataModel = this.string_pad(width, parseFloat(order.discount).toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        for (var x = 0; x < dataModel.toString().length; x++) {
+          let b = marginLeft;
+          page_printed[marginTop][x + b] = dataModel.toString()[x];
+        }
+      }
+    }
     //put total
     marginTop = layout.invoiceTotal_top / 4.4;
     marginLeft = layout.invoiceTotal_left / 1.35;
+    width = layout.invoiceTotal_width / 1.35;
     marginTop = parseInt(marginTop);
     marginLeft = parseInt(marginLeft);
-    dataModel = order.total.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+    // dataModel = order.total.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    dataModel = this.string_pad(width, parseFloat(order.total).toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
     for (var x = 0; x < dataModel.toString().length; x++) {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -699,15 +727,18 @@ export class FormatService {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
     }
-
-    let invoice = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a";
-    for (var y = 0; y < 43 + layout.lines_limit; y++) {
+    let invoice = "";
+    for (var y = 0; y < layout.invoice_height/4.4 + layout.lines_limit; y++) {
       for (var x = 0; x < 160; x++) {
         invoice += page_printed[y][x];
       }
       invoice += "\n";
     }
-    var blob = new Blob([invoice], { type: "text/plain;charset=utf-8" });
+    let final = "\x1b\x40\x1b\x78\x30\x1b\x4d\x0f\x0a";
+    for (var y = 0; y < layout.copy_count; y++) {
+      final += invoice;
+    }
+    var blob = new Blob([final], { type: "text/plain;charset=utf-8" });
     saveAs(blob, prefix + order.code + extension);
   }
 

@@ -37,7 +37,9 @@ export class HelpListPage implements OnInit {
     this.filter = this.route.snapshot.paramMap.get('filter')||'all';
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
     //this.loading.present();
     this.startFilteredItems();
   }
@@ -61,7 +63,7 @@ export class HelpListPage implements OnInit {
       this.helps = helps;
 
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
   setFilteredItems() {

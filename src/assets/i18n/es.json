@@ -211,7 +211,15 @@
   "IMPLEMENT": "Implemento",
   "EDIT_MACHINE": "Editar Maquina",
   "NEW_MACHINE": "Nueva Maquina",
-  "RESULT": "Resultado",
   "bag60kg": "Saca 60Kg",
-  "bag50kg": "Saca 50Kg"
+  "bag50kg": "Saca 50Kg",
+  "OBSERVATION": "Observación",
+  "DISCOUNT_PERCENT": "Descuento en %",
+  "DISCOUNT": "Descuento",
+  "DISCOUNT_AMOUNT": "Descuento en Valor",
+  "NEW_AMOUNT": "Nuevo Valor",
+  "AMOUNT_ORIGINAL": "Valor Original",
+  "FABRICATION": "Fabricación",
+  "RESULT": "Resultado"
+
 }

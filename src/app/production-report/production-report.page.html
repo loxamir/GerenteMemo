@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'Producciones' | translate }}: {{reportProductionForm.value.code}}
+        {{ 'Fabricaciones' | translate }}: {{reportProductionForm.value.code}}
       </ion-row>
     </ion-title>
     <ion-buttons slot="end">
@@ -22,7 +22,8 @@
         (ionChange)="goNextStep()"
         displayFormat="DD/MM/YYYY"
         pickerFormat="DD/MM/YYYY"
-        formControlName="dateStart">
+        formControlName="dateStart"
+        [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-item>
       <ion-item no-padding class="field-50">
@@ -31,7 +32,8 @@
         (ionChange)="goNextStep()"
         displayFormat="DD/MM/YYYY"
         pickerFormat="DD/MM/YYYY"
-        formControlName="dateEnd">
+        formControlName="dateEnd"
+        [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-item>
       <ion-item
@@ -45,7 +47,7 @@
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
-          <ion-select-option value="product">Producto Producido</ion-select-option>
+          <ion-select-option value="product">Producto Fabricado</ion-select-option>
           <ion-select-option value="component">Componente</ion-select-option>
           <ion-select-option value="category">Categoria</ion-select-option>
           <ion-select-option value="brand">Marca</ion-select-option>

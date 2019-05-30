@@ -60,46 +60,6 @@ export class DashboardListPage implements OnInit {
     });
   }
 
-
-  saveAsCsv() {
-    var csv: any = this.convertToCSV(this.dashboards)
-    var fileName: any = "dashboards.csv"
-    this.file.writeFile(
-      this.file.externalRootDirectory, fileName, csv, {replace:true}
-    ).then(_ => {
-              alert('Success ;-)')
-      }).catch(err => {
-              this.file.writeExistingFile(
-                this.file.externalRootDirectory, fileName, csv
-              ).then(_ => {
-        alert('Success ;-)')
-          }).catch(err => {
-            alert('Failure')
-          })
-      })
-
-  }
-
-  convertToCSV(dashboards) {
-    var csv: any = 'Codigo,Nombre,Telefone,RUC,Direccion,Email,Es Cliente,Es Proveedor,Es Empleado,Es Vendedor,Anotación\r\n';
-
-    dashboards.forEach(dashboard => {
-      csv += dashboard.code + "," +
-      dashboard.name + "," +
-      dashboard.phone + "," +
-      dashboard.document + "," +
-      dashboard.address + "," +
-      dashboard.email + "," +
-      dashboard.client + "," +
-      dashboard.supplier + "," +
-      dashboard.employee + "," +
-      dashboard.seller + "," +
-      '"' + dashboard.note + '"' +
-      '\r\n';
-    });
-    return csv
-  }
-
   ngOnInit() {
     //this.loading.present();
     this.setFilteredItems();

@@ -11,10 +11,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { HttpModule } from '@angular/http';
 import { ImporterPage } from './importer.page';
-import { FileChooser } from '@ionic-native/file-chooser/ngx';
-import { FilePath } from '@ionic-native/file-path/ngx';
-import { File } from '@ionic-native/file/ngx';
-
 const routes: Routes = [
   {
     path: '',
@@ -38,11 +34,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ImporterPage],
-  providers: [
-    FileChooser,
-    FilePath,
-    File,
-  ]
+  declarations: [ImporterPage]
 })
 export class ImporterPageModule {}

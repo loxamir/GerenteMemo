@@ -37,7 +37,7 @@ export class CashPage implements OnInit {
     @Input() _id: string;
     changes = {};
     currency_precision = 2;
-
+    user:any = {};
     constructor(
       public navCtrl: NavController,
       public modalCtrl: ModalController,
@@ -66,6 +66,10 @@ export class CashPage implements OnInit {
       this.events.unsubscribe('changed-cash-move');
       this.events.subscribe('changed-cash-move', (change)=>{
         if (!this.changes.hasOwnProperty(change.seq)){
+if (
+            change.doc.accountFrom_id == this._id
+            || change.doc.accountTo_id == this._id
+          ){
           console.log("changed-cash-move", change);
           this.cashService.handleChange(this.cashForm.value.moves, change);
           this.cashService.localHandleChangeData(
@@ -73,6 +77,7 @@ export class CashPage implements OnInit {
           this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
           this.events.publish('refresh-cash-list', change);
           this.changes[change.seq] = true;
+}
         }
       })
       this.events.subscribe('changed-close', (change)=>{
@@ -113,11 +118,16 @@ export class CashPage implements OnInit {
         code: new FormControl(''),
         // default: new FormControl(false),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
+      this.user = (await this.pouchdbService.getUser());
       if (this._id){
         this.cashService.getCash(this._id).then((data) => {
           // console.log("data", data);

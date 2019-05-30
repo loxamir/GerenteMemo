@@ -9,7 +9,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-// import { File } from '@ionic-native/file/ngx';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
@@ -60,6 +59,7 @@ import { ProductCategoryPageModule } from './product-category/product-category.m
 import { BrandPageModule } from './brand/brand.module';
 import { ContactPageModule } from './contact/contact.module';
 import { ProductPageModule } from './product/product.module';
+import { DiscountPageModule } from './discount/discount.module';
 
 import { CheckListPageModule } from './check-list/check-list.module';
 import { CheckPageModule } from './check/check.module';
@@ -125,6 +125,7 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     LoginPageModule,
     AgroTabsPageModule,
     ContactPageModule,
+    DiscountPageModule,
     CashMovePageModule,
     BrandListPageModule,
     ImageModalPageModule,

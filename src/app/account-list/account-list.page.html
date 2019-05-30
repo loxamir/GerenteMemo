@@ -51,7 +51,9 @@
           <!-- <ion-col no-padding size="2" class="item-icon"  align-self-center style="text-align: center;" (click)="gotoAccount(item)">
             <ion-icon  name="open"></ion-icon>
           </ion-col> -->
-          <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openAccount(item)">
+          <ion-col size="2" class="open-item-col"
+          *ngIf="select && user.admin"
+          (click)="openAccount(item)">
             <ion-icon name="open" class="open-item-arrow"></ion-icon>
           </ion-col>
         </ion-row>
@@ -70,7 +72,7 @@
 </ion-infinite-scroll>
 <ion-row style="height:15px;">
 </ion-row>
-<ion-fab vertical="bottom" horizontal="center" slot="fixed">
+<ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="user.admin">
     <ion-fab-button (click)="createAccount()">
         <ion-icon name="add">
         </ion-icon>

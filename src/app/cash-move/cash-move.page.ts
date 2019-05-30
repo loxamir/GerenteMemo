@@ -17,6 +17,7 @@ import { ConfigService } from '../config/config.service';
 import { CheckListPage } from '../check-list/check-list.page';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 
 @Component({
   selector: 'app-cash-move',
@@ -72,6 +73,7 @@ export class CashMovePage implements OnInit {
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public cashMoveService: CashMoveService,
+    public pouchdbService: PouchdbService,
     // public cashService: CashService,
     // public navParams: NavParams,
     public events: Events,
@@ -94,7 +96,7 @@ export class CashMovePage implements OnInit {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     var today = new Date().toISOString();
     setTimeout(() => {
       this.amount.setFocus();
@@ -102,7 +104,7 @@ export class CashMovePage implements OnInit {
     }, 200);
 
     this.cashMoveForm = this.formBuilder.group({
-      name: new FormControl(this.default_name, Validators.required),
+      name: new FormControl(this.default_name),
       amount: new FormControl(this.default_amount||'', Validators.required),
       date: new FormControl(today, Validators.required),
       dateDue: new FormControl(today, Validators.required),
@@ -135,6 +137,10 @@ export class CashMovePage implements OnInit {
       currency_amount: new FormControl(this.currency_amount||0),
       currency_residual: new FormControl(this.currency_residual||0),
       _id: new FormControl(''),
+      create_user: new FormControl(''),
+      create_time: new FormControl(''),
+      write_user: new FormControl(''),
+      write_time: new FormControl(''),
     });
     if (this.accountTo && (this.accountTo['_id'].split('.')[1]=='cash' || this.accountTo['_id'].split('.')[1]=='bank' || this.accountTo['_id'].split('.')[1]=='check')){
       // console.log("to cash");
@@ -147,6 +153,9 @@ export class CashMovePage implements OnInit {
     if (this.transfer){
       // console.log("from cash");
       this.transfer = true;
+      this.contact = await this.pouchdbService.getDoc('contact.myCompany');
+    } else {
+      this.contact = await this.pouchdbService.getDoc('contact.unknown');
     }
 
     if (this._id){
@@ -188,18 +197,19 @@ export class CashMovePage implements OnInit {
     }
   }
 
+  showSave(){
+    return (
+      this.cashMoveForm.dirty
+      && this.cashMoveForm.value.amount
+      && JSON.stringify(this.cashMoveForm.value.accountFrom) != '{}'
+      && JSON.stringify(this.cashMoveForm.value.accountTo) != '{}'
+    )
+  }
+
   async goNextStep() {
     if (this.cashMoveForm.value.state == 'DRAFT'){
       if (this.cashMoveForm.value.amount == ''){
         this.amount.setFocus();
-      }
-      else if (!this.transfer && Object.keys(this.cashMoveForm.value.contact).length === 0){
-        this.selectContact();
-        return;
-      }
-      else if (!this.cashMoveForm.value.name){
-        this.description.setFocus();
-        return;
       }
       else if (Object.keys(this.cashMoveForm.value.accountFrom).length === 0){
         this.selectAccountFrom();
@@ -207,6 +217,14 @@ export class CashMovePage implements OnInit {
       }
       else if (Object.keys(this.cashMoveForm.value.accountTo).length === 0){
         this.selectAccountTo();
+        return;
+      }
+      else if (!this.transfer && Object.keys(this.cashMoveForm.value.contact).length === 0){
+        this.selectContact();
+        return;
+      }
+      else if (!this.cashMoveForm.value.name){
+        this.description.setFocus();
         return;
       }
       else if (
@@ -269,6 +287,10 @@ export class CashMovePage implements OnInit {
     ]
   };
 
+  async saveCashMove(){
+    await this.buttonSave();
+  }
+
   buttonSave() {
     // var today = new Date().toISOString();
     // this.cashMoveForm.value.date = this.cashMoveForm.value.date;
@@ -277,26 +299,34 @@ export class CashMovePage implements OnInit {
     // } else {
     //   this.cashMoveForm.value.state = 'DRAFT';
     // }
+return new Promise(async resolve => {
     if (this._id){
       this.cashMoveService.updateCashMove(this.cashMoveForm.value);
       this.cashMoveForm.markAsPristine();
       if (this.select){
-        this.modalCtrl.dismiss()
+        this.modalCtrl.dismiss();
+resolve(true);
       } else {
         this.navCtrl.navigateBack('/cash-move-list');
+resolve(true);
       }
     } else {
       this.cashMoveService.createCashMove(this.cashMoveForm.value).then(doc => {
+this.cashMoveForm.value._id = doc['id'];
+          this._id = doc['id'];
         //console.log("the_doc", doc);
         if (this.select){
-          this.modalCtrl.dismiss()
+          this.modalCtrl.dismiss();
+resolve(true);
         } else {
-          this.cashMoveForm.value._id = doc['id'];
-          this.cashMoveForm.markAsPristine();
+          //this.cashMoveForm.value._id = doc['id'];
+          //this.cashMoveForm.markAsPristine();
           this.navCtrl.navigateBack('/cash-move-list');
+resolve(true);
         }
       });
     }
+})
   }
 
   confirmState(){
@@ -474,9 +504,9 @@ export class CashMovePage implements OnInit {
     if (this.cashMoveForm.value.amount==null){
       return true;
     }
-    else if (this.cashMoveForm.value.name==null){
-      return true;
-    }
+    // else if (this.cashMoveForm.value.name==null){
+    //   return true;
+    // }
     else if (Object.keys(this.cashMoveForm.value.contact).length==0){
     // else if (this.cashMoveForm.value.contact.toJSON()=='{}'){
       return true;

@@ -73,7 +73,7 @@ export class StockReportPage implements OnInit {
     public events: Events,
     public pouchdbService: PouchdbService,
   ) {
-    this.today = new Date().toISOString();
+    this.today = new Date();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.avoidAlertMessage = false;
@@ -202,7 +202,7 @@ export class StockReportPage implements OnInit {
               // }
             });
 
-            let products: any = await this.pouchdbService.getList(getList);
+            let products: any = await this.pouchdbService.getList(getList.slice(1, 1000));
             var doc_dict = {};
             products.forEach(row=>{
               doc_dict[row.id] = row.doc;
@@ -500,12 +500,11 @@ export class StockReportPage implements OnInit {
   }
 
   async ngOnInit() {
-    //var today = new Date().toISOString();
     this.reportStockForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
       name: new FormControl(''),
       dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.getFirstDateOfMonth()),
-      dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today),
+      dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today.toISOString()),
       total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),

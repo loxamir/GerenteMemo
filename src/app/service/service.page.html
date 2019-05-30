@@ -22,30 +22,16 @@
   </ion-toolbar>
 
 
-  <ion-row>
-    <ion-item
-    no-padding
-        *ngIf="!serviceForm.value.production"
-     class="summary-50">
-      <h4 class="field-label">{{'TOTAL' | translate}}</h4>
-      <h4 class="field-value" style="color:blue">$ {{serviceForm.value.total|number:'1.'+currency_precision}}</h4>
-    </ion-item>
+  <ion-row style="height:50px;">
+    <ion-col>
+      <h4 class="field-label-col">{{'TOTAL' | translate}}</h4>
+      <h4 class="field-value-col" style="color:blue">$ {{serviceForm.value.total|number:'1.'+currency_precision}}</h4>
+    </ion-col>
 
-    <ion-item
-    no-padding
-        *ngIf="serviceForm.value.production"
-     class="summary-100">
-      <h4 class="field-label">{{'TOTAL' | translate}}</h4>
-      <h4 class="field-value" style="color:blue">$ {{serviceForm.value.total|number:'1.'+currency_precision}}</h4>
-    </ion-item>
-
-    <ion-item
-    *ngIf="!serviceForm.value.production"
-    no-padding
-     class="summary-50">
-      <h4 class="field-label">{{'Cobrar' | translate}}</h4>
-      <h4 class="field-value" style="color:red">$ {{serviceForm.value.residual|number:'1.'+currency_precision}}</h4>
-    </ion-item>
+    <ion-col>
+      <h4 class="field-label-col">{{'Cobrar' | translate}}</h4>
+      <h4 class="field-value-col" style="color:red">$ {{serviceForm.value.residual|number:'1.'+currency_precision}}</h4>
+    </ion-col>
     <!-- <ion-item
     *ngIf="serviceForm.value.production"
     no-padding

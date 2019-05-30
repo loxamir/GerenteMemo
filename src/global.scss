@@ -65,6 +65,12 @@ ion-item {
   --inner-padding-end: 0px;
   --padding-start: 0px;
 }
+.field-many2one-edit {
+  background: white;
+  padding-top: 5px;
+  height: 50px;
+  border: 1px solid #a4c1f5;
+}
 .field-50 {
   width: 50%;
   --ion-background-color: #fff;
@@ -100,6 +106,22 @@ h4.field-value {
 }
 h4.field-value-bigger {
   font-size: 15px;
+  margin-top: 20px;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+}
+
+h4.field-label-col {
+  position: absolute;
+  margin-left: 5px;
+  font-size: 13px;
+  margin-top: 0px;
+  width: 100%;
+  text-align: left;
+}
+h4.field-value-col {
+  font-size: 18px;
   margin-top: 20px;
   position: absolute;
   width: 100%;
@@ -195,7 +217,7 @@ h4.field-value-bigger {
     margin-left: 10%;
 }
 .summary-50 {
-    width: 50%;
+    // width: 50%;
     // background-color: #fff;
     // border: 1px solid #ddd;
 }
@@ -645,4 +667,9 @@ h3.activity-name {
 // }
 ion-title.ios.title-ios.hydrated {
     padding-right: 0px;
+}
+
+.discount-modal {
+  --max-height: 350px;
+  --max-width: 350px;
 }

@@ -30,7 +30,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
   @ViewChild('cost') cost;
   @ViewChild('type') type;
   @ViewChild('stock') stock;
-  @ViewChild('#barcode') barcode;
+  // @ViewChild('barcode') barcodeField;
 
   @ViewChild('category') category;
   @ViewChild('brand') brand;
@@ -42,6 +42,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     theoreticalStock: number = 0;
     opened: boolean = false;
     select;
+    barcode = '';
 
     constructor(
       public navCtrl: NavController,
@@ -123,6 +124,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         unity: new FormControl(this.route.snapshot.paramMap.get('unity')||'un'),
         fixed: new FormControl(false),
         _id: new FormControl(''),
+        create_user: new FormControl(''),
+        create_time: new FormControl(''),
+        write_user: new FormControl(''),
+        write_time: new FormControl(''),
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
