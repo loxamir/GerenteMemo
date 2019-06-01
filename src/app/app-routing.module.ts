@@ -82,6 +82,8 @@ const routes: Routes = [
   { path: 'animal', loadChildren: './animal/animal.module#AnimalPageModule' },
   { path: 'area', loadChildren: './area/area.module#AreaPageModule' },
   { path: 'areas', loadChildren: './areas/areas.module#AreasPageModule' },
+  { path: 'person', loadChildren: './person/person.module#PersonPageModule' },
+  { path: 'persons', loadChildren: './persons/persons.module#PersonsPageModule' },
   { path: 'animals', loadChildren: './animals/animals.module#AnimalsPageModule' },
   { path: 'machine', loadChildren: './machine/machine.module#MachinePageModule' },
   { path: 'machines', loadChildren: './machines/machines.module#MachinesPageModule' },

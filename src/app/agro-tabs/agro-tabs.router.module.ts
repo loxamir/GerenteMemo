@@ -9,6 +9,15 @@ const routes: Routes = [
     component: AgroTabsPage,
     children: [
       {
+        path: 'person-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../persons/persons.module#PersonsPageModule'
+          }
+        ]
+      },
+      {
         path: 'area-list',
         children: [
           {

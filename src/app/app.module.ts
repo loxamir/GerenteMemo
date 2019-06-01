@@ -83,6 +83,8 @@ import { MachinePageModule } from './machine/machine.module';
 import { CropPageModule } from './crop/crop.module';
 import { AnimalsPageModule } from './animals/animals.module';
 import { AreasPageModule } from './areas/areas.module';
+import { PersonsPageModule } from './persons/persons.module';
+import { PersonPageModule } from './person/person.module';
 import { MachinesPageModule } from './machines/machines.module';
 import { CropsPageModule } from './crops/crops.module';
 import { InputPageModule } from './input/input.module';
@@ -140,6 +142,8 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     CropPageModule,
     AnimalsPageModule,
     AreasPageModule,
+    PersonsPageModule,
+    PersonPageModule,
     MachinesPageModule,
     CropsPageModule,
     ProductListPageModule,
