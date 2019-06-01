@@ -56,11 +56,11 @@
     <ion-list no-lines class="rotate180" style="overflow: auto;display: flex;flex-direction: column-reverse;">
       <ion-item-sliding class="list-item" *ngFor="let item of personForm.value.moves">
         <ion-item no-padding (click)="openItem(item)" *ngIf="!(item._attachments && item._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
-          <ion-card class="memo-card">
+          <ion-card class="area-card">
             <ion-row no-padding>
-              <!-- <ion-thumbnail style="--border-radius:10px;">
-                <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
-              </ion-thumbnail> -->
+              <ion-thumbnail style="--border-radius:10px;">
+                <ion-img [src]="'./assets/icons/'+item._id.split('.')[0]+'.png'"></ion-img>
+              </ion-thumbnail>
               <ion-col>
                 <ion-row>
                   <ion-col size="8.5" no-padding>
@@ -69,7 +69,7 @@
                     </h3>
                     <div [innerHTML]="item.summary"></div>
                     <h1 class="activity-note">
-                      {{item._id.split(".")[0]}}
+                      <b>Valor:</b> {{item.amount||item.total|number:'1.0'}}
                     </h1>
                     <h1 class="activity-note">
                       {{item.note}}
@@ -149,45 +149,68 @@
       </div>
     </ion-row>
     <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-      <ion-col size="4" (click)="addActivity('activity.plant')">
-        <ion-img [src]="'./assets/icons/activity.plant.png'" class="activity-menu"></ion-img>
+      <ion-col size="4" (click)="createSale()">
+        <ion-img [src]="'./assets/icons/sale.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Plantio
+          Venta
         </h1>
       </ion-col>
-      <ion-col size="4" (click)="addActivity('activity.spray')">
-        <ion-img [src]="'./assets/icons/activity.spray.png'" class="activity-menu"></ion-img>
+      <ion-col size="4" (click)="createPurchase()">
+        <ion-img [src]="'./assets/icons/purchase.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Pulverización
+          Compra
         </h1>
       </ion-col>
-      <ion-col size="4" (click)="addActivity('activity.work')">
-        <ion-img [src]="'./assets/icons/activity.work.png'" class="activity-menu"></ion-img>
+      <ion-col size="4" (click)="createService()">
+        <ion-img [src]="'./assets/icons/service.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Otro Servicio
+          Servicio
         </h1>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-      <ion-col size="4" (click)="addActivity('activity.harvest')">
-        <ion-img [src]="'./assets/icons/activity.harvest.png'" class="activity-menu"></ion-img>
+      <ion-col size="4" (click)="createReception()">
+        <ion-img [src]="'./assets/icons/receipt.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Cosecha
+          Cobro
         </h1>
       </ion-col>
-      <ion-col size="4" (click)="addActivity('activity.rain')">
-        <ion-img [src]="'./assets/icons/activity.rain.png'" class="activity-menu"></ion-img>
+      <ion-col size="4" (click)="createPayment()">
+        <ion-img [src]="'./assets/icons/stock-move.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Lluvia
+          Pago
         </h1>
       </ion-col>
-      <ion-col size="4" (click)="addActivity('activity.analisis')">
-        <ion-img [src]="'./assets/icons/activity.analisis.png'" class="activity-menu"></ion-img>
+      <ion-col size="4" (click)="createCashMove()">
+        <ion-img [src]="'./assets/icons/cash-move.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Analisis
+          Registro Financiero
         </h1>
       </ion-col>
     </ion-row>
+
+    <!-- <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
+
+      <ion-col size="4" (click)="addActivity('activity.analisis')">
+        <ion-img [src]="'./assets/icons/cash-move.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Facturación
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.rain')">
+        <ion-img [src]="'./assets/icons/stock-move.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Recepciones
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.harvest')">
+        <ion-img [src]="'./assets/icons/receipt.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Entregas
+        </h1>
+      </ion-col>
+
+    </ion-row> -->
   </ion-fab>
 
 </ion-content>

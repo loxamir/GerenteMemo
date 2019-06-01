@@ -106,6 +106,7 @@ export class ServicePage implements OnInit {
     // ignore_travels: boolean = false;
     serviceNote;
     currency_precision = 2;
+    contact;
 
     constructor(
       public socialSharing: SocialSharing,
@@ -137,12 +138,13 @@ export class ServicePage implements OnInit {
       this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
       this.avoidAlertMessage = false;
+      this.contact = this.route.snapshot.paramMap.get('contact');
     }
 
     async ngOnInit() {
       //var today = new Date().toISOString();
       this.serviceForm = this.formBuilder.group({
-        contact: new FormControl('', Validators.required),
+        contact: new FormControl(this.contact||{}, Validators.required),
         name: new FormControl(''),
         contact_name: new FormControl(''),
         code: new FormControl(''),

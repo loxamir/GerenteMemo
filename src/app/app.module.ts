@@ -53,7 +53,11 @@ import { WarehouseListPageModule } from './warehouse-list/warehouse-list.module'
 import { AccountListPageModule } from './account-list/account-list.module';
 import { CashListPageModule } from './cash-list/cash-list.module';
 import { CashMovePageModule } from './cash-move/cash-move.module';
+import { StockMovePageModule } from './stock-move/stock-move.module';
 import { LoginPageModule } from './login/login.module';
+import { SalePageModule } from './sale/sale.module';
+
+import { ServicePageModule } from './service/service.module';
 
 import { ProductCategoryPageModule } from './product-category/product-category.module';
 import { BrandPageModule } from './brand/brand.module';
@@ -68,6 +72,7 @@ import { ServiceWorkPageModule } from './service/work/work.module';
 import { ProductionWorkPageModule } from './production/work/work.module';
 import { ServiceTravelPageModule } from './service/travel/travel.module';
 import { WorkPageModule } from './work/work.module';
+import { PurchasePageModule } from './purchase/purchase.module';
 import { WorksPageModule } from './works/works.module';
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
@@ -90,6 +95,7 @@ import { CropsPageModule } from './crops/crops.module';
 import { InputPageModule } from './input/input.module';
 import { InputsPageModule } from './inputs/inputs.module';
 import { FilterPageModule } from './filter/filter.module';
+import { PlannedListPageModule } from './planned-list/planned-list.module';
 import { AgroTabsPageModule } from './agro-tabs/agro-tabs.module';
 import { environment } from '../environments/environment';
 // import { AuthGuardService } from './services/auth-guard.service';
@@ -129,6 +135,10 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     ContactPageModule,
     DiscountPageModule,
     CashMovePageModule,
+    StockMovePageModule,
+    SalePageModule,
+    ServicePageModule,
+    PlannedListPageModule,
     BrandListPageModule,
     ImageModalPageModule,
     ProductCategoryListPageModule,
@@ -164,6 +174,7 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     CashListPageModule,
     WorkPageModule,
     WorksPageModule,
+    PurchasePageModule,
     UserPageModule,
     CheckPageModule,
     InvoiceConfigPageModule,

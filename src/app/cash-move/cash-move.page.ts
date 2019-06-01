@@ -39,7 +39,7 @@ export class CashMovePage implements OnInit {
 @Input() accountFrom;
 @Input() accountTo;
 @Input() contact;
-@Input() contact_id;
+// @Input() contact_id;
 @Input() signal;
 @Input() check;
 @Input() currency;
@@ -86,6 +86,7 @@ export class CashMovePage implements OnInit {
     this.translate.use('es');
     this._id =  this.route.snapshot.paramMap.get('_id');
     this.select =  this.route.snapshot.paramMap.get('select');
+    this.contact =  this.route.snapshot.paramMap.get('contact');
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
     this.transfer = this.route.snapshot.paramMap.get('transfer') == 'true';
@@ -117,7 +118,7 @@ export class CashMovePage implements OnInit {
       accountTo: new FormControl({}),
       accountTo_id: new FormControl(this.accountTo_id),
       contact: new FormControl(this.contact||{}),
-      contact_id: new FormControl(this.contact_id),
+      // contact_id: new FormControl(this.contact_id),
       // project: new FormControl(this.project||{}),
       // project_name: new FormControl(this.project_name||''),
       signal: new FormControl(this.signal||'-'),
@@ -150,11 +151,12 @@ export class CashMovePage implements OnInit {
       // console.log("from cash");
       this.from_cash = true;
     }
+
     if (this.transfer){
       // console.log("from cash");
       this.transfer = true;
       this.contact = await this.pouchdbService.getDoc('contact.myCompany');
-    } else {
+    } else if (JSON.stringify(this.contact) == '{}'){
       this.contact = await this.pouchdbService.getDoc('contact.unknown');
     }
 
@@ -186,7 +188,7 @@ export class CashMovePage implements OnInit {
             accountTo: accountTo,
             accountTo_id: accountTo['_id'],
             contact: contact,
-            contact_id: contact['_id'],
+            // contact_id: contact['_id'],
           });
         // });
         // this.cashService.getDefaultCash().then(default_cash => {
@@ -463,7 +465,7 @@ resolve(true);
        this.events.subscribe('select-contact', (data) => {
          this.cashMoveForm.patchValue({
            contact: data,
-           contact_id: data._id,
+           // contact_id: data._id,
          });
          this.cashMoveForm.markAsDirty();
          profileModal.dismiss();

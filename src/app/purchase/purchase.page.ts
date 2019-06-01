@@ -129,6 +129,7 @@ export class PurchasePage implements OnInit {
     avoidAlertMessage: boolean;
     currency_precision = 2;
     languages: Array<LanguageModel>;
+    contact;
 
     constructor(
       public navCtrl: NavController,
@@ -161,6 +162,7 @@ export class PurchasePage implements OnInit {
       this.translate.use('es');
       this._id = this.route.snapshot.paramMap.get('_id');
       this.avoidAlertMessage = false;
+      this.contact = this.route.snapshot.paramMap.get('contact');
     }
 
     async createBarcodeProduct(barcode){
@@ -209,7 +211,7 @@ export class PurchasePage implements OnInit {
     async ngOnInit() {
       //var today = new Date().toISOString();
       this.purchaseForm = this.formBuilder.group({
-        contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
+        contact: new FormControl(this.contact||{}, Validators.required),
         contact_name: new FormControl(this.route.snapshot.paramMap.get('contact_name')||''),
 
         // project: new FormControl(this.route.snapshot.paramMap.get('project')||{}),

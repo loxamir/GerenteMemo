@@ -32,8 +32,13 @@ import { Storage } from '@ionic/storage';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { ImageModalPage } from '../image-modal/image-modal.page';
 import { WorksService } from '../works/works.service';
-
-const STORAGE_KEY = 'my_images';
+import { PurchasePage } from '../purchase/purchase.page';
+import { CashMovePage } from '../cash-move/cash-move.page';
+import { StockMovePage } from '../stock-move/stock-move.page';
+import { SalePage } from '../sale/sale.page';
+import { ReceiptPage } from '../receipt/receipt.page';
+import { ServicePage } from '../service/service.page';
+import { PlannedListPage } from '../planned-list/planned-list.page';
 
 @Component({
   selector: 'app-person',
@@ -92,6 +97,21 @@ export class PersonPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
+    this.events.subscribe('changed-sale', (change) => {
+      this.personService.handleChange(this.personForm.value.moves, change);
+    })
+    this.events.subscribe('changed-purchase', (change) => {
+      this.personService.handleChange(this.personForm.value.moves, change);
+    })
+    this.events.subscribe('changed-service', (change) => {
+      this.personService.handleChange(this.personForm.value.moves, change);
+    })
+    this.events.subscribe('changed-cash-move', (change) => {
+      this.personService.handleChange(this.personForm.value.moves, change);
+    })
+    this.events.subscribe('changed-receipt', (change) => {
+      this.personService.handleChange(this.personForm.value.moves, change);
+    })
     this.events.subscribe('changed-work', (change) => {
       this.personService.handleChange(this.personForm.value.moves, change);
     })
@@ -471,8 +491,21 @@ export class PersonPage implements OnInit {
       item.date = data.date;
       this.events.unsubscribe('open-person-move');
     });
+    let component:any = WorkPage;
+    let docType = item._id.split(".")[0];
+    if (docType == 'purchase'){
+      component = PurchasePage;
+    } else if (docType == 'cash-move'){
+      component = CashMovePage;
+    } else if (docType == 'stock-move'){
+      component = StockMovePage;
+    } else if (docType == 'sale'){
+      component = SalePage;
+    } else if (docType == 'receipt'){
+      component = ReceiptPage;
+    }
     let profileModal = await this.modalCtrl.create({
-      component: WorkPage,
+      component: component,
       componentProps: {
         "_id": item._id,
         "select": true,
@@ -496,6 +529,99 @@ export class PersonPage implements OnInit {
     });
     profileModal.present();
   }
+
+  async createSale() {
+    let componentProps = {
+      "contact": this.personForm.value,
+      "select": true,
+    }
+    // if (activity_id) {
+    //   componentProps['activity'] = await this.pouchdbService.getDoc(activity_id);
+    //   componentProps['note'] = this.personForm.value.note;
+    // }
+    // componentProps['contact'] = await this.pouchdbService.getDoc(this._id);
+    let profileModal = await this.modalCtrl.create({
+      component: SalePage,
+      componentProps: componentProps
+    });
+    profileModal.present();
+  }
+
+  async createPurchase() {
+    let componentProps = {
+      "contact": this.personForm.value,
+      "select": true,
+    }
+    // if (activity_id) {
+    //   componentProps['activity'] = await this.pouchdbService.getDoc(activity_id);
+    //   componentProps['note'] = this.personForm.value.note;
+    // }
+    // componentProps['contact'] = await this.pouchdbService.getDoc(this._id);
+    let profileModal = await this.modalCtrl.create({
+      component: PurchasePage,
+      componentProps: componentProps
+    });
+    profileModal.present();
+  }
+
+  async createService() {
+    let componentProps = {
+      "contact": this.personForm.value,
+      "select": true,
+    }
+    // if (activity_id) {
+    //   componentProps['activity'] = await this.pouchdbService.getDoc(activity_id);
+    //   componentProps['note'] = this.personForm.value.note;
+    // }
+    // componentProps['contact'] = await this.pouchdbService.getDoc(this._id);
+    let profileModal = await this.modalCtrl.create({
+      component: ServicePage,
+      componentProps: componentProps
+    });
+    profileModal.present();
+  }
+
+  async createPayment() {
+    let componentProps = {
+      "contact": this.personForm.value,
+      "select": true,
+      "signal": "-",
+      "contact_id": this.personForm.value._id,
+    }
+    let profileModal = await this.modalCtrl.create({
+      component: PlannedListPage,
+      componentProps: componentProps
+    });
+    profileModal.present();
+  }
+
+  async createReception() {
+    let componentProps = {
+      "contact": this.personForm.value,
+      "select": true,
+      "signal": "+",
+      "contact_id": this.personForm.value._id,
+    }
+    let profileModal = await this.modalCtrl.create({
+      component: PlannedListPage,
+      componentProps: componentProps
+    });
+    profileModal.present();
+  }
+
+  async createCashMove() {
+    let componentProps = {
+      "contact": this.personForm.value,
+      "select": true,
+    }
+    let profileModal = await this.modalCtrl.create({
+      component: CashMovePage,
+      componentProps: componentProps
+    });
+    profileModal.present();
+  }
+
+
 
   selectCrop() {
     return new Promise(async resolve => {
