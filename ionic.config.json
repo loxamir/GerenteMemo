@@ -1,7 +1,8 @@
 {
   "name": "Sistema Memo",
   "integrations": {
-    "cordova": {}
+    "cordova": {},
+    "capacitor": {}
   },
   "type": "angular"
 }
