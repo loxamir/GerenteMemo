@@ -8,10 +8,9 @@ import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { CheckService } from './check.service';
+import { CheckService } from './check.service';
 import { ContactListPage } from '../contact-list/contact-list.page';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
-import { ReceiptListPage } from '../receipt-list/receipt-list.page';
 import { CashListPage } from '../cash-list/cash-list.page';
 
 
@@ -30,6 +29,7 @@ export class CheckPage implements OnInit {
     select;
     @Input() contact;
     @Input() amount;
+    @Input() account;
 
     languages: Array<LanguageModel>;
 
@@ -39,18 +39,18 @@ export class CheckPage implements OnInit {
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
-      // public checkService: CheckService,
+      public checkService: CheckService,
       public alertCtrl: AlertController,
       public route: ActivatedRoute,
       public formBuilder: FormBuilder,
       public events: Events,
       public pouchdbService: PouchdbService,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       this.contact = this.route.snapshot.paramMap.get('contact');
+      this.account = this.route.snapshot.paramMap.get('account');
       this.amount = this.route.snapshot.paramMap.get('amount');
       this.translate.setDefaultLang('es');
       this.translate.use('es');
@@ -72,10 +72,10 @@ export class CheckPage implements OnInit {
         emision_date: new FormControl(''),
         maturity_date: new FormControl(''),
         contact: new FormControl(this.contact||{}),
+        account: new FormControl(this.account||{}),
         state: new FormControl('NEW'),
         currency: new FormControl(this.route.snapshot.paramMap.get('currency')||{}),
         note: new FormControl(''),
-        receipt: new FormControl(this.route.snapshot.paramMap.get('receipt')||{}),
         _id: new FormControl(''),
         create_user: new FormControl(''),
         create_time: new FormControl(''),
@@ -84,7 +84,7 @@ export class CheckPage implements OnInit {
       });
       //this.loading.present();
       if (this._id){
-        this.getCheck(this._id).then((data) => {
+        this.checkService.getCheck(this._id).then((data) => {
           this.checkForm.patchValue(data);
           //this.loading.dismiss();
         });
@@ -112,15 +112,22 @@ export class CheckPage implements OnInit {
       }
     }
 
+    changeCheck(){
+      this.checkForm.patchValue({
+        state: "CHANGED",
+      });
+      this.buttonSave();
+    }
+
     buttonSave() {
       if (this._id){
-        this.updateCheck(this.checkForm.value);
+        this.checkService.updateCheck(this.checkForm.value);
         // this.navCtrl.navigateBack().then(() => {
           this.events.publish('open-check', this.checkForm.value);
           this.modalCtrl.dismiss();
         // });
       } else {
-        this.createCheck(this.checkForm.value).then((doc: any) => {
+        this.checkService.createCheck(this.checkForm.value).then((doc: any) => {
           this.checkForm.patchValue({
             _id: doc.check._id,
           });
@@ -203,36 +210,6 @@ export class CheckPage implements OnInit {
       });
     }
 
-    selectReceipt() {
-      return new Promise(async resolve => {
-        this.events.subscribe('select-receipt', (data) => {
-          this.checkForm.patchValue({
-            receipt: data,
-          });
-          this.checkForm.markAsDirty();
-          this.events.unsubscribe('select-receipt');
-          resolve(true);
-        })
-        let profileModal = await this.modalCtrl.create({
-          component: ReceiptListPage,
-          componentProps: {
-            "select": true
-          }
-        });
-        profileModal.present();
-      });
-    }
-
-    setLanguage(lang: LanguageModel){
-      let language_to_set = this.translate.getDefaultLang();
-
-      if(lang){
-        language_to_set = lang.code;
-      }
-      this.translate.setDefaultLang(language_to_set);
-      this.translate.use(language_to_set);
-    }
-
     validation_messages = {
       'name': [
         { type: 'required', message: 'Name is required.' }
@@ -243,55 +220,7 @@ export class CheckPage implements OnInit {
       //console.log(values);
     }
 
-    getCheck(doc_id): Promise<any> {
-      return new Promise((resolve, reject)=>{
-        return this.pouchdbService.getDoc(doc_id).then(pouchData=>{
-          this.pouchdbService.getDoc(pouchData['bank_id']).then(bank => {
-            pouchData['bank'] = bank;
-            resolve(pouchData);
-          });
-        });
-      });
-    }
-
-
-    createCheck(check){
-      return new Promise((resolve, reject)=>{
-        check.docType = 'check';
-        if (check.bank){
-          check.bank_id = check.bank._id;
-        }
-        delete check.bank;
-
-        if (check.code != ''){
-          this.pouchdbService.createDoc(check).then(doc => {
-            resolve({doc: doc, check: check});
-          });
-        } else {
-          // this.configService.getSequence('check').then((code) => {
-          //   check['code'] = code;
-            this.pouchdbService.createDoc(check).then(doc => {
-              resolve({doc: doc, check: check});
-            });
-          // });
-        }
-      });
-
-      // return this.pouchdbService.createDoc(check);
-    }
-
-    updateCheck(check){
-      check.docType = 'check';
-      if (check.bank){
-        check.bank_id = check.bank._id;
-      }
-      delete check.bank;
-      return this.pouchdbService.updateDoc(check);
-    }
-
-
       showNextButton(){
-        // console.log("stock",this.checkForm.value.stock);
         if (this.checkForm.value.amount==null){
           return true;
         }
@@ -299,35 +228,8 @@ export class CheckPage implements OnInit {
           return true;
         }
         else if (Object.keys(this.checkForm.value.contact).length==0){
-        // else if (this.checkForm.value.contact.toJSON()=='{}'){
           return true;
         }
-        // else if (Object.keys(this.checkForm.value.accountTo).length==0){
-        //   return true;
-        // }
-        // // else if (this.checkForm.value.accountFrom.toJSON()=='{}'){
-        // else if (Object.keys(this.checkForm.value.accountFrom).length==0){
-        //   return true;
-        // }
-        // else if (
-        //   this.checkForm.value.is_check==true
-        //   && Object.keys(this.checkForm.value.check).length==0
-        // ){
-        //   return true;
-        // }
-        // else if (
-        //   this.checkForm.value.is_other_currency==true
-        //   && Object.keys(this.checkForm.value.currency).length==0
-        // ){
-        //   return true;
-        // }
-        // else if (
-        //   this.checkForm.value.is_other_currency==true
-        //   && Object.keys(this.checkForm.value.currency).length!=0
-        //   && this.checkForm.value.currency_amount===0
-        // ){
-        //   return true;
-        // }
         else {
           return false;
         }
@@ -389,57 +291,6 @@ export class CheckPage implements OnInit {
           else if (Object.keys(this.checkForm.value.contact).length === 0){
             this.selectContact();
             return;
-          }
-
-          // else if (Object.keys(this.checkForm.value.accountFrom).length === 0){
-          //   this.selectAccountFrom();
-          //   return;
-          // }
-          // else if (Object.keys(this.checkForm.value.accountTo).length === 0){
-          //   this.selectAccountTo();
-          //   return;
-          // }
-          // else if (
-          //   this.checkForm.value.is_check==true
-          //   && Object.keys(this.checkForm.value.check).length==0
-          // ){
-          //   this.selectCheck();
-          // }
-          // else if (
-          //   this.checkForm.value.is_other_currency==true
-          //   && Object.keys(this.checkForm.value.currency).length==0
-          // ){
-          //   this.selectCurrency();
-          // }
-          // else if (
-          //   this.checkForm.value.is_other_currency==true
-          //   && Object.keys(this.checkForm.value.currency).length!=0
-          //   && this.checkForm.value.currency_amount===0
-          // ){
-          //   this.currency_amount.setFocus();
-          // }
-
-          else {
-            // TODO: Just use this for bank destination moves
-            // let prompt = await this.alertCtrl.create({
-            //   header: 'Confirmar',
-            //   message: 'Estas seguro que deseas confirmar el movimiento?',
-            //   buttons: [
-            //     {
-            //       text: 'No',
-            //       handler: data => {
-            //       }
-            //     },
-            //     {
-            //       text: 'Si',
-            //       handler: data => {
-            //         // this.addTravel();
-            //         this.confirmCashMove();
-            //       }
-            //     }
-            //   ]
-            // });
-            // prompt.present();
           }
         }
 

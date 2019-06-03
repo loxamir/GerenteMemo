@@ -24,7 +24,7 @@ import { ReceiptPage } from '../receipt/receipt.page';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 import { ServicePopover } from './service.popover';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import * as html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-service',

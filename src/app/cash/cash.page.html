@@ -41,15 +41,80 @@
 
 <ion-segment formControlName="section" class="cash-segment" *ngIf="cashForm.value.type == 'bank'">
   <ion-segment-button value="moves">
-    Confirmado
+    Extrato
   </ion-segment-button>
-  <ion-segment-button value="waiting">
+  <ion-segment-button value="checks">
+    Cheques
+  </ion-segment-button>
+  <!-- <ion-segment-button value="waiting">
     En Espera
+  </ion-segment-button> -->
+</ion-segment>
+
+<ion-segment formControlName="section" class="cash-segment" *ngIf="cashForm.value.type == 'check'">
+  <ion-segment-button value="moves">
+    Extrato
+  </ion-segment-button>
+  <ion-segment-button value="checks">
+    Cheques
   </ion-segment-button>
 </ion-segment>
 
 
 <div [ngSwitch]="cashForm.value.section" class="forms-wrapper">
+  <div *ngSwitchCase="'checks'" class="post-example-view">
+    <ion-list no-lines>
+      <ion-item-sliding class="list-item" *ngFor="let item of cashForm.value.checks && cashForm.value.checks.sort(this.formatService.compare) || []">
+      <ion-item no-padding (click)="openCheck(item)" style="margin-bottom: 0px; margin-top:0px;">
+        <ion-card class="list-card" style="border-radius: 5px;">
+          <ion-row no-padding class="content-row one-line">
+             <ion-col no-padding>
+               <h3 class="item-title"><b>{{ item.doc.name }}</b></h3>
+             </ion-col>
+           </ion-row>
+     <ion-row no-padding class="content-row one-line">
+        <ion-col no-padding width-25 class="schedule-date">
+          <h3 class="schedule-month">{{item.doc.maturity_date|date: 'dd/MM/yyyy'}}</h3>
+          <h4 class="schedule-time">{{item.doc.maturity_date|date: 'HH:mm:ss'}}</h4>
+        </ion-col>
+        <ion-col no-padding width-35>
+          <ion-row no-padding>
+            <ion-col class="item-content" style="white-space: normal;">
+              {{item.doc.owner_name}}
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+          <h2 class="list-big-number" style="color: green;">$ {{item.doc.amount| number:'1.'+currency_precision}}</h2>
+          <!-- <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.doc.amount| number:'1.'+currency_precision}}</h2> -->
+        </ion-col>
+      </ion-row>
+      <!-- <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
+        <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+          {{ item.accountFrom_name | translate}}
+        </ion-col>
+        <ion-col no-padding width-10 class="item-icon">
+          <ion-icon name="arrow-forward"></ion-icon>
+        </ion-col>
+        <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+          {{ item.accountTo_name | translate}}
+        </ion-col>
+      </ion-row> -->
+
+      <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
+        <ion-col no-padding style="text-align: center;border-radius: 4px;">
+          {{ item.state}}
+        </ion-col>
+      </ion-row>
+      </ion-card>
+    </ion-item>
+        <ion-item-options>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+<ion-row style="height:15px;">
+</ion-row>
+  </div>
   <div *ngSwitchCase="'moves'" class="post-example-view">
     <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="cashForm.value.moves.length">
       Lanzamientos desde ultimo cierre

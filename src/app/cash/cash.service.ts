@@ -35,12 +35,15 @@ export class CashService {
           }
         })
         promise_ids.push(this.pouchdbService.getDoc(doc_id));
-        Promise.all(promise_ids).then(cashMoves => {
+        Promise.all(promise_ids).then(async cashMoves => {
           let cash = Object.assign({}, cashMoves[cashMoves.length-1]);
           cash.moves = [];
           cash.balance = balance[0] && balance[0].value || 0;
           cash.account = cashMoves[cashMoves.length-1];
           cash.waiting = [];
+          let checks = await this.pouchdbService.getView('Informes/Cheques', 5, [doc_id], [doc_id+"z"], false, true, undefined, undefined, true);
+          console.log("checks", checks)
+          cash.checks = checks || [];
           for(let i=0;i<pts.length;i++){
             if (cashMoves[i].state == 'WAITING'){
               cash.waiting.unshift(cashMoves[i]);
@@ -184,6 +187,41 @@ export class CashService {
       if (change.doc.close_id){
         console.log("changed with close_id");
         list.splice(changedIndex, 1);
+      }
+  }
+
+  localHandleCheckChange(checks, change){
+    console.log("lslolo", change);
+    let changedDoc = null;
+    let changedState = false;
+    let changedIndex = null;
+      let list = checks;
+      list.forEach((doc, index) => {
+        if(doc.doc._id === change.id){
+          changedDoc = doc;
+          changedIndex = index;
+          if (doc.state == 'WAITING' && change.doc.state == 'DONE'){
+            // To use when deposit the check
+            changedState = true;
+          }
+        }
+      });
+      //A document was deleted
+      if(change.deleted){
+        list.splice(changedIndex, 1);
+      } else if(changedState){
+        list.splice(changedIndex, 1);
+        changedState = false;
+      }
+      else {
+        //A document was updated
+        if(changedDoc){
+          list[changedIndex] = change;
+        }
+        //A document was added
+        else {
+          list.unshift(change);
+        }
       }
   }
 

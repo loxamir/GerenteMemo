@@ -8,8 +8,6 @@ import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
 import { CashService } from './cash.service';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { CashMoveService } from '../cash-move/cash-move.service';
@@ -20,6 +18,8 @@ import { FormatService } from "../services/format.service";
 import { ConfigService } from '../config/config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountPage } from '../account/account.page';
+
+import { CheckPage } from '../check/check.page';
 
 import { ClosePage } from './close/close.page';
 
@@ -97,6 +97,23 @@ export class CashPage implements OnInit {
         //   console.log("changed with close_id");
         //   list.splice(changedIndex, 1);
         // }
+      })
+
+      this.events.subscribe('changed-check', (change)=>{
+        if (!this.changes.hasOwnProperty(change.seq)){
+          console.log("changed-check", change);
+          if (
+            change.doc.account_id == this._id
+            || change.doc.account_id == this._id
+          ){
+            this.cashService.localHandleCheckChange(this.cashForm.value.checks, change);
+            // this.cashService.localHandleChangeData(
+            //   this.cashForm.value.moves, this.cashForm.value.waiting, change);
+            // this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
+            this.events.publish('refresh-cash-list', change);
+            this.changes[change.seq] = true;
+          }
+        }
       })
     }
 
@@ -274,17 +291,34 @@ export class CashPage implements OnInit {
       });
       profileModal.present();
 
-      this.events.subscribe('open-cash-move', (data) => {
-        //console.log("Payment", data);
-        item.amount = data.amount;
-        item.date = data.date;
-        this.recomputeValues();
-        this.events.unsubscribe('open-cash-move');
-      });
+      // this.events.subscribe('open-cash-move', (data) => {
+      //   //console.log("Payment", data);
+      //   item.amount = data.amount;
+      //   item.date = data.date;
+      //   this.recomputeValues();
+      //   this.events.unsubscribe('open-cash-move');
+      // });
       //console.log("item", item);
       // this.navCtrl.navigateForward(['/cash-move', {
       //   "_id": item._id,
       // }]);
+    }
+
+    async openCheck(item) {
+      let profileModal = await this.modalCtrl.create({
+        component: CheckPage,
+        componentProps: {
+          "select": true,
+          "_id": item.doc._id,
+        }
+      });
+      profileModal.present();
+      // this.events.subscribe('open-cash-move', (data) => {
+      //   // item.amount = data.amount;
+      //   // item.date = data.date;
+      //   // this.recomputeValues();
+      //   this.events.unsubscribe('open-cash-move');
+      // });
     }
 
     recomputeValues() {

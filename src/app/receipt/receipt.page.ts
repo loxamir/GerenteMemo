@@ -996,6 +996,7 @@ export class ReceiptPage implements OnInit {
           } else {
             check.state = 'DELIVERED';
           }
+          check.account_id = this.receiptForm.value.cash_paid._id;
           promise_ids2.push(this.pouchdbService.updateDoc(check));
         }
 

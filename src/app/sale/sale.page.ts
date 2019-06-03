@@ -36,7 +36,7 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
 // declare var cordova:any;
 // import * as jsPDF from 'jspdf';
-import * as html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas';
 import { DiscountPage } from '../discount/discount.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
 
