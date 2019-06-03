@@ -138,12 +138,12 @@
       </ion-datetime>
   </ion-item>
 
-  <ion-item
+  <!-- <ion-item
   no-padding
   class="field-50">
   <ion-label>{{'Es Cheque' | translate}}</ion-label>
   <ion-toggle formControlName="is_check"></ion-toggle>
-</ion-item>
+</ion-item> -->
 
 <!-- <ion-item
 no-padding
@@ -157,29 +157,10 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
   <ion-item
    no-padding
    (click)="selectCheck()"
-   *ngIf="cashMoveForm.value.is_check"
    class="field-100">
     <h4 class="field-label">{{'Cheque' | translate }}</h4>
     <h4 class="field-value">{{cashMoveForm.value.check && cashMoveForm.value.check.name || 'Selecionar'}}</h4>
   </ion-item>
-  <!-- <ion-item
-   no-padding
-   *ngIf="cashMoveForm.value.is_other_currency"
-   (click)="selectCurrency()"
-   class="field-50">
-   <div class="field-many2one">
-     <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-     <h4 class="field-value">{{cashMoveForm.value.currency && cashMoveForm.value.currency.name || 'Selecionar'}}</h4>
-   </div>
-  </ion-item>
-  <ion-item
-   no-padding
-   *ngIf="cashMoveForm.value.is_other_currency"
-   class="field-50">
-    <ion-label position="floating" style="font-size:14px">{{'CURRENCY_AMOUNT' | translate}}</ion-label>
-    <ion-input #currency_amount type="number"
-    formControlName="currency_amount"></ion-input>
-  </ion-item> -->
     </ion-row>
     <ion-button (click)="printAccountText()" color="success">
       <ion-icon name="print"> </ion-icon>

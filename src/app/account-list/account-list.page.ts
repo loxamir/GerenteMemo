@@ -123,13 +123,14 @@ export class AccountListPage implements OnInit {
     });
   }
 
-  selectAccount(accounts) {
+  selectAccount(account) {
     if (this.select){
       // this.navCtrl.navigateBack().then(() => {
-        this.events.publish('select-account', accounts);
+        this.events.publish('select-account', account);
+        this.modalCtrl.dismiss();
       // });
     } else {
-      this.openAccount(accounts);
+      this.openAccount(account);
     }
 
     this.events.subscribe('open-account', (data) => {

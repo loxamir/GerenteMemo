@@ -76,6 +76,10 @@
           <h4 class="field-label">{{'CURRENCY' | translate}}</h4>
           <h4 class="field-value">{{checkForm.value.currency && checkForm.value.currency.name || 'Selecionar'}}</h4>
         </ion-item>
+        <ion-item no-padding (click)="selectAccount()" class="field-100">
+          <h4 class="field-label">{{'ACCOUNT' | translate}}</h4>
+          <h4 class="field-value">{{checkForm.value.account && checkForm.value.account.name || 'Selecionar'}}</h4>
+        </ion-item>
     </ion-row>
       <ion-item class="field-100">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
@@ -83,10 +87,10 @@
       </ion-item>
 
     </section>
-    <ion-button (click)="changeCheck()" color="success">
+    <!-- <ion-button (click)="changeCheck()" color="success">
       <ion-icon name="print"> </ion-icon>
       Cheque Compensado
-    </ion-button>
+    </ion-button> -->
   </form>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">

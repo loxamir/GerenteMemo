@@ -41,16 +41,23 @@ export class CashService {
           cash.balance = balance[0] && balance[0].value || 0;
           cash.account = cashMoves[cashMoves.length-1];
           cash.waiting = [];
+          // let waitingBalance = 0;
           let checks = await this.pouchdbService.getView('Informes/Cheques', 5, [doc_id], [doc_id+"z"], false, true, undefined, undefined, true);
           console.log("checks", checks)
           cash.checks = checks || [];
           for(let i=0;i<pts.length;i++){
-            if (cashMoves[i].state == 'WAITING'){
-              cash.waiting.unshift(cashMoves[i]);
+            if (cash.type == 'bank'){
+              if (cashMoves[i].state == 'WAITING'){
+                cash.waiting.unshift(cashMoves[i]);
+                // waitingBalance+=cashMoves[i].amount;
+              } else {
+                cash.moves.unshift(cashMoves[i]);
+              }
             } else {
               cash.moves.unshift(cashMoves[i]);
             }
           }
+          // cash.balance -= waitingBalance;
           this.pouchdbService.getDoc(cash.currency_id).then(async currency=>{
             cash.currency = currency;
             this.pouchdbService.getRelated(

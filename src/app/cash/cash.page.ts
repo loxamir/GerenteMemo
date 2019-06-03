@@ -412,6 +412,10 @@ export class CashPage implements OnInit {
       //console.log(values);
     }
 
+    changeTab(){
+      this.cashForm.controls.section.markAsPristine();
+    }
+
     async changeName(){
       let prompt = await this.alertCtrl.create({
         header: 'Nombre del Caja',

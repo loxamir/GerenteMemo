@@ -993,10 +993,11 @@ export class ReceiptPage implements OnInit {
           let check = this.receiptForm.value.check;
           if (this.receiptForm.value.signal == '+'){
             check.state = 'RECEIVED';
+            check.account_id = this.receiptForm.value.cash_paid._id;
           } else {
             check.state = 'DELIVERED';
+            check.account_id = 'account.payable.credit';
           }
-          check.account_id = this.receiptForm.value.cash_paid._id;
           promise_ids2.push(this.pouchdbService.updateDoc(check));
         }
 

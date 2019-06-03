@@ -310,5 +310,10 @@
   "FABRICATION": "Fabricación",
   "AMOUNT_COMPANY_CURRENCY": "Monto Moneda Empresa",
   "CURRENCY_EXCHANGE": "Tasa de Cambio",
+  "DEPOSITED": "Depositado",
+  "CHANGED": "Trocado",
+  "REJECTED": "Rechazado",
+  "NEW": "Nuevo",
+  "DELIVERED": "Entregado",
   "RESULT": "Resultado"
 }

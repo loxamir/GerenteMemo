@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/cash-list')"></ion-back-button>
+      <ion-back-button defaultHref='/tabs/cash-list'></ion-back-button>
     </ion-buttons>
     <ion-title>
       <ion-row>
@@ -39,24 +39,24 @@
 
 
 
-<ion-segment formControlName="section" class="cash-segment" *ngIf="cashForm.value.type == 'bank'">
+<ion-segment formControlName="section" class="cash-segment" (ionChange)="changeTab()" *ngIf="cashForm.value.type == 'bank'">
   <ion-segment-button value="moves">
-    Extrato
+    Confirmado
   </ion-segment-button>
-  <ion-segment-button value="checks">
+  <!-- <ion-segment-button value="checks">
     Cheques
-  </ion-segment-button>
-  <!-- <ion-segment-button value="waiting">
-    En Espera
   </ion-segment-button> -->
+  <ion-segment-button value="waiting">
+    En Espera
+  </ion-segment-button>
 </ion-segment>
 
-<ion-segment formControlName="section" class="cash-segment" *ngIf="cashForm.value.type == 'check'">
-  <ion-segment-button value="moves">
-    Extrato
-  </ion-segment-button>
+<ion-segment formControlName="section" class="cash-segment" (ionChange)="changeTab()" *ngIf="cashForm.value.type == 'check'">
   <ion-segment-button value="checks">
     Cheques
+  </ion-segment-button>
+  <ion-segment-button value="moves">
+    Extrato
   </ion-segment-button>
 </ion-segment>
 
@@ -103,7 +103,7 @@
 
       <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
         <ion-col no-padding style="text-align: center;border-radius: 4px;">
-          {{ item.state}}
+          {{ item.doc.state | translate}}
         </ion-col>
       </ion-row>
       </ion-card>

@@ -12,7 +12,7 @@ import { CheckService } from './check.service';
 import { ContactListPage } from '../contact-list/contact-list.page';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
 import { CashListPage } from '../cash-list/cash-list.page';
-
+import { AccountListPage } from '../account-list/account-list.page';
 
 @Component({
   selector: 'app-check',
@@ -56,13 +56,12 @@ export class CheckPage implements OnInit {
       this.translate.use('es');
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       setTimeout(() => {
         this.amountField.setFocus();
       }, 200);
       this.checkForm = this.formBuilder.group({
         bank_name: new FormControl(''),
-
         bank: new FormControl({}),
         name: new FormControl(null),
         amount: new FormControl(this.amount||null),
@@ -82,14 +81,15 @@ export class CheckPage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
-      //this.loading.present();
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if (this._id){
         this.checkService.getCheck(this._id).then((data) => {
           this.checkForm.patchValue(data);
-          //this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
-        //this.loading.dismiss();
+        this.loading.dismiss();
       }
     }
 
@@ -155,6 +155,29 @@ export class CheckPage implements OnInit {
           })
           let profileModal = await this.modalCtrl.create({
             component: ContactListPage,
+            componentProps: {
+              "select": true
+            }
+          });
+          profileModal.present();
+        });
+    }
+
+    selectAccount() {
+        return new Promise(async resolve => {
+          // this.avoidAlertMessage = true;
+          this.events.unsubscribe('select-account');
+          this.events.subscribe('select-account', (data) => {
+            this.checkForm.patchValue({
+              account: data,
+            });
+            this.checkForm.markAsDirty();
+            // this.avoidAlertMessage = false;
+            this.events.unsubscribe('select-account');
+            resolve(true);
+          })
+          let profileModal = await this.modalCtrl.create({
+            component: AccountListPage,
             componentProps: {
               "select": true
             }

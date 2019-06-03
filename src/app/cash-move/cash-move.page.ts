@@ -149,7 +149,8 @@ company_currency = 'currency.PYG';
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
     setTimeout(() => {
-       if (JSON.stringify(this.cashMoveForm.value.currency) == '{}'){
+       if (JSON.stringify(this.cashMoveForm.value.currency) == '{}' ||
+      this.cashMoveForm.value.currency._id == this.company_currency){
          this.amount.setFocus();
        } else {
          this.currency_amountField.setFocus();
@@ -415,9 +416,15 @@ company_currency = 'currency.PYG';
       let check = this.cashMoveForm.value.check;
       if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'bank'){
         check['state'] = 'DEPOSITED';
+        check['account_id'] = this.cashMoveForm.value.accountTo_id;
         await this.pouchdbService.updateDoc(check);
       } else if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'cash'){
         check['state'] = 'CHANGED';
+        check['account_id'] = this.cashMoveForm.value.accountTo_id;
+        await this.pouchdbService.updateDoc(check);
+      } else if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'check'){
+        check['state'] = 'RECEIVED';
+        check['account_id'] = this.cashMoveForm.value.accountTo_id;
         await this.pouchdbService.updateDoc(check);
       }
     }
