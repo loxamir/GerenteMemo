@@ -382,22 +382,24 @@ company_currency = 'currency.PYG';
   }
 
   async rejectCheck(){
-     // this.cashMoveForm.patchValue({
-     //   'state': 'DONE',
-     // });
+     this.cashMoveForm.patchValue({
+       'state': 'DONE',
+     });
      await this.buttonSave();
      if (JSON.stringify(this.cashMoveForm.value.check) != '{}'){
        let check = this.cashMoveForm.value.check;
        check['state'] = 'REJECTED';
+       check['account_id'] = this.cashMoveForm.value.accountFrom._id;
        await this.pouchdbService.updateDoc(check);
      }
      let cashMove = Object.assign({}, this.cashMoveForm.value);
-     cashMove['accountTo'] = this.cashMoveForm.value.accountFrom;
+     cashMove['docType'] = 'cash-move';
      cashMove['accountTo_id'] = this.cashMoveForm.value.accountFrom._id;
+     cashMove['date'] = this.today.toISOString();
      cashMove['accountTo_name'] = this.cashMoveForm.value.accountFrom.name;
-     cashMove['accountFrom'] = this.cashMoveForm.value.accountTo;
      cashMove['accountFrom_id'] = this.cashMoveForm.value.accountTo._id;
      cashMove['accountFrom_name'] = this.cashMoveForm.value.accountTo.name;
+     cashMove['check_id'] = this.cashMoveForm.value.check._id;
      delete cashMove._id;
      delete cashMove._rev;
      this.pouchdbService.createDoc(cashMove)
