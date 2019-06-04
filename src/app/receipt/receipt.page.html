@@ -70,6 +70,12 @@
         </div>
       </ion-item>
     </ion-card>
+    <ion-item class="field-100" (click)="selectAccount()">
+      <div class="field-many2one">
+        <h4 class="field-label">{{'Diferencia' | translate}}</h4>
+        <h4 class="field-value">{{receiptForm.value.difference_account && receiptForm.value.difference_account.name || 'Dejar en Abierto'}}</h4>
+      </div>
+    </ion-item>
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.payments">
         <ion-item style="background-color: #ddd;width: 110%;margin-left: -21px;">

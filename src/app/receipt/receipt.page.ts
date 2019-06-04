@@ -31,6 +31,7 @@ import { InvoicePage } from '../invoice/invoice.page';
 import { CheckListPage } from '../check-list/check-list.page';
 import { CheckPage } from '../check/check.page';
 import { ReceiptPopover } from './receipt.popover';
+import { AccountListPage } from '../account-list/account-list.page';
 
 @Component({
   selector: 'app-receipt',
@@ -142,6 +143,7 @@ export class ReceiptPage implements OnInit {
         exchange_rate: new FormControl(this.exchange_rate||'1'),
         // createInvoice: new FormControl(false),
         currency_id: new FormControl(this.company_currency_id||{}),
+        difference_account: new FormControl({}),
         payables: new FormControl([]),
         receivables: new FormControl([]),
         cash_paid: new FormControl({}),
@@ -669,6 +671,31 @@ export class ReceiptPage implements OnInit {
       }
     }
 
+    async selectAccount(){
+      this.avoidAlertMessage = true;
+      let profileModal = await this.modalCtrl.create({
+        component: AccountListPage,
+        componentProps: {
+          "select": true,
+        }});
+      profileModal.present();
+      // if (default_amount != 0){
+        this.events.subscribe('select-account',  (data: any) => {
+          // this.receiptForm.value.cash = data;
+          // console.log("selectCash", (await this.pouchdbService.getDoc(data.currency_id)))
+          this.receiptForm.patchValue({
+            "difference_account": data,
+            // "amount_paid": data.amount,
+          })
+          profileModal.dismiss();
+          this.events.unsubscribe('select-account');
+          this.recomputeValues();
+        });
+
+      // }
+    }
+
+
     async selectCheck(){
       this.avoidAlertMessage = true;
       let profileModal = await this.modalCtrl.create({
@@ -915,6 +942,27 @@ export class ReceiptPage implements OnInit {
           }
           console.log("Movimento", doc);
           promise_ids.push(this.cashMoveService.createCashMove(doc));
+          if (JSON.stringify(this.receiptForm.value.difference_account) != "{}"){
+            doc = {
+              "amount": (this.receiptForm.value.total-amount_paid).toFixed(this.currency_precision),
+              "name": this.receiptForm.value.name,
+              "date": this.today,
+              "accountFrom_id": account_id,
+              "contact_id": this.receiptForm.value.contact._id,
+              "check_id": this.receiptForm.value.check._id,
+              "accountTo_id": this.receiptForm.value.difference_account._id,
+              'signal': this.receiptForm.value.signal,
+              "payments": paymentAccount[account_id],
+              "origin_id": this.receiptForm.value._id,
+            }
+            if (this.receiptForm.value.cash_paid.currency_id != this.company_currency_id){
+              doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency.precision || 0);
+              doc['currency'] = this.receiptForm.value.cash_paid.currency;
+              doc['currency_exchange'] = this.receiptForm.value.exchange_rate;
+            }
+            console.log("Movimento", doc);
+            promise_ids.push(this.cashMoveService.createCashMove(doc));
+          }
 
         });
       } else {
