@@ -35,6 +35,7 @@ export class CashPage implements OnInit {
     loading: any;
     languages: Array<LanguageModel>;
     @Input() _id: string;
+    company_currency = 'currency.PYG';
     changes = {};
     currency_precision = 2;
     user:any = {};
@@ -144,6 +145,7 @@ export class CashPage implements OnInit {
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
+      this.company_currency = config.currency_id;
       this.user = (await this.pouchdbService.getUser());
       if (this._id){
         this.cashService.getCash(this._id).then((data) => {
@@ -155,6 +157,19 @@ export class CashPage implements OnInit {
       } else {
         this.loading.dismiss();
       }
+    }
+
+    showAmount(item){
+      if (item.currency_amount && this.cashForm.value.currency && item.currency_id == this.cashForm.value.currency._id){
+        return item.currency_amount
+      }
+      return item.amount
+    }
+    showAmountSecond(item){
+      if (item.currency_amount && this.cashForm.value.currency && item.currency_id == this.cashForm.value.currency._id){
+        return item.amount
+      }
+      return item.currency_amount
     }
 
     selectCurrency() {
