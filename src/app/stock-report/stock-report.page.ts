@@ -202,7 +202,7 @@ export class StockReportPage implements OnInit {
               // }
             });
 
-            let products: any = await this.pouchdbService.getList(getList.slice(1, 1000));
+            let products: any = await this.pouchdbService.getList(getList.slice(0, 999));
             var doc_dict = {};
             products.forEach(row=>{
               doc_dict[row.id] = row.doc;
