@@ -315,5 +315,9 @@
   "REJECTED": "Rechazado",
   "NEW": "Nuevo",
   "DELIVERED": "Entregado",
+  "SALE_RATE": "Tasa de Venta",
+  "EXCHANGE_RATE": "Tasa de Cambio",
+  "PURCHASE_RATE": "Tasa de Compra",
+  "SYMBOL": "Simbolo",
   "RESULT": "Resultado"
 }

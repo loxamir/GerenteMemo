@@ -13,6 +13,7 @@ import { ContactListPage } from '../contact-list/contact-list.page';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
 import { CashListPage } from '../cash-list/cash-list.page';
 import { AccountListPage } from '../account-list/account-list.page';
+import { CashMoveService } from '../cash-move/cash-move.service';
 
 @Component({
   selector: 'app-check',
@@ -44,6 +45,7 @@ export class CheckPage implements OnInit {
       public route: ActivatedRoute,
       public formBuilder: FormBuilder,
       public events: Events,
+      public cashMoveService: CashMoveService,
       public pouchdbService: PouchdbService,
     ) {
       this.languages = this.languageService.getLanguages();
@@ -91,6 +93,27 @@ export class CheckPage implements OnInit {
       } else {
         this.loading.dismiss();
       }
+    }
+
+    async depositCheck(){
+      let doc = {
+        "amount": this.checkForm.value.amount,
+        "name": "Depositado cheque "+ this.checkForm.value.name,
+        "date": new Date().toISOString(),
+        "accountFrom_id": this.checkForm.value.account._id,
+        "contact_id": this.checkForm.value.contact._id,
+        "check_id": this.checkForm.value._id,
+        'signal': this.checkForm.value.signal,
+        "state": 'WAITING',
+        "origin_id": this.checkForm.value._id,
+      }
+      await this.selectAccount();
+      this.checkForm.patchValue({
+        state: "DEPOSITED",
+      })
+      doc["accountTo_id"] = this.checkForm.value.account._id,
+      await this.cashMoveService.createCashMove(doc);
+      await this.buttonSave();
     }
 
     async changeMyCheck(){

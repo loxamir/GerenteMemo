@@ -54,6 +54,7 @@ export class CurrencyPage implements OnInit {
         name: new FormControl('', Validators.required),
         precision: new FormControl(2),
         sale_rate: new FormControl(1),
+        symbol: new FormControl('X$'),
         purchase_rate: new FormControl(1),
         _id: new FormControl(''),
         create_user: new FormControl(''),

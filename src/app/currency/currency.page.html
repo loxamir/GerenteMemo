@@ -1,14 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button> -->
-    <ion-title>{{ 'CURRENCY_INFORMATION' | translate }}</ion-title>
-    <!-- <ion-buttons slot="end" [hidden]="!currencyForm.dirty">
-      <ion-button (click)="buttonSave()">
-        {{ 'SAVE' | translate }}
-      </ion-button>
-    </ion-buttons> -->
+    <ion-title>{{ 'CURRENCY' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -26,19 +18,25 @@
           </div>
         </ng-container>
       </div>
-      <ion-item class="field-100">
-        <ion-label position="floating">{{'Precisión Decimal' | translate}}</ion-label>
-        <ion-input type="number" formControlName="precision"></ion-input>
-      </ion-item>
-      <ion-item class="field-100">
-        <ion-label position="floating">{{'SALE' | translate}}</ion-label>
+
+      <ion-item class="field-50">
+        <ion-label position="floating">{{'SALE_RATE' | translate}}</ion-label>
         <ion-input type="number" formControlName="sale_rate" autocomplete='name'></ion-input>
       </ion-item>
 
-      <ion-item class="field-100">
-        <ion-label position="floating">{{'PURCHASE' | translate}}</ion-label>
+      <ion-item class="field-50">
+        <ion-label position="floating">{{'PURCHASE_RATE' | translate}}</ion-label>
         <ion-input type="number" formControlName="purchase_rate" autocomplete='name'></ion-input>
       </ion-item>
+      <ion-item class="field-50">
+        <ion-label position="floating">{{'SYMBOL' | translate}}</ion-label>
+        <ion-input type="text" formControlName="symbol"></ion-input>
+      </ion-item>
+      <ion-item class="field-50">
+        <ion-label position="floating">{{'Precisión Decimal' | translate}}</ion-label>
+        <ion-input type="number" formControlName="precision"></ion-input>
+      </ion-item>
+
 
     </ion-row>
   </form>

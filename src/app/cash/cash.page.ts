@@ -38,6 +38,7 @@ export class CashPage implements OnInit {
     company_currency = 'currency.PYG';
     changes = {};
     currency_precision = 2;
+    currencies = {};
     user:any = {};
     constructor(
       public navCtrl: NavController,
@@ -146,6 +147,12 @@ export class CashPage implements OnInit {
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
       this.company_currency = config.currency_id;
+      let pyg = await this.pouchdbService.getDoc('currency.PYG')
+      let usd = await this.pouchdbService.getDoc('currency.USD')
+      this.currencies = {
+        "currency.PYG": pyg,
+        "currency.USD": usd,
+      }
       this.user = (await this.pouchdbService.getUser());
       if (this._id){
         this.cashService.getCash(this._id).then((data) => {
@@ -223,6 +230,45 @@ export class CashPage implements OnInit {
         });
         profileModal.present();
       });
+    }
+
+    async symbol(item){
+      if (item.currency_amount && this.cashForm.value.currency && item.currency_id == this.cashForm.value.currency._id){
+        // if (this.currencies.hasOwnProperty(item.currency_id)){
+          console.log("t1", this.currencies[this.company_currency].symbol);
+          return item.currency_id;
+        // } else {
+        //   this.currencies[item.currency_id] = (await this.pouchdbService.getDoc(item.currency_id));
+        //   console.log("t2", this.currencies[this.company_currency].symbol);
+        //   return this.currencies[item.currency_id].symbol;
+        // }
+      }
+      // if (this.currencies.hasOwnProperty(this.company_currency)){
+        console.log("t3", this.currencies[this.company_currency].symbol);
+        this.company_currency;
+      // } else {
+      //   this.currencies[this.company_currency] = (await this.pouchdbService.getDoc(this.company_currency));
+      //   console.log("t4", this.currencies[this.company_currency].symbol);
+      //   return this.currencies[this.company_currency].symbol;
+      // }
+    }
+    async secondSymbol(item){
+      if (item.currency_amount && this.cashForm.value.currency && item.currency_id == this.cashForm.value.currency._id){
+        // return item.amount
+        // if (this.currencies.hasOwnProperty(this.company_currency)){
+          return this.currencies[this.company_currency].symbol;
+        // } else {
+        //   this.currencies[this.company_currency] = await this.pouchdbService.getDoc(this.company_currency);
+        //   return this.currencies[this.company_currency].symbol;
+        // }
+      }
+      // return item.currency_amount
+      // if (this.currencies.hasOwnProperty(item.currency_id)){
+        return this.currencies[item.currency_id].symbol;
+      // } else {
+      //   this.currencies[item.currency_id] = await this.pouchdbService.getDoc(item.currency_id);
+      //   return this.currencies[item.currency_id].symbol;
+      // }
     }
 
     openClose(item) {

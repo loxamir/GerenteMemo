@@ -144,13 +144,13 @@
           <h2 *ngIf="item.accountTo_id != _id" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
         </ion-col> -->
         <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-          <h2 *ngIf="item.accountFrom_id != _id" class="list-big-number" style="color: green;">$ {{showAmount(item)| number:'1.'+currency_precision}}</h2>
-          <h2 *ngIf="item.accountTo_id != _id" class="list-big-number" style="color: red;">$ {{showAmount(item)| number:'1.'+currency_precision}}</h2>
+          <h2 *ngIf="item.accountFrom_id != _id" class="list-big-number" style="color: green;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol|| currencies[company_currency].symbol}} {{showAmount(item)| number:'1.'+currency_precision}}</h2>
+          <h2 *ngIf="item.accountTo_id != _id" class="list-big-number" style="color: red;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol || currencies[company_currency].symbol}} {{showAmount(item)| number:'1.'+currency_precision}}</h2>
           <div class="residual-value" *ngIf="item.accountFrom_id != _id && item.currency_amount && item.currency_id.length && item.currency_id != company_currency" style="color: green;">
-            $ {{ showAmountSecond(item) | number:'1.'+currency_precision }}
+            {{currencies[company_currency].symbol}} {{ showAmountSecond(item) | number:'1.'+currency_precision }}
           </div>
           <div class="residual-value"*ngIf="item.accountTo_id != _id && item.currency_amount && item.currency_id.length && item.currency_id != company_currency"  style="color: red;">
-            $ {{ showAmountSecond(item) | number:'1.'+currency_precision }}
+            {{currencies[company_currency].symbol}} {{ showAmountSecond(item) | number:'1.'+currency_precision }}
           </div>
         </ion-col>
       </ion-row>
