@@ -88,7 +88,7 @@ export class SalePage implements OnInit {
           }
           this.barcode = "";
         }
-        if(!timeStamp || timeStamp < 5 || this.barcode == ""){
+        if(!timeStamp || timeStamp < 20 || this.barcode == ""){
           this.barcode += event.key;
         }
         if( event.which < 48 || event.which >= 58 ){ // not a number
