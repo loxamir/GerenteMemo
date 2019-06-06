@@ -424,6 +424,8 @@ export class SalePage implements OnInit {
     // }
 
     async goNextStep() {
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if(this.return){
         await this.buttonSave();
       }
@@ -431,17 +433,20 @@ export class SalePage implements OnInit {
       //   await this.buttonSave();
       // }
       if (this.saleForm.value.state == 'QUOTATION'){
-      if (! this.confirming){
-        this.confirming = true;
-        let teste = await this.confirmSale();
-        this.confirming = false;
-      }
+        if (! this.confirming){
+          this.confirming = true;
+          await this.beforeConfirm();
+          this.confirming = false;
+        }
       } else if (this.saleForm.value.state == 'CONFIRMED'){
-          this.beforeAddPayment();
+          await this.loading.dismiss();
+          this.addPayment();
       } else if (this.saleForm.value.state == 'PAID'){
         if (this.saleForm.value.invoices.length){
-          this.navCtrl.navigateBack('/sale-list');
+          await this.navCtrl.navigateBack('/sale-list');
+          await this.loading.dismiss();
         } else {
+          await this.loading.dismiss();
           this.addInvoice();
         }
       }
@@ -450,24 +455,35 @@ export class SalePage implements OnInit {
     beforeConfirm(){
       return new Promise(async resolve =>{
         if (this.saleForm.value.items.length == 0){
+          await this.loading.dismiss();
           this.addItem();
           resolve(true);
         } else {
           if (Object.keys(this.saleForm.value.contact).length === 0){
-            this.selectContact().then( teste => {
+            await this.loading.dismiss();
+            this.selectContact().then(async teste => {
+              await this.loading.dismiss();
               if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
                 this.selectPaymentCondition().then(async ()=>{
+                  this.loading = await this.loadingCtrl.create();
+                  await this.loading.present();
                   await this.saleConfimation();
                   resolve(true);
                 });
               }
             });
           } else if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
+            await this.loading.dismiss();
             this.selectPaymentCondition().then(async ()=>{
+              this.loading = await this.loadingCtrl.create();
+              await this.loading.present();
               await this.saleConfimation();
               resolve(true);
             });
           } else {
+            await this.loading.dismiss();
+            this.loading = await this.loadingCtrl.create();
+            await this.loading.present();
             await this.saleConfimation();
             resolve(true);
           }
@@ -600,6 +616,8 @@ export class SalePage implements OnInit {
     async addItem(){
       let self = this;
       if (this.saleForm.value.state=='QUOTATION'){
+        this.loading = await this.loadingCtrl.create();
+        await this.loading.present();
         this.avoidAlertMessage = true;
         this.listenBarcode = false;
         this.events.unsubscribe('select-product');
@@ -624,6 +642,7 @@ export class SalePage implements OnInit {
           }
         });
         await profileModal.present();
+        await this.loading.dismiss();
         await profileModal.onDidDismiss();
         this.listenBarcode = true;
       }
@@ -740,6 +759,8 @@ export class SalePage implements OnInit {
     }
 
     async openPayment(item) {
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.listenBarcode = false;
       this.events.unsubscribe('open-receipt');
       this.events.subscribe('open-receipt', (data) => {
@@ -777,6 +798,7 @@ export class SalePage implements OnInit {
         }
       });
       await profileModal.present();
+      await this.loading.dismiss();
       await profileModal.onDidDismiss();
       this.listenBarcode = true;
     }
@@ -799,17 +821,6 @@ export class SalePage implements OnInit {
       ]
     };
 
-    confirmSale() {
-      return new Promise(async resolve =>{
-        if (this.saleForm.value.state=='QUOTATION'){
-          await this.beforeConfirm();
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      })
-    }
-
     async saleConfimation(){
       return new Promise(async resolve =>{
         let prompt = await this.alertCtrl.create({
@@ -826,12 +837,16 @@ export class SalePage implements OnInit {
             {
               text: 'Confirmar',
               handler: async data => {
+                this.loading = await this.loadingCtrl.create();
+                await this.loading.present();
                 await this.afterConfirm();
+                await this.loading.dismiss();
                 resolve(true);
               }
             }
           ]
         });
+        await this.loading.dismiss();
         await prompt.present();
       })
     }
@@ -1023,17 +1038,9 @@ export class SalePage implements OnInit {
       });
     }
 
-    beforeAddPayment(){
-      if (this.saleForm.value.state == "QUOTATION"){
-        this.afterConfirm().then(data => {
-          this.addPayment();
-        });
-      } else {
-        this.addPayment();
-      }
-    }
-
     async addPayment() {
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.avoidAlertMessage = true;
       this.listenBarcode = false;
         this.events.unsubscribe('create-receipt');
@@ -1084,11 +1091,14 @@ export class SalePage implements OnInit {
           }
         });
         await profileModal.present();
+        await this.loading.dismiss();
         await profileModal.onDidDismiss();
         this.listenBarcode = true;
     }
 
     async addInvoice() {
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.avoidAlertMessage = true;
       this.listenBarcode = false;
       this.events.unsubscribe('create-invoice');
@@ -1178,11 +1188,14 @@ export class SalePage implements OnInit {
         }
       });
       await profileModal.present();
+      await this.loading.dismiss();
       await profileModal.onDidDismiss();
       this.listenBarcode = true;
     }
 
     async openInvoice(item) {
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       this.listenBarcode = false;
       this.events.unsubscribe('open-invoice');
       this.events.subscribe('open-invoice', (data) => {
@@ -1199,6 +1212,7 @@ export class SalePage implements OnInit {
         }
       });
       await profileModal.present();
+      await this.loading.dismiss();
       await profileModal.onDidDismiss();
       this.listenBarcode = true;
     }
@@ -1207,8 +1221,10 @@ export class SalePage implements OnInit {
       //console.log(values);
     }
 
-    selectContact() {
+    async selectContact() {
       if (this.saleForm.value.state=='QUOTATION'){
+        this.loading = await this.loadingCtrl.create();
+        await this.loading.present();
         this.listenBarcode = false;
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
@@ -1233,6 +1249,7 @@ export class SalePage implements OnInit {
             }
           });
           await profileModal.present();
+          await this.loading.dismiss();
           await profileModal.onDidDismiss();
           this.listenBarcode = true;
         });
@@ -1264,6 +1281,8 @@ export class SalePage implements OnInit {
     selectSeller() {
       // if (this.saleForm.value.state=='QUOTATION'){
         return new Promise(async resolve => {
+          this.loading = await this.loadingCtrl.create();
+          await this.loading.present();
           this.avoidAlertMessage = true;
           this.listenBarcode = false;
           this.events.unsubscribe('select-contact');
@@ -1287,6 +1306,7 @@ export class SalePage implements OnInit {
             }
           });
           await profileModal.present();
+          await this.loading.dismiss();
           await profileModal.onDidDismiss();
           this.listenBarcode = true;
         });
@@ -1296,6 +1316,8 @@ export class SalePage implements OnInit {
     selectPaymentCondition() {
       return new Promise(async resolve => {
       if (this.saleForm.value.state=='QUOTATION'){
+        this.loading = await this.loadingCtrl.create();
+        await this.loading.present();
         this.avoidAlertMessage = true;
         this.listenBarcode = false;
         this.events.unsubscribe('select-payment-condition');
@@ -1317,6 +1339,7 @@ export class SalePage implements OnInit {
           }
         });
         await profileModal.present();
+        await this.loading.dismiss();
         await profileModal.onDidDismiss();
         this.listenBarcode = true;
       }

@@ -95,7 +95,7 @@
         <ion-button class="button-100" (click)="addInvoice()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>Crear Factura</ion-button>
       </ion-col>
       <ion-col *ngIf="saleForm.value.state == 'CONFIRMED'">
-        <ion-button class="button-100" (click)="beforeAddPayment()"><ion-icon name="cash" style="margin-right:10px;"></ion-icon>Registrar Cobro</ion-button>
+        <ion-button class="button-100" (click)="addPayment()"><ion-icon name="cash" style="margin-right:10px;"></ion-icon>Registrar Cobro</ion-button>
       </ion-col>
     </ion-row>
     <!-- <ion-row>

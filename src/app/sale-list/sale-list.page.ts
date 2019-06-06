@@ -112,19 +112,25 @@ export class SaleListPage implements OnInit {
     });
   }
 
-  openSale(sale) {
+  async openSale(sale) {
     this.events.subscribe('open-sale', (data) => {
       this.events.unsubscribe('open-sale');
     })
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // newRootNav.push(SalePage, {'_id': sale._id});
-    this.navCtrl.navigateForward(['/sale', {'_id': sale._id}]);
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
+    await this.navCtrl.navigateForward(['/sale', {'_id': sale._id}]);
+    await this.loading.dismiss();
   }
 
-  createSale(){
+  async createSale(){
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // newRootNav.push(SalePage, {});
-    this.navCtrl.navigateForward(['/sale', {}]);
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
+    await this.navCtrl.navigateForward(['/sale', {}]);
+    await this.loading.dismiss();
   }
 
   getSalesPage(keyword, page){
