@@ -35,7 +35,7 @@ export class CashPage implements OnInit {
     loading: any;
     languages: Array<LanguageModel>;
     @Input() _id: string;
-    company_currency = 'currency.PYG';
+    company_currency_id = 'currency.PYG';
     changes = {};
     currency_precision = 2;
     currencies = {};
@@ -46,9 +46,6 @@ export class CashPage implements OnInit {
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
-      // public imagePicker: ImagePicker,
-      // public cropService: Crop,
-      // public platform: Platform,
       public cashService: CashService,
       public cashMoveService: CashMoveService,
       public route: ActivatedRoute,
@@ -59,7 +56,6 @@ export class CashPage implements OnInit {
       public events: Events,
       public formatService: FormatService,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
@@ -68,7 +64,6 @@ export class CashPage implements OnInit {
       this.events.unsubscribe('changed-cash-move');
       this.events.subscribe('changed-cash-move', (change)=>{
         if (!this.changes.hasOwnProperty(change.seq)){
-          console.log("changed-cash-move", change);
           if (
             change.doc.accountFrom_id == this._id
             || change.doc.accountTo_id == this._id
@@ -83,7 +78,6 @@ export class CashPage implements OnInit {
         }
       })
       this.events.subscribe('changed-close', (change)=>{
-        console.log("changeddd", change);
         this.events.unsubscribe('changed-close');
         if (change.doc.cash_id == this._id){
           this.cashForm.value.closes.unshift(change.doc);
@@ -92,18 +86,10 @@ export class CashPage implements OnInit {
             closes: this.cashForm.value.closes
           })
         }
-        // console.log("close-cash", change);
-        // this.cashForm.value.moves.for
-        // console.log("change.doc", change.doc);
-        // if (change.doc.close_id){
-        //   console.log("changed with close_id");
-        //   list.splice(changedIndex, 1);
-        // }
       })
 
       this.events.subscribe('changed-check', (change)=>{
         if (!this.changes.hasOwnProperty(change.seq)){
-          console.log("changed-check", change);
           if (
             change.doc.account_id == this._id
             || change.doc.account_id == this._id
@@ -146,7 +132,7 @@ export class CashPage implements OnInit {
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
-      this.company_currency = config.currency_id;
+      this.company_currency_id = config.currency_id;
       let pyg = await this.pouchdbService.getDoc('currency.PYG')
       let usd = await this.pouchdbService.getDoc('currency.USD')
       this.currencies = {
@@ -205,19 +191,6 @@ export class CashPage implements OnInit {
 
     closeCash() {
       return new Promise(async resolve => {
-        // this.avoidAlertMessage = true;
-        // this.events.unsubscribe('select-currency');
-        // this.events.subscribe('select-currency', (data) => {
-        //   this.cashForm.patchValue({
-        //     currency: data,
-        //     // currency_name: data.name,
-        //   });
-        //   this.cashForm.markAsDirty();
-        //   // this.avoidAlertMessage = false;
-        //   this.events.unsubscribe('select-currency');
-        //   resolve(true);
-        // })
-        console.log("closes", this.cashForm.value.closes);
         let profileModal = await this.modalCtrl.create({
           component: ClosePage,
           componentProps: {
@@ -232,49 +205,9 @@ export class CashPage implements OnInit {
       });
     }
 
-    async symbol(item){
-      if (item.currency_amount && this.cashForm.value.currency && item.currency_id == this.cashForm.value.currency._id){
-        // if (this.currencies.hasOwnProperty(item.currency_id)){
-          console.log("t1", this.currencies[this.company_currency].symbol);
-          return item.currency_id;
-        // } else {
-        //   this.currencies[item.currency_id] = (await this.pouchdbService.getDoc(item.currency_id));
-        //   console.log("t2", this.currencies[this.company_currency].symbol);
-        //   return this.currencies[item.currency_id].symbol;
-        // }
-      }
-      // if (this.currencies.hasOwnProperty(this.company_currency)){
-        console.log("t3", this.currencies[this.company_currency].symbol);
-        this.company_currency;
-      // } else {
-      //   this.currencies[this.company_currency] = (await this.pouchdbService.getDoc(this.company_currency));
-      //   console.log("t4", this.currencies[this.company_currency].symbol);
-      //   return this.currencies[this.company_currency].symbol;
-      // }
-    }
-
     isOtherCurrency(){
       return JSON.stringify(this.cashForm.value.currency) != "{}"
-      && this.cashForm.value.currency._id != this.company_currency;
-    }
-
-    async secondSymbol(item){
-      if (item.currency_amount && this.cashForm.value.currency && item.currency_id == this.cashForm.value.currency._id){
-        // return item.amount
-        // if (this.currencies.hasOwnProperty(this.company_currency)){
-          return this.currencies[this.company_currency].symbol;
-        // } else {
-        //   this.currencies[this.company_currency] = await this.pouchdbService.getDoc(this.company_currency);
-        //   return this.currencies[this.company_currency].symbol;
-        // }
-      }
-      // return item.currency_amount
-      // if (this.currencies.hasOwnProperty(item.currency_id)){
-        return this.currencies[item.currency_id].symbol;
-      // } else {
-      //   this.currencies[item.currency_id] = await this.pouchdbService.getDoc(item.currency_id);
-      //   return this.currencies[item.currency_id].symbol;
-      // }
+      && this.cashForm.value.currency._id != this.company_currency_id;
     }
 
     openClose(item) {
@@ -291,28 +224,14 @@ export class CashPage implements OnInit {
     }
 
     async editAccount() {
-      // return new Promise(async resolve => {
-        // this.avoidAlertMessage = true;
-        // this.events.unsubscribe('select-currency');
-        // this.events.subscribe('select-currency', (data) => {
-        //   this.cashForm.patchValue({
-        //     currency: data,
-        //     // currency_name: data.name,
-        //   });
-        //   this.cashForm.markAsDirty();
-        //   // this.avoidAlertMessage = false;
-        //   this.events.unsubscribe('select-currency');
-        //   resolve(true);
-        // })
-        let profileModal = await this.modalCtrl.create({
-          component: AccountPage,
-          componentProps: {
-            "select": true,
-            "_id": this.cashForm.value._id
-          }
-        });
-        profileModal.present();
-      // });
+      let profileModal = await this.modalCtrl.create({
+        component: AccountPage,
+        componentProps: {
+          "select": true,
+          "_id": this.cashForm.value._id
+        }
+      });
+      profileModal.present();
     }
 
     buttonSave() {
@@ -357,18 +276,6 @@ export class CashPage implements OnInit {
         }
       });
       profileModal.present();
-
-      // this.events.subscribe('open-cash-move', (data) => {
-      //   //console.log("Payment", data);
-      //   item.amount = data.amount;
-      //   item.date = data.date;
-      //   this.recomputeValues();
-      //   this.events.unsubscribe('open-cash-move');
-      // });
-      //console.log("item", item);
-      // this.navCtrl.navigateForward(['/cash-move', {
-      //   "_id": item._id,
-      // }]);
     }
 
     async openCheck(item) {
@@ -380,12 +287,6 @@ export class CashPage implements OnInit {
         }
       });
       profileModal.present();
-      // this.events.subscribe('open-cash-move', (data) => {
-      //   // item.amount = data.amount;
-      //   // item.date = data.date;
-      //   // this.recomputeValues();
-      //   this.events.unsubscribe('open-cash-move');
-      // });
     }
 
     recomputeValues() {
@@ -461,7 +362,6 @@ export class CashPage implements OnInit {
         this.cashService.getCash(this._id).then((data) => {
           this.cashForm.patchValue(data);
           this.recomputeValues();
-          //this.loading.dismiss();
         });
         refresher.target.complete();
       }, 500);
@@ -471,7 +371,6 @@ export class CashPage implements OnInit {
       this.cashService.getCash(this._id).then((data) => {
         this.cashForm.patchValue(data);
         this.recomputeValues();
-        //this.loading.dismiss();
       });
     }
 

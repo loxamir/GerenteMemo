@@ -24,6 +24,8 @@ export class CashListPage implements OnInit {
   page = 0;
   currency_precision = 2;
   user:any = {};
+  company_currency_id = 'currency.PYG';
+  currencies = {};
   constructor(
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
@@ -47,6 +49,15 @@ export class CashListPage implements OnInit {
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
+
+    this.company_currency_id = config.currency_id;
+    let pyg = await this.pouchdbService.getDoc('currency.PYG')
+    let usd = await this.pouchdbService.getDoc('currency.USD')
+    this.currencies = {
+      "currency.PYG": pyg,
+      "currency.USD": usd,
+    }
+
     this.user = (await this.pouchdbService.getUser());
     this.setFilteredItems();
     this.events.subscribe('changed-cash-move', (change)=>{
