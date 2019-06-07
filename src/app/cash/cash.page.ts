@@ -252,6 +252,12 @@ export class CashPage implements OnInit {
       //   return this.currencies[this.company_currency].symbol;
       // }
     }
+
+    isOtherCurrency(){
+      return JSON.stringify(this.cashForm.value.currency) != "{}"
+      && this.cashForm.value.currency._id != this.company_currency;
+    }
+
     async secondSymbol(item){
       if (item.currency_amount && this.cashForm.value.currency && item.currency_id == this.cashForm.value.currency._id){
         // return item.amount

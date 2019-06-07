@@ -1007,8 +1007,8 @@ export class ReceiptPage implements OnInit {
               "origin_id": this.receiptForm.value._id,
             }
             if (this.receiptForm.value.cash_paid.currency_id != this.company_currency_id) {
-              doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency.precision || 0);
-              doc['currency'] = this.receiptForm.value.cash_paid.currency;
+              doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency_id && this.currencies[this.receiptForm.value.cash_paid.currency_id].precision || 0);
+              doc['currency_id'] = this.receiptForm.value.cash_paid.currency_id;
               doc['currency_exchange'] = this.receiptForm.value.exchange_rate;
             }
             console.log("Movimento", doc);
