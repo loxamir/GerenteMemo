@@ -42,7 +42,7 @@ export class CashMovePage implements OnInit {
 @Input() contact_id;
 @Input() signal;
 @Input() check;
-company_currency = 'currency.PYG';
+company_currency_id = 'currency.PYG';
 @Input() currency;
 @Input() currency_amount;
 @Input() currency_residual;
@@ -150,7 +150,7 @@ company_currency = 'currency.PYG';
     await this.loading.present();
     setTimeout(() => {
        if (JSON.stringify(this.cashMoveForm.value.currency) == '{}' ||
-      this.cashMoveForm.value.currency._id == this.company_currency){
+      this.cashMoveForm.value.currency._id == this.company_currency_id){
          this.amount.setFocus();
        } else {
          this.currency_amountField.setFocus();
@@ -192,7 +192,7 @@ company_currency = 'currency.PYG';
         let config = await this.configService.getConfig();
         // let config:any = (await this.pouchdbService.getDoc('config.profile'));
         this.currency_precision = config.currency_precision;
-        this.company_currency = config.currency._id;
+        this.company_currency_id = config.currency._id;
         this.company_currency_name = config.currency.name;
           let accountFrom = this.accountFrom || {};
           let accountTo = this.accountTo || {};
@@ -231,10 +231,10 @@ company_currency = 'currency.PYG';
   }
 
   checkForeingCurrency(){
-    // console.log("este ", JSON.stringify(this.cashMoveForm.value.currency) != '{}', this.cashMoveForm.value.currency._id != this.company_currency);
+    // console.log("este ", JSON.stringify(this.cashMoveForm.value.currency) != '{}', this.cashMoveForm.value.currency._id != this.company_currency_id);
     return (
       JSON.stringify(this.cashMoveForm.value.currency) != '{}'
-      && this.cashMoveForm.value.currency._id != this.company_currency
+      && this.cashMoveForm.value.currency._id != this.company_currency_id
     )
   }
 
@@ -336,7 +336,7 @@ company_currency = 'currency.PYG';
     //   this.cashMoveForm.value.state = 'DRAFT';
     // }
     return new Promise(async resolve => {
-      if (this.cashMoveForm.value.currency && this.cashMoveForm.value.currency._id != this.company_currency){
+      if (this.cashMoveForm.value.currency && this.cashMoveForm.value.currency._id != this.company_currency_id){
         this.cashMoveForm.patchValue({
           "currency_residual": this.cashMoveForm.value.currency_amount
         })
@@ -473,14 +473,14 @@ company_currency = 'currency.PYG';
         let amount = this.cashMoveForm.value.amount;
         let amountCurrency = this.cashMoveForm.value.amount;
         if (
-          data._id != this.company_currency &&
-          this.cashMoveForm.value.currency._id == this.company_currency
+          data._id != this.company_currency_id &&
+          this.cashMoveForm.value.currency._id == this.company_currency_id
         ){
           amountCurrency = this.cashMoveForm.value.amount;
           amount = this.cashMoveForm.value.amount*parseFloat(data.sale_rate);
         } else if (
-          data._id == this.company_currency &&
-          this.cashMoveForm.value.currency._id != this.company_currency
+          data._id == this.company_currency_id &&
+          this.cashMoveForm.value.currency._id != this.company_currency_id
         ){
           amount = this.cashMoveForm.value.currency_amount;
           amountCurrency = amount;
@@ -488,7 +488,7 @@ company_currency = 'currency.PYG';
         console.log("data", data);
         console.log("amount", amount);
         console.log("amountCurrency", amountCurrency);
-        console.log("this.company_currency", this.company_currency);
+        console.log("this.company_currency_id", this.company_currency_id);
         this.cashMoveForm.patchValue({
           amount: amount,
           currency_amount: amountCurrency,
@@ -501,7 +501,7 @@ company_currency = 'currency.PYG';
         setTimeout(() => {
            // this.amount.setFocus();
            // this.currency_amountField.setFocus();
-           if (data && data._id == this.company_currency){
+           if (data && data._id == this.company_currency_id){
              this.amount.setFocus();
            } else {
              this.currency_amountField.setFocus();
@@ -707,7 +707,7 @@ company_currency = 'currency.PYG';
 
 
   changedCurrencyAmount() {
-    if (this.cashMoveForm.value.currency._id != this.company_currency){
+    if (this.cashMoveForm.value.currency._id != this.company_currency_id){
       if (!this.changing) {
         this.changing = true;
         let amountExchange = parseFloat(this.cashMoveForm.value.currency_exchange);
@@ -724,7 +724,7 @@ company_currency = 'currency.PYG';
   }
 
   changedAmount() {
-    if (this.cashMoveForm.value.currency._id != this.company_currency){
+    if (this.cashMoveForm.value.currency._id != this.company_currency_id){
       if (!this.changing) {
         this.changing = true;
         let amountCurrency = this.cashMoveForm.value.currency_amount;
@@ -740,7 +740,7 @@ company_currency = 'currency.PYG';
     }
   }
   changedExchange() {
-    if (this.cashMoveForm.value.currency._id != this.company_currency){
+    if (this.cashMoveForm.value.currency._id != this.company_currency_id){
       if (!this.changing) {
         this.changing = true;
         let amountExchange = this.cashMoveForm.value.currency_exchange;

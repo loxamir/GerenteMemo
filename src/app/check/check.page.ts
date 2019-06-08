@@ -23,14 +23,25 @@ import { CashMoveService } from '../cash-move/cash-move.service';
 export class CheckPage implements OnInit {
   @ViewChild('amount') amountField;
   @ViewChild('name') name;
+  @ViewChild('currency_amount') currency_amountField;
 
     checkForm: FormGroup;
     loading: any;
     _id: string;
     select;
+    company_currency_id = 'currency.PYG';
+    company_currency_name = "Guarani";
     @Input() contact;
     @Input() amount;
+    @Input() bank;
     @Input() account;
+    @Input() currency_exchange;
+    @Input() currency_amount;
+    @Input() my_check;
+    @Input() signal = "+";
+    changing = false;
+    currency_precision = 2;
+    showExtra = false;
 
     languages: Array<LanguageModel>;
 
@@ -52,30 +63,46 @@ export class CheckPage implements OnInit {
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       this.contact = this.route.snapshot.paramMap.get('contact');
+      this.bank = this.route.snapshot.paramMap.get('bank');
       this.account = this.route.snapshot.paramMap.get('account');
       this.amount = this.route.snapshot.paramMap.get('amount');
+      this.signal = this.route.snapshot.paramMap.get('signal');
+      this.my_check = this.route.snapshot.paramMap.get('my_check');
       this.translate.setDefaultLang('es');
       this.translate.use('es');
     }
 
     async ngOnInit() {
+      // setTimeout(() => {
+      //   this.amountField.setFocus();
+      // }, 200);
       setTimeout(() => {
-        this.amountField.setFocus();
+         if (JSON.stringify(this.checkForm.value.currency) == '{}' ||
+        this.checkForm.value.currency._id == this.company_currency_id){
+           this.amountField.setFocus();
+         } else {
+           this.currency_amountField.setFocus();
+         }
+         this.checkForm.markAsPristine();
       }, 200);
       this.checkForm = this.formBuilder.group({
         bank_name: new FormControl(''),
-        bank: new FormControl({}),
+        bank: new FormControl(this.bank||{}),
         name: new FormControl(null),
+        checkAccount: new FormControl(''),
         amount: new FormControl(this.amount||null),
         owner_name: new FormControl(''),
         owner_doc: new FormControl(''),
-        my_check: new FormControl(false),
-        emision_date: new FormControl(''),
-        maturity_date: new FormControl(''),
+        my_check: new FormControl(this.my_check||false),
+        emision_date: new FormControl(new Date().toISOString()),
+        maturity_date: new FormControl(new Date().toISOString()),
         contact: new FormControl(this.contact||{}),
         account: new FormControl(this.account||{}),
         state: new FormControl('NEW'),
         currency: new FormControl(this.route.snapshot.paramMap.get('currency')||{}),
+        currency_amount: new FormControl(this.currency_amount||0),
+        currency_exchange: new FormControl(this.currency_exchange||1),
+        currency_id: new FormControl(''),
         note: new FormControl(''),
         _id: new FormControl(''),
         create_user: new FormControl(''),
@@ -85,6 +112,8 @@ export class CheckPage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
+      let config:any = await this.pouchdbService.getDoc('config.profile');
+      this.currency_precision = config.currency_precision;
       if (this._id){
         this.checkService.getCheck(this._id).then((data) => {
           this.checkForm.patchValue(data);
@@ -92,6 +121,60 @@ export class CheckPage implements OnInit {
         });
       } else {
         this.loading.dismiss();
+      }
+    }
+
+    flipExtra(){
+      this.showExtra = !this.showExtra;
+    }
+
+    changedCurrencyAmount() {
+      if (this.checkForm.value.currency._id != this.company_currency_id){
+        if (!this.changing) {
+          this.changing = true;
+          let amountExchange = parseFloat(this.checkForm.value.currency_exchange);
+          let amountCompanyCurrency = this.checkForm.value.currency_amount * amountExchange;
+          this.checkForm.patchValue({
+            amount: amountCompanyCurrency.toFixed(this.currency_precision),
+            currency_exchange: amountExchange.toFixed(this.currency_precision),
+          })
+          setTimeout(() => {
+            this.changing = false;
+          }, 10);
+        }
+      }
+    }
+
+    changedAmount() {
+      if (this.checkForm.value.currency._id != this.company_currency_id){
+        if (!this.changing) {
+          this.changing = true;
+          let amountCurrency = this.checkForm.value.currency_amount;
+          let amountExchange = this.checkForm.value.amount/amountCurrency;
+          this.checkForm.patchValue({
+            // currency_amount: amountCompanyCurrency.toFixed(this.currency_precision),
+            currency_exchange: amountExchange.toFixed(this.currency_precision),
+          })
+          setTimeout(() => {
+            this.changing = false;
+          }, 10);
+        }
+      }
+    }
+    changedExchange() {
+      if (this.checkForm.value.currency._id != this.company_currency_id){
+        if (!this.changing) {
+          this.changing = true;
+          let amountExchange = this.checkForm.value.currency_exchange;
+          let amountCompanyCurrency = this.checkForm.value.currency_amount * amountExchange;
+          this.checkForm.patchValue({
+            amount: amountCompanyCurrency.toFixed(this.currency_precision),
+            // currency_exchange: amountExchange.toFixed(this.currency_precision),
+          })
+          setTimeout(() => {
+            this.changing = false;
+          }, 10);
+        }
       }
     }
 
@@ -114,6 +197,14 @@ export class CheckPage implements OnInit {
       doc["accountTo_id"] = this.checkForm.value.account._id,
       await this.cashMoveService.createCashMove(doc);
       await this.buttonSave();
+    }
+
+    checkForeingCurrency(){
+      // console.log("este ", JSON.stringify(this.checkForm.value.currency) != '{}', this.checkForm.value.currency._id != this.company_currency);
+      return (
+        JSON.stringify(this.checkForm.value.currency) != '{}'
+        && this.checkForm.value.currency._id != this.company_currency_id
+      )
     }
 
     async changeMyCheck(){
@@ -235,17 +326,29 @@ export class CheckPage implements OnInit {
         });
     }
 
+    // selectCurrency() {
+    //   return new Promise(async resolve => {
+    //     this.events.subscribe('select-currency', (data) => {
+    //       this.checkForm.patchValue({
+    //         currency: data,
+    //         // cash_id: data._id,
+    //       });
+    //       this.checkForm.markAsDirty();
+    //       this.events.unsubscribe('select-currency');
+    //       resolve(true);
+    //     })
+    //     let profileModal = await this.modalCtrl.create({
+    //       component: CurrencyListPage,
+    //       componentProps: {
+    //         "select": true
+    //       }
+    //     });
+    //     profileModal.present();
+    //   });
+    // }
+
     selectCurrency() {
       return new Promise(async resolve => {
-        this.events.subscribe('select-currency', (data) => {
-          this.checkForm.patchValue({
-            currency: data,
-            // cash_id: data._id,
-          });
-          this.checkForm.markAsDirty();
-          this.events.unsubscribe('select-currency');
-          resolve(true);
-        })
         let profileModal = await this.modalCtrl.create({
           component: CurrencyListPage,
           componentProps: {
@@ -253,6 +356,48 @@ export class CheckPage implements OnInit {
           }
         });
         profileModal.present();
+        this.events.subscribe('select-currency', (data) => {
+          let amount = this.checkForm.value.amount;
+          let amountCurrency = this.checkForm.value.amount;
+          if (
+            data._id != this.company_currency_id &&
+            this.checkForm.value.currency._id == this.company_currency_id
+          ){
+            amountCurrency = this.checkForm.value.amount;
+            amount = this.checkForm.value.amount*parseFloat(data.sale_rate);
+          } else if (
+            data._id == this.company_currency_id &&
+            this.checkForm.value.currency._id != this.company_currency_id
+          ){
+            amount = this.checkForm.value.currency_amount;
+            amountCurrency = amount;
+          }
+          console.log("data", data);
+          console.log("amount", amount);
+          console.log("amountCurrency", amountCurrency);
+          console.log("this.company_currency_id", this.company_currency_id);
+          this.checkForm.patchValue({
+            amount: amount,
+            currency_amount: amountCurrency,
+            currency_exchange: data.sale_rate,
+            currency: data,
+            currency_id: data._id,
+          });
+          this.checkForm.markAsDirty();
+          profileModal.dismiss();
+          setTimeout(() => {
+             // this.amount.setFocus();
+             // this.currency_amountField.setFocus();
+             if (data && data._id == this.company_currency_id){
+               this.amountField.setFocus();
+             } else {
+               this.currency_amountField.setFocus();
+             }
+            // this.checkForm.markAsPristine();
+          }, 200);
+          this.events.unsubscribe('select-currency');
+          resolve(true);
+        })
       });
     }
 

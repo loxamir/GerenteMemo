@@ -67,6 +67,7 @@ export class ReceiptPage implements OnInit {
   exchangeDiff = 0;
   change = 0;
   currencies = {};
+  config;
 
   constructor(
     public navCtrl: NavController,
@@ -164,6 +165,7 @@ export class ReceiptPage implements OnInit {
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
     let config: any = await this.configService.getConfig();
+    this.config = config;
     this.currency_precision = config.currency_precision;
     this.company_currency_id = config.currency_id;
     let pyg = await this.pouchdbService.getDoc('currency.PYG')
@@ -512,7 +514,8 @@ export class ReceiptPage implements OnInit {
         contact: this.receiptForm.value.contact,
         amount: this.receiptForm.value.total,
         "select": true,
-        "_id": this.receiptForm.value.check._id
+        "_id": this.receiptForm.value.check._id,
+        "signal": this.receiptForm.value.signal
       }
     });
     profileModal.present();
@@ -787,13 +790,19 @@ export class ReceiptPage implements OnInit {
 
   async createCheck() {
     this.avoidAlertMessage = true;
+    let data = {
+      "contact": this.receiptForm.value.contact,
+      "amount": this.receiptForm.value.total,
+      "select": true,
+      "signal": this.receiptForm.value.signal,
+    }
+    if (this.receiptForm.value.cash_paid.type == 'bank'){
+      data['bank'] = this.receiptForm.value.cash_paid;
+      data['my_check'] = true;
+    }
     let profileModal = await this.modalCtrl.create({
       component: CheckPage,
-      componentProps: {
-        contact: this.receiptForm.value.contact,
-        amount: this.receiptForm.value.total,
-        "select": true,
-      }
+      componentProps: data,
     });
     profileModal.present();
     // if (default_amount != 0){
@@ -1011,6 +1020,14 @@ export class ReceiptPage implements OnInit {
               doc['currency_id'] = this.receiptForm.value.cash_paid.currency_id;
               doc['currency_exchange'] = this.receiptForm.value.exchange_rate;
             }
+            if (this.receiptForm.value.cash_paid.type == 'check'){
+              doc['amount'] = (amount_paid2 + this.change).toFixed(this.currency_precision);
+              if (this.receiptForm.value.check.currency_id && this.receiptForm.value.check.currency_id != this.company_currency_id) {
+                doc['currency_amount'] = this.receiptForm.value.check.currency_amount;
+                doc['currency_id'] = this.receiptForm.value.check.currency_id;
+                doc['currency_exchange'] = this.receiptForm.value.check.exchange_rate;
+              }
+            }
             console.log("Movimento", doc);
             promise_ids.push(this.cashMoveService.createCashMove(doc));
 
@@ -1027,10 +1044,10 @@ export class ReceiptPage implements OnInit {
                 "amount": this.change.toFixed(this.currency_precision),
                 "name": this.receiptForm.value.name,
                 "date": this.today,
-                "accountTo_id": this.receiptForm.value.cash_paid._id,
+                "accountTo_id": "account.receivable.cash",
                 "contact_id": this.receiptForm.value.contact._id,
                 "check_id": this.receiptForm.value.check._id,
-                "accountFrom_id": this.receiptForm.value.difference_account._id,
+                "accountFrom_id": this.config.cash_id,
                 'signal': this.receiptForm.value.signal,
                 // "payments": paymentAccount[account_id],
                 "origin_id": this.receiptForm.value._id,

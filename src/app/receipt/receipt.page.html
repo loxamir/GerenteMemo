@@ -60,13 +60,18 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="!hasCheck() && (receiptForm.value.cash_paid.type == 'check' || (receiptForm.value.cash_paid.type == 'bank' && receiptForm.value.signal == '-'))">
-
+      <ion-row *ngIf="!hasCheck() && ((receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '+') || (receiptForm.value.cash_paid.type == 'bank' && receiptForm.value.signal == '-'))">
         <ion-col>
           <ion-button class="button-100" (click)="createCheck()">Registrar Cheque</ion-button>
         </ion-col>
       </ion-row>
-      <ion-item class="field-100" *ngIf="receiptForm.value.cash_paid.type != 'cash' && hasCheck()" (click)="editCheck()">
+      <ion-item class="field-100" *ngIf="!(receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '-') && receiptForm.value.cash_paid.type != 'cash' && hasCheck()" (click)="editCheck()">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Cheque' | translate}}</h4>
+          <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'Seleccionar'}}</h4>
+        </div>
+      </ion-item>
+      <ion-item class="field-100" *ngIf="receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '-'" (click)="selectCheck()">
         <div class="field-many2one">
           <h4 class="field-label">{{'Cheque' | translate}}</h4>
           <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'Seleccionar'}}</h4>

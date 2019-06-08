@@ -319,5 +319,6 @@
   "EXCHANGE_RATE": "Tasa de Cambio",
   "PURCHASE_RATE": "Tasa de Compra",
   "SYMBOL": "Simbolo",
+  "EMISSION_DATE": "Fecha de Emisión",
   "RESULT": "Resultado"
 }
