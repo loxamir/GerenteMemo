@@ -154,13 +154,48 @@ export class PouchdbService {
     sort='date', direction='decrease'
   ){
     let self = this;
-    return new Promise((resolve, reject)=>{
+    return new Promise(async (resolve, reject)=>{
+      let selector = {
+        // name: {$regex: "(?i)"+keyword},
+        // code: {$regex: "(?i)"+keyword},
+        docType: {$eq: docType}
+      }
 
+      let dad = {
+        "$or": [
+          {
+              "name": {
+                  $regex: "(?i)"+keyword
+              }
+          },
+          {
+              "code": {
+                  $regex: "(?i)"+keyword
+              }
+          }
+      ],
+      "$and": [
+        {docType: {$eq: docType}}
+      ]}
+
+      if (field) {
+        let dict: any = {};
+        dict[field] = {$regex: "(?i)"+keyword};
+        dad['$or'].push(dict)
+      }
+      await this.db.createIndex({
+        index: {fields: [sort]}
+      })
+      let newSort = {}
+      if (direction == 'decrease'){
+        newSort[sort] = 'desc';
+      } else {
+        newSort[sort] = 'asc';
+      }
+      console.log("dad", dad);
       self.db.find({
-        selector: {
-          code: {$eq: keyword},
-          docType: {$eq: docType}
-        }
+        selector: dad,
+        sort: [newSort],
       }).then(data=>{
         console.log("data", data.docs);
         resolve(data.docs);
