@@ -63,7 +63,7 @@
 <ion-content background="#ddd" >
   <ion-input #corpo style="height: 0px;--padding-top: 0px;--padding-bottom: 0px;--padding-start: 0px;"></ion-input>
   <form [formGroup]="saleForm" (ngSubmit)="onSubmit(saleForm.value)">
-    <ion-row *ngIf="!transfer">
+    <ion-row>
       <ion-col no-padding class="field-many2one-edit"
       (click)="selectContact()">
         <h4 class="field-label-col">{{'CONTACT' | translate }}</h4>

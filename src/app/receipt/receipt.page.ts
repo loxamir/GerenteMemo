@@ -62,11 +62,11 @@ export class ReceiptPage implements OnInit {
   currency_precision = 2;
   cash_precision = 2;
   user: any = {};
-  company_currency_id = {};
+  company_currency_id = 'currency.PYG';
   confirming = false;
   exchangeDiff = 0;
   change = 0;
-  currencies = {};
+  currencies;
   config;
 
   constructor(
@@ -167,7 +167,7 @@ export class ReceiptPage implements OnInit {
     let config: any = await this.configService.getConfig();
     this.config = config;
     this.currency_precision = config.currency_precision;
-    this.company_currency_id = config.currency_id;
+    this.company_currency_id = config.currency_id || this.company_currency_id;
     let pyg = await this.pouchdbService.getDoc('currency.PYG')
     let usd = await this.pouchdbService.getDoc('currency.USD')
     this.currencies = {
