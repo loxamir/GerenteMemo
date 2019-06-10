@@ -63,11 +63,21 @@
 <ion-content background="#ddd" >
   <ion-input #corpo style="height: 0px;--padding-top: 0px;--padding-bottom: 0px;--padding-start: 0px;"></ion-input>
   <form [formGroup]="saleForm" (ngSubmit)="onSubmit(saleForm.value)">
+    <ion-row *ngIf="!transfer">
+      <ion-col no-padding class="field-many2one-edit"
+      (click)="selectContact()">
+        <h4 class="field-label-col">{{'CONTACT' | translate }}</h4>
+        <h4 class="field-value-col">{{saleForm.value.contact && saleForm.value.contact.name || 'Selecionar'}}</h4>
+      </ion-col>
+      <ion-col size="2" class="open-item-col" (click)="editContact()">
+        <ion-icon name="open" class="open-item-arrow"></ion-icon>
+      </ion-col>
+    </ion-row>
     <ion-row justify-content-center>
-      <ion-item no-padding (click)="selectContact()" class="field-100">
+      <!-- <ion-item no-padding (click)="selectContact()" class="field-100">
         <h4 class="field-label">{{'CLIENT' | translate}}</h4>
         <h4 class="field-value">{{saleForm.value.contact && saleForm.value.contact.name || 'Selecionar'}}</h4>
-      </ion-item>
+      </ion-item> -->
       <ion-item no-padding (click)="selectPaymentCondition()" class="field-50">
         <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
         <h4 class="field-value">{{saleForm.value.paymentCondition && saleForm.value.paymentCondition.name || 'Selecionar'}}</h4>

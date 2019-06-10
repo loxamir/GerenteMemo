@@ -39,6 +39,7 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 import html2canvas from 'html2canvas';
 import { DiscountPage } from '../discount/discount.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
+import { ContactPage } from '../contact/contact.page';
 
 @Component({
   selector: 'app-sale',
@@ -208,6 +209,35 @@ export class SalePage implements OnInit {
       if (this.return){
         this.recomputeValues();
       }
+    }
+
+    editContact() {
+      return new Promise(async resolve => {
+        this.events.unsubscribe('open-contact');
+        this.events.subscribe('open-contact', (data) => {
+          this.saleForm.patchValue({
+            contact: data,
+            // type: data.type,
+            // cash_out: data.cash_out,
+            // cash_in: data.cash_in,
+            // transfer: data.transfer,
+            // payable: data.payable,
+            // receivable: data.receivable,
+          });
+          this.saleForm.markAsDirty();
+          // this.avoidAlertMessage = false;
+          this.events.unsubscribe('open-contact');
+          resolve(true);
+        })
+        let profileModal = await this.modalCtrl.create({
+          component: ContactPage,
+          componentProps: {
+            "select": true,
+            "_id": this.saleForm.value.contact._id,
+          }
+        });
+        profileModal.present();
+      });
     }
 
     async selectCashMove(item) {

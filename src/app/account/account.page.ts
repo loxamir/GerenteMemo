@@ -68,6 +68,7 @@ export class AccountPage implements OnInit {
       payable: new FormControl(false),
       receivable: new FormControl(false),
       printedText: new FormControl(''),
+      filename: new FormControl('filename.prt'),
       _id: new FormControl(''),
       create_user: new FormControl(''),
       create_time: new FormControl(''),

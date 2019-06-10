@@ -89,14 +89,26 @@
         <h4 class="field-label">{{'Destino' | translate }}</h4>
         <h4 class="field-value">{{cashMoveForm.value.accountTo && cashMoveForm.value.accountTo.name || 'Selecionar'}}</h4>
       </ion-item>
-      <ion-item
+      <!-- <ion-item
       no-padding
       *ngIf="!transfer"
       (click)="selectContact()"
        class="field-100">
         <h4 class="field-label">{{'CONTACT' | translate}}</h4>
         <h4 class="field-value">{{cashMoveForm.value.contact && cashMoveForm.value.contact.name || 'Selecionar'}}</h4>
-      </ion-item>
+      </ion-item> -->
+    </ion-row>
+    <ion-row *ngIf="!transfer">
+      <ion-col no-padding class="field-many2one-edit"
+      (click)="selectContact()">
+        <h4 class="field-label-col">{{'CONTACT' | translate }}</h4>
+        <h4 class="field-value-col">{{cashMoveForm.value.contact && cashMoveForm.value.contact.name || 'Selecionar'}}</h4>
+      </ion-col>
+      <ion-col size="2" class="open-item-col" (click)="editContact()">
+        <ion-icon name="open" class="open-item-arrow"></ion-icon>
+      </ion-col>
+    </ion-row>
+      <ion-row>
       <ion-item class="field-100">
         <ion-label position="floating" style="font-size:14px">{{'OBSERVATION' | translate}}</ion-label>
         <ion-input #description type="text" formControlName="name"></ion-input>
@@ -154,13 +166,25 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
 </ion-item> -->
 
 
-  <ion-item
+  <!-- <ion-item
    no-padding
    (click)="selectCheck()"
    class="field-100">
     <h4 class="field-label">{{'Cheque' | translate }}</h4>
     <h4 class="field-value">{{cashMoveForm.value.check && cashMoveForm.value.check.name || 'Selecionar'}}</h4>
-  </ion-item>
+  </ion-item> -->
+
+    </ion-row>
+    <ion-row>
+
+      <ion-col no-padding class="field-many2one-edit"
+      (click)="selectCheck()">
+        <h4 class="field-label-col">{{'Cheque' | translate }}</h4>
+        <h4 class="field-value-col">{{cashMoveForm.value.check && cashMoveForm.value.check.name || 'Selecionar'}}</h4>
+      </ion-col>
+      <ion-col size="2" class="open-item-col" (click)="editCheck()">
+        <ion-icon name="open" class="open-item-arrow"></ion-icon>
+      </ion-col>
     </ion-row>
     <ion-button class="button-100" (click)="printAccountText()" *ngIf="cashMoveForm.value.accountTo.printedText" color="success">
       <ion-icon name="print"> </ion-icon>

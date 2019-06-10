@@ -6,11 +6,7 @@ import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
-// import { CashService } from '../cash/cash.service';
 import { CashMoveService } from './cash-move.service';
-// import { CashListPage } from '../list/cash-list';
 import { AccountListPage } from '../account-list/account-list.page';
 import { ContactListPage } from '../contact-list/contact-list.page';
 import { ConfigService } from '../config/config.service';
@@ -18,6 +14,9 @@ import { CheckListPage } from '../check-list/check-list.page';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
+import { FormatService } from "../services/format.service";
+import { ContactPage } from '../contact/contact.page';
+import { CheckPage } from '../check/check.page';
 
 @Component({
   selector: 'app-cash-move',
@@ -79,7 +78,7 @@ company_currency_id = 'currency.PYG';
     public formBuilder: FormBuilder,
     public cashMoveService: CashMoveService,
     public pouchdbService: PouchdbService,
-    // public cashService: CashService,
+    public formatService: FormatService,
     // public navParams: NavParams,
     public events: Events,
     public configService: ConfigService,
@@ -433,7 +432,103 @@ company_currency_id = 'currency.PYG';
   }
 
   printAccountText(){
-    console.log("accountText", this.cashMoveForm.value.accountTo.printedText);
+    let summary = this.cashMoveForm.value.accountTo.printedText || "";
+    console.log("summary", summary);
+    if (summary){
+      let list = summary.split("${").splice(1);
+      list.forEach(variable=>{
+          variable = variable.split("}")[0];
+          console.log("variable", variable);
+          let objectList = variable.split('.');
+          if (objectList.length > 1){
+            let generatedVariable = this.cashMoveForm.value;
+            objectList.forEach(vari=>{
+              generatedVariable=generatedVariable[vari];
+            })
+            summary = summary.replace("${"+variable+"}", generatedVariable);
+          } else {
+            summary = summary.replace("${"+variable+"}", this.cashMoveForm.value[variable]);
+          }
+      })
+    }
+    let filename = this.cashMoveForm.value.accountTo.filename || "";
+    console.log("filename", filename);
+    if (filename){
+      let list = filename.split("${");
+      list.forEach(variable=>{
+          variable = variable.split("}")[0];
+          console.log("variable", variable);
+          let objectList = variable.split('.');
+          if (objectList.length > 1){
+            let generatedVariable = this.cashMoveForm.value;
+            objectList.forEach(vari=>{
+              generatedVariable=generatedVariable[vari];
+            })
+            filename = filename.replace("${"+variable+"}", generatedVariable);
+          } else {
+            filename = filename.replace("${"+variable+"}", this.cashMoveForm.value[variable]);
+          }
+      })
+    }
+    this.formatService.printMatrixClean(summary, filename);
+  }
+
+  editContact() {
+    return new Promise(async resolve => {
+      this.events.unsubscribe('open-contact');
+      this.events.subscribe('open-contact', (data) => {
+        this.cashMoveForm.patchValue({
+          contact: data,
+          // type: data.type,
+          // cash_out: data.cash_out,
+          // cash_in: data.cash_in,
+          // transfer: data.transfer,
+          // payable: data.payable,
+          // receivable: data.receivable,
+        });
+        this.cashMoveForm.markAsDirty();
+        // this.avoidAlertMessage = false;
+        this.events.unsubscribe('open-contact');
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ContactPage,
+        componentProps: {
+          "select": true,
+          "_id": this.cashMoveForm.value.contact._id,
+        }
+      });
+      profileModal.present();
+    });
+  }
+
+  editCheck() {
+    return new Promise(async resolve => {
+      this.events.unsubscribe('open-check');
+      this.events.subscribe('open-check', (data) => {
+        this.cashMoveForm.patchValue({
+          check: data,
+          // type: data.type,
+          // cash_out: data.cash_out,
+          // cash_in: data.cash_in,
+          // transfer: data.transfer,
+          // payable: data.payable,
+          // receivable: data.receivable,
+        });
+        this.cashMoveForm.markAsDirty();
+        // this.avoidAlertMessage = false;
+        this.events.unsubscribe('open-check');
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: CheckPage,
+        componentProps: {
+          "select": true,
+          "_id": this.cashMoveForm.value.check._id,
+        }
+      });
+      profileModal.present();
+    });
   }
 
   selectCheck() {
