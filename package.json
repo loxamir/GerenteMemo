@@ -74,6 +74,7 @@
     "papaparse": "^4.6.3",
     "pouchdb": "^7.0.0",
     "pouchdb-adapter-cordova-sqlite": "^2.0.6",
+    "pouchdb-find": "^7.0.0",
     "pouchdb-upsert": "^2.2.0",
     "pouchdb-utils": "^7.0.0",
     "rxjs": "^6.5.2",
