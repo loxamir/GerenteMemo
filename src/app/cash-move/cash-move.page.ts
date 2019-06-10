@@ -454,7 +454,7 @@ company_currency_id = 'currency.PYG';
     let filename = this.cashMoveForm.value.accountTo.filename || "";
     console.log("filename", filename);
     if (filename){
-      let list = filename.split("${");
+      let list = filename.split("${").splice(1);
       list.forEach(variable=>{
           variable = variable.split("}")[0];
           console.log("variable", variable);
