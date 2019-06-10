@@ -242,7 +242,7 @@
 
       <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
         <ion-col no-padding style="text-align: center;border-radius: 4px;">
-          {{ item.state}}
+          {{ item.state | translate}}
         </ion-col>
       </ion-row>
       </ion-card>
