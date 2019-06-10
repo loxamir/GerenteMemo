@@ -162,14 +162,26 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
     <h4 class="field-value">{{cashMoveForm.value.check && cashMoveForm.value.check.name || 'Selecionar'}}</h4>
   </ion-item>
     </ion-row>
-    <ion-button (click)="printAccountText()" color="success">
+    <ion-button class="button-100" (click)="printAccountText()" *ngIf="cashMoveForm.value.accountTo.printedText" color="success">
       <ion-icon name="print"> </ion-icon>
       Imprimir
     </ion-button>
-    <ion-button (click)="rejectCheck()" color="danger">
-      <ion-icon name="print"> </ion-icon>
-      Rechazado
-    </ion-button>
+    <ion-row *ngIf="cashMoveForm.value.state == 'WAITING' && cashMoveForm.value.accountFrom.type == 'check' && cashMoveForm.value.accountTo.type == 'bank'">
+      <ion-col>
+        <ion-button class="button-100" (click)="rejectCheck()" color="danger">
+          <!-- <ion-icon name="print"> </ion-icon> -->
+          Cheque Rechazado
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="confirmState()"  class="button-100">
+          <!-- <ion-icon name="fastforward"> </ion-icon> -->
+          Cheque Trocado
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+
   </form>
   <!-- <ion-row>
     <ion-col class="item-content" *ngIf="cashMoveForm.value.state=='WAITING'">
@@ -214,12 +226,12 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
     </ion-button>
   </ion-fab>
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="cashMoveForm.value.state == 'WAITING'">
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="cashMoveForm.value.state == 'WAITING'">
     <ion-button (click)="confirmState()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
       Confirmar
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
   <div style="height: 100px">
   </div>
 </ion-content>

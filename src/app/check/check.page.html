@@ -121,6 +121,12 @@
             <ion-select-option value="regional">Banco Regional</ion-select-option>
           </ion-select>
         </ion-item> -->
+        <!-- <ion-item> -->
+          <ion-button class="button-100" (click)="depositCheck()" *ngIf="checkForm.value.state  == 'RECEIVED' || checkForm.value.state  == 'REJECTED'" color="success">
+            <ion-icon name="print"> </ion-icon>
+            Depositar
+          </ion-button>
+        <!-- </ion-item> -->
       </ion-row>
 
           <!-- <ion-row style="height: 25px;">
@@ -171,21 +177,18 @@
           <h4 class="field-label">{{'ACCOUNT' | translate}}</h4>
           <h4 class="field-value">{{checkForm.value.account && checkForm.value.account.name || 'Selecionar'}}</h4>
         </ion-item> -->
+
     </ion-row>
-      <ion-item class="field-100">
-        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
-        <ion-textarea rows="3" formControlName="note"></ion-textarea>
-      </ion-item>
+    <ion-item class="field-100">
+      <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+      <ion-textarea rows="1" formControlName="note" autoGrow="true"></ion-textarea>
+    </ion-item>
 
     </section>
     <!-- <ion-button (click)="changeCheck()" color="success">
       <ion-icon name="print"> </ion-icon>
       Cheque Compensado
     </ion-button> -->
-    <ion-button (click)="depositCheck()" *ngIf="checkForm.value.state  == 'RECEIVED' || checkForm.value.state  == 'REJECTED'" color="success">
-      <ion-icon name="print"> </ion-icon>
-      Depositar
-    </ion-button>
   </form>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">

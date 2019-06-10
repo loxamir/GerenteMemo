@@ -978,7 +978,7 @@ export class SalePage implements OnInit {
                 'payments': [],
                 'invoices': [],
                 'origin_id': this.saleForm.value._id,
-                'dateDue': dateDue,
+                'dateDue': dateDue.toISOString(),
                 'accountFrom_id': 'account.income.sale',
                 'accountFrom_name': docDict['account.income.sale'].doc.name,
                 'accountTo_id': this.saleForm.value.paymentCondition.accountTo_id,
@@ -998,7 +998,7 @@ export class SalePage implements OnInit {
               this.saleForm.patchValue({
                 state: 'CONFIRMED',
                 amount_unInvoiced: this.saleForm.value.total,
-                planned: created,
+                planned: created.filter(word=>typeof word.amount_residual !== 'undefined'),
               });
               console.log("Sale created", created);
               await this.buttonSave();

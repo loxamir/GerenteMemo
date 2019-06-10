@@ -113,7 +113,7 @@ export class SaleService {
 
           this.pouchdbService.getRelated(
           "cash-move", "origin_id", doc_id).then((planned) => {
-            pouchData['planned'] = planned;
+            pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
             resolve(pouchData);
           });
         })

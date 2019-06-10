@@ -320,5 +320,8 @@
   "PURCHASE_RATE": "Tasa de Compra",
   "SYMBOL": "Simbolo",
   "EMISSION_DATE": "Fecha de Emisión",
+  "DUE": "Vencido",
+  "PENDING": "Pendiente",
+  "WAITING": "En Espera",
   "RESULT": "Resultado"
 }
