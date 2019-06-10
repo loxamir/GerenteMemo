@@ -42,7 +42,7 @@ export class CashService {
           cash.account = cashMoves[cashMoves.length-1];
           cash.waiting = [];
           // let waitingBalance = 0;
-          let checks = await this.pouchdbService.getView('Informes/Cheques', 5, [doc_id], [doc_id+"z"], false, true, undefined, undefined, true);
+          let checks = await this.pouchdbService.getView('Informes/Cheques', 0, [doc_id], [doc_id+"z"], false, false, undefined, undefined, true);
           console.log("checks", checks)
           cash.checks = checks || [];
           for(let i=0;i<pts.length;i++){
