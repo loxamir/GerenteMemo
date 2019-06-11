@@ -315,8 +315,7 @@ export class CashPage implements OnInit {
       });
     }
 
-    async addIncome(fab){
-      fab.close();
+    async addIncome(){
       let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
@@ -326,11 +325,10 @@ export class CashPage implements OnInit {
           "currency": this.cashForm.value.currency,
         }
       });
-      profileModal.present();
+      await profileModal.present();
     }
 
-    async addTransfer(fab){
-      fab.close();
+    async addTransfer(){
       let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
@@ -343,8 +341,7 @@ export class CashPage implements OnInit {
       profileModal.present();
     }
 
-    async addExpense(fab){
-      fab.close();
+    async addExpense(){
       let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
