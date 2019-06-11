@@ -69,6 +69,7 @@ export class PouchdbService {
           // this.db = new PouchDB(database);
           this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
           console.log("database", database);
+          this.db.setMaxListeners(50);
           self.events.publish('got-database');
           this.storage.get('password').then(password => {
             this.remote = "https://"+username+":"+password+"@"+server+'/'+database;

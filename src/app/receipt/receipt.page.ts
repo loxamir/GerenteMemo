@@ -204,6 +204,8 @@ export class ReceiptPage implements OnInit {
     if (this.receiptForm.value.amount_paid == null) {
       this.amount_paid.setFocus();
     } else if (this.receiptForm.value.amount_paid.toString() == "0" && this.receiptForm.value.total.toString() == "0") {
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       if (!this.confirming) {
         this.confirming = true;
         await this.confirmReceipt();
@@ -213,6 +215,8 @@ export class ReceiptPage implements OnInit {
       this.amount_paid.setFocus();
     }
     else if (this.receiptForm.value.state == 'DRAFT') {
+      this.loading = await this.loadingCtrl.create();
+      await this.loading.present();
       // await this.confirmReceipt();
       if (!this.confirming) {
         this.confirming = true;
@@ -872,21 +876,25 @@ export class ReceiptPage implements OnInit {
             text: 'Confirmar',
             handler: async data => {
               //console.log("Confirmar");
+              this.loading = await this.loadingCtrl.create();
+              await this.loading.present();
               await this.afterConfirm();
+              await this.loading.dismiss();
               resolve(true);
             }
           }
         ]
       });
       await prompt.present();
+      await this.loading.dismiss();
     });
   }
 
   async afterConfirm() {
     return new Promise(async resolve => {
       let self = this;
-      self.loading = await self.loadingCtrl.create();
-      await self.loading.present();
+      // self.loading = await self.loadingCtrl.create();
+      // await self.loading.present();
       let details = {};
       this.receiptForm.value.items.forEach(variable => {
         details[variable._id] = {
@@ -901,7 +909,7 @@ export class ReceiptPage implements OnInit {
       this.receiptForm.value.payments.push({
         'amount': (this.receiptForm.value.amount_paid - this.receiptForm.value.change).toFixed(2),
         'date': this.today,
-        // 'cash': this.receiptForm.value.cash_paid,
+        'cash': this.receiptForm.value.cash_paid,
         'state': 'done',
         'accountTo_name': this.receiptForm.value.cash_paid.name,
         'accountFrom_name': this.receiptForm.value.cash_paid.name,
@@ -1245,7 +1253,7 @@ export class ReceiptPage implements OnInit {
         Promise.all(promise_ids2).then(res => {
           this.events.publish('create-receipt', this.receiptForm.value);
           this.justSave();
-          self.loading.dismiss();
+          // self.loading.dismiss();
           resolve(true);
         });
       });
