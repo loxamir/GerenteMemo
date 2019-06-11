@@ -919,15 +919,39 @@ export class ReceiptPage implements OnInit {
       })
       let amount_paid = (this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit) * this.receiptForm.value.exchange_rate;
       let amount_paid2 = this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit;
+      let paid_real = this.receiptForm.value.paid - this.receiptForm.value.change;
+      let paid_currency = (
+        paid_real * this.receiptForm.value.exchange_rate
+      ).toFixed(this.currency_precision);
       this.receiptForm.patchValue({
         "change": 0,
-        "paid": ((this.receiptForm.value.paid - this.receiptForm.value.change) * this.receiptForm.value.exchange_rate).toFixed(this.currency_precision),
+        "paid": paid_currency,
       });
       this.receiptForm.value.payments.forEach((item) => {
         let payments = [];
         let toCreateCashMoves = {};
         let paymentAccount = {};
+
         this.receiptForm.value.items.forEach(ite => {
+          if (ite.currency_id && ite.currency_id != this.company_currency_id && ite.currency_id != this.receiptForm.value.cash_paid.currency_id){
+            let ex_rate = this.currencies[ite.currency_id].purchase_rate;
+              paid_currency = (
+                paid_real / ex_rate
+              ).toFixed(this.currency_precision);
+            this.receiptForm.patchValue({
+              "change": 0,
+              "paid": paid_currency,
+            });
+          } else if (ite.currency_id && ite.currency_id != this.company_currency_id && ite.currency_id == this.receiptForm.value.cash_paid.currency_id){
+            let ex_rate = this.currencies[ite.currency_id].purchase_rate;
+              paid_currency = (
+                paid_real
+              ).toFixed(this.currency_precision);
+            this.receiptForm.patchValue({
+              "change": 0,
+              "paid": paid_currency,
+            });
+          }
           // console.log("ite", ite);
           let item_paid = 0;
           let item_residual = 0;
@@ -1124,16 +1148,30 @@ export class ReceiptPage implements OnInit {
         this.receiptForm.value.items.forEach(async (item1, index) => {
           let item_paid = 0;
           let item_residual = 0;
-          if (amount_paid > item1.amount_residual) {
-            item_paid = item1.amount_residual;
-            item_residual = 0;
-            amount_paid -= item1.amount_residual;
+          if (item1.currency_id && item1.currency_id != this.company_currency_id){
+            if (amount_paid > item1.currency_residual) {
+              item_paid = item1.currency_residual;
+              item_residual = 0;
+              amount_paid -= item1.currency_residual;
+            } else {
+              item_paid = amount_paid;
+              item_residual = item1.currency_residual - amount_paid;
+              amount_paid = 0;
+            }
+            item1.currency_residual = item_residual;
+            item1.amount_residual = item_residual*this.receiptForm.value.exchange_rate;
           } else {
-            item_paid = amount_paid;
-            item_residual = item1.amount_residual - amount_paid;
-            amount_paid = 0;
+            if (amount_paid > item1.amount_residual) {
+              item_paid = item1.amount_residual;
+              item_residual = 0;
+              amount_paid -= item1.amount_residual;
+            } else {
+              item_paid = amount_paid;
+              item_residual = item1.amount_residual - amount_paid;
+              amount_paid = 0;
+            }
+            item1.amount_residual = item_residual;
           }
-          item1.amount_residual = item_residual;
           item1.payments.push({
             "_id": promise_data[0].id, //FIXME: It's not showing the right move for multi account payments
             "amount": item_paid

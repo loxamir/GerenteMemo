@@ -376,6 +376,7 @@ export class SalePage implements OnInit {
           });
           await profileModal.present();
           await profileModal.onDidDismiss();
+          this.events.unsubscribe('set-discount');
           this.listenBarcode = true;
         });
       // }
@@ -402,6 +403,7 @@ export class SalePage implements OnInit {
         });
         await profileModal.present();
         await profileModal.onDidDismiss();
+        this.events.unsubscribe('set-discount');
         this.listenBarcode = true;
       });
     }

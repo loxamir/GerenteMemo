@@ -128,6 +128,7 @@ export class PurchasePage implements OnInit {
     _id: string;
     avoidAlertMessage: boolean;
     currency_precision = 2;
+    company_currency_id = 'currency.PYG';
     languages: Array<LanguageModel>;
 
     constructor(
@@ -245,6 +246,7 @@ export class PurchasePage implements OnInit {
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
+      this.company_currency_id = config.currency_id || this.company_currency_id;
       if (this._id){
         this.getPurchase(this._id).then((data) => {
           //console.log("data", data);
@@ -729,6 +731,11 @@ export class PurchasePage implements OnInit {
         if(!this.purchaseForm.value._id){
           await this.buttonSave();
         }
+        let exchangeRate = 1;
+        if (JSON.stringify(this.purchaseForm.value.currency) != '{}'
+        && this.purchaseForm.value.currency._id != this.company_currency_id){
+          exchangeRate = this.purchaseForm.value.currency.purchase_rate;
+        }
         this.configService.getConfigDoc().then((config: any)=>{
 
           this.pouchdbService.getList([
@@ -751,7 +758,7 @@ export class PurchasePage implements OnInit {
               this.productService.updateStockAndCost(
                 product_id,
                 item.quantity,
-                item.price,
+                item.price*exchangeRate,
                 old_stock,
                 old_cost);
 
@@ -765,7 +772,7 @@ export class PurchasePage implements OnInit {
                 'product_id': product_id,
                 'product_name': product_name,
                 'date': new Date(),
-                'cost': item.price*item.quantity,
+                'cost': item.price*item.quantity*exchangeRate,
                 'warehouseFrom_id': 'warehouse.supplier',
                 'warehouseFrom_name': docDict['warehouse.supplier'].doc.name,
                 'warehouseTo_id': config.warehouse_id,
@@ -776,7 +783,7 @@ export class PurchasePage implements OnInit {
                 'name': "Compra "+this.purchaseForm.value.code,
                 'contact_id': this.purchaseForm.value.contact._id,
                 'contact_name': this.purchaseForm.value.contact.name,
-                'amount': item.quantity*item.price,
+                'amount': item.quantity*item.price*exchangeRate,
                 'origin_id': this.purchaseForm.value._id,
                 'date': new Date(),
                 'accountFrom_id': 'account.other.transitStock',
@@ -789,7 +796,7 @@ export class PurchasePage implements OnInit {
               let dateDue = this.addDays(this.today, item.days);
               // console.log("dentro", this.purchaseForm.value);
               let amount = (item.percent/100)*this.purchaseForm.value.total;
-              createList.push({
+              let receivableCashMove = {
                 '_return': true,
                 'docType': "cash-move",
                 'date': new Date(),
@@ -807,7 +814,18 @@ export class PurchasePage implements OnInit {
                 'accountFrom_name': docDict[this.purchaseForm.value.paymentCondition.accountFrom_id].doc.name,
                 'accountTo_id': 'account.other.transitStock',
                 'accountTo_name': docDict['account.other.transitStock'].doc.name,
-              });
+              }
+              if (JSON.stringify(this.purchaseForm.value.currency) != '{}' && this.purchaseForm.value.currency._id != this.company_currency_id) {
+                receivableCashMove['currency_amount'] = amount;
+                receivableCashMove['currency_id'] = this.purchaseForm.value.currency._id;
+                receivableCashMove['currency_exchange'] = exchangeRate;
+                receivableCashMove['currency_residual'] = amount;
+
+                receivableCashMove['amount'] = amount*exchangeRate;
+                receivableCashMove['amount_residual'] = amount*exchangeRate;
+
+              }
+              createList.push(receivableCashMove);
             });
 
             this.pouchdbService.createDocList(createList).then(async (created: any)=>{
@@ -892,13 +910,12 @@ export class PurchasePage implements OnInit {
       this.avoidAlertMessage = true;
         this.events.unsubscribe('create-receipt');
         this.events.subscribe('create-receipt', (data) => {
-            console.log("DDDDDDDATA", data);
-            this.purchaseForm.value.payments.push({
-              'paid': data.paid,
-              'date': data.date,
-              'state': data.state,
-              '_id': data._id,
-            });
+          this.purchaseForm.value.payments.push({
+            'paid': data.paid,
+            'date': data.date,
+            'state': data.state,
+            '_id': data._id,
+          });
           this.purchaseForm.patchValue({
             'residual': this.purchaseForm.value.residual - data.paid,
           });
