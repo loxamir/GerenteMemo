@@ -190,7 +190,7 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
       <ion-icon name="print"> </ion-icon>
       Imprimir
     </ion-button>
-    <ion-row *ngIf="cashMoveForm.value.state == 'WAITING' && cashMoveForm.value.accountFrom.type == 'check' && cashMoveForm.value.accountTo.type == 'bank'">
+    <ion-row *ngIf="cashMoveForm.value.state == 'WAITING'">
       <ion-col>
         <ion-button class="button-100" (click)="rejectCheck()" color="danger">
           <!-- <ion-icon name="print"> </ion-icon> -->

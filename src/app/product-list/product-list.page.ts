@@ -58,26 +58,29 @@ export class ProductListPage implements OnInit {
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    this.setFilteredItems();
-    setTimeout(() => {
-      if (this.select) {
-        this.searchBar.setFocus();
-      }
-    }, 500);
+    await this.setFilteredItems();
+    if (this.select) {
+      setTimeout(() => {
+          this.searchBar.setFocus();
+      }, 200);
+    }
   }
 
   setFilteredItems() {
-    this.getProductsPage(
-      this.searchTerm, 0, this.type
-    ).then((products: any[]) => {
-      if (this.type == 'all') {
-        this.products = products;
-      }
-      else {
-        this.products = products.filter(word => word.type == this.type);
-      }
-      this.page = 1;
-      this.loading.dismiss();
+    return new Promise(async (resolve, reject) => {
+      this.getProductsPage(
+        this.searchTerm, 0, this.type
+      ).then(async (products: any[]) => {
+        if (this.type == 'all') {
+          this.products = products;
+        }
+        else {
+          this.products = products.filter(word => word.type == this.type);
+        }
+        this.page = 1;
+        await this.loading.dismiss();
+        resolve(true);
+      });
     });
   }
 

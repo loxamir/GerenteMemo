@@ -138,7 +138,7 @@ company_currency_id = 'currency.PYG';
       currency_id: new FormControl(''),
       currency_amount: new FormControl(this.currency_amount||0),
       currency_residual: new FormControl(this.currency_residual||0),
-      currency_exchange: new FormControl(this.currency_exchange||1),
+      currency_exchange: new FormControl(this.currency_exchange||this.currency && this.currency.sale_rate||1),
       _id: new FormControl(''),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
@@ -147,15 +147,6 @@ company_currency_id = 'currency.PYG';
     });
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
-    setTimeout(() => {
-       if (JSON.stringify(this.cashMoveForm.value.currency) == '{}' ||
-      this.cashMoveForm.value.currency._id == this.company_currency_id){
-         this.amount.setFocus();
-       } else {
-         this.currency_amountField.setFocus();
-       }
-       this.cashMoveForm.markAsPristine();
-    }, 200);
     if (this.accountTo && (this.accountTo['_id'].split('.')[1]=='cash' || this.accountTo['_id'].split('.')[1]=='bank' || this.accountTo['_id'].split('.')[1]=='check')){
       // console.log("to cash");
       this.to_cash = true;
@@ -216,7 +207,18 @@ company_currency_id = 'currency.PYG';
         //
         // });
       // }
-      this.loading.dismiss();
+      await this.loading.dismiss();
+      setTimeout(() => {
+        if (JSON.stringify(this.cashMoveForm.value.currency) == '{}' ||
+        this.cashMoveForm.value.currency._id == this.company_currency_id){
+          this.amount.value = '';
+          this.amount.setFocus();
+        } else {
+          this.currency_amountField.value = '';
+          this.currency_amountField.setFocus();
+        }
+        this.cashMoveForm.markAsPristine();
+      }, 200);
     }
   }
 
@@ -625,11 +627,18 @@ company_currency_id = 'currency.PYG';
         }
       });
       profileModal.present();
-      this.events.subscribe('select-account', (data) => {
-        this.cashMoveForm.patchValue({
+      this.events.subscribe('select-account', async (data) => {
+        let dict = {
           accountFrom: data,
           accountFrom_id: data._id,
-        });
+        }
+        if (data.currency_id){
+          let currency:any = await this.pouchdbService.getDoc(data.currency_id);
+            dict['currency'] = currency;
+            dict['currency_id'] = data.currency_id;
+            dict['currency_exchange'] = currency.sale_rate;
+        }
+        this.cashMoveForm.patchValue(dict);
         this.cashMoveForm.markAsDirty();
         profileModal.dismiss();
         this.events.unsubscribe('select-account');
@@ -653,11 +662,18 @@ company_currency_id = 'currency.PYG';
         }
       });
       profileModal.present();
-      this.events.subscribe('select-account', (data) => {
-        this.cashMoveForm.patchValue({
+      this.events.subscribe('select-account', async (data) => {
+        let dict = {
           accountTo: data,
           accountTo_id: data._id,
-        });
+        }
+        if (data.currency_id){
+          let currency:any = await this.pouchdbService.getDoc(data.currency_id);
+            dict['currency'] = currency;
+            dict['currency_id'] = data.currency_id;
+            dict['currency_exchange'] = currency.sale_rate;
+        }
+        this.cashMoveForm.patchValue(dict);
         this.cashMoveForm.markAsDirty();
         profileModal.dismiss();
         this.events.unsubscribe('select-account');

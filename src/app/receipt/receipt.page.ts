@@ -65,8 +65,9 @@ export class ReceiptPage implements OnInit {
   company_currency_id = 'currency.PYG';
   confirming = false;
   exchangeDiff = 0;
+  smallDiff = 0;
   change = 0;
-  currencies;
+  currencies:any = {};
   config;
 
   constructor(
@@ -115,11 +116,6 @@ export class ReceiptPage implements OnInit {
 
   async ngOnInit() {
     //var today = new Date().toISOString();
-    setTimeout(() => {
-      if (this.receiptForm.value.state == "DRAFT") {
-        this.amount_paid.setFocus();
-      }
-    }, 500);
     this.receiptForm = this.formBuilder.group({
       contact: new FormControl(this.contact || {}, Validators.required),
       // account_id: new FormControl(this.route.snapshot.paramMap.get('account_id')||""),
@@ -197,7 +193,10 @@ export class ReceiptPage implements OnInit {
       });
       // receiptForm.value.cash.precision
       this.recomputeValues();
-      this.loading.dismiss();
+      await this.loading.dismiss();
+      setTimeout(() => {
+        this.amount_paid.setFocus();
+      }, 200);
     }
   }
 
@@ -376,40 +375,6 @@ export class ReceiptPage implements OnInit {
     profileModal.present();
   }
 
-  // ionViewCanLeave() {
-  //     // if(this.receiptForm.dirty && ! this.avoidAlertMessage) {
-  //     //     let alertPopup = this.alertCtrl.create({
-  //     //         title: 'Exit',
-  //     //         message: '¿Are you sure?',
-  //     //         buttons: [{
-  //     //                 text: 'Exit',
-  //     //                 handler: () => {
-  //     //                     alertPopup.dismiss().then(() => {
-  //     //                         this.exitPage();
-  //     //                     });
-  //     //                 }
-  //     //             },
-  //     //             {
-  //     //                 text: 'Stay',
-  //     //                 handler: () => {
-  //     //                     // need to do something if the user stays?
-  //     //                 }
-  //     //             }]
-  //     //     });
-  //     //
-  //     //     // Show the alert
-  //     //     alertPopup.present();
-  //     //
-  //     //     // Return false to avoid the page to be popped up
-  //     //     return false;
-  //     // }
-  // }
-  //
-  // exitPage() {
-  //     this.receiptForm.markAsPristine();
-  //     this.modalCtrl.dismiss();
-  // }
-
   beforeConfirm() {
     return new Promise(async resolve => {
       if (!this.receiptForm.value._id) {
@@ -577,6 +542,9 @@ export class ReceiptPage implements OnInit {
         this.exchangeDiff = exchangeDiff;
         if (amount_unInvoiced > (this.receiptForm.value.amount_paid - this.receiptForm.value.change)) {
           amount_unInvoiced = (this.receiptForm.value.amount_paid - this.receiptForm.value.change);
+        }
+        if ((total - Math.round(total)) > 0){
+          this.smallDiff = 10**(-1*this.currencies[this.receiptForm.value.cash_paid.currency_id].precision);
         }
         this.receiptForm.patchValue({
           total: total,
@@ -1114,8 +1082,8 @@ export class ReceiptPage implements OnInit {
               "payments": payments,
             }
             if (this.receiptForm.value.cash_paid.currency_id != this.company_currency_id) {
-              doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency.precision || 0);
-              doc['currency'] = this.receiptForm.value.cash_paid.currency;
+              doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency_id && this.currencies[this.receiptForm.value.cash_paid.currency_id].precision || 0);
+              doc['currency_id'] = this.receiptForm.value.cash_paid.currency_id;
               doc['currency_exchange'] = this.receiptForm.value.exchange_rate;
             }
             if (this.receiptForm.value.cash_paid.type == 'bank' && JSON.stringify(this.receiptForm.value.check) != '{}') {
