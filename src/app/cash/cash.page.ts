@@ -63,7 +63,8 @@ export class CashPage implements OnInit {
       this.translate.use('es');
       this.events.unsubscribe('changed-cash-move');
       this.events.subscribe('changed-cash-move', (change)=>{
-        if (!this.changes.hasOwnProperty(change.seq)){
+        if (!this.changes.hasOwnProperty(change.seq) && change.doc.docType){
+          this.changes[change.seq] = true;
           if (
             change.doc.accountFrom_id == this._id
             || change.doc.accountTo_id == this._id
@@ -73,7 +74,6 @@ export class CashPage implements OnInit {
               this.cashForm.value.moves, this.cashForm.value.waiting, change);
             this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
             this.events.publish('refresh-cash-list', change);
-            this.changes[change.seq] = true;
           }
         }
       })
@@ -90,17 +90,17 @@ export class CashPage implements OnInit {
 
       this.events.subscribe('changed-check', (change)=>{
         if (!this.changes.hasOwnProperty(change.seq)){
-          if (
-            change.doc.account_id == this._id
-            || change.doc.account_id == this._id
-          ){
+          this.changes[change.seq] = true;
+          // if (
+          //   change.doc.account_id == this._id
+          //   || change.doc.account_id == this._id
+          // ){
             this.cashService.localHandleCheckChange(this.cashForm.value.checks, change);
             // this.cashService.localHandleChangeData(
             //   this.cashForm.value.moves, this.cashForm.value.waiting, change);
             // this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
             this.events.publish('refresh-cash-list', change);
-            this.changes[change.seq] = true;
-          }
+          // }
         }
       })
     }

@@ -198,38 +198,45 @@ export class CashService {
   }
 
   localHandleCheckChange(checks, change){
-    console.log("lslolo", change);
+    console.log("lsloloCheck", change, checks);
     let changedDoc = null;
     let changedState = false;
     let changedIndex = null;
-      let list = checks;
-      list.forEach((doc, index) => {
-        if(doc.doc._id === change.id){
-          changedDoc = doc;
-          changedIndex = index;
-          if (doc.state == 'WAITING' && change.doc.state == 'DONE'){
-            // To use when deposit the check
-            changedState = true;
-          }
+    let list = checks;
+    list.forEach((doc, index) => {
+      console.log("doc.id", doc.id, change.id);
+      if(doc.id === change.id){
+        console.log("es igual");
+        changedDoc = doc;
+        changedIndex = index;
+        if (change.doc.state == 'DEPOSITED'){
+          // To use when deposit the check
+          changedState = true;
+          console.log("muda estado");
         }
-      });
-      //A document was deleted
-      if(change.deleted){
-        list.splice(changedIndex, 1);
-      } else if(changedState){
-        list.splice(changedIndex, 1);
-        changedState = false;
       }
+    });
+    //A document was deleted
+    if(change.deleted){
+      console.log("deleted", changedIndex);
+      list.splice(changedIndex, 1);
+
+    } else if(changedState){
+      console.log("changedState", changedIndex);
+      list.splice(changedIndex, 1);
+      changedState = false;
+    }
+    else {
+      console.log("other");
+      //A document was updated
+      if(changedDoc){
+        list[changedIndex] = change;
+      }
+      //A document was added
       else {
-        //A document was updated
-        if(changedDoc){
-          list[changedIndex] = change;
-        }
-        //A document was added
-        else {
-          list.unshift(change);
-        }
+        list.unshift(change);
       }
+    }
   }
 
   handleSumatoryChange(sumatory, cashForm, change){

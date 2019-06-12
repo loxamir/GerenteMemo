@@ -16,7 +16,8 @@ export class CheckService {
       let pouchData = await this.pouchdbService.getDoc(doc_id);
       let docList: any = await this.pouchdbService.getList([
         pouchData['bank_id'],
-        pouchData['account_id']
+        pouchData['account_id'],
+        pouchData['contact_id'],
       ]);
       let docDict = {}
       docList.forEach(item=>{
@@ -24,17 +25,24 @@ export class CheckService {
       })
       pouchData['bank'] = docDict[pouchData['bank_id']];
       pouchData['account'] = docDict[pouchData['account_id']];
+      pouchData['contact'] = docDict[pouchData['contact_id']];
       resolve(pouchData);
     });
   }
 
-  createCheck(check){
+  createCheck(viewData){
+    let check = Object.assign({}, viewData);
     return new Promise((resolve, reject)=>{
       check.docType = 'check';
       if (check.bank){
         check.bank_id = check.bank._id;
       }
       delete check.bank;
+      if (JSON.stringify(check.contact)!='{}'){
+        check.contact_id = check.contact._id;
+        check.contact_name = check.contact_name;
+      }
+      delete check.contact;
       check.account_id = check.account && check.account._id || check.account_id || '';
       delete check.account;
       if (check.code != ''){
@@ -54,12 +62,18 @@ export class CheckService {
     // return this.pouchdbService.createDoc(check);
   }
 
-  updateCheck(check){
+  updateCheck(viewData){
+    let check = Object.assign({}, viewData);
     check.docType = 'check';
     if (check.bank){
       check.bank_id = check.bank._id;
     }
     delete check.bank;
+    if (JSON.stringify(check.contact)!='{}'){
+      check.contact_id = check.contact._id;
+      check.contact_name = check.contact.name;
+    }
+    delete check.contact;
     check.account_id = check.account && check.account._id || check.account_id || '';
     delete check.account;
     return this.pouchdbService.updateDoc(check);

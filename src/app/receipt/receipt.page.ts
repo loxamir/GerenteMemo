@@ -810,6 +810,9 @@ export class ReceiptPage implements OnInit {
       })
       this.events.unsubscribe('select-cash');
       this.recomputeValues();
+      if (this.receiptForm.value.signal == '+' && data.type == 'check'){
+        this.createCheck();
+      }
     });
     let profileModal = await this.modalCtrl.create({
       component: CashListPage,
@@ -1044,7 +1047,7 @@ export class ReceiptPage implements OnInit {
                 "amount": this.change.toFixed(this.currency_precision),
                 "name": this.receiptForm.value.name,
                 "date": this.today,
-                "accountTo_id": "account.receivable.cash",
+                "accountTo_id": account_id,
                 "contact_id": this.receiptForm.value.contact._id,
                 "check_id": this.receiptForm.value.check._id,
                 "accountFrom_id": this.config.cash_id,
@@ -1124,18 +1127,26 @@ export class ReceiptPage implements OnInit {
             console.log("Movimento", doc);
             promise_ids.push(this.cashMoveService.createCashMove(doc));
 
-            // promise_ids.push(this.cashMoveService.createCashMove({
-            //   "amount": toCreateCashMoves[account_id],
-            //   "name": this.receiptForm.value.name,
-            //   "date": this.today,
-            //   "check_id": this.receiptForm.value.check._id,
-            //   "accountFrom_id": this.receiptForm.value.cash_paid._id,
-            //   "contact_id": this.receiptForm.value.contact._id,
-            //   "accountTo_id": account_id,
-            //   'signal': this.receiptForm.value.signal,
-            //   "origin_id":this.receiptForm.value._id,
-            //   "payments": payments,
-            // }));
+            //Get change from check
+            if (this.receiptForm.value.cash_paid.type == 'check'
+              && this.change > 0
+            ) {
+
+              let cashMoveDoc = {
+                "amount": this.change.toFixed(this.currency_precision),
+                "name": this.receiptForm.value.name,
+                "date": this.today,
+                "accountTo_id": this.config.cash_id,
+                "contact_id": this.receiptForm.value.contact._id,
+                "check_id": this.receiptForm.value.check._id,
+                "accountFrom_id": account_id,
+                'signal': this.receiptForm.value.signal,
+                // "payments": paymentAccount[account_id],
+                "origin_id": this.receiptForm.value._id,
+              }
+              console.log("Movimento", cashMoveDoc);
+              promise_ids.push(this.cashMoveService.createCashMove(cashMoveDoc));
+            }
           });
         }
       });
@@ -1185,7 +1196,7 @@ export class ReceiptPage implements OnInit {
             "amount": item_paid
           });
           if (JSON.stringify(this.receiptForm.value.check) != '{}') {
-            let check = this.receiptForm.value.check;
+            let check:any = await this.pouchdbService.getDoc(this.receiptForm.value.check._id);
             if (this.receiptForm.value.signal == '+') {
               check.state = 'RECEIVED';
               check.account_id = this.receiptForm.value.cash_paid._id;

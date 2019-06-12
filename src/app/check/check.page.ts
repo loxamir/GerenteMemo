@@ -76,17 +76,9 @@ export class CheckPage implements OnInit {
       // setTimeout(() => {
       //   this.amountField.setFocus();
       // }, 200);
-      setTimeout(() => {
-         if (JSON.stringify(this.checkForm.value.currency) == '{}' ||
-        this.checkForm.value.currency._id == this.company_currency_id){
-           this.amountField.setFocus();
-         } else {
-           this.currency_amountField.setFocus();
-         }
-         this.checkForm.markAsPristine();
-      }, 200);
+
       this.checkForm = this.formBuilder.group({
-        bank_name: new FormControl(''),
+        bank_name: new FormControl(this.bank && this.bank.name || ''),
         bank: new FormControl(this.bank||{}),
         name: new FormControl(null),
         checkAccount: new FormControl(''),
@@ -120,7 +112,22 @@ export class CheckPage implements OnInit {
           this.loading.dismiss();
         });
       } else {
-        this.loading.dismiss();
+        await this.loading.dismiss();
+        setTimeout(() => {
+           if (JSON.stringify(this.checkForm.value.currency) == '{}' ||
+          this.checkForm.value.currency._id == this.company_currency_id){
+             if (this.checkForm.value.amount){
+               this.name.setFocus()
+             } else {
+               this.amountField.setFocus();
+             }
+           } else if (! this.checkForm.value.currency_amount) {
+             this.currency_amountField.setFocus();
+           } else {
+             this.name.setFocus()
+           }
+           this.checkForm.markAsPristine();
+        }, 200);
       }
     }
 
