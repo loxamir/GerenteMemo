@@ -68,6 +68,9 @@ export class CurrencyListPage implements OnInit {
       this.navCtrl.navigateForward(['/currency', {'_id': currency._id}]);
     }
     this.events.subscribe('open-currency', (data) => {
+      setTimeout(() => {
+        this.setFilteredItems();
+      }, 200);
       this.events.unsubscribe('open-currency');
     })
   }

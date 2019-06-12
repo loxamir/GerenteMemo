@@ -73,16 +73,18 @@ export class CurrencyPage implements OnInit {
       }
     }
 
-    buttonSave() {
+    async buttonSave() {
       if (this._id){
-        this.updateCurrency(this.currencyForm.value);
+        await this.updateCurrency(this.currencyForm.value);
         // this.navCtrl.navigateBack().then(() => {
           this.events.publish('open-currency', this.currencyForm.value);
+          this.exitPage();
         // });
       } else {
-        this.createCurrency(this.currencyForm.value);
+        await this.createCurrency(this.currencyForm.value);
         // this.navCtrl.navigateBack().then(() => {
           this.events.publish('create-currency', this.currencyForm.value);
+          this.exitPage();
         // });
       }
     }

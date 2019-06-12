@@ -53,7 +53,7 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col *ngIf="receiptForm.value.cash_paid.currency_id && receiptForm.value.cash_paid.currency_id != company_currency_id">
+        <ion-col *ngIf="(receiptForm.value.items[0].currency_id && receiptForm.value.items[0].currency_id != receiptForm.value.cash_paid.currency_id) || (!receiptForm.value.items[0].currency_id && receiptForm.value.cash_paid.currency_id && receiptForm.value.cash_paid.currency_id != company_currency_id)">
           <ion-item>
             <ion-label position="floating" style="font-size:14px">{{'EXCHANGE_RATE' | translate}}</ion-label>
             <ion-input #exchange_rate type="number" formControlName="exchange_rate" (ionChange)="recomputeValues()" [disabled]="!this.isEmpty(receiptForm.value.check) || receiptForm.value.cash_paid.type == 'check'"></ion-input>
