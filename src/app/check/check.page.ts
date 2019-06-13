@@ -363,21 +363,24 @@ export class CheckPage implements OnInit {
           }
         });
         profileModal.present();
-        this.events.subscribe('select-currency', (data) => {
+        this.events.subscribe('select-currency', async (data) => {
           let amount = this.checkForm.value.amount;
           let amountCurrency = this.checkForm.value.amount;
           if (
             data._id != this.company_currency_id &&
-            this.checkForm.value.currency._id == this.company_currency_id
+            JSON.stringify(this.checkForm.value.currency)=='{}' || this.checkForm.value.currency._id == this.company_currency_id
           ){
-            amountCurrency = this.checkForm.value.amount;
-            amount = this.checkForm.value.amount*parseFloat(data.sale_rate);
+            amountCurrency = (this.checkForm.value.amount/parseFloat(data.sale_rate)).toFixed(data.precision);
+            console.log("amountCurrency1", amountCurrency);
+            amount = this.checkForm.value.amount;
           } else if (
             data._id == this.company_currency_id &&
-            this.checkForm.value.currency._id != this.company_currency_id
+            JSON.stringify(this.checkForm.value.currency)!='{}' || this.checkForm.value.currency._id != this.company_currency_id
           ){
-            amount = this.checkForm.value.currency_amount;
-            amountCurrency = amount;
+            console.log("this.checkForm.value", this.checkForm.value.amount);
+            // amount = 22;
+            amountCurrency = 0;
+            console.log("amountCurrency2", amount);
           }
           console.log("data", data);
           console.log("amount", amount);
@@ -391,13 +394,14 @@ export class CheckPage implements OnInit {
             currency_id: data._id,
           });
           this.checkForm.markAsDirty();
-          profileModal.dismiss();
+          await profileModal.dismiss();
           setTimeout(() => {
              // this.amount.setFocus();
              // this.currency_amountField.setFocus();
              if (data && data._id == this.company_currency_id){
                this.amountField.setFocus();
              } else {
+               // this.currency_amountField.value =
                this.currency_amountField.setFocus();
              }
             // this.checkForm.markAsPristine();
