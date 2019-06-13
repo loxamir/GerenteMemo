@@ -751,6 +751,8 @@ export class ReceiptPage implements OnInit {
       component: CheckListPage,
       componentProps: {
         "select": true,
+        "field": "state",
+        "filter": "RECEIVED"
       }
 });
     profileModal.present();

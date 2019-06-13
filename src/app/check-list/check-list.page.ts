@@ -22,6 +22,8 @@ export class CheckListPage implements OnInit {
   page = 0;
   currency_precision = 2;
   languages: Array<LanguageModel>;
+  field:any = null;
+  filter:any = '';
 
   constructor(
     public navCtrl: NavController,
@@ -42,6 +44,8 @@ export class CheckListPage implements OnInit {
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
     this.select = this.route.snapshot.paramMap.get('select');
+    this.field = this.route.snapshot.paramMap.get('field') || null;
+    this.filter = this.route.snapshot.paramMap.get('filter') || '';
   }
 
   async ngOnInit() {
@@ -54,7 +58,7 @@ export class CheckListPage implements OnInit {
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
-      this.checkListService.getChecks(this.searchTerm, this.page).then((checks: any[]) => {
+      this.checkListService.getChecks(this.searchTerm, this.page, this.field, this.filter).then((checks: any[]) => {
         checks.forEach(check => {
           this.checks.push(check);
         });
@@ -66,7 +70,8 @@ export class CheckListPage implements OnInit {
 
   doRefresh(refresher) {
     setTimeout(() => {
-      this.checkListService.getChecks(this.searchTerm, 0).then((checks: any[]) => {
+      console.log("this.field, this.filter)", this.field, this.filter);
+      this.checkListService.getChecks(this.searchTerm, 0, this.field, this.filter).then((checks: any[]) => {
         this.checks = checks;
       });
       this.page = 1;
@@ -75,7 +80,7 @@ export class CheckListPage implements OnInit {
   }
 
   setFilteredItems() {
-    this.checkListService.getChecks(this.searchTerm, 0).then((checks) => {
+    this.checkListService.getChecks(this.searchTerm, 0, this.field, this.filter).then((checks) => {
       this.checks = checks;
       this.page = 1;
       this.loading.dismiss();
@@ -84,7 +89,7 @@ export class CheckListPage implements OnInit {
 
   doRefreshList() {
     setTimeout(() => {
-      this.checkListService.getChecks(this.searchTerm, 0).then((checks: any[]) => {
+      this.checkListService.getChecks(this.searchTerm, 0, this.field, this.filter).then((checks: any[]) => {
         this.checks = checks;
         this.page = 1;
       });
