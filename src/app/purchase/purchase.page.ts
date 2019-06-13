@@ -130,6 +130,7 @@ export class PurchasePage implements OnInit {
     currency_precision = 2;
     company_currency_id = 'currency.PYG';
     languages: Array<LanguageModel>;
+    currencies:any = {};
 
     constructor(
       public navCtrl: NavController,
@@ -234,6 +235,7 @@ export class PurchasePage implements OnInit {
         invoice: new FormControl(''),
         invoices: new FormControl([]),
         amount_unInvoiced: new FormControl(0),
+        exchange_rate: new FormControl(1),
         seller: new FormControl(this.route.snapshot.paramMap.get('seller')||{}, Validators.required),
         seller_name: new FormControl(this.route.snapshot.paramMap.get('seller_name')||''),
         _id: new FormControl(''),
@@ -247,6 +249,12 @@ export class PurchasePage implements OnInit {
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
       this.company_currency_id = config.currency_id || this.company_currency_id;
+      let pyg = await this.pouchdbService.getDoc('currency.PYG')
+      let usd = await this.pouchdbService.getDoc('currency.USD')
+      this.currencies = {
+        "currency.PYG": pyg,
+        "currency.USD": usd,
+      }
       if (this._id){
         this.getPurchase(this._id).then((data) => {
           //console.log("data", data);
@@ -523,7 +531,7 @@ export class PurchasePage implements OnInit {
           //console.log("vars", data);
           this.purchaseForm.value.items.unshift({
             'quantity': 1,
-            'price': data.cost,
+            'price': data.cost/this.purchaseForm.value.exchange_rate,
             // 'cost': data.cost,
             'product': data,
             'description': data.name,
@@ -551,7 +559,7 @@ export class PurchasePage implements OnInit {
         profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
-          item.price = data.price;
+          item.price = data.cost/this.purchaseForm.value.exchange_rate;
           item.product = data;
           item.description = data.name;
           this.recomputeValues();
@@ -1176,6 +1184,8 @@ export class PurchasePage implements OnInit {
         delete purchase.planned;
         purchase.contact_id = purchase.contact._id;
         delete purchase.contact;
+        purchase.currency_id = purchase.currency._id;
+        delete purchase.currency;
         // purchase.project_id = purchase.project._id;
         // delete purchase.project;
         purchase.pay_cond_id = purchase.paymentCondition._id;
@@ -1198,7 +1208,8 @@ export class PurchasePage implements OnInit {
           this.pouchdbService.getDoc(doc_id).then(((pouchData: any) => {
             let getList = [
               pouchData['contact_id'],
-              pouchData['pay_cond_id']
+              pouchData['pay_cond_id'],
+              pouchData['currency_id'],
             ];
             pouchData['lines'].forEach((item) => {
               if (getList.indexOf(item['product_id'])==-1){
@@ -1212,6 +1223,7 @@ export class PurchasePage implements OnInit {
               })
               pouchData.contact = doc_dict[pouchData.contact_id] || {};
               pouchData.paymentCondition = doc_dict[pouchData.pay_cond_id] || {};
+              pouchData.currency = doc_dict[pouchData.currency_id] || {};
               let index=2;
               pouchData['items'] = [];
               pouchData.lines.forEach((line: any)=>{
@@ -1308,26 +1320,26 @@ export class PurchasePage implements OnInit {
       }
 
 
-          selectCurrency() {
-            return new Promise(async resolve => {
-              this.events.subscribe('select-currency', (data) => {
-                this.purchaseForm.patchValue({
-                  currency: data,
-                  // cash_id: data._id,
-                });
-                this.purchaseForm.markAsDirty();
-                this.events.unsubscribe('select-currency');
-                // profileModal.dismiss();
-                resolve(true);
-              })
-              let profileModal = await this.modalCtrl.create({
-                component: CurrencyListPage,
-                componentProps: {
-                  "select": true
-                }
-              });
-              profileModal.present();
-            });
-          }
-
+  selectCurrency() {
+    return new Promise(async resolve => {
+      this.events.subscribe('select-currency', (data) => {
+        this.purchaseForm.patchValue({
+          currency: data,
+          exchange_rate: data.purchase_rate,
+          // cash_id: data._id,
+        });
+        this.purchaseForm.markAsDirty();
+        this.events.unsubscribe('select-currency');
+        // profileModal.dismiss();
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: CurrencyListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      profileModal.present();
+    });
+  }
 }

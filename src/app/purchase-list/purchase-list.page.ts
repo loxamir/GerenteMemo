@@ -27,7 +27,8 @@ export class PurchaseListPage implements OnInit {
   criteria = "=";
   languages: Array<LanguageModel>;
   currency_precision = 2;
-
+  currencies:any = {};
+  company_currency_id = 'currency.PYG';
   constructor(
     public navCtrl: NavController,
     // public app: App,
@@ -119,6 +120,13 @@ export class PurchaseListPage implements OnInit {
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
+    this.company_currency_id = config.currency_id;
+    let pyg = await this.pouchdbService.getDoc('currency.PYG')
+    let usd = await this.pouchdbService.getDoc('currency.USD')
+    this.currencies = {
+      "currency.PYG": pyg,
+      "currency.USD": usd,
+    }
     this.setFilteredItems();
   }
 
