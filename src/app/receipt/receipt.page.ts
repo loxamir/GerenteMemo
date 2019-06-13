@@ -915,6 +915,19 @@ export class ReceiptPage implements OnInit {
   }
 
   async afterConfirm() {
+    let savedResidual = 0;
+    if (this.receiptForm.value.residual > 0
+      && JSON.stringify(this.receiptForm.value.difference_account) != "{}"
+    ) {
+      console.log("is retencion");
+      savedResidual = this.receiptForm.value.residual;
+      this.receiptForm.patchValue({
+        "change": 0,
+        "amount_paid": this.receiptForm.value.total*this.receiptForm.value.exchange_rate,
+        "paid": this.receiptForm.value.total*this.receiptForm.value.exchange_rate,
+        "residual": 0,
+      });
+    }
     return new Promise(async resolve => {
       let self = this;
       // self.loading = await self.loadingCtrl.create();
@@ -1079,18 +1092,10 @@ export class ReceiptPage implements OnInit {
               console.log("Movimento", cashMoveDoc);
               promise_ids.push(this.cashMoveService.createCashMove(cashMoveDoc));
             }
-            // Writeoff para pagamentos exessivos
-            if (this.receiptForm.value.residual > 0
-              && JSON.stringify(this.receiptForm.value.difference_account) != "{}"
-            ) {
-              // this.pouchdbService.createDoc({
-              //   docType: 'cash-move',
-              //   amount: this.receiptForm.value.residual,
-              //   accountFrom: this.receiptForm.value.cash_paid,
-              //   accountTo: this.receiptForm.value.difference_account,
-              // })
+            // Writeoff para retenciones
+            if (savedResidual > 0) {
               let cashMoveDoc = {
-                "amount": this.change.toFixed(this.currency_precision),
+                "amount": savedResidual.toFixed(this.currency_precision),
                 "name": this.receiptForm.value.name,
                 "date": this.today,
                 "accountFrom_id": this.receiptForm.value.cash_paid._id,
@@ -1098,10 +1103,8 @@ export class ReceiptPage implements OnInit {
                 "check_id": this.receiptForm.value.check._id,
                 "accountTo_id": this.receiptForm.value.difference_account._id,
                 'signal': this.receiptForm.value.signal,
-                // "payments": paymentAccount[account_id],
                 "origin_id": this.receiptForm.value._id,
               }
-              console.log("Movimento", cashMoveDoc);
               promise_ids.push(this.cashMoveService.createCashMove(cashMoveDoc));
             }
             //Exchange Difference
