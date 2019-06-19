@@ -291,20 +291,34 @@ export class CashListPage implements OnInit {
         this.pouchdbService.searchDocTypeData(
           'account', keyword
         ).then((cashList: any[]) => {
-          cashList.forEach(cashier=>{
+          cashList.forEach(async cashier=>{
             if (this.user['admin']){
-              cashier.balance = 0;
               if (cashier._id.split('.')[1] == 'cash' || cashier._id.split('.')[1] == 'check' || cashier._id.split('.')[1] == 'bank'){
-                let cashReport = planneds.filter(x => x.key[0]==cashier._id)[0]
-                cashier.balance = cashReport && cashReport.value || 0;
+                if (cashier.currency_id){
+                  let balance = await this.pouchdbService.getView(
+                    'stock/CaixasForeing', 1, [cashier._id, null], [cashier._id, "z"]);
+                  cashier.balance = balance[0] && balance[0].value || 0;
+                } else {
+                  let balance = await this.pouchdbService.getView(
+                    'stock/Caixas', 1, [cashier._id, null], [cashier._id, "z"]);
+                    cashier.balance = balance[0] && balance[0].value || 0;
+                }
                 cashiers.push(cashier);
               }
             } else {
               if (cashier.users && cashier.users.indexOf(this.user['username'])>=0){
                 cashier.balance = 0;
                 if (cashier._id.split('.')[1] == 'cash' || cashier._id.split('.')[1] == 'check' || cashier._id.split('.')[1] == 'bank'){
-                  let cashReport = planneds.filter(x => x.key[0]==cashier._id)[0]
-                  cashier.balance = cashReport && cashReport.value || 0;
+                  if (cashier.currency_id){
+                    let balance = await this.pouchdbService.getView(
+                      'stock/CaixasForeing', 1, [cashier._id, null], [cashier._id, "z"]);
+                      cashier.balance = balance[0] && balance[0].value || 0;
+                  } else {
+
+                    let balance = await this.pouchdbService.getView(
+                      'stock/Caixas', 1, [cashier._id, null], [cashier._id, "z"]);
+                      cashier.balance = balance[0] && balance[0].value || 0;
+                  }
                   cashiers.push(cashier);
                 }
               }
@@ -321,24 +335,45 @@ export class CashListPage implements OnInit {
   }
 
   handleViewChange(list, change){
-    this.pouchdbService.getView(
-      'stock/Caixas', 1,
-      ['0'],
-      ['z']
-    ).then((cashiers: any[]) => {
-      let cashierDict = {}
-      cashiers.forEach(item=>{
-        cashierDict[item.key[0]] = item.value;
-      })
-      list.forEach((cashier, index)=>{
-        if (
-          change.doc.accountFrom_id == cashier._id
-          || change.doc.accountTo_id == cashier._id
-        ){
-          cashier.balance = cashierDict[cashier._id] || 0;
-        }
-      })
-    });
+    if (change.doc.currency_id){
+      this.pouchdbService.getView(
+        'stock/CaixasForeing', 1,
+        ['0'],
+        ['z']
+      ).then((cashiers: any[]) => {
+        let cashierDict = {}
+        cashiers.forEach(item=>{
+          cashierDict[item.key[0]] = item.value;
+        })
+        list.forEach((cashier, index)=>{
+          if (
+            change.doc.accountFrom_id == cashier._id
+            || change.doc.accountTo_id == cashier._id
+          ){
+            cashier.balance = cashierDict[cashier._id] || 0;
+          }
+        })
+      });
+    } else {
+      this.pouchdbService.getView(
+        'stock/Caixas', 1,
+        ['0'],
+        ['z']
+      ).then((cashiers: any[]) => {
+        let cashierDict = {}
+        cashiers.forEach(item=>{
+          cashierDict[item.key[0]] = item.value;
+        })
+        list.forEach((cashier, index)=>{
+          if (
+            change.doc.accountFrom_id == cashier._id
+            || change.doc.accountTo_id == cashier._id
+          ){
+            cashier.balance = cashierDict[cashier._id] || 0;
+          }
+        })
+      });
+    }
   }
 
   deleteCash2(cash) {

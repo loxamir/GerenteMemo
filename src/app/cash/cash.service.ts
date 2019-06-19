@@ -28,8 +28,6 @@ export class CashService {
       ).then(async (planneds: any[]) => {
         let promise_ids = [];
         let pts = [];
-        let balance: any = await this.pouchdbService.getView(
-          'stock/Caixas', 1, [doc_id, null], [doc_id, "z"]);
         planneds.forEach(item => {
           if (!item.key[2] || item.key[3] == doc_id){
             pts.push(item);
@@ -38,6 +36,15 @@ export class CashService {
         })
         promise_ids.push(this.pouchdbService.getDoc(doc_id));
         Promise.all(promise_ids).then(async cashMoves => {
+          let balance:any;
+          if (cashMoves[cashMoves.length-1].currency_id){
+            balance = await this.pouchdbService.getView(
+              'stock/CaixasForeing', 1, [doc_id, null], [doc_id, "z"]);
+          } else {
+            balance = await this.pouchdbService.getView(
+              'stock/Caixas', 1, [doc_id, null], [doc_id, "z"]);
+          }
+
           let cash = Object.assign({}, cashMoves[cashMoves.length-1]);
           cash.moves = [];
           cash.balance = balance[0] && balance[0].value || 0;
