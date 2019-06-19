@@ -792,6 +792,8 @@ export class ReceiptPage implements OnInit {
       this.events.unsubscribe('select-cash');
       if (this.receiptForm.value.signal == '+' && data.type == 'check'){
         this.createCheck();
+      } else if (this.receiptForm.value.signal == '-' && data.type == 'check'){
+        this.selectCheck();
       }
       await this.recomputeValues();
       // if (data.type == 'bank' || data.type == 'cash'){

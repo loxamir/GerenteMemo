@@ -531,7 +531,7 @@ export class PurchasePage implements OnInit {
           //console.log("vars", data);
           this.purchaseForm.value.items.unshift({
             'quantity': 1,
-            'price': data.cost/this.purchaseForm.value.exchange_rate,
+            'price': (data.cost/this.purchaseForm.value.exchange_rate).toFixed(this.currencies[this.purchaseForm.value.currency && this.purchaseForm.value.currency._id || this.company_currency_id].precision),
             // 'cost': data.cost,
             'product': data,
             'description': data.name,

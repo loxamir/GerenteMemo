@@ -192,6 +192,11 @@ export class CheckPage implements OnInit {
       }
     }
 
+    showSaveButton(){
+      let data = this.checkForm.value.name && this.checkForm.dirty;
+      return data;
+    }
+
     async depositCheck(){
       let doc = {
         "amount": this.checkForm.value.amount,

@@ -32,8 +32,12 @@
               </ion-row>
              <ion-row no-padding class="content-row one-line">
                 <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-                  <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
-                  <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+                  <!-- <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+                  <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2> -->
+                  <h2 class="list-big-number" style="color: green;">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{item.amount| number:'1.'+currency_precision}}</h2>
+                  <div class="residual-value" *ngIf="item.currency_id && item.currency_amount && item.currency_id.length && item.currency_id != company_currency_id"  style="color: black;">
+                    {{currencies[company_currency_id] && currencies[item.currency_id].symbol}} {{ item.currency_amount | number:'1.'+(currencies[company_currency_id] && currencies[item.currency_id].precision) }}
+                  </div>
                 </ion-col>
               </ion-row>
             </ion-col>
@@ -41,7 +45,7 @@
               <ion-icon name="open" class="open-item-arrow"></ion-icon>
             </ion-col>
           </ion-row>
-          <ion-row no-padding [class.paid]="item.state != 'REJECTED'" [class.due]="item.state == 'REJECTED'">
+          <ion-row no-padding [class.quotation]="item.state != 'REJECTED' && item.state != 'RECEIVED'" [class.paid]="item.state == 'RECEIVED'" [class.due]="item.state == 'REJECTED'">
             <ion-col no-padding style="text-align: center;border-radius: 4px;">
               {{ item.state | translate}}
             </ion-col>
