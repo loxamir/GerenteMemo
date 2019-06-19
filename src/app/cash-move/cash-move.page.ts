@@ -63,7 +63,7 @@ company_currency_id = 'currency.PYG';
   transfer: boolean = false;
   changing = false;
   currency_precision = 2;
-  company_currency_name = "Guarani";
+  company_currency_name = "";
   constructor(
 
     public navCtrl: NavController,

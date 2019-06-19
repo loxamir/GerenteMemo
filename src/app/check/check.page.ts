@@ -31,7 +31,7 @@ export class CheckPage implements OnInit {
     _id: string;
     select;
     company_currency_id = 'currency.PYG';
-    company_currency_name = "Guarani";
+    company_currency_name = "";
     @Input() contact;
     @Input() amount;
     @Input() bank;

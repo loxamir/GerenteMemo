@@ -105,7 +105,7 @@ export class PurchasePage implements OnInit {
             //return;
         }
         //console.log("timeStamp", timeStamp);
-        if(!timeStamp || timeStamp < 5 || this.barcode == ""){
+        if(!timeStamp || timeStamp < 20 || this.barcode == ""){
             //code = "";
             this.barcode += event.key;
         }
