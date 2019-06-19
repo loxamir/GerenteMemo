@@ -28,6 +28,8 @@
       <h4 class="field-label" style="text-align: center;">{{'A Cobrar' | translate }}</h4>
       <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receiptForm.value.cash_paid.currency_id && receiptForm.value.cash_paid.currency_id != company_currency_id">{{currencies[company_currency_id] && currencies[company_currency_id].symbol }} {{receiptForm.value.residual*receiptForm.value.exchange_rate|number:'1.'+currency_precision+'-2'}}</h4>
       <h4 class="field-value" style="color:red;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">{{currencies[company_currency_id] && currencies[receiptForm.value.cash_paid.currency_id || company_currency_id].symbol }} {{receiptForm.value.residual+(receiptForm.value.residual && smallDiff)|number:'1.'+currency_precision+'-2'}}</h4>
+      <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;"> {{exchangeDiff}}</h4>
+
     </ion-col>
     <ion-col size="4" no-padding>
       <h4 class="field-label" style="text-align: center;">{{'Troco' | translate }}</h4>

@@ -7,26 +7,16 @@ import {
 } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-//import { DecimalPipe } from '@angular/common';
 import { Printer } from '@ionic-native/printer/ngx';
-
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
 import { ReceiptService } from './receipt.service';
-// import { ContactsPage } from '../contact/list/contacts';
-//import { ReceiptItemPage } from '../receipt-item/receipt-item';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { CashMoveService } from '../cash-move/cash-move.service';
 import { CashListPage } from '../cash-list/cash-list.page';
-// import { ProductsPage } from '../product/list/products';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
-// import { PlannedService } from '../planned/list/planned-list.service';
 import { ConfigService } from '../config/config.service';
-// import { HostListener } from '@angular/core';
-// import { PlannedPage } from '../planned/planned';
 import { FormatService } from '../services/format.service';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { InvoicePage } from '../invoice/invoice.page';
@@ -41,16 +31,12 @@ import { AccountListPage } from '../account-list/account-list.page';
   styleUrls: ['./receipt.page.scss'],
 })
 export class ReceiptPage implements OnInit {
-  // @ViewChild('Select') select;
   @ViewChild('amount_paid') amount_paid;
   receiptForm: FormGroup;
   loading: any;
   today: any;
-  // _id: string;
   avoidAlertMessage: boolean;
-  // select;
   languages: Array<LanguageModel>;
-  // items;
   @Input() items: any;
   @Input() select: any;
   @Input() _id: any;
@@ -75,17 +61,12 @@ export class ReceiptPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    // public imagePicker: ImagePicker,
-    // public cropService: Crop,
     public platform: Platform,
     public modalCtrl: ModalController,
     public receiptService: ReceiptService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
-    // public navParams: NavParams,
     public alertCtrl: AlertController,
-    // public productService: ProductService,
-    // public plannedService: PlannedService,
     public bluetoothSerial: BluetoothSerial,
     public toastCtrl: ToastController,
     public printer: Printer,
@@ -95,33 +76,22 @@ export class ReceiptPage implements OnInit {
     public pouchdbService: PouchdbService,
     public popoverCtrl: PopoverController,
     public events: Events,
-    // public modal: ModalController,
   ) {
-    // console.log("route", this.route);
     this.today = new Date().toISOString();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
-    // this.items =  this.route.snapshot.paramMap.get('items');
     this.avoidAlertMessage = false;
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
   }
 
-  // ngAfterViewInit(){
-  //   console.log("after", this.route.snapshot.paramMap.get('items'));
-  // }
-
   async ngOnInit() {
-    //var today = new Date().toISOString();
     this.receiptForm = this.formBuilder.group({
       contact: new FormControl(this.contact || {}, Validators.required),
-      // account_id: new FormControl(this.route.snapshot.paramMap.get('account_id')||""),
-      // project_id: new FormControl(this.route.snapshot.paramMap.get('project_id')||""),
       name: new FormControl(this.name || 'Recibo'),
-      // contact_name: new FormControl(this.route.snapshot.paramMap.get('contact') && this.route.snapshot.paramMap.get('contact.name') || ''),
       code: new FormControl(''),
       date: new FormControl(this.today),
       total: new FormControl(0),
@@ -134,8 +104,6 @@ export class ReceiptPage implements OnInit {
       items_details: new FormControl([]),
       origin_id: new FormControl(this.origin_id || ''),
       payments: new FormControl([]),
-      // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids')||[]),
-      // paymentCondition: new FormControl({}),
       payment_name: new FormControl(''),
       invoices: new FormControl([]),
       amount_unInvoiced: new FormControl(''),
@@ -192,7 +160,6 @@ export class ReceiptPage implements OnInit {
         "cash_paid": cashier,
         "exchange_rate": cash_currency.purchase_rate,
       });
-      // receiptForm.value.cash.precision
       await this.recomputeValues();
       await this.loading.dismiss();
       setTimeout(() => {
@@ -253,10 +220,8 @@ export class ReceiptPage implements OnInit {
       });
       this.avoidAlertMessage = false;
       this.buttonSave();
-      // console.log("toInvoice", data);
       let toInvoice = data.total;
       this.receiptForm.value.items.forEach(cashMove => {
-        // let cashMove = this.receiptForm.value.items[0];
         let amount_invoiced = 0;
         if (toInvoice > cashMove.amount_unInvoiced) {
           toInvoice -= cashMove.amount_unInvoiced;
@@ -524,6 +489,7 @@ export class ReceiptPage implements OnInit {
               exchangeDiff += parseFloat(item.amount_residual) - parseFloat(item['currency_residual'])*parseFloat(this.receiptForm.value.exchange_rate);
               console.log("exchangeDiff1", exchangeDiff);
             } else {
+              exchangeDiff += parseFloat(item.amount_residual) - parseFloat(item['currency_residual'])*parseFloat(this.receiptForm.value.exchange_rate);
               let item_currency: any = await this.pouchdbService.getDoc(item.currency_id);
               let rate = item_currency.sale_rate;
               if (this.receiptForm.value.signal == "-"){
@@ -982,7 +948,8 @@ export class ReceiptPage implements OnInit {
 
         this.receiptForm.value.items.forEach(ite => {
           if (ite.currency_id && ite.currency_id != this.company_currency_id && ite.currency_id != this.receiptForm.value.cash_paid.currency_id){
-            let ex_rate = this.currencies[ite.currency_id].purchase_rate;
+            // let ex_rate = this.currencies[ite.currency_id].purchase_rate;
+            let ex_rate = parseFloat(this.receiptForm.value.exchange_rate);
               paid_currency = (
                 paid_real / ex_rate
               ).toFixed(this.currency_precision);
@@ -1175,6 +1142,21 @@ export class ReceiptPage implements OnInit {
               promise_ids.push(this.cashMoveService.createCashMove(cashMoveDoc));
             }
           });
+          if (this.exchangeDiff != 0) {
+            let cashMoveDoc = {
+              "amount": this.exchangeDiff.toFixed(this.currency_precision),
+              "name": this.receiptForm.value.name,
+              "date": this.today,
+              "accountFrom_id": this.receiptForm.value.cash_paid._id,
+              "contact_id": this.receiptForm.value.contact._id,
+              "check_id": this.receiptForm.value.check._id,
+              "accountTo_id": 'account.payable.cash',
+              'signal': this.receiptForm.value.signal,
+              // "payments": paymentAccount[account_id],
+              "origin_id": this.receiptForm.value._id,
+            }
+            promise_ids.push(this.cashMoveService.createCashMove(cashMoveDoc));
+          }
         }
       });
       let details2 = [];
