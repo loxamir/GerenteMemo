@@ -498,8 +498,8 @@ export class SalePage implements OnInit {
     // }
 
     async goNextStep() {
-      this.loading = await this.loadingCtrl.create();
-      await this.loading.present();
+      // this.loading = await this.loadingCtrl.create();
+      // await this.loading.present();
       if(this.return){
         await this.buttonSave();
       }
@@ -513,14 +513,14 @@ export class SalePage implements OnInit {
           this.confirming = false;
         }
       } else if (this.saleForm.value.state == 'CONFIRMED'){
-          await this.loading.dismiss();
+          // await this.loading.dismiss();
           this.addPayment();
       } else if (this.saleForm.value.state == 'PAID'){
         if (this.saleForm.value.invoices.length){
           await this.navCtrl.navigateBack('/sale-list');
-          await this.loading.dismiss();
+          // await this.loading.dismiss();
         } else {
-          await this.loading.dismiss();
+          // await this.loading.dismiss();
           this.addInvoice();
         }
       }
@@ -529,12 +529,12 @@ export class SalePage implements OnInit {
     beforeConfirm(){
       return new Promise(async resolve =>{
         if (this.saleForm.value.items.length == 0){
-          await this.loading.dismiss();
+          // await this.loading.dismiss();
           this.addItem();
           resolve(true);
         } else {
           if (Object.keys(this.saleForm.value.contact).length === 0){
-            await this.loading.dismiss();
+            // await this.loading.dismiss();
             this.selectContact().then(async teste => {
               await this.loading.dismiss();
               if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
@@ -547,7 +547,7 @@ export class SalePage implements OnInit {
               }
             });
           } else if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
-            await this.loading.dismiss();
+            // await this.loading.dismiss();
             this.selectPaymentCondition().then(async ()=>{
               this.loading = await this.loadingCtrl.create();
               await this.loading.present();
@@ -555,7 +555,7 @@ export class SalePage implements OnInit {
               resolve(true);
             });
           } else {
-            await this.loading.dismiss();
+            // await this.loading.dismiss();
             this.loading = await this.loadingCtrl.create();
             await this.loading.present();
             await this.saleConfimation();
