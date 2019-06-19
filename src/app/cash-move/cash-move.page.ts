@@ -162,7 +162,11 @@ company_currency_id = 'currency.PYG';
     } else {
       this.contact = await this.pouchdbService.getDoc('contact.unknown');
     }
-
+    let config = await this.configService.getConfig();
+    // let config:any = (await this.pouchdbService.getDoc('config.profile'));
+    this.currency_precision = config.currency_precision;
+    this.company_currency_id = config.currency._id;
+    this.company_currency_name = config.currency.name;
     if (this._id){
       this.cashMoveService.getCashMove(this._id).then((data) => {
         // data.date = Date(data.date)
@@ -179,11 +183,11 @@ company_currency_id = 'currency.PYG';
       //   });
       // } else {
         // this.configService.getConfig().then(config => {
-        let config = await this.configService.getConfig();
-        // let config:any = (await this.pouchdbService.getDoc('config.profile'));
-        this.currency_precision = config.currency_precision;
-        this.company_currency_id = config.currency._id;
-        this.company_currency_name = config.currency.name;
+        // let config = await this.configService.getConfig();
+        // // let config:any = (await this.pouchdbService.getDoc('config.profile'));
+        // this.currency_precision = config.currency_precision;
+        // this.company_currency_id = config.currency._id;
+        // this.company_currency_name = config.currency.name;
           let accountFrom = this.accountFrom || {};
           let accountTo = this.accountTo || {};
           let contact = this.contact || {};
@@ -408,7 +412,7 @@ company_currency_id = 'currency.PYG';
 
   async confirmCashMove(){
     let state = 'DONE';
-    if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'bank'){
+    if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'bank' || JSON.stringify(this.cashMoveForm.value.check) != '{}'){
       state = 'WAITING'
     }
     this.cashMoveForm.patchValue({

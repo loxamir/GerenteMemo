@@ -14,6 +14,7 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 import { CashListPage } from '../cash-list/cash-list.page';
 import { AccountListPage } from '../account-list/account-list.page';
 import { CashMoveService } from '../cash-move/cash-move.service';
+import { ConfigService } from '../config/config.service';
 
 @Component({
   selector: 'app-check',
@@ -58,6 +59,7 @@ export class CheckPage implements OnInit {
       public events: Events,
       public cashMoveService: CashMoveService,
       public pouchdbService: PouchdbService,
+      public configService: ConfigService,
     ) {
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
@@ -104,8 +106,13 @@ export class CheckPage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
-      let config:any = await this.pouchdbService.getDoc('config.profile');
+      // let config:any = await this.pouchdbService.getDoc('config.profile');
+      // this.currency_precision = config.currency_precision;
+      let config = await this.configService.getConfig();
+      // let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
+      this.company_currency_id = config.currency._id;
+      this.company_currency_name = config.currency.name;
       if (this._id){
         this.checkService.getCheck(this._id).then((data) => {
           this.checkForm.patchValue(data);
@@ -197,11 +204,19 @@ export class CheckPage implements OnInit {
         "state": 'WAITING',
         "origin_id": this.checkForm.value._id,
       }
+      if (JSON.stringify(this.checkForm.value.currency) != '{}'){
+        doc['currency_id'] = this.checkForm.value.currency._id;
+        doc['currency_amount'] = this.checkForm.value.currency_amount;
+        doc['currency_exchange'] = this.checkForm.value.currency_exchange;
+      }
       await this.selectAccount();
       this.checkForm.patchValue({
         state: "DEPOSITED",
       })
-      doc["accountTo_id"] = this.checkForm.value.account._id,
+      doc["accountTo_id"] = this.checkForm.value.account._id;
+      if (this.checkForm.value.account._id.split('.')[1] == 'cash'){
+        doc['state'] = 'DONE';
+      }
       await this.cashMoveService.createCashMove(doc);
       await this.buttonSave();
     }

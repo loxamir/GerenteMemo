@@ -15,7 +15,7 @@ export class CheckListService {
     return new Promise((resolve, reject)=>{
       if (field){
         this.pouchdbService.searchDocTypeDataField(
-          'check', keyword, page, field, filter
+          'check', keyword, page, field, filter, "maturity_date"
         ).then((accounts: any[]) => {
           resolve(accounts);
         });

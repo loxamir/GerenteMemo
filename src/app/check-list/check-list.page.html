@@ -41,7 +41,7 @@
               <ion-icon name="open" class="open-item-arrow"></ion-icon>
             </ion-col>
           </ion-row>
-          <ion-row no-padding [class.paid]="item.accountFrom_id == _id" [class.due]="item.accountFrom_id != _id">
+          <ion-row no-padding [class.paid]="item.state != 'REJECTED'" [class.due]="item.state == 'REJECTED'">
             <ion-col no-padding style="text-align: center;border-radius: 4px;">
               {{ item.state | translate}}
             </ion-col>

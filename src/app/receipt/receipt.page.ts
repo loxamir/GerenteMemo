@@ -810,14 +810,15 @@ export class ReceiptPage implements OnInit {
     // if (default_amount != 0){
     this.events.subscribe('select-cash', async (data: any) => {
       // this.receiptForm.value.cash = data;
-      // console.log("selectCash", (await this.pouchdbService.getDoc(data.currency_id)))
       let currency: any = await this.pouchdbService.getDoc(data.currency_id);
-      let rate = data.currency_id && currency.sale_rate || 1;
+      let rate = currency.sale_rate || 1;
       if (this.receiptForm.value.signal == '-'){
-        rate = data.currency_id && currency.purchase_rate || 1;
+        rate = currency.purchase_rate || 1;
       }
-      let cash_currency:any = await this.pouchdbService.getDoc(this.items[0].currency_id || this.company_currency_id);
-      rate = cash_currency.purchase_rate;
+      if (this.items[0].currency_id){
+        let cash_currency:any = await this.pouchdbService.getDoc(this.items[0].currency_id || this.company_currency_id);
+        rate = cash_currency.purchase_rate;
+      }
       this.receiptForm.patchValue({
         "cash_paid": data,
         "exchange_rate": rate,

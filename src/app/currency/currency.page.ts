@@ -53,6 +53,9 @@ export class CurrencyPage implements OnInit {
       this.currencyForm = this.formBuilder.group({
         name: new FormControl('', Validators.required),
         precision: new FormControl(2),
+        inverted_rate: new FormControl(false),
+        inverted_sale_rate: new FormControl(1),
+        inverted_purchase_rate: new FormControl(1),
         sale_rate: new FormControl(1),
         symbol: new FormControl('X$'),
         purchase_rate: new FormControl(1),
@@ -87,6 +90,18 @@ export class CurrencyPage implements OnInit {
           this.exitPage();
         // });
       }
+    }
+
+    changedPurchageRate() {
+      this.currencyForm.patchValue({
+        purchase_rate: 1/this.currencyForm.value.inverted_purchase_rate,
+      })
+    }
+
+    changedSaleRate() {
+      this.currencyForm.patchValue({
+        sale_rate: 1/this.currencyForm.value.inverted_sale_rate,
+      })
     }
 
     setLanguage(lang: LanguageModel){

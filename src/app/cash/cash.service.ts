@@ -3,6 +3,7 @@ import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ConfigService } from '../config/config.service';
 import { CashMoveService } from '../cash-move/cash-move.service';
+import { FormatService } from '../services/format.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class CashService {
     public pouchdbService: PouchdbService,
     public configService: ConfigService,
     public cashMoveService: CashMoveService,
+    public formatService: FormatService,
   ) {}
 
 
@@ -42,9 +44,13 @@ export class CashService {
           cash.account = cashMoves[cashMoves.length-1];
           cash.waiting = [];
           // let waitingBalance = 0;
-          let checks = await this.pouchdbService.getView('Informes/Cheques', 5, [doc_id], [doc_id+"z"], false, true, undefined, undefined, true);
-          console.log("checks", checks)
-          cash.checks = checks || [];
+          if (cash.type == 'check'){
+            let checks:any = await this.pouchdbService.getView('Informes/Cheques', 5, [doc_id], [doc_id+"z"], false, true, undefined, undefined, true);
+            let checks2 = checks.sort((a, b) => {
+              return this.formatService.compareField(a.doc, b.doc, 'write_date', 'increase');
+            })
+            cash.checks = checks2 || [];
+          }
           for(let i=0;i<pts.length;i++){
             if (cash.type == 'bank'){
               if (cashMoves[i].state == 'WAITING'){

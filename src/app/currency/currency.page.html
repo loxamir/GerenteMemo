@@ -9,7 +9,7 @@
     <ion-row>
       <ion-item class="field-100">
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-        <ion-input type="text" formControlName="name" autocomplete='name'></ion-input>
+        <ion-input type="text" formControlName="name"></ion-input>
       </ion-item>
       <div class="validation-errors">
         <ng-container *ngFor="let validation of validation_messages.name">
@@ -21,12 +21,14 @@
 
       <ion-item class="field-50">
         <ion-label position="floating">{{'SALE_RATE' | translate}}</ion-label>
-        <ion-input type="number" formControlName="sale_rate" autocomplete='name'></ion-input>
+        <ion-input type="number" formControlName="sale_rate" *ngIf="!currencyForm.value.inverted_rate"></ion-input>
+        <ion-input type="number" formControlName="inverted_sale_rate" (ngModelChange)="changedSaleRate()" *ngIf="currencyForm.value.inverted_rate"></ion-input>
       </ion-item>
 
-      <ion-item class="field-50">
+      <ion-item class="field-50" >
         <ion-label position="floating">{{'PURCHASE_RATE' | translate}}</ion-label>
-        <ion-input type="number" formControlName="purchase_rate" autocomplete='name'></ion-input>
+        <ion-input type="number" formControlName="purchase_rate" *ngIf="!currencyForm.value.inverted_rate"></ion-input>
+        <ion-input type="number" formControlName="inverted_purchase_rate" (ngModelChange)="changedPurchageRate()" *ngIf="currencyForm.value.inverted_rate"></ion-input>
       </ion-item>
       <ion-item class="field-50">
         <ion-label position="floating">{{'SYMBOL' | translate}}</ion-label>
@@ -36,7 +38,12 @@
         <ion-label position="floating">{{'Precisión Decimal' | translate}}</ion-label>
         <ion-input type="number" formControlName="precision"></ion-input>
       </ion-item>
-
+      <ion-item
+       no-padding
+       class="field-100">
+         <ion-label>{{'Tasa Invertida' | translate}}</ion-label>
+         <ion-toggle formControlName="inverted_rate"></ion-toggle>
+      </ion-item>
 
     </ion-row>
   </form>
