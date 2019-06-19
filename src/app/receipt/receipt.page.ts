@@ -155,7 +155,7 @@ export class ReceiptPage implements OnInit {
       if (this.receiptForm.value.signal == '-'){
         rate =  cashier.currency && cashier.currency.purchase_rate || 1;
       }
-      let cash_currency:any = await this.pouchdbService.getDoc(this.items[0].currency_id || this.company_currency_id);
+      let cash_currency:any = await this.pouchdbService.getDoc(this.items[0] && this.items[0].currency_id || this.company_currency_id);
       this.receiptForm.patchValue({
         "cash_paid": cashier,
         "exchange_rate": cash_currency.purchase_rate,
@@ -1170,7 +1170,12 @@ export class ReceiptPage implements OnInit {
       });
       Promise.all(promise_ids).then((promise_data) => {
         // console.log("promise_data",promise_data);
-        let amount_paid = (this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit) * this.receiptForm.value.exchange_rate;
+        let amount_paid = 0;
+        if (this.receiptForm.value.cash_paid.currency_id){
+          amount_paid = (this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit);
+        } else  {
+          amount_paid = (this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit) / this.receiptForm.value.exchange_rate;
+        }
         // let amount_invoiced = amount_paid;
         let promise_ids2 = [];
         this.receiptForm.value.items.forEach(async (item1, index) => {
