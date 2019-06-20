@@ -550,7 +550,9 @@ company_currency_id = 'currency.PYG';
         this.cashMoveForm.patchValue({
           check: data,
           amount: data.amount,
-          currency: data.currency
+          currency: data.currency,
+          currency_amount: data.currency_amount,
+          currency_exchange: data.currency_exchange
           // cash_id: data._id,
         });
         this.cashMoveForm.markAsDirty();

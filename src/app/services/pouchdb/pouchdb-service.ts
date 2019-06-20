@@ -9,7 +9,7 @@ import { Storage } from '@ionic/storage';
 import { FormatService } from '../format.service';
 import * as PouchWorker from 'worker-pouch';
 // var server = "database.sistemamemo.com";
-var server = "localhost:5984";
+var server = "192.168.0.50:5984";
 
 @Injectable({ providedIn: 'root' })
 export class PouchdbService {

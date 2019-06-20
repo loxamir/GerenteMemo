@@ -218,7 +218,6 @@ export class PurchasePage implements OnInit {
         // project_name: new FormControl(this.route.snapshot.paramMap.get('project_name')||''),
 
         name: new FormControl(''),
-        currency: new FormControl({}),
         code: new FormControl(''),
         date: new FormControl(this.route.snapshot.paramMap.get('date')||this.today),
         origin_id: new FormControl(this.route.snapshot.paramMap.get('origin_id')),
@@ -235,7 +234,8 @@ export class PurchasePage implements OnInit {
         invoice: new FormControl(''),
         invoices: new FormControl([]),
         amount_unInvoiced: new FormControl(0),
-        exchange_rate: new FormControl(1),
+        currency: new FormControl({}),
+        currency_exchange: new FormControl(1),
         seller: new FormControl(this.route.snapshot.paramMap.get('seller')||{}, Validators.required),
         seller_name: new FormControl(this.route.snapshot.paramMap.get('seller_name')||''),
         _id: new FormControl(''),
@@ -531,7 +531,7 @@ export class PurchasePage implements OnInit {
           //console.log("vars", data);
           this.purchaseForm.value.items.unshift({
             'quantity': 1,
-            'price': (data.cost/this.purchaseForm.value.exchange_rate).toFixed(this.currencies[this.purchaseForm.value.currency && this.purchaseForm.value.currency._id || this.company_currency_id].precision),
+            'price': (data.cost/this.purchaseForm.value.currency_exchange).toFixed(this.currencies[this.purchaseForm.value.currency && this.purchaseForm.value.currency._id || this.company_currency_id].precision),
             // 'cost': data.cost,
             'product': data,
             'description': data.name,
@@ -559,7 +559,7 @@ export class PurchasePage implements OnInit {
         profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
-          item.price = data.cost/this.purchaseForm.value.exchange_rate;
+          item.price = data.cost/this.purchaseForm.value.currency_exchange;
           item.product = data;
           item.description = data.name;
           this.recomputeValues();
@@ -1325,7 +1325,7 @@ export class PurchasePage implements OnInit {
       this.events.subscribe('select-currency', (data) => {
         this.purchaseForm.patchValue({
           currency: data,
-          exchange_rate: data.purchase_rate,
+          currency_exchange: data.purchase_rate,
           // cash_id: data._id,
         });
         this.purchaseForm.markAsDirty();
