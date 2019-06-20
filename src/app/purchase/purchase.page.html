@@ -16,12 +16,12 @@
   <ion-row  style="height:50px;">
     <ion-col>
       <h4 class="field-label-col">{{'TOTAL' | translate}}</h4>
-      <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="purchaseForm.value.currency && purchaseForm.value.currency._id && purchaseForm.value.currency._id != company_currency_id">{{currencies[company_currency_id] && currencies[company_currency_id].symbol }} {{purchaseForm.value.total*purchaseForm.value.exchange_rate|number:'1.'+currency_precision+'-2'}}</h4>
+      <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="purchaseForm.value.currency && purchaseForm.value.currency._id && purchaseForm.value.currency._id != company_currency_id">{{currencies[company_currency_id] && currencies[company_currency_id].symbol }} {{purchaseForm.value.total*purchaseForm.value.currency_exchange|number:'1.'+currency_precision+'-2'}}</h4>
       <h4 class="field-value-col" style="color:blue">{{this.purchaseForm.value.currency && this.purchaseForm.value.currency._id != company_currency_id && this.purchaseForm.value.currency.symbol || currencies[company_currency_id] && currencies[company_currency_id].symbol||'$' }} {{purchaseForm.value.total|number:'1.'+currency_precision}}</h4>
     </ion-col>
     <ion-col>
       <h4 class="field-label-col">{{'Pagar' | translate}}</h4>
-      <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="purchaseForm.value.currency && purchaseForm.value.currency._id && purchaseForm.value.currency._id != company_currency_id">{{currencies[company_currency_id] && currencies[company_currency_id].symbol }} {{purchaseForm.value.residual*purchaseForm.value.exchange_rate|number:'1.'+currency_precision+'-2'}}</h4>
+      <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="purchaseForm.value.currency && purchaseForm.value.currency._id && purchaseForm.value.currency._id != company_currency_id">{{currencies[company_currency_id] && currencies[company_currency_id].symbol }} {{purchaseForm.value.residual*purchaseForm.value.currency_exchange|number:'1.'+currency_precision+'-2'}}</h4>
       <h4 class="field-value-col" style="color:red">{{this.purchaseForm.value.currency && this.purchaseForm.value.currency.symbol || currencies[company_currency_id] && currencies[company_currency_id].symbol||'$' }} {{purchaseForm.value.residual|number:'1.'+currency_precision}}</h4>
     </ion-col>
   </ion-row>
@@ -84,7 +84,7 @@
       <ion-col *ngIf="purchaseForm.value.currency && purchaseForm.value.currency.name">
         <ion-item style="--background: white;">
           <ion-label position="floating" style="font-size:14px">{{'EXCHANGE_RATE' | translate}}</ion-label>
-          <ion-input #exchange_rate type="number" formControlName="exchange_rate" (ionChange)="recomputeValues()" [disabled]="purchaseForm.value.state != 'QUOTATION'"></ion-input>
+          <ion-input #currency_exchange type="number" formControlName="currency_exchange" (ionChange)="recomputeValues()" [disabled]="purchaseForm.value.state != 'QUOTATION'"></ion-input>
         </ion-item>
       </ion-col>
 
@@ -99,7 +99,7 @@
       </ion-item>
       <ion-item no-padding class="field-50" *ngIf="purchaseForm.value.currency && purchaseForm.value.currency.name">
         <ion-label position="floating" style="font-size:14px">{{'EXCHANGE_RATE' | translate}}</ion-label>
-        <ion-input #exchange_rate type="number" formControlName="exchange_rate" (ionChange)="recomputeValues()" [disabled]="purchaseForm.value.state != 'QUOTATION'"></ion-input>
+        <ion-input #currency_exchange type="number" formControlName="currency_exchange" (ionChange)="recomputeValues()" [disabled]="purchaseForm.value.state != 'QUOTATION'"></ion-input>
       </ion-item> -->
     </ion-row>
     <ion-row>
@@ -190,7 +190,7 @@
                 <div style="font-size: 15px;display: contents; color:red">
                    {{this.purchaseForm.value.currency && this.purchaseForm.value.currency.symbol || currencies[company_currency_id] && currencies[company_currency_id].symbol||'$' }} {{item.price|number:'1.'++(this.purchaseForm.value.currency && this.purchaseForm.value.currency.precision || currencies[company_currency_id] && currencies[company_currency_id].precision)+"-"+(this.purchaseForm.value.currency && this.purchaseForm.value.currency.precision || currencies[company_currency_id] && currencies[company_currency_id].precision)}}
                 </div>
-                <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: left;margin-top: -0.2rem;margin-bottom: 1rem;" *ngIf="purchaseForm.value.currency && purchaseForm.value.currency._id && purchaseForm.value.currency._id != company_currency_id">{{currencies[company_currency_id] && currencies[company_currency_id].symbol }} {{item.price*purchaseForm.value.exchange_rate|number:'1.'+currency_precision+'-2'}}</h4>
+                <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: left;margin-top: -0.2rem;margin-bottom: 1rem;" *ngIf="purchaseForm.value.currency && purchaseForm.value.currency._id && purchaseForm.value.currency._id != company_currency_id">{{currencies[company_currency_id] && currencies[company_currency_id].symbol }} {{item.price*purchaseForm.value.currency_exchange|number:'1.'+currency_precision+'-2'}}</h4>
 
               </ion-col>
             </ion-row>
@@ -199,7 +199,7 @@
                 <span class="price-label">SubTotal:</span>
                 <div style="font-size: 20px;color:green;">
                    {{this.purchaseForm.value.currency && this.purchaseForm.value.currency.symbol || currencies[company_currency_id] && currencies[company_currency_id].symbol||'$' }} {{item.price*item.quantity|number:'1.'+(this.purchaseForm.value.currency && this.purchaseForm.value.currency.precision || currencies[company_currency_id] && currencies[company_currency_id].precision)+"-"+(this.purchaseForm.value.currency && this.purchaseForm.value.currency.precision || currencies[company_currency_id] && currencies[company_currency_id].precision)}}
-                   <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: left;margin-top: -0.2rem;margin-bottom: 1rem;" *ngIf="purchaseForm.value.currency && purchaseForm.value.currency._id && purchaseForm.value.currency._id != company_currency_id">{{currencies[company_currency_id] && currencies[company_currency_id].symbol }} {{item.price*item.quantity*purchaseForm.value.exchange_rate|number:'1.'+currency_precision+'-2'}}</h4>
+                   <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: left;margin-top: -0.2rem;margin-bottom: 1rem;" *ngIf="purchaseForm.value.currency && purchaseForm.value.currency._id && purchaseForm.value.currency._id != company_currency_id">{{currencies[company_currency_id] && currencies[company_currency_id].symbol }} {{item.price*item.quantity*purchaseForm.value.currency_exchange|number:'1.'+currency_precision+'-2'}}</h4>
                 </div>
               </ion-col>
             </ion-row>
