@@ -1018,9 +1018,8 @@ export class ReceiptPage implements OnInit {
               doc['currency_exchange'] = this.receiptForm.value.currency_exchange;
             }
             if (this.receiptForm.value.cash_paid.type == 'check'){
-              // doc['amount'] = (amount_paid2 + this.change).toFixed(this.currency_precision);
-              doc['amount'] = (this.receiptForm.value.check.currency_amount*this.receiptForm.value.currency_exchange).toFixed(this.currency_precision);
               if (this.receiptForm.value.check.currency_id && this.receiptForm.value.check.currency_id != this.company_currency_id) {
+                doc['amount'] = (this.receiptForm.value.check.currency_amount*this.receiptForm.value.currency_exchange).toFixed(this.currency_precision);
                 doc['currency_amount'] = this.receiptForm.value.check.currency_amount;
                 doc['currency_id'] = this.receiptForm.value.check.currency_id;
                 doc['currency_exchange'] = this.receiptForm.value.check.currency_exchange;
@@ -1110,8 +1109,8 @@ export class ReceiptPage implements OnInit {
               doc['state'] = 'WAITING';
             }
             if (this.receiptForm.value.cash_paid.type == 'check'){
-              doc['amount'] = (this.receiptForm.value.check.currency_amount*this.receiptForm.value.currency_exchange).toFixed(this.currency_precision);
               if (this.receiptForm.value.check.currency_id && this.receiptForm.value.check.currency_id != this.company_currency_id) {
+                doc['amount'] = (this.receiptForm.value.check.currency_amount*this.receiptForm.value.currency_exchange).toFixed(this.currency_precision);
                 doc['currency_amount'] = this.receiptForm.value.check.currency_amount;
                 doc['currency_id'] = this.receiptForm.value.check.currency_id;
                 doc['currency_exchange'] = this.receiptForm.value.check.currency_exchange;
