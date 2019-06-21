@@ -282,11 +282,11 @@ export class CashListPage implements OnInit {
   getCashList(keyword, page){
     return new Promise((resolve, reject)=>{
       let payableList = [];
-      // this.pouchdbService.getView(
-      //   'stock/Caixas', 1,
-      //   ['0'],
-      //   ['z']
-      // ).then((planneds: any[]) => {
+      this.pouchdbService.getView(
+        'stock/Caixas', 1,
+        ['0'],
+        ['z']
+      ).then((planneds: any[]) => {
         let cashiers = [];
         this.pouchdbService.searchDocTypeData(
           'account', keyword
@@ -327,7 +327,7 @@ export class CashListPage implements OnInit {
           resolve(cashiers);
         });
       });
-    // });
+    });
   }
 
   handleChange(list, change){

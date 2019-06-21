@@ -664,7 +664,7 @@ export class PurchasePage implements OnInit {
             this.purchaseForm.value.payments.slice(index, 1);
             newPayments.push(receipt);
           } else {
-            residual += receipt.paid;
+            residual += parseFloat(receipt.paid);
           }
         })
         this.pouchdbService.getRelated(

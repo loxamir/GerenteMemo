@@ -717,11 +717,17 @@ export class ReceiptPage implements OnInit {
     });
     profileModal.present();
     this.events.subscribe('select-check', (data: any) => {
-      this.receiptForm.patchValue({
+      let doc = {
         "check": data,
         "amount_paid": data.currency_amount || data.amount,
-        "currency_exchange": this.currencies[data.currency_id || this.company_currency_id].purchase_rate,
-      })
+        // "currency_exchange": this.currencies[data.currency_id || this.company_currency_id].purchase_rate,
+        "currency_exchange": data.currency_exchange || 1,
+      }
+      if (this.receiptForm.value.signal == '-' && this.receiptForm.value.items[0].currency_id && this.receiptForm.value.items[0].currency_id != data.currency_id){
+        // doc['currency_exchange'] = this.currencies[data.currency_id || this.company_currency_id].purchase_rate;
+        doc['currency_exchange'] = this.currencies[this.receiptForm.value.items[0].currency_id].purchase_rate;
+      }
+      this.receiptForm.patchValue(doc)
       this.receiptForm.value.cash_paid['currency_id'] = data.currency_id;
       profileModal.dismiss();
       this.events.unsubscribe('select-check');
@@ -750,7 +756,8 @@ export class ReceiptPage implements OnInit {
       this.receiptForm.patchValue({
         "check": data,
         "amount_paid": data.currency_amount || data.amount,
-        "currency_exchange": this.currencies[data.currency_id || this.company_currency_id].purchase_rate,
+        // "currency_exchange": this.currencies[data.currency_id || this.company_currency_id].purchase_rate,
+        "currency_exchange": data.currency_exchange || 1,
       })
       this.receiptForm.value.cash_paid['currency_id'] = data.currency_id;
       profileModal.dismiss();
@@ -1089,7 +1096,7 @@ export class ReceiptPage implements OnInit {
           console.log("ERR Movimento");
           Object.keys(toCreateCashMoves).forEach(account_id => {
             let doc = {
-              "amount": toCreateCashMoves[account_id],
+              'amount': (amount_paid2 * this.receiptForm.value.currency_exchange).toFixed(this.currency_precision),
               "name": this.receiptForm.value.name,
               "date": this.today,
               "check_id": this.receiptForm.value.check._id,
@@ -1099,6 +1106,10 @@ export class ReceiptPage implements OnInit {
               'signal': this.receiptForm.value.signal,
               "origin_id": this.receiptForm.value._id,
               "payments": payments,
+            }
+            //Specific for purchases in foreign currency
+            if (this.receiptForm.value.items[0].currency_id && this.receiptForm.value.items[0].currency_id != this.receiptForm.value.cash_paid.currency_id){
+              doc['amount'] = (amount_paid2).toFixed(this.currency_precision);
             }
             if (this.receiptForm.value.cash_paid.currency_id != this.company_currency_id) {
               doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency_id && this.currencies[this.receiptForm.value.cash_paid.currency_id].precision || 0);
@@ -1181,13 +1192,13 @@ export class ReceiptPage implements OnInit {
           let item_paid = 0;
           let item_residual = 0;
           if (item1.currency_id && item1.currency_id != this.company_currency_id){
-            if (amount_paid > item1.currency_residual) {
+            if (amount_paid/this.receiptForm.value.currency_exchange > item1.currency_residual) {
               item_paid = item1.currency_residual;
               item_residual = 0;
               amount_paid -= item1.currency_residual;
             } else {
               item_paid = amount_paid;
-              item_residual = item1.currency_residual - amount_paid;
+              item_residual = item1.currency_residual - amount_paid/this.receiptForm.value.currency_exchange;
               amount_paid = 0;
             }
             item1.currency_residual = item_residual;
@@ -1731,22 +1742,20 @@ export class ReceiptPage implements OnInit {
 
   async removeCashMoves() {
     return new Promise(async resolve => {
-
-      // this.receiptForm.value.payments.forEach(payment => {
       await this.formatService.asyncForEach(this.receiptForm.value.payments, async (payment: any) => {
         let total = 0
         await this.formatService.asyncForEach(this.receiptForm.value.items, async (item: any) => {
-
-          // })
-          // this.receiptForm.value.items.forEach(async item => {
           let paidMove: any = await this.pouchdbService.getDoc(item._id);
           let payments = [];
           paidMove.payments.forEach((paid, index) => {
             if (paid._id != payment._id) {
-              // paidMove.payments.slice(index, 1);
               payments.push(paid);
             } else {
-              total += paid.amount;
+              if (paidMove.currency_id && paidMove.currency_exchange){
+                total += parseFloat(paid.amount)*parseFloat(paidMove.currency_exchange);
+              } else {
+                total += parseFloat(paid.amount);
+              }
             }
           })
           paidMove.payments = payments;
