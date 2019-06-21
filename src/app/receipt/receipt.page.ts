@@ -1751,15 +1751,14 @@ export class ReceiptPage implements OnInit {
             if (paid._id != payment._id) {
               payments.push(paid);
             } else {
-              if (paidMove.currency_id && paidMove.currency_exchange){
-                total += parseFloat(paid.amount)*parseFloat(paidMove.currency_exchange);
-              } else {
-                total += parseFloat(paid.amount);
-              }
+              total += parseFloat(paid.amount);
             }
           })
           paidMove.payments = payments;
           paidMove.amount_residual += total;
+          if (paidMove.currency_id && paidMove.currency_exchange){
+            paidMove.currency_residual += total/parseFloat(paidMove.currency_exchange);
+          }
           await this.pouchdbService.updateDoc(paidMove);
         });
         this.pouchdbService.deleteDoc(payment);
