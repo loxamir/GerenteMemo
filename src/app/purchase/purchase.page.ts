@@ -742,7 +742,7 @@ export class PurchasePage implements OnInit {
         let exchangeRate = 1;
         if (JSON.stringify(this.purchaseForm.value.currency) != '{}'
         && this.purchaseForm.value.currency._id != this.company_currency_id){
-          exchangeRate = this.purchaseForm.value.currency.purchase_rate;
+          exchangeRate = this.purchaseForm.value.currency_exchange;
         }
         this.configService.getConfigDoc().then((config: any)=>{
 
