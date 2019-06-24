@@ -1215,10 +1215,17 @@ export class ReceiptPage implements OnInit {
             }
             item1.amount_residual = item_residual;
           }
-          item1.payments.push({
-            "_id": promise_data[0].id, //FIXME: It's not showing the right move for multi account payments
-            "amount": item_paid
-          });
+          if (this.receiptForm.value.items[0].currency_id){
+            item1.payments.push({
+              "_id": promise_data[0].id, //FIXME: It's not showing the right move for multi account payments
+              "amount": item_paid + this.exchangeDiff,
+            });
+          } else {
+            item1.payments.push({
+              "_id": promise_data[0].id, //FIXME: It's not showing the right move for multi account payments
+              "amount": item_paid,
+            });
+          }
           if (JSON.stringify(this.receiptForm.value.check) != '{}') {
             let check:any = await this.pouchdbService.getDoc(this.receiptForm.value.check._id);
             if (this.receiptForm.value.signal == '+') {
@@ -1755,11 +1762,13 @@ export class ReceiptPage implements OnInit {
             }
           })
           paidMove.payments = payments;
-          paidMove.amount_residual += total;
-          if (paidMove.currency_id && paidMove.currency_exchange){
-            paidMove.currency_residual += total/parseFloat(paidMove.currency_exchange);
+          if (total > 0){
+            paidMove.amount_residual = total;
+            if (paidMove.currency_id && paidMove.currency_exchange){
+              paidMove.currency_residual = total/parseFloat(paidMove.currency_exchange);
+            }
+            await this.pouchdbService.updateDoc(paidMove);
           }
-          await this.pouchdbService.updateDoc(paidMove);
         });
         this.pouchdbService.deleteDoc(payment);
       });
