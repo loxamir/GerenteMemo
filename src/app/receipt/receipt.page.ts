@@ -1169,7 +1169,7 @@ export class ReceiptPage implements OnInit {
                 "amount": Math.abs(this.exchangeDiff).toFixed(this.currency_precision),
                 "name": this.receiptForm.value.name,
                 "date": this.today,
-                "accountFrom_id": this.receiptForm.value.cash_paid._id,
+                "accountFrom_id": account_id,
                 "contact_id": this.receiptForm.value.contact._id,
                 "check_id": this.receiptForm.value.check._id,
                 "accountTo_id": 'account.expense.exchange',
