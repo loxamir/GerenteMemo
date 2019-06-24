@@ -1151,22 +1151,34 @@ export class ReceiptPage implements OnInit {
               // console.log("Movimento", cashMoveDoc);
               promise_ids.push(this.cashMoveService.createCashMove(cashMoveDoc));
             }
-          });
-          if (this.exchangeDiff != 0) {
-            let cashMoveDoc = {
-              "amount": this.exchangeDiff.toFixed(this.currency_precision),
-              "name": this.receiptForm.value.name,
-              "date": this.today,
-              "accountFrom_id": this.receiptForm.value.cash_paid._id,
-              "contact_id": this.receiptForm.value.contact._id,
-              "check_id": this.receiptForm.value.check._id,
-              "accountTo_id": 'account.payable.cash',
-              'signal': this.receiptForm.value.signal,
-              // "payments": paymentAccount[account_id],
-              "origin_id": this.receiptForm.value._id,
+            if (this.exchangeDiff > 0) {
+              let cashMoveDoc = {
+                "amount": Math.abs(this.exchangeDiff).toFixed(this.currency_precision),
+                "name": this.receiptForm.value.name,
+                "date": this.today,
+                "contact_id": this.receiptForm.value.contact._id,
+                "check_id": this.receiptForm.value.check._id,
+                "accountFrom_id": 'account.income.exchange',
+                "accountTo_id": account_id,
+                'signal': this.receiptForm.value.signal,
+                "origin_id": this.receiptForm.value._id,
+              }
+              promise_ids.push(this.cashMoveService.createCashMove(cashMoveDoc));
+            } else if (this.exchangeDiff < 0){
+              let cashMoveDoc = {
+                "amount": Math.abs(this.exchangeDiff).toFixed(this.currency_precision),
+                "name": this.receiptForm.value.name,
+                "date": this.today,
+                "accountFrom_id": this.receiptForm.value.cash_paid._id,
+                "contact_id": this.receiptForm.value.contact._id,
+                "check_id": this.receiptForm.value.check._id,
+                "accountTo_id": 'account.expense.exchange',
+                'signal': this.receiptForm.value.signal,
+                "origin_id": this.receiptForm.value._id,
+              }
+              promise_ids.push(this.cashMoveService.createCashMove(cashMoveDoc));
             }
-            promise_ids.push(this.cashMoveService.createCashMove(cashMoveDoc));
-          }
+          });
         }
       });
       let details2 = [];
