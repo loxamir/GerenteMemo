@@ -1025,6 +1025,7 @@ export class ReceiptPage implements OnInit {
               doc['currency_exchange'] = this.receiptForm.value.currency_exchange;
             }
             if (this.receiptForm.value.cash_paid.type == 'check'){
+              doc['amount'] = (this.receiptForm.value.check.amount).toFixed(this.currency_precision);
               if (this.receiptForm.value.check.currency_id && this.receiptForm.value.check.currency_id != this.company_currency_id) {
                 doc['amount'] = (this.receiptForm.value.check.currency_amount*this.receiptForm.value.currency_exchange).toFixed(this.currency_precision);
                 doc['currency_amount'] = this.receiptForm.value.check.currency_amount;
@@ -1043,7 +1044,6 @@ export class ReceiptPage implements OnInit {
             if (this.receiptForm.value.cash_paid.type == 'check'
               && this.change > 0
             ) {
-
               let cashMoveDoc = {
                 "amount": (this.change*this.receiptForm.value.check.currency_exchange).toFixed(this.currency_precision),
                 "name": this.receiptForm.value.name,
@@ -1120,6 +1120,7 @@ export class ReceiptPage implements OnInit {
               doc['state'] = 'WAITING';
             }
             if (this.receiptForm.value.cash_paid.type == 'check'){
+              doc['amount'] = (this.receiptForm.value.check.amount).toFixed(this.currency_precision);
               if (this.receiptForm.value.check.currency_id && this.receiptForm.value.check.currency_id != this.company_currency_id) {
                 doc['amount'] = (this.receiptForm.value.check.currency_amount*this.receiptForm.value.currency_exchange).toFixed(this.currency_precision);
                 doc['currency_amount'] = this.receiptForm.value.check.currency_amount;
@@ -1775,7 +1776,7 @@ export class ReceiptPage implements OnInit {
           })
           paidMove.payments = payments;
           if (total > 0){
-            paidMove.amount_residual = total;
+            paidMove.amount_residual += total;
             if (paidMove.currency_id && paidMove.currency_exchange){
               paidMove.currency_residual = total/parseFloat(paidMove.currency_exchange);
             }
