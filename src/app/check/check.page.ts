@@ -36,6 +36,7 @@ export class CheckPage implements OnInit {
     @Input() amount;
     @Input() bank;
     @Input() account;
+    @Input() currency;
     @Input() currency_exchange;
     @Input() currency_amount;
     @Input() my_check;
@@ -67,6 +68,7 @@ export class CheckPage implements OnInit {
       this.contact = this.route.snapshot.paramMap.get('contact');
       this.bank = this.route.snapshot.paramMap.get('bank');
       this.account = this.route.snapshot.paramMap.get('account');
+      this.currency = this.route.snapshot.paramMap.get('currency');
       this.amount = this.route.snapshot.paramMap.get('amount');
       this.signal = this.route.snapshot.paramMap.get('signal');
       this.my_check = this.route.snapshot.paramMap.get('my_check');
@@ -93,7 +95,7 @@ export class CheckPage implements OnInit {
         contact: new FormControl(this.contact||{}),
         account: new FormControl(this.account||{}),
         state: new FormControl('NEW'),
-        currency: new FormControl(this.route.snapshot.paramMap.get('currency')||{}),
+        currency: new FormControl(this.currency||{}),
         currency_amount: new FormControl(this.currency_amount||0),
         currency_exchange: new FormControl(this.currency_exchange||1),
         currency_id: new FormControl(''),
