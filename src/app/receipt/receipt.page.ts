@@ -942,7 +942,7 @@ export class ReceiptPage implements OnInit {
       let paid_real = this.receiptForm.value.paid - this.receiptForm.value.change;
       let paid_currency = (
         paid_real * this.receiptForm.value.currency_exchange
-      ).toFixed(this.currency_precision);
+      ).toFixed(this.currencies[this.receiptForm.value.cash_paid.currency_id || this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency._id || this.company_currency_id].precision);
       this.receiptForm.patchValue({
         "change": 0,
         "paid": paid_currency,
@@ -958,7 +958,7 @@ export class ReceiptPage implements OnInit {
             let ex_rate = parseFloat(this.receiptForm.value.currency_exchange);
               paid_currency = (
                 paid_real / ex_rate
-              ).toFixed(this.currency_precision);
+              ).toFixed(this.currencies[this.receiptForm.value.cash_paid.currency_id || this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency._id || this.company_currency_id].precision);
             this.receiptForm.patchValue({
               "change": 0,
               "paid": paid_currency,
@@ -967,7 +967,7 @@ export class ReceiptPage implements OnInit {
             let ex_rate = this.currencies[ite.currency_id].purchase_rate;
               paid_currency = (
                 paid_real
-              ).toFixed(this.currency_precision);
+              ).toFixed(this.currencies[this.receiptForm.value.cash_paid.currency_id || this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency._id || this.company_currency_id].precision);
             this.receiptForm.patchValue({
               "change": 0,
               "paid": paid_currency,
