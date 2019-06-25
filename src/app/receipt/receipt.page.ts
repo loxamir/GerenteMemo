@@ -1806,13 +1806,15 @@ export class ReceiptPage implements OnInit {
           if (total > 0){
             paidMove.amount_residual += total;
             if (paidMove.currency_id && paidMove.currency_exchange){
-              paidMove.currency_residual = total/parseFloat(paidMove.currency_exchange);
+              paidMove.currency_residual += total;
+              paidMove.amount_residual += total*parseFloat(paidMove.currency_exchange);
             }
             await this.pouchdbService.updateDoc(paidMove);
           }
         });
         this.pouchdbService.deleteDoc(payment);
       });
+      //Remove the receipt
       let doc = await this.pouchdbService.getDoc(this.receiptForm.value._id);
       this.pouchdbService.deleteDoc(doc);
       resolve(true);
