@@ -1036,8 +1036,8 @@ export class SalePage implements OnInit {
                 cashMoveTemplate['currency'] = this.saleForm.value.currency;
                 cashMoveTemplate['currency_amount'] = amount;
                 cashMoveTemplate['currency_residual'] = amount;
-                cashMoveTemplate['amount'] = amount*this.saleForm.value.currency.sale_rate;
-                cashMoveTemplate['residual'] = amount*this.saleForm.value.currency.sale_rate;
+                cashMoveTemplate['amount'] = amount*this.saleForm.value.currency.exchange_rate;
+                cashMoveTemplate['residual'] = amount*this.saleForm.value.currency.exchange_rate;
               }
               createList.push(cashMoveTemplate);
             });

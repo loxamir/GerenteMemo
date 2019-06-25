@@ -1325,7 +1325,7 @@ export class PurchasePage implements OnInit {
       this.events.subscribe('select-currency', (data) => {
         this.purchaseForm.patchValue({
           currency: data,
-          currency_exchange: data.purchase_rate,
+          currency_exchange: data.exchange_rate,
           // cash_id: data._id,
         });
         this.purchaseForm.markAsDirty();

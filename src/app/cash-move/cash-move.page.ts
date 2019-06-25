@@ -138,7 +138,7 @@ company_currency_id = 'currency.PYG';
       currency_id: new FormControl(''),
       currency_amount: new FormControl(this.currency_amount||0),
       currency_residual: new FormControl(this.currency_residual||0),
-      currency_exchange: new FormControl(this.currency_exchange||this.currency && this.currency.sale_rate||1),
+      currency_exchange: new FormControl(this.currency_exchange||this.currency && this.currency.exchange_rate||1),
       _id: new FormControl(''),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
@@ -580,7 +580,7 @@ company_currency_id = 'currency.PYG';
           this.cashMoveForm.value.currency._id == this.company_currency_id
         ){
           amountCurrency = this.cashMoveForm.value.amount;
-          amount = this.cashMoveForm.value.amount*parseFloat(data.sale_rate);
+          amount = this.cashMoveForm.value.amount*parseFloat(data.exchange_rate);
         } else if (
           data._id == this.company_currency_id &&
           this.cashMoveForm.value.currency._id != this.company_currency_id
@@ -595,7 +595,7 @@ company_currency_id = 'currency.PYG';
         this.cashMoveForm.patchValue({
           amount: amount,
           currency_amount: amountCurrency,
-          currency_exchange: data.sale_rate,
+          currency_exchange: data.exchange_rate,
           currency: data,
           currency_id: data._id,
         });
@@ -642,7 +642,7 @@ company_currency_id = 'currency.PYG';
           let currency:any = await this.pouchdbService.getDoc(data.currency_id);
             dict['currency'] = currency;
             dict['currency_id'] = data.currency_id;
-            dict['currency_exchange'] = currency.sale_rate;
+            dict['currency_exchange'] = currency.exchange_rate;
         }
         this.cashMoveForm.patchValue(dict);
         this.cashMoveForm.markAsDirty();
@@ -677,7 +677,7 @@ company_currency_id = 'currency.PYG';
           let currency:any = await this.pouchdbService.getDoc(data.currency_id);
             dict['currency'] = currency;
             dict['currency_id'] = data.currency_id;
-            dict['currency_exchange'] = currency.sale_rate;
+            dict['currency_exchange'] = currency.exchange_rate;
         }
         this.cashMoveForm.patchValue(dict);
         this.cashMoveForm.markAsDirty();

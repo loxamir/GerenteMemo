@@ -392,7 +392,7 @@ export class CheckPage implements OnInit {
             data._id != this.company_currency_id &&
             JSON.stringify(this.checkForm.value.currency)=='{}' || this.checkForm.value.currency._id == this.company_currency_id
           ){
-            amountCurrency = (this.checkForm.value.amount/parseFloat(data.sale_rate)).toFixed(data.precision);
+            amountCurrency = (this.checkForm.value.amount/parseFloat(data.exchange_rate)).toFixed(data.precision);
             console.log("amountCurrency1", amountCurrency);
             amount = this.checkForm.value.amount;
           } else if (
@@ -415,7 +415,7 @@ export class CheckPage implements OnInit {
           this.checkForm.patchValue({
             amount: amount,
             currency_amount: (parseFloat(amountCurrency) + smallDiff).toFixed(data.precision),
-            currency_exchange: data.sale_rate,
+            currency_exchange: data.exchange_rate,
             currency: data,
             currency_id: data._id,
           });

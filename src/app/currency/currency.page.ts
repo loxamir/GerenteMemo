@@ -54,11 +54,9 @@ export class CurrencyPage implements OnInit {
         name: new FormControl('', Validators.required),
         precision: new FormControl(2),
         inverted_rate: new FormControl(false),
-        inverted_sale_rate: new FormControl(1),
-        inverted_purchase_rate: new FormControl(1),
-        sale_rate: new FormControl(1),
+        inverted_exchange_rate: new FormControl(1),
+        exchange_rate: new FormControl(1),
         symbol: new FormControl('X$'),
-        purchase_rate: new FormControl(1),
         _id: new FormControl(''),
         create_user: new FormControl(''),
         create_time: new FormControl(''),
@@ -79,28 +77,18 @@ export class CurrencyPage implements OnInit {
     async buttonSave() {
       if (this._id){
         await this.updateCurrency(this.currencyForm.value);
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('open-currency', this.currencyForm.value);
-          this.exitPage();
-        // });
+        this.events.publish('open-currency', this.currencyForm.value);
+        this.exitPage();
       } else {
         await this.createCurrency(this.currencyForm.value);
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('create-currency', this.currencyForm.value);
-          this.exitPage();
-        // });
+        this.events.publish('create-currency', this.currencyForm.value);
+        this.exitPage();
       }
     }
 
-    changedPurchageRate() {
+    changedExchangeRate() {
       this.currencyForm.patchValue({
-        purchase_rate: 1/this.currencyForm.value.inverted_purchase_rate,
-      })
-    }
-
-    changedSaleRate() {
-      this.currencyForm.patchValue({
-        sale_rate: 1/this.currencyForm.value.inverted_sale_rate,
+        exchange_rate: 1/this.currencyForm.value.inverted_exchange_rate,
       })
     }
 
@@ -180,7 +168,6 @@ export class CurrencyPage implements OnInit {
       if (this.select){
         this.modalCtrl.dismiss();
       } else {
-        // this.currencyForm.markAsPristine();
         this.navCtrl.navigateBack('/currency-list');
       }
     }
