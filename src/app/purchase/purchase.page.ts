@@ -236,6 +236,7 @@ export class PurchasePage implements OnInit {
         amount_unInvoiced: new FormControl(0),
         currency: new FormControl({}),
         currency_exchange: new FormControl(1),
+        inverted_exchange_rate: new FormControl(1),
         seller: new FormControl(this.route.snapshot.paramMap.get('seller')||{}, Validators.required),
         seller_name: new FormControl(this.route.snapshot.paramMap.get('seller_name')||''),
         _id: new FormControl(''),
@@ -264,6 +265,12 @@ export class PurchasePage implements OnInit {
       } else {
         this.loading.dismiss();
       }
+    }
+
+    changedExchangeRate() {
+      this.purchaseForm.patchValue({
+        currency_exchange: 1/this.purchaseForm.value.inverted_exchange_rate,
+      })
     }
 
     // async ionViewCanLeave() {
@@ -740,9 +747,11 @@ export class PurchasePage implements OnInit {
           await this.buttonSave();
         }
         let exchangeRate = 1;
+        let invertedExchangeRate = 1;
         if (JSON.stringify(this.purchaseForm.value.currency) != '{}'
         && this.purchaseForm.value.currency._id != this.company_currency_id){
           exchangeRate = this.purchaseForm.value.currency_exchange;
+          invertedExchangeRate = this.purchaseForm.value.inverted_exchange_rate;
         }
         this.configService.getConfigDoc().then((config: any)=>{
 
@@ -828,7 +837,7 @@ export class PurchasePage implements OnInit {
                 receivableCashMove['currency_id'] = this.purchaseForm.value.currency._id;
                 receivableCashMove['currency_exchange'] = exchangeRate;
                 receivableCashMove['currency_residual'] = amount;
-
+                receivableCashMove['inverted_exchange_rate'] = invertedExchangeRate;
                 receivableCashMove['amount'] = amount*exchangeRate;
                 receivableCashMove['amount_residual'] = amount*exchangeRate;
 
@@ -1326,7 +1335,7 @@ export class PurchasePage implements OnInit {
         this.purchaseForm.patchValue({
           currency: data,
           currency_exchange: data.exchange_rate,
-          // cash_id: data._id,
+          inverted_exchange_rate: data.inverted_exchange_rate,
         });
         this.purchaseForm.markAsDirty();
         this.events.unsubscribe('select-currency');

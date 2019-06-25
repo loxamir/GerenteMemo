@@ -65,9 +65,11 @@
          *ngIf="checkForeingCurrency()"
          class="field-50">
           <ion-label position="floating" style="font-size:14px">{{'CURRENCY_EXCHANGE' | translate}}</ion-label>
-          <ion-input #currency_exchange type="number"
+          <!-- <ion-input #currency_exchange type="number"
           (ngModelChange)="changedExchange()"
-          formControlName="currency_exchange"></ion-input>
+          formControlName="currency_exchange"></ion-input> -->
+          <ion-input #currency_exchange type="number" formControlName="currency_exchange" (ngModelChange)="changedExchange()" *ngIf="!checkForm.value.currency.inverted_rate"></ion-input>
+          <ion-input type="number" formControlName="inverted_exchange_rate" (ngModelChange)="changedExchangeRate()" *ngIf="checkForm.value.currency.inverted_rate"></ion-input>
         </ion-item>
 
 

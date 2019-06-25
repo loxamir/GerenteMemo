@@ -139,6 +139,7 @@ company_currency_id = 'currency.PYG';
       currency_amount: new FormControl(this.currency_amount||0),
       currency_residual: new FormControl(this.currency_residual||0),
       currency_exchange: new FormControl(this.currency_exchange||this.currency && this.currency.exchange_rate||1),
+      inverted_exchange_rate: new FormControl(this.currency && this.currency.inverted_exchange_rate||1),
       _id: new FormControl(''),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
@@ -224,6 +225,12 @@ company_currency_id = 'currency.PYG';
         this.cashMoveForm.markAsPristine();
       }, 200);
     }
+  }
+
+  changedExchangeRate() {
+    this.cashMoveForm.patchValue({
+      currency_exchange: 1/this.cashMoveForm.value.inverted_exchange_rate,
+    })
   }
 
   showSave(){

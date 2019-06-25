@@ -84,7 +84,8 @@
       <ion-col *ngIf="purchaseForm.value.currency && purchaseForm.value.currency.name">
         <ion-item style="--background: white;">
           <ion-label position="floating" style="font-size:14px">{{'EXCHANGE_RATE' | translate}}</ion-label>
-          <ion-input #currency_exchange type="number" formControlName="currency_exchange" (ionChange)="recomputeValues()" [disabled]="purchaseForm.value.state != 'QUOTATION'"></ion-input>
+          <ion-input #currency_exchange type="number" formControlName="currency_exchange" (ionChange)="recomputeValues()" *ngIf="!purchaseForm.value.currency.inverted_rate" [disabled]="purchaseForm.value.state != 'QUOTATION'"></ion-input>
+          <ion-input type="number" formControlName="inverted_exchange_rate" (ngModelChange)="changedExchangeRate()" *ngIf="purchaseForm.value.currency.inverted_rate"></ion-input>
         </ion-item>
       </ion-col>
 

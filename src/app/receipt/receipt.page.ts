@@ -111,6 +111,7 @@ export class ReceiptPage implements OnInit {
       amount_paid: new FormControl(null),
       amount_paid_currency: new FormControl(''),
       currency_exchange: new FormControl(this.currency_exchange || '1'),
+      inverted_exchange_rate: new FormControl(this.currency_exchange || '1'),
       // createInvoice: new FormControl(false),
       currency_id: new FormControl(this.company_currency_id || {}),
       difference_account: new FormControl({}),
@@ -159,6 +160,7 @@ export class ReceiptPage implements OnInit {
       this.receiptForm.patchValue({
         "cash_paid": cashier,
         "currency_exchange": cash_currency.exchange_rate,
+        "inverted_exchange_rate": cash_currency.inverted_exchange_rate,
       });
       await this.recomputeValues();
       await this.loading.dismiss();
@@ -721,9 +723,11 @@ export class ReceiptPage implements OnInit {
         "check": data,
         "amount_paid": data.currency_amount || data.amount,
         "currency_exchange": data.currency_exchange || 1,
+        "inverted_exchange_rate": data.inverted_exchange_rate || 1,
       }
       if (this.receiptForm.value.signal == '-' && this.receiptForm.value.items[0].currency_id && this.receiptForm.value.items[0].currency_id != data.currency_id){
         doc['currency_exchange'] = this.currencies[this.receiptForm.value.items[0].currency_id].exchange_rate;
+        doc['inverted_exchange_rate'] = this.currencies[this.receiptForm.value.items[0].currency_id].inverted_exchange_rate;
       }
       this.receiptForm.patchValue(doc)
       this.receiptForm.value.cash_paid['currency_id'] = data.currency_id;
@@ -772,22 +776,33 @@ export class ReceiptPage implements OnInit {
     });
   }
 
+  changedExchangeRate() {
+    this.receiptForm.patchValue({
+      currency_exchange: 1/this.receiptForm.value.inverted_exchange_rate,
+    })
+    this.recomputeValues();
+  }
+
   async selectCash() {
     this.avoidAlertMessage = true;
     this.events.subscribe('select-cash', async (viewData: any) => {
       let data = Object.assign({}, viewData);
       let currency: any = await this.pouchdbService.getDoc(data.currency_id);
       let rate = currency.exchange_rate || 1;
+      let inverted_rate = currency.exchange_rate || 1;
       if (this.receiptForm.value.signal == '-'){
         rate = currency.exchange_rate || 1;
+        inverted_rate = currency.inverted_exchange_rate || 1;
       }
       if (this.items[0].currency_id){
         let cash_currency:any = await this.pouchdbService.getDoc(this.items[0].currency_id || this.company_currency_id);
         rate = cash_currency.exchange_rate;
+        inverted_rate = cash_currency.inverted_exchange_rate;
       }
       this.receiptForm.patchValue({
         "cash_paid": data,
         "currency_exchange": rate,
+        "inverted_exchange_rate": inverted_rate
       })
       this.events.unsubscribe('select-cash');
       await this.recomputeValues();
@@ -1032,6 +1047,7 @@ export class ReceiptPage implements OnInit {
               doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency_id && this.currencies[this.receiptForm.value.cash_paid.currency_id].precision || 0);
               doc['currency_id'] = this.receiptForm.value.cash_paid.currency_id;
               doc['currency_exchange'] = this.receiptForm.value.currency_exchange;
+              doc['inverted_exchange_rate'] = this.receiptForm.value.inverted_exchange_rate;
             }
             if (this.receiptForm.value.cash_paid.type == 'check'){
               doc['amount'] = (parseFloat(this.receiptForm.value.check.amount)).toFixed(this.currency_precision);
@@ -1040,6 +1056,7 @@ export class ReceiptPage implements OnInit {
                 doc['currency_amount'] = this.receiptForm.value.check.currency_amount;
                 doc['currency_id'] = this.receiptForm.value.check.currency_id;
                 doc['currency_exchange'] = this.receiptForm.value.check.currency_exchange;
+                doc['inverted_exchange_rate'] = this.receiptForm.value.inverted_exchange_rate;
               }
             }
             // console.log("Movimento", doc);
@@ -1124,6 +1141,7 @@ export class ReceiptPage implements OnInit {
               doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency_id && this.currencies[this.receiptForm.value.cash_paid.currency_id].precision || 0);
               doc['currency_id'] = this.receiptForm.value.cash_paid.currency_id;
               doc['currency_exchange'] = this.receiptForm.value.currency_exchange;
+              doc['inverted_exchange_rate'] = this.receiptForm.value.inverted_exchange_rate;
             }
             if (this.receiptForm.value.cash_paid.type == 'bank' && JSON.stringify(this.receiptForm.value.check) != '{}') {
               doc['state'] = 'WAITING';
@@ -1135,6 +1153,7 @@ export class ReceiptPage implements OnInit {
                 doc['currency_amount'] = this.receiptForm.value.check.currency_amount;
                 doc['currency_id'] = this.receiptForm.value.check.currency_id;
                 doc['currency_exchange'] = this.receiptForm.value.check.currency_exchange;
+                doc['inverted_exchange_rate'] = this.receiptForm.value.inverted_exchange_rate;
               }
             }
             // console.log("Movimento", doc);

@@ -98,6 +98,7 @@ export class CheckPage implements OnInit {
         currency: new FormControl(this.currency||{}),
         currency_amount: new FormControl(this.currency_amount||0),
         currency_exchange: new FormControl(this.currency_exchange||1),
+        inverted_exchange_rate: new FormControl(this.currency_exchange || '1'),
         currency_id: new FormControl(''),
         note: new FormControl(''),
         _id: new FormControl(''),
@@ -144,6 +145,12 @@ export class CheckPage implements OnInit {
       this.showExtra = !this.showExtra;
     }
 
+    changedExchangeRate() {
+      this.checkForm.patchValue({
+        currency_exchange: 1/this.checkForm.value.inverted_exchange_rate,
+      })
+    }
+
     changedCurrencyAmount() {
       if (this.checkForm.value.currency._id != this.company_currency_id){
         if (!this.changing) {
@@ -153,6 +160,7 @@ export class CheckPage implements OnInit {
           this.checkForm.patchValue({
             amount: amountCompanyCurrency.toFixed(this.currency_precision),
             currency_exchange: amountExchange.toFixed(this.currency_precision),
+            inverted_exchange_rate: (1/amountExchange).toFixed(this.currency_precision),
           })
           setTimeout(() => {
             this.changing = false;
@@ -170,6 +178,7 @@ export class CheckPage implements OnInit {
           this.checkForm.patchValue({
             // currency_amount: amountCompanyCurrency.toFixed(this.currency_precision),
             currency_exchange: amountExchange.toFixed(this.currency_precision),
+            inverted_exchange_rate: (1/amountExchange).toFixed(this.currency_precision),
           })
           setTimeout(() => {
             this.changing = false;
