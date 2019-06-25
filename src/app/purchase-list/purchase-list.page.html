@@ -40,9 +40,9 @@
           <h3 class="item-title" style="font-size:15px;">{{item.payment_name | translate}}</h3>
         </ion-col>
         <ion-col no-padding size="6" align-self-center>
-          <h2 class="list-big-number" style="color: red;">{{item.currency_id && currencies[item.currency_id] && currencies[item.currency_id].symbol || currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{item.total| number:'1.'+(item.currency_id && currencies[item.currency_id] && currencies[item.currency_id].precision || currency_precision)}}</h2>
+          <h2 class="list-big-number" style="color: red;">{{item.currency_id && currencies[item.currency_id] && currencies[item.currency_id].symbol || currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{item.total| number:'1.'+(item.currency_id && currencies[item.currency_id] && currencies[item.currency_id].precision.toString() || currency_precision)+"-"+(item.currency_id && currencies[item.currency_id] && currencies[item.currency_id].precision.toString() || currency_precision)}}</h2>
           <div *ngIf="item.residual != 0 && item.state!='CANCELED'" class="residual-value">
-            {{ item.currency_id && currencies[item.currency_id] && currencies[item.currency_id].symbol || company_currency_id  && currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{ item.residual | number:'1.'+(item.currency_id && currencies[item.currency_id] && currencies[item.currency_id].precision || currency_precision)}}
+            {{ item.currency_id && currencies[item.currency_id] && currencies[item.currency_id].symbol || company_currency_id  && currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{ item.residual | number:'1.'+(item.currency_id && currencies[item.currency_id] && currencies[item.currency_id].precision.toString() || currency_precision)+"-"+(item.currency_id && currencies[item.currency_id] && currencies[item.currency_id].precision.toString() || currency_precision)}}
           </div>
         </ion-col>
       </ion-row>

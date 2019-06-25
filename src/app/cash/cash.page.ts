@@ -101,6 +101,7 @@ export class CashPage implements OnInit {
       this.cashForm = this.formBuilder.group({
         name: new FormControl('', Validators.required),
         balance: new FormControl(0),
+        currency_balance: new FormControl(0),
         currency: new FormControl({}),
         // currency_name: new FormControl(''),
         moves: new FormControl([]),

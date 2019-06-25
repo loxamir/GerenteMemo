@@ -252,14 +252,13 @@ export class CashListPage implements OnInit {
             || cashier._id.split('.')[1] == 'check'
             || cashier._id.split('.')[1] == 'bank') {
             if (cashier.currency_id) {
-              let balance = await this.pouchdbService.getView(
+              let currency_balance = await this.pouchdbService.getView(
                 'stock/CaixasForeing', 1, [cashier._id, null], [cashier._id, "z"]);
-              cashier.balance = balance[0] && balance[0].value || 0;
-            } else {
-              let balance = await this.pouchdbService.getView(
-                'stock/Caixas', 1, [cashier._id, null], [cashier._id, "z"]);
-              cashier.balance = balance[0] && balance[0].value || 0;
+              cashier.currency_balance = currency_balance[0] && currency_balance[0].value || 0;
             }
+            let balance = await this.pouchdbService.getView(
+              'stock/Caixas', 1, [cashier._id, null], [cashier._id, "z"]);
+            cashier.balance = balance[0] && balance[0].value || 0;
             cashiers.push(cashier);
           }
         } else {
@@ -269,14 +268,13 @@ export class CashListPage implements OnInit {
               || cashier._id.split('.')[1] == 'check'
               || cashier._id.split('.')[1] == 'bank') {
               if (cashier.currency_id) {
-                let balance = await this.pouchdbService.getView(
+                let currency_balance = await this.pouchdbService.getView(
                   'stock/CaixasForeing', 1, [cashier._id, null], [cashier._id, "z"]);
-                cashier.balance = balance[0] && balance[0].value || 0;
-              } else {
-                let balance = await this.pouchdbService.getView(
-                  'stock/Caixas', 1, [cashier._id, null], [cashier._id, "z"]);
-                cashier.balance = balance[0] && balance[0].value || 0;
+                cashier.currency_balance = currency_balance[0] && currency_balance[0].value || 0;
               }
+              let balance = await this.pouchdbService.getView(
+                'stock/Caixas', 1, [cashier._id, null], [cashier._id, "z"]);
+              cashier.balance = balance[0] && balance[0].value || 0;
               cashiers.push(cashier);
             }
           }
