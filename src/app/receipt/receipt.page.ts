@@ -162,7 +162,7 @@ export class ReceiptPage implements OnInit {
         "currency_exchange": cash_currency.exchange_rate,
         "inverted_exchange_rate": cash_currency.inverted_exchange_rate,
       });
-      await this.recomputeValues();
+      await this.changedExchangeRate();
       await this.loading.dismiss();
       setTimeout(() => {
         this.amount_paid.setFocus();
@@ -1257,10 +1257,18 @@ export class ReceiptPage implements OnInit {
             item1.amount_residual = item_residual;
           }
           if (this.receiptForm.value.items[0].currency_id){
-            item1.payments.push({
+            let paym = {
               "_id": promise_data[0].id, //FIXME: It's not showing the right move for multi account payments
               "amount": item_paid + this.exchangeDiff,
-            });
+            }
+            if (this.receiptForm.value.items[0].currency_id == this.receiptForm.value.cash_paid.currency_id){
+              paym["amount_currency"] =  item_paid/this.receiptForm.value.currency_exchange,
+              paym["amount"] = item_paid;
+            } else {
+              paym["amount"] =  item_paid*this.receiptForm.value.currency_exchange,
+              paym["amount_currency"] = item_paid;
+            }
+            item1.payments.push(paym);
           } else {
             item1.payments.push({
               "_id": promise_data[0].id, //FIXME: It's not showing the right move for multi account payments
@@ -1791,7 +1799,8 @@ export class ReceiptPage implements OnInit {
   async removeCashMoves() {
     return new Promise(async resolve => {
       await this.formatService.asyncForEach(this.receiptForm.value.payments, async (payment: any) => {
-        let total = 0
+        let total = 0;
+        let total_currency = 0;
         await this.formatService.asyncForEach(this.receiptForm.value.items, async (item: any) => {
           let paidMove: any = await this.pouchdbService.getDoc(item._id);
           let payments = [];
@@ -1800,14 +1809,15 @@ export class ReceiptPage implements OnInit {
               payments.push(paid);
             } else {
               total += parseFloat(paid.amount);
+              total_currency += parseFloat(paid.amount_currency || 0);
             }
           })
           paidMove.payments = payments;
           if (total > 0){
             paidMove.amount_residual = total;
             if (paidMove.currency_id && paidMove.currency_exchange){
-              paidMove.currency_residual = total;
-              paidMove.amount_residual = total*parseFloat(paidMove.currency_exchange);
+              paidMove.amount_residual = total;
+              paidMove.currency_residual = total_currency;
             }
             await this.pouchdbService.updateDoc(paidMove);
           }
