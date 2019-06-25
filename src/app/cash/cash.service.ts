@@ -254,11 +254,20 @@ export class CashService {
 
   handleSumatoryChange(sumatory, cashForm, change){
     if (change.doc._rev[0] == '1'){
-      if (change.doc.accountTo_id == cashForm.value._id){
-        sumatory += change.doc.amount
-      }
-      if (change.doc.accountFrom_id == cashForm.value._id){
-        sumatory -= change.doc.amount
+      if (JSON.stringify(cashForm.value.currency) == "{}"){
+        if (change.doc.accountTo_id == cashForm.value._id){
+          sumatory += change.doc.amount
+        }
+        if (change.doc.accountFrom_id == cashForm.value._id){
+          sumatory -= change.doc.amount
+        }
+      } else {
+        if (change.doc.accountTo_id == cashForm.value._id){
+          sumatory += change.doc.currency_amount
+        }
+        if (change.doc.accountFrom_id == cashForm.value._id){
+          sumatory -= change.doc.currency_amount
+        }
       }
       cashForm.patchValue({
         balance: sumatory

@@ -91,16 +91,8 @@ export class CashPage implements OnInit {
       this.events.subscribe('changed-check', (change)=>{
         if (!this.changes.hasOwnProperty(change.seq)){
           this.changes[change.seq] = true;
-          // if (
-          //   change.doc.account_id == this._id
-          //   || change.doc.account_id == this._id
-          // ){
-            this.cashService.localHandleCheckChange(this.cashForm.value.checks, change);
-            // this.cashService.localHandleChangeData(
-            //   this.cashForm.value.moves, this.cashForm.value.waiting, change);
-            // this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
-            this.events.publish('refresh-cash-list', change);
-          // }
+          this.cashService.localHandleCheckChange(this.cashForm.value.checks, change);
+          this.events.publish('refresh-cash-list', change);
         }
       })
     }
