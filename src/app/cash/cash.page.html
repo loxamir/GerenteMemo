@@ -227,8 +227,19 @@
           </ion-row>
         </ion-col>
         <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-          <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
-          <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+          <!-- <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+          <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2> -->
+          <h2 *ngIf="item.accountFrom_id != _id && isOtherCurrency()" class="list-big-number" style="color: green;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol|| currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currencies[item.currency_id] && currencies[item.currency_id].precision||currency_precision)}}</h2>
+          <h2 *ngIf="item.accountTo_id != _id && isOtherCurrency()" class="list-big-number" style="color: red;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol || currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currencies[item.currency_id] && currencies[item.currency_id].precision||currency_precision)}}</h2>
+
+          <h2 *ngIf="item.accountFrom_id != _id && ! isOtherCurrency()" class="list-big-number" style="color: green;">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currency_precision)}}</h2>
+          <h2 *ngIf="item.accountTo_id != _id && ! isOtherCurrency()" class="list-big-number" style="color: red;">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currency_precision)}}</h2>
+          <div class="residual-value" *ngIf="isOtherCurrency() && item.currency_amount && item.currency_id.length && item.currency_id != company_currency_id"  style="color: black;">
+            {{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{ showAmountSecond(item) | number:'1.'+currency_precision }}
+          </div>
+          <div class="residual-value" *ngIf="! isOtherCurrency() && item.currency_amount && item.currency_id.length && item.currency_id != company_currency_id"  style="color: black;">
+            {{currencies[company_currency_id] && currencies[item.currency_id].symbol}} {{ item.currency_amount | number:'1.'+(currencies[company_currency_id] && currencies[item.currency_id].precision) }}
+          </div>
         </ion-col>
       </ion-row>
       <!-- <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">

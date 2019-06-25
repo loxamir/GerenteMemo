@@ -408,9 +408,13 @@ export class CheckPage implements OnInit {
           console.log("amount", amount);
           console.log("amountCurrency", amountCurrency);
           console.log("this.company_currency_id", this.company_currency_id);
+          let smallDiff = 0;
+          if ((amountCurrency - Math.round(amountCurrency)) > 0){
+            smallDiff = 10**(-1*data.precision);
+          }
           this.checkForm.patchValue({
             amount: amount,
-            currency_amount: amountCurrency,
+            currency_amount: (parseFloat(amountCurrency) + smallDiff).toFixed(data.precision),
             currency_exchange: data.sale_rate,
             currency: data,
             currency_id: data._id,
