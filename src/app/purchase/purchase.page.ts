@@ -131,6 +131,10 @@ export class PurchasePage implements OnInit {
     company_currency_id = 'currency.PYG';
     languages: Array<LanguageModel>;
     currencies:any = {};
+    currency_symbol = "$";
+    purchase_currency_symbol = "$";
+    purchase_currency_precision = 2;
+    purchase_currency_id = 'currency.PYG';
 
     constructor(
       public navCtrl: NavController,
@@ -248,7 +252,6 @@ export class PurchasePage implements OnInit {
       this.loading = await this.loadingCtrl.create();
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
-      this.currency_precision = config.currency_precision;
       this.company_currency_id = config.currency_id || this.company_currency_id;
       let pyg = await this.pouchdbService.getDoc('currency.PYG')
       let usd = await this.pouchdbService.getDoc('currency.USD')
@@ -256,9 +259,15 @@ export class PurchasePage implements OnInit {
         "currency.PYG": pyg,
         "currency.USD": usd,
       }
+      this.currency_precision = config.currency_precision;
+      this.currency_symbol = this.currencies[config.currency_id].symbol;
+      this.purchase_currency_precision = this.currency_precision;
+      this.purchase_currency_symbol = this.currency_symbol;
       if (this._id){
         this.getPurchase(this._id).then((data) => {
-          //console.log("data", data);
+          this.purchase_currency_id = data.currency_id || this.company_currency_id;
+          this.purchase_currency_symbol = this.currencies[data.currency_id || this.company_currency_id].symbol;
+          this.purchase_currency_precision = this.currencies[data.currency_id || this.company_currency_id].precision;
           this.purchaseForm.patchValue(data);
           this.loading.dismiss();
         });
@@ -1337,9 +1346,11 @@ export class PurchasePage implements OnInit {
           currency_exchange: data.exchange_rate,
           inverted_exchange_rate: data.inverted_exchange_rate,
         });
+        this.purchase_currency_id = data._id;
+        this.purchase_currency_symbol = data.symbol;
+        this.purchase_currency_precision = data.precision;
         this.purchaseForm.markAsDirty();
         this.events.unsubscribe('select-currency');
-        // profileModal.dismiss();
         resolve(true);
       })
       let profileModal = await this.modalCtrl.create({
