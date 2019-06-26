@@ -39,7 +39,6 @@ export class SaleListPage implements OnInit {
     public languageService: LanguageService,
     public translate: TranslateService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -85,7 +84,7 @@ export class SaleListPage implements OnInit {
 
   async ngOnInit() {
     //this.loading.present();
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
@@ -118,7 +117,7 @@ export class SaleListPage implements OnInit {
     })
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // newRootNav.push(SalePage, {'_id': sale._id});
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.navCtrl.navigateForward(['/sale', {'_id': sale._id}]);
     await this.loading.dismiss();
@@ -127,7 +126,7 @@ export class SaleListPage implements OnInit {
   async createSale(){
     // let newRootNav = <NavController>this.app.getRootNavById('n4');
     // newRootNav.push(SalePage, {});
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.navCtrl.navigateForward(['/sale', {}]);
     await this.loading.dismiss();

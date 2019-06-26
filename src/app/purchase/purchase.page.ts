@@ -249,7 +249,7 @@ export class PurchasePage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.company_currency_id = config.currency_id || this.company_currency_id;

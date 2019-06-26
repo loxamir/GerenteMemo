@@ -29,7 +29,6 @@ export class WarehouseListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public modalCtrl: ModalController,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
   }
 

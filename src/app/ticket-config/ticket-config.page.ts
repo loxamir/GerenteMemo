@@ -34,7 +34,6 @@ export class TicketConfigPage implements OnInit {
     public formatService: FormatService,
     public pouchdbService: PouchdbService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');

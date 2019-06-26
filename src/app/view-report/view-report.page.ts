@@ -54,7 +54,7 @@ export class ViewReportPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
@@ -142,7 +142,7 @@ export class ViewReportPage implements OnInit {
   }
 
   async doRefreshList() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     setTimeout(() => {
       this.viewService.getView(
@@ -159,7 +159,7 @@ export class ViewReportPage implements OnInit {
   }
 
   async doRefresh(refresher) {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     setTimeout(() => {
       this.viewService.getView(

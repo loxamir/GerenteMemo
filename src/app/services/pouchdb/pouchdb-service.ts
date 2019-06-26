@@ -7,7 +7,6 @@ import PouchdbUpsert from 'pouchdb-upsert';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { Storage } from '@ionic/storage';
 import { FormatService } from '../format.service';
-import * as PouchWorker from 'worker-pouch';
 // var server = "database.sistemamemo.com";
 var server = "192.168.0.50:5984";
 
@@ -68,9 +67,7 @@ export class PouchdbService {
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
           PouchDB.plugin(cordovaSqlitePlugin);
-          // PouchDB.adapter('worker', PouchWorker);
           // this.db = new PouchDB(database);
-          // this.db = new PouchDB(database, {adapter: 'worker'});
           this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
           console.log("database", database);
           this.db.setMaxListeners(50);

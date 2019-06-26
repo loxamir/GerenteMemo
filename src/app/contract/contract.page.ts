@@ -210,7 +210,7 @@ export class ContractPage implements OnInit {
         dateNext: new FormControl(''),
 
       });
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       if (this._id){
         this.contractService.getContract(this._id).then((data) => {

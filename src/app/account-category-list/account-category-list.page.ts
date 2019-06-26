@@ -28,7 +28,6 @@ export class AccountCategoryListPage implements OnInit {
     public events: Events,
     public popoverCtrl: PopoverController,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     // if (this.select){
     //   this.has_search = true;

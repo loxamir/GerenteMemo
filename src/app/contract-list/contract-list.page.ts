@@ -38,7 +38,6 @@ export class ContractListPage implements OnInit {
     public languageService: LanguageService,
     public translate: TranslateService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -84,7 +83,7 @@ export class ContractListPage implements OnInit {
 
   async ngOnInit() {
     //this.loading.present();
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.setFilteredItems();
   }

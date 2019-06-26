@@ -45,7 +45,6 @@ export class PaymentConditionPage implements OnInit {
       public events: Events,
       public alertCtrl: AlertController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');

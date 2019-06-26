@@ -25,7 +25,6 @@ export class CurrencyListPage implements OnInit {
     public route: ActivatedRoute,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
   }
   // setSearch() {

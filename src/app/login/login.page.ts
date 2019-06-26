@@ -76,7 +76,7 @@ export class LoginPage implements OnInit {
       ])),
       password: new FormControl('', Validators.required),
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     let campaign = await this.storage.get("campaign");
     this.campaign = campaign || this.route.snapshot.paramMap.get('campaign');
     if (this.campaign && ! campaign){
@@ -223,7 +223,7 @@ export class LoginPage implements OnInit {
   }
 
   async selectDatabase(database){
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       await this.storage.set('database', database);
       let toast = await this.toastCtrl.create({

@@ -39,7 +39,6 @@ export class ContactListPage implements OnInit {
     public file: File,
     public loadingCtrl: LoadingController,
   ) {
-    // //this.loading = //this.loadingCtrl.create();
     // this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     this.filter = this.route.snapshot.paramMap.get('filter')||'all';
@@ -58,7 +57,7 @@ export class ContactListPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.setFilteredItems();
     setTimeout(() => {

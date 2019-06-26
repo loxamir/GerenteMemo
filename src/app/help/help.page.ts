@@ -42,7 +42,6 @@ export class HelpPage implements OnInit {
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
   }

@@ -194,7 +194,7 @@ export class SalePage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
@@ -498,7 +498,6 @@ export class SalePage implements OnInit {
     // }
 
     async goNextStep() {
-      // this.loading = await this.loadingCtrl.create();
       // await this.loading.present();
       if(this.return){
         await this.buttonSave();
@@ -539,7 +538,7 @@ export class SalePage implements OnInit {
               await this.loading.dismiss();
               if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
                 this.selectPaymentCondition().then(async ()=>{
-                  this.loading = await this.loadingCtrl.create();
+                  this.loading = await this.loadingCtrl.create({});
                   await this.loading.present();
                   await this.saleConfimation();
                   resolve(true);
@@ -549,14 +548,14 @@ export class SalePage implements OnInit {
           } else if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
             // await this.loading.dismiss();
             this.selectPaymentCondition().then(async ()=>{
-              this.loading = await this.loadingCtrl.create();
+              this.loading = await this.loadingCtrl.create({});
               await this.loading.present();
               await this.saleConfimation();
               resolve(true);
             });
           } else {
             // await this.loading.dismiss();
-            this.loading = await this.loadingCtrl.create();
+            this.loading = await this.loadingCtrl.create({});
             await this.loading.present();
             await this.saleConfimation();
             resolve(true);
@@ -690,7 +689,7 @@ export class SalePage implements OnInit {
     async addItem(){
       let self = this;
       if (this.saleForm.value.state=='QUOTATION'){
-        this.loading = await this.loadingCtrl.create();
+        this.loading = await this.loadingCtrl.create({});
         await this.loading.present();
         this.avoidAlertMessage = true;
         this.listenBarcode = false;
@@ -833,7 +832,7 @@ export class SalePage implements OnInit {
     }
 
     async openPayment(item) {
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.listenBarcode = false;
       this.events.unsubscribe('open-receipt');
@@ -911,7 +910,7 @@ export class SalePage implements OnInit {
             {
               text: 'Confirmar',
               handler: async data => {
-                this.loading = await this.loadingCtrl.create();
+                this.loading = await this.loadingCtrl.create({});
                 await this.loading.present();
                 await this.afterConfirm();
                 await this.loading.dismiss();
@@ -1113,7 +1112,7 @@ export class SalePage implements OnInit {
     }
 
     async addPayment() {
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.avoidAlertMessage = true;
       this.listenBarcode = false;
@@ -1171,7 +1170,7 @@ export class SalePage implements OnInit {
     }
 
     async addInvoice() {
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.avoidAlertMessage = true;
       this.listenBarcode = false;
@@ -1268,7 +1267,7 @@ export class SalePage implements OnInit {
     }
 
     async openInvoice(item) {
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.listenBarcode = false;
       this.events.unsubscribe('open-invoice');
@@ -1297,7 +1296,7 @@ export class SalePage implements OnInit {
 
     async selectContact() {
       if (this.saleForm.value.state=='QUOTATION'){
-        this.loading = await this.loadingCtrl.create();
+        this.loading = await this.loadingCtrl.create({});
         await this.loading.present();
         this.listenBarcode = false;
         return new Promise(async resolve => {
@@ -1355,7 +1354,7 @@ export class SalePage implements OnInit {
     selectSeller() {
       // if (this.saleForm.value.state=='QUOTATION'){
         return new Promise(async resolve => {
-          this.loading = await this.loadingCtrl.create();
+          this.loading = await this.loadingCtrl.create({});
           await this.loading.present();
           this.avoidAlertMessage = true;
           this.listenBarcode = false;
@@ -1390,7 +1389,7 @@ export class SalePage implements OnInit {
     selectPaymentCondition() {
       return new Promise(async resolve => {
       if (this.saleForm.value.state=='QUOTATION'){
-        this.loading = await this.loadingCtrl.create();
+        this.loading = await this.loadingCtrl.create({});
         await this.loading.present();
         this.avoidAlertMessage = true;
         this.listenBarcode = false;

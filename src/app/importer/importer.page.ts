@@ -64,7 +64,6 @@ export class ImporterPage implements OnInit {
   }
 
   // async startLoading(){
-  //   this.loading = await this.loadingCtrl.create();
   // }
 
   // private readCsvData() {
@@ -462,7 +461,7 @@ export class ImporterPage implements OnInit {
     // this.csvData.forEach(doc=>{
     //   console.log("Doc", doc);
     // })f
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     // this.validate();
     // console.log("this.createList", this.createList);

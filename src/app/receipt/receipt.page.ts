@@ -131,7 +131,7 @@ export class ReceiptPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
     let config: any = await this.configService.getConfig();
@@ -186,7 +186,7 @@ export class ReceiptPage implements OnInit {
     if (this.receiptForm.value.amount_paid == null) {
       this.amount_paid.setFocus();
     } else if (this.receiptForm.value.amount_paid.toString() == "0" && this.receiptForm.value.total.toString() == "0") {
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       if (!this.confirming) {
         this.confirming = true;
@@ -197,7 +197,7 @@ export class ReceiptPage implements OnInit {
       this.amount_paid.setFocus();
     }
     else if (this.receiptForm.value.state == 'DRAFT') {
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       // await this.confirmReceipt();
       if (!this.confirming) {
@@ -922,7 +922,7 @@ export class ReceiptPage implements OnInit {
             text: 'Confirmar',
             handler: async data => {
               //console.log("Confirmar");
-              this.loading = await this.loadingCtrl.create();
+              this.loading = await this.loadingCtrl.create({});
               await this.loading.present();
               await this.afterConfirm();
               await this.loading.dismiss();
@@ -952,7 +952,6 @@ export class ReceiptPage implements OnInit {
     }
     return new Promise(async resolve => {
       let self = this;
-      // self.loading = await self.loadingCtrl.create();
       // await self.loading.present();
       let details = {};
       this.receiptForm.value.items.forEach(variable => {

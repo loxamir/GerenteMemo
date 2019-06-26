@@ -87,7 +87,6 @@ export class DashboardPage implements OnInit {
       public formatService: FormatService,
       public events: Events,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
       if (this.route.snapshot.paramMap.get('_id')){

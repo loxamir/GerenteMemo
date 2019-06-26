@@ -75,7 +75,6 @@ export class ReportPage implements OnInit {
       public file: File,
       public pouchdbService: PouchdbService,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.today = new Date();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');

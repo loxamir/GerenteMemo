@@ -157,7 +157,7 @@ export class StockReportPage implements OnInit {
   }
 
   async getData() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     return new Promise(resolve => {
       if (this.reportStockForm.value.reportType == 'stock') {

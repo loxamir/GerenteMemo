@@ -66,7 +66,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public stockMoveService: StockMoveService,
       public cashMoveService: CashMoveService,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');
@@ -129,7 +128,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       if (this._id){
         this.productService.getProduct(this._id).then((data) => {
