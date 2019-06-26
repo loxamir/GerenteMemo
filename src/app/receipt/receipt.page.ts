@@ -1179,7 +1179,7 @@ export class ReceiptPage implements OnInit {
               doc['state'] = 'WAITING';
             }
             if (this.receiptForm.value.cash_paid.type == 'check'){
-              doc['amount'] = (this.receiptForm.value.check.amount).toFixed(this.company_currency_precision);
+              doc['amount'] = (parseFloat(this.receiptForm.value.check.amount)).toFixed(this.company_currency_precision);
               if (this.receiptForm.value.check.currency_id && this.receiptForm.value.check.currency_id != this.company_currency_id) {
                 doc['amount'] = (this.receiptForm.value.check.currency_amount*this.receiptForm.value.currency_exchange).toFixed(this.company_currency_precision);
                 doc['currency_amount'] = this.receiptForm.value.check.currency_amount;
