@@ -127,14 +127,14 @@ export class PurchasePage implements OnInit {
     today: any;
     _id: string;
     avoidAlertMessage: boolean;
-    currency_precision = 2;
     company_currency_id = 'currency.PYG';
-    languages: Array<LanguageModel>;
-    currencies:any = {};
-    currency_symbol = "$";
+    company_currency_precision = 2;
+    company_currency_symbol = "$";
+    purchase_currency_id = 'currency.PYG';
     purchase_currency_symbol = "$";
     purchase_currency_precision = 2;
-    purchase_currency_id = 'currency.PYG';
+    currencies:any = {};
+    languages: Array<LanguageModel>;
 
     constructor(
       public navCtrl: NavController,
@@ -259,10 +259,10 @@ export class PurchasePage implements OnInit {
         "currency.PYG": pyg,
         "currency.USD": usd,
       }
-      this.currency_precision = config.currency_precision;
-      this.currency_symbol = this.currencies[config.currency_id].symbol;
-      this.purchase_currency_precision = this.currency_precision;
-      this.purchase_currency_symbol = this.currency_symbol;
+      this.company_currency_precision = config.currency_precision;
+      this.company_currency_symbol = this.currencies[config.currency_id].symbol;
+      this.purchase_currency_precision = this.company_currency_precision;
+      this.purchase_currency_symbol = this.company_currency_symbol;
       if (this._id){
         this.getPurchase(this._id).then((data) => {
           this.purchase_currency_id = data.currency_id || this.company_currency_id;
