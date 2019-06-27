@@ -493,7 +493,7 @@ export class PurchasePage implements OnInit {
         profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
-          let cost = data.cost*this.purchase_exchange_rate;
+          let cost = data.cost/this.purchase_exchange_rate;
           this.purchaseForm.value.items.unshift({
             'quantity': 1,
             'price': (cost).toFixed(this.purchase_currency_precision),
