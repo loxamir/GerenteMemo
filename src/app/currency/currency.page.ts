@@ -53,7 +53,6 @@ export class CurrencyPage implements OnInit {
         name: new FormControl('', Validators.required),
         precision: new FormControl(2),
         inverted_rate: new FormControl(false),
-        inverted_exchange_rate: new FormControl(1),
         exchange_rate: new FormControl(1),
         symbol: new FormControl('X$'),
         _id: new FormControl(''),
@@ -83,12 +82,6 @@ export class CurrencyPage implements OnInit {
         this.events.publish('create-currency', this.currencyForm.value);
         this.exitPage();
       }
-    }
-
-    changedExchangeRate() {
-      this.currencyForm.patchValue({
-        exchange_rate: 1/this.currencyForm.value.inverted_exchange_rate,
-      })
     }
 
     setLanguage(lang: LanguageModel){

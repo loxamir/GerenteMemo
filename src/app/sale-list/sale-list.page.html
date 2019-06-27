@@ -25,7 +25,7 @@
   <ion-list no-lines>
     <ion-item-sliding *ngFor="let item of sales" #slidingItem>
       <ion-item no-padding (click)="openSale(item)">
-        <ion-card class="list-card" no-padding>
+        <ion-card class="list-card" no-padding button="true">
           <ion-row>
             <ion-col>
               <h3 class="item-name"><b>{{ item.contact_name || 'No Informado'}}</b></h3>

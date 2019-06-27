@@ -149,17 +149,16 @@ export class PurchaseListPage implements OnInit {
   }
 
   createPurchase(){
+    console.log("teste foi");
     this.events.subscribe('create-purchase', (data) => {
       if (this.select){
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('select-purchase', data);
-        // });
+        this.events.publish('select-purchase', data);
       }
       this.events.unsubscribe('create-purchase');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(PurchasePage, {});
+    console.log("meio foi");
     this.navCtrl.navigateForward(['/purchase', {}]);
+    console.log("pagina foi");
   }
 
   getPurchases(keyword, page){

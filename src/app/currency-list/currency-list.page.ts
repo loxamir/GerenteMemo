@@ -15,7 +15,6 @@ export class CurrencyListPage implements OnInit {
   loading: any;
   select;
   searchTerm: string = '';
-  // has_search = false;
 
   constructor(
     public navCtrl: NavController,
@@ -27,13 +26,7 @@ export class CurrencyListPage implements OnInit {
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
   }
-  // setSearch() {
-  //   if (this.has_search){
-  //     this.searchTerm = "";
-  //     this.setFilteredItems();
-  //   }
-  //   this.has_search = ! this.has_search;
-  // }
+
   ngOnInit() {
     //this.loading.present();
     this.setFilteredItems();
@@ -75,7 +68,6 @@ export class CurrencyListPage implements OnInit {
   }
 
   selectCurrency(currency) {
-    // this.navCtrl.navigateBack().then(() => {
     if (this.select){
       console.log("select", currency);
       this.events.publish('select-currency', currency);
@@ -83,7 +75,6 @@ export class CurrencyListPage implements OnInit {
     } else {
       this.openCurrency(currency);
     }
-    // });
   }
 
   async createCurrency(){
@@ -100,18 +91,12 @@ export class CurrencyListPage implements OnInit {
     }
     this.events.subscribe('create-currency', (data) => {
       if (this.select){
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('select-currency', data);
-          this.modalCtrl.dismiss();
-        // });
+        this.events.publish('select-currency', data);
+        this.modalCtrl.dismiss();
       }
       this.events.unsubscribe('create-currency');
     })
   }
-
-  // deleteCurrency(currency){
-  //   this.deleteCurrency(currency);
-  // }
 
   deleteCurrency(currency) {
     return this.pouchdbService.deleteDoc(currency);

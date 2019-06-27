@@ -1,7 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <!-- <ion-back-button defaultHref="/tabs/purchase-list"></ion-back-button> -->
       <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/purchase-list')"></ion-back-button>
     </ion-buttons>
     <ion-title>
@@ -16,12 +15,12 @@
   <ion-row  style="height:50px;">
     <ion-col>
       <h4 class="field-label-col">{{'TOTAL' | translate}}</h4>
-      <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="purchase_currency_id != company_currency_id">{{company_currency_symbol}} {{purchaseForm.value.total*purchaseForm.value.currency_exchange|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
+      <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="purchase_currency_id != company_currency_id">{{company_currency_symbol}} {{purchaseForm.value.total*view_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
       <h4 class="field-value-col" style="color:blue">{{purchase_currency_symbol }} {{purchaseForm.value.total|number:'1.'+purchase_currency_precision+"-"+purchase_currency_precision}}</h4>
     </ion-col>
     <ion-col>
       <h4 class="field-label-col">{{'Pagar' | translate}}</h4>
-      <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="purchase_currency_id != company_currency_id">{{ company_currency_symbol }} {{purchaseForm.value.residual*purchaseForm.value.currency_exchange|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
+      <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="purchase_currency_id != company_currency_id">{{ company_currency_symbol }} {{purchaseForm.value.residual*view_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
       <h4 class="field-value-col" style="color:red">{{purchase_currency_symbol}} {{purchaseForm.value.residual|number:'1.'+purchase_currency_precision+"-"+purchase_currency_precision}}</h4>
     </ion-col>
   </ion-row>
@@ -65,27 +64,19 @@
         <ion-datetime class="field-50-datetime"
         displayFormat="DD/MM/YYYY"
         pickerFormat="DD/MM/YYYY"
-        formControlName="date"
-        [disabled]="purchaseForm.value.state!='QUOTATION'">
+        formControlName="date">
         </ion-datetime>
       </ion-item>
-      <!-- <ion-item no-padding (click)="selectSeller()" class="field-50">
-        <h4 class="field-label">{{'SELLER' | translate }}</h4>
-        <h4 class="field-value">{{purchaseForm.value.seller_name || 'Selecionar'}}</h4>
-      </ion-item> -->
     </ion-row>
     <ion-row style="height: 60px;background: white;">
       <ion-col (click)="selectCurrency()">
-        <!-- <ion-item no-padding (click)="selectCurrency()" class="field-100"> -->
-          <h4 class="field-label-col">{{'CURRENCY' | translate }}</h4>
-          <h4 class="field-value-col">{{purchaseForm.value.currency && purchaseForm.value.currency.name || 'Selecionar'}}</h4>
-        <!-- </ion-item> -->
+        <h4 class="field-label-col">{{'CURRENCY' | translate }}</h4>
+        <h4 class="field-value-col">{{purchaseForm.value.currency && purchaseForm.value.currency.name || 'Selecionar'}}</h4>
       </ion-col>
       <ion-col *ngIf="purchaseForm.value.currency && purchaseForm.value.currency.name">
         <ion-item style="--background: white;">
           <ion-label position="floating" style="font-size:14px">{{'EXCHANGE_RATE' | translate}}</ion-label>
-          <ion-input #currency_exchange type="number" formControlName="currency_exchange" (ionChange)="recomputeValues()" *ngIf="!purchaseForm.value.currency.inverted_rate" [disabled]="purchaseForm.value.state != 'QUOTATION'"></ion-input>
-          <ion-input type="number" formControlName="inverted_exchange_rate" (ngModelChange)="changedExchangeRate()" *ngIf="purchaseForm.value.currency.inverted_rate"></ion-input>
+          <ion-input #exchange_rate type="number" formControlName="exchange_rate" (ionChange)="recomputeValues()"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -93,9 +84,12 @@
       <ion-col *ngIf="purchaseForm.value.state != 'QUOTATION' && purchaseForm.value.amount_unInvoiced == purchaseForm.value.total">
         <ion-button class="button-100" (click)="addInvoice()">Registrar Factura</ion-button>
       </ion-col>
-      <ion-col *ngIf="purchaseForm.value.state == 'CONFIRMED'">
+      <!-- <ion-col *ngIf="purchaseForm.value.state == 'CONFIRMED'">
         <ion-button class="button-100" (click)="beforeAddPayment()">Registrar Pago</ion-button>
-      </ion-col>
+      </ion-col> -->
+      <!-- <ion-col size="12" *ngIf="purchaseForm.value.state == 'QUOTATION' && purchaseForm.value.items.length">
+        <ion-button class="button-100" color="success" (click)="goNextStep()">Confirmar</ion-button>
+      </ion-col> -->
       <ion-col size="12" *ngIf="purchaseForm.value.state == 'QUOTATION'">
         <ion-button class="button-100" (click)="addItem()">+ Agregar Item</ion-button>
       </ion-col>
@@ -175,7 +169,7 @@
                 <div style="font-size: 15px;display: contents; color:red">
                    {{ purchase_currency_symbol }} {{item.price|number:'1.'+purchase_currency_precision+"-"+purchase_currency_precision}}
                 </div>
-                <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: left;margin-top: -0.2rem;margin-bottom: 1rem;" *ngIf="purchase_currency_id != company_currency_id">{{company_currency_symbol }} {{item.price*purchaseForm.value.currency_exchange|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
+                <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: left;margin-top: -0.2rem;margin-bottom: 1rem;" *ngIf="purchase_currency_id != company_currency_id">{{company_currency_symbol }} {{item.price*view_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
 
               </ion-col>
             </ion-row>
@@ -184,7 +178,7 @@
                 <span class="price-label">SubTotal:</span>
                 <div style="font-size: 20px;color:green;">
                    {{ purchase_currency_symbol }} {{item.price*item.quantity|number:'1.'+purchase_currency_precision+"-"+purchase_currency_precision}}
-                   <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: left;margin-top: -0.2rem;margin-bottom: 1rem;" *ngIf="purchase_currency_id != company_currency_id">{{company_currency_symbol }} {{item.price*item.quantity*purchaseForm.value.currency_exchange|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
+                   <h4 class="field-value-col" style="color:black;font-size: 13px;text-align: left;margin-top: -0.2rem;margin-bottom: 1rem;" *ngIf="purchase_currency_id != company_currency_id">{{company_currency_symbol }} {{item.price*item.quantity*view_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
                 </div>
               </ion-col>
             </ion-row>
@@ -221,20 +215,26 @@
     </section>
     </ion-list>
   </form>
-  <!-- <ion-fab vertical="footer" horizontal="end" slot="fixed" *ngIf="purchaseForm.value.state == 'QUOTATION'">
-    <ion-fab-button (click)="addItem()" color="primary">
-      <ion-icon name="add">
-      </ion-icon>
-    </ion-fab-button>
-  </ion-fab> -->
 
-
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
-    <ion-button (click)="goNextStep()"  class="next-button">
-      <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="purchaseForm.value.state == 'QUOTATION' && purchaseForm.value.items.length">
+    <ion-button (click)="goNextStep()"  class="next-button" color="primary">
+      <ion-icon name="checkmark"> </ion-icon>
+      Confirmar
     </ion-button>
   </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="purchaseForm.value.state == 'CONFIRMED'">
+    <ion-button (click)="beforeAddPayment()"  class="next-button" color="primary">
+      <ion-icon name="cash"> </ion-icon>
+      Pagar
+    </ion-button>
+  </ion-fab>
+  <!-- <ion-col >
+    <ion-button class="button-100" (click)="beforeAddPayment()">Registrar Pago</ion-button>
+  </ion-col> -->
+  <!-- <ion-col size="12" *ngIf="purchaseForm.value.state == 'QUOTATION' && purchaseForm.value.items.length">
+    <ion-button class="button-100"  (click)="goNextStep()">Confirmar</ion-button>
+  </ion-col> -->
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">

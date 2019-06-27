@@ -61,21 +61,8 @@
        *ngIf="checkForeingCurrency()"
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'CURRENCY_EXCHANGE' | translate}}</ion-label>
-        <!-- <ion-input #currency_exchange type="number"
-        (ngModelChange)="changedExchange()"
-        formControlName="currency_exchange"></ion-input> -->
-
-        <ion-input #currency_exchange type="number" formControlName="currency_exchange" (ngModelChange)="changedExchange()" *ngIf="!cashMoveForm.value.currency.inverted_rate"></ion-input>
-        <ion-input type="number" formControlName="inverted_exchange_rate" (ngModelChange)="changedExchangeRate()" *ngIf="cashMoveForm.value.currency.inverted_rate"></ion-input>
+        <ion-input #exchange_rate type="number" formControlName="exchange_rate" (ngModelChange)="changedExchange()"></ion-input>
       </ion-item>
-      <!-- <ion-item
-       no-padding
-       *ngIf="cashMoveForm.value.origin_id"
-       class="field-50">
-        <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
-        <ion-input #input type="number"
-        formControlName="amount"></ion-input>
-      </ion-item> -->
       <ion-item
        no-padding
        (click)="selectAccountFrom()"
@@ -92,14 +79,6 @@
         <h4 class="field-label">{{'Destino' | translate }}</h4>
         <h4 class="field-value">{{cashMoveForm.value.accountTo && cashMoveForm.value.accountTo.name || 'Selecionar'}}</h4>
       </ion-item>
-      <!-- <ion-item
-      no-padding
-      *ngIf="!transfer"
-      (click)="selectContact()"
-       class="field-100">
-        <h4 class="field-label">{{'CONTACT' | translate}}</h4>
-        <h4 class="field-value">{{cashMoveForm.value.contact && cashMoveForm.value.contact.name || 'Selecionar'}}</h4>
-      </ion-item> -->
     </ion-row>
     <ion-row *ngIf="!transfer">
       <ion-col no-padding class="field-many2one-edit"

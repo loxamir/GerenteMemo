@@ -115,8 +115,6 @@ export class SaleListPage implements OnInit {
     this.events.subscribe('open-sale', (data) => {
       this.events.unsubscribe('open-sale');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(SalePage, {'_id': sale._id});
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.navCtrl.navigateForward(['/sale', {'_id': sale._id}]);
@@ -124,8 +122,6 @@ export class SaleListPage implements OnInit {
   }
 
   async createSale(){
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(SalePage, {});
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.navCtrl.navigateForward(['/sale', {}]);

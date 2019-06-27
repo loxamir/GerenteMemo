@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NavController, ModalController, LoadingController,  Events, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -24,37 +23,32 @@ import { CheckPage } from '../check/check.page';
   styleUrls: ['./cash-move.page.scss'],
 })
 export class CashMovePage implements OnInit {
-
-  // constructor() { }
   @ViewChild('amount') amount;
   @ViewChild('description') description;
   @ViewChild('currency_amount') currency_amountField;
+  @Input() _id;
+  @Input() origin_id;
+  @Input() accountFrom_id;
+  @Input() accountTo_id;
+  @Input() accountFrom;
+  @Input() accountTo;
+  @Input() contact;
+  @Input() contact_id;
+  @Input() signal;
+  @Input() check;
+  company_currency_id = 'currency.PYG';
+  @Input() currency;
+  @Input() currency_amount;
+  @Input() currency_residual;
+  @Input() exchange_rate;
+  @Input() payable;
+  @Input() receivable;
+  @Input() select;
 
-@Input() _id;
-// @Input() select;
-@Input() origin_id;
-@Input() accountFrom_id;
-@Input() accountTo_id;
-@Input() accountFrom;
-@Input() accountTo;
-@Input() contact;
-@Input() contact_id;
-@Input() signal;
-@Input() check;
-company_currency_id = 'currency.PYG';
-@Input() currency;
-@Input() currency_amount;
-@Input() currency_residual;
-@Input() currency_exchange;
-@Input() payable;
-@Input() receivable;
-@Input() select;
-
+  receipt_currency_id = 'currency.PYG';
   cashMoveForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
-  // _id: string;
-  // cash_id: string;
   default_amount: number;
   default_name: number;
   today: any;
@@ -64,22 +58,20 @@ company_currency_id = 'currency.PYG';
   changing = false;
   currency_precision = 2;
   company_currency_name = "";
-  constructor(
+  view_exchange_rate:number = 1;
+  currencies:any = {};
 
+  constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    // public imagePicker: ImagePicker,
-    // public cropService: Crop,
-    // public platform: Platform,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public cashMoveService: CashMoveService,
     public pouchdbService: PouchdbService,
     public formatService: FormatService,
-    // public navParams: NavParams,
     public events: Events,
     public configService: ConfigService,
     public alertCtrl: AlertController,
@@ -92,25 +84,16 @@ company_currency_id = 'currency.PYG';
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
     this.transfer = this.route.snapshot.paramMap.get('transfer') == 'true';
-    // this.default_amount = this.default_amount');
-    // this.default_name = this.default_name');
     this.today = new Date();
-    // console.log("dados nav", this.
-
   }
 
   async ngOnInit() {
-    // var today = new Date().toISOString();
-
-
     this.cashMoveForm = this.formBuilder.group({
       name: new FormControl(this.default_name),
       amount: new FormControl(this.default_amount||'', Validators.required),
       date: new FormControl(this.today.toISOString(), Validators.required),
       dateDue: new FormControl(this.today.toISOString(), Validators.required),
       state: new FormControl('DRAFT'),
-      // cash: new FormControl({}),
-      // cash_id: new FormControl(this.cash_id')),
       origin_id: new FormControl(this.origin_id),
       accountFrom: new FormControl({}),
       accountFrom_id: new FormControl(this.accountFrom_id),
@@ -137,8 +120,7 @@ company_currency_id = 'currency.PYG';
       currency_id: new FormControl(''),
       currency_amount: new FormControl(this.currency_amount||0),
       currency_residual: new FormControl(this.currency_residual||0),
-      currency_exchange: new FormControl(this.currency_exchange||this.currency && this.currency.exchange_rate||1),
-      inverted_exchange_rate: new FormControl(this.currency && this.currency.inverted_exchange_rate||1),
+      exchange_rate: new FormControl(this.exchange_rate||this.currency && this.currency.exchange_rate||1),
       _id: new FormControl(''),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
@@ -148,69 +130,61 @@ company_currency_id = 'currency.PYG';
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     if (this.accountTo && (this.accountTo['_id'].split('.')[1]=='cash' || this.accountTo['_id'].split('.')[1]=='bank' || this.accountTo['_id'].split('.')[1]=='check')){
-      // console.log("to cash");
       this.to_cash = true;
     }
     if (this.accountFrom && (this.accountFrom['_id'].split('.')[1]=='cash' || this.accountFrom['_id'].split('.')[1]=='bank' || this.accountFrom['_id'].split('.')[1]=='check')){
-      // console.log("from cash");
       this.from_cash = true;
     }
     if (this.transfer){
-      // console.log("from cash");
       this.transfer = true;
       this.contact = await this.pouchdbService.getDoc('contact.myCompany');
     } else {
       this.contact = await this.pouchdbService.getDoc('contact.unknown');
     }
     let config = await this.configService.getConfig();
-    // let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
     this.company_currency_id = config.currency._id;
     this.company_currency_name = config.currency.name;
+    this.receipt_currency_id = this.company_currency_id;
+
+    let pyg = await this.pouchdbService.getDoc('currency.PYG')
+    let usd = await this.pouchdbService.getDoc('currency.USD')
+    this.currencies = {
+      "currency.PYG": pyg,
+      "currency.USD": usd,
+    }
+
+    if (config.currency.inverted_rate){
+      this.view_exchange_rate = parseFloat(config.currency.exchange_rate);
+    } else {
+      this.view_exchange_rate = (1/parseFloat(config.currency.exchange_rate));
+    }
+
     if (this._id){
       this.cashMoveService.getCashMove(this._id).then((data) => {
-        // data.date = Date(data.date)
         this.cashMoveForm.patchValue(data);
         this.loading.dismiss();
       });
     } else {
       this.cashMoveForm.markAsDirty();
-      //console.log("caja", this.cash);
-      // if (this.hasOwnProperty('cash')){
-      //   this.cashMoveForm.patchValue({
-      //     cash: this.cash,
-      //     cash_id: this.cash._id,
-      //   });
-      // } else {
-        // this.configService.getConfig().then(config => {
-        // let config = await this.configService.getConfig();
-        // // let config:any = (await this.pouchdbService.getDoc('config.profile'));
-        // this.currency_precision = config.currency_precision;
-        // this.company_currency_id = config.currency._id;
-        // this.company_currency_name = config.currency.name;
-          let accountFrom = this.accountFrom || {};
-          let accountTo = this.accountTo || {};
-          let contact = this.contact || {};
-          //console.log("configconfig", config);
-          let currency = config.currency
-          if (this.currency._id){
-            currency = this.currency
-          }
-          this.cashMoveForm.patchValue({
-            currency: currency,
-            currency_id: currency['_id'],
-            accountFrom: accountFrom,
-            accountFrom_id: accountFrom['_id'],
-            accountTo: accountTo,
-            accountTo_id: accountTo['_id'],
-            contact: contact,
-            contact_id: contact['_id'],
-          });
-        // });
-        // this.cashService.getDefaultCash().then(default_cash => {
-        //
-        // });
-      // }
+      let accountFrom = this.accountFrom || {};
+      let accountTo = this.accountTo || {};
+      let contact = this.contact || {};
+      //console.log("configconfig", config);
+      let currency = config.currency
+      if (this.currency._id){
+        currency = this.currency
+      }
+      this.cashMoveForm.patchValue({
+        currency: currency,
+        currency_id: currency['_id'],
+        accountFrom: accountFrom,
+        accountFrom_id: accountFrom['_id'],
+        accountTo: accountTo,
+        accountTo_id: accountTo['_id'],
+        contact: contact,
+        contact_id: contact['_id'],
+      });
       await this.loading.dismiss();
       setTimeout(() => {
         if (JSON.stringify(this.cashMoveForm.value.currency) == '{}' ||
@@ -226,12 +200,6 @@ company_currency_id = 'currency.PYG';
     }
   }
 
-  changedExchangeRate() {
-    this.cashMoveForm.patchValue({
-      currency_exchange: 1/this.cashMoveForm.value.inverted_exchange_rate,
-    })
-  }
-
   showSave(){
     return (
       this.cashMoveForm.dirty
@@ -242,7 +210,6 @@ company_currency_id = 'currency.PYG';
   }
 
   checkForeingCurrency(){
-    // console.log("este ", JSON.stringify(this.cashMoveForm.value.currency) != '{}', this.cashMoveForm.value.currency._id != this.company_currency_id);
     return (
       JSON.stringify(this.cashMoveForm.value.currency) != '{}'
       && this.cashMoveForm.value.currency._id != this.company_currency_id
@@ -339,13 +306,6 @@ company_currency_id = 'currency.PYG';
   }
 
   buttonSave() {
-    // var today = new Date().toISOString();
-    // this.cashMoveForm.value.date = this.cashMoveForm.value.date;
-    // if (this.cashMoveForm.value.date <= today){
-    //   this.cashMoveForm.value.state = 'DONE';
-    // } else {
-    //   this.cashMoveForm.value.state = 'DRAFT';
-    // }
     return new Promise(async resolve => {
       if (this.cashMoveForm.value.currency && this.cashMoveForm.value.currency._id != this.company_currency_id){
         this.cashMoveForm.patchValue({
@@ -364,7 +324,6 @@ company_currency_id = 'currency.PYG';
         }
       } else {
         this.cashMoveService.createCashMove(this.cashMoveForm.value).then(doc => {
-          //console.log("the_doc", doc);
           this.cashMoveForm.value._id = doc['id'];
           this._id = doc['id'];
           if (this.select){
@@ -491,15 +450,8 @@ company_currency_id = 'currency.PYG';
       this.events.subscribe('open-contact', (data) => {
         this.cashMoveForm.patchValue({
           contact: data,
-          // type: data.type,
-          // cash_out: data.cash_out,
-          // cash_in: data.cash_in,
-          // transfer: data.transfer,
-          // payable: data.payable,
-          // receivable: data.receivable,
         });
         this.cashMoveForm.markAsDirty();
-        // this.avoidAlertMessage = false;
         this.events.unsubscribe('open-contact');
         resolve(true);
       })
@@ -520,15 +472,8 @@ company_currency_id = 'currency.PYG';
       this.events.subscribe('open-check', (data) => {
         this.cashMoveForm.patchValue({
           check: data,
-          // type: data.type,
-          // cash_out: data.cash_out,
-          // cash_in: data.cash_in,
-          // transfer: data.transfer,
-          // payable: data.payable,
-          // receivable: data.receivable,
         });
         this.cashMoveForm.markAsDirty();
-        // this.avoidAlertMessage = false;
         this.events.unsubscribe('open-check');
         resolve(true);
       })
@@ -558,8 +503,7 @@ company_currency_id = 'currency.PYG';
           amount: data.amount,
           currency: data.currency,
           currency_amount: data.currency_amount,
-          currency_exchange: data.currency_exchange
-          // cash_id: data._id,
+          exchange_rate: data.exchange_rate
         });
         this.cashMoveForm.markAsDirty();
         profileModal.dismiss();
@@ -601,21 +545,19 @@ company_currency_id = 'currency.PYG';
         this.cashMoveForm.patchValue({
           amount: amount,
           currency_amount: amountCurrency,
-          currency_exchange: data.exchange_rate,
+          exchange_rate: data.exchange_rate,
           currency: data,
           currency_id: data._id,
         });
+        this.receipt_currency_id = data._id;
         this.cashMoveForm.markAsDirty();
         profileModal.dismiss();
         setTimeout(() => {
-           // this.amount.setFocus();
-           // this.currency_amountField.setFocus();
            if (data && data._id == this.company_currency_id){
              this.amount.setFocus();
            } else {
              this.currency_amountField.setFocus();
            }
-          // this.cashMoveForm.markAsPristine();
         }, 200);
         this.events.unsubscribe('select-currency');
         resolve(true);
@@ -624,7 +566,6 @@ company_currency_id = 'currency.PYG';
   }
 
   selectAccountFrom() {
-    // let self = this;
     return new Promise(async resolve => {
       let profileModal = await this.modalCtrl.create({
         component: AccountListPage,
@@ -648,7 +589,7 @@ company_currency_id = 'currency.PYG';
           let currency:any = await this.pouchdbService.getDoc(data.currency_id);
             dict['currency'] = currency;
             dict['currency_id'] = data.currency_id;
-            dict['currency_exchange'] = currency.exchange_rate;
+            dict['exchange_rate'] = currency.exchange_rate;
         }
         this.cashMoveForm.patchValue(dict);
         this.cashMoveForm.markAsDirty();
@@ -683,7 +624,7 @@ company_currency_id = 'currency.PYG';
           let currency:any = await this.pouchdbService.getDoc(data.currency_id);
             dict['currency'] = currency;
             dict['currency_id'] = data.currency_id;
-            dict['currency_exchange'] = currency.exchange_rate;
+            dict['exchange_rate'] = currency.exchange_rate;
         }
         this.cashMoveForm.patchValue(dict);
         this.cashMoveForm.markAsDirty();
@@ -743,7 +684,6 @@ company_currency_id = 'currency.PYG';
   }
 
   showNextButton(){
-    // console.log("stock",this.cashMoveForm.value.stock);
     if (this.cashMoveForm.value.amount==null){
       return true;
     }
@@ -796,23 +736,15 @@ company_currency_id = 'currency.PYG';
               buttons: [{
                       text: 'Si',
                       handler: () => {
-                          // alertPopup.dismiss().then(() => {
                               this.exitPage();
-                          // });
                       }
                   },
                   {
                       text: 'No',
-                      handler: () => {
-                          // need to do something if the user stays?
-                      }
+                      handler: () => {}
                   }]
           });
-
-          // Show the alert
           alertPopup.present();
-
-          // Return false to avoid the page to be popped up
           return false;
       } else {
         this.exitPage();
@@ -823,21 +755,24 @@ company_currency_id = 'currency.PYG';
     if (this.select){
       this.modalCtrl.dismiss();
     } else {
-      // this.cashMoveForm.markAsPristine();
       this.navCtrl.navigateBack('/cash-move-list');
     }
   }
 
 
   changedCurrencyAmount() {
-    if (this.cashMoveForm.value.currency._id != this.company_currency_id){
+    if (this.receipt_currency_id != this.company_currency_id){
       if (!this.changing) {
         this.changing = true;
-        let amountExchange = parseFloat(this.cashMoveForm.value.currency_exchange);
-        let amountCompanyCurrency = this.cashMoveForm.value.currency_amount * amountExchange;
+        let amountExchange = parseFloat(this.cashMoveForm.value.exchange_rate);
+        if (this.currencies[this.receipt_currency_id].inverted_rate){
+          this.view_exchange_rate = amountExchange;
+        } else {
+          this.view_exchange_rate = 1/amountExchange;
+        }
+        let amountCompanyCurrency = this.cashMoveForm.value.currency_amount * this.view_exchange_rate;
         this.cashMoveForm.patchValue({
           amount: amountCompanyCurrency.toFixed(this.currency_precision),
-          currency_exchange: amountExchange.toFixed(this.currency_precision),
         })
         setTimeout(() => {
           this.changing = false;
@@ -847,14 +782,18 @@ company_currency_id = 'currency.PYG';
   }
 
   changedAmount() {
-    if (this.cashMoveForm.value.currency._id != this.company_currency_id){
+    if (this.receipt_currency_id != this.company_currency_id){
       if (!this.changing) {
         this.changing = true;
-        let amountCurrency = this.cashMoveForm.value.currency_amount;
-        let amountExchange = this.cashMoveForm.value.amount/amountCurrency;
+        let amountCurrency = parseFloat(this.cashMoveForm.value.currency_amount);
+        let amountExchange;
+        if (this.currencies[this.receipt_currency_id].inverted_rate){
+          amountExchange = parseFloat(this.cashMoveForm.value.amount)/amountCurrency;
+        } else {
+          amountExchange = amountCurrency/parseFloat(this.cashMoveForm.value.amount);
+        }
         this.cashMoveForm.patchValue({
-          // currency_amount: amountCompanyCurrency.toFixed(this.currency_precision),
-          currency_exchange: amountExchange.toFixed(this.currency_precision),
+          exchange_rate: amountExchange.toFixed(this.currency_precision),
         })
         setTimeout(() => {
           this.changing = false;
@@ -863,14 +802,18 @@ company_currency_id = 'currency.PYG';
     }
   }
   changedExchange() {
-    if (this.cashMoveForm.value.currency._id != this.company_currency_id){
+    if (this.receipt_currency_id != this.company_currency_id){
       if (!this.changing) {
         this.changing = true;
-        let amountExchange = this.cashMoveForm.value.currency_exchange;
+        let amountExchange;
+        if (this.currencies[this.receipt_currency_id].inverted_rate){
+          amountExchange = parseFloat(this.cashMoveForm.value.exchange_rate);
+        } else {
+          amountExchange = 1/parseFloat(this.cashMoveForm.value.exchange_rate);
+        }
         let amountCompanyCurrency = this.cashMoveForm.value.currency_amount * amountExchange;
         this.cashMoveForm.patchValue({
           amount: amountCompanyCurrency.toFixed(this.currency_precision),
-          // currency_exchange: amountExchange.toFixed(this.currency_precision),
         })
         setTimeout(() => {
           this.changing = false;
