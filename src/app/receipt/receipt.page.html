@@ -59,12 +59,12 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="!hasCheck() && ((receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '+') || (receiptForm.value.cash_paid.type == 'bank' && receiptForm.value.signal == '-'))">
+      <ion-row *ngIf="!hasCheck && ((receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '+') || (receiptForm.value.cash_paid.type == 'bank' && receiptForm.value.signal == '-'))">
         <ion-col>
           <ion-button class="button-100" (click)="createCheck()">Registrar Cheque</ion-button>
         </ion-col>
       </ion-row>
-      <ion-item class="field-100" *ngIf="!(receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '-') && receiptForm.value.cash_paid.type != 'cash' && hasCheck()" (click)="editCheck()">
+      <ion-item class="field-100" *ngIf="!(receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '-') && receiptForm.value.cash_paid.type != 'cash' && hasCheck" (click)="editCheck()">
         <div class="field-many2one">
           <h4 class="field-label">{{'Cheque' | translate}}</h4>
           <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'Seleccionar'}}</h4>
@@ -77,7 +77,7 @@
         </div>
       </ion-item>
     </ion-card>
-    <ion-item class="field-100" (click)="selectAccount()" *ngIf="showDiffAccount()">
+    <ion-item class="field-100" (click)="selectAccount()" *ngIf="showDiffAccount">
       <div class="field-many2one">
         <h4 class="field-label">{{'Diferencia' | translate}}</h4>
         <h4 class="field-value">{{receiptForm.value.difference_account && receiptForm.value.difference_account.name || 'Dejar en Abierto'}}</h4>
@@ -196,10 +196,10 @@
       </ion-icon>
     </ion-fab-button>
   </ion-fab> -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showNextButton()">
-    <ion-button (click)="goNextStep()" class="next-button">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="receiptForm.value.state != 'DONE'">
+    <ion-button (click)="goNextStep()" class="next-button" color="success">
       <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+      Confirmar
     </ion-button>
   </ion-fab>
 

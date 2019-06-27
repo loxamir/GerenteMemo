@@ -60,6 +60,8 @@ export class ReceiptPage implements OnInit {
   receipt_currency_symbol = "$";
   receipt_currency_precision = 2;
   receipt_exchange_rate:number = 1;
+  hasCheck: boolean = false;
+  showDiffAccount: boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -167,7 +169,7 @@ export class ReceiptPage implements OnInit {
       if (this.receiptForm.value.signal == '-'){
         rate =  cashier.currency && cashier.currency.exchange_rate || 1;
       }
-      let cash_currency:any = await this.pouchdbService.getDoc(this.items[0] && this.items[0].currency_id || this.company_currency_id);
+      let cash_currency:any = await this.pouchdbService.getDoc(this.items && this.items[0] && this.items[0].currency_id || this.company_currency_id);
       this.receiptForm.patchValue({
         "cash_paid": cashier,
         "exchange_rate": cash_currency.exchange_rate,
@@ -215,13 +217,13 @@ export class ReceiptPage implements OnInit {
     // }
   }
 
-  showDiffAccount(){
-    return JSON.stringify(this.receiptForm.value.difference_account) != '{}';
-  }
+  // showDiffAccount(){
+  //   return JSON.stringify(this.receiptForm.value.difference_account) != '{}';
+  // }
 
-  hasCheck(){
-    return JSON.stringify(this.receiptForm.value.check) != '{}';
-  }
+  // hasCheck(){
+  //   return JSON.stringify(this.receiptForm.value.check) != '{}';
+  // }
 
   createInvoice() {
     // if (this.receiptForm.value.amount_unInvoiced > 0){
@@ -366,13 +368,18 @@ export class ReceiptPage implements OnInit {
   beforeConfirm() {
     return new Promise(async resolve => {
       if (!this.receiptForm.value._id) {
-        this.justSave();
+        await this.justSave();
       }
       if (this.receiptForm.value.items.length == 0) {
         // this.addItem();
       } else {
-        await this.receiptConfimation();
+        // await this.receiptConfimation();
+        await this.afterConfirm();
+        await this.loading.dismiss();
         resolve(true);
+        if (this.select){
+          this.modalCtrl.dismiss();
+        }
       }
     })
   }
@@ -412,27 +419,31 @@ export class ReceiptPage implements OnInit {
   }
 
   justSave() {
-    if (this._id) {
-      this.receiptService.updateReceipt(this.receiptForm.value);
-      this.receiptForm.markAsPristine();
-      //this.events.publish('open-receipt', this.receiptForm.value);
-    } else {
-      //this.invoiceService.createInvoice(this.invoiceForm.value);
-      this.receiptService.createReceipt(this.receiptForm.value).then((doc: any) => {
-        // console.log("docss receipt2", JSON.stringify(doc));
-        this.receiptForm.patchValue({
-          _id: doc['doc'].id,
-          code: doc['receipt'].code,
-          create_time: doc['receipt'].create_time,
-          create_user: doc['receipt'].create_user,
-          write_time: doc['receipt'].write_time,
-          write_user: doc['receipt'].write_user,
-        });
-        this._id = doc['doc'].id;
+    return new Promise(async resolve => {
+      if (this._id) {
+        this.receiptService.updateReceipt(this.receiptForm.value);
         this.receiptForm.markAsPristine();
-        //this.events.publish('create-receipt', this.receiptForm.value);
-      });
-    }
+        resolve(true);
+        //this.events.publish('open-receipt', this.receiptForm.value);
+      } else {
+        //this.invoiceService.createInvoice(this.invoiceForm.value);
+        this.receiptService.createReceipt(this.receiptForm.value).then((doc: any) => {
+          // console.log("docss receipt2", JSON.stringify(doc));
+          this.receiptForm.patchValue({
+            _id: doc['doc'].id,
+            code: doc['receipt'].code,
+            create_time: doc['receipt'].create_time,
+            create_user: doc['receipt'].create_user,
+            write_time: doc['receipt'].write_time,
+            write_user: doc['receipt'].write_user,
+          });
+          this._id = doc['doc'].id;
+          this.receiptForm.markAsPristine();
+          resolve(true);
+          //this.events.publish('create-receipt', this.receiptForm.value);
+        });
+      }
+    });
   }
 
   setLanguage(lang: LanguageModel) {
@@ -472,10 +483,7 @@ export class ReceiptPage implements OnInit {
       }
     });
     profileModal.present();
-    // if (default_amount != 0){
     this.events.subscribe('open-check', (data: any) => {
-      // this.receiptForm.value.cash = data;
-      // console.log("selectCash", (await this.pouchdbService.getDoc(data.currency_id)))
       this.receiptForm.patchValue({
         "check": data,
         "amount_paid": data.amount,
@@ -484,8 +492,6 @@ export class ReceiptPage implements OnInit {
       this.events.unsubscribe('open-check');
       this.recomputeValues();
     });
-
-    // }
   }
 
   async recomputeTotal() {
@@ -610,6 +616,7 @@ export class ReceiptPage implements OnInit {
       this.receiptForm.patchValue({
         "difference_account": data,
       })
+      this.showDiffAccount = true;
       profileModal.dismiss();
       this.events.unsubscribe('select-account');
       this.recomputeValues();
@@ -645,6 +652,7 @@ export class ReceiptPage implements OnInit {
 
       this.receiptForm.patchValue(doc)
       this.receiptForm.value.cash_paid['currency_id'] = data.currency_id;
+      this.hasCheck = true;
       profileModal.dismiss();
       this.events.unsubscribe('select-check');
       this.recomputeValues();
@@ -689,6 +697,7 @@ export class ReceiptPage implements OnInit {
       }
       this.receiptForm.patchValue(doc)
       this.receiptForm.value.cash_paid['currency_id'] = data.currency_id;
+      this.hasCheck = true;
       profileModal.dismiss();
       this.events.unsubscribe('create-check');
       this.recomputeValues();
@@ -722,6 +731,13 @@ export class ReceiptPage implements OnInit {
         this.receipt_currency_symbol = this.company_currency_symbol;
         this.receipt_currency_precision = this.company_currency_precision;
       }
+
+      // if (cash_currency.inverted_rate){
+      //   this.receipt_exchange_rate = parseFloat(cash_currency.exchange_rate);
+      // } else {
+      //   this.receipt_exchange_rate = (1/parseFloat(cash_currency.exchange_rate));
+      // }
+
       this.events.unsubscribe('select-cash');
       await this.recomputeValues();
       if (this.receiptForm.value.signal == '+' && data.type == 'check'){
@@ -1266,7 +1282,6 @@ export class ReceiptPage implements OnInit {
         Promise.all(promise_ids2).then(res => {
           this.events.publish('create-receipt', this.receiptForm.value);
           this.justSave();
-          // self.loading.dismiss();
           resolve(true);
         });
       });

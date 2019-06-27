@@ -312,16 +312,19 @@ export class PurchasePage implements OnInit {
           this.selectContact().then( teste => {
             if (Object.keys(this.purchaseForm.value.paymentCondition).length === 0){
               this.selectPaymentCondition().then(()=>{
-                this.purchaseConfimation();
+                // this.purchaseConfimation();
+                this.afterConfirm();
               });
             }
           });
         } else if (Object.keys(this.purchaseForm.value.paymentCondition).length === 0){
           this.selectPaymentCondition().then(()=>{
-            this.purchaseConfimation();
+            // this.purchaseConfimation();
+            this.afterConfirm();
           });
         } else {
-          this.purchaseConfimation();
+          // this.purchaseConfimation();
+          this.afterConfirm();
         }
       }
     }
@@ -643,6 +646,7 @@ export class PurchasePage implements OnInit {
         });
         this.events.unsubscribe('cancel-receipt');
       });
+      console.log('item', item);
       let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,
         componentProps: {
