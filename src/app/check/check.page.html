@@ -28,7 +28,7 @@
         <ion-item
          no-padding
          class="field-50"
-         *ngIf="checkForeingCurrency()">
+         *ngIf="check_currency_id != company_currency_id">
           <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
           <ion-input #currency_amount type="number"
           (ngModelChange)="changedCurrencyAmount()"
@@ -36,7 +36,7 @@
         </ion-item>
         <ion-item
          no-padding
-         *ngIf="!checkForeingCurrency()"
+         *ngIf="check_currency_id == company_currency_id"
          class="field-50">
           <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
           <ion-input #amount type="number"
@@ -53,7 +53,7 @@
         </ion-item>
         <ion-item
          no-padding
-         *ngIf="checkForeingCurrency()"
+         *ngIf="check_currency_id != company_currency_id"
          class="field-50">
           <ion-label position="floating" style="font-size:14px">{{'AMOUNT_COMPANY_CURRENCY' | translate}}</ion-label>
           <ion-input #amount2 type="number"
@@ -62,7 +62,7 @@
         </ion-item>
         <ion-item
          no-padding
-         *ngIf="checkForeingCurrency()"
+         *ngIf="check_currency_id != company_currency_id"
          class="field-50">
           <ion-label position="floating" style="font-size:14px">{{'CURRENCY_EXCHANGE' | translate}}</ion-label>
           <ion-input #exchange_rate type="number" formControlName="exchange_rate" (ngModelChange)="changedExchange()"></ion-input>

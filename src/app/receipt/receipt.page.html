@@ -20,17 +20,17 @@
   <ion-row style="height: 43px;margin-top: 15px;">
     <ion-col size="4" no-padding>
       <h4 class="field-label" style="text-align: center;">{{'TOTAL' | translate }}</h4>
-      <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.total*view_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
+      <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.total*receipt_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
       <h4 class="field-value" style="color:blue;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">{{ receipt_currency_symbol }} {{receiptForm.value.total+(receiptForm.value.total && smallDiff)|number:'1.'+receipt_currency_precision+"-"+receipt_currency_precision}}</h4>
     </ion-col>
     <ion-col size="4" no-padding>
       <h4 class="field-label" style="text-align: center;">{{'A Cobrar' | translate }}</h4>
-      <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.residual*view_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
+      <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.residual*receipt_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
       <h4 class="field-value" style="color:red;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">{{ receipt_currency_symbol }} {{receiptForm.value.residual+(receiptForm.value.residual && smallDiff)|number:'1.'+receipt_currency_precision+"-"+receipt_currency_precision}}</h4>
     </ion-col>
     <ion-col size="4" no-padding>
       <h4 class="field-label" style="text-align: center;">{{'Troco' | translate }}</h4>
-      <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.change*view_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
+      <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.change*receipt_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
       <h4 class="field-value" style="color:green;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">{{ receipt_currency_symbol }} {{receiptForm.value.change-(receiptForm.value.change && smallDiff)|number:'1.'+receipt_currency_precision+"-"+receipt_currency_precision}}</h4>
     </ion-col>
   </ion-row>

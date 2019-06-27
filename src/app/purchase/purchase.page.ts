@@ -124,7 +124,7 @@ export class PurchasePage implements OnInit {
     purchase_currency_precision = 2;
     currencies:any = {};
     languages: Array<LanguageModel>;
-    view_exchange_rate:number = 1;
+    purchase_exchange_rate:number = 1;
 
     constructor(
       public navCtrl: NavController,
@@ -258,9 +258,9 @@ export class PurchasePage implements OnInit {
           this.purchase_currency_symbol = this.currencies[data.currency_id || this.company_currency_id].symbol;
           this.purchase_currency_precision = this.currencies[data.currency_id || this.company_currency_id].precision;
           if (this.currencies[data.currency_id || this.company_currency_id].inverse_rate){
-            this.view_exchange_rate = this.currencies[data.currency_id || this.company_currency_id].exchange_rate;
+            this.purchase_exchange_rate = this.currencies[data.currency_id || this.company_currency_id].exchange_rate;
           } else {
-            this.view_exchange_rate = 1/this.currencies[data.currency_id || this.company_currency_id].exchange_rate;
+            this.purchase_exchange_rate = 1/this.currencies[data.currency_id || this.company_currency_id].exchange_rate;
           }
 
           this.purchaseForm.patchValue(data);
@@ -493,7 +493,7 @@ export class PurchasePage implements OnInit {
         profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
-          let cost = data.cost*this.view_exchange_rate;
+          let cost = data.cost*this.purchase_exchange_rate;
           this.purchaseForm.value.items.unshift({
             'quantity': 1,
             'price': (cost).toFixed(this.purchase_currency_precision),
@@ -523,7 +523,7 @@ export class PurchasePage implements OnInit {
         profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
-          item.price = data.cost*this.view_exchange_rate;
+          item.price = data.cost*this.purchase_exchange_rate;
           item.product = data;
           item.description = data.name;
           this.recomputeValues();
@@ -655,9 +655,9 @@ export class PurchasePage implements OnInit {
 
     recomputeValues() {
       if (this.currencies[this.purchase_currency_id].inverted_rate){
-        this.view_exchange_rate = this.purchaseForm.value.exchange_rate;
+        this.purchase_exchange_rate = this.purchaseForm.value.exchange_rate;
       } else {
-        this.view_exchange_rate = (1/parseFloat(this.purchaseForm.value.exchange_rate));
+        this.purchase_exchange_rate = (1/parseFloat(this.purchaseForm.value.exchange_rate));
       }
       this.recomputeTotal();
       this.recomputeUnInvoiced();
@@ -730,7 +730,7 @@ export class PurchasePage implements OnInit {
               this.productService.updateStockAndCost(
                 product_id,
                 item.quantity,
-                item.price*this.view_exchange_rate,
+                item.price*this.purchase_exchange_rate,
                 old_stock,
                 old_cost);
 
@@ -744,7 +744,7 @@ export class PurchasePage implements OnInit {
                 'product_id': product_id,
                 'product_name': product_name,
                 'date': new Date(),
-                'cost': item.price*item.quantity*this.view_exchange_rate,
+                'cost': item.price*item.quantity*this.purchase_exchange_rate,
                 'warehouseFrom_id': 'warehouse.supplier',
                 'warehouseFrom_name': docDict['warehouse.supplier'].doc.name,
                 'warehouseTo_id': config.warehouse_id,
@@ -755,7 +755,7 @@ export class PurchasePage implements OnInit {
                 'name': "Compra "+this.purchaseForm.value.code,
                 'contact_id': this.purchaseForm.value.contact._id,
                 'contact_name': this.purchaseForm.value.contact.name,
-                'amount': item.quantity*item.price*this.view_exchange_rate,
+                'amount': item.quantity*item.price*this.purchase_exchange_rate,
                 'origin_id': this.purchaseForm.value._id,
                 'date': new Date(),
                 'accountFrom_id': 'account.other.transitStock',
@@ -790,10 +790,10 @@ export class PurchasePage implements OnInit {
               if (JSON.stringify(this.purchaseForm.value.currency) != '{}' && this.purchaseForm.value.currency._id != this.company_currency_id) {
                 receivableCashMove['currency_amount'] = amount;
                 receivableCashMove['currency_id'] = this.purchaseForm.value.currency._id;
-                receivableCashMove['exchange_rate'] = this.view_exchange_rate;
+                receivableCashMove['exchange_rate'] = this.purchase_exchange_rate;
                 receivableCashMove['currency_residual'] = amount;
-                receivableCashMove['amount'] = amount*this.view_exchange_rate;
-                receivableCashMove['amount_residual'] = amount*this.view_exchange_rate;
+                receivableCashMove['amount'] = amount*this.purchase_exchange_rate;
+                receivableCashMove['amount_residual'] = amount*this.purchase_exchange_rate;
 
               }
               createList.push(receivableCashMove);
@@ -1292,9 +1292,9 @@ export class PurchasePage implements OnInit {
           exchange_rate: data.exchange_rate,
         });
         if (this.currencies[this.purchase_currency_id].inverted_rate){
-          this.view_exchange_rate = data.exchange_rate;
+          this.purchase_exchange_rate = data.exchange_rate;
         } else {
-          this.view_exchange_rate = (1/parseFloat(data.exchange_rate));
+          this.purchase_exchange_rate = (1/parseFloat(data.exchange_rate));
         }
         this.purchase_currency_id = data._id;
         this.purchase_currency_symbol = data.symbol;

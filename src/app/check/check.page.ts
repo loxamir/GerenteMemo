@@ -44,10 +44,10 @@ export class CheckPage implements OnInit {
   changing = false;
   currency_precision = 2;
   showExtra = false;
-  view_exchange_rate: number = 1;
+  check_exchange_rate: number = 1;
   languages: Array<LanguageModel>;
   currencies: any = {};
-  receipt_currency_id = 'currency.PYG';
+  check_currency_id = 'currency.PYG';
 
   constructor(
     public navCtrl: NavController,
@@ -109,7 +109,7 @@ export class CheckPage implements OnInit {
     let config = await this.configService.getConfig();
     this.currency_precision = config.currency_precision;
     this.company_currency_id = config.currency._id;
-    this.receipt_currency_id = this.company_currency_id;
+    this.check_currency_id = this.company_currency_id;
     let pyg = await this.pouchdbService.getDoc('currency.PYG')
     let usd = await this.pouchdbService.getDoc('currency.USD')
     this.currencies = {
@@ -118,16 +118,16 @@ export class CheckPage implements OnInit {
     }
     this.company_currency_name = config.currency.name;
     if (config.currency.inverted_rate) {
-      this.view_exchange_rate = parseFloat(config.currency.exchange_rate);
+      this.check_exchange_rate = parseFloat(config.currency.exchange_rate);
     } else {
-      this.view_exchange_rate = (1 / parseFloat(config.currency.exchange_rate));
+      this.check_exchange_rate = (1 / parseFloat(config.currency.exchange_rate));
     }
     if (this._id) {
       this.checkService.getCheck(this._id).then((data) => {
         if (config.currency.inverted_rate) {
-          this.view_exchange_rate = parseFloat(this.currencies[data.currency_id].exchange_rate);
+          this.check_exchange_rate = parseFloat(this.currencies[data.currency_id].exchange_rate);
         } else {
-          this.view_exchange_rate = (1 / parseFloat(this.currencies[data.currency_id].exchange_rate));
+          this.check_exchange_rate = (1 / parseFloat(this.currencies[data.currency_id].exchange_rate));
         }
         this.checkForm.patchValue(data);
         this.loading.dismiss();
@@ -157,16 +157,16 @@ export class CheckPage implements OnInit {
   }
 
   changedCurrencyAmount() {
-    if (this.receipt_currency_id != this.company_currency_id) {
+    if (this.check_currency_id != this.company_currency_id) {
       if (!this.changing) {
         this.changing = true;
         let amountExchange = parseFloat(this.checkForm.value.exchange_rate);
-        if (this.currencies[this.receipt_currency_id].inverted_rate) {
-          this.view_exchange_rate = amountExchange;
+        if (this.currencies[this.check_currency_id].inverted_rate) {
+          this.check_exchange_rate = amountExchange;
         } else {
-          this.view_exchange_rate = 1 / amountExchange;
+          this.check_exchange_rate = 1 / amountExchange;
         }
-        let amountCompanyCurrency = this.checkForm.value.currency_amount * this.view_exchange_rate;
+        let amountCompanyCurrency = this.checkForm.value.currency_amount * this.check_exchange_rate;
         this.checkForm.patchValue({
           amount: amountCompanyCurrency.toFixed(this.currency_precision),
         })
@@ -178,12 +178,12 @@ export class CheckPage implements OnInit {
   }
 
   changedAmount() {
-    if (this.receipt_currency_id != this.company_currency_id) {
+    if (this.check_currency_id != this.company_currency_id) {
       if (!this.changing) {
         this.changing = true;
         let amountCurrency = parseFloat(this.checkForm.value.currency_amount);
         let amountExchange;
-        if (this.currencies[this.receipt_currency_id].inverted_rate) {
+        if (this.currencies[this.check_currency_id].inverted_rate) {
           amountExchange = parseFloat(this.checkForm.value.amount) / amountCurrency;
         } else {
           amountExchange = amountCurrency / parseFloat(this.checkForm.value.amount);
@@ -198,11 +198,11 @@ export class CheckPage implements OnInit {
     }
   }
   changedExchange() {
-    if (this.receipt_currency_id != this.company_currency_id) {
+    if (this.check_currency_id != this.company_currency_id) {
       if (!this.changing) {
         this.changing = true;
         let amountExchange;
-        if (this.currencies[this.receipt_currency_id].inverted_rate) {
+        if (this.currencies[this.check_currency_id].inverted_rate) {
           amountExchange = parseFloat(this.checkForm.value.exchange_rate);
         } else {
           amountExchange = 1 / parseFloat(this.checkForm.value.exchange_rate);
@@ -250,13 +250,6 @@ export class CheckPage implements OnInit {
     }
     await this.cashMoveService.createCashMove(doc);
     await this.buttonSave();
-  }
-
-  checkForeingCurrency() {
-    return (
-      JSON.stringify(this.checkForm.value.currency) != '{}'
-      && this.checkForm.value.currency._id != this.company_currency_id
-    )
   }
 
   async changeMyCheck() {
@@ -401,11 +394,11 @@ export class CheckPage implements OnInit {
           currency: data,
           currency_id: data._id,
         });
-        this.receipt_currency_id = data._id;
+        this.check_currency_id = data._id;
         if (data.inverted_rate) {
-          this.view_exchange_rate = parseFloat(data.exchange_rate);
+          this.check_exchange_rate = parseFloat(data.exchange_rate);
         } else {
-          this.view_exchange_rate = (1 / parseFloat(data.exchange_rate));
+          this.check_exchange_rate = (1 / parseFloat(data.exchange_rate));
         }
         this.checkForm.markAsDirty();
         await profileModal.dismiss();
