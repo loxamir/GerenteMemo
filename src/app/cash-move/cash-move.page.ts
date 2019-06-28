@@ -58,7 +58,7 @@ export class CashMovePage implements OnInit {
   changing = false;
   currency_precision = 2;
   company_currency_name = "";
-  check_exchange_rate: number = 1;
+  cash_move_exchange_rate: number = 1;
   currencies: any = {};
 
   constructor(
@@ -156,9 +156,11 @@ export class CashMovePage implements OnInit {
     if (this._id) {
       this.cashMoveService.getCashMove(this._id).then((data) => {
         this.cashMoveForm.patchValue(data);
+        this.cash_move_currency_id = data.currency_id || this.company_currency_id;
         this.loading.dismiss();
       });
     } else {
+      this.cash_move_currency_id = this.company_currency_id;
       this.cashMoveForm.markAsDirty();
       let accountFrom = this.accountFrom || {};
       let accountTo = this.accountTo || {};
@@ -181,9 +183,9 @@ export class CashMovePage implements OnInit {
       this.cash_move_currency_id = currency._id;
       let exchange_rate = currency.exchange_rate;
       if (config.currency.inverted_rate) {
-        this.check_exchange_rate = parseFloat(exchange_rate);
+        this.cash_move_exchange_rate = parseFloat(exchange_rate);
       } else {
-        this.check_exchange_rate = (1 / parseFloat(exchange_rate));
+        this.cash_move_exchange_rate = (1 / parseFloat(exchange_rate));
       }
       await this.loading.dismiss();
       setTimeout(() => {
@@ -761,11 +763,11 @@ export class CashMovePage implements OnInit {
         this.changing = true;
         let amountExchange = parseFloat(this.cashMoveForm.value.exchange_rate);
         if (this.currencies[this.cash_move_currency_id].inverted_rate) {
-          this.check_exchange_rate = amountExchange;
+          this.cash_move_exchange_rate = amountExchange;
         } else {
-          this.check_exchange_rate = 1 / amountExchange;
+          this.cash_move_exchange_rate = 1 / amountExchange;
         }
-        let amountCompanyCurrency = this.cashMoveForm.value.currency_amount * this.check_exchange_rate;
+        let amountCompanyCurrency = this.cashMoveForm.value.currency_amount * this.cash_move_exchange_rate;
         this.cashMoveForm.patchValue({
           amount: amountCompanyCurrency.toFixed(this.currency_precision),
         })

@@ -84,7 +84,9 @@ export class LoginPage implements OnInit {
     }
     this.showCampaign();
     let username = await this.storage.get('username');
-    this.menuCtrl.enable(false);
+    setTimeout(() => {
+      this.menuCtrl.enable(false);
+    }, 500);
 
   }
 

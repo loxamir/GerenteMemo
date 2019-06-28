@@ -125,15 +125,17 @@ export class CheckPage implements OnInit {
     if (this._id) {
       this.checkService.getCheck(this._id).then((data) => {
         if (config.currency.inverted_rate) {
-          this.check_exchange_rate = parseFloat(this.currencies[data.currency_id].exchange_rate);
+          this.check_exchange_rate = parseFloat(this.currencies[data.currency_id || this.company_currency_id].exchange_rate);
         } else {
-          this.check_exchange_rate = (1 / parseFloat(this.currencies[data.currency_id].exchange_rate));
+          this.check_exchange_rate = (1 / parseFloat(this.currencies[data.currency_id || this.company_currency_id].exchange_rate));
         }
         this.checkForm.patchValue(data);
+        this.check_currency_id = data.currency_id || this.company_currency_id;
         this.loading.dismiss();
       });
     } else {
       await this.loading.dismiss();
+      this.check_currency_id = this.company_currency_id;
       setTimeout(() => {
         if (JSON.stringify(this.checkForm.value.currency) == '{}' ||
           this.checkForm.value.currency._id == this.company_currency_id) {

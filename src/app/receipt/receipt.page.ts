@@ -732,11 +732,11 @@ export class ReceiptPage implements OnInit {
         this.receipt_currency_precision = this.company_currency_precision;
       }
 
-      // if (cash_currency.inverted_rate){
-      //   this.receipt_exchange_rate = parseFloat(cash_currency.exchange_rate);
-      // } else {
-      //   this.receipt_exchange_rate = (1/parseFloat(cash_currency.exchange_rate));
-      // }
+      if (this.currencies[this.receipt_currency_id].inverted_rate){
+        this.receipt_exchange_rate = parseFloat(this.currencies[this.receipt_currency_id].exchange_rate);
+      } else {
+        this.receipt_exchange_rate = (1/parseFloat(this.currencies[this.receipt_currency_id].exchange_rate));
+      }
 
       this.events.unsubscribe('select-cash');
       await this.recomputeValues();
@@ -789,10 +789,18 @@ export class ReceiptPage implements OnInit {
   }
 
   recomputeExchangeValues(){
-    if (this.currencies[this.receipt_currency_id].inverted_rate){
-      this.receipt_exchange_rate = this.receiptForm.value.exchange_rate;
+    if (this.receiptForm.value.items && this.receiptForm.value.items[0] && this.receiptForm.value.items[0].currency_id){
+      if (this.currencies[this.receiptForm.value.items[0].currency_id].inverted_rate){
+        this.receipt_exchange_rate = this.receiptForm.value.exchange_rate;
+      } else {
+        this.receipt_exchange_rate = (1/parseFloat(this.receiptForm.value.exchange_rate));
+      }
     } else {
-      this.receipt_exchange_rate = (1/parseFloat(this.receiptForm.value.exchange_rate));
+      if (this.currencies[this.receipt_currency_id].inverted_rate){
+        this.receipt_exchange_rate = this.receiptForm.value.exchange_rate;
+      } else {
+        this.receipt_exchange_rate = (1/parseFloat(this.receiptForm.value.exchange_rate));
+      }
     }
     this.recomputeValues();
   }
@@ -1011,7 +1019,7 @@ export class ReceiptPage implements OnInit {
               && this.change > 0
             ) {
               let cashMoveDoc = {
-                "amount": (this.change*this.receiptForm.value.check.exchange_rate).toFixed(this.company_currency_precision),
+                "amount": (this.change*this.receipt_exchange_rate).toFixed(this.company_currency_precision),
                 "name": this.receiptForm.value.name,
                 "date": this.today,
                 "accountTo_id": account_id,
@@ -1104,7 +1112,7 @@ export class ReceiptPage implements OnInit {
 
               let cashMoveDoc = {
                 // "amount": this.change.toFixed(this.company_currency_precision),
-                "amount": (this.change*this.receiptForm.value.check.exchange_rate).toFixed(this.company_currency_precision),
+                "amount": (this.change*this.receipt_exchange_rate).toFixed(this.company_currency_precision),
                 "name": this.receiptForm.value.name,
                 "date": this.today,
                 "accountTo_id": this.config.cash_id,

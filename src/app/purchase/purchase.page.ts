@@ -257,7 +257,7 @@ export class PurchasePage implements OnInit {
           this.purchase_currency_id = data.currency_id || this.company_currency_id;
           this.purchase_currency_symbol = this.currencies[data.currency_id || this.company_currency_id].symbol;
           this.purchase_currency_precision = this.currencies[data.currency_id || this.company_currency_id].precision;
-          if (this.currencies[data.currency_id || this.company_currency_id].inverse_rate){
+          if (this.currencies[data.currency_id || this.company_currency_id].inverted_rate){
             this.purchase_exchange_rate = this.currencies[data.currency_id || this.company_currency_id].exchange_rate;
           } else {
             this.purchase_exchange_rate = 1/this.currencies[data.currency_id || this.company_currency_id].exchange_rate;
@@ -267,6 +267,7 @@ export class PurchasePage implements OnInit {
           this.loading.dismiss();
         });
       } else {
+        this.purchase_currency_id = this.company_currency_id;
         this.loading.dismiss();
       }
     }
@@ -497,6 +498,9 @@ export class PurchasePage implements OnInit {
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
           let cost = data.cost/this.purchase_exchange_rate;
+          if (this.currencies[this.purchase_currency_id].inverted_rate){
+            cost = data.cost*this.purchase_exchange_rate;
+          }
           this.purchaseForm.value.items.unshift({
             'quantity': 1,
             'price': (cost).toFixed(this.purchase_currency_precision),

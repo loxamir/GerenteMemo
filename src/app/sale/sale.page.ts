@@ -540,7 +540,8 @@ export class SalePage implements OnInit {
                 this.selectPaymentCondition().then(async ()=>{
                   this.loading = await this.loadingCtrl.create({});
                   await this.loading.present();
-                  await this.saleConfimation();
+                  await this.afterConfirm();
+                  await this.loading.dismiss();
                   resolve(true);
                 });
               }
@@ -550,14 +551,16 @@ export class SalePage implements OnInit {
             this.selectPaymentCondition().then(async ()=>{
               this.loading = await this.loadingCtrl.create({});
               await this.loading.present();
-              await this.saleConfimation();
+              await this.afterConfirm();
+              await this.loading.dismiss();
               resolve(true);
             });
           } else {
             // await this.loading.dismiss();
             this.loading = await this.loadingCtrl.create({});
             await this.loading.present();
-            await this.saleConfimation();
+            await this.afterConfirm();
+            await this.loading.dismiss();
             resolve(true);
           }
         }
@@ -894,45 +897,7 @@ export class SalePage implements OnInit {
       ]
     };
 
-    async saleConfimation(){
-      return new Promise(async resolve =>{
-        let prompt = await this.alertCtrl.create({
-          header: 'Estas seguro que deseas confirmar la venta?',
-          message: 'Si la confirmas no podras cambiar los productos ni el cliente',
-          buttons: [
-            {
-              text: 'Cancelar',
-              role: 'cancel',
-              handler: data => {
-                resolve(false)
-              }
-            },
-            {
-              text: 'Confirmar',
-              handler: async data => {
-                this.loading = await this.loadingCtrl.create({});
-                await this.loading.present();
-                await this.afterConfirm();
-                await this.loading.dismiss();
-                resolve(true);
-              }
-            }
-          ]
-        });
-        await this.loading.dismiss();
-        await prompt.present();
-      })
-    }
-
-    // presentPopover(myEvent) {
-    //   let popover = this.popoverCtrl.create(SalePopover, {doc: this});
-    //   popover.present({
-    //     ev: myEvent
-    //   });
-    // }
-
     async presentPopover(myEvent) {
-      console.log("teste my event");
       let popover = await this.popoverCtrl.create({
         component: SalePopover,
         event: myEvent,
