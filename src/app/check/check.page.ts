@@ -96,7 +96,7 @@ export class CheckPage implements OnInit {
       currency: new FormControl(this.currency || {}),
       currency_amount: new FormControl(this.currency_amount || 0),
       exchange_rate: new FormControl(this.exchange_rate || 1),
-      currency_id: new FormControl(''),
+      currency_id: new FormControl(this.currency && this.currency._id || ''),
       note: new FormControl(''),
       _id: new FormControl(''),
       create_user: new FormControl(''),
@@ -109,7 +109,7 @@ export class CheckPage implements OnInit {
     let config = await this.configService.getConfig();
     this.currency_precision = config.currency_precision;
     this.company_currency_id = config.currency._id;
-    this.check_currency_id = this.company_currency_id;
+    this.check_currency_id = this.currency && this.currency._id || this.company_currency_id;
     let pyg = await this.pouchdbService.getDoc('currency.PYG')
     let usd = await this.pouchdbService.getDoc('currency.USD')
     this.currencies = {
@@ -135,7 +135,6 @@ export class CheckPage implements OnInit {
       });
     } else {
       await this.loading.dismiss();
-      this.check_currency_id = this.company_currency_id;
       setTimeout(() => {
         if (JSON.stringify(this.checkForm.value.currency) == '{}' ||
           this.checkForm.value.currency._id == this.company_currency_id) {

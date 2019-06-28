@@ -670,11 +670,16 @@ export class ReceiptPage implements OnInit {
     if (this.receiptForm.value.cash_paid.type == 'bank'){
       data['bank'] = this.receiptForm.value.cash_paid;
       data['my_check'] = true;
+      if (this.currencies[this.receiptForm.value.cash_paid.currency_id || this.receipt_currency_id].inverted_rate){
+        data['exchange_rate'] = this.receipt_exchange_rate;
+        data['amount'] = this.receiptForm.value.total*this.receiptForm.value.exchange_rate;
+      } else {
+        data['exchange_rate'] = 1/this.receipt_exchange_rate;
+        data['amount'] = this.receiptForm.value.total/this.receiptForm.value.exchange_rate;
+      }
       if (this.receiptForm.value.cash_paid.currency_id){
         data['currency'] = this.currencies[this.receiptForm.value.cash_paid.currency_id];
-        data['amount'] = this.receiptForm.value.total*this.currencies[this.receiptForm.value.cash_paid.currency_id].exchange_rate;
         data['currency_amount'] = this.receiptForm.value.total;
-        data['exchange_rate'] = this.currencies[this.receiptForm.value.cash_paid.currency_id].exchange_rate;
       }
     }
     let profileModal = await this.modalCtrl.create({
