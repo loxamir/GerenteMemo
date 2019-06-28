@@ -60,7 +60,8 @@ export class CashListPage implements OnInit {
     this.user = (await this.pouchdbService.getUser());
     this.setFilteredItems();
     this.events.subscribe('changed-cash-move', (change) => {
-      this.handleViewChange(this.cashList, change);
+      this.setFilteredItems();
+      // this.handleViewChange(this.cashList, change);
     })
     this.events.subscribe('refresh-cash-list', (change) => {
       this.handleViewChange(this.cashList, change);
