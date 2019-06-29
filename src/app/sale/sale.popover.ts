@@ -31,6 +31,7 @@ export class SalePopover {
         state: 'QUOTATION',
         _id: '',
         code: '',
+        date: new Date().toISOString(),
         residual: this.navParams.data.doc.saleForm.value.total,
         planned: [],
         payments: [],
@@ -39,7 +40,7 @@ export class SalePopover {
       this.navParams.data.doc.saleForm.markAsDirty();
       let toast = await this.toastCtrl.create({
         message: "Venta Duplicada",
-        duration: 2000
+        duration: 500
       });
       toast.present();
       this.pop.dismiss();

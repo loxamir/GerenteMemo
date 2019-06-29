@@ -85,7 +85,7 @@ export class MachinesPage implements OnInit {
   async ngOnInit() {
 
 
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.setFilteredItems();
     // this.events.subscribe('changed-work', (change)=>{

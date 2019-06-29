@@ -27,6 +27,8 @@ export class PurchasePopover {
         state: 'QUOTATION',
         _id: '',
         code: '',
+        residual: this.navParams.data.doc.purchaseForm.value.total,
+        date: this.today,
         planned: [],
         payments: [],
         invoices: [],
@@ -34,7 +36,7 @@ export class PurchasePopover {
       this.navParams.data.doc.purchaseForm.markAsDirty();
       let toast = await this.toastCtrl.create({
         message: "Compra Duplicada",
-        duration: 2000
+        duration: 500
       });
       toast.present();
       this.pop.dismiss();

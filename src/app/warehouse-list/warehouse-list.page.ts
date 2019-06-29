@@ -42,7 +42,7 @@ export class WarehouseListPage implements OnInit {
 
   async ngOnInit() {
     //this.loading.present();
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;

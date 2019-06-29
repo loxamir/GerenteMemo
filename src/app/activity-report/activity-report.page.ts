@@ -162,7 +162,7 @@ export class ActivityReportPage implements OnInit {
   }
 
   async getData() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     return new Promise(resolve => {
       // if (this.reportActivityForm.value.reportType == 'activity') {
@@ -1008,7 +1008,7 @@ export class ActivityReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.goNextStep();
     this.loading.dismiss();

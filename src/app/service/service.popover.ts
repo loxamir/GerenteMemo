@@ -29,6 +29,7 @@ export class ServicePopover {
         state: 'DRAFT',
         _id: '',
         code: '',
+        residual: this.navParams.data.doc.purchaseForm.value.total,
         planned: [],
         payments: [],
         invoices: [],
@@ -36,7 +37,7 @@ export class ServicePopover {
       this.navParams.data.doc.serviceForm.markAsDirty();
       let toast = await this.toastCtrl.create({
         message: "Servicio Duplicado",
-        duration: 2000
+        duration: 500
       });
       toast.present();
       this.pop.dismiss();

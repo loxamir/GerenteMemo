@@ -11,17 +11,58 @@
     <ion-buttons slot="end">
     </ion-buttons>
   </ion-toolbar>
+  <ion-row justify-content-center>
+    <ion-item no-padding class="field-50">
+      <ion-buttons slot="start" style="margin-right: 0px;">
+        <ion-button (click)="goPeriodBack()">
+          <ion-icon name="arrow-round-back" style="">
+          </ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <h4 class="field-label">{{'Desde' | translate }}</h4>
+      <ion-datetime class="field-50-datetime"
+      (ngModelChange)="changeDateStart()"
+      displayFormat="DD/MM/YYYY"
+      pickerFormat="DD/MM/YYYY HH:mm:ss"
+      [(ngModel)]="reportSaleForm.value.dateStart"
+      [max]="today.getFullYear()+5">
+      </ion-datetime>
+    </ion-item>
+    <ion-item no-padding class="field-50">
+      <h4 class="field-label">{{'Hasta' | translate }}</h4>
+      <ion-datetime class="field-50-datetime"
+      (ngModelChange)="changeDateEnd()"
+      displayFormat="DD/MM/YYYY"
+      pickerFormat="DD/MM/YYYY HH:mm:ss"
+      [(ngModel)]="reportSaleForm.value.dateEnd"
+      [max]="today.getFullYear()+5">
+      </ion-datetime>
+      <ion-buttons slot="end"  style="margin-left: 0px;">
+        <ion-button (click)="goPeriodForward()">
+          <ion-icon name="arrow-round-forward" style="">
+          </ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+</ion-row>
 </ion-header>
 
 <ion-content class="report-content" style="background-color: #ddd">
   <form class="sample-form validations-form" [formGroup]="reportSaleForm" (ngSubmit)="onSubmit(reportSaleForm.value)">
     <ion-row justify-content-center>
-      <ion-item no-padding class="field-50">
+
+      <!-- <ion-item no-padding class="field-50">
+        <ion-buttons slot="start">
+          <ion-button (click)="goPeriodBack()">
+            <ion-icon name="arrow-round-back" style="">
+            </ion-icon>
+          </ion-button>
+        </ion-buttons>
         <h4 class="field-label">{{'Desde' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
-        (ionChange)="goNextStep()"
-        displayFormat="DD/MM/YYYY"
-        pickerFormat="DD/MM/YYYY"
+        (ionChange)="changeDateStart()"
+        displayFormat="DD/MM/YYYY HH:mm:ss"
+        pickerFormat="DD/MM/YYYY HH:mm:ss"
         formControlName="dateStart"
         [max]="today.getFullYear()+5">
         </ion-datetime>
@@ -29,13 +70,19 @@
       <ion-item no-padding class="field-50">
         <h4 class="field-label">{{'Hasta' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
-        (ionChange)="goNextStep()"
-        displayFormat="DD/MM/YYYY"
-        pickerFormat="DD/MM/YYYY"
+        (ionChange)="changeDateEnd()"
+        displayFormat="DD/MM/YYYY HH:mm:ss"
+        pickerFormat="DD/MM/YYYY HH:mm:ss"
         formControlName="dateEnd"
         [max]="today.getFullYear()+5">
         </ion-datetime>
-      </ion-item>
+        <ion-buttons slot="end">
+          <ion-button (click)="goPeriodForward()">
+            <ion-icon name="arrow-round-forward" style="">
+            </ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item> -->
       <ion-item
       *ngIf="reportSaleForm.value.reportType == 'sale'"
       no-padding
@@ -59,6 +106,58 @@
           <ion-select-option value="year">Año</ion-select-option>
         </ion-select>
       </ion-item>
+      <ion-item
+        no-padding
+        class="field-100">
+        <ion-label>{{'Filtros' | translate}}</ion-label>
+        <ion-toggle formControlName="showFilter"></ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
+        <div class="field-many2one" (click)="selectContact()">
+          <h4 class="field-label">{{'Cliente' | translate}}</h4>
+          <h4 class="field-value">{{reportSaleForm.value.contact && reportSaleForm.value.contact.name || 'Todos'}}</h4>
+        </div>
+        <ion-button (click)="clearContact()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
+        <div class="field-many2one" (click)="selectProduct()">
+          <h4 class="field-label">{{'Producto' | translate}}</h4>
+          <h4 class="field-value">{{reportSaleForm.value.product && reportSaleForm.value.product.name || 'Todos'}}</h4>
+        </div>
+        <ion-button (click)="clearProduct()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
+        <div class="field-many2one" (click)="selectCategory()">
+          <h4 class="field-label">{{'Categoria' | translate}}</h4>
+          <h4 class="field-value">{{reportSaleForm.value.category && reportSaleForm.value.category.name || 'Todos'}}</h4>
+        </div>
+        <ion-button (click)="clearCategory()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
+        <div class="field-many2one" (click)="selectPaymentCondition()">
+          <h4 class="field-label">{{'Condición de Pago' | translate}}</h4>
+          <h4 class="field-value">{{reportSaleForm.value.paymentCondition && reportSaleForm.value.paymentCondition.name || 'Todos'}}</h4>
+        </div>
+        <ion-button (click)="clearPaymentCondition()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
+        <div class="field-many2one" (click)="selectSeller()">
+          <h4 class="field-label">{{'Vendedor' | translate}}</h4>
+          <h4 class="field-value">{{reportSaleForm.value.seller && reportSaleForm.value.seller.name || 'Todos'}}</h4>
+        </div>
+        <ion-button (click)="clearSeller()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </ion-item>
+    <!-- </ion-row> -->
       <ion-card class="list-card">
         <ion-list>
           <div *ngIf="reportSaleForm.value.groupBy == 'product'">

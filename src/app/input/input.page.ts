@@ -51,7 +51,7 @@ export class InputPage implements OnInit {
     public events: Events,
     public formatService: FormatService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
+    //this.loading = //this.loadingCtrl.create({});
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
@@ -75,7 +75,7 @@ export class InputPage implements OnInit {
       code: new FormControl(''),
       _id: new FormControl(''),
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     if (this._id){
       this.inputService.getInput(this._id).then((data) => {

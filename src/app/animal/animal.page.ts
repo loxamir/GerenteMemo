@@ -49,7 +49,7 @@ export class AnimalPage implements OnInit {
     public events: Events,
     public formatService: FormatService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
+    //this.loading = //this.loadingCtrl.create({});
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.events.subscribe('changed-animal-move', (change)=>{
@@ -71,7 +71,7 @@ export class AnimalPage implements OnInit {
       code: new FormControl(''),
       _id: new FormControl(''),
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     if (this._id){
       this.animalService.getAnimal(this._id).then((data) => {

@@ -38,7 +38,7 @@ export class FilterPage implements OnInit {
     public events: Events,
     public alertCtrl: AlertController,
   ) {
-    //this.loading = //this.loadingCtrl.create();
+    //this.loading = //this.loadingCtrl.create({});
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');

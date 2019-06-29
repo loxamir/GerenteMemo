@@ -178,7 +178,7 @@ export class InvoicePage implements OnInit {
         origin_id: new FormControl(this.origin_id||''),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
       });
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
@@ -373,10 +373,14 @@ export class InvoicePage implements OnInit {
     recomputeTax(){
       let tax:number = 0;
       this.invoiceForm.value.items.forEach((item) => {
-        tax += parseFloat(item.price)*parseFloat(item.quantity)/11;
+        if (item.product.tax == 'iva10'){
+          tax += parseFloat(item.price)*parseFloat(item.quantity)/11;
+        } else if (item.product.tax == 'iva5'){
+          tax += parseFloat(item.price)*parseFloat(item.quantity)/21;
+        }
       });
       this.invoiceForm.patchValue({
-        tax: tax,
+        tax: tax.toFixed(this.currency_precision),
       });
     }
 

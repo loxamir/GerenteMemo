@@ -4,5 +4,6 @@
     "cordova": {},
     "capacitor": {}
   },
-  "type": "angular"
+  "type": "angular",
+  "id": "eb0636c3"
 }

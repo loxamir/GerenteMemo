@@ -47,7 +47,6 @@ export class WarehousePage implements OnInit {
     public pouchdbService: PouchdbService,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     // this._id = this.navParams.data._id;
     this._id = this.route.snapshot.paramMap.get('_id');

@@ -46,27 +46,10 @@ export class AccountListPage implements OnInit {
     this.receivable = this.route.snapshot.paramMap.get('receivable');
     this.payable = this.route.snapshot.paramMap.get('payable');
     this.transfer = this.route.snapshot.paramMap.get('transfer');
-    // if (this.show_cash_in){
-    //   this.field = null;
-    //   this.filter = "cash_in";
-    // } else if (this.show_cash_out){
-    //   this.field = null;
-    //   this.filter = "cash_out";
-    // } else if (this.route.snapshot.paramMap.get('receivable')){
-    //   this.field = null;
-    //   this.filter = "receivable";
-    // } else if (this.route.snapshot.paramMap.get('payable')){
-    //   this.field = null;
-    //   this.filter = "payable";
-    // }
-    // if (this.route.snapshot.paramMap.get('transfer')){
-    //   this.field = null;
-    //   this.filter = "transfer";
-    // }
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
     if (this.transfer){
@@ -123,13 +106,14 @@ export class AccountListPage implements OnInit {
     });
   }
 
-  selectAccount(accounts) {
+  selectAccount(account) {
     if (this.select){
       // this.navCtrl.navigateBack().then(() => {
-        this.events.publish('select-account', accounts);
+        this.events.publish('select-account', account);
+        this.modalCtrl.dismiss();
       // });
     } else {
-      this.openAccount(accounts);
+      this.openAccount(account);
     }
 
     this.events.subscribe('open-account', (data) => {
@@ -192,26 +176,17 @@ export class AccountListPage implements OnInit {
 
   getAccounts(keyword, page, field, filter){
     return new Promise((resolve, reject)=>{
-      ////console.log("getPlanned");
       this.pouchdbService.searchDocTypeData(
       'account', keyword, page, field, filter
     ).then((accounts: any[]) => {
-      console.log("filter", filter);
-      // this.pouchdbService.searchDocTypeData('account', keyword, page=null, field='cash_in', filter=true).then((accounts: any[]) => {
-      // this.pouchdbService.searchDocTypeData('account').then((accounts: any[]) => {
-        console.log("real accounts", accounts);
-        // resolve(accounts);
         let promise_ids = [];
-        console.log("acciybts", accounts)
         accounts.forEach(account => {
-          console.log("account", account);
           promise_ids.push(this.pouchdbService.getDoc(account.category_id));
         });
         Promise.all(promise_ids).then(balances => {
           for(let i=0;i<balances.length;i++){
             accounts[i].category = balances[i];
           }
-          console.log("accounts", accounts);
           resolve(accounts);
         });
       });

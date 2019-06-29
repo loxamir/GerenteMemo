@@ -71,9 +71,14 @@ import { PaymentConditionPageModule } from './payment-condition/payment-conditio
 import { ServiceWorkPageModule } from './service/work/work.module';
 import { ProductionWorkPageModule } from './production/work/work.module';
 import { ServiceTravelPageModule } from './service/travel/travel.module';
+
 import { WorkPageModule } from './work/work.module';
 import { PurchasePageModule } from './purchase/purchase.module';
 import { WorksPageModule } from './works/works.module';
+
+import { ContractPageModule } from './contract/contract.module';
+import { ContractListPageModule } from './contract-list/contract-list.module';
+
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
 import { TicketConfigPageModule } from './ticket-config/ticket-config.module';
@@ -133,6 +138,8 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     LoginPageModule,
     AgroTabsPageModule,
     ContactPageModule,
+    ContractPageModule,
+    ContractListPageModule,
     DiscountPageModule,
     CashMovePageModule,
     StockMovePageModule,

@@ -28,7 +28,6 @@ export class BrandListPage implements OnInit {
     // public navParams: NavParams,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
 
   }

@@ -52,7 +52,6 @@ export class ContactPage implements OnInit {
     public pouchdbService: PouchdbService,
     public restProvider: RestProvider,
   ) {
-    // this.loading = this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -109,7 +108,7 @@ export class ContactPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     console.log("paramap", this.route.snapshot.paramMap.get('_id'), this._id, this.select);
     if (this._id){

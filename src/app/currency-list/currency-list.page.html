@@ -25,20 +25,11 @@
               </ion-row>
               <ion-row>
                 <ion-col>
-                  <!-- <h3 class="item-title">Venta: {{item.sale_rate}}</h3> -->
-                  <h4 class="currency-label">{{'Venta' | translate}}</h4>
-                  <h4 class="currency-value">{{item.sale_rate}}</h4>
-                </ion-col>
-                <ion-col no-padding style="margin-top: 13px;">
-                  <!-- <h3 class="item-title">Compra: {{item.purchase_rate}}</h3> -->
-                  <h4 class="field-label">{{'Compra' | translate}}</h4>
-                  <h4 class="field-value">{{item.purchase_rate}}</h4>
+                  <h4 class="currency-label">{{'Tasa de Cambio' | translate}}</h4>
+                  <h4 class="currency-value">{{item.exchange_rate}}</h4>
                 </ion-col>
               </ion-row>
             </ion-col>
-            <!-- <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;">
-          <ion-icon (click)="openCurrency(item)" name="arrow-forward"></ion-icon>
-        </ion-col> -->
             <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openCurrency(item)">
               <ion-icon name="open" class="open-item-arrow"></ion-icon>
             </ion-col>

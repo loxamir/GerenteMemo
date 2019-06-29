@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, LoadingController, AlertController, Events, ToastController } from '@ionic/angular';
+import { NavController, LoadingController, AlertController, Events, ToastController, ModalController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,6 +10,10 @@ import { ReportService } from '../report/report.service';
 import { ProductService } from '../product/product.service';
 import { FormatService } from '../services/format.service';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { ContactListPage } from '../contact-list/contact-list.page';
+import { ProductListPage } from '../product-list/product-list.page';
+import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
+import { ProductCategoryListPage } from '../product-category-list/product-category-list.page';
 
 import * as d3 from 'd3';
 
@@ -58,6 +62,8 @@ export class SaleReportPage implements OnInit {
   g: any;
 
   line: d3Shape.Line<[number, number]>;
+
+  updating = false;
   constructor(
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
@@ -72,6 +78,7 @@ export class SaleReportPage implements OnInit {
     public formatService: FormatService,
     public events: Events,
     public pouchdbService: PouchdbService,
+    public modalCtrl: ModalController,
   ) {
     this.today = new Date();
     this.languages = this.languageService.getLanguages();
@@ -156,16 +163,69 @@ export class SaleReportPage implements OnInit {
     }, {})
   }
 
+  goPeriodBack() {
+    let start_date = new Date(this.reportSaleForm.value.dateStart).getTime();
+    let end_date = new Date(this.reportSaleForm.value.dateEnd).getTime();
+    console.log("start_date", new Date(start_date).toJSON());
+    console.log("end_date", new Date(end_date).toJSON());
+    let period = end_date - start_date + 1;
+    console.log("period", period);
+    this.updating = true;
+    this.reportSaleForm.patchValue({
+      dateStart: new Date(start_date - period).toISOString(),
+      dateEnd: new Date(end_date - period).toISOString(),
+    })
+    setTimeout(() => {
+      this.updating = false;
+    }, 10);
+    // this.recomputeValues();
+    this.goNextStep();
+    // this.loading.dismiss();
+  }
+
+  async changeDateStart(){
+    if (!this.updating){
+      console.log("changeDateStart");
+      await this.goNextStep();
+    }
+  }
+
+  changeDateEnd(){
+    if (!this.updating){
+      console.log("changeDateEnd");
+      this.goNextStep();
+    }
+  }
+
+  goPeriodForward() {
+    let start_date = new Date(this.reportSaleForm.value.dateStart).getTime();
+    let end_date = new Date(this.reportSaleForm.value.dateEnd).getTime();
+    let period = end_date - start_date + 1;
+    this.updating = true;
+    this.reportSaleForm.patchValue({
+      dateStart: new Date(start_date + period).toJSON(),
+      dateEnd: new Date(end_date + period).toJSON(),
+    })
+    setTimeout(() => {
+      this.updating = false;
+    }, 10);
+    // this.updating = false;
+    // this.recomputeValues();
+    this.goNextStep();
+  }
+
   async getData() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     return new Promise(resolve => {
       if (this.reportSaleForm.value.reportType == 'sale') {
+        let startkey=(new Date(this.reportSaleForm.value.dateStart)).toJSON();
+        let endkey=(new Date(this.reportSaleForm.value.dateEnd)).toJSON();
         this.pouchdbService.getView(
           'Informes/ProductoDiario',
-          10,
-          [this.reportSaleForm.value.dateStart.split("T")[0], "0", "0"],
-          [this.reportSaleForm.value.dateEnd.split("T")[0], "z", "z"],
+          20,
+          [startkey, "0", "0"],
+          [endkey, "z", "z"],
           true,
           true,
           undefined,
@@ -173,6 +233,29 @@ export class SaleReportPage implements OnInit {
           false
         ).then(async (sales: any[]) => {
           console.log("sale lines", sales);
+
+          if (Object.keys(this.reportSaleForm.value.contact).length > 0) {
+            sales = sales.filter(word => word['key'][10] == this.reportSaleForm.value.contact._id);
+          }
+          if (Object.keys(this.reportSaleForm.value.product).length > 0) {
+            sales = sales.filter(word => word['key'][9] == this.reportSaleForm.value.product._id);
+          }
+          if (Object.keys(this.reportSaleForm.value.paymentCondition).length > 0) {
+            sales = sales.filter(word => word['key'][11] == this.reportSaleForm.value.paymentCondition._id);
+          }
+          if (Object.keys(this.reportSaleForm.value.seller).length > 0) {
+            sales = sales.filter(word => word['key'][12] == this.reportSaleForm.value.seller._id);
+          }
+
+          if (Object.keys(this.reportSaleForm.value.category).length > 0) {
+            let categoryProductList = await this.pouchdbService.getRelated("product", "category_id", this.reportSaleForm.value.category._id);
+            let categProdList = [];
+            categoryProductList.forEach(produ=>{
+              categProdList.push(produ._id);
+            })
+            sales = sales.filter(word => categProdList.indexOf(word['key'][9]) >= 0);
+          }
+          console.log("sales2", sales);
           let items = [];
           let promise_ids = [];
           let result = {};
@@ -339,40 +422,40 @@ export class SaleReportPage implements OnInit {
             resolve(output);
           }
           else if (this.reportSaleForm.value.groupBy == 'payment') {
-          items = [];
-          sales.forEach(saleLine => {
-            if (result.hasOwnProperty(saleLine.key[7])) {
-              items[result[saleLine.key[7]]] = {
-                'name': items[result[saleLine.key[7]]].name,
-                'quantity': items[result[saleLine.key[7]]].quantity + parseFloat(saleLine.key[4]),
-                'margin': items[result[saleLine.key[7]]].margin + saleLine.key[3],
-                'total': items[result[saleLine.key[7]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
-              };
-            } else {
-              items.push({
-                'name': saleLine.key[7],
-                'quantity': parseFloat(saleLine.key[4]),
-                'margin': saleLine.key[3],
-                'total': parseFloat(saleLine.key[4])*saleLine.key[5],
-              });
-              result[saleLine.key[7]] = items.length-1;
-            }
-          });
+            items = [];
+            sales.forEach(saleLine => {
+              if (result.hasOwnProperty(saleLine.key[7])) {
+                items[result[saleLine.key[7]]] = {
+                  'name': items[result[saleLine.key[7]]].name,
+                  'quantity': items[result[saleLine.key[7]]].quantity + parseFloat(saleLine.key[4]),
+                  'margin': items[result[saleLine.key[7]]].margin + saleLine.key[3],
+                  'total': items[result[saleLine.key[7]]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                };
+              } else {
+                items.push({
+                  'name': saleLine.key[7],
+                  'quantity': parseFloat(saleLine.key[4]),
+                  'margin': saleLine.key[3],
+                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                });
+                result[saleLine.key[7]] = items.length-1;
+              }
+            });
 
-          let self = this;
-          let output = items.sort(function(a, b) {
-            return self.compare(a, b, self.reportSaleForm.value.orderBy);
-          })
-          let marker = false;
-          let total = 0;
-          output.forEach(item => {
-            item['marker'] = marker,
-              marker = !marker;
-            total += parseFloat(item['total']);
-          });
-          this.loading.dismiss();
-          resolve(output);
-        }
+            let self = this;
+            let output = items.sort(function(a, b) {
+              return self.compare(a, b, self.reportSaleForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            resolve(output);
+          }
           else if (this.reportSaleForm.value.groupBy == 'contact') {
             items = [];
             sales.forEach(saleLine => {
@@ -410,28 +493,42 @@ export class SaleReportPage implements OnInit {
             resolve(output);
           }
           else if (this.reportSaleForm.value.groupBy == 'date') {
+            // let resultado = 0;
+            // let acumulado = 0;
+            // let tmpMoves = [];
             items = [];
             sales.forEach(saleLine => {
-              let date = saleLine.key[0].split(" ")[0];
+              // let date = saleLine.key[0].split("T")[0];
+              let date:any = (new Date(saleLine.key[0])).toLocaleDateString();
+              // if (date == '5/20/2019'){
+              //   console.log("date", date, saleLine.key[4], saleLine.key[5], saleLine.value);
+              //   resultado += parseFloat(saleLine.key[4])*parseFloat(saleLine.key[5]);
+              //   console.log("resultado", resultado);
+              //   console.log("acumulado", acumulado);
+              //   if (tmpMoves.indexOf(saleLine.key[0])  < 0 ){
+              //     acumulado += saleLine.value;
+              //     tmpMoves.push(saleLine.key[0]);
+              //   }
+              // }
               if (result.hasOwnProperty(date)) {
                 // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
                 items[result[date]] = {
                   'name': items[result[date]].name,
                   'quantity': items[result[date]].quantity + parseFloat(saleLine.key[4]),
                   'margin': items[result[date]].margin + saleLine.key[3],
-                  'total': items[result[date]].total + parseFloat(saleLine.key[4])*saleLine.key[5],
+                  'total': items[result[date]].total + parseFloat(saleLine.key[4])*parseFloat(saleLine.key[5]),
                 };
               } else {
                 items.push({
                   'name': date,
                   'quantity': parseFloat(saleLine.key[4]),
                   'margin': saleLine.key[3],
-                  'total': parseFloat(saleLine.key[4])*saleLine.key[5],
+                  'total': parseFloat(saleLine.key[4])*parseFloat(saleLine.key[5]),
                 });
                 result[date] = items.length-1;
               }
             });
-
+            // console.log("result", result[1]);
             let self = this;
             let output = items.sort(function(a, b) {
               return self.compare(b, a, self.reportSaleForm.value.orderBy);
@@ -678,31 +775,32 @@ export class SaleReportPage implements OnInit {
   }
 
   async ngOnInit() {
+    let today = new Date().toISOString();
+    let timezone = new Date().toString().split(" ")[5].split('-')[1];
+    let start_date = new Date(today.split("T")[0]+"T00:00:00.000"+timezone).toISOString();
+    let end_date = new Date(today.split("T")[0]+"T23:59:59.999"+timezone).toISOString();
     this.reportSaleForm = this.formBuilder.group({
-      contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
+      // contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
       name: new FormControl(''),
-      dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.getFirstDateOfMonth()),
-      dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today.toISOString()),
+      dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||start_date),
+      dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || end_date),
       total: new FormControl(0),
-      items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
+      items: new FormControl(this.route.snapshot.paramMap.get('items') || []),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
       groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'product'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
+      showFilter: new FormControl(false),
       filter: new FormControl(''),
+      contact: new FormControl({}),
+      product: new FormControl({}),
+      category: new FormControl({}),
+      paymentCondition: new FormControl({}),
+      seller: new FormControl({}),
     });
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    if (this._id) {
-      this.reportService.getReport(this._id).then((data) => {
-        //console.log("data", data);
-        this.reportSaleForm.patchValue(data);
-        //this.loading.dismiss();
-      });
-    } else {
-      //this.loading.dismiss();
-    }
-    // if (this.route.snapshot.paramMap.get('compute){
+    //this.loading.dismiss();
     this.goNextStep();
   }
 
@@ -711,32 +809,186 @@ export class SaleReportPage implements OnInit {
     return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
   }
 
-  goNextStep() {
-    if (
-      this.reportSaleForm.value.groupBy == 'date'
-      || this.reportSaleForm.value.groupBy == 'month'
-      || this.reportSaleForm.value.groupBy == 'week'
-      || this.reportSaleForm.value.groupBy == 'year'
-    ){
-      this.reportSaleForm.patchValue({
-        'orderBy': 'name'
-      });
-    } else {
-      this.reportSaleForm.patchValue({
-        'orderBy': 'total'
-      });
-    }
+  clearContact(){
+    this.reportSaleForm.patchValue({
+      contact: {},
+    });
+    this.goNextStep();
+  }
 
-    this.getData().then(data => {
-      let self = this;
-      new Promise((resolve, reject) => {
-        self.reportSaleForm.patchValue({
-          "items": data,
+  clearProduct(){
+    this.reportSaleForm.patchValue({
+      product: {},
+    });
+    this.goNextStep();
+  }
+
+  clearCategory(){
+    this.reportSaleForm.patchValue({
+      category: {},
+    });
+    this.goNextStep();
+  }
+
+  clearPaymentCondition(){
+    this.reportSaleForm.patchValue({
+      paymentCondition: {},
+    });
+    this.goNextStep();
+  }
+
+  clearSeller(){
+    this.reportSaleForm.patchValue({
+      seller: {},
+    });
+    this.goNextStep();
+  }
+
+  selectContact(){
+    return new Promise(async resolve => {
+      this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-contact');
+      this.events.subscribe('select-contact', (data) => {
+        this.reportSaleForm.patchValue({
+          contact: data,
         });
+        this.reportSaleForm.markAsDirty();
+        this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-contact');
         resolve(true);
-      }).then(() => {
-        this.recomputeValues();
+        this.goNextStep();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ContactListPage,
+        componentProps: {
+          "select": true,
+        }
       });
+      profileModal.present();
+    });
+  }
+
+  selectCategory(){
+    return new Promise(async resolve => {
+      this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-category');
+      this.events.subscribe('select-category', (data) => {
+        this.reportSaleForm.patchValue({
+          category: data,
+        });
+        this.reportSaleForm.markAsDirty();
+        this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-category');
+        resolve(true);
+        this.goNextStep();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ProductCategoryListPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
+
+  selectProduct(){
+    return new Promise(async resolve => {
+      this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-product');
+      this.events.subscribe('select-product', (data) => {
+        this.reportSaleForm.patchValue({
+          product: data,
+        });
+        this.reportSaleForm.markAsDirty();
+        this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-product');
+        resolve(true);
+        this.goNextStep();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ProductListPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
+
+  selectPaymentCondition(){
+    return new Promise(async resolve => {
+      this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-payment-condition');
+      this.events.subscribe('select-payment-condition', (data) => {
+        this.reportSaleForm.patchValue({
+          paymentCondition: data,
+        });
+        this.reportSaleForm.markAsDirty();
+        this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-payment-condition');
+        resolve(true);
+        this.goNextStep();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: PaymentConditionListPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
+
+  selectSeller(){
+    return new Promise(async resolve => {
+      this.avoidAlertMessage = true;
+      this.events.unsubscribe('select-contact');
+      this.events.subscribe('select-contact', (data) => {
+        this.reportSaleForm.patchValue({
+          seller: data,
+        });
+        this.reportSaleForm.markAsDirty();
+        this.avoidAlertMessage = false;
+        this.events.unsubscribe('select-contact');
+        resolve(true);
+        this.goNextStep();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ContactListPage,
+        componentProps: {
+          "select": true,
+        }
+      });
+      profileModal.present();
+    });
+  }
+
+  goNextStep() {
+    new Promise(async (resolve, reject) => {
+      if (
+        this.reportSaleForm.value.groupBy == 'date'
+        || this.reportSaleForm.value.groupBy == 'month'
+        || this.reportSaleForm.value.groupBy == 'week'
+        || this.reportSaleForm.value.groupBy == 'year'
+      ){
+        this.reportSaleForm.patchValue({
+          'orderBy': 'name'
+        });
+      } else {
+        this.reportSaleForm.patchValue({
+          'orderBy': 'total'
+        });
+      }
+
+      let data: any = await this.getData();
+      this.reportSaleForm.patchValue({
+        "items": data,
+        "dateStart": this.reportSaleForm.value.dateStart,
+        "dateEnd": this.reportSaleForm.value.dateEnd,
+      });
+      this.recomputeValues();
+      resolve(true);
     })
   }
 

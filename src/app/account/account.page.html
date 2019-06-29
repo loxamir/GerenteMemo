@@ -61,6 +61,7 @@
       <ion-item
        no-padding
        *ngIf="accountForm.value.category && accountForm.value.category.type == 'liquidity'"
+       (click)="selectCurrency()"
        class="field-50">
        <div class="field-many2one">
          <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
@@ -82,16 +83,17 @@
           <ion-select-option value="regional">Banco Regional</ion-select-option>
         </ion-select>
       </ion-item>
-
-
-
-
-
-
-
       <ion-item class="field-100">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-textarea rows="2" formControlName="note"></ion-textarea>
+      </ion-item>
+      <ion-item class="field-100">
+        <ion-label position="floating">{{'Texto Impresso' | translate}}</ion-label>
+        <ion-textarea rows="10" formControlName="printedText"></ion-textarea>
+      </ion-item>
+      <ion-item class="field-100" *ngIf="accountForm.value.printedText">
+        <ion-label position="floating">{{'Nombre de Archivo' | translate}}</ion-label>
+        <ion-input formControlName="filename"></ion-input>
       </ion-item>
 
     </ion-row>

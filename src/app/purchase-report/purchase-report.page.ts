@@ -69,7 +69,6 @@ export class PurchaseReportPage implements OnInit {
     public events: Events,
     public pouchdbService: PouchdbService,
   ) {
-    // this.loading = this.loadingCtrl.create();
     this.today = new Date();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
@@ -155,7 +154,7 @@ export class PurchaseReportPage implements OnInit {
   }
 
   async getData() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     return new Promise(resolve => {
       if (this.reportPurchaseForm.value.reportType == 'purchase') {

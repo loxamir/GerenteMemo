@@ -30,7 +30,6 @@ export class DashboardFilterPage implements OnInit {
 
       public formBuilder: FormBuilder,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
     }
 

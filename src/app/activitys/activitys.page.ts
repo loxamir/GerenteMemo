@@ -28,7 +28,7 @@ export class ActivitysPage implements OnInit {
     public events: Events,
     public popoverCtrl: PopoverController,
   ) {
-    //this.loading = //this.loadingCtrl.create();
+    //this.loading = //this.loadingCtrl.create({});
     this.select = this.route.snapshot.paramMap.get('select');
     this.filter = this.route.snapshot.paramMap.get('filter')||'all';
     this.events.subscribe('changed-activity', (change) => {
@@ -38,7 +38,7 @@ export class ActivitysPage implements OnInit {
 
   async ngOnInit() {
     //this.loading.present();
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.setFilteredItems();
   }

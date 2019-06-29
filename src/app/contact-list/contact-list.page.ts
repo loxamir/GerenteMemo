@@ -39,7 +39,6 @@ export class ContactListPage implements OnInit {
     public file: File,
     public loadingCtrl: LoadingController,
   ) {
-    // //this.loading = //this.loadingCtrl.create();
     // this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     this.filter = this.route.snapshot.paramMap.get('filter')||'all';
@@ -58,49 +57,34 @@ export class ContactListPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-    this.setFilteredItems();
+    await this.setFilteredItems();
     setTimeout(() => {
       if(this.select){
         this.searchBar.setFocus();
       }
-    }, 500);
+    }, 200);
   }
 
   setFilteredItems() {
-    console.log("tes1");
-    let filter = null;
-    if (this.filter == "all"){
+    return new Promise(async resolve => {
       let filter = null;
-    } else {
-      let filter = this.filter;
-    }
-    this.getContactsPage(
-      this.searchTerm, 0, filter
-    ).then((contacts: any[]) => {
-      console.log("contacts", contacts);
+      if (this.filter == "all"){
+        let filter = null;
+      } else {
+        let filter = this.filter;
+      }
+      this.getContactsPage(
+        this.searchTerm, 0, filter
+      ).then(async (contacts: any[]) => {
 
-      // if (this.filter == 'all'){
-        this.contacts = contacts;
-      // }
-      // else if (this.filter == 'seller'){
-      //   this.contacts = contacts.filter(word => word.seller == true);
-      // }
-      // else if (this.filter == 'customer'){
-      //   this.contacts = contacts.filter(word => word.customer == true);
-      // }
-      // else if (this.filter == 'supplier'){
-      //   this.contacts = contacts.filter(word => word.supplier == true);
-      // }
-      // else if (this.filter == 'employee'){
-      //   this.contacts = contacts.filter(word => word.employee == true);
-      // }
-      this.page = 1;
+          this.contacts = contacts;
+        this.page = 1;
 
-      // this.contacts = contacts;
-      // this.page = 1;
-      this.loading.dismiss();
+        await this.loading.dismiss();
+        resolve(true)
+      });
     });
   }
 

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/cash-list')"></ion-back-button>
+      <ion-back-button defaultHref='/tabs/cash-list'></ion-back-button>
     </ion-buttons>
     <ion-title>
       <ion-row>
@@ -17,17 +17,23 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-row>
-    <ion-item
-     no-padding
-     class="field-50">
-       <h4 class="field-label">{{'CURRENT_BALANCE' | translate }}</h4>
-       <h4 class="field-value" style="color: green;">{{cashForm.value.balance|number:'1.'+currency_precision}}</h4>
-    </ion-item>
-    <ion-item class="field-50">
+    <ion-col>
+      <h4 class="field-label-col" style="margin-top: -2px;">{{'CURRENT_BALANCE' | translate }}</h4>
+      <h4 class="field-value-col" style="color: green;margin-top: 12px;font-size: 21px;text-align: right;padding-right: 20px;" *ngIf="isOtherCurrency()">{{currencies[cashForm.value.currency._id] && currencies[cashForm.value.currency._id].symbol || currencies[company_currency_id].symbol}} {{cashForm.value.currency_balance|number:'1.'+(currencies[company_currency_id] && currencies[cashForm.value.currency && cashForm.value.currency._id].precision.toString() || currency_precision)+"-"+(currencies[company_currency_id] && currencies[cashForm.value.currency && cashForm.value.currency._id].precision.toString() || currency_precision)}}</h4>
+      <h4 class="field-value-col" style="color: black;margin-top: 33px;font-size: 14px;text-align: right;padding-right: 20px;" *ngIf="isOtherCurrency()">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{cashForm.value.balance|number:'1.'+currency_precision}}</h4>
+      <h4 class="field-value-col" style="color: green;margin-top: 12px;font-size: 21px;text-align: right;padding-right: 20px;" *ngIf="!isOtherCurrency()">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{cashForm.value.balance|number:'1.'+(currencies[company_currency_id] && currencies[company_currency_id].precision || currency_precision)+"-"+(currencies[company_currency_id] && currencies[company_currency_id].precision || currency_precision)}}</h4>
+    </ion-col>
+    <ion-col>
       <ion-button (click)="closeCash()" style="width: 100%;">
         Cerrar
       </ion-button>
-    </ion-item>
+    </ion-col>
+    <!-- <ion-item
+     no-padding
+     class="field-50"> -->
+    <!-- </ion-item> -->
+    <!-- <ion-item class="field-50">
+    </ion-item> -->
   </ion-row>
 </ion-header>
 
@@ -39,17 +45,74 @@
 
 
 
-<ion-segment formControlName="section" class="cash-segment" *ngIf="cashForm.value.type == 'bank'">
+<ion-segment formControlName="section" class="cash-segment" (ionChange)="changeTab()" *ngIf="cashForm.value.type == 'bank'">
   <ion-segment-button value="moves">
     Confirmado
   </ion-segment-button>
+  <!-- <ion-segment-button value="checks">
+    Cheques
+  </ion-segment-button> -->
   <ion-segment-button value="waiting">
     En Espera
   </ion-segment-button>
 </ion-segment>
 
+<ion-segment formControlName="section" class="cash-segment" (ionChange)="changeTab()" *ngIf="cashForm.value.type == 'check'">
+  <ion-segment-button value="checks">
+    Cheques
+  </ion-segment-button>
+  <ion-segment-button value="moves">
+    Extrato
+  </ion-segment-button>
+</ion-segment>
+
 
 <div [ngSwitch]="cashForm.value.section" class="forms-wrapper">
+  <div *ngSwitchCase="'checks'" class="post-example-view">
+    <ion-list no-lines>
+      <ion-item-sliding class="list-item" *ngFor="let item of cashForm.value.checks && cashForm.value.checks.sort(this.formatService.compare) || []">
+      <ion-item no-padding (click)="openCheck(item)" style="margin-bottom: 0px; margin-top:0px;">
+        <ion-card class="list-card" style="border-radius: 5px;">
+          <ion-row no-padding class="content-row one-line">
+             <ion-col no-padding>
+               <h3 class="item-title"><b>{{ item.doc.name }}</b></h3>
+             </ion-col>
+           </ion-row>
+     <ion-row no-padding class="content-row one-line">
+        <ion-col no-padding width-25 class="schedule-date">
+          <!-- <h3 class="schedule-month">{{item.doc.maturity_date|date: 'dd/MM/yyyy'}}</h3> -->
+          <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.doc.maturity_date|date: 'dd/MM/yyyy'}}</h3>
+          <h3 class="item-title" style="font-size:15px;">{{item.doc.contact_name}}</h3>
+          <!-- <h3 class="item-title" style="font-size:15px;">{{item.doc.maturity_date|date: 'HH:mm:ss'}}</h3> -->
+        </ion-col>
+        <ion-col no-padding width-35>
+          <ion-row no-padding>
+            <ion-col class="item-content" style="white-space: normal;">
+              {{item.doc.bank_name}}
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+          <h2 class="list-big-number" style="color: green;">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{item.doc.amount| number:'1.'+currency_precision}}</h2>
+          <div class="residual-value" *ngIf="item.doc.currency_id && item.doc.currency_amount && item.doc.currency_id.length && item.doc.currency_id != company_currency_id"  style="color: black;">
+            {{currencies[company_currency_id] && currencies[item.doc.currency_id].symbol}} {{ item.doc.currency_amount | number:'1.'+(currencies[company_currency_id] && currencies[item.doc.currency_id].precision) }}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row no-padding [class.paid]="item.doc.state != 'REJECTED'" [class.due]="item.doc.state == 'REJECTED'">
+        <ion-col no-padding style="text-align: center;border-radius: 4px;">
+          {{ item.doc.state | translate}}
+        </ion-col>
+      </ion-row>
+      </ion-card>
+    </ion-item>
+        <ion-item-options>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+<ion-row style="height:15px;">
+</ion-row>
+  </div>
   <div *ngSwitchCase="'moves'" class="post-example-view">
     <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="cashForm.value.moves.length">
       Lanzamientos desde ultimo cierre
@@ -65,7 +128,7 @@
      <ion-row no-padding class="content-row one-line">
         <ion-col no-padding width-25 class="schedule-date">
           <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.date|date: 'dd/MM/yyyy'}}</h3>
-          <h3 class="item-title" style="font-size:15px;">{{item.date|date: 'HH:mm:SS'}}</h3>
+          <h3 class="item-title" style="font-size:15px;">{{item.date|date: 'HH:mm:ss'}}</h3>
         </ion-col>
         <ion-col no-padding width-35>
           <ion-row no-padding>
@@ -74,9 +137,25 @@
             </ion-col>
           </ion-row>
         </ion-col>
-        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        <!-- <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
           <h2 *ngIf="item.accountFrom_id != _id" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
           <h2 *ngIf="item.accountTo_id != _id" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+        </ion-col> -->
+        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+
+
+
+          <h2 *ngIf="item.accountFrom_id != _id && isOtherCurrency()" class="list-big-number" style="color: green;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol|| currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currencies[item.currency_id] && currencies[item.currency_id].precision.toString()||currency_precision)+"-"+(currencies[item.currency_id] && currencies[item.currency_id].precision.toString()||currency_precision)}}</h2>
+          <h2 *ngIf="item.accountTo_id != _id && isOtherCurrency()" class="list-big-number" style="color: red;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol || currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currencies[item.currency_id] && currencies[item.currency_id].precision.toString()||currency_precision)+"-"+(currencies[item.currency_id] && currencies[item.currency_id].precision.toString()||currency_precision)}}</h2>
+
+          <h2 *ngIf="item.accountFrom_id != _id && ! isOtherCurrency()" class="list-big-number" style="color: green;">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currency_precision)+"-"+(currency_precision)}}</h2>
+          <h2 *ngIf="item.accountTo_id != _id && ! isOtherCurrency()" class="list-big-number" style="color: red;">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currency_precision)+"-"+(currency_precision)}}</h2>
+          <div class="residual-value" *ngIf="isOtherCurrency() && item.currency_amount && item.currency_id.length && item.currency_id != company_currency_id"  style="color: black;">
+            {{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{ showAmountSecond(item) | number:'1.'+currency_precision+"-"+currency_precision }}
+          </div>
+          <div class="residual-value" *ngIf="! isOtherCurrency() && item.currency_amount && item.currency_id.length && item.currency_id != company_currency_id"  style="color: black;">
+            {{currencies[company_currency_id] && currencies[item.currency_id].symbol}} {{ item.currency_amount | number:'1.'+(currencies[company_currency_id] && currencies[item.currency_id].precision)+"-"+(currencies[company_currency_id] && currencies[item.currency_id].precision) }}
+          </div>
         </ion-col>
       </ion-row>
       <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
@@ -134,10 +213,11 @@
                <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
              </ion-col>
            </ion-row>
+
      <ion-row no-padding class="content-row one-line">
         <ion-col no-padding width-25 class="schedule-date">
-          <h3 class="schedule-month">{{item.date|date: 'dd/MM/yyyy'}}</h3>
-          <h4 class="schedule-time">{{item.date|date: 'HH:mm:SS'}}</h4>
+          <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.date|date: 'dd/MM/yyyy'}}</h3>
+          <h3 class="item-title" style="font-size:15px;">{{item.date|date: 'HH:mm:ss'}}</h3>
         </ion-col>
         <ion-col no-padding width-35>
           <ion-row no-padding>
@@ -147,11 +227,22 @@
           </ion-row>
         </ion-col>
         <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-          <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
-          <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+          <!-- <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+          <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2> -->
+          <h2 *ngIf="item.accountFrom_id != _id && isOtherCurrency()" class="list-big-number" style="color: green;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol|| currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currencies[item.currency_id] && currencies[item.currency_id].precision||currency_precision)}}</h2>
+          <h2 *ngIf="item.accountTo_id != _id && isOtherCurrency()" class="list-big-number" style="color: red;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol || currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currencies[item.currency_id] && currencies[item.currency_id].precision||currency_precision)}}</h2>
+
+          <h2 *ngIf="item.accountFrom_id != _id && ! isOtherCurrency()" class="list-big-number" style="color: green;">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currency_precision)}}</h2>
+          <h2 *ngIf="item.accountTo_id != _id && ! isOtherCurrency()" class="list-big-number" style="color: red;">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'+(currency_precision)}}</h2>
+          <div class="residual-value" *ngIf="isOtherCurrency() && item.currency_amount && item.currency_id.length && item.currency_id != company_currency_id"  style="color: black;">
+            {{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{ showAmountSecond(item) | number:'1.'+currency_precision }}
+          </div>
+          <div class="residual-value" *ngIf="! isOtherCurrency() && item.currency_amount && item.currency_id.length && item.currency_id != company_currency_id"  style="color: black;">
+            {{currencies[company_currency_id] && currencies[item.currency_id].symbol}} {{ item.currency_amount | number:'1.'+(currencies[company_currency_id] && currencies[item.currency_id].precision) }}
+          </div>
         </ion-col>
       </ion-row>
-      <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
+      <!-- <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
         <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
           {{ item.accountFrom_name | translate}}
         </ion-col>
@@ -161,13 +252,28 @@
         <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
           {{ item.accountTo_name | translate}}
         </ion-col>
-      </ion-row>
+      </ion-row> -->
 
       <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
-        <ion-col no-padding style="text-align: center;border-radius: 4px;">
-          {{ item.state}}
+        <ion-col *ngIf="item.accountFrom_id != _id" no-padding style="text-align: center;border-radius: 4px;">
+          {{ item.accountFrom_name | translate}}
+        </ion-col>
+        <ion-col *ngIf="item.accountFrom_id != _id" no-padding size="2" class="item-icon">
+          <ion-icon name="arrow-round-up" color="success"></ion-icon>
+        </ion-col>
+        <ion-col *ngIf="item.accountTo_id != _id" no-padding style="text-align: center;border-radius: 4px;">
+          {{ item.accountTo_name | translate}}
+        </ion-col>
+        <ion-col *ngIf="item.accountTo_id != _id" no-padding size="2" class="item-icon">
+          <ion-icon name="arrow-round-down"></ion-icon>
         </ion-col>
       </ion-row>
+
+      <!-- <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
+        <ion-col no-padding style="text-align: center;border-radius: 4px;">
+          {{ item.state | translate}}
+        </ion-col>
+      </ion-row> -->
       </ion-card>
     </ion-item>
         <ion-item-options>
@@ -200,9 +306,9 @@
 <ion-fab vertical="bottom" horizontal="center" slot="fixed"  #fab>
 <ion-fab-button><ion-icon name="add"></ion-icon></ion-fab-button>
 <ion-fab-list side="top">
-<div style="background: #4CAF50;color: white;margin-top: -5px;">Entrada</div><ion-button style="background: #4CAF50;color: white;margin-bottom: 5px;" ion-fab (click)="addIncome(fab)"><ion-icon name="arrow-round-down"></ion-icon></ion-button>
-<div style="background: #FF5722;color: white;margin-top: -5px;">Salida</div><ion-button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addExpense(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
-<div style="background: #FF5722;color: white;margin-top: -5px;">Transferencia</div><ion-button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addTransfer(fab)"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
+<div style="background: #4CAF50;color: white;margin-top: -5px;">Entrada</div><ion-button style="background: #4CAF50;color: white;margin-bottom: 5px;" ion-fab (click)="addIncome()"><ion-icon name="arrow-round-down"></ion-icon></ion-button>
+<div style="background: #FF5722;color: white;margin-top: -5px;">Salida</div><ion-button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addExpense()"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
+<div style="background: #FF5722;color: white;margin-top: -5px;">Transferencia</div><ion-button style="background: #FF5722;color: white;margin-bottom: 5px;" ion-fab (click)="addTransfer()"><ion-icon name="arrow-round-up"></ion-icon></ion-button>
 </ion-fab-list>
 </ion-fab>
 

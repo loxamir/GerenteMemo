@@ -49,7 +49,6 @@ export class AdvancePage implements OnInit {
       public printer: Printer,
       public configService: ConfigService,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');

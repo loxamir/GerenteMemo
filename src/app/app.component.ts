@@ -90,17 +90,15 @@ export class AppComponent implements OnInit {
   backButtonListener(): void {
     window.onpopstate = async (evt) => {
       // Close any active modals or overlays
-      console.log("close modal");
-          console.log("teste back");
-          const modal = await this.modalCtrl.getTop();
-          if (modal) {
-              modal.dismiss();
-          }
+      const modal = await this.modalCtrl.getTop();
+      if (modal) {
+        await modal.dismiss();
+      }
     }
   }
 
   async ngOnInit(){
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
     if (this.user && !this.user['admin']){

@@ -104,7 +104,7 @@ export class ConfigPage implements OnInit {
       users: [],
       _id: [''],
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.configService.getConfig().then((data) => {
       this.configForm.patchValue(data);

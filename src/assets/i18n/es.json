@@ -220,6 +220,21 @@
   "NEW_AMOUNT": "Nuevo Valor",
   "AMOUNT_ORIGINAL": "Valor Original",
   "FABRICATION": "Fabricación",
+  "AMOUNT_COMPANY_CURRENCY": "Monto Moneda Empresa",
+  "CURRENCY_EXCHANGE": "Tasa de Cambio",
+  "DEPOSITED": "Depositado",
+  "CHANGED": "Trocado",
+  "REJECTED": "Rechazado",
+  "NEW": "Nuevo",
+  "DELIVERED": "Entregado",
+  "SALE_RATE": "Tasa de Venta",
+  "EXCHANGE_RATE": "Tasa de Cambio",
+  "PURCHASE_RATE": "Tasa de Compra",
+  "SYMBOL": "Simbolo",
+  "EMISSION_DATE": "Fecha de Emisión",
+  "DUE": "Vencido",
+  "PENDING": "Pendiente",
+  "WAITING": "En Espera",
   "RESULT": "Resultado"
 
 }

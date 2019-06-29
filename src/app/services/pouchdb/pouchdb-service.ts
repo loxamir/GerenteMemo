@@ -7,7 +7,8 @@ import PouchdbUpsert from 'pouchdb-upsert';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { Storage } from '@ionic/storage';
 import { FormatService } from '../format.service';
-var server = "database.sistemamemo.com";
+// var server = "database.sistemamemo.com";
+var server = "192.168.0.50:5984";
 
 @Injectable({ providedIn: 'root' })
 export class PouchdbService {
@@ -96,10 +97,11 @@ export class PouchdbService {
           androidDatabaseImplementation: 2
          });
           console.log("database", database);
+          this.db.setMaxListeners(50);
           self.events.publish('got-database');
           let loadDemo = await this.storage.get('loadDemo');
           this.storage.get('password').then(password => {
-            this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
+            this.remote = "http://"+username+":"+password+"@"+server+'/'+database;
             if (database != 'agromemo' || !loadDemo){
               let options = {
                 live: true,
@@ -302,16 +304,16 @@ export class PouchdbService {
         if (!item._id){
           item._id = item.docType+"."+this.getUUID();
         }
-        if (item._return){
-          delete item._return;
-          returns.push(item);
-        }
         let time = new Date().toJSON();
-        processedList.push(item);
         item.create_user = this.username;
         item.create_time = time;
         item.write_user = this.username;
         item.write_time = time;
+        if (item._return){
+          delete item._return;
+          returns.push(item);
+        }
+        processedList.push(item);
       })
       this.db.bulkDocs(processedList).then(createdDocs=>{
         resolve(returns);

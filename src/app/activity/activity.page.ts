@@ -42,7 +42,7 @@ export class ActivityPage implements OnInit {
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
+    //this.loading = //this.loadingCtrl.create({});
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -71,7 +71,7 @@ export class ActivityPage implements OnInit {
       type: new FormControl('area'),
       _id: new FormControl(''),
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     if (this._id){
       this.activityService.getActivity(this._id).then((data) => {

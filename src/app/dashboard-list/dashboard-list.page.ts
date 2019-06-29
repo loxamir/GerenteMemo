@@ -36,7 +36,6 @@ export class DashboardListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public file: File,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     this.filter = this.route.snapshot.paramMap.get('filter')||'all';
     this.supplier = this.route.snapshot.paramMap.get('supplier')|| false;

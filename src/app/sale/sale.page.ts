@@ -38,6 +38,8 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 // import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { DiscountPage } from '../discount/discount.page';
+import { CashMovePage } from '../cash-move/cash-move.page';
+import { ContactPage } from '../contact/contact.page';
 
 @Component({
   selector: 'app-sale',
@@ -51,7 +53,6 @@ export class SalePage implements OnInit {
     async handleKeyboardEvent(event: KeyboardEvent) {
       if (this.listenBarcode && this.saleForm.value.state == 'QUOTATION'){
         this.corpo.setFocus();
-        // console.log("corpo", this.corpo);
         this.corpo.value = "";
         let timeStamp = event.timeStamp - this.timeStamp;
         this.timeStamp = event.timeStamp;
@@ -88,7 +89,7 @@ export class SalePage implements OnInit {
           }
           this.barcode = "";
         }
-        if(!timeStamp || timeStamp < 5 || this.barcode == ""){
+        if(!timeStamp || timeStamp < 20 || this.barcode == ""){
           this.barcode += event.key;
         }
         if( event.which < 48 || event.which >= 58 ){ // not a number
@@ -193,7 +194,7 @@ export class SalePage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
@@ -209,6 +210,77 @@ export class SalePage implements OnInit {
       if (this.return){
         this.recomputeValues();
       }
+    }
+
+    editContact() {
+      return new Promise(async resolve => {
+        this.events.unsubscribe('open-contact');
+        this.events.subscribe('open-contact', (data) => {
+          this.saleForm.patchValue({
+            contact: data,
+            // type: data.type,
+            // cash_out: data.cash_out,
+            // cash_in: data.cash_in,
+            // transfer: data.transfer,
+            // payable: data.payable,
+            // receivable: data.receivable,
+          });
+          this.saleForm.markAsDirty();
+          // this.avoidAlertMessage = false;
+          this.events.unsubscribe('open-contact');
+          resolve(true);
+        })
+        let profileModal = await this.modalCtrl.create({
+          component: ContactPage,
+          componentProps: {
+            "select": true,
+            "_id": this.saleForm.value.contact._id,
+          }
+        });
+        profileModal.present();
+      });
+    }
+
+    async selectCashMove(item) {
+      this.listenBarcode = false;
+      this.events.unsubscribe('open-cash-move');
+      this.events.subscribe('open-cash-move', (data) => {
+        this.events.unsubscribe('open-cash-move');
+        // profileModal.dismiss();
+      });
+      // this.events.subscribe('cancel-receipt', (data) => {
+      //   let newPayments = [];
+      //   let residual = this.saleForm.value.residual;
+      //   this.saleForm.value.payments.forEach((receipt, index)=>{
+      //     if (receipt._id != data){
+      //       this.saleForm.value.payments.slice(index, 1);
+      //       newPayments.push(receipt);
+      //     } else {
+      //       residual += receipt.paid;
+      //     }
+      //   })
+      //   this.pouchdbService.getRelated(
+      //   "cash-move", "origin_id", this.saleForm.value._id).then((planned) => {
+      //     this.saleForm.patchValue({
+      //       payments: newPayments,
+      //       residual: residual,
+      //       state: 'CONFIRMED',
+      //       planned: planned
+      //     })
+      //     this.buttonSave();
+      //   });
+      //   this.events.unsubscribe('cancel-receipt');
+      // });
+      let profileModal = await this.modalCtrl.create({
+        component: CashMovePage,
+        componentProps: {
+          "select": true,
+          "_id": item._id,
+        }
+      });
+      await profileModal.present();
+      await profileModal.onDidDismiss();
+      this.listenBarcode = true;
     }
 
     computePercent(){
@@ -305,6 +377,7 @@ export class SalePage implements OnInit {
           });
           await profileModal.present();
           await profileModal.onDidDismiss();
+          this.events.unsubscribe('set-discount');
           this.listenBarcode = true;
         });
       // }
@@ -331,6 +404,7 @@ export class SalePage implements OnInit {
         });
         await profileModal.present();
         await profileModal.onDidDismiss();
+        this.events.unsubscribe('set-discount');
         this.listenBarcode = true;
       });
     }
@@ -424,6 +498,7 @@ export class SalePage implements OnInit {
     // }
 
     async goNextStep() {
+      // await this.loading.present();
       if(this.return){
         await this.buttonSave();
       }
@@ -431,17 +506,20 @@ export class SalePage implements OnInit {
       //   await this.buttonSave();
       // }
       if (this.saleForm.value.state == 'QUOTATION'){
-      if (! this.confirming){
-        this.confirming = true;
-        let teste = await this.confirmSale();
-        this.confirming = false;
-      }
+        if (! this.confirming){
+          this.confirming = true;
+          await this.beforeConfirm();
+          this.confirming = false;
+        }
       } else if (this.saleForm.value.state == 'CONFIRMED'){
-          this.beforeAddPayment();
+          // await this.loading.dismiss();
+          this.addPayment();
       } else if (this.saleForm.value.state == 'PAID'){
         if (this.saleForm.value.invoices.length){
-          this.navCtrl.navigateBack('/sale-list');
+          await this.navCtrl.navigateBack('/sale-list');
+          // await this.loading.dismiss();
         } else {
+          // await this.loading.dismiss();
           this.addInvoice();
         }
       }
@@ -450,25 +528,39 @@ export class SalePage implements OnInit {
     beforeConfirm(){
       return new Promise(async resolve =>{
         if (this.saleForm.value.items.length == 0){
+          // await this.loading.dismiss();
           this.addItem();
           resolve(true);
         } else {
           if (Object.keys(this.saleForm.value.contact).length === 0){
-            this.selectContact().then( teste => {
+            // await this.loading.dismiss();
+            this.selectContact().then(async teste => {
+              await this.loading.dismiss();
               if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
                 this.selectPaymentCondition().then(async ()=>{
-                  await this.saleConfimation();
+                  this.loading = await this.loadingCtrl.create({});
+                  await this.loading.present();
+                  await this.afterConfirm();
+                  await this.loading.dismiss();
                   resolve(true);
                 });
               }
             });
           } else if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
+            // await this.loading.dismiss();
             this.selectPaymentCondition().then(async ()=>{
-              await this.saleConfimation();
+              this.loading = await this.loadingCtrl.create({});
+              await this.loading.present();
+              await this.afterConfirm();
+              await this.loading.dismiss();
               resolve(true);
             });
           } else {
-            await this.saleConfimation();
+            // await this.loading.dismiss();
+            this.loading = await this.loadingCtrl.create({});
+            await this.loading.present();
+            await this.afterConfirm();
+            await this.loading.dismiss();
             resolve(true);
           }
         }
@@ -600,6 +692,8 @@ export class SalePage implements OnInit {
     async addItem(){
       let self = this;
       if (this.saleForm.value.state=='QUOTATION'){
+        this.loading = await this.loadingCtrl.create({});
+        await this.loading.present();
         this.avoidAlertMessage = true;
         this.listenBarcode = false;
         this.events.unsubscribe('select-product');
@@ -624,6 +718,7 @@ export class SalePage implements OnInit {
           }
         });
         await profileModal.present();
+        await this.loading.dismiss();
         await profileModal.onDidDismiss();
         this.listenBarcode = true;
       }
@@ -740,6 +835,8 @@ export class SalePage implements OnInit {
     }
 
     async openPayment(item) {
+      this.loading = await this.loadingCtrl.create({});
+      await this.loading.present();
       this.listenBarcode = false;
       this.events.unsubscribe('open-receipt');
       this.events.subscribe('open-receipt', (data) => {
@@ -777,6 +874,7 @@ export class SalePage implements OnInit {
         }
       });
       await profileModal.present();
+      await this.loading.dismiss();
       await profileModal.onDidDismiss();
       this.listenBarcode = true;
     }
@@ -799,52 +897,7 @@ export class SalePage implements OnInit {
       ]
     };
 
-    confirmSale() {
-      return new Promise(async resolve =>{
-        if (this.saleForm.value.state=='QUOTATION'){
-          await this.beforeConfirm();
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      })
-    }
-
-    async saleConfimation(){
-      return new Promise(async resolve =>{
-        let prompt = await this.alertCtrl.create({
-          header: 'Estas seguro que deseas confirmar la venta?',
-          message: 'Si la confirmas no podras cambiar los productos ni el cliente',
-          buttons: [
-            {
-              text: 'Cancelar',
-              role: 'cancel',
-              handler: data => {
-                resolve(false)
-              }
-            },
-            {
-              text: 'Confirmar',
-              handler: async data => {
-                await this.afterConfirm();
-                resolve(true);
-              }
-            }
-          ]
-        });
-        await prompt.present();
-      })
-    }
-
-    // presentPopover(myEvent) {
-    //   let popover = this.popoverCtrl.create(SalePopover, {doc: this});
-    //   popover.present({
-    //     ev: myEvent
-    //   });
-    // }
-
     async presentPopover(myEvent) {
-      console.log("teste my event");
       let popover = await this.popoverCtrl.create({
         component: SalePopover,
         event: myEvent,
@@ -937,7 +990,7 @@ export class SalePage implements OnInit {
                 'payments': [],
                 'invoices': [],
                 'origin_id': this.saleForm.value._id,
-                'dateDue': dateDue,
+                'dateDue': dateDue.toISOString(),
                 'accountFrom_id': 'account.income.sale',
                 'accountFrom_name': docDict['account.income.sale'].doc.name,
                 'accountTo_id': this.saleForm.value.paymentCondition.accountTo_id,
@@ -947,8 +1000,8 @@ export class SalePage implements OnInit {
                 cashMoveTemplate['currency'] = this.saleForm.value.currency;
                 cashMoveTemplate['currency_amount'] = amount;
                 cashMoveTemplate['currency_residual'] = amount;
-                cashMoveTemplate['amount'] = amount*this.saleForm.value.currency.sale_rate;
-                cashMoveTemplate['residual'] = amount*this.saleForm.value.currency.sale_rate;
+                cashMoveTemplate['amount'] = amount*this.saleForm.value.currency.exchange_rate;
+                cashMoveTemplate['residual'] = amount*this.saleForm.value.currency.exchange_rate;
               }
               createList.push(cashMoveTemplate);
             });
@@ -957,7 +1010,7 @@ export class SalePage implements OnInit {
               this.saleForm.patchValue({
                 state: 'CONFIRMED',
                 amount_unInvoiced: this.saleForm.value.total,
-                planned: created,
+                planned: created.filter(word=>typeof word.amount_residual !== 'undefined'),
               });
               console.log("Sale created", created);
               await this.buttonSave();
@@ -1023,17 +1076,9 @@ export class SalePage implements OnInit {
       });
     }
 
-    beforeAddPayment(){
-      if (this.saleForm.value.state == "QUOTATION"){
-        this.afterConfirm().then(data => {
-          this.addPayment();
-        });
-      } else {
-        this.addPayment();
-      }
-    }
-
     async addPayment() {
+      this.loading = await this.loadingCtrl.create({});
+      await this.loading.present();
       this.avoidAlertMessage = true;
       this.listenBarcode = false;
         this.events.unsubscribe('create-receipt');
@@ -1084,11 +1129,14 @@ export class SalePage implements OnInit {
           }
         });
         await profileModal.present();
+        await this.loading.dismiss();
         await profileModal.onDidDismiss();
         this.listenBarcode = true;
     }
 
     async addInvoice() {
+      this.loading = await this.loadingCtrl.create({});
+      await this.loading.present();
       this.avoidAlertMessage = true;
       this.listenBarcode = false;
       this.events.unsubscribe('create-invoice');
@@ -1178,11 +1226,14 @@ export class SalePage implements OnInit {
         }
       });
       await profileModal.present();
+      await this.loading.dismiss();
       await profileModal.onDidDismiss();
       this.listenBarcode = true;
     }
 
     async openInvoice(item) {
+      this.loading = await this.loadingCtrl.create({});
+      await this.loading.present();
       this.listenBarcode = false;
       this.events.unsubscribe('open-invoice');
       this.events.subscribe('open-invoice', (data) => {
@@ -1199,6 +1250,7 @@ export class SalePage implements OnInit {
         }
       });
       await profileModal.present();
+      await this.loading.dismiss();
       await profileModal.onDidDismiss();
       this.listenBarcode = true;
     }
@@ -1207,8 +1259,10 @@ export class SalePage implements OnInit {
       //console.log(values);
     }
 
-    selectContact() {
+    async selectContact() {
       if (this.saleForm.value.state=='QUOTATION'){
+        this.loading = await this.loadingCtrl.create({});
+        await this.loading.present();
         this.listenBarcode = false;
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
@@ -1233,6 +1287,7 @@ export class SalePage implements OnInit {
             }
           });
           await profileModal.present();
+          await this.loading.dismiss();
           await profileModal.onDidDismiss();
           this.listenBarcode = true;
         });
@@ -1264,6 +1319,8 @@ export class SalePage implements OnInit {
     selectSeller() {
       // if (this.saleForm.value.state=='QUOTATION'){
         return new Promise(async resolve => {
+          this.loading = await this.loadingCtrl.create({});
+          await this.loading.present();
           this.avoidAlertMessage = true;
           this.listenBarcode = false;
           this.events.unsubscribe('select-contact');
@@ -1287,6 +1344,7 @@ export class SalePage implements OnInit {
             }
           });
           await profileModal.present();
+          await this.loading.dismiss();
           await profileModal.onDidDismiss();
           this.listenBarcode = true;
         });
@@ -1296,6 +1354,8 @@ export class SalePage implements OnInit {
     selectPaymentCondition() {
       return new Promise(async resolve => {
       if (this.saleForm.value.state=='QUOTATION'){
+        this.loading = await this.loadingCtrl.create({});
+        await this.loading.present();
         this.avoidAlertMessage = true;
         this.listenBarcode = false;
         this.events.unsubscribe('select-payment-condition');
@@ -1317,6 +1377,7 @@ export class SalePage implements OnInit {
           }
         });
         await profileModal.present();
+        await this.loading.dismiss();
         await profileModal.onDidDismiss();
         this.listenBarcode = true;
       }

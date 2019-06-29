@@ -15,7 +15,6 @@ export class CurrencyListPage implements OnInit {
   loading: any;
   select;
   searchTerm: string = '';
-  // has_search = false;
 
   constructor(
     public navCtrl: NavController,
@@ -25,16 +24,9 @@ export class CurrencyListPage implements OnInit {
     public route: ActivatedRoute,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
   }
-  // setSearch() {
-  //   if (this.has_search){
-  //     this.searchTerm = "";
-  //     this.setFilteredItems();
-  //   }
-  //   this.has_search = ! this.has_search;
-  // }
+
   ngOnInit() {
     //this.loading.present();
     this.setFilteredItems();
@@ -68,12 +60,14 @@ export class CurrencyListPage implements OnInit {
       this.navCtrl.navigateForward(['/currency', {'_id': currency._id}]);
     }
     this.events.subscribe('open-currency', (data) => {
+      setTimeout(() => {
+        this.setFilteredItems();
+      }, 200);
       this.events.unsubscribe('open-currency');
     })
   }
 
   selectCurrency(currency) {
-    // this.navCtrl.navigateBack().then(() => {
     if (this.select){
       console.log("select", currency);
       this.events.publish('select-currency', currency);
@@ -81,7 +75,6 @@ export class CurrencyListPage implements OnInit {
     } else {
       this.openCurrency(currency);
     }
-    // });
   }
 
   async createCurrency(){
@@ -98,18 +91,12 @@ export class CurrencyListPage implements OnInit {
     }
     this.events.subscribe('create-currency', (data) => {
       if (this.select){
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('select-currency', data);
-          this.modalCtrl.dismiss();
-        // });
+        this.events.publish('select-currency', data);
+        this.modalCtrl.dismiss();
       }
       this.events.unsubscribe('create-currency');
     })
   }
-
-  // deleteCurrency(currency){
-  //   this.deleteCurrency(currency);
-  // }
 
   deleteCurrency(currency) {
     return this.pouchdbService.deleteDoc(currency);

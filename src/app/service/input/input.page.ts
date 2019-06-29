@@ -33,7 +33,6 @@ export class ServiceInputPage implements OnInit {
     public events: Events,
     // public speechRecognition: SpeechRecognition,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
   }
 

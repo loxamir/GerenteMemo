@@ -20,15 +20,18 @@
   <ion-row style="height: 43px;margin-top: 15px;">
     <ion-col size="4" no-padding>
       <h4 class="field-label" style="text-align: center;">{{'TOTAL' | translate }}</h4>
-      <h4 class="field-value" style="color:blue;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.total|number:'1.'+currency_precision}}</h4>
+      <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.total*receipt_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
+      <h4 class="field-value" style="color:blue;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">{{ receipt_currency_symbol }} {{receiptForm.value.total+(receiptForm.value.total && smallDiff)|number:'1.'+receipt_currency_precision+"-"+receipt_currency_precision}}</h4>
     </ion-col>
     <ion-col size="4" no-padding>
       <h4 class="field-label" style="text-align: center;">{{'A Cobrar' | translate }}</h4>
-      <h4 class="field-value" style="color:red;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.residual|number:'1.'+currency_precision}}</h4>
+      <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.residual*receipt_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
+      <h4 class="field-value" style="color:red;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">{{ receipt_currency_symbol }} {{receiptForm.value.residual+(receiptForm.value.residual && smallDiff)|number:'1.'+receipt_currency_precision+"-"+receipt_currency_precision}}</h4>
     </ion-col>
     <ion-col size="4" no-padding>
       <h4 class="field-label" style="text-align: center;">{{'Troco' | translate }}</h4>
-      <h4 class="field-value" style="color:green;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.change|number:'1.'+currency_precision}}</h4>
+      <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.change*receipt_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
+      <h4 class="field-value" style="color:green;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">{{ receipt_currency_symbol }} {{receiptForm.value.change-(receiptForm.value.change && smallDiff)|number:'1.'+receipt_currency_precision+"-"+receipt_currency_precision}}</h4>
     </ion-col>
   </ion-row>
 </ion-header>
@@ -48,21 +51,38 @@
           <h4 class="field-value">{{receiptForm.value.cash_paid && receiptForm.value.cash_paid.name}}</h4>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="receiptForm.value.cash_paid.type != 'cash'">
-        <ion-col size="6" (click)="selectCheck()">
-          <ion-button class="button-100">Seleccionar Cheque</ion-button>
+      <ion-row>
+        <ion-col *ngIf="(receiptForm.value.cash_paid.type == 'check' && receiptForm.value.check && receiptForm.value.check.currency_id && receiptForm.value.signal == '-') || (receiptForm.value.items[0] && receiptForm.value.items[0].currency_id && receiptForm.value.items[0].currency_id != receiptForm.value.cash_paid.currency_id) || (receiptForm.value.items[0] && !receiptForm.value.items[0].currency_id && receiptForm.value.cash_paid.currency_id && receiptForm.value.cash_paid.currency_id != company_currency_id && receiptForm.value.cash_paid.type != 'check')">
+          <ion-item>
+            <ion-label position="floating" style="font-size:14px">{{'EXCHANGE_RATE' | translate}}</ion-label>
+            <ion-input #exchange_rate type="number" formControlName="exchange_rate" (ionChange)="recomputeExchangeValues()" *ngIf="(receiptForm.value.items[0] && receiptForm.value.items[0].currency_id && currencies[receiptForm.value.items[0].currency_id]) || (receiptForm.value.cash_paid.currency_id )"></ion-input>
+          </ion-item>
         </ion-col>
-        <ion-col size="6">
+      </ion-row>
+      <ion-row *ngIf="!hasCheck && ((receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '+') || (receiptForm.value.cash_paid.type == 'bank' && receiptForm.value.signal == '-'))">
+        <ion-col>
           <ion-button class="button-100" (click)="createCheck()">Registrar Cheque</ion-button>
         </ion-col>
       </ion-row>
-      <ion-item class="field-100" *ngIf="receiptForm.value.cash_paid.type != 'cash'">
+      <ion-item class="field-100" *ngIf="!(receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '-') && receiptForm.value.cash_paid.type != 'cash' && hasCheck" (click)="editCheck()">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Cheque' | translate}}</h4>
+          <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'Seleccionar'}}</h4>
+        </div>
+      </ion-item>
+      <ion-item class="field-100" *ngIf="receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '-'" (click)="selectCheck()">
         <div class="field-many2one">
           <h4 class="field-label">{{'Cheque' | translate}}</h4>
           <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'Seleccionar'}}</h4>
         </div>
       </ion-item>
     </ion-card>
+    <ion-item class="field-100" (click)="selectAccount()" *ngIf="showDiffAccount">
+      <div class="field-many2one">
+        <h4 class="field-label">{{'Diferencia' | translate}}</h4>
+        <h4 class="field-value">{{receiptForm.value.difference_account && receiptForm.value.difference_account.name || 'Dejar en Abierto'}}</h4>
+      </div>
+    </ion-item>
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.payments">
         <ion-item style="background-color: #ddd;width: 110%;margin-left: -21px;">
@@ -108,10 +128,10 @@
                 Fecha: {{item.date|date: 'dd/MM/yyyy'}}
               </ion-col>
               <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-                <h3 class="list-big-number amount" style="color: red;">$ {{item.amount_dued| number:'1.'+currency_precision}}</h3>
+                <h3 class="list-big-number amount" style="color: red;">$ {{item.amount_dued| number:'1.'+company_currency_precision}}</h3>
               </ion-col>
               <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-                <h3 class="list-big-number amount" style="color: green;">$ {{item.amount_paid| number:'1.'+currency_precision}}</h3>
+                <h3 class="list-big-number amount" style="color: green;">$ {{item.amount_paid| number:'1.'+company_currency_precision}}</h3>
               </ion-col>
             </ion-row>
 
@@ -176,10 +196,10 @@
       </ion-icon>
     </ion-fab-button>
   </ion-fab> -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showNextButton()">
-    <ion-button (click)="goNextStep()" class="next-button">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="receiptForm.value.state != 'DONE'">
+    <ion-button (click)="goNextStep()" class="next-button" color="success">
       <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+      Confirmar
     </ion-button>
   </ion-fab>
 
