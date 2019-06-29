@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ConfigService } from '../config/config.service';
-// import { InputMoveService } from './move/input-move.service';
 
 @Injectable()
 export class InputService {
@@ -10,84 +9,133 @@ export class InputService {
   constructor(
     public pouchdbService: PouchdbService,
     public configService: ConfigService,
-    // public inputMoveService: InputMoveService,
-  ) {}
+  ) { }
 
 
   getInput(doc_id): Promise<any> {
-    return new Promise((resolve, reject)=>{
+    return new Promise(async (resolve, reject) => {
+      let input: any = await this.pouchdbService.getDoc(doc_id, true);
       let payableList = [];
-      this.pouchdbService.getView(
-        'stock/Inputs', 2,
+      this.pouchdbService.getViewInv(
+        'stock/InputDiario', 4,
+        [doc_id, 'z'],
         [doc_id, '0'],
-        [doc_id, 'z']
-      ).then((planneds: any[]) => {
-        let promise_ids = [];
-        let pts = [];
-        let balance = 0;
+        true,
+        true,
+        5
+      ).then(async (planneds: any[]) => {
+        let getList = [];
         planneds.forEach(item => {
-          pts.push(item);
-          promise_ids.push(this.pouchdbService.getDoc(item.key[1]));
-          balance += parseFloat(item.value);
+          getList.push(item.key[3]);
         })
-        promise_ids.push(this.pouchdbService.getDoc(doc_id));
-        Promise.all(promise_ids).then(inputMoves => {
-          let input = Object.assign({}, inputMoves[inputMoves.length-1]);
-          input.moves = [];
-          input.balance = balance;
-          input.account = inputMoves[inputMoves.length-1];
-          input.name
-          for(let i=0;i<pts.length;i++){
-            input.moves.unshift(inputMoves[i]);
-          }
-          resolve(input);
-        })
+        if (input._attachments && input._attachments['avatar.png']) {
+          let avatar = input._attachments['avatar.png'].data;
+          input.image = "data:image/png;base64," + avatar;
+        } else {
+          input.image = "./assets/icons/field.jpg";
+        }
+        resolve(input);
       });
     });
   }
 
-  createInput(viewData){
+  getInputRain(doc_id): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      let payableList = [];
+      this.pouchdbService.getViewInv(
+        'stock/Chuva', 2,
+        [doc_id, 'z'],
+        [doc_id, '0'],
+        true,
+        true,
+        1
+      ).then(async (rains: any[]) => {
+        if (rains.length) {
+          resolve({
+            date: rains[0].key[1],
+            quantity: rains[0].value
+          });
+        } else {
+          resolve(false)
+        }
+      });
+    });
+  }
+
+  createInput(viewData, blob = undefined) {
     let input = Object.assign({}, viewData);
-    input.docType = 'input';
+    input.docType = 'product';
     delete input.moves;
-    return new Promise((resolve, reject)=>{
-      if (input.code && input.code != ''){
+    delete input.input;
+    delete input.image;
+    return new Promise((resolve, reject) => {
+      if (input.code && input.code != '') {
         this.pouchdbService.createDoc(input).then(doc => {
-          resolve({doc: doc, area: input});
+          resolve({ doc: doc, input: input });
         });
       } else {
-        this.configService.getSequence('input').then((code) => {
+        this.configService.getSequence('product').then((code) => {
           input['code'] = code;
-          this.pouchdbService.createDoc(input).then(doc => {
-            resolve({doc: doc, input: input});
+          this.pouchdbService.createDoc(input).then(async doc => {
+            if (blob) {
+              console.log("blob", doc);
+              let avai = await this.pouchdbService.attachFile(doc['id'], 'avatar.png', blob);
+            }
+            resolve({ doc: doc, input: input });
           });
         });
       }
+
     });
   }
 
-  getDefaultInput(){
-    return new Promise((resolve, reject)=>{
-      this.configService.getConfigDoc().then(config => {
-        this.pouchdbService.getDoc(config.input_id).then(default_input => {
-          resolve(default_input);
-        })
-      });
-    });
-  }
-
-  updateInput(input){
-    input.docType = 'account';
+  async updateInput(viewData, blob = undefined) {
+    let input = Object.assign({}, viewData);
+    input.docType = 'input';
     delete input.moves;
     delete input.input;
+    delete input.image;
+    if (blob) {
+      await this.pouchdbService.attachFile(input._id, 'avatar.png', blob);
+      let data: any = await this.pouchdbService.getDoc(input._id);
+      let attachments = data._attachments;
+      input._attachments = attachments;
+    }
     return this.pouchdbService.updateDoc(input);
   }
 
-  deleteInput(input){
+  deleteInput(input) {
     return this.pouchdbService.deleteDoc(input);
   }
 
-  handleChange(list, change){
+  handleChange(list, change) {
     this.pouchdbService.localHandleChangeData(list, change)
+  }
+
+  getWorksPage(input_id, skip = 0): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      let payableList = [];
+      this.pouchdbService.getViewInv(
+        'stock/InputDiario', 4,
+        [input_id + "z"],
+        [input_id],
+        true,
+        true,
+        15,
+        skip
+      ).then(async (planneds: any[]) => {
+        console.log("planned", planneds);
+        let getList = [];
+        planneds.forEach(item => {
+          getList.push(item.key[3]);
+        })
+        let docs: any = await this.pouchdbService.getList(getList, true);
+        let moves = [];
+        docs.forEach(row => {
+          moves.push(row.doc);
+        })
+        resolve(moves);
+      });
+    });
   }
 }

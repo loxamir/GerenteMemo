@@ -1,87 +1,274 @@
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/agro-tabs/input-list"></ion-back-button>
+  <ion-toolbar *ngIf="showForm" color="primary" style="font-size: 20px;">
+    <ion-buttons slot="start" (click)="backEdit()">
+      <ion-icon name="arrow-back" style="font-size: 25px;padding-right: 10px;padding-left: 10px;"></ion-icon>
     </ion-buttons>
-    <ion-title>
-        Insumo: {{inputForm.value.name}}
+    <ion-title style="padding-left: 5px;" *ngIf="_id">
+      {{ 'EDIT_PLACE' | translate }} - {{inputForm.value.code}}
     </ion-title>
-    <ion-buttons slot="end" >
+    <ion-title style="padding-left: 5px;" *ngIf="!_id">
+      {{ 'NEW_PLACE' | translate }}
+    </ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="!showForm" color="primary">
+    <ion-buttons slot="start" (click)="goBack()">
+      <ion-icon name="arrow-back" style="font-size: 25px;"></ion-icon>
+      <ion-thumbnail style="--border-radius:10px;">
+        <img [src]="inputForm.value.image" id="avatarImage" #avatarImage *ngIf="inputForm.value.image">
+      </ion-thumbnail>
+    </ion-buttons>
+    <ion-title
+    (click)="showEdit()"
+    style="padding-left: 5px;">{{inputForm.value.name}}
+      <h1 class="subtitle" *ngIf="inputForm.value.lastRain && diffDays  > 1">
+        Ultima chuva {{inputForm.value.lastRain}}mm a {{ diffDays }} dias
+      </h1>
+      <h1 class="subtitle" *ngIf="inputForm.value.lastRain && diffDays == 1">
+        Ultima chuva {{inputForm.value.lastRain}}mm a {{ diffDays }} dia
+      </h1>
+      <h1 class="subtitle" *ngIf="inputForm.value.lastRain && !diffDays">
+        Ultima chuva {{inputForm.value.lastRain}}mm hoje
+      </h1>
+      <h1 class="subtitle" *ngIf="!inputForm.value.lastRain">
+        Sem dados de Chuva
+      </h1>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
-
 </ion-header>
 
-<ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-  <form class="sample-form validations-form" [formGroup]="inputForm" (ngSubmit)="onSubmit(inputForm.value)">
-    <ion-item
-     no-padding
-     *ngIf="create"
-     class="field-50">
-      <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-      <ion-input #name type="text"
-      formControlName="name"></ion-input>
-    </ion-item>
-    <ion-list no-lines>
-      <ion-item-sliding class="list-item" *ngFor="let item of inputForm.value.moves.sort(this.formatService.compare)">
-      <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
-        <ion-card class="list-card" style="">
-
-            <ion-row>
+<ion-content  class="list-mini-content rotate180" *ngIf="!showForm">
+  <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
+  <img id="imgtmp" #imgtmp class="rotate180" style="display:none">
+  <div id="pwa">
+    <input type="file" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
+    <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
+  </div>
+  <div style="height:100px;">
+  </div>
+  <div style="height:200px;" *ngIf="showBotom">
+  </div>
+  <form class="sample-form validations-form" [formGroup]="inputForm">
+    <ion-list no-lines class="rotate180" style="overflow: auto;display: flex;flex-direction: column-reverse;">
+      <ion-item-sliding class="list-item" *ngFor="let item of inputForm.value.moves">
+        <ion-item no-padding (click)="openItem(item)" *ngIf="!(item._attachments && item._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card class="area-card">
+            <ion-row no-padding>
+              <ion-thumbnail style="--border-radius:10px;">
+                <ion-img [src]="'./assets/icons/'+item._id.split('.')[0]+'.png'"></ion-img>
+              </ion-thumbnail>
               <ion-col>
-                <h3 class="item-name"><b>{{ item.activity_name || 'No Informado'}}</b></h3>
+                <ion-row>
+                  <ion-col size="8.5" no-padding>
+                    <h3 class="activity-name">
+                      {{ item.name || item.code || 'No Informado'}}
+                    </h3>
+                    <div [innerHTML]="item.summary"></div>
+                    <h1 class="activity-note">
+                      <b>Valor:</b> {{item.amount||item.total|number:'1.0'}}
+                    </h1>
+                    <h1 class="activity-note">
+                      {{item.note}}
+                    </h1>
+                  </ion-col>
+                  <ion-col>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'HH:mm'}}
+                    </h3>
+                  </ion-col>
+                </ion-row>
               </ion-col>
             </ion-row>
-       <ion-row no-padding class="content-row one-line">
-          <ion-col no-padding size="6">
-            <h3 class="item-title" style="font-size:15px;font-weight: bold">{{item.area_name | translate}}</h3>
-            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateStart|date: 'dd/MM/yyyy'}}</h3>
-            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateEnd|date: 'dd/MM/yyyy'}}</h3>
-          </ion-col>
-          <ion-col no-padding size="6" align-self-center>
-            <h2 *ngIf="item.progress < 100" class="list-big-number" style="color: red;">{{item.progress| number:'1.0'}}%</h2>
-            <h2 *ngIf="item.progress == 100" class="list-big-number" style="color: green;">{{item.progress| number:'1.0'}}%</h2>
-          </ion-col>
-        </ion-row>
-      </ion-card>
-    </ion-item>
+          </ion-card>
+        </ion-item>
 
+        <ion-item no-padding (click)="openPreview(item)" *ngIf="item._attachments && item._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card [class.input-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
+            <ion-row no-padding>
+              <ion-col no-padding>
+                <ion-img *ngIf="item._attachments['image.png'].data" style="max-height: 200px;width: 100%;" [src]="'data:image/png;base64,'+item._attachments['image.png'].data"></ion-img>
+              </ion-col>
+            </ion-row>
+            <ion-row style="background: white">
+              <ion-col size="8.5" style="background: white" *ngIf="item.note">
+                {{item.note}}
+              </ion-col>
+              <ion-col style="background: white">
+                <h3 class="item-title-second">
+                  {{item.date|date: 'dd/MM/yyyy'}}
+                  {{item.date|date: 'HH:mm'}}
+                </h3>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
         <ion-item-options>
-          <ion-item-option (click)="deleteInputMove(item)">
+          <ion-item-option (click)="deleteWork(item)" *ngIf="!item.fixed">
             Borrar
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
+    <ion-infinite-scroll threshold="100px" position="bottom" (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content class="rotate180" loadingSpinner="bubbles" loadingText="Cargando mas atividades...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 
-<ion-row style="height:15px;">
-</ion-row>
-</form>
+    <ion-row style="height:15px;">
+    </ion-row>
+  </form>
 
-<ion-fab vertical="bottom" horizontal="center" slot="fixed" class="add-product-button">
-<ion-fab-button (click)="addActivity()">
-  <ion-icon name="add">
-  </ion-icon>
-</ion-fab-button>
-</ion-fab>
-<ion-fab vertical="bottom" horizontal="start" slot="fixed">
-  <ion-button (click)="discard()" color="danger" class="discard-button">
-    <ion-icon name="backspace" *ngIf="inputForm.dirty"> </ion-icon>
-    <ion-icon name="arrow-back" *ngIf="!inputForm.dirty"> </ion-icon>
-    <span *ngIf="inputForm.dirty">Descartar</span>
-    <span *ngIf="!inputForm.dirty">Volver</span>
-  </ion-button>
-</ion-fab>
 
-<ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="inputForm.dirty">
-  <ion-button (click)="buttonSave()"  color="success" class="save-button">
-    <ion-icon name="save"> </ion-icon>
-    Guardar
-  </ion-button>
-</ion-fab>
-<div style="height: 100px;">
-</div>
+  <ion-fab vertical="top" class="rotate180" style="left: 0px;right:0px;top: 0px;background: #dddddd;" horizontal="start" slot="fixed">
+    <ion-row style="padding-bottom:5px;padding-top: 5px;">
+      <ion-col [class.left-round]="true" [class.all-round]="false">
+        <ion-textarea #note [(ngModel)]="inputForm.value.note" placeholder="Escribir Anotación" style="margin-top: 2px;" rows="1">
+        </ion-textarea>
+      </ion-col>
+      <div size="1.6" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;    width: 40px;padding-top: 5px;">
+        <ion-icon name="camera" (click)="selectImage()" style="font-size: 26px;color: gray;margin-top:7px;"></ion-icon>
+      </div>
+      <div size="2" style="padding-top: 6px;padding-right: 5px;">
+        <ion-fab-button *ngIf="!inputForm.value.note" style="width:40px;height:40px;margin-left: 5px;">
+          <ion-icon name="add" (click)="addButton()" *ngIf="!showBotom">
+          </ion-icon>
+          <ion-icon name="close" (click)="addButton()" *ngIf="showBotom">
+          </ion-icon>
+        </ion-fab-button>
+        <ion-fab-button *ngIf="inputForm.value.note" (click)="sendButton()" style="width:40px;height:40px;margin-left: 5px;">
+          <ion-icon name="send" style="font-size: 22px;margin-left: 3px;">
+          </ion-icon>
+        </ion-fab-button>
+      </div>
+    </ion-row>
+    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
+      <ion-col size="4" (click)="createSale()">
+        <ion-img [src]="'./assets/icons/sale.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Venta
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="createPurchase()">
+        <ion-img [src]="'./assets/icons/purchase.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Compra
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="createService()">
+        <ion-img [src]="'./assets/icons/service.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Servicio
+        </h1>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
+      <ion-col size="4" (click)="createReception()">
+        <ion-img [src]="'./assets/icons/receipt.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Cobro
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="createPayment()">
+        <ion-img [src]="'./assets/icons/stock-move.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Pago
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="createCashMove()">
+        <ion-img [src]="'./assets/icons/cash-move.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Registro Financiero
+        </h1>
+      </ion-col>
+    </ion-row>
+
+    <!-- <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
+
+      <ion-col size="4" (click)="addActivity('activity.analisis')">
+        <ion-img [src]="'./assets/icons/cash-move.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Facturación
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.rain')">
+        <ion-img [src]="'./assets/icons/stock-move.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Recepciones
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.harvest')">
+        <ion-img [src]="'./assets/icons/receipt.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          Entregas
+        </h1>
+      </ion-col>
+
+    </ion-row> -->
+  </ion-fab>
+
+</ion-content>
+
+<ion-content class="list-mini-content" *ngIf="showForm">
+  <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
+  <div id="pwa">
+    <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
+  </div>
+  <form class="sample-form validations-form" [formGroup]="inputForm">
+    <ion-row>
+      <img [src]="inputForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+      <ion-item no-padding class="field-100">
+        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+        <ion-input #name type="text" formControlName="name"></ion-input>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <ion-label position="floating">{{'Input(ha)' | translate}}</ion-label>
+        <ion-input type="number" style="--padding-top: 21px;" formControlName="surface"></ion-input>
+      </ion-item>
+      <ion-item no-padding (click)="selectCrop()" class="field-50">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
+          <h4 class="field-value">
+            {{inputForm.value.crop && inputForm.value.crop.name || 'Selecionar'}}
+          </h4>
+        </div>
+      </ion-item>
+      <ion-item no-padding class="field-100">
+        <ion-label>{{'OWN_PLACE' | translate}}</ion-label>
+        <ion-toggle formControlName="own"></ion-toggle>
+      </ion-item>
+      <ion-item no-padding (click)="selectContact()" *ngIf="!inputForm.value.own" class="field-100">
+        <div class="field-many2one">
+          <h4 class="field-label">{{'Proprietario' | translate}}</h4>
+          <h4 class="field-value">
+            {{inputForm.value.contact && inputForm.value.contact.name || 'Selecionar'}}
+          </h4>
+        </div>
+      </ion-item>
+      <ion-item no-padding class="field-50" *ngIf="!inputForm.value.own">
+        <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
+        <ion-select #type formControlName="rentingType" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
+          <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
+          <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
+          <ion-select-option value="percent">Porcentage</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item no-padding class="field-50" *ngIf="!inputForm.value.own">
+        <ion-label position="floating" *ngIf="inputForm.value.rentingType == 'fixedAmount'">
+          {{'Valor em $' | translate}}</ion-label>
+        <ion-label position="floating" *ngIf="inputForm.value.rentingType == 'fixedWeight'">
+          {{'Peso em Kg' | translate}}</ion-label>
+        <ion-label position="floating" *ngIf="inputForm.value.rentingType == 'percent'">
+          {{'Porcentage %' | translate}}</ion-label>
+        <ion-input type="number" formControlName="rentingAmount"></ion-input>
+      </ion-item>
+      <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
+    </ion-row>
+  </form>
 </ion-content>

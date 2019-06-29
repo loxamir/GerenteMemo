@@ -1,36 +1,40 @@
 import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { FormatService } from '../services/format.service';
 
 @Injectable()
 export class InputsService {
   constructor(
     public pouchdbService: PouchdbService,
+    public formatService: FormatService,
   ) {}
 
   getInputs(keyword, page){
     return new Promise((resolve, reject)=>{
-      this.pouchdbService.getView(
-        'stock/Inputs', 1,
-        ['0'],
-        ['z']
-      ).then((planneds: any[]) => {
         let inputList = [];
-        this.pouchdbService.searchDocTypeDataField(
-          'product', keyword, page, 'type', 'product'
-        ).then((inputs: any[]) => {
-          console.log("inputs", inputs);
-          console.log("planneds", planneds);
-          inputs.forEach(input=>{
-            input.balance = 0;
-            // if (input._id.split('.')[1] == 'input'){
-              let inputReport = planneds.filter(x => x.key[0]==input._id)[0]
-              input.balance = inputReport && inputReport.value || 0;
+        this.pouchdbService.searchDocTypeData(
+          'product', keyword, page
+        ).then(async (inputs: any[]) => {
+          await this.formatService.asyncForEach(inputs, async input=>{
+            await this.pouchdbService.getViewInv(
+              'Informes/InputDiario', 3,
+              [input._id+'z'],
+              [input._id],
+              true,
+              true,
+              1
+            ).then((planneds: any[]) => {
+              input.lastActivity =  planneds[0] && planneds[0].value.replace('<br/>', ' ') || '';
+              input.lastDate = planneds[0] && planneds[0].key[1] || null;
               inputList.push(input);
-            // }
           })
-          resolve(inputList);
         });
+        let self=this;
+        let listOrdered= inputList.sort(function(a, b) {
+          return self.formatService.compareField(a, b, 'lastDate', 'decrease');
+        })
+        resolve(listOrdered);
       });
     });
   }
@@ -39,28 +43,8 @@ export class InputsService {
     this.pouchdbService.localHandleChangeData(list, change)
   }
 
-  handleViewChange(list, change){
-    this.pouchdbService.getView(
-      'stock/Inputs', 1,
-      ['0'],
-      ['z']
-    ).then((inputs: any[]) => {
-      let inputDict = {}
-      inputs.forEach(item=>{
-        inputDict[item.key[0]] = item.value;
-      })
-      list.forEach((input, index)=>{
-        if (
-          change.doc.accountFrom_id == input._id
-          || change.doc.accountTo_id == input._id
-        ){
-          input.balance = inputDict[input._id] || 0;
-        }
-      })
-    });
-  }
-
   deleteInput(input) {
     return this.pouchdbService.deleteDoc(input);
+    //Have to delete all works created for it
   }
 }

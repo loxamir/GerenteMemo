@@ -21,6 +21,12 @@ const routes: Routes = [
   }
 ];
 
+import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
+import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
+
+import { InputPopover } from './input.popover';
+
+
 @NgModule({
   imports: [
     ReactiveFormsModule,
@@ -37,7 +43,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [InputPage],
-  providers: [InputService]
+  declarations: [InputPage, InputPopover],
+  providers: [InputService, SpeechRecognition, TextToSpeech],
+  entryComponents: [InputPopover]
 })
 export class InputPageModule {}

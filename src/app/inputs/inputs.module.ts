@@ -13,7 +13,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { InputsPage } from './inputs.page';
-
+import { InputsPopover } from './inputs.popover';
 const routes: Routes = [
   {
     path: '',
@@ -37,7 +37,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [InputsPage],
-  providers: [InputsService]
+  declarations: [InputsPage, InputsPopover],
+  providers: [InputsService],
+  entryComponents: [InputsPopover]
 })
 export class InputsPageModule {}
