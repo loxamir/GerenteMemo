@@ -1,36 +1,40 @@
 import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { FormatService } from '../services/format.service';
 
 @Injectable()
 export class AnimalsService {
   constructor(
     public pouchdbService: PouchdbService,
+    public formatService: FormatService,
   ) {}
 
   getAnimals(keyword, page){
     return new Promise((resolve, reject)=>{
-      this.pouchdbService.getView(
-        'stock/Animals', 1,
-        ['0'],
-        ['z']
-      ).then((planneds: any[]) => {
         let animalList = [];
-        this.pouchdbService.searchDocTypeDataField(
-          'product', keyword, page, 'type', 'animal'
-        ).then((animals: any[]) => {
-          console.log("animals", animals);
-          console.log("planneds", planneds);
-          animals.forEach(animal=>{
-            animal.balance = 0;
-            // if (animal._id.split('.')[1] == 'animal'){
-              let animalReport = planneds.filter(x => x.key[0]==animal._id)[0]
-              animal.balance = animalReport && animalReport.value || 0;
+        this.pouchdbService.searchDocTypeData(
+          'animal', keyword, page
+        ).then(async (animals: any[]) => {
+          await this.formatService.asyncForEach(animals, async animal=>{
+            await this.pouchdbService.getViewInv(
+              'Informes/AnimalDiario', 3,
+              [animal._id+'z'],
+              [animal._id],
+              true,
+              true,
+              1
+            ).then((planneds: any[]) => {
+              animal.lastActivity =  planneds[0] && planneds[0].value.replace('<br/>', ' ') || '';
+              animal.lastDate = planneds[0] && planneds[0].key[1] || null;
               animalList.push(animal);
-            // }
           })
-          resolve(animalList);
         });
+        let self=this;
+        let listOrdered= animalList.sort(function(a, b) {
+          return self.formatService.compareField(a, b, 'lastDate', 'decrease');
+        })
+        resolve(listOrdered);
       });
     });
   }
@@ -39,28 +43,8 @@ export class AnimalsService {
     this.pouchdbService.localHandleChangeData(list, change)
   }
 
-  handleViewChange(list, change){
-    this.pouchdbService.getView(
-      'stock/Animals', 1,
-      ['0'],
-      ['z']
-    ).then((animals: any[]) => {
-      let animalDict = {}
-      animals.forEach(item=>{
-        animalDict[item.key[0]] = item.value;
-      })
-      list.forEach((animal, index)=>{
-        if (
-          change.doc.accountFrom_id == animal._id
-          || change.doc.accountTo_id == animal._id
-        ){
-          animal.balance = animalDict[animal._id] || 0;
-        }
-      })
-    });
-  }
-
   deleteAnimal(animal) {
     return this.pouchdbService.deleteDoc(animal);
+    //Have to delete all works created for it
   }
 }

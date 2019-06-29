@@ -45,11 +45,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'crop-list',
+        path: 'animal-list',
         children: [
           {
             path: '',
-            loadChildren: '../crops/crops.module#CropsPageModule'
+            loadChildren: '../animals/animals.module#AnimalsPageModule'
           }
         ]
       },

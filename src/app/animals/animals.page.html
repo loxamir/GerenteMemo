@@ -1,41 +1,77 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar *ngIf="showSearch" style="--background: #b8c9ff">
+    <ion-buttons slot="start">
+      <ion-button (click)="changeSearch()" color="primary">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  <ion-searchbar
+  [placeholder]="'SEARCH_PERSON'|translate"
+  [(ngModel)]="searchTerm"
+  #searchBar
+  (ionChange)="setFilteredItems()">
+  </ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="!showSearch" color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-searchbar
-      placeholder="Buscar Animal"
-      [(ngModel)]="searchTerm"
-      (ionChange)="setFilteredItems()">
-    </ion-searchbar>
+    <ion-title style="padding-inline-start: 10px;">AgroMemo - {{'PLACES'|translate}}</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="changeSearch()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <ion-button  (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <!-- <ion-segment [(ngModel)]="section" scrollable="true" style="--color-checked: #ffffff;">
+    <ion-segment-button value="moves" style="color: white;--background-activated: red;">
+      Animals
+    </ion-segment-button>
+    <ion-segment-button value="waiting" style="color: white;--background-activated: red;">
+      Maquinas
+    </ion-segment-button>
+  </ion-segment> -->
 </ion-header>
 
 <ion-content class="list-mini-content">
+
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of animals">
-      <ion-item no-padding (click)="selectAnimal(item)" style="margin-bottom: 0px; margin-top:0px;">
-        <ion-card class="list-card" style="height:50px;">
-          <ion-row no-padding class="content-row one-line" style="margin-left:0.3em">
-            <h3 class="item-title"><b>{{ item.name }}</b></h3>
+      <ion-item no-padding (click)="selectAnimal(item)"
+      style="margin-bottom: 0px; margin-top:0px;">
+        <ion-card class="list-card">
+          <ion-row>
+            <ion-thumbnail style="--border-radius:10px;">
+              <img [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data" *ngIf="item._attachments && item._attachments['avatar.png']">
+              <img src="./assets/icons/field.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
+            </ion-thumbnail>
+            <ion-col>
+              <ion-row>
+                <ion-col size="8.5" no-padding>
+                  <h3 class="item-name"><b>{{ item.name}}</b></h3>
+                </ion-col>
+                <ion-col size="3.5" no-padding>
+                  <h3 *ngIf="isToday(item.lastDate)" class="item-title-second">{{ item.lastDate | date: 'HH:mm'}}</h3>
+                  <h3 *ngIf="!isToday(item.lastDate)" class="item-title-second">{{ item.lastDate | date: 'dd/MM/yyyy'}}</h3>
+                </ion-col>
+              </ion-row>
+               <ion-row no-padding class="content-row one-line">
+                  <ion-col no-padding size="12">
+                    <!-- <h3 class="item-title" style="font-size:15px;margin-left: 5px">{{item.crop_name | translate}}</h3> -->
+                    <!-- <h3 class="item-title" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;font-size:15px;margin-left: 5px">{{item.lastActivity | translate}}</h3> -->
+                    <div [innerHTML]="item.lastActivity" style="font-size:14px;"></div>
+                  </ion-col>
+                </ion-row>
+            </ion-col>
           </ion-row>
-     <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-35  >
-          <ion-row no-padding>
-          </ion-row>
-        </ion-col>
-        <ion-col no-padding width-60 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
-          <h2 class="list-big-number" style="color: green;">$ {{item.balance| number:'1.0'}}</h2>
-        </ion-col>
-      </ion-row>
-      </ion-card>
-
-    </ion-item>
+        </ion-card>
+      </ion-item>
       <ion-item-options>
         <ion-item-option (click)="deleteAnimal(item)"
         *ngIf="!item.fixed">
@@ -47,9 +83,9 @@
   <ion-row style="height:15px;">
   </ion-row>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createAnimal()">
-          <ion-icon name="add">
-          </ion-icon>
-      </ion-fab-button>
+    <ion-fab-button (click)="createAnimal()">
+      <ion-icon name="add">
+      </ion-icon>
+    </ion-fab-button>
   </ion-fab>
 </ion-content>

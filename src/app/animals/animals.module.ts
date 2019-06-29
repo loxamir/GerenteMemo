@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -9,10 +8,12 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
 import { AnimalsService } from './animals.service';
+import { Routes, RouterModule } from '@angular/router';
+
 import { IonicModule } from '@ionic/angular';
 
 import { AnimalsPage } from './animals.page';
-
+import { AnimalsPopover } from './animals.popover';
 const routes: Routes = [
   {
     path: '',
@@ -36,7 +37,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AnimalsPage],
-  providers: [AnimalsService]
+  declarations: [AnimalsPage, AnimalsPopover],
+  providers: [AnimalsService],
+  entryComponents: [AnimalsPopover]
 })
 export class AnimalsPageModule {}
