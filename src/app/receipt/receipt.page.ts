@@ -1216,8 +1216,8 @@ export class ReceiptPage implements OnInit {
               paym["amount_currency"] =  item_paid/this.receipt_exchange_rate,
               paym["amount"] = item_paid;
             } else {
-              paym["amount"] =  item_paid*this.receipt_exchange_rate,
-              paym["amount_currency"] = item_paid;
+              paym["amount_currency"] =  item_paid/this.receipt_exchange_rate,
+              paym["amount"] = item_paid;
             }
             item1.payments.push(paym);
           } else {
