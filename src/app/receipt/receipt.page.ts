@@ -1753,10 +1753,9 @@ export class ReceiptPage implements OnInit {
           })
           paidMove.payments = payments;
           if (total > 0){
-            paidMove.amount_residual = total;
-            if (paidMove.currency_id && paidMove.exchange_rate){
-              paidMove.amount_residual = total;
-              paidMove.currency_residual = total_currency;
+            paidMove.amount_residual += total;
+            if (paidMove.currency_id){
+              paidMove.currency_residual += total_currency;
             }
             await this.pouchdbService.updateDoc(paidMove);
           }
