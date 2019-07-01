@@ -663,7 +663,7 @@ export class ReceiptPage implements OnInit {
     this.avoidAlertMessage = true;
     let data = {
       "contact": this.receiptForm.value.contact,
-      "amount": this.receiptForm.value.total,
+      "amount": (this.receiptForm.value.total).toFixed(this.currencies[this.receiptForm.value.cash_paid.currency_id || this.company_currency_id].precision),
       "select": true,
       "signal": this.receiptForm.value.signal,
     }
@@ -672,14 +672,14 @@ export class ReceiptPage implements OnInit {
       data['my_check'] = true;
       if (this.currencies[this.receiptForm.value.cash_paid.currency_id || this.receipt_currency_id].inverted_rate){
         data['exchange_rate'] = this.receipt_exchange_rate;
-        data['amount'] = this.receiptForm.value.total*this.receiptForm.value.exchange_rate;
+        data['amount'] = (this.receiptForm.value.total*this.receiptForm.value.exchange_rate).toFixed(this.currencies[this.company_currency_id].precision);
       } else {
         data['exchange_rate'] = 1/this.receipt_exchange_rate;
-        data['amount'] = this.receiptForm.value.total/this.receiptForm.value.exchange_rate;
+        data['amount'] = (this.receiptForm.value.total/this.receiptForm.value.exchange_rate).toFixed(this.currencies[this.company_currency_id].precision);
       }
       if (this.receiptForm.value.cash_paid.currency_id){
         data['currency'] = this.currencies[this.receiptForm.value.cash_paid.currency_id];
-        data['currency_amount'] = this.receiptForm.value.total;
+        data['currency_amount'] = this.receiptForm.value.total.toFixed(this.currencies[this.receiptForm.value.cash_paid.currency_id || this.company_currency_id].precision);
       }
     }
     let profileModal = await this.modalCtrl.create({
