@@ -845,6 +845,7 @@ export class ReceiptPage implements OnInit {
 
   async afterConfirm() {
     let savedResidual = 0;
+    let smallDiff1 = 10**(-1*this.receipt_currency_precision);
     if (this.receiptForm.value.residual > 0
       && JSON.stringify(this.receiptForm.value.difference_account) != "{}"
     ) {
@@ -855,6 +856,17 @@ export class ReceiptPage implements OnInit {
         "paid": this.receiptForm.value.total*this.receipt_exchange_rate,
         "residual": 0,
       });
+    } else if (
+      this.receiptForm.value.residual > 0
+      && this.receiptForm.value.residual <= smallDiff1
+      && this.receiptForm.value.residual >= -smallDiff1
+    ){
+        this.receiptForm.patchValue({
+          "change": 0,
+          "amount_paid": this.receiptForm.value.total*this.receipt_exchange_rate,
+          "paid": this.receiptForm.value.total*this.receipt_exchange_rate,
+          "residual": 0,
+        });
     }
     return new Promise(async resolve => {
       let self = this;
@@ -888,7 +900,7 @@ export class ReceiptPage implements OnInit {
       let amount_paid2 = this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit;
       let paid_real = this.receiptForm.value.paid - this.receiptForm.value.change;
       let paid_currency = (
-        paid_real * this.receipt_exchange_rate
+        paid_real
       ).toFixed(this.company_currency_precision);
       this.receiptForm.patchValue({
         "change": 0,
@@ -1219,23 +1231,26 @@ export class ReceiptPage implements OnInit {
           promise_ids2.push(this.pouchdbService.updateDoc(item1));
           // console.log("item_residual1", item1.origin_id, item_residual);
           // console.log("ORIGIN", item1.origin_id.split('.')[0]);
+          let smallDiff = 10**(-1*this.receipt_currency_precision)*this.receipt_exchange_rate;
           if (item1.origin_id.split('.')[0] == 'sale') {
             // console.log("findSale");
             let sale: any = await this.pouchdbService.getDoc(item1.origin_id);
             // console.log("sALE", JSON.stringify(sale))
             sale.residual = item1.amount_residual;
             // console.log("item_residual2", item_residual);
+            let sale_item_paid = item_paid;
+            if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
+              sale.state = "PAID";
+              sale.residual = 0;
+              sale_item_paid += item1.amount_residual;
+            }
             sale.payments.push({
-              "paid": item_paid,
+              "paid": sale_item_paid,
               "date": this.receiptForm.value.date,
               "state": "CONFIRMED",
               "_id": this.receiptForm.value._id,
             });
-            let smallDiff = 10**(-1*this.company_currency_precision);
-            if (item_residual <= smallDiff && item_residual >= -smallDiff){
-              sale.state = "PAID";
-              sale.residual = 0;
-            }
+
             // console.log("SALE RES", JSON.stringify(sale));
             await this.pouchdbService.updateDoc(sale);
           }
@@ -1253,8 +1268,7 @@ export class ReceiptPage implements OnInit {
                 "state": "CONFIRMED",
                 "_id": this.receiptForm.value._id,
               });
-              let smallDiff = 10**(-1*this.currencies[purchase.currency_id || this.company_currency_id].precision);
-              if (item_residual <= smallDiff && item_residual >= -smallDiff){
+              if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
                 purchase.state = "PAID";
                 purchase.residual = 0;
               }
@@ -1270,8 +1284,7 @@ export class ReceiptPage implements OnInit {
                 "state": "CONFIRMED",
                 "_id": this.receiptForm.value._id,
               });
-              let smallDiff = 10**(-1*this.company_currency_precision);
-              if (item_residual <= smallDiff && item_residual >= -smallDiff){
+              if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
                 service.state = "PAID";
                 service.residual = 0;
               }
@@ -1764,6 +1777,7 @@ export class ReceiptPage implements OnInit {
             this.receiptForm.value.signal == '-'){
             //Volta o cheque para o caixa que estava
             this.receiptForm.value.check.account_id = this.receiptForm.value.cash_paid._id;
+            this.receiptForm.value.check.state = 'RECEIVED';
             await this.pouchdbService.updateDoc(this.receiptForm.value.check);
           }
         }
