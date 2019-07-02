@@ -855,7 +855,6 @@ export class ReceiptPage implements OnInit {
     if (this.receiptForm.value.residual > 0
       && JSON.stringify(this.receiptForm.value.difference_account) != "{}"
     ) {
-      // console.log("is retencion");
       savedResidual = this.receiptForm.value.residual;
       this.receiptForm.patchValue({
         "change": 0,
@@ -877,7 +876,6 @@ export class ReceiptPage implements OnInit {
           amount_paid: 0,
         }
       });
-      // console.log("details", details);
       this.receiptForm.value.payments.push({
         'amount': (this.receiptForm.value.amount_paid - this.receiptForm.value.change).toFixed(2),
         'date': this.today,
@@ -885,11 +883,7 @@ export class ReceiptPage implements OnInit {
         'state': 'done',
         'accountTo_name': this.receiptForm.value.cash_paid.name,
         'accountFrom_name': this.receiptForm.value.cash_paid.name,
-        // 'items_details': details,
       });
-
-      // let amount_paid1 = this.receiptForm.value.amount_paid-this.receiptForm.value.change;
-
       let promise_ids = [];
       let credit = 0;
       this.receiptForm.value.items.forEach(ite => {
@@ -902,7 +896,7 @@ export class ReceiptPage implements OnInit {
       let paid_real = this.receiptForm.value.paid - this.receiptForm.value.change;
       let paid_currency = (
         paid_real * this.receipt_exchange_rate
-      ).toFixed(this.currencies[this.receiptForm.value.cash_paid.currency_id || this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency._id || this.company_currency_id].precision);
+      ).toFixed(this.company_currency_precision);
       this.receiptForm.patchValue({
         "change": 0,
         "paid": paid_currency,
@@ -914,17 +908,14 @@ export class ReceiptPage implements OnInit {
 
         this.receiptForm.value.items.forEach(ite => {
           if (ite.currency_id && ite.currency_id != this.company_currency_id && ite.currency_id != this.receiptForm.value.cash_paid.currency_id){
-            // let ex_rate = this.currencies[ite.currency_id].exchange_rate;
-            let ex_rate = this.receipt_exchange_rate;
               paid_currency = (
-                paid_real / ex_rate
-              ).toFixed(this.currencies[this.receiptForm.value.cash_paid.currency_id || this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency._id || this.company_currency_id].precision);
+                paid_real /  this.receipt_exchange_rate
+              ).toFixed(this.currencies[ite.currency_id].precision);
             this.receiptForm.patchValue({
               "change": 0,
               "paid": paid_currency,
             });
           } else if (ite.currency_id && ite.currency_id != this.company_currency_id && ite.currency_id == this.receiptForm.value.cash_paid.currency_id){
-            let ex_rate = this.currencies[ite.currency_id].exchange_rate;
               paid_currency = (
                 paid_real
               ).toFixed(this.currencies[this.receiptForm.value.cash_paid.currency_id || this.receiptForm.value.cash_paid.currency && this.receiptForm.value.cash_paid.currency._id || this.company_currency_id].precision);
@@ -933,7 +924,6 @@ export class ReceiptPage implements OnInit {
               "paid": paid_currency,
             });
           }
-          // console.log("ite", ite);
           let item_paid = 0;
           let item_residual = 0;
           if (amount_paid > ite.amount_residual) {
@@ -1267,8 +1257,10 @@ export class ReceiptPage implements OnInit {
                 "state": "CONFIRMED",
                 "_id": this.receiptForm.value._id,
               });
-              if (item_residual == 0) {
+              let smallDiff = 10**(-1*this.currencies[purchase.currency_id].precision);
+              if (item_residual <= smallDiff && item_residual >= -smallDiff){
                 purchase.state = "PAID";
+                purchase.residual = 0;
               }
               this.pouchdbService.updateDoc(purchase);
             })

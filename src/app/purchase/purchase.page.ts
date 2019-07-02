@@ -670,9 +670,11 @@ export class PurchasePage implements OnInit {
       this.recomputeTotal();
       this.recomputeUnInvoiced();
       this.recomputeResidual();
-      if (this.purchaseForm.value.total > 0 && this.purchaseForm.value.residual == 0){
+      let smallDiff = 10**(-1*this.purchase_currency_precision);
+      if (this.purchaseForm.value.total > 0 && this.purchaseForm.value.residual <= smallDiff && this.purchaseForm.value.residual >= -smallDiff){
         this.purchaseForm.patchValue({
           state: "PAID",
+          residual: 0,
         });
       }
     }
