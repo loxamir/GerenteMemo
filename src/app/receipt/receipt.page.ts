@@ -536,9 +536,6 @@ export class ReceiptPage implements OnInit {
         if (amount_unInvoiced > (this.receiptForm.value.amount_paid - this.receiptForm.value.change)) {
           amount_unInvoiced = (this.receiptForm.value.amount_paid - this.receiptForm.value.change);
         }
-        if ((total - Math.round(total)) > 0){
-          this.smallDiff = 10**(-1*this.currencies[this.receiptForm.value.cash_paid.currency_id || this.company_currency_id].precision);
-        }
         this.receiptForm.patchValue({
           total: total,
           amount_unInvoiced: amount_unInvoiced,
@@ -673,10 +670,6 @@ export class ReceiptPage implements OnInit {
     }
     if (this.receiptForm.value.cash_paid.currency_id){
       let smallDiff = 0;
-      if ((this.receiptForm.value.total - Math.round(this.receiptForm.value.total)) > 0){
-        smallDiff = 10**(-1*this.currencies[this.receiptForm.value.cash_paid.currency_id || this.company_currency_id].precision);
-      }
-
       data['amount'] = (this.receiptForm.value.total*this.receipt_exchange_rate).toFixed(this.currencies[this.company_currency_id].precision);
       data['currency'] = this.currencies[this.receiptForm.value.cash_paid.currency_id];
       data["currency_amount"] = (this.receiptForm.value.total + smallDiff).toFixed(this.currencies[this.receiptForm.value.cash_paid.currency_id || this.company_currency_id].precision);
@@ -1000,8 +993,9 @@ export class ReceiptPage implements OnInit {
 
 
             //Get change from check
+            let smallDiff = 10**(-1*this.company_currency_precision);
             if (this.receiptForm.value.cash_paid.type == 'check'
-              && this.change > 0
+              && this.change >= smallDiff
             ) {
               let changeAmount;
               if (this.receipt_currency_id == this.company_currency_id){
@@ -1097,8 +1091,9 @@ export class ReceiptPage implements OnInit {
             promise_ids.push(this.cashMoveService.createCashMove(doc));
 
             //Get change from check
+            let smallDiff = 10**(-1*this.company_currency_precision);
             if (this.receiptForm.value.cash_paid.type == 'check'
-              && this.change > 0
+              && this.change >= smallDiff
             ) {
               let changeAmount;
               if (this.receipt_currency_id == this.company_currency_id){
@@ -1236,9 +1231,10 @@ export class ReceiptPage implements OnInit {
               "state": "CONFIRMED",
               "_id": this.receiptForm.value._id,
             });
-            if (item_residual == 0) {
-              // console.log("is Paid", sale._id);
-              sale['state'] = "PAID";
+            let smallDiff = 10**(-1*this.company_currency_precision);
+            if (item_residual <= smallDiff && item_residual >= -smallDiff){
+              sale.state = "PAID";
+              sale.residual = 0;
             }
             // console.log("SALE RES", JSON.stringify(sale));
             await this.pouchdbService.updateDoc(sale);
@@ -1257,7 +1253,7 @@ export class ReceiptPage implements OnInit {
                 "state": "CONFIRMED",
                 "_id": this.receiptForm.value._id,
               });
-              let smallDiff = 10**(-1*this.currencies[purchase.currency_id].precision);
+              let smallDiff = 10**(-1*this.currencies[purchase.currency_id || this.company_currency_id].precision);
               if (item_residual <= smallDiff && item_residual >= -smallDiff){
                 purchase.state = "PAID";
                 purchase.residual = 0;
@@ -1274,8 +1270,10 @@ export class ReceiptPage implements OnInit {
                 "state": "CONFIRMED",
                 "_id": this.receiptForm.value._id,
               });
-              if (item_residual == 0) {
+              let smallDiff = 10**(-1*this.company_currency_precision);
+              if (item_residual <= smallDiff && item_residual >= -smallDiff){
                 service.state = "PAID";
+                service.residual = 0;
               }
               this.pouchdbService.updateDoc(service);
             })
