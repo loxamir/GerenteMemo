@@ -68,7 +68,7 @@ export class ReceiptService {
           })
           pouchData.contact = doc_dict[pouchData.contact_id] || {};
           pouchData.cash_paid = doc_dict[pouchData.cash_id] || {};
-
+          pouchData.check = doc_dict[pouchData.check_id] || {};
           if (pouchData['state'] != 'QUOTATION'){
             this.pouchdbService.getRelated(
             "cash-move", "origin_id", doc_id).then((payments) => {

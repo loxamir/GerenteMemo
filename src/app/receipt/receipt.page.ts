@@ -1747,6 +1747,26 @@ export class ReceiptPage implements OnInit {
             await this.pouchdbService.updateDoc(paidMove);
           }
         });
+        if (this.receiptForm.value.check._id){
+          if (
+            //Pagos de Cheques proprios
+            this.receiptForm.value.signal == '-'
+            && this.receiptForm.value.cash_paid.type == 'bank'
+          ||
+            //Cobros de Cheques de Terceros
+            this.receiptForm.value.signal == '+'
+            && this.receiptForm.value.cash_paid.type == 'check'
+          ){
+            //Apagar Cheque
+            await this.pouchdbService.deleteDoc(this.receiptForm.value.check)
+          } else if (
+            //Pagos con cheques de terceros
+            this.receiptForm.value.signal == '-'){
+            //Volta o cheque para o caixa que estava
+            this.receiptForm.value.check.account_id = this.receiptForm.value.cash_paid._id;
+            await this.pouchdbService.updateDoc(this.receiptForm.value.check);
+          }
+        }
         this.pouchdbService.deleteDoc(payment);
       });
       //Remove the receipt
