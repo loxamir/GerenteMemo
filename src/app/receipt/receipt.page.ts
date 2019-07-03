@@ -1002,7 +1002,7 @@ export class ReceiptPage implements OnInit {
             if (this.receiptForm.value.cash_paid.currency_id && this.receiptForm.value.cash_paid.currency_id != this.company_currency_id) {
               doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency_id && this.currencies[this.receiptForm.value.cash_paid.currency_id].precision || 0);
               doc['currency_id'] = this.receiptForm.value.cash_paid.currency_id;
-              doc['exchange_rate'] = this.receipt_exchange_rate;
+              doc['exchange_rate'] = this.receiptForm.value.exchange_rate;
             }
             if (this.receiptForm.value.cash_paid.type == 'check'){
               doc['amount'] = (parseFloat(this.receiptForm.value.check.amount)).toFixed(this.company_currency_precision);
@@ -1101,7 +1101,7 @@ export class ReceiptPage implements OnInit {
             if (this.receiptForm.value.cash_paid.currency_id != this.company_currency_id) {
               doc['currency_amount'] = amount_paid2.toFixed(this.receiptForm.value.cash_paid.currency_id && this.currencies[this.receiptForm.value.cash_paid.currency_id].precision || 0);
               doc['currency_id'] = this.receiptForm.value.cash_paid.currency_id;
-              doc['exchange_rate'] = this.receipt_exchange_rate;
+              doc['exchange_rate'] = this.receiptForm.value.exchange_rate;
             }
             if (this.receiptForm.value.cash_paid.type == 'bank' && JSON.stringify(this.receiptForm.value.check) != '{}') {
               doc['state'] = 'WAITING';
