@@ -98,10 +98,10 @@ export class ConfigService {
         // });
       } else {
         let user = await this.getUser();
-        console.log("user", user);
+        // console.log("user", user);
         let data = await this.pouchdbService.getDoc('sequence.'+docType+'.'+user);
         let code = data['value'];
-        console.log('code', code);
+        // console.log('code', code);
         let regex = /[0-9]+$/
         let string_end = code.match(regex).index;
         let number = code.match(regex)[0];
@@ -110,9 +110,9 @@ export class ConfigService {
         let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
         let new_code = prefix+pad_number;
         data['value'] = new_code;
-        console.log("data", data);
+        // console.log("data", data);
         let test = await this.pouchdbService.updateDoc(data);
-        console.log("test", test);
+        // console.log("test", test);
         resolve(code);
       }
     });
@@ -128,11 +128,11 @@ export class ConfigService {
         resolve(code['value']);
       } else {
         let user = await this.getUser();
-        console.log("user", user);
+        // console.log("user", user);
         let code = await this.pouchdbService.getDoc(
           'sequence'+'.'+docType+'.'+user
         );
-        console.log('code', code);
+        // console.log('code', code);
         resolve(code['value']);
       }
     });
@@ -193,7 +193,7 @@ export class ConfigService {
   }
 
   async unserializeConfig(pouchData){
-    console.log("pouchData18", pouchData);
+    // console.log("pouchData18", pouchData);
     return new Promise(async (resolve, reject)=>{
         // let promise_ids = []
         // let index = 0;
@@ -236,7 +236,7 @@ export class ConfigService {
         //   promise_ids.push(this.pouchdbService.getDoc(pouchData['travel_product_id']));
         //   index += 1;
         // }
-        console.log("Passed", pouchData);
+        // console.log("Passed", pouchData);
         pouchData['travel_product'] = await this.pouchdbService.getDoc(pouchData['travel_product_id']);
         pouchData['warehouse'] = await this.pouchdbService.getDoc(pouchData['warehouse_id']);
         pouchData['currency'] = await this.pouchdbService.getDoc(pouchData['currency_id']);

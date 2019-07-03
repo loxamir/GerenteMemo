@@ -87,28 +87,28 @@ export class PouchdbService {
               since: 'now',
               include_docs: true
             }).on('change', (change) => {
-              console.log("changed", change);
+              // console.log("changed", change);
               this.handleChangeData(change);
             }).on('complete', function(info) {
               //console.log("have info", info);
             }).on('error', function (err) {
-              console.log(err);
+              console.log("errou", err);
               // resolve(false)
             });
 
             this.db.sync(this.remote, options)
             .on('change', function (info) {
               // handle change
-              console.log("sync change", info);
-            }).on('paused', function (err) {
-              console.log("sync paused", err);
+              // console.log("sync change", info);
+            }).on('paused', function () {
+              console.log("sync done");
               self.events.publish('end-sync');
               // replication paused (e.g. replication up to date, user went offline)
             }).on('active', function () {
               console.log("sync activated");
               // replicate resumed (e.g. new changes replicating, user went back online)
-            }).on('denied', function (err) {
-              console.log("sync no permissions", err);
+            }).on('denied', function (info) {
+              console.log("sync no permissions", info);
               // a document failed to replicate (e.g. due to permissions)
             }).on('complete', function (info) {
               console.log("sync complete", info);
@@ -171,7 +171,7 @@ export class PouchdbService {
         return self.formatService.compareField(a, b, sort, direction);
       })
       .slice(start, end);
-      console.log(docs)
+      // console.log(docs)
       resolve(docs);
     });
   }
@@ -204,7 +204,7 @@ export class PouchdbService {
       this.db.query(viewName, options).then(function (res) {
         resolve(res.rows);
       }).catch(function (err) {
-        console.log("error", err);
+        console.log("view error", err);
       });
     });
   }
