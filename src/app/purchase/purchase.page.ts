@@ -51,9 +51,9 @@ export class PurchasePage implements OnInit {
             });
             if (!found){
               let bacode= this.barcode;
-              console.log("this.barcode11", this.barcode);
+              // console.log("this.barcode11", this.barcode);
               this.productService.getProductByCode(this.barcode).then(async data => {
-                console.log("barcode data", data);
+                // console.log("barcode data", data);
                 if (data){
                   this.purchaseForm.value.items.unshift({
                     'quantity': 1,
@@ -63,7 +63,7 @@ export class PurchasePage implements OnInit {
                   this.recomputeValues();
                   this.purchaseForm.markAsDirty();
                 } else {
-                  console.log("barco", this.barcode);
+                  // console.log("barco", this.barcode);
                   let alertPopup = await this.alertCtrl.create({
                       header: 'Producto no Encontrado',
                       message: '¿Deseas catastrarlo?',
@@ -187,7 +187,7 @@ export class PurchasePage implements OnInit {
           this.events.unsubscribe('create-product');
           this.barcode = "";
         })
-        console.log("barcode", barcode);
+        // console.log("barcode", barcode);
         let profileModal = await this.modalCtrl.create({
           component: ProductPage,
           componentProps: {
@@ -388,7 +388,7 @@ export class PurchasePage implements OnInit {
     }
 
     buttonSave() {
-      console.log("buttonSave");
+      // console.log("buttonSave");
       return new Promise(resolve => {
         if (this._id){
           this.updatePurchase(this.purchaseForm.value);
@@ -396,7 +396,7 @@ export class PurchasePage implements OnInit {
           this.purchaseForm.markAsPristine();
         } else {
           this.createPurchase(this.purchaseForm.value).then(doc => {
-            console.log("docss", doc);
+            // console.log("docss", doc);
             this.purchaseForm.patchValue({
               _id: doc['doc'].id,
               code: doc['purchase'].code,
@@ -406,7 +406,7 @@ export class PurchasePage implements OnInit {
               write_user: doc['purchase'].write_user,
             });
             this._id = doc['doc'].id;
-            console.log("this.purchaseForm", this.purchaseForm.value);
+            // console.log("this.purchaseForm", this.purchaseForm.value);
             // this.events.publish('create-purchase', this.purchaseForm.value);
             this.purchaseForm.markAsPristine();
             resolve(true);
@@ -649,7 +649,7 @@ export class PurchasePage implements OnInit {
         });
         this.events.unsubscribe('cancel-receipt');
       });
-      console.log('item', item);
+      // console.log('item', item);
       let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,
         componentProps: {
@@ -814,7 +814,7 @@ export class PurchasePage implements OnInit {
                 amount_unInvoiced: this.purchaseForm.value.total,
                 planned: created,
               });
-              console.log("Purchase created", created);
+              // console.log("Purchase created", created);
               await this.buttonSave();
               resolve(true);
             })
@@ -913,8 +913,8 @@ export class PurchasePage implements OnInit {
 
           // plannedItems = [this.purchaseForm.value.planned[this.purchaseForm.value.planned.length - 1]];
 
-        console.log("this.purchaseForm.value.planned", this.purchaseForm.value.planned);
-        console.log("plannedItems", plannedItems);
+        // console.log("this.purchaseForm.value.planned", this.purchaseForm.value.planned);
+        // console.log("plannedItems", plannedItems);
         let profileModal = await this.modalCtrl.create({
           component: ReceiptPage,
           componentProps: {
@@ -1231,7 +1231,7 @@ export class PurchasePage implements OnInit {
 
 
       showNextButton(){
-        console.log("process showNextButton");
+        // console.log("process showNextButton");
         // console.log("stock",this.purchaseForm.value.stock);
         // if (this.purchaseForm.value.name==null){
           return true;
