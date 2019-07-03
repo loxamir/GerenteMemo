@@ -1293,7 +1293,16 @@ export class ReceiptPage implements OnInit {
           }
         });
         Promise.all(promise_ids2).then(res => {
-          this.events.publish('create-receipt', this.receiptForm.value);
+          if (
+            !this.receiptForm.value.items[0].currency_id
+            && this.receipt_currency_id != this.company_currency_id
+          ){
+            let retorno = Object.assign({}, this.receiptForm.value);
+            retorno.paid = retorno.paid*this.receipt_exchange_rate;
+            this.events.publish('create-receipt', retorno);
+          } else {
+            this.events.publish('create-receipt', this.receiptForm.value);
+          }
           this.justSave();
           resolve(true);
         });
