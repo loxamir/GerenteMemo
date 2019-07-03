@@ -18,7 +18,7 @@ export class RestProvider {
   apiUrl = 'https://app.sistemamemo.com';
 
   constructor(public http: HttpClient) {
-    console.log('Hello RestProvider Provider');
+    // console.log('Hello RestProvider Provider');
   }
 
   getTasks() {
@@ -37,7 +37,7 @@ export class RestProvider {
   getNews() {
     return new Promise(resolve => {
         this.http.get(this.apiUrl+'/engine-rest/task?unassigned=true').subscribe(data => {
-        console.log("tasks", data);
+        // console.log("tasks", data);
         resolve(data);
       }, err => {
         console.log(err);
@@ -47,7 +47,7 @@ export class RestProvider {
   getDones() {
     return new Promise(resolve => {
         this.http.get(this.apiUrl+'/engine-rest/task').subscribe(data => {
-        console.log("tasks", data);
+        // console.log("tasks", data);
         resolve(data);
       }, err => {
         console.log(err);
@@ -57,7 +57,7 @@ export class RestProvider {
   getMys() {
     return new Promise(resolve => {
         this.http.get(this.apiUrl+'/engine-rest/task?assignee=demo').subscribe(data => {
-        console.log("tasks", data);
+        // console.log("tasks", data);
         resolve(data);
       }, err => {
         console.log(err);
@@ -69,7 +69,7 @@ export class RestProvider {
   getTask(taskId) {
     return new Promise(resolve => {
       this.http.get(this.apiUrl+'/engine-rest/task/'+taskId+'/form-variables').subscribe(data => {
-        console.log("task", data);
+        // console.log("task", data);
         resolve(data);
       }, err => {
         console.log(err);
@@ -80,7 +80,7 @@ export class RestProvider {
     console.log("updateTask", formVariables);
     return new Promise(resolve => {
       this.http.post(this.apiUrl+'/engine-rest/task/'+taskId+'/resolve', formVariables).subscribe(data => {
-        console.log("task", data);
+        // console.log("task", data);
         resolve(data);
       }, err => {
         console.log(err);
@@ -91,7 +91,7 @@ export class RestProvider {
     console.log("claimTask", taskId);
     return new Promise(resolve => {
       this.http.post(this.apiUrl+'/engine-rest/task/'+taskId+'/claim', {"userId": "demo"}).subscribe(data => {
-        console.log("task", data);
+        // console.log("task", data);
         resolve(data);
       }, err => {
         console.log(err);
@@ -102,7 +102,7 @@ export class RestProvider {
     console.log("updateTask", formVariables);
     return new Promise(resolve => {
       this.http.post(this.apiUrl+'/engine-rest/task/'+taskId+'/complete', formVariables).subscribe(data => {
-        console.log("task", data);
+        // console.log("task", data);
         resolve(data);
       }, err => {
         console.log(err);
@@ -112,7 +112,7 @@ export class RestProvider {
   getStartTask(processId) {
     return new Promise(resolve => {
       this.http.get(this.apiUrl+'/engine-rest/process-definition/'+processId+'/form-variables').subscribe(data => {
-        console.log("start task start process", data);
+        // console.log("start task start process", data);
         resolve(data);
       }, err => {
         console.log(err);
@@ -121,9 +121,9 @@ export class RestProvider {
   }
   startProcess(processId, formVariables) {
     return new Promise(resolve => {
-      console.log("startProcess", formVariables);
+      // console.log("startProcess", formVariables);
       this.http.post(this.apiUrl+'/engine-rest/process-definition/key/'+processId+'/start', formVariables).subscribe(data => {
-        console.log("started Process", data);
+        // console.log("started Process", data);
         // this.checkDbExist();
         resolve(data);
       }, err => {
@@ -134,7 +134,7 @@ export class RestProvider {
   getProcess() {
     return new Promise(resolve => {
       this.http.get(this.apiUrl+'/engine-rest/process-definition?latestVersion=true').subscribe(data => {
-        console.log("tasks", data);
+        // console.log("tasks", data);
         resolve(data);
       }, err => {
         console.log(err);
@@ -146,7 +146,7 @@ export class RestProvider {
   checkDbExist(database) {
     return new Promise(resolve => {
         this.http.get(this.databaseUrl+'/'+database).subscribe(data => {
-        console.log("check exist", data);
+        // console.log("check exist", data);
         resolve(data);
       }, err => {
         resolve(err);
@@ -158,7 +158,7 @@ export class RestProvider {
   getRucName(ruc) {
     return new Promise(resolve => {
         this.http.get(this.databaseUrl+'/ruc/'+ruc).subscribe(data => {
-        console.log("RUC NAME", data);
+        // console.log("RUC NAME", data);
         resolve(data);
       }, err => {
         resolve(err);
@@ -170,7 +170,7 @@ export class RestProvider {
   getDatabaseDoc(database, doc_id) {
     return new Promise(resolve => {
         this.http.get(this.databaseUrl+'/'+database+'/'+doc_id).subscribe(data => {
-        console.log("DOC NAME", data);
+        // console.log("DOC NAME", data);
         resolve(data);
       }, err => {
         resolve(err);
@@ -187,7 +187,7 @@ export class RestProvider {
       }
       // console.log("loginData", loginData);
       this.http.post(this.databaseUrl+'/_session', loginData).subscribe(data => {
-        console.log("check login", data);
+        // console.log("check login", data);
         resolve(data);
       }, err => {
         resolve(err);
@@ -206,7 +206,7 @@ export class RestProvider {
             headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + old_passowrd))
           }
         ).subscribe((userData: any) => {
-          console.log("userData", userData);
+          // console.log("userData", userData);
           // resolve(data);
           userData.password = new_password;
           // delete userData._rev;
@@ -247,7 +247,7 @@ export class RestProvider {
             headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + password))
           }
         ).subscribe((userData: any) => {
-          console.log("userData", userData);
+          // console.log("userData", userData);
           resolve(userData.db_list);
           // resolve(data);
           // userData.password = new_password;

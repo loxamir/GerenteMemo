@@ -55,11 +55,6 @@ export class PurchaseListPage implements OnInit {
     })
   }
 
-  openMenu() {
-    console.log("asdfasdf");
-    this.menu.open();
-  }
-
   doInfinite(infiniteScroll) {
     setTimeout(() => {
       this.getPurchases(
@@ -78,7 +73,6 @@ export class PurchaseListPage implements OnInit {
     this.searchItemsS(
       this.searchTerm, 0
     ).then((purchases) => {
-      console.log("purchases", purchases);
       this.purchases = purchases;
       this.page = 1;
       this.loading.dismiss();
@@ -97,15 +91,7 @@ export class PurchaseListPage implements OnInit {
     }, 50);
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(PurchasesPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
-
   async presentPopover(myEvent) {
-    console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: PurchaseListPopover,
       event: myEvent,
@@ -143,22 +129,17 @@ export class PurchaseListPage implements OnInit {
     this.events.subscribe('open-purchase', (data) => {
       this.events.unsubscribe('open-purchase');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(PurchasePage, {'_id': purchase._id});
     this.navCtrl.navigateForward(['/purchase', {'_id': purchase._id}]);
   }
 
   createPurchase(){
-    console.log("teste foi");
     this.events.subscribe('create-purchase', (data) => {
       if (this.select){
         this.events.publish('select-purchase', data);
       }
       this.events.unsubscribe('create-purchase');
     })
-    console.log("meio foi");
     this.navCtrl.navigateForward(['/purchase', {}]);
-    console.log("pagina foi");
   }
 
   getPurchases(keyword, page){

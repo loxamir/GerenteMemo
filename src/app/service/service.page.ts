@@ -207,6 +207,9 @@ export class ServicePage implements OnInit {
           this.getService(this._id).then((data) => {
             //console.log("data", data);
             this.serviceForm.patchValue(data);
+            if (data.state != 'PAID'){
+              this.serviceForm.controls.date.disable();
+            }
             this.recomputeValues();
             this.loading.dismiss();
           });

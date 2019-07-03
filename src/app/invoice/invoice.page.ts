@@ -186,6 +186,9 @@ export class InvoicePage implements OnInit {
       if (this._id){
         this.getInvoice(this._id).then((data) => {
           this.invoiceForm.patchValue(data);
+          if (data.state != 'QUOTATION'){
+            this.invoiceForm.controls.date.disable();
+          }
           this.loading.dismiss();
         });
       } else {

@@ -66,9 +66,12 @@ export class PouchdbService {
           }
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
-          PouchDB.plugin(cordovaSqlitePlugin);
-          // this.db = new PouchDB(database);
-          this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+          if (this.platform.is('cordova')){
+            PouchDB.plugin(cordovaSqlitePlugin);
+            this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+          } else {
+            this.db = new PouchDB(database);
+          }
           console.log("database", database);
           this.db.setMaxListeners(50);
           self.events.publish('got-database');
@@ -337,9 +340,15 @@ export class PouchdbService {
 
   getList(list) {
     return new Promise((resolve, reject)=>{
+        let list2 = [];
+        list.forEach(variable => {
+            if (variable){
+              list2.push(variable)
+            }
+        });
         this.db.allDocs({
           include_docs : true,
-          keys: list
+          keys: list2
         }).then((res) => {
           resolve(res.rows);
         }).catch((err) => {

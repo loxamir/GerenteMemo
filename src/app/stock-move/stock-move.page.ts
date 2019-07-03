@@ -103,6 +103,9 @@ export class StockMovePage implements OnInit {
     if (this._id){
       this.stockMoveService.getStockMove(this._id).then((data) => {
         this.stockMoveForm.patchValue(data);
+        if (this.stockMoveForm.value.state=='done'){
+          this.stockMoveForm.controls.date.disable();
+        }
         this.loading.dismiss();
       });
     } else {

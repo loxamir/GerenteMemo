@@ -156,6 +156,9 @@ export class ReceiptPage implements OnInit {
         this.receipt_currency_symbol = this.currencies[data.currency_id || this.company_currency_id].symbol;
         this.receipt_currency_precision = this.currencies[data.currency_id || this.company_currency_id].precision;
         this.receiptForm.patchValue(data);
+        if (!this.isEmpty(this.receiptForm.value.check) || this.receiptForm.value.cash_paid.type == 'check'){
+          this.receiptForm.controls.amount_paid.disable();
+        }
         this.loading.dismiss();
       });
     } else {
@@ -337,7 +340,6 @@ export class ReceiptPage implements OnInit {
 
 
   async presentPopover(myEvent) {
-    console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ReceiptPopover,
       event: myEvent,
@@ -505,7 +507,7 @@ export class ReceiptPage implements OnInit {
             if (this.receiptForm.value.cash_paid.currency_id == item.currency_id) {
               total += parseFloat(item['currency_residual']);
               exchangeDiff += parseFloat(item.amount_residual) - parseFloat(item['currency_residual'])*this.receipt_exchange_rate;
-              console.log("exchangeDiff1", exchangeDiff);
+              // console.log("exchangeDiff1", exchangeDiff);
             } else {
               exchangeDiff += parseFloat(item.amount_residual) - parseFloat(item['currency_residual'])*this.receipt_exchange_rate;
               let item_currency: any = await this.pouchdbService.getDoc(item.currency_id);
@@ -520,7 +522,7 @@ export class ReceiptPage implements OnInit {
 
               }
               total += parseFloat(item['currency_residual']) * this.receipt_exchange_rate / parseFloat(cash_currency_exchange);
-              console.log("exchangeDiff2", exchangeDiff);
+              // console.log("exchangeDiff2", exchangeDiff);
             }
           } else {
             if (this.receipt_exchange_rate) {
@@ -531,7 +533,7 @@ export class ReceiptPage implements OnInit {
           }
           amount_unInvoiced += parseFloat(item['amount_unInvoiced']);
         });
-        console.log("exchangeDiff3", exchangeDiff);
+        // console.log("exchangeDiff3", exchangeDiff);
         this.exchangeDiff = exchangeDiff;
         if (amount_unInvoiced > (this.receiptForm.value.amount_paid - this.receiptForm.value.change)) {
           amount_unInvoiced = (this.receiptForm.value.amount_paid - this.receiptForm.value.change);
@@ -706,6 +708,9 @@ export class ReceiptPage implements OnInit {
     this.avoidAlertMessage = true;
     this.events.subscribe('select-cash', async (viewData: any) => {
       let data = Object.assign({}, viewData);
+      if (!this.isEmpty(this.receiptForm.value.check) || this.receiptForm.value.cash_paid.type == 'check'){
+        this.receiptForm.controls.amount_paid.disable();
+      }
       let currency: any = this.currencies[data.currency_id || this.company_currency_id];
       if (this.items[0].currency_id){
         currency = this.currencies[this.items[0].currency_id];
@@ -859,14 +864,25 @@ export class ReceiptPage implements OnInit {
     } else if (
       this.receiptForm.value.residual > 0
       && this.receiptForm.value.residual <= smallDiff1
-      && this.receiptForm.value.residual >= -smallDiff1
     ){
+      if (
+        this.receiptForm.value.items[0].currency_id &&
+        this.receiptForm.value.items[0].currency_id != this.receipt_currency_id
+      ){
+        this.receiptForm.patchValue({
+          "change": 0,
+          "amount_paid": this.receiptForm.value.total,
+          "paid": this.receiptForm.value.total,
+          "residual": 0,
+        });
+      } else {
         this.receiptForm.patchValue({
           "change": 0,
           "amount_paid": this.receiptForm.value.total*this.receipt_exchange_rate,
           "paid": this.receiptForm.value.total*this.receipt_exchange_rate,
           "residual": 0,
         });
+      }
     }
     return new Promise(async resolve => {
       let self = this;
@@ -1027,7 +1043,7 @@ export class ReceiptPage implements OnInit {
                 // "payments": paymentAccount[account_id],
                 "origin_id": this.receiptForm.value._id,
               }
-              console.log("Movimento", cashMoveDoc);
+              // console.log("Movimento", cashMoveDoc);
               promise_ids.push(this.cashMoveService.createCashMove(cashMoveDoc));
             }
             // Writeoff para retenciones
@@ -1064,7 +1080,7 @@ export class ReceiptPage implements OnInit {
 
           });
         } else {
-          console.log("ERR Movimento");
+          // console.log("ERR Movimento");
           Object.keys(toCreateCashMoves).forEach(account_id => {
             let doc = {
               'amount': (amount_paid2 * this.receipt_exchange_rate).toFixed(this.company_currency_precision),

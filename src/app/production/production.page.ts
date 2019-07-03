@@ -199,6 +199,9 @@ export class ProductionPage implements OnInit {
           this.getProduction(this._id).then((data) => {
             //console.log("data", data);
             this.productionForm.patchValue(data);
+            if (data.state != 'PAID'){
+              this.productionForm.controls.date.disable();
+            }
             this.recomputeValues();
             this.loading.dismiss();
           });

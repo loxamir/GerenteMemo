@@ -200,8 +200,10 @@ export class SalePage implements OnInit {
       this.currency_precision = config.currency_precision;
       if (this._id){
         this.saleService.getSale(this._id).then((data) => {
-          //console.log("data", data);
           this.saleForm.patchValue(data);
+          if (data.state != 'QUOTATION'){
+            this.saleForm.controls.date.disable();
+          }
           this.loading.dismiss();
         });
       } else {
