@@ -57,7 +57,7 @@ export class SalePage implements OnInit {
         let timeStamp = event.timeStamp - this.timeStamp;
         this.timeStamp = event.timeStamp;
         if(event.which === 13){
-          console.log("enter", this.barcode);
+          //console.log("enter", this.barcode);
           let found = false;
           this.saleForm.value.items.forEach(item => {
             if (item.product.barcode == this.barcode){
@@ -607,7 +607,7 @@ export class SalePage implements OnInit {
 
     async deleteItem(slidingItem, item){
       if (this.saleForm.value.state=='QUOTATION'){
-        console.log("delete item", item);
+        //console.log("delete item", item);
         slidingItem.close();
         let index = this.saleForm.value.items.indexOf(item)
         this.saleForm.value.items.splice(index, 1);
@@ -629,7 +629,7 @@ export class SalePage implements OnInit {
           total = total + item.quantity*item.price;
         });
         // total -= this.saleForm.value.discount.value;
-        console.log("total", total);
+        //console.log("total", total);
         this.saleForm.patchValue({
           total: total,
         });
@@ -644,7 +644,7 @@ export class SalePage implements OnInit {
             discount_lines += parseFloat(item.quantity)*(parseFloat(item.price_original || item.price)-parseFloat(item.price));
           }
         });
-        console.log("discount_lines", discount_lines);
+        //console.log("discount_lines", discount_lines);
         if (!discount_lines){
           discount_lines = 0;
         }
@@ -1007,14 +1007,14 @@ export class SalePage implements OnInit {
               }
               createList.push(cashMoveTemplate);
             });
-            console.log("createList", createList);
+            //console.log("createList", createList);
             this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.saleForm.patchValue({
                 state: 'CONFIRMED',
                 amount_unInvoiced: this.saleForm.value.total,
                 planned: created.filter(word=>typeof word.amount_residual !== 'undefined'),
               });
-              console.log("Sale created", created);
+              //console.log("Sale created", created);
               await this.buttonSave();
               resolve(true);
             })
@@ -1085,7 +1085,7 @@ export class SalePage implements OnInit {
       this.listenBarcode = false;
         this.events.unsubscribe('create-receipt');
         this.events.subscribe('create-receipt', (data) => {
-            console.log("DDDDDDDATA", data);
+            //console.log("DDDDDDDATA", data);
             this.saleForm.value.payments.push({
               'paid': data.paid,
               'date': data.date,
@@ -1110,8 +1110,8 @@ export class SalePage implements OnInit {
 
           // plannedItems = [this.saleForm.value.planned[this.saleForm.value.planned.length - 1]];
 
-        console.log("this.saleForm.value.planned", this.saleForm.value.planned);
-        console.log("plannedItems", JSON.stringify(plannedItems));
+        //console.log("this.saleForm.value.planned", this.saleForm.value.planned);
+        //console.log("plannedItems", JSON.stringify(plannedItems));
         let profileModal = await this.modalCtrl.create({
           component: ReceiptPage,
           componentProps: {
@@ -1471,7 +1471,7 @@ export class SalePage implements OnInit {
           message: "Imprimiendo...",
           duration: 3000
         });
-        console.log("ticket", ticket);
+        //console.log("ticket", ticket);
         toast.present();
         this.bluetoothSerial.isEnabled().then(res => {
           this.bluetoothSerial.list().then((data)=> {
@@ -1738,7 +1738,7 @@ export class SalePage implements OnInit {
         ticket += "\n</pre></div>";
 
 
-        console.log("ticket", ticket);
+        //console.log("ticket", ticket);
 
         const div = document.getElementById("htmltoimage");
         div.innerHTML = ticket;
@@ -1746,9 +1746,9 @@ export class SalePage implements OnInit {
 
 
         // let teste = document.getElementById("htmltoimage");
-        console.log("teste element", div);
+        //console.log("teste element", div);
        html2canvas(div, options).then(canvas => {
-         console.log("canvas", canvas);
+         //console.log("canvas", canvas);
          if (this.platform.is('cordova')){
            var contentType = "image/png";
            this.socialSharing.share(

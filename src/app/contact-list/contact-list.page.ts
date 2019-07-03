@@ -124,7 +124,7 @@ export class ContactListPage implements OnInit {
 
   searchItems() {
     this.searchItemsS(this.searchTerm, 0).then((sales) => {
-      console.log("contacts", sales);
+      // console.log("contacts", sales);
       this.contacts = sales;
       this.page = 1;
       this.loading.dismiss();
@@ -194,7 +194,7 @@ export class ContactListPage implements OnInit {
   //   });
   // }
   async presentPopover(myEvent) {
-    console.log("teste my event");
+    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ContactListPopover,
       event: myEvent,
@@ -207,7 +207,7 @@ export class ContactListPage implements OnInit {
     this.events.subscribe('open-contact', (data) => {
       this.events.unsubscribe('open-contact');
     })
-    console.log("contact", contact);
+    // console.log("contact", contact);
     // if (this.select){
     //   // this.navCtrl.push(ContactPage, {'_id': contact._id});
     //   this.router.navigate(['contact', {'_id': contact._id}]);
@@ -264,10 +264,10 @@ export class ContactListPage implements OnInit {
       }]);
     }
     this.events.subscribe('create-contact', (data) => {
-      console.log("select", data);
+      // console.log("select", data);
       if (this.select){
         this.events.publish('select-contact', data);
-        console.log("dismiss");
+        // console.log("dismiss");
         this.modalCtrl.dismiss();
 
         // });

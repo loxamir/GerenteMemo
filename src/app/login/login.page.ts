@@ -181,7 +181,7 @@ export class LoginPage implements OnInit {
           this.loginForm.value.password,
           this.loginForm.value.new_password,
         ).then(updatePassword=>{
-          console.log("updatePassword", updatePassword);
+          // console.log("updatePassword", updatePassword);
         })
       }
       else {

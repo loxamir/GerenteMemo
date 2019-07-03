@@ -172,7 +172,7 @@ export class StockReportPage implements OnInit {
           undefined,
           false
         ).then(async (stocks: any[]) => {
-          console.log("stock lines", stocks);
+          //console.log("stock lines", stocks);
           let items = [];
           let promise_ids = [];
           let result = {};
@@ -201,7 +201,7 @@ export class StockReportPage implements OnInit {
                 }
               // }
             });
-            console.log("getList", getList);
+            //console.log("getList", getList);
             let products: any = await this.pouchdbService.getList(getList.slice(0, 999));
             var doc_dict = {};
             products.forEach(row=>{
@@ -228,10 +228,10 @@ export class StockReportPage implements OnInit {
                   brands[item._id] = litems.length-1;
                 }
               } else {
-                console.log("item", item);
+                //console.log("item", item);
               }
             })
-            console.log("litems", litems);
+            //console.log("litems", litems);
             let self = this;
             let output = litems.sort(function(a, b) {
               return self.compare(a, b, self.reportStockForm.value.orderBy);
@@ -298,10 +298,10 @@ export class StockReportPage implements OnInit {
                   brands[doc_dict[item._id].category_name] = litems.length-1;
                 }
               } else {
-                console.log("item", item);
+                // console.log("item", item);
               }
             })
-            console.log("litems", litems);
+            // console.log("litems", litems);
             let self = this;
             let output = litems.sort(function(a, b) {
               return self.compare(a, b, self.reportStockForm.value.orderBy);
@@ -429,10 +429,10 @@ export class StockReportPage implements OnInit {
                     brands[doc_dict[item._id].brand_name] = litems.length-1;
                   }
                 } else {
-                  console.log("item", item);
+                  // console.log("item", item);
                 }
               })
-              console.log("litems", litems);
+              // console.log("litems", litems);
               let self = this;
               let output = litems.sort(function(a, b) {
                 return self.compare(a, b, self.reportStockForm.value.orderBy);
@@ -1009,7 +1009,7 @@ export class StockReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
+        // console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1030,7 +1030,7 @@ export class StockReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
+        // console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1045,6 +1045,6 @@ export class StockReportPage implements OnInit {
         if (tooltip) tooltip.style('display', 'none');
         if (tooltipLine) tooltipLine.attr('stroke', 'none');
       });
-    console.log("fim");
+    // console.log("fim");
   }
 }

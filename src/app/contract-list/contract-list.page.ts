@@ -72,7 +72,7 @@ export class ContractListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    console.log("teste my event");
+    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ContractsPopover,
       event: myEvent,
@@ -158,7 +158,7 @@ export class ContractListPage implements OnInit {
 
     contracts.forEach((contract, index) => {
       // if (contract.code){
-      console.log("contract", contract);
+      // console.log("contract", contract);
         csv += contract.code + "," +
         (contract.contact && contract.contact.name|| contract.contact_name) + "," +
         contract.payment_name + "," +

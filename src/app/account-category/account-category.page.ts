@@ -99,7 +99,7 @@ export class AccountCategoryPage implements OnInit {
     }
 
     selectTitle() {
-      console.log("selectTitle");
+      // console.log("selectTitle");
       return new Promise(async resolve => {
         // this.avoidAlertMessage = true;
         this.events.unsubscribe('select-title');

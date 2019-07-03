@@ -78,7 +78,7 @@ export class DiscountPage implements OnInit {
       this.changing = true;
       let discount_amount = this.amount_original * this.discountForm.value.discount_percent / 100
       let new_amount = this.amount_original - discount_amount;
-      console.log("changedPercent", new_amount);
+      // console.log("changedPercent", new_amount);
       this.discountForm.patchValue({
         discount_amount: discount_amount.toFixed(this.currency_precision),
         new_amount: new_amount.toFixed(this.currency_precision),
@@ -93,7 +93,7 @@ export class DiscountPage implements OnInit {
     if (!this.changing) {
       this.changing = true;
       let discount_percent = 100 * (this.discountForm.value.discount_amount / this.amount_original)
-      console.log("changedAmount", this.discountForm.value.discount_amount / this.amount_original);
+      // console.log("changedAmount", this.discountForm.value.discount_amount / this.amount_original);
       let new_amount = this.amount_original - this.discountForm.value.discount_amount;
       this.discountForm.patchValue({
         discount_percent: discount_percent.toFixed(0),
@@ -106,11 +106,11 @@ export class DiscountPage implements OnInit {
   }
   changedNew() {
     if (!this.changing) {
-      console.log("changedNew");
+      // console.log("changedNew");
       this.changing = true;
       let discount_percent = 100 * (1 - this.discountForm.value.new_amount / this.amount_original)
       let discount_amount = this.amount_original - this.discountForm.value.new_amount;
-      console.log("changedPercent", discount_amount);
+      // console.log("changedPercent", discount_amount);
       this.discountForm.patchValue({
         discount_percent: discount_percent.toFixed(0),
         discount_amount: discount_amount.toFixed(this.currency_precision),

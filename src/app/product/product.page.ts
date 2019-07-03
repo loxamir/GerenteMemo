@@ -255,7 +255,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       })
 
       let product = Object.assign({}, this.productForm.value);
-      console.log("product", product);
+      // console.log("product", product);
       // if(this.productForm.value.stock != this.theoreticalStock){
         product.stock = this.theoreticalStock;
       // }
@@ -333,7 +333,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             'warehouseTo_id': warehouseTo_id,
             'warehouseTo_name': doc_dict[warehouseTo_id],
           }).then(res => {
-            console.log("res", res);
+            // console.log("res", res);
           });
 
           this.cashMoveService.createCashMove({

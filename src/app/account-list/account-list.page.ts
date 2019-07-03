@@ -86,7 +86,7 @@ export class AccountListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    console.log("teste my event");
+    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: AccountListPopover,
       event: myEvent,
@@ -96,7 +96,7 @@ export class AccountListPage implements OnInit {
   }
 
   setFilteredItems() {
-    console.log("this.filter", this.filter);
+    // console.log("this.filter", this.filter);
     this.getAccounts(
       this.searchTerm, 0, this.field, this.filter
     ).then((accounts: any) => {

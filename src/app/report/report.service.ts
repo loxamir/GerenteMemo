@@ -34,7 +34,7 @@ export class ReportService {
         let sales = sales1
         .filter(word => word.date >= dateStart)
         .filter(word => word.date <= dateEnd);
-        console.log("sale", dateStart, dateEnd, sales1);
+        //console.log("sale", dateStart, dateEnd, sales1);
         sales.forEach(sale => {
           total += parseFloat(sale.total);
           sale['lines'].forEach(line => {
@@ -74,7 +74,7 @@ export class ReportService {
         let sales = sales1
         .filter(word => word.date >= dateStart)
         .filter(word => word.date <= dateEnd);
-        console.log("sale", dateStart, dateEnd, sales1);
+        //console.log("sale", dateStart, dateEnd, sales1);
         sales.forEach(sale => {
           if (sale.account_id == 'account.other.salary'){
             admin -= parseFloat(sale.amount);
@@ -180,7 +180,7 @@ export class ReportService {
       };
       this.pouchdbService.searchDocTypeData('asset', '', false).then((sales1: any[]) => {
         let sales = sales1;
-        console.log("asset", sales);
+        //console.log("asset", sales);
         sales.forEach(cash => {
           if (cash.type == 'vehicle'){
             result['vehicle'] += parseFloat(cash.value);
@@ -204,7 +204,7 @@ export class ReportService {
         let sales = sales1;
         sales.forEach(product => {
           if (product.type != 'service'){
-            console.log("product", product, result);
+            //console.log("product", product, result);
             result['inventory'] += parseFloat(product.stock||0)*parseFloat(product.cost||0);
           }
         });
@@ -218,7 +218,7 @@ export class ReportService {
     return new Promise((resolve, reject)=>{
       let tax = 0;
       this.pouchdbService.searchDocTypeData('invoice', '', false).then((data1: any[]) => {
-        console.log("Invoice", dateStart, dateEnd, data1);
+        //console.log("Invoice", dateStart, dateEnd, data1);
         let data = data1
         .filter(word => word.type == type)
         .filter(word => word.date >= dateStart)

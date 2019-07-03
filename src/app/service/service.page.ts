@@ -226,7 +226,7 @@ export class ServicePage implements OnInit {
     }
 
     async presentPopover(myEvent) {
-      console.log("teste my event");
+      //console.log("teste my event");
       let popover = await this.popoverCtrl.create({
         component: ServicePopover,
         event: myEvent,
@@ -593,7 +593,7 @@ export class ServicePage implements OnInit {
     // }
 
     beforeConfirm(){
-      console.log("datos", this.serviceForm.value);
+      //console.log("datos", this.serviceForm.value);
       if (this.serviceForm.value.production){
         this.pouchdbService.getDoc('contact.myCompany').then((contact: any)=>{
           this.serviceForm.patchValue({
@@ -755,7 +755,7 @@ export class ServicePage implements OnInit {
           });
           await profileModal.present();
           this.events.subscribe('create-receipt', (data) => {
-              console.log("DDDDDDDATA", data);
+              //console.log("DDDDDDDATA", data);
               this.serviceForm.value.payments.push({
                 'paid': data.paid,
                 'date': data.date,
@@ -771,8 +771,8 @@ export class ServicePage implements OnInit {
             profileModal.dismiss();
             this.events.unsubscribe('create-receipt');
           });
-          console.log("this.serviceForm.value.planned", this.serviceForm.value.planned);
-          console.log("plannedItems", JSON.stringify(plannedItems));
+          //console.log("this.serviceForm.value.planned", this.serviceForm.value.planned);
+          //console.log("plannedItems", JSON.stringify(plannedItems));
 
       }
 
@@ -974,7 +974,7 @@ export class ServicePage implements OnInit {
         });
         await profileModal.present();
         let data: any = await profileModal.onDidDismiss();//data => {
-          console.log("Work", data);
+          //console.log("Work", data);
           if (data.data) {
             // data.data.cost = data.data.cost;
             // data.data.price = this.labor_product['price'];
@@ -1515,7 +1515,7 @@ export class ServicePage implements OnInit {
             } else {
               this.serviceForm.value.paymentCondition.items.forEach(item => {
                 let dateDue = this.addDays(this.today, item.days);
-                console.log("dentro", this.serviceForm.value);
+                //console.log("dentro", this.serviceForm.value);
                 let amount = (item.percent/100)*this.serviceForm.value.total;
                 createList.push({
                   '_return': true,
@@ -1550,7 +1550,7 @@ export class ServicePage implements OnInit {
                 amount_unInvoiced: this.serviceForm.value.total,
                 planned: created,
               });
-              console.log("Purchase created", created);
+              //console.log("Purchase created", created);
               this.buttonSave();
               resolve(true);
             })
@@ -1789,7 +1789,7 @@ export class ServicePage implements OnInit {
             i--;
           }
 
-          console.log("\n"+ticket);
+          // console.log("\n"+ticket);
           // Print to bluetooth printer
           let toast = await this.toastCtrl.create({
           message: "Start ",
@@ -2132,7 +2132,7 @@ export class ServicePage implements OnInit {
       ticket += "\n</pre></div>";
 
 
-      console.log("\n"+ticket);
+      // console.log("\n"+ticket);
 
 
       //console.log("ticket", ticket);

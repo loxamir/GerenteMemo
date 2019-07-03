@@ -67,7 +67,7 @@ export class PlannedListPage implements OnInit {
       'account.other.open',
       'account.receivable.credit'
     ]).then(async accounts=>{
-      console.log("accounts", accounts);
+      // console.log("accounts", accounts);
       let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
@@ -118,7 +118,7 @@ export class PlannedListPage implements OnInit {
         this.plannedService.getReceivables(
           this.searchTerm
         ).then((plannedList: any[]) => {
-          console.log("plannedList", plannedList);
+          // console.log("plannedList", plannedList);
           this.plannedList = plannedList;
           this.recomputeValues();
           this.loading.dismiss();

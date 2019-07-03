@@ -398,12 +398,12 @@ export class CashMovePage implements OnInit {
 
   printAccountText() {
     let summary = this.cashMoveForm.value.accountTo.printedText || "";
-    console.log("summary", summary);
+    // console.log("summary", summary);
     if (summary) {
       let list = summary.split("${").splice(1);
       list.forEach(variable => {
         variable = variable.split("}")[0];
-        console.log("variable", variable);
+        // console.log("variable", variable);
         let objectList = variable.split('.');
         if (objectList.length > 1) {
           let generatedVariable = this.cashMoveForm.value;
@@ -417,12 +417,12 @@ export class CashMovePage implements OnInit {
       })
     }
     let filename = this.cashMoveForm.value.accountTo.filename || "";
-    console.log("filename", filename);
+    // console.log("filename", filename);
     if (filename) {
       let list = filename.split("${").splice(1);
       list.forEach(variable => {
         variable = variable.split("}")[0];
-        console.log("variable", variable);
+        // console.log("variable", variable);
         let objectList = variable.split('.');
         if (objectList.length > 1) {
           let generatedVariable = this.cashMoveForm.value;
@@ -532,10 +532,10 @@ export class CashMovePage implements OnInit {
           amount = this.cashMoveForm.value.currency_amount;
           amountCurrency = amount;
         }
-        console.log("data", data);
-        console.log("amount", amount);
-        console.log("amountCurrency", amountCurrency);
-        console.log("this.company_currency_id", this.company_currency_id);
+        // console.log("data", data);
+        // console.log("amount", amount);
+        // console.log("amountCurrency", amountCurrency);
+        // console.log("this.company_currency_id", this.company_currency_id);
         this.cashMoveForm.patchValue({
           amount: amount,
           currency_amount: amountCurrency,
@@ -755,11 +755,11 @@ export class CashMovePage implements OnInit {
 
 
   changedCurrencyAmount() {
-    console.log("11");
+    // console.log("11");
     if (this.cash_move_currency_id != this.company_currency_id) {
-      console.log("22");
+      // console.log("22");
       if (!this.changing) {
-        console.log("33");
+        // console.log("33");
         this.changing = true;
         let amountExchange = parseFloat(this.cashMoveForm.value.exchange_rate);
         if (this.currencies[this.cash_move_currency_id].inverted_rate) {

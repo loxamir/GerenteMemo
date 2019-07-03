@@ -71,7 +71,7 @@ export class ViewReportPage implements OnInit {
       startkey,
       endkey
     ).then((view: any[]) => {
-      console.log("view", view);
+      // console.log("view", view);
       if (this.filter){
         this.view = view.filter(doc => doc.doc.name == this.filter);
       } else {

@@ -79,7 +79,7 @@ export class CheckListPage implements OnInit {
 
   doRefresh(refresher) {
     setTimeout(() => {
-      console.log("this.field, this.filter)", this.field, this.filter);
+      // console.log("this.field, this.filter)", this.field, this.filter);
       this.checkListService.getChecks(this.searchTerm, 0, this.field, this.filter).then((checks: any[]) => {
         this.checks = checks;
       });
@@ -115,7 +115,7 @@ export class CheckListPage implements OnInit {
   }
 
   async openCheck(check) {
-    console.log("openCheck", this.select);
+    // console.log("openCheck", this.select);
     this.events.subscribe('open-check', (data) => {
       this.events.unsubscribe('open-check');
       // this.doRefreshList();

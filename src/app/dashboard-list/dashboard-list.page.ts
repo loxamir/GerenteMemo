@@ -52,7 +52,7 @@ export class DashboardListPage implements OnInit {
 
   searchItems() {
     this.dashboardsService.searchItems(this.searchTerm, 0).then((sales) => {
-      console.log("dashboards", sales);
+      // console.log("dashboards", sales);
       this.dashboards = sales;
       this.page = 1;
       //this.loading.dismiss();

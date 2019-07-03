@@ -1421,7 +1421,7 @@ export class ReceiptPage implements OnInit {
       ticket += "\n";
       i--;
     }
-    console.log("ticket", ticket);
+    // console.log("ticket", ticket);
     // let content = this.formatService.string_pad(40,"RECIBO DE DINERO", 'center', ' ')+"\n";
     // content += company_name+"\n";
     // content += "RUC: "+company_ruc+"\n";

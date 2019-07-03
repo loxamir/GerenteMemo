@@ -46,7 +46,7 @@ export class CurrencyListPage implements OnInit {
 
 
   async openCurrency(currency) {
-    console.log("open", currency);
+    // console.log("open", currency);
     if (this.select){
       let profileModal = await this.modalCtrl.create({
         component: CurrencyPage,
@@ -69,7 +69,7 @@ export class CurrencyListPage implements OnInit {
 
   selectCurrency(currency) {
     if (this.select){
-      console.log("select", currency);
+      // console.log("select", currency);
       this.events.publish('select-currency', currency);
       this.modalCtrl.dismiss();
     } else {

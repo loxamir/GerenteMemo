@@ -49,7 +49,7 @@ export class ServiceListPage implements OnInit {
     this.searchItemsS(
       this.searchTerm, 0
     ).then((services) => {
-      console.log("services", services);
+      //console.log("services", services);
       this.services = services;
       this.page = 1;
       this.loading.dismiss();
@@ -83,7 +83,7 @@ export class ServiceListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    console.log("teste my event");
+    //console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ServiceListPopover,
       event: myEvent,

@@ -179,7 +179,7 @@ export class AccountPage implements OnInit {
   }
 
   selectCategory() {
-    console.log("selectContact");
+    // console.log("selectContact");
     let self=this;
     return new Promise(async resolve => {
       // this.avoidAlertMessage = true;

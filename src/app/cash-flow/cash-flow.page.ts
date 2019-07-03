@@ -171,7 +171,7 @@ export class CashFlowPage implements OnInit {
         undefined,
         false
       ).then(async (cashFlowList: any[]) => {
-        console.log("cashFlow lines", cashFlowList);
+        // console.log("cashFlow lines", cashFlowList);
         let items = [];
         let promise_ids = [];
         let result = {};

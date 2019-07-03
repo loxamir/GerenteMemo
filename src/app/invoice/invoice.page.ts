@@ -1175,9 +1175,9 @@ export class InvoicePage implements OnInit {
              }
 
              this.printer.print(result, options).then(onSuccess => {
-               console.log("onPrintSuccess2", onSuccess);
+               // console.log("onPrintSuccess2", onSuccess);
              }, onError => {
-               console.log("onPrintError2", onError);
+               // console.log("onPrintError2", onError);
              });
            //})
       });

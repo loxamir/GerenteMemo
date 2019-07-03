@@ -21,7 +21,7 @@ export class ContactService {
     return new Promise((resolve, reject)=>{
       contact.docType = 'contact';
       if (contact.code != ''){
-        console.log("sin code", contact.code);
+        // console.log("sin code", contact.code);
         this.pouchdbService.createDoc(contact).then(doc => {
           resolve({doc: doc, contact: contact});
         });
