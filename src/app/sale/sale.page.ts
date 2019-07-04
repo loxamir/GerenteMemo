@@ -59,17 +59,15 @@ export class SalePage implements OnInit {
         if(event.which === 13){
           //console.log("enter", this.barcode);
           let found = false;
-          this.saleForm.value.items.forEach(item => {
-            if (item.product.barcode == this.barcode){
-              item.quantity += 1;
-              found = true;
-            }
-          });
+          let list = this.saleForm.value.items.filter(item=>item.product.barcode == this.barcode);
+          if (list.length){
+            let index = this.saleForm.value.items.indexOf(list[0]);
+            this.saleForm.value.items[index].quantity += 1;
+            found = true;
+          }
           if (found){
-            this.saleForm.patchValue({
-              "items": this.saleForm.value.items,
-            });
-            this.recomputeValues();
+            this.recomputeTotal();
+            this.recomputeResidual();
             this.saleForm.markAsDirty();
           } else {
             this.productService.getProductByCode(
@@ -82,7 +80,8 @@ export class SalePage implements OnInit {
                   'price': data.price,
                   'cost': data.cost,
                 })
-                this.recomputeValues();
+                this.recomputeTotal();
+                this.recomputeResidual();
                 this.saleForm.markAsDirty();
               }
             });

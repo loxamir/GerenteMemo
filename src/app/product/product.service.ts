@@ -33,11 +33,21 @@ export class ProductService {
     });
   }
   getProductByCode(code): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      this.pouchdbService.getRelated("product", "barcode", code).then((product_list) => {
-        let product = product_list[0];
-        resolve(product);
-      });
+    return new Promise(async (resolve, reject)=>{
+      let product:any = await this.pouchdbService.getView('stock/barcode', undefined,
+      [code.toString()],
+      [code.toString()+"z"],
+      true,
+      true,
+      undefined,
+      undefined,
+      true,
+      )
+      if (product[0]){
+        resolve(product[0].doc);
+      } else {
+        resolve(false)
+      }
     });
   }
 

@@ -28,27 +28,33 @@ export class CashService {
       ).then(async (planneds: any[]) => {
         let promise_ids = [];
         let pts = [];
+        let getList = [];
         planneds.forEach(item => {
           if (!item.key[2] || item.key[3] == doc_id){
             pts.push(item);
-            promise_ids.push(this.cashMoveService.getCashMove(item.key[4]));
+            getList.push(item.key && item.key[4]);
           }
         })
-        promise_ids.push(this.pouchdbService.getDoc(doc_id));
-        Promise.all(promise_ids).then(async cashMoves => {
+        getList.push(doc_id);
+        this.pouchdbService.getList(getList).then(async (cashMoves:any) => {
+          let docDict = {}
+          cashMoves.forEach(item=>{
+            docDict[item.id] = item.doc;
+          })
           let balance:any;
           let currency_balance:any;
-          let cash = Object.assign({}, cashMoves[cashMoves.length-1]);
+          let cash = Object.assign({}, docDict[doc_id]);
           cash.moves = [];
           balance = await this.pouchdbService.getView(
             'stock/Caixas', 1, [doc_id, null], [doc_id, "z"]);
           cash.balance = balance[0] && balance[0].value || 0;
-          if (cashMoves[cashMoves.length-1].currency_id){
+
+          if (cash.currency_id){
             currency_balance = await this.pouchdbService.getView(
               'stock/CaixasForeing', 1, [doc_id, null], [doc_id, "z"]);
             cash.currency_balance = currency_balance[0] && currency_balance[0].value || 0;
           }
-          cash.account = cashMoves[cashMoves.length-1];
+          cash.account = cash;
           cash.waiting = [];
           // let waitingBalance = 0;
           if (cash.type == 'check'){
@@ -61,24 +67,30 @@ export class CashService {
           for(let i=0;i<pts.length;i++){
             if (cash.type == 'bank'){
               if (cashMoves[i].state == 'WAITING'){
-                cash.waiting.unshift(cashMoves[i]);
-                // waitingBalance+=cashMoves[i].amount;
+                if (pts[i] && pts[i].key && docDict[pts[i].key[4]]){
+                  cash.waiting.unshift(pts[i] && pts[i].key && docDict[pts[i].key[4]]);
+                }
               } else {
-                cash.moves.unshift(cashMoves[i]);
+                if (pts[i] && pts[i].key && docDict[pts[i].key[4]]){
+                  cash.moves.unshift(pts[i] && pts[i].key && docDict[pts[i].key[4]]);
+                }
               }
             } else {
-              cash.moves.unshift(cashMoves[i]);
+              if (pts[i] && pts[i].key && docDict[pts[i].key[4]]){
+                cash.moves.unshift(pts[i] && pts[i].key && docDict[pts[i].key[4]]);
+              }
             }
           }
-          // cash.balance -= waitingBalance;
-          this.pouchdbService.getDoc(cash.currency_id).then(async currency=>{
-            cash.currency = currency;
-            this.pouchdbService.getRelated(
-            "close", "cash_id", doc_id).then((planned) => {
-              cash.closes = planned;
-              resolve(cash);
-            });
-          })
+          if (cash.currency_id){
+            this.pouchdbService.getDoc(cash.currency_id).then(async currency=>{
+              cash.currency = currency;
+            })
+          }
+          this.pouchdbService.getRelated(
+          "close", "cash_id", doc_id).then((planned) => {
+            cash.closes = planned;
+            resolve(cash);
+          });
         })
       });
     });

@@ -342,9 +342,9 @@ export class PouchdbService {
     return new Promise((resolve, reject)=>{
         let list2 = [];
         list.forEach(variable => {
-            if (variable){
-              list2.push(variable)
-            }
+          if (variable && JSON.stringify(variable) != '{}'){
+            list2.push(variable)
+          }
         });
         this.db.allDocs({
           include_docs : true,
