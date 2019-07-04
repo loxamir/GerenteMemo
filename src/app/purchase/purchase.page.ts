@@ -1156,7 +1156,6 @@ export class PurchasePage implements OnInit {
         purchase.lines = [];
         purchase.docType = 'purchase';
         // delete purchase.payments;
-        delete purchase.planned;
         purchase.contact_id = purchase.contact._id;
         delete purchase.contact;
         purchase.currency_id = purchase.currency._id;
@@ -1175,6 +1174,11 @@ export class PurchasePage implements OnInit {
           })
         });
         delete purchase.items;
+        purchase.moves = [];
+        purchase.planned.forEach(item => {
+          purchase.moves.push(item._id)
+        });
+        delete purchase.planned;
         return purchase;
       }
 
@@ -1211,11 +1215,31 @@ export class PurchasePage implements OnInit {
                 })
               })
 
-              this.pouchdbService.getRelated(
-              "cash-move", "origin_id", doc_id).then((planned) => {
-                pouchData['planned'] = planned;
+              pouchData['items'] = [];
+              pouchData.lines.forEach((line: any)=>{
+                pouchData['items'].push({
+                  'product': doc_dict[line.product_id],
+                  'description': doc_dict[line.product_id].name,
+                  'quantity': line.quantity,
+                  'price': line.price,
+                  'cost': line.cost || 0,
+                })
+              })
+              if (pouchData.moves){
+                pouchData['planned'] = [];
+                pouchData.moves.forEach(line=>{
+                  console.log("liena", line);
+                  pouchData['planned'].push(doc_dict[line])
+                })
+                console.log("doc_dict", doc_dict);
                 resolve(pouchData);
-              });
+              } else {
+                this.pouchdbService.getRelated(
+                "cash-move", "origin_id", doc_id).then((planned) => {
+                  pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
+                  resolve(pouchData);
+                });
+              }
             })
           }));
         });

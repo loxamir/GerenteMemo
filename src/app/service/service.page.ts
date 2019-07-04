@@ -207,8 +207,8 @@ export class ServicePage implements OnInit {
           this.getService(this._id).then((data) => {
             //console.log("data", data);
             this.serviceForm.patchValue(data);
-            if (data.state != 'PAID'){
-              this.serviceForm.controls.date.disable();
+            if (data.state == 'PAID'){
+              // this.serviceForm.controls.date.disable();
             }
             this.recomputeValues();
             this.loading.dismiss();
@@ -2221,7 +2221,6 @@ export class ServicePage implements OnInit {
       let service = Object.assign({}, viewData);
       service.lines = [];
       service.docType = 'service';
-      delete service.planned;
       // delete service.payments;
       service.contact_id = service.contact._id;
       delete service.contact;
@@ -2242,6 +2241,11 @@ export class ServicePage implements OnInit {
         //input['product_id'] = input.product_id || input.product._id;
       });
       delete service.inputs;
+      service.moves = [];
+      service.planned.forEach(item => {
+        service.moves.push(item._id)
+      });
+      delete service.planned;
       return service;
     }
 
@@ -2276,11 +2280,31 @@ export class ServicePage implements OnInit {
               })
             })
 
-            this.pouchdbService.getRelated(
-            "cash-move", "origin_id", doc_id).then((planned) => {
-              pouchData['planned'] = planned;
+            pouchData['items'] = [];
+            pouchData.lines.forEach((line: any)=>{
+              pouchData['items'].push({
+                'product': doc_dict[line.product_id],
+                'description': doc_dict[line.product_id].name,
+                'quantity': line.quantity,
+                'price': line.price,
+                'cost': line.cost || 0,
+              })
+            })
+            if (pouchData.moves){
+              pouchData['planned'] = [];
+              pouchData.moves.forEach(line=>{
+                console.log("liena", line);
+                pouchData['planned'].push(doc_dict[line])
+              })
+              console.log("doc_dict", doc_dict);
               resolve(pouchData);
-            });
+            } else {
+              this.pouchdbService.getRelated(
+              "cash-move", "origin_id", doc_id).then((planned) => {
+                pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
+                resolve(pouchData);
+              });
+            }
           })
         }));
       });

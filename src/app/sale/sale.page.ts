@@ -201,7 +201,7 @@ export class SalePage implements OnInit {
         this.saleService.getSale(this._id).then((data) => {
           this.saleForm.patchValue(data);
           if (data.state != 'QUOTATION'){
-            this.saleForm.controls.date.disable();
+            // this.saleForm.controls.date.disable();
           }
           this.loading.dismiss();
         });

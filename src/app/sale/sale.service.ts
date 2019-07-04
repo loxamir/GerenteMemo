@@ -46,8 +46,6 @@ export class SaleService {
     let sale = Object.assign({}, viewData);
     sale.lines = [];
     sale.docType = 'sale';
-    // delete sale.payments;
-    delete sale.planned;
     sale.contact_id = sale.contact._id;
     delete sale.contact;
     sale.project_id = sale.project && sale.project._id || "";
@@ -62,9 +60,13 @@ export class SaleService {
         price: item.price,
         cost: item.cost,
       })
-      //item['product_id'] = item.product_id || item.product._id;
     });
     delete sale.items;
+    sale.moves = [];
+    sale.planned.forEach(item => {
+      sale.moves.push(item._id)
+    });
+    delete sale.planned;
     return sale;
   }
 
@@ -93,6 +95,13 @@ export class SaleService {
             getList.push(item['product_id']);
           }
         });
+        if (pouchData['moves']){
+          pouchData['moves'].forEach((item) => {
+            if (getList.indexOf(item)==-1){
+              getList.push(item);
+            }
+          });
+        }
         this.pouchdbService.getList(getList).then((docs: any[])=>{
           var doc_dict = {};
           docs.forEach(row=>{
@@ -110,12 +119,21 @@ export class SaleService {
               'cost': line.cost || 0,
             })
           })
-
-          this.pouchdbService.getRelated(
-          "cash-move", "origin_id", doc_id).then((planned) => {
-            pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
+          if (pouchData.moves){
+            pouchData['planned'] = [];
+            pouchData.moves.forEach(line=>{
+              console.log("liena", line);
+              pouchData['planned'].push(doc_dict[line])
+            })
+            console.log("doc_dict", doc_dict);
             resolve(pouchData);
-          });
+          } else {
+            this.pouchdbService.getRelated(
+            "cash-move", "origin_id", doc_id).then((planned) => {
+              pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
+              resolve(pouchData);
+            });
+          }
         })
       }));
     });

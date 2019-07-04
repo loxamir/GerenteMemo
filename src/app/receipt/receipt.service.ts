@@ -39,9 +39,16 @@ export class ReceiptService {
     let receipt = Object.assign({}, viewData);
     receipt.lines = [];
     receipt.docType = 'receipt';
-    if (receipt['state'] != 'QUOTATION'){
-      delete receipt.payments;
-    }
+    // console.log("paymovesss", receipt.payments);
+    // if (receipt.payments){
+    //   receipt.moves = [];
+    //   receipt.payments.forEach(item => {
+    //     console.log("movesss", item);
+    //     receipt.moves.push(item._id)
+    //   });
+    //   delete receipt.payments;
+    //   // delete sale.planned;
+    // }
     delete receipt.planned;
     delete receipt.amount_paid;
     receipt.cash_id = receipt.cash_paid._id;
@@ -69,15 +76,24 @@ export class ReceiptService {
           pouchData.contact = doc_dict[pouchData.contact_id] || {};
           pouchData.cash_paid = doc_dict[pouchData.cash_id] || {};
           pouchData.check = doc_dict[pouchData.check_id] || {};
-          if (pouchData['state'] != 'QUOTATION'){
-            this.pouchdbService.getRelated(
-            "cash-move", "origin_id", doc_id).then((payments) => {
-              pouchData['payments'] = payments;
-              resolve(pouchData);
-            });
-          } else {
-            resolve(pouchData);
-          }
+          // if (pouchData['state'] != 'QUOTATION'){
+          //   if (pouchData.moves){
+          //     pouchData['payments'] = [];
+          //     pouchData.moves.forEach(line=>{
+          //       console.log("payments", line);
+          //       pouchData['payments'].push(doc_dict[line])
+          //     })
+          //     resolve(pouchData);
+          //   } else {
+          //     this.pouchdbService.getRelated(
+          //       "cash-move", "origin_id", doc_id).then((payments) => {
+          //         pouchData['payments'] = payments;
+          //         resolve(pouchData);
+          //       });
+          //   }
+          // } else {
+          // }
+          resolve(pouchData);
         })
       }));
     });

@@ -1803,7 +1803,6 @@ export class ProductionPage implements OnInit {
       let production = Object.assign({}, viewData);
       production.lines = [];
       production.docType = 'production';
-      delete production.planned;
       // delete production.payments;
       production.contact_id = production.contact._id;
       delete production.contact;
@@ -1858,11 +1857,6 @@ export class ProductionPage implements OnInit {
               })
             })
 
-            this.pouchdbService.getRelated(
-            "cash-move", "origin_id", doc_id).then((planned) => {
-              pouchData['planned'] = planned;
-              resolve(pouchData);
-            });
           })
         }));
       });

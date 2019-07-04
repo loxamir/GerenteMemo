@@ -167,7 +167,7 @@ export class CashMovePage implements OnInit {
       let contact = this.contact || {};
       //console.log("configconfig", config);
       let currency = config.currency
-      if (this.currency._id) {
+      if (this.currency && this.currency._id) {
         currency = this.currency
       }
       this.cashMoveForm.patchValue({

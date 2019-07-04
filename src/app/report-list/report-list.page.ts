@@ -333,7 +333,7 @@ export class ReportListPage implements OnInit {
         let stocked_price = 0;
         let stocked_quantity = 0;
         let getList = [];
-        products = products.slice(1, 1000);
+        products = products.slice(0, 999);
         products.forEach(sale => {
           if (getList.indexOf(sale.key[1]) < 0){
             getList.push(sale.key[1])
