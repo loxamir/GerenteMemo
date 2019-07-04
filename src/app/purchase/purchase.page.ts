@@ -451,21 +451,21 @@ export class PurchasePage implements OnInit {
       }
     }
 
-    recomputeUnInvoiced(){
-      let amount_unInvoiced = 0;
-      this.pouchdbService.getRelated(
-        "cash-move", "origin_id", this.purchaseForm.value._id
-      ).then((planned) => {
-        planned.forEach((item) => {
-          if (item.amount_unInvoiced){
-            amount_unInvoiced += parseFloat(item.amount_unInvoiced);
-          }
-        });
-        this.purchaseForm.patchValue({
-          amount_unInvoiced: amount_unInvoiced,
-        });
-      });
-    }
+    // recomputeUnInvoiced(){
+    //   let amount_unInvoiced = 0;
+    //   this.pouchdbService.getRelated(
+    //     "cash-move", "origin_id", this.purchaseForm.value._id
+    //   ).then((planned) => {
+    //     planned.forEach((item) => {
+    //       if (item.amount_unInvoiced){
+    //         amount_unInvoiced += parseFloat(item.amount_unInvoiced);
+    //       }
+    //     });
+    //     this.purchaseForm.patchValue({
+    //       amount_unInvoiced: amount_unInvoiced,
+    //     });
+    //   });
+    // }
 
     recomputeResidual(){
       if (this.purchaseForm.value.state == 'QUOTATION'){
@@ -667,7 +667,7 @@ export class PurchasePage implements OnInit {
         this.purchase_exchange_rate = (1/parseFloat(this.purchaseForm.value.exchange_rate));
       }
       this.recomputeTotal();
-      this.recomputeUnInvoiced();
+      // this.recomputeUnInvoiced();
       this.recomputeResidual();
       let smallDiff = 10**(-1*this.purchase_currency_precision);
       if (this.purchaseForm.value.total > 0 && this.purchaseForm.value.residual <= smallDiff && this.purchaseForm.value.residual >= -smallDiff){
@@ -713,6 +713,9 @@ export class PurchasePage implements OnInit {
 
     afterConfirm(){
       return new Promise(async resolve => {
+        this.purchaseForm.patchValue({
+          amount_unInvoiced: this.purchaseForm.value.total,
+        });
         let createList = [];
         if(!this.purchaseForm.value._id){
           await this.buttonSave();

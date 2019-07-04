@@ -57,7 +57,7 @@ export class SalePage implements OnInit {
         let timeStamp = event.timeStamp - this.timeStamp;
         this.timeStamp = event.timeStamp;
         if(event.which === 13){
-          //console.log("enter", this.barcode);
+          console.log("enter", this.barcode);
           let found = false;
           let list = this.saleForm.value.items.filter(item=>item.product.barcode == this.barcode);
           if (list.length){
@@ -662,21 +662,21 @@ export class SalePage implements OnInit {
       ).toFixed(0)
     }
 
-    recomputeUnInvoiced(){
-      let amount_unInvoiced = 0;
-      this.pouchdbService.getRelated(
-        "cash-move", "origin_id", this.saleForm.value._id
-      ).then((planned) => {
-        planned.forEach((item) => {
-          if (item.amount_unInvoiced){
-            amount_unInvoiced += parseFloat(item.amount_unInvoiced);
-          }
-        });
-        this.saleForm.patchValue({
-          amount_unInvoiced: amount_unInvoiced,
-        });
-      });
-    }
+    // recomputeUnInvoiced(){
+    //   let amount_unInvoiced = 0;
+    //   this.pouchdbService.getRelated(
+    //     "cash-move", "origin_id", this.saleForm.value._id
+    //   ).then((planned) => {
+    //     planned.forEach((item) => {
+    //       if (item.amount_unInvoiced){
+    //         amount_unInvoiced += parseFloat(item.amount_unInvoiced);
+    //       }
+    //     });
+    //     this.saleForm.patchValue({
+    //       amount_unInvoiced: amount_unInvoiced,
+    //     });
+    //   });
+    // }
 
     recomputeResidual(){
       if (this.saleForm.value.state == 'QUOTATION'){
@@ -882,7 +882,7 @@ export class SalePage implements OnInit {
 
     recomputeValues() {
       this.recomputeTotal();
-      this.recomputeUnInvoiced();
+      // this.recomputeUnInvoiced();
       this.recomputeResidual();
       this.recomputeDiscountLines()
       if (this.saleForm.value.total != 0 && this.saleForm.value.residual == 0){
@@ -912,6 +912,9 @@ export class SalePage implements OnInit {
 
     afterConfirm(){
       return new Promise(async resolve => {
+        this.saleForm.patchValue({
+          amount_unInvoiced: this.saleForm.value.total,
+        });
         if(!this.saleForm.value._id){
           await this.buttonSave();
         }
