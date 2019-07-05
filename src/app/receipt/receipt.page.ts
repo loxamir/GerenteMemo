@@ -849,6 +849,7 @@ export class ReceiptPage implements OnInit {
   }
 
   async afterConfirm() {
+    let paid_document_amount:any = 0;
     let savedResidual = 0;
     let smallDiff1 = 10**(-1*this.receipt_currency_precision);
     if (this.receiptForm.value.residual > 0
@@ -916,12 +917,13 @@ export class ReceiptPage implements OnInit {
       let amount_paid2 = this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit;
       let paid_real = this.receiptForm.value.paid - this.receiptForm.value.change;
       let paid_currency = (
-        paid_real
+        paid_real * this.receipt_exchange_rate
       ).toFixed(this.company_currency_precision);
       this.receiptForm.patchValue({
         "change": 0,
         "paid": paid_currency,
       });
+      // paid_document_amount = paid_currency;
       this.receiptForm.value.payments.forEach((item) => {
         let payments = [];
         let toCreateCashMoves = {};
@@ -1255,10 +1257,12 @@ export class ReceiptPage implements OnInit {
             sale.residual = item1.amount_residual;
             // console.log("item_residual2", item_residual);
             let sale_item_paid = item_paid;
+            paid_document_amount = item_paid;
             if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
               sale.state = "PAID";
               sale.residual = 0;
               sale_item_paid += item1.amount_residual;
+              paid_document_amount += item1.amount_residual;
             }
             sale.payments.push({
               "paid": sale_item_paid,
@@ -1275,8 +1279,10 @@ export class ReceiptPage implements OnInit {
               purchase.residual = item1.amount_residual;
               // console.log("item_residual2", item_residual);
               let item_paid_purchase = item_paid;
+              paid_document_amount = item_paid;
               if (purchase.currency_id){
-                item_paid_purchase = item_paid/this.receipt_exchange_rate
+                item_paid_purchase = item_paid/this.receipt_exchange_rate;
+                paid_document_amount = item_paid/this.receipt_exchange_rate;
               }
               purchase.payments.push({
                 "paid": item_paid_purchase,
@@ -1292,10 +1298,32 @@ export class ReceiptPage implements OnInit {
             })
           }
           else if (item1.origin_id.split('.')[0] == 'service') {
+            // this.pouchdbService.getDoc(item1.origin_id).then((service: any) => {
+            //   service.residual = item1.amount_residual;
+            //   service.payments.push({
+            //     "paid": item_paid,
+            //     "date": this.receiptForm.value.date,
+            //     "state": "CONFIRMED",
+            //     "_id": this.receiptForm.value._id,
+            //   });
+            //   if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
+            //     service.state = "PAID";
+            //     service.residual = 0;
+            //   }
+            //   this.pouchdbService.updateDoc(service);
+            // })
+
             this.pouchdbService.getDoc(item1.origin_id).then((service: any) => {
               service.residual = item1.amount_residual;
+              // console.log("item_residual2", item_residual);
+              let item_paid_purchase = item_paid;
+              paid_document_amount = item_paid;
+              if (service.currency_id){
+                item_paid_purchase = item_paid/this.receipt_exchange_rate;
+                paid_document_amount = item_paid/this.receipt_exchange_rate;
+              }
               service.payments.push({
-                "paid": item_paid,
+                "paid": item_paid_purchase,
                 "date": this.receiptForm.value.date,
                 "state": "CONFIRMED",
                 "_id": this.receiptForm.value._id,
@@ -1314,7 +1342,8 @@ export class ReceiptPage implements OnInit {
             && this.receipt_currency_id != this.company_currency_id
           ){
             let retorno = Object.assign({}, this.receiptForm.value);
-            retorno.paid = retorno.paid*this.receipt_exchange_rate;
+            // retorno.paid = retorno.paid*this.receipt_exchange_rate;
+            retorno.paid = paid_document_amount;
             this.events.publish('create-receipt', retorno);
           } else {
             this.events.publish('create-receipt', this.receiptForm.value);
