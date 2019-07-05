@@ -2241,10 +2241,10 @@ export class ServicePage implements OnInit {
         //input['product_id'] = input.product_id || input.product._id;
       });
       delete service.inputs;
-      service.moves = [];
-      service.planned.forEach(item => {
-        service.moves.push(item._id)
-      });
+      // service.moves = [];
+      // service.planned.forEach(item => {
+      //   service.moves.push(item._id)
+      // });
       delete service.planned;
       return service;
     }
@@ -2290,21 +2290,21 @@ export class ServicePage implements OnInit {
                 'cost': line.cost || 0,
               })
             })
-            if (pouchData.moves){
-              pouchData['planned'] = [];
-              pouchData.moves.forEach(line=>{
-                console.log("liena", line);
-                pouchData['planned'].push(doc_dict[line])
-              })
-              console.log("doc_dict", doc_dict);
-              resolve(pouchData);
-            } else {
+            // if (pouchData.moves){
+            //   pouchData['planned'] = [];
+            //   pouchData.moves.forEach(line=>{
+            //     console.log("liena", line);
+            //     pouchData['planned'].push(doc_dict[line])
+            //   })
+            //   console.log("doc_dict", doc_dict);
+            //   resolve(pouchData);
+            // } else {
               this.pouchdbService.getRelated(
               "cash-move", "origin_id", doc_id).then((planned) => {
                 pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
                 resolve(pouchData);
               });
-            }
+            // }
           })
         }));
       });
