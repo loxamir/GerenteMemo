@@ -66,7 +66,7 @@ export class CashService {
           }
           for(let i=0;i<pts.length;i++){
             if (cash.type == 'bank'){
-              if (cashMoves[i].state == 'WAITING'){
+              if (cashMoves[i].doc.state == 'WAITING'){
                 if (pts[i] && pts[i].key && docDict[pts[i].key[4]]){
                   cash.waiting.unshift(pts[i] && pts[i].key && docDict[pts[i].key[4]]);
                 }
@@ -82,9 +82,8 @@ export class CashService {
             }
           }
           if (cash.currency_id){
-            this.pouchdbService.getDoc(cash.currency_id).then(async currency=>{
-              cash.currency = currency;
-            })
+            let currency:any = await this.pouchdbService.getDoc(cash.currency_id);
+            cash.currency = currency;
           }
           this.pouchdbService.getRelated(
           "close", "cash_id", doc_id).then((planned) => {
