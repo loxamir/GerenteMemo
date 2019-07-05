@@ -219,7 +219,6 @@ export class SalePage implements OnInit {
         });
       } else {
         this.loading.dismiss();
-        this.addItem();
       }
       if (this.return){
         this.recomputeValues();
@@ -524,6 +523,10 @@ export class SalePage implements OnInit {
           this.confirming = true;
           await this.beforeConfirm();
           this.confirming = false;
+          if (JSON.stringify(this.saleForm.value.paymentCondition) != '{}'
+          && this.saleForm.value.paymentCondition._id == 'payment-condition.cash'){
+            this.addPayment();
+          }
         }
       } else if (this.saleForm.value.state == 'CONFIRMED'){
           // await this.loading.dismiss();
