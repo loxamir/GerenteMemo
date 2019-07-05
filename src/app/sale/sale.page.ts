@@ -197,6 +197,18 @@ export class SalePage implements OnInit {
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
+      if (config.default_contact_id){
+        let default_contact:any = await this.pouchdbService.getDoc(config.default_contact_id);
+        this.saleForm.patchValue({
+          'contact': default_contact
+        })
+      }
+      if (config.default_payment_id){
+        let default_payment:any = await this.pouchdbService.getDoc(config.default_payment_id);
+        this.saleForm.patchValue({
+          'paymentCondition': default_payment
+        })
+      }
       if (this._id){
         this.saleService.getSale(this._id).then((data) => {
           this.saleForm.patchValue(data);
@@ -207,6 +219,7 @@ export class SalePage implements OnInit {
         });
       } else {
         this.loading.dismiss();
+        this.addItem();
       }
       if (this.return){
         this.recomputeValues();

@@ -24,18 +24,25 @@
       <h4 class="field-value">{{configForm.value.account && configForm.value.account.name || 'Seleccionar'}}</h4>
     </ion-item> -->
 
+    <ion-item no-padding (click)="selectDefaultContact()" class="field-50">
+      <h4 class="field-label">{{'DEFAULT_CONTACT' | translate }}</h4>
+      <h4 class="field-value">{{configForm.value.default_contact && configForm.value.default_contact.name || 'Seleccionar'}}</h4>
+    </ion-item>
+
+    <ion-item no-padding (click)="selectDefaultPayment()" class="field-50">
+      <h4 class="field-label">{{'DEFAULT_PAYMENT' | translate }}</h4>
+      <h4 class="field-value">{{configForm.value.default_payment && configForm.value.default_payment.name || 'Seleccionar'}}</h4>
+    </ion-item>
+
     <ion-item no-padding (click)="selectWarehouse()" class="field-50">
       <h4 class="field-label">{{'WAREHOUSE' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.warehouse && configForm.value.warehouse.name || 'Seleccionar'}}</h4>
     </ion-item>
 
-
     <ion-item no-padding (click)="selectCurrency()" class="field-50">
       <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.currency && configForm.value.currency.name || 'Seleccionar'}}</h4>
     </ion-item>
-
-
 
     <!-- <ion-item no-padding (click)="selectContact()" class="field-50">
       <h4 class="field-label">{{'CONTACT' | translate }}</h4>

@@ -24,6 +24,7 @@ import { TicketConfigPage } from '../ticket-config/ticket-config.page';
 import { UserPage } from '../user/user.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RestProvider } from "../services/rest/rest";
+import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 
 @Component({
   selector: 'app-config',
@@ -79,6 +80,8 @@ export class ConfigPage implements OnInit {
       input_product: [{}],
       travel_product: [{}],
       contact: [{}],
+      default_payment: [{}],
+      default_contact: [{}],
       phone: ['', Validators.required],
       email: ['', Validators.required],
       city: [''],
@@ -324,6 +327,53 @@ export class ConfigPage implements OnInit {
       // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
     });
   }
+
+  selectDefaultContact() {
+    return new Promise(async resolve => {
+      let profileModal = await this.modalCtrl.create({
+        component: ContactListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      profileModal.present();
+
+      this.events.subscribe('select-contact', (data) => {
+        this.configForm.patchValue({
+          default_contact: data,
+        });
+        this.configForm.markAsDirty();
+        profileModal.dismiss();
+        this.events.unsubscribe('select-contact');
+        resolve(data);
+      })
+      // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
+    });
+  }
+
+  selectDefaultPayment() {
+    return new Promise(async resolve => {
+      let profileModal = await this.modalCtrl.create({
+        component: PaymentConditionListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      profileModal.present();
+
+      this.events.subscribe('select-payment-condition', (data) => {
+        this.configForm.patchValue({
+          default_payment: data,
+        });
+        this.configForm.markAsDirty();
+        profileModal.dismiss();
+        this.events.unsubscribe('select-payment-condition');
+        resolve(data);
+      })
+      // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
+    });
+  }
+
 
   logout() {
     this.storage.set('database', false).then(()=>{

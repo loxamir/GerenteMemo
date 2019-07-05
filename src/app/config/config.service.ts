@@ -243,6 +243,8 @@ export class ConfigService {
         pouchData['labor_product'] = await this.pouchdbService.getDoc(pouchData['labor_product_id']);
         pouchData['contact'] = await this.pouchdbService.getDoc(pouchData['contact_id']);
         pouchData['cash'] = await this.pouchdbService.getDoc(pouchData['cash_id']);
+        pouchData['default_contact'] = await this.pouchdbService.getDoc(pouchData['default_contact_id']);
+        pouchData['default_payment'] = await this.pouchdbService.getDoc(pouchData['default_payment_id']);
         pouchData['product_sequence'] = (await this.pouchdbService.getDoc('sequence.product'))['value'];
 
         // if (pouchData['warehouse_id']){
@@ -288,6 +290,10 @@ export class ConfigService {
     config.docType = 'config';
     config.cash_id = config.cash._id;
     delete config.cash;
+    config.default_contact_id = config.default_contact._id;
+    delete config.default_contact;
+    config.default_payment_id = config.default_payment._id;
+    delete config.default_payment;
     config.account_id = config.account._id;
     delete config.account;
     config.warehouse_id = config.warehouse._id;
