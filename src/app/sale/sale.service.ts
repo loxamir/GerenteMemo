@@ -62,10 +62,10 @@ export class SaleService {
       })
     });
     delete sale.items;
-    sale.moves = [];
-    sale.planned.forEach(item => {
-      sale.moves.push(item._id)
-    });
+    // sale.moves = [];
+    // sale.planned.forEach(item => {
+    //   sale.moves.push(item._id)
+    // });
     delete sale.planned;
     return sale;
   }
@@ -95,13 +95,13 @@ export class SaleService {
             getList.push(item['product_id']);
           }
         });
-        if (pouchData['moves']){
-          pouchData['moves'].forEach((item) => {
-            if (getList.indexOf(item)==-1){
-              getList.push(item);
-            }
-          });
-        }
+        // if (pouchData['moves']){
+        //   pouchData['moves'].forEach((item) => {
+        //     if (getList.indexOf(item)==-1){
+        //       getList.push(item);
+        //     }
+        //   });
+        // }
         this.pouchdbService.getList(getList).then((docs: any[])=>{
           var doc_dict = {};
           docs.forEach(row=>{
@@ -119,21 +119,21 @@ export class SaleService {
               'cost': line.cost || 0,
             })
           })
-          if (pouchData.moves){
-            pouchData['planned'] = [];
-            pouchData.moves.forEach(line=>{
-              console.log("liena", line);
-              pouchData['planned'].push(doc_dict[line])
-            })
-            console.log("doc_dict", doc_dict);
-            resolve(pouchData);
-          } else {
+          // if (pouchData.moves){
+          //   pouchData['planned'] = [];
+          //   pouchData.moves.forEach(line=>{
+          //     console.log("liena", line);
+          //     pouchData['planned'].push(doc_dict[line])
+          //   })
+          //   console.log("doc_dict", doc_dict);
+          //   resolve(pouchData);
+          // } else {
             this.pouchdbService.getRelated(
             "cash-move", "origin_id", doc_id).then((planned) => {
               pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
               resolve(pouchData);
             });
-          }
+          // }
         })
       }));
     });

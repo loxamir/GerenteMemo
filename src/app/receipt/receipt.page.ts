@@ -1234,8 +1234,8 @@ export class ReceiptPage implements OnInit {
               "amount": item_paid,
             });
           }
-          if (JSON.stringify(this.receiptForm.value.check) != '{}') {
-            let check:any = await this.pouchdbService.getDoc(this.receiptForm.value.check._id);
+          if (this.receiptForm.value.check && JSON.stringify(this.receiptForm.value.check) != '{}') {
+            let check:any = this.receiptForm.value.check;
             if (this.receiptForm.value.signal == '+') {
               check.state = 'RECEIVED';
               check.account_id = this.receiptForm.value.cash_paid._id;
@@ -1284,16 +1284,18 @@ export class ReceiptPage implements OnInit {
                 item_paid_purchase = item_paid/this.receipt_exchange_rate;
                 paid_document_amount = item_paid/this.receipt_exchange_rate;
               }
+              if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
+                purchase.state = "PAID";
+                purchase.residual = 0;
+                item_paid_purchase += item1.amount_residual;
+                paid_document_amount += item1.amount_residual;
+              }
               purchase.payments.push({
                 "paid": item_paid_purchase,
                 "date": this.receiptForm.value.date,
                 "state": "CONFIRMED",
                 "_id": this.receiptForm.value._id,
               });
-              if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
-                purchase.state = "PAID";
-                purchase.residual = 0;
-              }
               this.pouchdbService.updateDoc(purchase);
             })
           }
@@ -1316,22 +1318,24 @@ export class ReceiptPage implements OnInit {
             this.pouchdbService.getDoc(item1.origin_id).then((service: any) => {
               service.residual = item1.amount_residual;
               // console.log("item_residual2", item_residual);
-              let item_paid_purchase = item_paid;
+              let item_paid_service = item_paid;
               paid_document_amount = item_paid;
-              if (service.currency_id){
-                item_paid_purchase = item_paid/this.receipt_exchange_rate;
-                paid_document_amount = item_paid/this.receipt_exchange_rate;
+              // if (service.currency_id){
+              //   item_paid_purchase = item_paid/this.receipt_exchange_rate;
+              //   paid_document_amount = item_paid/this.receipt_exchange_rate;
+              // }
+              if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
+                service.state = "PAID";
+                service.residual = 0;
+                item_paid_service += item1.amount_residual;
+                paid_document_amount += item1.amount_residual;
               }
               service.payments.push({
-                "paid": item_paid_purchase,
+                "paid": item_paid_service,
                 "date": this.receiptForm.value.date,
                 "state": "CONFIRMED",
                 "_id": this.receiptForm.value._id,
               });
-              if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
-                service.state = "PAID";
-                service.residual = 0;
-              }
               this.pouchdbService.updateDoc(service);
             })
           }

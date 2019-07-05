@@ -46,7 +46,7 @@ export class ReceiptService {
     //     console.log("movesss", item);
     //     receipt.moves.push(item._id)
     //   });
-    //   delete receipt.payments;
+      delete receipt.payments;
     //   // delete sale.planned;
     // }
     delete receipt.planned;
@@ -85,15 +85,15 @@ export class ReceiptService {
           //     })
           //     resolve(pouchData);
           //   } else {
-          //     this.pouchdbService.getRelated(
-          //       "cash-move", "origin_id", doc_id).then((payments) => {
-          //         pouchData['payments'] = payments;
-          //         resolve(pouchData);
-          //       });
+              this.pouchdbService.getRelated(
+                "cash-move", "origin_id", doc_id).then((payments) => {
+                  pouchData['payments'] = payments;
+                  resolve(pouchData);
+                });
           //   }
           // } else {
           // }
-          resolve(pouchData);
+          // resolve(pouchData);
         })
       }));
     });
