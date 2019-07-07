@@ -193,7 +193,7 @@ export class ServicePage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.configService.getConfig().then((data) => {
         // console.log("dddata", data);
@@ -207,6 +207,9 @@ export class ServicePage implements OnInit {
           this.getService(this._id).then((data) => {
             //console.log("data", data);
             this.serviceForm.patchValue(data);
+            if (data.state == 'PAID'){
+              // this.serviceForm.controls.date.disable();
+            }
             this.recomputeValues();
             this.loading.dismiss();
           });
@@ -223,7 +226,7 @@ export class ServicePage implements OnInit {
     }
 
     async presentPopover(myEvent) {
-      console.log("teste my event");
+      //console.log("teste my event");
       let popover = await this.popoverCtrl.create({
         component: ServicePopover,
         event: myEvent,
@@ -590,7 +593,7 @@ export class ServicePage implements OnInit {
     // }
 
     beforeConfirm(){
-      console.log("datos", this.serviceForm.value);
+      //console.log("datos", this.serviceForm.value);
       if (this.serviceForm.value.production){
         this.pouchdbService.getDoc('contact.myCompany').then((contact: any)=>{
           this.serviceForm.patchValue({
@@ -752,7 +755,7 @@ export class ServicePage implements OnInit {
           });
           await profileModal.present();
           this.events.subscribe('create-receipt', (data) => {
-              console.log("DDDDDDDATA", data);
+              //console.log("DDDDDDDATA", data);
               this.serviceForm.value.payments.push({
                 'paid': data.paid,
                 'date': data.date,
@@ -768,8 +771,8 @@ export class ServicePage implements OnInit {
             profileModal.dismiss();
             this.events.unsubscribe('create-receipt');
           });
-          console.log("this.serviceForm.value.planned", this.serviceForm.value.planned);
-          console.log("plannedItems", JSON.stringify(plannedItems));
+          //console.log("this.serviceForm.value.planned", this.serviceForm.value.planned);
+          //console.log("plannedItems", JSON.stringify(plannedItems));
 
       }
 
@@ -971,7 +974,7 @@ export class ServicePage implements OnInit {
         });
         await profileModal.present();
         let data: any = await profileModal.onDidDismiss();//data => {
-          console.log("Work", data);
+          //console.log("Work", data);
           if (data.data) {
             // data.data.cost = data.data.cost;
             // data.data.price = this.labor_product['price'];
@@ -1512,7 +1515,7 @@ export class ServicePage implements OnInit {
             } else {
               this.serviceForm.value.paymentCondition.items.forEach(item => {
                 let dateDue = this.addDays(this.today, item.days);
-                console.log("dentro", this.serviceForm.value);
+                //console.log("dentro", this.serviceForm.value);
                 let amount = (item.percent/100)*this.serviceForm.value.total;
                 createList.push({
                   '_return': true,
@@ -1547,7 +1550,7 @@ export class ServicePage implements OnInit {
                 amount_unInvoiced: this.serviceForm.value.total,
                 planned: created,
               });
-              console.log("Purchase created", created);
+              //console.log("Purchase created", created);
               this.buttonSave();
               resolve(true);
             })
@@ -1786,7 +1789,7 @@ export class ServicePage implements OnInit {
             i--;
           }
 
-          console.log("\n"+ticket);
+          // console.log("\n"+ticket);
           // Print to bluetooth printer
           let toast = await this.toastCtrl.create({
           message: "Start ",
@@ -2129,7 +2132,7 @@ export class ServicePage implements OnInit {
       ticket += "\n</pre></div>";
 
 
-      console.log("\n"+ticket);
+      // console.log("\n"+ticket);
 
 
       //console.log("ticket", ticket);
@@ -2218,7 +2221,6 @@ export class ServicePage implements OnInit {
       let service = Object.assign({}, viewData);
       service.lines = [];
       service.docType = 'service';
-      delete service.planned;
       // delete service.payments;
       service.contact_id = service.contact._id;
       delete service.contact;
@@ -2239,6 +2241,11 @@ export class ServicePage implements OnInit {
         //input['product_id'] = input.product_id || input.product._id;
       });
       delete service.inputs;
+      // service.moves = [];
+      // service.planned.forEach(item => {
+      //   service.moves.push(item._id)
+      // });
+      delete service.planned;
       return service;
     }
 
@@ -2273,11 +2280,31 @@ export class ServicePage implements OnInit {
               })
             })
 
-            this.pouchdbService.getRelated(
-            "cash-move", "origin_id", doc_id).then((planned) => {
-              pouchData['planned'] = planned;
-              resolve(pouchData);
-            });
+            pouchData['items'] = [];
+            pouchData.lines.forEach((line: any)=>{
+              pouchData['items'].push({
+                'product': doc_dict[line.product_id],
+                'description': doc_dict[line.product_id].name,
+                'quantity': line.quantity,
+                'price': line.price,
+                'cost': line.cost || 0,
+              })
+            })
+            // if (pouchData.moves){
+            //   pouchData['planned'] = [];
+            //   pouchData.moves.forEach(line=>{
+            //     console.log("liena", line);
+            //     pouchData['planned'].push(doc_dict[line])
+            //   })
+            //   console.log("doc_dict", doc_dict);
+            //   resolve(pouchData);
+            // } else {
+              this.pouchdbService.getRelated(
+              "cash-move", "origin_id", doc_id).then((planned) => {
+                pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
+                resolve(pouchData);
+              });
+            // }
           })
         }));
       });

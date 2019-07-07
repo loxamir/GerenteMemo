@@ -28,6 +28,7 @@ export class PurchasePopover {
         _id: '',
         code: '',
         residual: this.navParams.data.doc.purchaseForm.value.total,
+        date: this.today,
         planned: [],
         payments: [],
         invoices: [],

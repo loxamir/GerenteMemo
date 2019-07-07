@@ -73,7 +73,7 @@ export class ClosePage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
@@ -86,8 +86,7 @@ export class ClosePage implements OnInit {
         this.cash_id = data.cash_id;
         this.amount_theoretical = data.amount_theoretical;
         this.amount_physical = data.amount_physical;
-        // this.closeForm.controls.amount_physical.disable();
-        // this.recomputeValues();
+        this.closeForm.controls.amount_physical.disable();
         this.loading.dismiss();
       });
     } else {

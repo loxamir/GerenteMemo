@@ -3,30 +3,19 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, LoadingController, AlertController, Events, ToastController, ModalController, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
-//import { DecimalPipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
-// import { PurchaseService } from './purchase.service';
 import { ContactListPage } from '../contact-list/contact-list.page';
-//import { PurchaseItemPage } from '../purchase-item/purchase-item';
-//import { CashMovePage } from '../cash/move/cash-move';
 import { ProductService } from '../product/product.service';
-//import { PurchasesPage } from '../purchases/purchases';
 import { ProductListPage } from '../product-list/product-list.page';
 import { ProductPage } from '../product/product.page';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 import { ConfigService } from '../config/config.service';
 import { HostListener } from '@angular/core';
 import { ReceiptPage } from '../receipt/receipt.page';
-// import { ReceiptService } from '../receipt/receipt.service';
 import { InvoicePage } from '../invoice/invoice.page';
 import { FormatService } from '../services/format.service';
-// import { CashMoveService } from '../cash/move/cash-move.service';
-// import { StockMoveService } from '../stock/stock-move.service';
-// import { ProjectsPage } from '../project/list/projects';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { PurchasePopover } from './purchase.popover';
 import { CurrencyListPage } from '../currency-list/currency-list.page';
@@ -62,9 +51,9 @@ export class PurchasePage implements OnInit {
             });
             if (!found){
               let bacode= this.barcode;
-              console.log("this.barcode11", this.barcode);
+              // console.log("this.barcode11", this.barcode);
               this.productService.getProductByCode(this.barcode).then(async data => {
-                console.log("barcode data", data);
+                // console.log("barcode data", data);
                 if (data){
                   this.purchaseForm.value.items.unshift({
                     'quantity': 1,
@@ -74,7 +63,7 @@ export class PurchasePage implements OnInit {
                   this.recomputeValues();
                   this.purchaseForm.markAsDirty();
                 } else {
-                  console.log("barco", this.barcode);
+                  // console.log("barco", this.barcode);
                   let alertPopup = await this.alertCtrl.create({
                       header: 'Producto no Encontrado',
                       message: '¿Deseas catastrarlo?',
@@ -105,7 +94,7 @@ export class PurchasePage implements OnInit {
             //return;
         }
         //console.log("timeStamp", timeStamp);
-        if(!timeStamp || timeStamp < 5 || this.barcode == ""){
+        if(!timeStamp || timeStamp < 20 || this.barcode == ""){
             //code = "";
             this.barcode += event.key;
         }
@@ -127,8 +116,15 @@ export class PurchasePage implements OnInit {
     today: any;
     _id: string;
     avoidAlertMessage: boolean;
-    currency_precision = 2;
+    company_currency_id = 'currency.PYG';
+    company_currency_precision = 2;
+    company_currency_symbol = "$";
+    purchase_currency_id = 'currency.PYG';
+    purchase_currency_symbol = "$";
+    purchase_currency_precision = 2;
+    currencies:any = {};
     languages: Array<LanguageModel>;
+    purchase_exchange_rate:number = 1;
 
     constructor(
       public navCtrl: NavController,
@@ -191,7 +187,7 @@ export class PurchasePage implements OnInit {
           this.events.unsubscribe('create-product');
           this.barcode = "";
         })
-        console.log("barcode", barcode);
+        // console.log("barcode", barcode);
         let profileModal = await this.modalCtrl.create({
           component: ProductPage,
           componentProps: {
@@ -216,7 +212,6 @@ export class PurchasePage implements OnInit {
         // project_name: new FormControl(this.route.snapshot.paramMap.get('project_name')||''),
 
         name: new FormControl(''),
-        currency: new FormControl({}),
         code: new FormControl(''),
         date: new FormControl(this.route.snapshot.paramMap.get('date')||this.today),
         origin_id: new FormControl(this.route.snapshot.paramMap.get('origin_id')),
@@ -233,6 +228,8 @@ export class PurchasePage implements OnInit {
         invoice: new FormControl(''),
         invoices: new FormControl([]),
         amount_unInvoiced: new FormControl(0),
+        currency: new FormControl({}),
+        exchange_rate: new FormControl(1),
         seller: new FormControl(this.route.snapshot.paramMap.get('seller')||{}, Validators.required),
         seller_name: new FormControl(this.route.snapshot.paramMap.get('seller_name')||''),
         _id: new FormControl(''),
@@ -241,58 +238,41 @@ export class PurchasePage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
-      this.currency_precision = config.currency_precision;
+      this.company_currency_id = config.currency_id || this.company_currency_id;
+      let pyg = await this.pouchdbService.getDoc('currency.PYG')
+      let usd = await this.pouchdbService.getDoc('currency.USD')
+      this.currencies = {
+        "currency.PYG": pyg,
+        "currency.USD": usd,
+      }
+      this.company_currency_precision = config.currency_precision;
+      this.company_currency_symbol = this.currencies[config.currency_id].symbol;
+      this.purchase_currency_precision = this.company_currency_precision;
+      this.purchase_currency_symbol = this.company_currency_symbol;
       if (this._id){
         this.getPurchase(this._id).then((data) => {
-          //console.log("data", data);
+          this.purchase_currency_id = data.currency_id || this.company_currency_id;
+          this.purchase_currency_symbol = this.currencies[data.currency_id || this.company_currency_id].symbol;
+          this.purchase_currency_precision = this.currencies[data.currency_id || this.company_currency_id].precision;
+          if (this.currencies[data.currency_id || this.company_currency_id].inverted_rate){
+            this.purchase_exchange_rate = this.currencies[data.currency_id || this.company_currency_id].exchange_rate;
+          } else {
+            this.purchase_exchange_rate = 1/this.currencies[data.currency_id || this.company_currency_id].exchange_rate;
+          }
+
           this.purchaseForm.patchValue(data);
           this.loading.dismiss();
         });
       } else {
+        this.purchase_currency_id = this.company_currency_id;
         this.loading.dismiss();
       }
     }
 
-    // async ionViewCanLeave() {
-    //     if(this.purchaseForm.dirty && ! this.avoidAlertMessage) {
-    //         let alertPopup = await this.alertCtrl.create({
-    //             header: 'Descartar',
-    //             message: '¿Deseas salir sin guardar?',
-    //             buttons: [{
-    //                     text: 'Si',
-    //                     handler: () => {
-    //                         // alertPopup.dismiss().then(() => {
-    //                             this.exitPage();
-    //                         // });
-    //                     }
-    //                 },
-    //                 {
-    //                     text: 'No',
-    //                     handler: () => {
-    //                         // need to do something if the user stays?
-    //                     }
-    //                 }]
-    //         });
-    //
-    //         // Show the alert
-    //         alertPopup.present();
-    //
-    //         // Return false to avoid the page to be popped up
-    //         return false;
-    //     }
-    // }
-    //
-    // // presentPopover(myEvent) {
-    // //   let popover = this.popoverCtrl.create(PurchasePopover, {doc: this});
-    // //   popover.present({
-    // //     ev: myEvent
-    // //   });
-    // // }
     async presentPopover(myEvent) {
-      console.log("teste my event");
       let popover = await this.popoverCtrl.create({
         component: PurchasePopover,
         event: myEvent,
@@ -303,12 +283,6 @@ export class PurchasePage implements OnInit {
       });
       popover.present();
     }
-    //
-    //
-    // private exitPage() {
-    //     this.purchaseForm.markAsPristine();
-    //     // this.navCtrl.navigateBack();
-    // }
 
     goNextStep() {
       if (this.purchaseForm.value.state == 'QUOTATION'){
@@ -338,16 +312,19 @@ export class PurchasePage implements OnInit {
           this.selectContact().then( teste => {
             if (Object.keys(this.purchaseForm.value.paymentCondition).length === 0){
               this.selectPaymentCondition().then(()=>{
-                this.purchaseConfimation();
+                // this.purchaseConfimation();
+                this.afterConfirm();
               });
             }
           });
         } else if (Object.keys(this.purchaseForm.value.paymentCondition).length === 0){
           this.selectPaymentCondition().then(()=>{
-            this.purchaseConfimation();
+            // this.purchaseConfimation();
+            this.afterConfirm();
           });
         } else {
-          this.purchaseConfimation();
+          // this.purchaseConfimation();
+          this.afterConfirm();
         }
       }
     }
@@ -411,7 +388,7 @@ export class PurchasePage implements OnInit {
     }
 
     buttonSave() {
-      console.log("buttonSave");
+      // console.log("buttonSave");
       return new Promise(resolve => {
         if (this._id){
           this.updatePurchase(this.purchaseForm.value);
@@ -419,7 +396,7 @@ export class PurchasePage implements OnInit {
           this.purchaseForm.markAsPristine();
         } else {
           this.createPurchase(this.purchaseForm.value).then(doc => {
-            console.log("docss", doc);
+            // console.log("docss", doc);
             this.purchaseForm.patchValue({
               _id: doc['doc'].id,
               code: doc['purchase'].code,
@@ -429,7 +406,7 @@ export class PurchasePage implements OnInit {
               write_user: doc['purchase'].write_user,
             });
             this._id = doc['doc'].id;
-            console.log("this.purchaseForm", this.purchaseForm.value);
+            // console.log("this.purchaseForm", this.purchaseForm.value);
             // this.events.publish('create-purchase', this.purchaseForm.value);
             this.purchaseForm.markAsPristine();
             resolve(true);
@@ -474,21 +451,21 @@ export class PurchasePage implements OnInit {
       }
     }
 
-    recomputeUnInvoiced(){
-      let amount_unInvoiced = 0;
-      this.pouchdbService.getRelated(
-        "cash-move", "origin_id", this.purchaseForm.value._id
-      ).then((planned) => {
-        planned.forEach((item) => {
-          if (item.amount_unInvoiced){
-            amount_unInvoiced += parseFloat(item.amount_unInvoiced);
-          }
-        });
-        this.purchaseForm.patchValue({
-          amount_unInvoiced: amount_unInvoiced,
-        });
-      });
-    }
+    // recomputeUnInvoiced(){
+    //   let amount_unInvoiced = 0;
+    //   this.pouchdbService.getRelated(
+    //     "cash-move", "origin_id", this.purchaseForm.value._id
+    //   ).then((planned) => {
+    //     planned.forEach((item) => {
+    //       if (item.amount_unInvoiced){
+    //         amount_unInvoiced += parseFloat(item.amount_unInvoiced);
+    //       }
+    //     });
+    //     this.purchaseForm.patchValue({
+    //       amount_unInvoiced: amount_unInvoiced,
+    //     });
+    //   });
+    // }
 
     recomputeResidual(){
       if (this.purchaseForm.value.state == 'QUOTATION'){
@@ -519,10 +496,13 @@ export class PurchasePage implements OnInit {
         profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
+          let cost = data.cost/this.purchase_exchange_rate;
+          if (this.currencies[this.purchase_currency_id].inverted_rate){
+            cost = data.cost*this.purchase_exchange_rate;
+          }
           this.purchaseForm.value.items.unshift({
             'quantity': 1,
-            'price': data.cost,
-            // 'cost': data.cost,
+            'price': (cost).toFixed(this.purchase_currency_precision),
             'product': data,
             'description': data.name,
           })
@@ -549,7 +529,7 @@ export class PurchasePage implements OnInit {
         profileModal.present();
         this.events.subscribe('select-product', (data) => {
           //console.log("vars", data);
-          item.price = data.price;
+          item.price = data.cost*this.purchase_exchange_rate;
           item.product = data;
           item.description = data.name;
           this.recomputeValues();
@@ -654,7 +634,7 @@ export class PurchasePage implements OnInit {
             this.purchaseForm.value.payments.slice(index, 1);
             newPayments.push(receipt);
           } else {
-            residual += receipt.paid;
+            residual += parseFloat(receipt.paid);
           }
         })
         this.pouchdbService.getRelated(
@@ -669,6 +649,7 @@ export class PurchasePage implements OnInit {
         });
         this.events.unsubscribe('cancel-receipt');
       });
+      // console.log('item', item);
       let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,
         componentProps: {
@@ -680,12 +661,19 @@ export class PurchasePage implements OnInit {
     }
 
     recomputeValues() {
+      if (this.currencies[this.purchase_currency_id].inverted_rate){
+        this.purchase_exchange_rate = this.purchaseForm.value.exchange_rate;
+      } else {
+        this.purchase_exchange_rate = (1/parseFloat(this.purchaseForm.value.exchange_rate));
+      }
       this.recomputeTotal();
-      this.recomputeUnInvoiced();
+      // this.recomputeUnInvoiced();
       this.recomputeResidual();
-      if (this.purchaseForm.value.total > 0 && this.purchaseForm.value.residual == 0){
+      let smallDiff = 10**(-1*this.purchase_currency_precision);
+      if (this.purchaseForm.value.total > 0 && this.purchaseForm.value.residual <= smallDiff && this.purchaseForm.value.residual >= -smallDiff){
         this.purchaseForm.patchValue({
           state: "PAID",
+          residual: 0,
         });
       }
     }
@@ -725,6 +713,9 @@ export class PurchasePage implements OnInit {
 
     afterConfirm(){
       return new Promise(async resolve => {
+        this.purchaseForm.patchValue({
+          amount_unInvoiced: this.purchaseForm.value.total,
+        });
         let createList = [];
         if(!this.purchaseForm.value._id){
           await this.buttonSave();
@@ -751,7 +742,7 @@ export class PurchasePage implements OnInit {
               this.productService.updateStockAndCost(
                 product_id,
                 item.quantity,
-                item.price,
+                item.price*this.purchase_exchange_rate,
                 old_stock,
                 old_cost);
 
@@ -765,7 +756,7 @@ export class PurchasePage implements OnInit {
                 'product_id': product_id,
                 'product_name': product_name,
                 'date': new Date(),
-                'cost': item.price*item.quantity,
+                'cost': item.price*item.quantity*this.purchase_exchange_rate,
                 'warehouseFrom_id': 'warehouse.supplier',
                 'warehouseFrom_name': docDict['warehouse.supplier'].doc.name,
                 'warehouseTo_id': config.warehouse_id,
@@ -776,7 +767,7 @@ export class PurchasePage implements OnInit {
                 'name': "Compra "+this.purchaseForm.value.code,
                 'contact_id': this.purchaseForm.value.contact._id,
                 'contact_name': this.purchaseForm.value.contact.name,
-                'amount': item.quantity*item.price,
+                'amount': item.quantity*item.price*this.purchase_exchange_rate,
                 'origin_id': this.purchaseForm.value._id,
                 'date': new Date(),
                 'accountFrom_id': 'account.other.transitStock',
@@ -789,7 +780,7 @@ export class PurchasePage implements OnInit {
               let dateDue = this.addDays(this.today, item.days);
               // console.log("dentro", this.purchaseForm.value);
               let amount = (item.percent/100)*this.purchaseForm.value.total;
-              createList.push({
+              let receivableCashMove = {
                 '_return': true,
                 'docType': "cash-move",
                 'date': new Date(),
@@ -807,7 +798,17 @@ export class PurchasePage implements OnInit {
                 'accountFrom_name': docDict[this.purchaseForm.value.paymentCondition.accountFrom_id].doc.name,
                 'accountTo_id': 'account.other.transitStock',
                 'accountTo_name': docDict['account.other.transitStock'].doc.name,
-              });
+              }
+              if (JSON.stringify(this.purchaseForm.value.currency) != '{}' && this.purchaseForm.value.currency._id != this.company_currency_id) {
+                receivableCashMove['currency_amount'] = amount;
+                receivableCashMove['currency_id'] = this.purchaseForm.value.currency._id;
+                receivableCashMove['exchange_rate'] = this.purchase_exchange_rate;
+                receivableCashMove['currency_residual'] = amount;
+                receivableCashMove['amount'] = amount*this.purchase_exchange_rate;
+                receivableCashMove['amount_residual'] = amount*this.purchase_exchange_rate;
+
+              }
+              createList.push(receivableCashMove);
             });
 
             this.pouchdbService.createDocList(createList).then(async (created: any)=>{
@@ -816,7 +817,7 @@ export class PurchasePage implements OnInit {
                 amount_unInvoiced: this.purchaseForm.value.total,
                 planned: created,
               });
-              console.log("Purchase created", created);
+              // console.log("Purchase created", created);
               await this.buttonSave();
               resolve(true);
             })
@@ -892,13 +893,12 @@ export class PurchasePage implements OnInit {
       this.avoidAlertMessage = true;
         this.events.unsubscribe('create-receipt');
         this.events.subscribe('create-receipt', (data) => {
-            console.log("DDDDDDDATA", data);
-            this.purchaseForm.value.payments.push({
-              'paid': data.paid,
-              'date': data.date,
-              'state': data.state,
-              '_id': data._id,
-            });
+          this.purchaseForm.value.payments.push({
+            'paid': data.paid,
+            'date': data.date,
+            'state': data.state,
+            '_id': data._id,
+          });
           this.purchaseForm.patchValue({
             'residual': this.purchaseForm.value.residual - data.paid,
           });
@@ -916,8 +916,8 @@ export class PurchasePage implements OnInit {
 
           // plannedItems = [this.purchaseForm.value.planned[this.purchaseForm.value.planned.length - 1]];
 
-        console.log("this.purchaseForm.value.planned", this.purchaseForm.value.planned);
-        console.log("plannedItems", plannedItems);
+        // console.log("this.purchaseForm.value.planned", this.purchaseForm.value.planned);
+        // console.log("plannedItems", plannedItems);
         let profileModal = await this.modalCtrl.create({
           component: ReceiptPage,
           componentProps: {
@@ -1156,9 +1156,10 @@ export class PurchasePage implements OnInit {
         purchase.lines = [];
         purchase.docType = 'purchase';
         // delete purchase.payments;
-        delete purchase.planned;
         purchase.contact_id = purchase.contact._id;
         delete purchase.contact;
+        purchase.currency_id = purchase.currency._id;
+        delete purchase.currency;
         // purchase.project_id = purchase.project._id;
         // delete purchase.project;
         purchase.pay_cond_id = purchase.paymentCondition._id;
@@ -1173,6 +1174,11 @@ export class PurchasePage implements OnInit {
           })
         });
         delete purchase.items;
+        // purchase.moves = [];
+        // purchase.planned.forEach(item => {
+        //   purchase.moves.push(item._id)
+        // });
+        delete purchase.planned;
         return purchase;
       }
 
@@ -1181,7 +1187,8 @@ export class PurchasePage implements OnInit {
           this.pouchdbService.getDoc(doc_id).then(((pouchData: any) => {
             let getList = [
               pouchData['contact_id'],
-              pouchData['pay_cond_id']
+              pouchData['pay_cond_id'],
+              pouchData['currency_id'],
             ];
             pouchData['lines'].forEach((item) => {
               if (getList.indexOf(item['product_id'])==-1){
@@ -1195,6 +1202,7 @@ export class PurchasePage implements OnInit {
               })
               pouchData.contact = doc_dict[pouchData.contact_id] || {};
               pouchData.paymentCondition = doc_dict[pouchData.pay_cond_id] || {};
+              pouchData.currency = doc_dict[pouchData.currency_id] || {};
               let index=2;
               pouchData['items'] = [];
               pouchData.lines.forEach((line: any)=>{
@@ -1207,11 +1215,31 @@ export class PurchasePage implements OnInit {
                 })
               })
 
-              this.pouchdbService.getRelated(
-              "cash-move", "origin_id", doc_id).then((planned) => {
-                pouchData['planned'] = planned;
-                resolve(pouchData);
-              });
+              pouchData['items'] = [];
+              pouchData.lines.forEach((line: any)=>{
+                pouchData['items'].push({
+                  'product': doc_dict[line.product_id],
+                  'description': doc_dict[line.product_id].name,
+                  'quantity': line.quantity,
+                  'price': line.price,
+                  'cost': line.cost || 0,
+                })
+              })
+              // if (pouchData.moves){
+              //   pouchData['planned'] = [];
+              //   pouchData.moves.forEach(line=>{
+              //     console.log("liena", line);
+              //     pouchData['planned'].push(doc_dict[line])
+              //   })
+              //   console.log("doc_dict", doc_dict);
+              //   resolve(pouchData);
+              // } else {
+                this.pouchdbService.getRelated(
+                "cash-move", "origin_id", doc_id).then((planned) => {
+                  pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
+                  resolve(pouchData);
+                });
+              // }
             })
           }));
         });
@@ -1230,6 +1258,7 @@ export class PurchasePage implements OnInit {
 
 
       showNextButton(){
+        // console.log("process showNextButton");
         // console.log("stock",this.purchaseForm.value.stock);
         // if (this.purchaseForm.value.name==null){
           return true;
@@ -1291,26 +1320,32 @@ export class PurchasePage implements OnInit {
       }
 
 
-          selectCurrency() {
-            return new Promise(async resolve => {
-              this.events.subscribe('select-currency', (data) => {
-                this.purchaseForm.patchValue({
-                  currency: data,
-                  // cash_id: data._id,
-                });
-                this.purchaseForm.markAsDirty();
-                this.events.unsubscribe('select-currency');
-                // profileModal.dismiss();
-                resolve(true);
-              })
-              let profileModal = await this.modalCtrl.create({
-                component: CurrencyListPage,
-                componentProps: {
-                  "select": true
-                }
-              });
-              profileModal.present();
-            });
-          }
-
+  selectCurrency() {
+    return new Promise(async resolve => {
+      this.events.subscribe('select-currency', (data) => {
+        this.purchaseForm.patchValue({
+          currency: data,
+          exchange_rate: data.exchange_rate,
+        });
+        if (this.currencies[this.purchase_currency_id].inverted_rate){
+          this.purchase_exchange_rate = data.exchange_rate;
+        } else {
+          this.purchase_exchange_rate = (1/parseFloat(data.exchange_rate));
+        }
+        this.purchase_currency_id = data._id;
+        this.purchase_currency_symbol = data.symbol;
+        this.purchase_currency_precision = data.precision;
+        this.purchaseForm.markAsDirty();
+        this.events.unsubscribe('select-currency');
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: CurrencyListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      profileModal.present();
+    });
+  }
 }

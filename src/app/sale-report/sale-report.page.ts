@@ -166,10 +166,10 @@ export class SaleReportPage implements OnInit {
   goPeriodBack() {
     let start_date = new Date(this.reportSaleForm.value.dateStart).getTime();
     let end_date = new Date(this.reportSaleForm.value.dateEnd).getTime();
-    console.log("start_date", new Date(start_date).toJSON());
-    console.log("end_date", new Date(end_date).toJSON());
+    //console.log("start_date", new Date(start_date).toJSON());
+    //console.log("end_date", new Date(end_date).toJSON());
     let period = end_date - start_date + 1;
-    console.log("period", period);
+    //console.log("period", period);
     this.updating = true;
     this.reportSaleForm.patchValue({
       dateStart: new Date(start_date - period).toISOString(),
@@ -185,14 +185,14 @@ export class SaleReportPage implements OnInit {
 
   async changeDateStart(){
     if (!this.updating){
-      console.log("changeDateStart");
+      //console.log("changeDateStart");
       await this.goNextStep();
     }
   }
 
   changeDateEnd(){
     if (!this.updating){
-      console.log("changeDateEnd");
+      //console.log("changeDateEnd");
       this.goNextStep();
     }
   }
@@ -215,7 +215,7 @@ export class SaleReportPage implements OnInit {
   }
 
   async getData() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     return new Promise(resolve => {
       if (this.reportSaleForm.value.reportType == 'sale') {
@@ -232,7 +232,7 @@ export class SaleReportPage implements OnInit {
           undefined,
           false
         ).then(async (sales: any[]) => {
-          console.log("sale lines", sales);
+          //console.log("sale lines", sales);
 
           if (Object.keys(this.reportSaleForm.value.contact).length > 0) {
             sales = sales.filter(word => word['key'][10] == this.reportSaleForm.value.contact._id);
@@ -255,7 +255,7 @@ export class SaleReportPage implements OnInit {
             })
             sales = sales.filter(word => categProdList.indexOf(word['key'][9]) >= 0);
           }
-          console.log("sales2", sales);
+          //console.log("sales2", sales);
           let items = [];
           let promise_ids = [];
           let result = {};
@@ -604,7 +604,7 @@ export class SaleReportPage implements OnInit {
               let year = (new Date(saleLine.key[0])).getFullYear();
               let date = year+"-"+week;
               // let date = (new Date(saleLine.key[0])).getWeekYear();
-              console.log("date", date);
+              //console.log("date", date);
               if (result.hasOwnProperty(date)) {
                 // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
                 items[result[date]] = {
@@ -647,7 +647,7 @@ export class SaleReportPage implements OnInit {
             items = [];
             sales.forEach(saleLine => {
               let date = (new Date(saleLine.key[0])).getFullYear();
-              console.log("date", date);
+              //console.log("date", date);
               if (result.hasOwnProperty(date)) {
                 // console.log("items[result[saleLine.key[1]]]", items[result[saleLine.key[1]]]);
                 items[result[date]] = {
@@ -1454,7 +1454,7 @@ export class SaleReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
+        //console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1475,7 +1475,7 @@ export class SaleReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
+        //console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1490,7 +1490,7 @@ export class SaleReportPage implements OnInit {
         if (tooltip) tooltip.style('display', 'none');
         if (tooltipLine) tooltipLine.attr('stroke', 'none');
       });
-    console.log("fim");
+    //console.log("fim");
   }
 
   getNumberOfWeek(date) {

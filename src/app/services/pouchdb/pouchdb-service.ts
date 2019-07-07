@@ -8,6 +8,7 @@ import PouchdbUpsert from 'pouchdb-upsert';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { Storage } from '@ionic/storage';
 import { FormatService } from '../format.service';
+// var server = "database.sistemamemo.com";
 var server = "database.sistemamemo.com";
 
 @Injectable({ providedIn: 'root' })
@@ -67,10 +68,14 @@ export class PouchdbService {
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
           PouchDB.plugin(PouchdbFind);
-          // PouchDB.plugin(cordovaSqlitePlugin);
-          // this.db = new PouchDB(database);
-          // this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+          if (this.platform.is('cordova')){
+            PouchDB.plugin(cordovaSqlitePlugin);
+            this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+          } else {
+            this.db = new PouchDB(database);
+          }
           console.log("database", database);
+          this.db.setMaxListeners(50);
           self.events.publish('got-database');
           this.storage.get('password').then(password => {
             this.db = new PouchDB("https://"+username+":"+password+"@"+server+'/'+database);
@@ -90,7 +95,7 @@ export class PouchdbService {
             }).on('complete', function(info) {
               //console.log("have info", info);
             }).on('error', function (err) {
-              console.log(err);
+              console.log("errou", err);
               // resolve(false)
             });
 
@@ -192,36 +197,12 @@ export class PouchdbService {
       } else {
         newSort[sort] = 'asc';
       }
-      console.log("dad", dad);
       self.db.find({
         selector: dad,
         sort: [newSort],
       }).then(data=>{
-        console.log("data", data.docs);
         resolve(data.docs);
       });
-
-
-      // let start = page*15;
-      // let self = this;
-      // let end = (page+1)*15;
-      // if (page == null){
-      //   start = undefined;
-      //   end = undefined;
-      // }
-      // let docs = this.docTypes[docType].filter(
-      //   word => filter && word[filter] || ! filter && true)
-      // .filter(word => field && word[field]
-      //   && word[field].toString().search(new RegExp(keyword, "i")) != -1
-      //   || (word['name']
-      //   && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
-      //   || (word.code && word.code.toString().search(keyword) != -1))
-      // .sort(function(a, b) {
-      //   return self.formatService.compareField(a, b, sort, direction);
-      // })
-      // .slice(start, end);
-      // console.log(docs)
-      // resolve(docs);
     });
   }
 
@@ -253,7 +234,7 @@ export class PouchdbService {
       this.db.query(viewName, options).then(function (res) {
         resolve(res.rows);
       }).catch(function (err) {
-        console.log("error", err);
+        console.log("view error", err);
       });
     });
   }
@@ -389,9 +370,15 @@ export class PouchdbService {
 
   getList(list) {
     return new Promise((resolve, reject)=>{
+        let list2 = [];
+        list.forEach(variable => {
+          if (variable && JSON.stringify(variable) != '{}'){
+            list2.push(variable)
+          }
+        });
         this.db.allDocs({
           include_docs : true,
-          keys: list
+          keys: list2
         }).then((res) => {
           resolve(res.rows);
         }).catch((err) => {

@@ -3,6 +3,7 @@ import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ConfigService } from '../config/config.service';
 import { CashMoveService } from '../cash-move/cash-move.service';
+import { FormatService } from '../services/format.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class CashService {
     public pouchdbService: PouchdbService,
     public configService: ConfigService,
     public cashMoveService: CashMoveService,
+    public formatService: FormatService,
   ) {}
 
 
@@ -26,46 +28,68 @@ export class CashService {
       ).then(async (planneds: any[]) => {
         let promise_ids = [];
         let pts = [];
-        let balance: any = await this.pouchdbService.getView(
-          'stock/Caixas', 1, [doc_id, null], [doc_id, "z"]);
+        let getList = [];
         planneds.forEach(item => {
           if (!item.key[2] || item.key[3] == doc_id){
             pts.push(item);
-            promise_ids.push(this.cashMoveService.getCashMove(item.key[4]));
+            getList.push(item.key && item.key[4]);
           }
         })
-        promise_ids.push(this.pouchdbService.getDoc(doc_id));
-        Promise.all(promise_ids).then(async cashMoves => {
-          let cash = Object.assign({}, cashMoves[cashMoves.length-1]);
+        getList.push(doc_id);
+        this.pouchdbService.getList(getList).then(async (cashMoves:any) => {
+          let docDict = {}
+          cashMoves.forEach(item=>{
+            docDict[item.id] = item.doc;
+          })
+          let balance:any;
+          let currency_balance:any;
+          let cash = Object.assign({}, docDict[doc_id]);
           cash.moves = [];
+          balance = await this.pouchdbService.getView(
+            'stock/Caixas', 1, [doc_id, null], [doc_id, "z"]);
           cash.balance = balance[0] && balance[0].value || 0;
-          cash.account = cashMoves[cashMoves.length-1];
+
+          if (cash.currency_id){
+            currency_balance = await this.pouchdbService.getView(
+              'stock/CaixasForeing', 1, [doc_id, null], [doc_id, "z"]);
+            cash.currency_balance = currency_balance[0] && currency_balance[0].value || 0;
+          }
+          cash.account = cash;
           cash.waiting = [];
           // let waitingBalance = 0;
-          let checks = await this.pouchdbService.getView('Informes/Cheques', 0, [doc_id], [doc_id+"z"], false, false, undefined, undefined, true);
-          console.log("checks", checks)
-          cash.checks = checks || [];
+          if (cash.type == 'check'){
+            let checks:any = await this.pouchdbService.getView('Informes/Cheques', 5, [doc_id], [doc_id+"z"], false, true, undefined, undefined, true);
+            let checks2 = checks.sort((a, b) => {
+              return this.formatService.compareField(a.doc, b.doc, 'write_date', 'increase');
+            })
+            cash.checks = checks2 || [];
+          }
           for(let i=0;i<pts.length;i++){
             if (cash.type == 'bank'){
-              if (cashMoves[i].state == 'WAITING'){
-                cash.waiting.unshift(cashMoves[i]);
-                // waitingBalance+=cashMoves[i].amount;
+              if (cashMoves[i].doc.state == 'WAITING'){
+                if (pts[i] && pts[i].key && docDict[pts[i].key[4]]){
+                  cash.waiting.unshift(pts[i] && pts[i].key && docDict[pts[i].key[4]]);
+                }
               } else {
-                cash.moves.unshift(cashMoves[i]);
+                if (pts[i] && pts[i].key && docDict[pts[i].key[4]]){
+                  cash.moves.unshift(pts[i] && pts[i].key && docDict[pts[i].key[4]]);
+                }
               }
             } else {
-              cash.moves.unshift(cashMoves[i]);
+              if (pts[i] && pts[i].key && docDict[pts[i].key[4]]){
+                cash.moves.unshift(pts[i] && pts[i].key && docDict[pts[i].key[4]]);
+              }
             }
           }
-          // cash.balance -= waitingBalance;
-          this.pouchdbService.getDoc(cash.currency_id).then(async currency=>{
+          if (cash.currency_id){
+            let currency:any = await this.pouchdbService.getDoc(cash.currency_id);
             cash.currency = currency;
-            this.pouchdbService.getRelated(
-            "close", "cash_id", doc_id).then((planned) => {
-              cash.closes = planned;
-              resolve(cash);
-            });
-          })
+          }
+          this.pouchdbService.getRelated(
+          "close", "cash_id", doc_id).then((planned) => {
+            cash.closes = planned;
+            resolve(cash);
+          });
         })
       });
     });
@@ -127,7 +151,7 @@ export class CashService {
   }
 
   localHandleChangeData(moves, waiting, change){
-    console.log("lslolo", change);
+    // console.log("lslolo", change);
     let changedDoc = null;
     let changedState = false;
     let changedIndex = null;
@@ -190,55 +214,71 @@ export class CashService {
           list.unshift(change.doc);
         }
       }
-      console.log("change.doc", change.doc);
+      // console.log("change.doc", change.doc);
       if (change.doc.close_id){
-        console.log("changed with close_id");
+        // console.log("changed with close_id");
         list.splice(changedIndex, 1);
       }
   }
 
   localHandleCheckChange(checks, change){
-    console.log("lslolo", change);
+    // console.log("lsloloCheck", change, checks);
     let changedDoc = null;
     let changedState = false;
     let changedIndex = null;
-      let list = checks;
-      list.forEach((doc, index) => {
-        if(doc.doc._id === change.id){
-          changedDoc = doc;
-          changedIndex = index;
-          if (doc.state == 'WAITING' && change.doc.state == 'DONE'){
-            // To use when deposit the check
-            changedState = true;
-          }
+    let list = checks;
+    list.forEach((doc, index) => {
+      // console.log("doc.id", doc.id, change.id);
+      if(doc.id === change.id){
+        // console.log("es igual");
+        changedDoc = doc;
+        changedIndex = index;
+        if (change.doc.state == 'DEPOSITED'){
+          // To use when deposit the check
+          changedState = true;
+          // console.log("muda estado");
         }
-      });
-      //A document was deleted
-      if(change.deleted){
-        list.splice(changedIndex, 1);
-      } else if(changedState){
-        list.splice(changedIndex, 1);
-        changedState = false;
       }
+    });
+    //A document was deleted
+    if(change.deleted){
+      // console.log("deleted", changedIndex);
+      list.splice(changedIndex, 1);
+
+    } else if(changedState){
+      // console.log("changedState", changedIndex);
+      list.splice(changedIndex, 1);
+      changedState = false;
+    }
+    else {
+      // console.log("other");
+      //A document was updated
+      if(changedDoc){
+        list[changedIndex] = change;
+      }
+      //A document was added
       else {
-        //A document was updated
-        if(changedDoc){
-          list[changedIndex] = change;
-        }
-        //A document was added
-        else {
-          list.unshift(change);
-        }
+        list.unshift(change);
       }
+    }
   }
 
   handleSumatoryChange(sumatory, cashForm, change){
     if (change.doc._rev[0] == '1'){
-      if (change.doc.accountTo_id == cashForm.value._id){
-        sumatory += change.doc.amount
-      }
-      if (change.doc.accountFrom_id == cashForm.value._id){
-        sumatory -= change.doc.amount
+      if (JSON.stringify(cashForm.value.currency) == "{}"){
+        if (change.doc.accountTo_id == cashForm.value._id){
+          sumatory += change.doc.amount
+        }
+        if (change.doc.accountFrom_id == cashForm.value._id){
+          sumatory -= change.doc.amount
+        }
+      } else {
+        if (change.doc.accountTo_id == cashForm.value._id){
+          sumatory += change.doc.currency_amount
+        }
+        if (change.doc.accountFrom_id == cashForm.value._id){
+          sumatory -= change.doc.currency_amount
+        }
       }
       cashForm.patchValue({
         balance: sumatory

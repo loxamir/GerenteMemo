@@ -28,7 +28,6 @@ export class AccountCategoryListPage implements OnInit {
     public events: Events,
     public popoverCtrl: PopoverController,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     // if (this.select){
     //   this.has_search = true;
@@ -128,7 +127,7 @@ export class AccountCategoryListPage implements OnInit {
   // }
 
   async openAccountCategory(accountCategory) {
-    console.log("accountCategory", accountCategory);
+    // console.log("accountCategory", accountCategory);
     if (this.select){
       let profileModal = await this.modalCtrl.create({
         component: AccountCategoryPage,

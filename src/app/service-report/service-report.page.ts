@@ -157,7 +157,7 @@ export class ServiceReportPage implements OnInit {
   }
 
   async getData() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     return new Promise(resolve => {
       if (this.reportServiceForm.value.groupBy == 'service') {
@@ -172,7 +172,7 @@ export class ServiceReportPage implements OnInit {
           undefined,
           false
         ).then(async (services: any[]) => {
-          console.log("Servicios lines", services);
+          //console.log("Servicios lines", services);
           let items = [];
           let promise_ids = [];
           let result = {};
@@ -224,7 +224,7 @@ export class ServiceReportPage implements OnInit {
           undefined,
           false
         ).then(async (services: any[]) => {
-          console.log("service lines", services);
+          //console.log("service lines", services);
           let items = [];
           let promise_ids = [];
           let result = {};
@@ -601,7 +601,7 @@ export class ServiceReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
@@ -1099,7 +1099,7 @@ export class ServiceReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
+        //console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1120,7 +1120,7 @@ export class ServiceReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
+        //console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1135,6 +1135,6 @@ export class ServiceReportPage implements OnInit {
         if (tooltip) tooltip.style('display', 'none');
         if (tooltipLine) tooltipLine.attr('stroke', 'none');
       });
-    console.log("fim");
+    //console.log("fim");
   }
 }

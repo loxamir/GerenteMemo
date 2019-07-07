@@ -11,7 +11,7 @@ import { LanguageModel } from "../services/language/language.model";
 // import { Crop } from '@ionic-native/crop';
 // import { HelpService } from './help.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import marked from 'marked';
+// import marked from 'marked';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 @Component({
@@ -42,7 +42,6 @@ export class HelpPage implements OnInit {
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
   }
@@ -50,7 +49,8 @@ export class HelpPage implements OnInit {
   convert() {
     if(this.helpForm.value.editContent==false){
       if(this.helpForm.value.content && this.helpForm.value.content!=''){
-        this.content =  marked(this.helpForm.value.content.toString());
+        // this.content =  marked(this.helpForm.value.content.toString());
+        this.content =  this.helpForm.value.content.toString();
       }
     }
   }

@@ -36,7 +36,6 @@ export class DashboardListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public file: File,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     this.filter = this.route.snapshot.paramMap.get('filter')||'all';
     this.supplier = this.route.snapshot.paramMap.get('supplier')|| false;
@@ -53,7 +52,7 @@ export class DashboardListPage implements OnInit {
 
   searchItems() {
     this.dashboardsService.searchItems(this.searchTerm, 0).then((sales) => {
-      console.log("dashboards", sales);
+      // console.log("dashboards", sales);
       this.dashboards = sales;
       this.page = 1;
       //this.loading.dismiss();

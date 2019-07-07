@@ -63,7 +63,8 @@ export class CashPage implements OnInit {
       this.translate.use('es');
       this.events.unsubscribe('changed-cash-move');
       this.events.subscribe('changed-cash-move', (change)=>{
-        if (!this.changes.hasOwnProperty(change.seq)){
+        if (!this.changes.hasOwnProperty(change.seq) && change.doc.docType){
+          this.changes[change.seq] = true;
           if (
             change.doc.accountFrom_id == this._id
             || change.doc.accountTo_id == this._id
@@ -73,7 +74,6 @@ export class CashPage implements OnInit {
               this.cashForm.value.moves, this.cashForm.value.waiting, change);
             this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
             this.events.publish('refresh-cash-list', change);
-            this.changes[change.seq] = true;
           }
         }
       })
@@ -90,17 +90,9 @@ export class CashPage implements OnInit {
 
       this.events.subscribe('changed-check', (change)=>{
         if (!this.changes.hasOwnProperty(change.seq)){
-          if (
-            change.doc.account_id == this._id
-            || change.doc.account_id == this._id
-          ){
-            this.cashService.localHandleCheckChange(this.cashForm.value.checks, change);
-            // this.cashService.localHandleChangeData(
-            //   this.cashForm.value.moves, this.cashForm.value.waiting, change);
-            // this.cashService.handleSumatoryChange(this.cashForm.value.balance, this.cashForm, change);
-            this.events.publish('refresh-cash-list', change);
-            this.changes[change.seq] = true;
-          }
+          this.changes[change.seq] = true;
+          this.cashService.localHandleCheckChange(this.cashForm.value.checks, change);
+          this.events.publish('refresh-cash-list', change);
         }
       })
     }
@@ -109,6 +101,7 @@ export class CashPage implements OnInit {
       this.cashForm = this.formBuilder.group({
         name: new FormControl('', Validators.required),
         balance: new FormControl(0),
+        currency_balance: new FormControl(0),
         currency: new FormControl({}),
         // currency_name: new FormControl(''),
         moves: new FormControl([]),
@@ -128,7 +121,7 @@ export class CashPage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
@@ -315,8 +308,7 @@ export class CashPage implements OnInit {
       });
     }
 
-    async addIncome(fab){
-      fab.close();
+    async addIncome(){
       let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
@@ -326,11 +318,10 @@ export class CashPage implements OnInit {
           "currency": this.cashForm.value.currency,
         }
       });
-      profileModal.present();
+      await profileModal.present();
     }
 
-    async addTransfer(fab){
-      fab.close();
+    async addTransfer(){
       let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {
@@ -343,8 +334,7 @@ export class CashPage implements OnInit {
       profileModal.present();
     }
 
-    async addExpense(fab){
-      fab.close();
+    async addExpense(){
       let profileModal = await this.modalCtrl.create({
         component: CashMovePage,
         componentProps: {

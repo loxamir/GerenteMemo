@@ -31,6 +31,7 @@ export class SalePopover {
         state: 'QUOTATION',
         _id: '',
         code: '',
+        date: new Date().toISOString(),
         residual: this.navParams.data.doc.saleForm.value.total,
         planned: [],
         payments: [],

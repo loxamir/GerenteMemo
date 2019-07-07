@@ -29,7 +29,6 @@ export class HelpListPage implements OnInit {
     public route: ActivatedRoute,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.select = this.route.snapshot.paramMap.get('select');
     if (this.select){
       this.has_search = true;
@@ -38,7 +37,7 @@ export class HelpListPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     //this.loading.present();
     this.startFilteredItems();
@@ -59,7 +58,7 @@ export class HelpListPage implements OnInit {
       let filter = this.filter;
     }
     this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
-      console.log("this.filter", this.filter);
+      // console.log("this.filter", this.filter);
       this.helps = helps;
 
       this.page = 1;

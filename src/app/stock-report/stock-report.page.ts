@@ -157,14 +157,12 @@ export class StockReportPage implements OnInit {
   }
 
   async getData() {
-    this.loading = await this.loadingCtrl.create();
-    await this.loading.present();
     return new Promise(resolve => {
       if (this.reportStockForm.value.reportType == 'stock') {
         this.pouchdbService.getView(
           'stock/Depositos',
           10,
-          ["warehouse.physical.my" ,"0", "0"],
+          ["warehouse.physical.my", "0", "0"],
           ["warehouse.physical.my", "z", "z"],
           true,
           true,
@@ -172,7 +170,7 @@ export class StockReportPage implements OnInit {
           undefined,
           false
         ).then(async (stocks: any[]) => {
-          console.log("stock lines", stocks);
+          //console.log("stock lines", stocks);
           let items = [];
           let promise_ids = [];
           let result = {};
@@ -201,7 +199,7 @@ export class StockReportPage implements OnInit {
                 }
               // }
             });
-            console.log("getList", getList);
+            //console.log("getList", getList);
             let products: any = await this.pouchdbService.getList(getList.slice(0, 999));
             var doc_dict = {};
             products.forEach(row=>{
@@ -228,10 +226,10 @@ export class StockReportPage implements OnInit {
                   brands[item._id] = litems.length-1;
                 }
               } else {
-                console.log("item", item);
+                //console.log("item", item);
               }
             })
-            console.log("litems", litems);
+            //console.log("litems", litems);
             let self = this;
             let output = litems.sort(function(a, b) {
               return self.compare(a, b, self.reportStockForm.value.orderBy);
@@ -243,7 +241,6 @@ export class StockReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
-            this.loading.dismiss();
             resolve(output);
           }
           else if (this.reportStockForm.value.groupBy == 'category') {
@@ -298,10 +295,10 @@ export class StockReportPage implements OnInit {
                   brands[doc_dict[item._id].category_name] = litems.length-1;
                 }
               } else {
-                console.log("item", item);
+                // console.log("item", item);
               }
             })
-            console.log("litems", litems);
+            // console.log("litems", litems);
             let self = this;
             let output = litems.sort(function(a, b) {
               return self.compare(a, b, self.reportStockForm.value.orderBy);
@@ -313,7 +310,6 @@ export class StockReportPage implements OnInit {
                 marker = !marker;
               total += parseFloat(item['total']);
             });
-            this.loading.dismiss();
             resolve(output);
             // items = [];
             // let getList = [];
@@ -374,7 +370,6 @@ export class StockReportPage implements OnInit {
             //     marker = !marker;
             //   total += parseFloat(item['total']);
             // });
-            // this.loading.dismiss();
             // resolve(output);
           }
           else if (this.reportStockForm.value.groupBy == 'brand') {
@@ -429,10 +424,10 @@ export class StockReportPage implements OnInit {
                     brands[doc_dict[item._id].brand_name] = litems.length-1;
                   }
                 } else {
-                  console.log("item", item);
+                  // console.log("item", item);
                 }
               })
-              console.log("litems", litems);
+              // console.log("litems", litems);
               let self = this;
               let output = litems.sort(function(a, b) {
                 return self.compare(a, b, self.reportStockForm.value.orderBy);
@@ -444,7 +439,6 @@ export class StockReportPage implements OnInit {
                   marker = !marker;
                 total += parseFloat(item['total']);
               });
-              this.loading.dismiss();
               resolve(output);
           }
         });
@@ -501,31 +495,26 @@ export class StockReportPage implements OnInit {
 
   async ngOnInit() {
     this.reportStockForm = this.formBuilder.group({
-      contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
+      contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}),
       name: new FormControl(''),
       dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.getFirstDateOfMonth()),
       dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today.toISOString()),
       total: new FormControl(0),
-      items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
+      items: new FormControl(this.route.snapshot.paramMap.get('items') || []),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
       groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'product'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    if (this._id) {
-      this.reportService.getReport(this._id).then((data) => {
-        //console.log("data", data);
-        this.reportStockForm.patchValue(data);
-        //this.loading.dismiss();
-      });
-    } else {
-      //this.loading.dismiss();
-    }
     // if (this.route.snapshot.paramMap.get('compute){
-    this.goNextStep();
+    await this.goNextStep();
+    // console.log("foie");
+    this.loading.dismiss();
   }
 
   getFirstDateOfMonth() {
@@ -1009,7 +998,7 @@ export class StockReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
+        // console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1030,7 +1019,7 @@ export class StockReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
+        // console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1045,6 +1034,6 @@ export class StockReportPage implements OnInit {
         if (tooltip) tooltip.style('display', 'none');
         if (tooltipLine) tooltipLine.attr('stroke', 'none');
       });
-    console.log("fim");
+    // console.log("fim");
   }
 }

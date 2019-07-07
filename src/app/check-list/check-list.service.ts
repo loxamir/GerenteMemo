@@ -11,9 +11,22 @@ export class CheckListService {
     public pouchdbService: PouchdbService,
   ) {}
 
-  getChecks(keyword, page){
-    return this.pouchdbService.searchDocTypeData('check', keyword, page);
-    // return this.pouchdbService.searchDocTypePage('check');
+  getChecks(keyword, page, field=null, filter=null){
+    return new Promise((resolve, reject)=>{
+      if (field){
+        this.pouchdbService.searchDocTypeDataField(
+          'check', keyword, page, field, filter, "maturity_date"
+        ).then((accounts: any[]) => {
+          resolve(accounts);
+        });
+      } else {
+        this.pouchdbService.searchDocTypeData(
+          'check', keyword, page
+        ).then((accounts: any[]) => {
+          resolve(accounts);
+        });
+      }
+    });
   }
 
   deleteCheck(check) {

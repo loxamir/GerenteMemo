@@ -66,31 +66,31 @@ export class AppComponent implements OnInit {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      // this.translate.setDefaultLang('es');
-      // this.translate.use('es');
-      // this.statusBar.styleDefault();
-      this.statusBar.show()
-      // this.statusBar.overlaysWebView(true);
-      this.statusBar.styleLightContent()
-      this.statusBar.backgroundColorByHexString('#1652a0');
-      this.splashScreen.hide();
+      if (this.platform.is('cordova')){
+        // this.translate.setDefaultLang('es');
+        // this.translate.use('es');
+        // this.statusBar.styleDefault();
+        this.statusBar.show()
+        // this.statusBar.overlaysWebView(true);
+        this.statusBar.styleLightContent()
+        this.statusBar.backgroundColorByHexString('#1652a0');
+        this.splashScreen.hide();
+      }
     });
   }
 
   backButtonListener(): void {
     window.onpopstate = async (evt) => {
       // Close any active modals or overlays
-      console.log("close modal");
-          console.log("teste back");
-          const modal = await this.modalCtrl.getTop();
-          if (modal) {
-              modal.dismiss();
-          }
+      const modal = await this.modalCtrl.getTop();
+      if (modal) {
+        await modal.dismiss();
+      }
     }
   }
 
   async ngOnInit(){
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
     if (this.user && !this.user['admin']){

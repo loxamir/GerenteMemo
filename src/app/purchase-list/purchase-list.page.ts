@@ -27,7 +27,8 @@ export class PurchaseListPage implements OnInit {
   criteria = "=";
   languages: Array<LanguageModel>;
   currency_precision = 2;
-
+  currencies:any = {};
+  company_currency_id = 'currency.PYG';
   constructor(
     public navCtrl: NavController,
     // public app: App,
@@ -42,7 +43,6 @@ export class PurchaseListPage implements OnInit {
     public route: ActivatedRoute,
     public modal: ModalController,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -53,11 +53,6 @@ export class PurchaseListPage implements OnInit {
     this.events.subscribe('got-database', ()=>{
       this.setFilteredItems();
     })
-  }
-
-  openMenu() {
-    console.log("asdfasdf");
-    this.menu.open();
   }
 
   doInfinite(infiniteScroll) {
@@ -78,7 +73,6 @@ export class PurchaseListPage implements OnInit {
     this.searchItemsS(
       this.searchTerm, 0
     ).then((purchases) => {
-      console.log("purchases", purchases);
       this.purchases = purchases;
       this.page = 1;
       this.loading.dismiss();
@@ -97,15 +91,7 @@ export class PurchaseListPage implements OnInit {
     }, 50);
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(PurchasesPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
-
   async presentPopover(myEvent) {
-    console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: PurchaseListPopover,
       event: myEvent,
@@ -115,10 +101,17 @@ export class PurchaseListPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
+    this.company_currency_id = config.currency_id;
+    let pyg = await this.pouchdbService.getDoc('currency.PYG')
+    let usd = await this.pouchdbService.getDoc('currency.USD')
+    this.currencies = {
+      "currency.PYG": pyg,
+      "currency.USD": usd,
+    }
     this.setFilteredItems();
   }
 
@@ -136,22 +129,16 @@ export class PurchaseListPage implements OnInit {
     this.events.subscribe('open-purchase', (data) => {
       this.events.unsubscribe('open-purchase');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(PurchasePage, {'_id': purchase._id});
     this.navCtrl.navigateForward(['/purchase', {'_id': purchase._id}]);
   }
 
   createPurchase(){
     this.events.subscribe('create-purchase', (data) => {
       if (this.select){
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('select-purchase', data);
-        // });
+        this.events.publish('select-purchase', data);
       }
       this.events.unsubscribe('create-purchase');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(PurchasePage, {});
     this.navCtrl.navigateForward(['/purchase', {}]);
   }
 

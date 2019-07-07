@@ -39,7 +39,6 @@ export class ContactListPage implements OnInit {
     public file: File,
     public loadingCtrl: LoadingController,
   ) {
-    // //this.loading = //this.loadingCtrl.create();
     // this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     this.filter = this.route.snapshot.paramMap.get('filter')||'all';
@@ -58,49 +57,34 @@ export class ContactListPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-    this.setFilteredItems();
+    await this.setFilteredItems();
     setTimeout(() => {
       if(this.select){
         this.searchBar.setFocus();
       }
-    }, 500);
+    }, 200);
   }
 
   setFilteredItems() {
-    console.log("tes1");
-    let filter = null;
-    if (this.filter == "all"){
+    return new Promise(async resolve => {
       let filter = null;
-    } else {
-      let filter = this.filter;
-    }
-    this.getContactsPage(
-      this.searchTerm, 0, filter
-    ).then((contacts: any[]) => {
-      console.log("contacts", contacts);
+      if (this.filter == "all"){
+        let filter = null;
+      } else {
+        let filter = this.filter;
+      }
+      this.getContactsPage(
+        this.searchTerm, 0, filter
+      ).then(async (contacts: any[]) => {
 
-      // if (this.filter == 'all'){
-        this.contacts = contacts;
-      // }
-      // else if (this.filter == 'seller'){
-      //   this.contacts = contacts.filter(word => word.seller == true);
-      // }
-      // else if (this.filter == 'customer'){
-      //   this.contacts = contacts.filter(word => word.customer == true);
-      // }
-      // else if (this.filter == 'supplier'){
-      //   this.contacts = contacts.filter(word => word.supplier == true);
-      // }
-      // else if (this.filter == 'employee'){
-      //   this.contacts = contacts.filter(word => word.employee == true);
-      // }
-      this.page = 1;
+          this.contacts = contacts;
+        this.page = 1;
 
-      // this.contacts = contacts;
-      // this.page = 1;
-      this.loading.dismiss();
+        await this.loading.dismiss();
+        resolve(true)
+      });
     });
   }
 
@@ -140,7 +124,7 @@ export class ContactListPage implements OnInit {
 
   searchItems() {
     this.searchItemsS(this.searchTerm, 0).then((sales) => {
-      console.log("contacts", sales);
+      // console.log("contacts", sales);
       this.contacts = sales;
       this.page = 1;
       this.loading.dismiss();
@@ -210,7 +194,7 @@ export class ContactListPage implements OnInit {
   //   });
   // }
   async presentPopover(myEvent) {
-    console.log("teste my event");
+    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ContactListPopover,
       event: myEvent,
@@ -223,7 +207,7 @@ export class ContactListPage implements OnInit {
     this.events.subscribe('open-contact', (data) => {
       this.events.unsubscribe('open-contact');
     })
-    console.log("contact", contact);
+    // console.log("contact", contact);
     // if (this.select){
     //   // this.navCtrl.push(ContactPage, {'_id': contact._id});
     //   this.router.navigate(['contact', {'_id': contact._id}]);
@@ -280,10 +264,10 @@ export class ContactListPage implements OnInit {
       }]);
     }
     this.events.subscribe('create-contact', (data) => {
-      console.log("select", data);
+      // console.log("select", data);
       if (this.select){
         this.events.publish('select-contact', data);
-        console.log("dismiss");
+        // console.log("dismiss");
         this.modalCtrl.dismiss();
 
         // });

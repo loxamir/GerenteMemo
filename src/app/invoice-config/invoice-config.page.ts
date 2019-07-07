@@ -34,7 +34,6 @@ export class InvoiceConfigPage implements OnInit {
     public formatService: FormatService,
     public pouchdbService: PouchdbService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -80,6 +79,7 @@ export class InvoiceConfigPage implements OnInit {
       linesTax0_width: new FormControl(this.navParams.data.linesTax0_width),
       linesTax5_width: new FormControl(this.navParams.data.linesTax5_width),
       linesTax10_width: new FormControl(this.navParams.data.linesTax10_width),
+      linesFee_width: new FormControl(this.navParams.data.linesFee_width),//
 
       subTotalTax0_top: new FormControl(this.navParams.data.subTotalTax0_top),
       subTotalTax0_left: new FormControl(this.navParams.data.subTotalTax0_left),
@@ -90,6 +90,11 @@ export class InvoiceConfigPage implements OnInit {
       subTotalTax10_top: new FormControl(this.navParams.data.subTotalTax10_top),
       subTotalTax10_left: new FormControl(this.navParams.data.subTotalTax10_left),
       subTotalTax10_width: new FormControl(this.navParams.data.subTotalTax10_width),
+
+      subTotalFees_top: new FormControl(this.navParams.data.subTotalFees_top),//
+      subTotalFees_left: new FormControl(this.navParams.data.subTotalFees_left),//
+      subTotalFees_width: new FormControl(this.navParams.data.subTotalFees_width),//
+
       amountInWords_top: new FormControl(this.navParams.data.amountInWords_top),
       amountInWords_left: new FormControl(this.navParams.data.amountInWords_left),
       amountInWords_width: new FormControl(this.navParams.data.amountInWords_width),
@@ -100,6 +105,10 @@ export class InvoiceConfigPage implements OnInit {
       invoiceDiscount_top: new FormControl(this.navParams.data.invoiceDiscount_top),
       invoiceDiscount_left: new FormControl(this.navParams.data.invoiceDiscount_left),
       invoiceDiscount_width: new FormControl(this.navParams.data.invoiceDiscount_width),
+
+      totalFees_top: new FormControl(this.navParams.data.totalFees_top),//
+      totalFees_left: new FormControl(this.navParams.data.totalFees_left),//
+      totalFees_width: new FormControl(this.navParams.data.totalFees_width),//
 
       invoiceNote_top: new FormControl(this.navParams.data.invoiceNote_top),
       invoiceNote_left: new FormControl(this.navParams.data.invoiceNote_left),
@@ -126,170 +135,154 @@ export class InvoiceConfigPage implements OnInit {
     });
   }
 
-  async printTest(){
-    // let dotmatrix_model:any = await this.pouchdbService.getDoc('config.invoice');
-    // let layout = await this.pouchdbService.getDoc('config.profile');
+  async printTest() {
     let invoiceData = {
-      "contact":{
-        "code":"190",
-        "name":"Cliente de Ejemplo",
-        "phone":"0983-585555",
-        "document":"653777-7",
-        "address":"SANTA RITA - SINUELO",
-        "email":"",
-        "customer":true,
-        "supplier":false,
-        "employee":false,
-        "seller":false,
-        "note":"",
-        "docType":"contact",
+      "contact": {
+        "code": "190",
+        "name": "Cliente de Ejemplo",
+        "phone": "0983-585555",
+        "document": "653777-7",
+        "address": "SANTA RITA - SINUELO",
+        "email": "",
+        "customer": true,
+        "supplier": false,
+        "employee": false,
+        "seller": false,
+        "note": "",
+        "docType": "contact",
+      },
+      "name": "",
+      "contact_name": "Cliente de Ejemplo",
+      "code": "001-001-0000002",
+      "date": "1999-12-31T12:07:47.265Z",
+      "total": 300000,
+      "residual": 300000,
+      "tax": 36181.818181818184,
+      "note": "",
+      "state": "PRINTED",
+      "items": [
+        {
+          "product": {
+            "code": "021",
+            "name": "Producto Iva 10%",
+            "price": 100000,
+            "stock": 10,
+            "tax": "iva10",
+            "stock_min": 0,
+            "type": "product",
+            "note": "",
+            "docType": "product"
+          },
+          "description": "Producto Iva 10%",
+          "quantity": "1",
+          "price": 100000
         },
-        "name":"",
-        "contact_name":"Cliente de Ejemplo",
-        "code":"001-001-0000002",
-        "date":"1999-12-31T12:07:47.265Z",
-        "total":300000,
-        "residual":300000,
-        "tax":36181.818181818184,
-        "note":"",
-        "state":"PRINTED",
-        "items":[
-          {
-            "product":{
-              "code":"021",
-              "name":"Producto Iva 10%",
-              "price":100000,
-              "stock":10,
-              "tax":"iva10",
-              "stock_min":0,
-              "type":"product",
-              "note":"",
-              "docType":"product"
-            },
-            "description":"Producto Iva 10%",
-            "quantity":"1",
-            "price":100000
+        {
+          "product": {
+            "code": "002",
+            "name": "Producto Iva 5%",
+            "price": 100000,
+            "cost": 50000,
+            "stock": 2,
+            "tax": "iva5",
+            "stock_min": 0,
+            "type": "product",
+            "note": "",
+            "docType": "product"
           },
-          {
-            "product":{
-              "code":"002",
-              "name":"Producto Iva 5%",
-              "price":100000,
-              "cost":50000,
-              "stock":2,
-              "tax":"iva5",
-              "stock_min":0,
-              "type":"product",
-              "note":"",
-              "docType":"product"
-            },
-            "description":"Producto Iva 5%",
-            "quantity":"1",
-            "price":100000
+          "description": "Producto Iva 5%",
+          "quantity": "1",
+          "price": 100000
+        },
+        {
+          "product": {
+            "code": "253",
+            "name": "Producto Exento",
+            "price": 100000,
+            "cost": 50000,
+            "stock": 2,
+            "tax": "iva0",
+            "stock_min": 0,
+            "type": "product",
+            "note": "",
+            "docType": "product"
           },
-          {
-            "product":{
-              "code":"253",
-              "name":"Producto Exento",
-              "price":100000,
-              "cost":50000,
-              "stock":2,
-              "tax":"iva0",
-              "stock_min":0,
-              "type":"product",
-              "note":"",
-              "docType":"product"
-            },
-            "description":"Producto Exento",
-            "quantity":"1",
-            "price":100000
-          },
-        ],
-        "type":"out",
-        "paymentCondition":"Contado",
-        "number":"",
-        "currency":{}
-      }
-    // async informNumberSupplier(code){
-      let prompt = await this.alertCtrl.create({
-        header: 'Elejir Condición de Pago',
-        message: 'Cual es la Condición de Pago de que quieres imprimir?',
-        buttons: [
-          {
-            text: 'Contado',
-            handler: data => {
-              invoiceData.paymentCondition = "Contado";
-              this.formatService.printInvoice(
-                invoiceData,
-                this.invoiceForm.value
-              );
-            }
-          },
-          {
-            text: 'Credito',
-            handler: data => {
-              invoiceData.paymentCondition = "Credito";
-              this.formatService.printInvoice(
-                invoiceData,
-                this.invoiceForm.value
-              );
-            }
+          "description": "Producto Exento",
+          "quantity": "1",
+          "price": 100000
+        },
+      ],
+      "type": "out",
+      "paymentCondition": "Contado",
+      "number": "",
+      "currency": {}
+    }
+    let prompt = await this.alertCtrl.create({
+      header: 'Elejir Condición de Pago',
+      message: 'Cual es la Condición de Pago de que quieres imprimir?',
+      buttons: [
+        {
+          text: 'Contado',
+          handler: data => {
+            invoiceData.paymentCondition = "Contado";
+            this.formatService.printInvoice(
+              invoiceData,
+              this.invoiceForm.value
+            );
           }
-        ]
-      });
-
+        },
+        {
+          text: 'Credito',
+          handler: data => {
+            invoiceData.paymentCondition = "Credito";
+            this.formatService.printInvoice(
+              invoiceData,
+              this.invoiceForm.value
+            );
+          }
+        }
+      ]
+    });
     await prompt.present();
-    // }
-
-
-
   }
 
-  buttonSave(){
+  buttonSave() {
     this.modalCtrl.dismiss(this.invoiceForm.value);
   }
 
 
-  discard(){
+  discard() {
     this.canDeactivate();
   }
   async canDeactivate() {
-      if(this.invoiceForm.dirty) {
-          let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
-              buttons: [{
-                      text: 'Si',
-                      handler: () => {
-                          // alertPopup.dismiss().then(() => {
-                              this.exitPage();
-                          // });
-                      }
-                  },
-                  {
-                      text: 'No',
-                      handler: () => {
-                          // need to do something if the user stays?
-                      }
-                  }]
-          });
-
-          // Show the alert
-          alertPopup.present();
-
-          // Return false to avoid the page to be popped up
-          return false;
-      } else {
-        this.exitPage();
-      }
+    if (this.invoiceForm.dirty) {
+      let alertPopup = await this.alertCtrl.create({
+        header: 'Descartar',
+        message: '¿Deseas salir sin guardar?',
+        buttons: [{
+          text: 'Si',
+          handler: () => {
+            this.exitPage();
+          }
+        },
+        {
+          text: 'No',
+          handler: () => { }
+        }]
+      });
+      alertPopup.present();
+      return false;
+    } else {
+      this.exitPage();
+    }
   }
 
   private exitPage() {
-    if (this.select){
+    if (this.select) {
       this.modalCtrl.dismiss();
     } else {
       this.invoiceForm.markAsPristine();
-      this.navCtrl.navigateBack('/product-list');
+      this.navCtrl.navigateBack('/config');
     }
   }
 }

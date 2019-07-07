@@ -39,7 +39,6 @@ export class SaleListPage implements OnInit {
     public languageService: LanguageService,
     public translate: TranslateService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -74,7 +73,7 @@ export class SaleListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    console.log("teste my event");
+    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: SalesPopover,
       event: myEvent,
@@ -85,7 +84,7 @@ export class SaleListPage implements OnInit {
 
   async ngOnInit() {
     //this.loading.present();
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
@@ -112,19 +111,21 @@ export class SaleListPage implements OnInit {
     });
   }
 
-  openSale(sale) {
+  async openSale(sale) {
     this.events.subscribe('open-sale', (data) => {
       this.events.unsubscribe('open-sale');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(SalePage, {'_id': sale._id});
-    this.navCtrl.navigateForward(['/sale', {'_id': sale._id}]);
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
+    await this.navCtrl.navigateForward(['/sale', {'_id': sale._id}]);
+    await this.loading.dismiss();
   }
 
-  createSale(){
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(SalePage, {});
-    this.navCtrl.navigateForward(['/sale', {}]);
+  async createSale(){
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
+    await this.navCtrl.navigateForward(['/sale', {}]);
+    await this.loading.dismiss();
   }
 
   getSalesPage(keyword, page){

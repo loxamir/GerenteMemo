@@ -3,11 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { NavController,  LoadingController,  Events, PopoverController } from '@ionic/angular';
 import { CashMoveListPopover } from './cash-move-list.popover';
-
 import 'rxjs/Rx';
-// import { CashMoveListService } from './cash-move-list.service';
-// import { CashListService } from '../../list/cash-list.service';
-// import { CashMoveListPopover } from './cash-move-list.popover';
 
 @Component({
   selector: 'app-cash-move-list',
@@ -25,7 +21,6 @@ export class CashMoveListPage implements OnInit {
   constructor(
     public pouchdbService: PouchdbService,
     public navCtrl: NavController,
-    // public cashMoveListService: CashMoveListService,
     public loadingCtrl: LoadingController,
     public route: ActivatedRoute,
     public events: Events,
@@ -58,7 +53,7 @@ export class CashMoveListPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
@@ -82,20 +77,7 @@ export class CashMoveListPage implements OnInit {
     });
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(CashMoveListPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  //   this.events.subscribe('import-cash-move', (data) => {
-  //     setTimeout(() => {
-  //       this.setFilteredItems();
-  //     }, 800);
-  //   });
-  // }
-
   async presentPopover(myEvent) {
-    console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: CashMoveListPopover,
       event: myEvent,
@@ -109,8 +91,6 @@ export class CashMoveListPage implements OnInit {
       this.events.subscribe('open-cash-move', (data) => {
         this.events.unsubscribe('open-cash-move');
       })
-      // let newRootNav = <NavController>this.app.getRootNavById('n4');
-      // newRootNav.push(CashMovePage, {'_id': cashMove._id});
       this.navCtrl.navigateForward(['/cash-move', {'_id': cashMove._id}]);
     } else {
       this.selectCashMove(cashMove);
@@ -119,9 +99,7 @@ export class CashMoveListPage implements OnInit {
 
   selectCashMove(cashMove) {
     if (this.select){
-      // this.navCtrl.navigateBack().then(() => {
         this.events.publish('select-cash-move', cashMove);
-      // });
     } else {
       this.openCashMove(cashMove);
     }
@@ -130,14 +108,10 @@ export class CashMoveListPage implements OnInit {
   createCashMove(){
     this.events.subscribe('create-cash-move', (data) => {
       if (this.select){
-        // this.navCtrl.navigateBack().then(() => {
           this.events.publish('select-cash-move', data);
-        // });
       }
       this.events.unsubscribe('create-cash-move');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(CashMovePage, {});
     this.navCtrl.navigateForward(['/cash-move', {}]);
   }
 

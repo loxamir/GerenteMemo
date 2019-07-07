@@ -87,7 +87,6 @@ export class DashboardPage implements OnInit {
       public formatService: FormatService,
       public events: Events,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
       if (this.route.snapshot.paramMap.get('_id')){
@@ -136,7 +135,7 @@ export class DashboardPage implements OnInit {
     }
 
     changeSection(){
-      console.log("form", this.dashboardForm.value.section);
+      // console.log("form", this.dashboardForm.value.section);
       let tab = this.dashboardForm.value.section;
       if (tab == 'line'){
         setTimeout(() => {
@@ -183,7 +182,6 @@ export class DashboardPage implements OnInit {
             this.field_value[field] = {'list': [item.doc[field]]};
           } else {
             if (this.field_value[field]['list'].indexOf(item.doc[field]) == -1){
-              console.log()
               this.field_value[field]['list'].push(item.doc[field]);
             }
           }
@@ -197,7 +195,6 @@ export class DashboardPage implements OnInit {
         this.dashboardForm.markAsPristine();
       } else {
         this.dashboardService.createDashboard(this.dashboardForm.value).then((doc: any) => {
-          console.log("doc", doc);
           this.dashboardForm.patchValue({
             _id: doc.id,
           });
@@ -256,7 +253,6 @@ export class DashboardPage implements OnInit {
         this.getFields(this.list);
         this.dashboardForm.value.filters.forEach((filter: any)=>{
             let list = this.filter(this.list, filter.field, filter.comparation, filter.value)
-            console.log("Filter "+filter.value, list);
             this.list = list;
         })
         if (this.dashboardForm.value.groupBy != ''){
@@ -268,12 +264,10 @@ export class DashboardPage implements OnInit {
               value: dict[item].value,
             })
           })
-          console.log("Group", list);
           this.list = list;
         }
         this.value = this.sum(this.list);
         this.list = this.sortBy(this.list, this.dashboardForm.value.sortBy);
-        console.log("this.list", this.list);
         this.drawNewLine(this.list);
         this.drawNewBar(this.list);
         this.drawPie(this.list);
@@ -284,13 +278,11 @@ export class DashboardPage implements OnInit {
     sortBy(result, prop){
       let list = [];
       let self = this;
-      console.log("prop", prop);
       switch(prop){
         case 'value_decrease':
           list = result.sort(function(a, b) {
             return self.formatService.compareField(a, b, 'value', 'decrease');
           });
-          console.log("liast", list);
         break;
         case 'value_increase':
           list = result.sort(function(a, b) {
@@ -308,7 +300,6 @@ export class DashboardPage implements OnInit {
           });
         break;
       }
-      console.log("docList", list);
       return list;
     }
 
@@ -325,7 +316,6 @@ export class DashboardPage implements OnInit {
 
     groupBy(result, prop, sum) {
       return result.reduce((lines, item) => {
-        console.log("doc", item.doc);
         let val = item.doc[prop]
         lines[val] = lines[val] || {}
         lines[val][sum] = lines[val][sum] && parseFloat(lines[val][sum]) || 0
@@ -432,7 +422,6 @@ export class DashboardPage implements OnInit {
           "history": []
         }
       ];
-      console.log("list", this.list);
       let start_date = list[0].key;
       let end_date = start_date;
       let max = 0;
@@ -452,7 +441,6 @@ export class DashboardPage implements OnInit {
       let end_year = parseInt(end_date.split('-')[0]);
       let end_month = parseInt(end_date.split('-')[1]);
       let end_day = parseInt(end_date.split('-')[2]);
-      console.log("states", states);
 
       const margin = { top: 40, right: 5, bottom: 30, left: 30 };
       const width = 330 - margin.left - margin.right;
@@ -520,7 +508,7 @@ export class DashboardPage implements OnInit {
           states.sort((a, b) => {
             return self.formatService.compareField(a, b, "date");
           })
-          console.log("d3.event.pageX", d3.event.pageX);
+          // console.log("d3.event.pageX", d3.event.pageX);
           tooltip.html(date)
             .style('display', 'block')
             .style('left', d3.event.pageX + 20)
@@ -541,7 +529,7 @@ export class DashboardPage implements OnInit {
           states.sort((a, b) => {
             return self.formatService.compareField(a, b, "date");
           })
-          console.log("d3.event.pageX", d3.event.pageX);
+          // console.log("d3.event.pageX", d3.event.pageX);
           tooltip.html(date)
             .style('display', 'block')
             .style('left', d3.event.pageX + 20)
@@ -556,7 +544,6 @@ export class DashboardPage implements OnInit {
           if (tooltip) tooltip.style('display', 'none');
           if (tooltipLine) tooltipLine.attr('stroke', 'none');
         });
-      console.log("fim");
     }
 
     drawNewBar(list) {
@@ -767,7 +754,7 @@ export class DashboardPage implements OnInit {
       });
 
       // define legend
-      console.log("color.domain()", color.domain());
+      // console.log("color.domain()", color.domain());
       var legend = svg.selectAll('.legend') // selecting elements with class 'legend'
         .data(color.domain()) // refers to an array of labels from our dataset
         .enter() // creates placeholder

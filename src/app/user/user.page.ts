@@ -34,7 +34,6 @@ export class UserPage implements OnInit {
     public configService: ConfigService,
     public pouchdbService: PouchdbService,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -56,7 +55,7 @@ export class UserPage implements OnInit {
 
   async buttonSave(){
     if (this.form.value.registered==true){
-      console.log("Guardou");
+      // console.log("Guardou");
       this.form.value.registered = true;
     }
     else {

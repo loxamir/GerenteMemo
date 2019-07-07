@@ -48,7 +48,7 @@ export class InvoiceListPage implements OnInit {
     this.searchItemsS(
       this.searchTerm, 0
     ).then((invoices) => {
-      console.log("sinvoice", invoices);
+      // console.log("sinvoice", invoices);
       this.invoices = invoices;
       this.page = 1;
       this.loading.dismiss();
@@ -77,7 +77,7 @@ export class InvoiceListPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
@@ -99,7 +99,7 @@ export class InvoiceListPage implements OnInit {
       this.events.unsubscribe('open-invoice');
     })
     // this.navCtrl.navigateForward(InvoicePage,{'_id': invoice._id});
-    console.log("invoice.id", invoice._id);
+    // console.log("invoice.id", invoice._id);
     this.navCtrl.navigateForward(['/invoice', {'_id': invoice._id}]);
   }
 

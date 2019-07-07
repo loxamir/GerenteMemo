@@ -159,7 +159,7 @@ export class PayableReportPage implements OnInit {
   }
 
   async getData() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     return new Promise(resolve => {
       this.pouchdbService.getView(
@@ -173,7 +173,7 @@ export class PayableReportPage implements OnInit {
         undefined,
         false
       ).then(async (cashFlowList: any[]) => {
-        console.log("cashFlow lines", cashFlowList);
+        // console.log("cashFlow lines", cashFlowList);
         let items = [];
         let promise_ids = [];
         let result = {};

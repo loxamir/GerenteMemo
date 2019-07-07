@@ -47,7 +47,6 @@ export class WarehousePage implements OnInit {
     public pouchdbService: PouchdbService,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     // this._id = this.navParams.data._id;
     this._id = this.route.snapshot.paramMap.get('_id');
@@ -369,14 +368,14 @@ export class WarehousePage implements OnInit {
         [doc_id, '0'],
         [doc_id, 'z']
       ).then((planneds: any[]) => {
-        console.log("Depositos", planneds);
+        // console.log("Depositos", planneds);
         let promise_ids = [];
         let pts = [];
         let balance = 0;
         planneds.forEach(item => {
           // if (item.value != 0){
             pts.push(item);
-            console.log("ites", item);
+            //console.log("ites", item);
             promise_ids.push(this.pouchdbService.getDoc(item.key[1]));
             balance += parseFloat(item.value);
           // }
@@ -384,8 +383,8 @@ export class WarehousePage implements OnInit {
         promise_ids.push(this.pouchdbService.getDoc(doc_id));
         Promise.all(promise_ids).then(stockMoves => {
           // resolve(pts);
-          console.log("stockMoves", stockMoves);
-          console.log("pts", pts);
+          //console.log("stockMoves", stockMoves);
+          //console.log("pts", pts);
           // let warehouse = ;
           let warehouse = Object.assign({}, stockMoves[stockMoves.length-1]);
           warehouse.moves = [];
@@ -395,9 +394,9 @@ export class WarehousePage implements OnInit {
           for(let i=0;i<pts.length;i++){
             stockMoves[i].stock = pts[i].value;
             warehouse.moves.unshift(stockMoves[i]);
-            console.log(stockMoves[i].value);
+            //console.log(stockMoves[i].value);
           }
-          console.log("PTS2", warehouse);
+          //console.log("PTS2", warehouse);
           // let receivables = pts.filter(word => word['contact_name'] && word['contact_name'].toString().search(new RegExp(keyword, "i")) != -1);
           resolve(warehouse);
         })

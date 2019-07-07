@@ -24,7 +24,7 @@
       <ion-item
        no-padding
        class="field-50"
-       *ngIf="checkForeingCurrency()">
+       *ngIf="cash_move_currency_id != company_currency_id">
         <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
         <ion-input #currency_amount type="number"
         (ngModelChange)="changedCurrencyAmount()"
@@ -32,7 +32,7 @@
       </ion-item>
       <ion-item
        no-padding
-       *ngIf="!checkForeingCurrency()"
+       *ngIf="cash_move_currency_id == company_currency_id"
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
         <ion-input #amount type="number"
@@ -49,7 +49,7 @@
       </ion-item>
       <ion-item
        no-padding
-       *ngIf="checkForeingCurrency()"
+       *ngIf="cash_move_currency_id != company_currency_id"
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'AMOUNT_COMPANY_CURRENCY' | translate}}</ion-label>
         <ion-input #amount2 type="number"
@@ -58,21 +58,11 @@
       </ion-item>
       <ion-item
        no-padding
-       *ngIf="checkForeingCurrency()"
+       *ngIf="cash_move_currency_id != company_currency_id"
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'CURRENCY_EXCHANGE' | translate}}</ion-label>
-        <ion-input #currency_exchange type="number"
-        (ngModelChange)="changedExchange()"
-        formControlName="currency_exchange"></ion-input>
+        <ion-input #exchange_rate type="number" formControlName="exchange_rate" (ngModelChange)="changedExchange()"></ion-input>
       </ion-item>
-      <!-- <ion-item
-       no-padding
-       *ngIf="cashMoveForm.value.origin_id"
-       class="field-50">
-        <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
-        <ion-input #input type="number"
-        formControlName="amount"></ion-input>
-      </ion-item> -->
       <ion-item
        no-padding
        (click)="selectAccountFrom()"
@@ -89,14 +79,6 @@
         <h4 class="field-label">{{'Destino' | translate }}</h4>
         <h4 class="field-value">{{cashMoveForm.value.accountTo && cashMoveForm.value.accountTo.name || 'Selecionar'}}</h4>
       </ion-item>
-      <!-- <ion-item
-      no-padding
-      *ngIf="!transfer"
-      (click)="selectContact()"
-       class="field-100">
-        <h4 class="field-label">{{'CONTACT' | translate}}</h4>
-        <h4 class="field-value">{{cashMoveForm.value.contact && cashMoveForm.value.contact.name || 'Selecionar'}}</h4>
-      </ion-item> -->
     </ion-row>
     <ion-row *ngIf="!transfer">
       <ion-col no-padding class="field-many2one-edit"
@@ -190,7 +172,7 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
       <ion-icon name="print"> </ion-icon>
       Imprimir
     </ion-button>
-    <ion-row *ngIf="cashMoveForm.value.state == 'WAITING' && cashMoveForm.value.accountFrom.type == 'check' && cashMoveForm.value.accountTo.type == 'bank'">
+    <ion-row *ngIf="cashMoveForm.value.state == 'WAITING'">
       <ion-col>
         <ion-button class="button-100" (click)="rejectCheck()" color="danger">
           <!-- <ion-icon name="print"> </ion-icon> -->

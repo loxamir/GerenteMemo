@@ -210,7 +210,7 @@ export class ContractPage implements OnInit {
         dateNext: new FormControl(''),
 
       });
-      this.loading = await this.loadingCtrl.create();
+      this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       if (this._id){
         this.contractService.getContract(this._id).then((data) => {
@@ -384,7 +384,7 @@ export class ContractPage implements OnInit {
 
     async deleteItem(slidingItem, item){
       if (this.contractForm.value.state=='QUOTATION'){
-        console.log("delete item", item);
+        // console.log("delete item", item);
         slidingItem.close();
         let index = this.contractForm.value.items.indexOf(item)
         this.contractForm.value.items.splice(index, 1);
@@ -693,7 +693,7 @@ export class ContractPage implements OnInit {
     // }
 
     async presentPopover(myEvent) {
-      console.log("teste my event");
+      // console.log("teste my event");
       let popover = await this.popoverCtrl.create({
         component: ContractPopover,
         event: myEvent,
@@ -801,14 +801,14 @@ export class ContractPage implements OnInit {
               }
               createList.push(cashMoveTemplate);
             });
-            console.log("createList", createList);
+            // console.log("createList", createList);
             this.pouchdbService.createDocList(createList).then((created: any)=>{
               this.contractForm.patchValue({
                 state: 'CONFIRMED',
                 amount_unInvoiced: this.contractForm.value.total,
                 planned: created,
               });
-              console.log("Contract created", created);
+              // console.log("Contract created", created);
               this.buttonSave();
               resolve(true);
             })
@@ -886,7 +886,7 @@ export class ContractPage implements OnInit {
       this.avoidAlertMessage = true;
         this.events.unsubscribe('create-receipt');
         this.events.subscribe('create-receipt', (data) => {
-            console.log("DDDDDDDATA", data);
+            // console.log("DDDDDDDATA", data);
             this.contractForm.value.payments.push({
               'paid': data.paid,
               'date': data.date,
@@ -911,8 +911,8 @@ export class ContractPage implements OnInit {
 
           // plannedItems = [this.contractForm.value.planned[this.contractForm.value.planned.length - 1]];
 
-        console.log("this.contractForm.value.planned", this.contractForm.value.planned);
-        console.log("plannedItems", JSON.stringify(plannedItems));
+        // console.log("this.contractForm.value.planned", this.contractForm.value.planned);
+        // console.log("plannedItems", JSON.stringify(plannedItems));
         let profileModal = await this.modalCtrl.create({
           component: ReceiptPage,
           componentProps: {
@@ -1226,7 +1226,7 @@ export class ContractPage implements OnInit {
           ticket += "\n";
 
 
-          console.log("ticket", ticket);
+          // console.log("ticket", ticket);
 
 
           // Print to bluetooth printer
@@ -1334,7 +1334,7 @@ export class ContractPage implements OnInit {
         ticket += "\n</pre></div>";
 
 
-        console.log("ticket", ticket);
+        // console.log("ticket", ticket);
 
         const div = document.getElementById("htmltoimage");
         div.innerHTML = ticket;
@@ -1342,7 +1342,7 @@ export class ContractPage implements OnInit {
 
 
         // let teste = document.getElementById("htmltoimage");
-        console.log("teste element", div);
+        // console.log("teste element", div);
       //  html2canvas(div, options).then(canvas => {
       //    console.log("canvas", canvas);
       //    if (this.platform.is('cordova')){

@@ -157,7 +157,7 @@ export class ProductionReportPage implements OnInit {
   }
 
   async getData() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     return new Promise(resolve => {
 
@@ -174,7 +174,7 @@ export class ProductionReportPage implements OnInit {
           undefined,
           false
         ).then(async (productions: any[]) => {
-          console.log("ProductosProducidos lines", productions);
+          // console.log("ProductosProducidos lines", productions);
           let items = [];
           let promise_ids = [];
           let result = {};
@@ -226,14 +226,14 @@ export class ProductionReportPage implements OnInit {
         undefined,
         false
       ).then(async (productions: any[]) => {
-        console.log("ProductosProducidos lines", productions);
+        //console.log("ProductosProducidos lines", productions);
         let items = [];
         let promise_ids = [];
         let result = {};
       items = [];
       productions.forEach(productionLine => {
         if (result.hasOwnProperty(productionLine.key[0])) {
-          // console.log("items[result[productionLine.key[1]]]", items[result[productionLine.key[1]]]);
+          // //console.log("items[result[productionLine.key[1]]]", items[result[productionLine.key[1]]]);
           items[result[productionLine.key[0]]] = {
             'name': items[result[productionLine.key[0]]].name,
             'quantity': items[result[productionLine.key[0]]].quantity + parseFloat(productionLine.key[3]),
@@ -281,7 +281,7 @@ export class ProductionReportPage implements OnInit {
           undefined,
           false
         ).then(async (productions: any[]) => {
-          console.log("production lines", productions);
+          //console.log("production lines", productions);
           let items = [];
           let promise_ids = [];
           let result = {};
@@ -1009,7 +1009,7 @@ export class ProductionReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
+        //console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1030,7 +1030,7 @@ export class ProductionReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
+        //console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1045,6 +1045,6 @@ export class ProductionReportPage implements OnInit {
         if (tooltip) tooltip.style('display', 'none');
         if (tooltipLine) tooltipLine.attr('stroke', 'none');
       });
-    console.log("fim");
+    //console.log("fim");
   }
 }

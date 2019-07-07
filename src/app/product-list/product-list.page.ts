@@ -6,6 +6,7 @@ import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductListPopover } from './product-list.popover';
+import { FormatService } from '../services/format.service';
 
 @Component({
   selector: 'app-product-list',
@@ -31,6 +32,7 @@ export class ProductListPage implements OnInit {
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
+    public formatService: FormatService,
     // public modal: ModalController,
     public events: Events,
     public route: ActivatedRoute,
@@ -49,35 +51,38 @@ export class ProductListPage implements OnInit {
     // this.events.subscribe('got-database', ()=>{
     //   this.setFilteredItems();
     // })
-    // var foo = { foo: true };
-    // history.pushState(foo, "Anything", " ");
+    var foo = { foo: true };
+    history.pushState(foo, "Anything", " ");
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    this.setFilteredItems();
-    setTimeout(() => {
-      if (this.select) {
-        this.searchBar.setFocus();
-      }
-    }, 500);
+    await this.setFilteredItems();
+    if (this.select) {
+      setTimeout(() => {
+          this.searchBar.setFocus();
+      }, 200);
+    }
   }
 
   setFilteredItems() {
-    this.getProductsPage(
-      this.searchTerm, 0, this.type
-    ).then((products: any[]) => {
-      if (this.type == 'all') {
-        this.products = products;
-      }
-      else {
-        this.products = products.filter(word => word.type == this.type);
-      }
-      this.page = 1;
-      this.loading.dismiss();
+    return new Promise(async (resolve, reject) => {
+      this.getProductsPage(
+        this.searchTerm, 0, this.type
+      ).then(async (products: any[]) => {
+        if (this.type == 'all') {
+          this.products = products;
+        }
+        else {
+          this.products = products.filter(word => word.type == this.type);
+        }
+        this.page = 1;
+        await this.loading.dismiss();
+        resolve(true);
+      });
     });
   }
 
@@ -118,7 +123,7 @@ export class ProductListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    console.log("teste my event");
+    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ProductListPopover,
       event: myEvent,
@@ -186,16 +191,11 @@ export class ProductListPage implements OnInit {
       } else {
         products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'type', type, 'name', 'increase')
       }
-      let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2)
-      products.forEach(product => {
-        //Get stock value from cash moves report
-        let stock = 0;
-        viewList.forEach(view => {
-          if (view.key[0].split(".")[1] == 'physical' && view.key[1] == product._id) {
-            stock += view.value;
-          }
-        })
-        product.stock = stock;
+      await this.formatService.asyncForEach(products, async (product: any)=>{
+        let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
+        ["warehouse.physical.my", product._id],
+        ["warehouse.physical.my", product._id+"z"])
+        product.stock = viewList && viewList[0] && viewList[0].value || 0;
       })
       resolve(products);
     })
@@ -225,23 +225,16 @@ export class ProductListPage implements OnInit {
     this.pouchdbService.localHandleChangeData(list, change)
   }
 
-  handleViewChange(list, change) {
-    this.pouchdbService.getView(
-      'stock/Depositos', 2
-    ).then((stocks: any[]) => {
-      let data: any[] = list;
-      let viewList: any[] = stocks;
-      data.forEach(product => {
-        //Get stock value from cash moves report
-        let stock = 0;
-        viewList.forEach(view => {
-          if (view.key[0].split(".")[1] == 'physical' && view.key[1] == product._id) {
-            stock += view.value;
-          }
-        })
-        product.stock = stock;
-      })
-    });
+  async handleViewChange(list, change) {
+    list.forEach(async (product:any)=>{
+      if (product._id == change.id){
+        let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
+        ["warehouse.physical.my", product._id],
+        ["warehouse.physical.my", product._id+"z"])
+        product.stock = viewList && viewList[0] && viewList[0].value || 0;
+        return;
+      }
+    })
   }
 
 }

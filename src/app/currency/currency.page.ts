@@ -42,7 +42,6 @@ export class CurrencyPage implements OnInit {
       public formBuilder: FormBuilder,
       public events: Events,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');
@@ -53,9 +52,9 @@ export class CurrencyPage implements OnInit {
       this.currencyForm = this.formBuilder.group({
         name: new FormControl('', Validators.required),
         precision: new FormControl(2),
-        sale_rate: new FormControl(1),
+        inverted_rate: new FormControl(false),
+        exchange_rate: new FormControl(1),
         symbol: new FormControl('X$'),
-        purchase_rate: new FormControl(1),
         _id: new FormControl(''),
         create_user: new FormControl(''),
         create_time: new FormControl(''),
@@ -73,17 +72,15 @@ export class CurrencyPage implements OnInit {
       }
     }
 
-    buttonSave() {
+    async buttonSave() {
       if (this._id){
-        this.updateCurrency(this.currencyForm.value);
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('open-currency', this.currencyForm.value);
-        // });
+        await this.updateCurrency(this.currencyForm.value);
+        this.events.publish('open-currency', this.currencyForm.value);
+        this.exitPage();
       } else {
-        this.createCurrency(this.currencyForm.value);
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('create-currency', this.currencyForm.value);
-        // });
+        await this.createCurrency(this.currencyForm.value);
+        this.events.publish('create-currency', this.currencyForm.value);
+        this.exitPage();
       }
     }
 
@@ -163,7 +160,6 @@ export class CurrencyPage implements OnInit {
       if (this.select){
         this.modalCtrl.dismiss();
       } else {
-        // this.currencyForm.markAsPristine();
         this.navCtrl.navigateBack('/currency-list');
       }
     }

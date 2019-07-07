@@ -22,6 +22,10 @@ export class CheckListPage implements OnInit {
   page = 0;
   currency_precision = 2;
   languages: Array<LanguageModel>;
+  field:any = null;
+  filter:any = '';
+  company_currency_id = 'currency.PYG';
+  currencies = {};
 
   constructor(
     public navCtrl: NavController,
@@ -42,19 +46,28 @@ export class CheckListPage implements OnInit {
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
     this.select = this.route.snapshot.paramMap.get('select');
+    this.field = this.route.snapshot.paramMap.get('field') || null;
+    this.filter = this.route.snapshot.paramMap.get('filter') || '';
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
+    this.company_currency_id = config.currency_id;
+    let pyg = await this.pouchdbService.getDoc('currency.PYG')
+    let usd = await this.pouchdbService.getDoc('currency.USD')
+    this.currencies = {
+      "currency.PYG": pyg,
+      "currency.USD": usd,
+    }
     this.setFilteredItems();
   }
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
-      this.checkListService.getChecks(this.searchTerm, this.page).then((checks: any[]) => {
+      this.checkListService.getChecks(this.searchTerm, this.page, this.field, this.filter).then((checks: any[]) => {
         checks.forEach(check => {
           this.checks.push(check);
         });
@@ -66,7 +79,8 @@ export class CheckListPage implements OnInit {
 
   doRefresh(refresher) {
     setTimeout(() => {
-      this.checkListService.getChecks(this.searchTerm, 0).then((checks: any[]) => {
+      // console.log("this.field, this.filter)", this.field, this.filter);
+      this.checkListService.getChecks(this.searchTerm, 0, this.field, this.filter).then((checks: any[]) => {
         this.checks = checks;
       });
       this.page = 1;
@@ -75,7 +89,7 @@ export class CheckListPage implements OnInit {
   }
 
   setFilteredItems() {
-    this.checkListService.getChecks(this.searchTerm, 0).then((checks) => {
+    this.checkListService.getChecks(this.searchTerm, 0, this.field, this.filter).then((checks) => {
       this.checks = checks;
       this.page = 1;
       this.loading.dismiss();
@@ -84,7 +98,7 @@ export class CheckListPage implements OnInit {
 
   doRefreshList() {
     setTimeout(() => {
-      this.checkListService.getChecks(this.searchTerm, 0).then((checks: any[]) => {
+      this.checkListService.getChecks(this.searchTerm, 0, this.field, this.filter).then((checks: any[]) => {
         this.checks = checks;
         this.page = 1;
       });
@@ -101,7 +115,7 @@ export class CheckListPage implements OnInit {
   }
 
   async openCheck(check) {
-    console.log("openCheck", this.select);
+    // console.log("openCheck", this.select);
     this.events.subscribe('open-check', (data) => {
       this.events.unsubscribe('open-check');
       // this.doRefreshList();

@@ -42,7 +42,6 @@ export class ServiceWorkPage implements OnInit {
       // public speechRecognition: SpeechRecognition,
       public events: Events,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');

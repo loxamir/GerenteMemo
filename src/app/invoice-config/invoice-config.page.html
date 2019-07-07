@@ -285,19 +285,23 @@
                         <ion-input type="number" formControlName="linesPrice_width"></ion-input>
                       </ion-item>
 
-                      <ion-item class="field-33">
+                      <ion-item class="field-50">
                         <ion-label position="floating">{{'Exentas' | translate}}</ion-label>
                         <ion-input type="number" formControlName="linesTax0_width"></ion-input>
                       </ion-item>
 
-                      <ion-item class="field-33">
+                      <ion-item class="field-50">
                         <ion-label position="floating">{{'IVA 5%' | translate}}</ion-label>
                         <ion-input type="number" formControlName="linesTax5_width"></ion-input>
                       </ion-item>
 
-                      <ion-item class="field-33">
+                      <ion-item class="field-50">
                         <ion-label position="floating">{{'IVA 10%' | translate}}</ion-label>
                         <ion-input type="number" formControlName="linesTax10_width"></ion-input>
+                      </ion-item>
+                      <ion-item class="field-50">
+                        <ion-label position="floating">{{'Tasa' | translate}}</ion-label>
+                        <ion-input type="number" formControlName="linesFee_width"></ion-input>
                       </ion-item>
 
 
@@ -354,6 +358,23 @@
                           </ion-item>
 </ion-row>
 
+<h2 class="section-title">{{'SubTotal Tasas' | translate}}</h2>
+
+  <ion-row>
+    <ion-item class="field-33">
+    <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+    <ion-input type="number" formControlName="subTotalFees_top"></ion-input>
+  </ion-item>
+  <ion-item class="field-33">
+    <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+    <ion-input type="number" formControlName="subTotalFees_left"></ion-input>
+  </ion-item>
+  <ion-item class="field-33">
+    <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+    <ion-input type="number" formControlName="subTotalFees_width"></ion-input>
+  </ion-item>
+</ion-row>
+
 
 
                           <h2 class="section-title">{{'Monto en Letras' | translate}}</h2>
@@ -370,6 +391,21 @@
                               <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
                               <ion-input type="number" formControlName="amountInWords_width"></ion-input>
                             </ion-item>
+</ion-row>
+<h2 class="section-title">{{'Tasas' | translate}}</h2>
+<ion-row>
+                              <ion-item class="field-33">
+                                <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+                                <ion-input type="number" formControlName="totalFees_top"></ion-input>
+                              </ion-item>
+                              <ion-item class="field-33">
+                                <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+                                <ion-input type="number" formControlName="totalFees_left"></ion-input>
+                              </ion-item>
+                              <ion-item class="field-33">
+                                <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+                                <ion-input type="number" formControlName="totalFees_width"></ion-input>
+                              </ion-item>
 </ion-row>
 <h2 class="section-title">{{'Descuento' | translate}}</h2>
 <ion-row>

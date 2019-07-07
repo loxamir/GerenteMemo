@@ -24,6 +24,7 @@ import { TicketConfigPage } from '../ticket-config/ticket-config.page';
 import { UserPage } from '../user/user.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RestProvider } from "../services/rest/rest";
+import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 
 @Component({
   selector: 'app-config',
@@ -79,6 +80,8 @@ export class ConfigPage implements OnInit {
       input_product: [{}],
       travel_product: [{}],
       contact: [{}],
+      default_payment: [{}],
+      default_contact: [{}],
       phone: ['', Validators.required],
       email: ['', Validators.required],
       city: [''],
@@ -104,7 +107,7 @@ export class ConfigPage implements OnInit {
       users: [],
       _id: [''],
     });
-    this.loading = await this.loadingCtrl.create();
+    this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.configService.getConfig().then((data) => {
       this.configForm.patchValue(data);
@@ -115,7 +118,7 @@ export class ConfigPage implements OnInit {
   buttonSave() {
     this.configService.updateConfig(this.configForm.value);
     if (this.configForm.controls.product_sequence.dirty){
-      console.log("product sequence changed");
+      // console.log("product sequence changed");
       this.configService.setNextSequence('product', 1, this.configForm.value.product_sequence);
     }
     if (this.select){
@@ -143,7 +146,7 @@ export class ConfigPage implements OnInit {
     this.configForm.value.users.forEach((user: any)=>{
       names.push(user.name);
     })
-    console.log("names", names);
+    // console.log("names", names);
     let security = {
       "_id": "_security",
       "admins": {
@@ -325,6 +328,53 @@ export class ConfigPage implements OnInit {
     });
   }
 
+  selectDefaultContact() {
+    return new Promise(async resolve => {
+      let profileModal = await this.modalCtrl.create({
+        component: ContactListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      profileModal.present();
+
+      this.events.subscribe('select-contact', (data) => {
+        this.configForm.patchValue({
+          default_contact: data,
+        });
+        this.configForm.markAsDirty();
+        profileModal.dismiss();
+        this.events.unsubscribe('select-contact');
+        resolve(data);
+      })
+      // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
+    });
+  }
+
+  selectDefaultPayment() {
+    return new Promise(async resolve => {
+      let profileModal = await this.modalCtrl.create({
+        component: PaymentConditionListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      profileModal.present();
+
+      this.events.subscribe('select-payment-condition', (data) => {
+        this.configForm.patchValue({
+          default_payment: data,
+        });
+        this.configForm.markAsDirty();
+        profileModal.dismiss();
+        this.events.unsubscribe('select-payment-condition');
+        resolve(data);
+      })
+      // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
+    });
+  }
+
+
   logout() {
     this.storage.set('database', false).then(()=>{
       window.location.reload();
@@ -367,7 +417,7 @@ export class ConfigPage implements OnInit {
 
   async configInvoicePrint() {
     // return new Promise(async resolve => {
-      console.log("invoice", {"teste": "ok"});
+      // console.log("invoice", {"teste": "ok"});
       let profileModal = await this.modalCtrl.create({
         component: InvoiceConfigPage,
         componentProps: this.configForm.value.invoicePrint,
@@ -393,7 +443,7 @@ export class ConfigPage implements OnInit {
 
   async configTicketPrint() {
     // return new Promise(async resolve => {
-      console.log("ticket", {"teste": "ok"});
+      // console.log("ticket", {"teste": "ok"});
       let profileModal = await this.modalCtrl.create({
         component: TicketConfigPage,
         componentProps: this.configForm.value.ticketPrint,
@@ -427,7 +477,7 @@ export class ConfigPage implements OnInit {
       await profileModal.present();
       // let data = await profileModal.onDidDismiss();
       const { data } = await profileModal.onDidDismiss();
-      console.log("userdata", data);
+      // console.log("userdata", data);
       // data => {
         if (data) {
           this.configForm.value.users.push(data);
@@ -460,8 +510,8 @@ export class ConfigPage implements OnInit {
           user["report"] = data.report;
           user["config"] = data.config;
           user["registered"] = data.registered;
-          console.log("data user", data);
-          console.log("user user", user);
+          // console.log("data user", data);
+          // console.log("user user", user);
           // this.configForm.patchValue({
           //   users: this.configForm.value.users,
           // });
@@ -548,7 +598,7 @@ export class ConfigPage implements OnInit {
           // })
         }
       })
-      console.log("contactList", contactList);
+      // console.log("contactList", contactList);
       this.pouchdbService.updateDocList(contactList);
     }
     start();

@@ -45,7 +45,6 @@ export class AccountPage implements OnInit {
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    //this.loading = //this.loadingCtrl.create();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -180,7 +179,7 @@ export class AccountPage implements OnInit {
   }
 
   selectCategory() {
-    console.log("selectContact");
+    // console.log("selectContact");
     let self=this;
     return new Promise(async resolve => {
       // this.avoidAlertMessage = true;
@@ -248,14 +247,32 @@ export class AccountPage implements OnInit {
     });
   }
 
+  // getAccount2(doc_id): Promise<any> {
+  //   return new Promise(async (resolve, reject)=>{
+  //     let account:any = await this.pouchdbService.getDoc(doc_id);//.then((account: any)=>{
+  //     let category = this.pouchdbService.getList([account.category_id, account.currency_id,]);//.then(category=>{
+  //     account.category = category || {};
+  //     let currency = this.pouchdbService.getList([account.category_id, account.currency_id,]);//.then(category=>{
+  //     account.currency = currency || {};
+  //     resolve(account);
+  //   });
+  // }
+
   getAccount(doc_id): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      this.pouchdbService.getDoc(doc_id).then((account: any)=>{
-        this.pouchdbService.getDoc(account.category_id).then(category=>{
-          account.category = category || {};
-          resolve(account);
-        });
-      });
+    return new Promise(async (resolve, reject)=>{
+      let pouchData = await this.pouchdbService.getDoc(doc_id);
+      let docList: any = await this.pouchdbService.getList([
+        pouchData['category_id'],
+        pouchData['currency_id'],
+      ]);
+      let docDict = {}
+      docList.forEach(item=>{
+        docDict[item.id] = item.doc;
+      })
+      // pouchData['bank'] = docDict[pouchData['bank_id']];
+      pouchData['category'] = docDict[pouchData['category_id']];
+      pouchData['currency'] = docDict[pouchData['currency_id']];
+      resolve(pouchData);
     });
   }
 

@@ -40,7 +40,6 @@ export class AccountCategoryPage implements OnInit {
       public formBuilder: FormBuilder,
       public events: Events,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');
@@ -100,7 +99,7 @@ export class AccountCategoryPage implements OnInit {
     }
 
     selectTitle() {
-      console.log("selectTitle");
+      // console.log("selectTitle");
       return new Promise(async resolve => {
         // this.avoidAlertMessage = true;
         this.events.unsubscribe('select-title');

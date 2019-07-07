@@ -45,7 +45,6 @@ export class PaymentConditionPage implements OnInit {
       public events: Events,
       public alertCtrl: AlertController,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
@@ -57,8 +56,6 @@ export class PaymentConditionPage implements OnInit {
       }, 500);
       this.paymentConditionForm = this.formBuilder.group({
         name: new FormControl(),
-        sale_rate: new FormControl(1),
-        purchase_rate: new FormControl(1),
         accountTo: new FormControl({}),
         accountTo_id: new FormControl(''),
         accountFrom: new FormControl({}),
@@ -85,13 +82,13 @@ export class PaymentConditionPage implements OnInit {
           accountFrom: accountFrom,
           accountFrom_id: accountFrom._id,
         })
-        console.log("accountTo", accountTo);
+        // console.log("accountTo", accountTo);
         //this.loading.dismiss();
       }
     }
 
     selectAccountTo() {
-      console.log("selectAccount");
+      // console.log("selectAccount");
       // if (this.paymentConditionForm.value.state=='QUOTATION'){
         return new Promise(async resolve => {
           // this.avoidAlertMessage = true;
@@ -119,7 +116,7 @@ export class PaymentConditionPage implements OnInit {
     }
 
     selectAccountFrom() {
-      console.log("selectAccount");
+      // console.log("selectAccount");
       // if (this.paymentConditionForm.value.state=='QUOTATION'){
         return new Promise(async resolve => {
           // this.avoidAlertMessage = true;

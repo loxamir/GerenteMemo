@@ -49,7 +49,6 @@ export class AdvancePage implements OnInit {
       public printer: Printer,
       public configService: ConfigService,
     ) {
-      //this.loading = //this.loadingCtrl.create();
       this.languages = this.languageService.getLanguages();
       this.translate.setDefaultLang('es');
       this.translate.use('es');
@@ -254,7 +253,6 @@ export class AdvancePage implements OnInit {
     async addPayment() {
         this.events.unsubscribe('create-receipt');
         this.events.subscribe('create-receipt', (data) => {
-            console.log("DDDDDDDATA", data);
             this.advanceForm.value.payments.push({
               'paid': data.paid,
               'date': data.date,
@@ -357,7 +355,6 @@ export class AdvancePage implements OnInit {
         }
         delete advance.contact;
         if (advance.code != ''){
-          console.log("sin code", advance.code);
           this.pouchdbService.createDoc(advance).then(doc => {
             resolve({doc: doc, advance: advance});
           });

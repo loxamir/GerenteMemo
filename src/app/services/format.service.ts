@@ -293,7 +293,7 @@ export class FormatService {
           //console.log("Writing content to file");
           fileWriter.write(DataBlob);
         }, function() {
-          console.log("Ponto7", folderpath);
+          // console.log("Ponto7", folderpath);
           alert('Unable to save file in path ' + folderpath);
         });
       });
@@ -365,6 +365,7 @@ export class FormatService {
     var subtotal_10 = 0;
     var subtotal_05 = 0;
     var subtotal_00 = 0;
+    var subtotal_fee = 0;
     var iva_10 = 0;
     var iva_05 = 0;
     let self = this;
@@ -529,6 +530,7 @@ export class FormatService {
       let line_amount_00 = 0;
       let line_amount_05 = 0;
       let line_amount_10 = 0;
+      let line_amount_fee = 0;
 
       //IVA Exento
       if (line.product.tax == 'iva0') {
@@ -546,6 +548,11 @@ export class FormatService {
         line_amount_10 = line.quantity * line.price;
         subtotal_10 += line_amount_10;
         iva_10 = iva_10 + line_amount_10 / 11;
+      }
+
+      if (line.product.tax == 'fee') {
+        line_amount_fee = line.quantity * line.price;
+        subtotal_fee += line_amount_fee;
       }
 
       //put code
@@ -611,6 +618,16 @@ export class FormatService {
       for (var x = 0; x < dataModel.toString().length; x++) {
         page_printed[linesMarginTop + index][x + marginLeft] = dataModel.toString()[x];
       }
+
+      //Duvidoso
+      marginLeft += parseInt(linesTax10_width);
+
+      let linesFee_width: any = layout.linesFee_width / 1.35;
+      linesFee_width = parseInt(linesFee_width);
+      dataModel = this.string_pad(linesFee_width, line_amount_fee.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), 'right');
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        page_printed[linesMarginTop + index][x + marginLeft] = dataModel.toString()[x];
+      }
     });
 
     //put exento
@@ -643,8 +660,33 @@ export class FormatService {
       let b = marginLeft;
       page_printed[marginTop][x + b] = dataModel.toString()[x];
     }
-    //put discount
+    //put subTotalFees
+    marginTop = layout.subTotalFees_top / 4.4;
+    marginLeft = layout.subTotalFees_left / 1.35;
+    marginTop = parseInt(marginTop);
+    marginLeft = parseInt(marginLeft);
+    dataModel = subtotal_fee.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    for (var x = 0; x < dataModel.toString().length; x++) {
+      let b = marginLeft;
+      page_printed[marginTop][x + b] = dataModel.toString()[x];
+    }
+
+    //put total fees on summary
     let width = 0;
+    marginTop = layout.totalFees_top / 4.4;
+    marginLeft = layout.totalFees_left / 1.35;
+    width = layout.totalFees_width / 1.35;
+    marginTop = parseInt(marginTop);
+    marginLeft = parseInt(marginLeft);
+    if (width){
+      dataModel = this.string_pad(width, subtotal_fee.toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        let b = marginLeft;
+        page_printed[marginTop][x + b] = dataModel.toString()[x];
+      }
+    }
+    //put discount
+    width = 0;
     if (order.discount){
       marginTop = layout.invoiceDiscount_top / 4.4;
       marginLeft = layout.invoiceDiscount_left / 1.35;
@@ -659,6 +701,7 @@ export class FormatService {
         }
       }
     }
+
     //put total
     marginTop = layout.invoiceTotal_top / 4.4;
     marginLeft = layout.invoiceTotal_left / 1.35;
