@@ -30,7 +30,7 @@ export class StockMoveService {
                 stock_move['product'] = product;
                 this.pouchdbService.getDoc(stock_move['contact_id']).then(contact => {
                   stock_move['contact'] = contact || {};
-                  console.log("stockMove", stock_move);
+                  // console.log("stockMove", stock_move);
                   resolve(stock_move);
                 });
               }));

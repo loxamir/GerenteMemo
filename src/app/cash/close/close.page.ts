@@ -86,8 +86,7 @@ export class ClosePage implements OnInit {
         this.cash_id = data.cash_id;
         this.amount_theoretical = data.amount_theoretical;
         this.amount_physical = data.amount_physical;
-        // this.closeForm.controls.amount_physical.disable();
-        // this.recomputeValues();
+        this.closeForm.controls.amount_physical.disable();
         this.loading.dismiss();
       });
     } else {

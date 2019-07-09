@@ -24,28 +24,30 @@ export class ProductService {
       let product:any = await this.pouchdbService.getDoc(doc_id);
       product.category = (await  this.pouchdbService.getDoc(product['category_id'])||{});
       product.brand = (await  this.pouchdbService.getDoc(product['brand_id'])||{});
-      this.pouchdbService.getView(
-        'stock/Depositos', 2,
-        ['0'],
-        ['z']
-      ).then((viewList: any[]) => {
-        let stock = 0;
-        viewList.forEach(view=>{
-          if (view.key[0].split(".")[1] == 'physical' && view.key[1] == doc_id){
-            stock += view.value;
-          }
-        })
-        product.stock = stock;
-        resolve(product);
-      });
+
+      let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
+      ["warehouse.physical.my", product._id],
+      ["warehouse.physical.my", product._id+"z"])
+      product.stock = viewList && viewList[0] && viewList[0].value || 0;
+      resolve(product);
     });
   }
   getProductByCode(code): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      this.pouchdbService.getRelated("product", "barcode", code).then((product_list) => {
-        let product = product_list[0];
-        resolve(product);
-      });
+    return new Promise(async (resolve, reject)=>{
+      let product:any = await this.pouchdbService.getView('stock/barcode', undefined,
+      [code.toString()],
+      [code.toString()+"z"],
+      true,
+      true,
+      undefined,
+      undefined,
+      true,
+      )
+      if (product[0]){
+        resolve(product[0].doc);
+      } else {
+        resolve(false)
+      }
     });
   }
 

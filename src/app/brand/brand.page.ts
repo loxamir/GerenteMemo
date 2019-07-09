@@ -138,7 +138,7 @@ export class BrandPage implements OnInit {
   }
 
   private exitPage() {
-    console.log("exitPage", this.select);
+    // console.log("exitPage", this.select);
       this.brandForm.markAsPristine();
       if (this.select){
         this.modalCtrl.dismiss();

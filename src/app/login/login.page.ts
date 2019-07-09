@@ -27,7 +27,7 @@ export class LoginPage implements OnInit {
   selected_user: boolean = false;
   databaseList: [];
   username: '';
-  campaign;
+  // campaign;
 
   constructor(
     public loadingCtrl: LoadingController,
@@ -59,9 +59,9 @@ export class LoginPage implements OnInit {
     })
   }
 
-  showCampaign(){
-    console.log("campaign", this.campaign);
-  }
+  // showCampaign(){
+  //   console.log("campaign", this.campaign);
+  // }
 
   async ngOnInit() {
     this.loginForm = new FormGroup({
@@ -78,12 +78,12 @@ export class LoginPage implements OnInit {
       password: new FormControl('', Validators.required),
     });
     this.loading = await this.loadingCtrl.create({});
-    let campaign = await this.storage.get("campaign");
-    this.campaign = campaign || this.route.snapshot.paramMap.get('campaign');
-    if (this.campaign && ! campaign){
-      await this.storage.set('campaign', this.campaign);
-    }
-    this.showCampaign();
+    // let campaign = await this.storage.get("campaign");
+    // this.campaign = campaign || this.route.snapshot.paramMap.get('campaign');
+    // if (this.campaign && ! campaign){
+    //   await this.storage.set('campaign', this.campaign);
+    // }
+    // this.showCampaign();
     let username = await this.storage.get('username');
     setTimeout(() => {
       this.menuCtrl.enable(false);
@@ -182,7 +182,7 @@ export class LoginPage implements OnInit {
           this.loginForm.value.password,
           this.loginForm.value.new_password,
         ).then(updatePassword=>{
-          console.log("updatePassword", updatePassword);
+          // console.log("updatePassword", updatePassword);
         })
       }
       else {
@@ -261,7 +261,7 @@ export class LoginPage implements OnInit {
         "email": {"value":datas.email, "type": "String"},
         "user": {"value":datas.user.toLowerCase(), "type": "String"},
         "password": {"value":datas.password, "type": "String"},
-        "campaign": {"value": this.campaign, "type": "String"}
+        // "campaign": {"value": this.campaign, "type": "String"}
       }};
       // console.log("variables", variables);
       this.restProvider.startProcess("ProcessoAgroCreation", body).then((data:any)=>{

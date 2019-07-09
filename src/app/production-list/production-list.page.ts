@@ -49,7 +49,7 @@ export class ProductionListPage implements OnInit {
     this.searchItemsS(
       this.searchTerm, 0
     ).then((productions) => {
-      console.log("productions", productions);
+      // console.log("productions", productions);
       this.productions = productions;
       this.page = 1;
       this.loading.dismiss();
@@ -83,7 +83,7 @@ export class ProductionListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    console.log("teste my event");
+    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ProductionListPopover,
       event: myEvent,

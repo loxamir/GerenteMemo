@@ -753,7 +753,7 @@ export class PurchaseReportPage implements OnInit {
     });
 
     // define legend
-    console.log("color.domain()", color.domain());
+    // console.log("color.domain()", color.domain());
     var legend = svg.selectAll('.legend') // selecting elements with class 'legend'
       .data(color.domain()) // refers to an array of labels from our dataset
       .enter() // creates placeholder

@@ -186,6 +186,9 @@ export class InvoicePage implements OnInit {
       if (this._id){
         this.getInvoice(this._id).then((data) => {
           this.invoiceForm.patchValue(data);
+          if (data.state != 'QUOTATION'){
+            this.invoiceForm.controls.date.disable();
+          }
           this.loading.dismiss();
         });
       } else {
@@ -1172,9 +1175,9 @@ export class InvoicePage implements OnInit {
              }
 
              this.printer.print(result, options).then(onSuccess => {
-               console.log("onPrintSuccess2", onSuccess);
+               // console.log("onPrintSuccess2", onSuccess);
              }, onError => {
-               console.log("onPrintError2", onError);
+               // console.log("onPrintError2", onError);
              });
            //})
       });

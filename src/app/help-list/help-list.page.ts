@@ -58,7 +58,7 @@ export class HelpListPage implements OnInit {
       let filter = this.filter;
     }
     this.getHelpsPage(this.searchTerm, 0, filter).then((helps: any[]) => {
-      console.log("this.filter", this.filter);
+      // console.log("this.filter", this.filter);
       this.helps = helps;
 
       this.page = 1;

@@ -55,7 +55,7 @@ export class UserPage implements OnInit {
 
   async buttonSave(){
     if (this.form.value.registered==true){
-      console.log("Guardou");
+      // console.log("Guardou");
       this.form.value.registered = true;
     }
     else {

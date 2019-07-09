@@ -190,7 +190,7 @@ export class ProductionPage implements OnInit {
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.configService.getConfig().then((data) => {
-        console.log("dddata", data);
+        //console.log("dddata", data);
         this.currency_precision = data.currency_precision;
         this.labor_product = data.labor_product;
         // this.input_product = data.input_product;
@@ -199,6 +199,9 @@ export class ProductionPage implements OnInit {
           this.getProduction(this._id).then((data) => {
             //console.log("data", data);
             this.productionForm.patchValue(data);
+            if (data.state != 'PAID'){
+              this.productionForm.controls.date.disable();
+            }
             this.recomputeValues();
             this.loading.dismiss();
           });
@@ -215,7 +218,7 @@ export class ProductionPage implements OnInit {
     }
 
     async presentPopover(myEvent) {
-      console.log("teste my event");
+      //console.log("teste my event");
       let popover = await this.popoverCtrl.create({
         component: ProductionPopover,
         event: myEvent,
@@ -416,7 +419,7 @@ export class ProductionPage implements OnInit {
 
     async goNextStep() {
       if (this.productionForm.value.state == 'DRAFT' || this.productionForm.value.state == 'SCHEDULED'){
-        console.log("set Focus");
+        //console.log("set Focus");
         if (this.productionForm.value.client_request == '' && !this.productionForm.value.production){
           this.clientRequest.setFocus();
         }
@@ -441,7 +444,7 @@ export class ProductionPage implements OnInit {
         //   this.buttonSave();
         // }
         if (! this.ignore_inputs){
-          console.log("ignore_inputs");
+          //console.log("ignore_inputs");
           let prompt = await this.alertCtrl.create({
             header: 'Productos Consumidos',
             message: 'Has consumido algun producto durante el trabajo?',
@@ -449,7 +452,7 @@ export class ProductionPage implements OnInit {
               {
                 text: 'No',
                 handler: async data => {
-                  console.log("ignore_inputs");
+                  //console.log("ignore_inputs");
 
                   this.ignore_inputs = true;
                   // if (!this.productionForm.value.production){
@@ -491,7 +494,7 @@ export class ProductionPage implements OnInit {
           this.addWork();
         }
         // else if (this.productionForm.value.travels.length==0 && ! this.ignore_travels && !this.productionForm.value.production){
-        //   console.log("ignore_travels");
+        //   //console.log("ignore_travels");
         //   let prompt = await this.alertCtrl.create({
         //     header: 'Viaticos',
         //     message: 'Has hecho algun viaje para realizar el trabajo?',
@@ -514,7 +517,7 @@ export class ProductionPage implements OnInit {
         //   prompt.present();
         // }
         else {
-          console.log("Confirm Service");
+          //console.log("Confirm Service");
           this.beforeConfirm();
         }
       } else if (this.productionForm.value.production){
@@ -542,7 +545,7 @@ export class ProductionPage implements OnInit {
     // }
 
     beforeConfirm(){
-      console.log("datos", this.productionForm.value);
+      //console.log("datos", this.productionForm.value);
       if (this.productionForm.value.production){
         this.pouchdbService.getDoc('contact.myCompany').then((contact: any)=>{
           this.productionForm.patchValue({
@@ -704,7 +707,7 @@ export class ProductionPage implements OnInit {
           });
           await profileModal.present();
           this.events.subscribe('create-receipt', (data) => {
-              console.log("DDDDDDDATA", data);
+              //console.log("DDDDDDDATA", data);
               this.productionForm.value.payments.push({
                 'paid': data.paid,
                 'date': data.date,
@@ -720,8 +723,8 @@ export class ProductionPage implements OnInit {
             profileModal.dismiss();
             this.events.unsubscribe('create-receipt');
           });
-          console.log("this.productionForm.value.planned", this.productionForm.value.planned);
-          console.log("plannedItems", JSON.stringify(plannedItems));
+          //console.log("this.productionForm.value.planned", this.productionForm.value.planned);
+          //console.log("plannedItems", JSON.stringify(plannedItems));
 
       }
 
@@ -910,7 +913,7 @@ export class ProductionPage implements OnInit {
         });
         await profileModal.present();
         let data: any = await profileModal.onDidDismiss();//data => {
-          console.log("Work", data);
+          //console.log("Work", data);
           if (data.data) {
             data.data.cost = this.labor_product['cost'];
             data.data.price = this.labor_product['price'];
@@ -1450,7 +1453,7 @@ export class ProductionPage implements OnInit {
             } else {
               this.productionForm.value.paymentCondition.items.forEach(item => {
                 let dateDue = this.addDays(this.today, item.days);
-                console.log("dentro", this.productionForm.value);
+                //console.log("dentro", this.productionForm.value);
                 let amount = (item.percent/100)*this.productionForm.value.total;
                 createList.push({
                   '_return': true,
@@ -1485,7 +1488,7 @@ export class ProductionPage implements OnInit {
                 amount_unInvoiced: this.productionForm.value.total,
                 planned: created,
               });
-              console.log("Purchase created", created);
+              //console.log("Purchase created", created);
               this.buttonSave();
               resolve(true);
             })
@@ -1744,7 +1747,7 @@ export class ProductionPage implements OnInit {
         ticket += "\n";
 
 
-        console.log("\n"+ticket);
+        // console.log("\n"+ticket);
 
 
         //console.log("ticket", ticket);
@@ -1800,7 +1803,6 @@ export class ProductionPage implements OnInit {
       let production = Object.assign({}, viewData);
       production.lines = [];
       production.docType = 'production';
-      delete production.planned;
       // delete production.payments;
       production.contact_id = production.contact._id;
       delete production.contact;
@@ -1855,11 +1857,6 @@ export class ProductionPage implements OnInit {
               })
             })
 
-            this.pouchdbService.getRelated(
-            "cash-move", "origin_id", doc_id).then((planned) => {
-              pouchData['planned'] = planned;
-              resolve(pouchData);
-            });
           })
         }));
       });

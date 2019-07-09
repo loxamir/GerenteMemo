@@ -59,17 +59,15 @@ export class SalePage implements OnInit {
         if(event.which === 13){
           console.log("enter", this.barcode);
           let found = false;
-          this.saleForm.value.items.forEach(item => {
-            if (item.product.barcode == this.barcode){
-              item.quantity += 1;
-              found = true;
-            }
-          });
+          let list = this.saleForm.value.items.filter(item=>item.product.barcode == this.barcode);
+          if (list.length){
+            let index = this.saleForm.value.items.indexOf(list[0]);
+            this.saleForm.value.items[index].quantity += 1;
+            found = true;
+          }
           if (found){
-            this.saleForm.patchValue({
-              "items": this.saleForm.value.items,
-            });
-            this.recomputeValues();
+            this.recomputeTotal();
+            this.recomputeResidual();
             this.saleForm.markAsDirty();
           } else {
             this.productService.getProductByCode(
@@ -82,7 +80,8 @@ export class SalePage implements OnInit {
                   'price': data.price,
                   'cost': data.cost,
                 })
-                this.recomputeValues();
+                this.recomputeTotal();
+                this.recomputeResidual();
                 this.saleForm.markAsDirty();
               }
             });
@@ -198,10 +197,24 @@ export class SalePage implements OnInit {
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
+      if (config.default_contact_id){
+        let default_contact:any = await this.pouchdbService.getDoc(config.default_contact_id);
+        this.saleForm.patchValue({
+          'contact': default_contact
+        })
+      }
+      if (config.default_payment_id){
+        let default_payment:any = await this.pouchdbService.getDoc(config.default_payment_id);
+        this.saleForm.patchValue({
+          'paymentCondition': default_payment
+        })
+      }
       if (this._id){
         this.saleService.getSale(this._id).then((data) => {
-          //console.log("data", data);
           this.saleForm.patchValue(data);
+          if (data.state != 'QUOTATION'){
+            // this.saleForm.controls.date.disable();
+          }
           this.loading.dismiss();
         });
       } else {
@@ -510,6 +523,10 @@ export class SalePage implements OnInit {
           this.confirming = true;
           await this.beforeConfirm();
           this.confirming = false;
+          if (JSON.stringify(this.saleForm.value.paymentCondition) != '{}'
+          && this.saleForm.value.paymentCondition._id == 'payment-condition.cash'){
+            this.addPayment();
+          }
         }
       } else if (this.saleForm.value.state == 'CONFIRMED'){
           // await this.loading.dismiss();
@@ -605,7 +622,7 @@ export class SalePage implements OnInit {
 
     async deleteItem(slidingItem, item){
       if (this.saleForm.value.state=='QUOTATION'){
-        console.log("delete item", item);
+        //console.log("delete item", item);
         slidingItem.close();
         let index = this.saleForm.value.items.indexOf(item)
         this.saleForm.value.items.splice(index, 1);
@@ -627,7 +644,7 @@ export class SalePage implements OnInit {
           total = total + item.quantity*item.price;
         });
         // total -= this.saleForm.value.discount.value;
-        console.log("total", total);
+        //console.log("total", total);
         this.saleForm.patchValue({
           total: total,
         });
@@ -642,7 +659,7 @@ export class SalePage implements OnInit {
             discount_lines += parseFloat(item.quantity)*(parseFloat(item.price_original || item.price)-parseFloat(item.price));
           }
         });
-        console.log("discount_lines", discount_lines);
+        //console.log("discount_lines", discount_lines);
         if (!discount_lines){
           discount_lines = 0;
         }
@@ -661,21 +678,21 @@ export class SalePage implements OnInit {
       ).toFixed(0)
     }
 
-    recomputeUnInvoiced(){
-      let amount_unInvoiced = 0;
-      this.pouchdbService.getRelated(
-        "cash-move", "origin_id", this.saleForm.value._id
-      ).then((planned) => {
-        planned.forEach((item) => {
-          if (item.amount_unInvoiced){
-            amount_unInvoiced += parseFloat(item.amount_unInvoiced);
-          }
-        });
-        this.saleForm.patchValue({
-          amount_unInvoiced: amount_unInvoiced,
-        });
-      });
-    }
+    // recomputeUnInvoiced(){
+    //   let amount_unInvoiced = 0;
+    //   this.pouchdbService.getRelated(
+    //     "cash-move", "origin_id", this.saleForm.value._id
+    //   ).then((planned) => {
+    //     planned.forEach((item) => {
+    //       if (item.amount_unInvoiced){
+    //         amount_unInvoiced += parseFloat(item.amount_unInvoiced);
+    //       }
+    //     });
+    //     this.saleForm.patchValue({
+    //       amount_unInvoiced: amount_unInvoiced,
+    //     });
+    //   });
+    // }
 
     recomputeResidual(){
       if (this.saleForm.value.state == 'QUOTATION'){
@@ -881,7 +898,7 @@ export class SalePage implements OnInit {
 
     recomputeValues() {
       this.recomputeTotal();
-      this.recomputeUnInvoiced();
+      // this.recomputeUnInvoiced();
       this.recomputeResidual();
       this.recomputeDiscountLines()
       if (this.saleForm.value.total != 0 && this.saleForm.value.residual == 0){
@@ -911,6 +928,9 @@ export class SalePage implements OnInit {
 
     afterConfirm(){
       return new Promise(async resolve => {
+        this.saleForm.patchValue({
+          amount_unInvoiced: this.saleForm.value.total,
+        });
         if(!this.saleForm.value._id){
           await this.buttonSave();
         }
@@ -1005,14 +1025,14 @@ export class SalePage implements OnInit {
               }
               createList.push(cashMoveTemplate);
             });
-            console.log("createList", createList);
+            //console.log("createList", createList);
             this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.saleForm.patchValue({
                 state: 'CONFIRMED',
                 amount_unInvoiced: this.saleForm.value.total,
                 planned: created.filter(word=>typeof word.amount_residual !== 'undefined'),
               });
-              console.log("Sale created", created);
+              //console.log("Sale created", created);
               await this.buttonSave();
               resolve(true);
             })
@@ -1083,7 +1103,7 @@ export class SalePage implements OnInit {
       this.listenBarcode = false;
         this.events.unsubscribe('create-receipt');
         this.events.subscribe('create-receipt', (data) => {
-            console.log("DDDDDDDATA", data);
+            //console.log("DDDDDDDATA", data);
             this.saleForm.value.payments.push({
               'paid': data.paid,
               'date': data.date,
@@ -1108,8 +1128,8 @@ export class SalePage implements OnInit {
 
           // plannedItems = [this.saleForm.value.planned[this.saleForm.value.planned.length - 1]];
 
-        console.log("this.saleForm.value.planned", this.saleForm.value.planned);
-        console.log("plannedItems", JSON.stringify(plannedItems));
+        //console.log("this.saleForm.value.planned", this.saleForm.value.planned);
+        //console.log("plannedItems", JSON.stringify(plannedItems));
         let profileModal = await this.modalCtrl.create({
           component: ReceiptPage,
           componentProps: {
@@ -1469,7 +1489,7 @@ export class SalePage implements OnInit {
           message: "Imprimiendo...",
           duration: 3000
         });
-        console.log("ticket", ticket);
+        //console.log("ticket", ticket);
         toast.present();
         this.bluetoothSerial.isEnabled().then(res => {
           this.bluetoothSerial.list().then((data)=> {
@@ -1736,7 +1756,7 @@ export class SalePage implements OnInit {
         ticket += "\n</pre></div>";
 
 
-        console.log("ticket", ticket);
+        //console.log("ticket", ticket);
 
         const div = document.getElementById("htmltoimage");
         div.innerHTML = ticket;
@@ -1744,9 +1764,9 @@ export class SalePage implements OnInit {
 
 
         // let teste = document.getElementById("htmltoimage");
-        console.log("teste element", div);
+        //console.log("teste element", div);
        html2canvas(div, options).then(canvas => {
-         console.log("canvas", canvas);
+         //console.log("canvas", canvas);
          if (this.platform.is('cordova')){
            var contentType = "image/png";
            this.socialSharing.share(

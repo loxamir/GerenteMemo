@@ -8,7 +8,7 @@ import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { Storage } from '@ionic/storage';
 import { FormatService } from '../format.service';
 // var server = "database.sistemamemo.com";
-var server = "192.168.0.50:5984";
+var server = "database.sistemamemo.com";
 
 @Injectable({ providedIn: 'root' })
 export class PouchdbService {
@@ -89,19 +89,22 @@ export class PouchdbService {
           }
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
-          PouchDB.plugin(cordovaSqlitePlugin);
-          // this.db = new PouchDB(database);
-          this.db = new PouchDB(database, {
-          adapter: 'cordova-sqlite',
-          location: 'default',
-          androidDatabaseImplementation: 2
-         });
+          if (this.platform.is('cordova')){
+            PouchDB.plugin(cordovaSqlitePlugin);
+            this.db = new PouchDB(database, {
+              adapter: 'cordova-sqlite',
+              location: 'default',
+              androidDatabaseImplementation: 2
+            })
+          } else {
+            this.db = new PouchDB(database);
+          }
           console.log("database", database);
           this.db.setMaxListeners(50);
           self.events.publish('got-database');
           let loadDemo = await this.storage.get('loadDemo');
           this.storage.get('password').then(password => {
-            this.remote = "http://"+username+":"+password+"@"+server+'/'+database;
+            this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
             if (database != 'agromemo' || !loadDemo){
               let options = {
                 live: true,
@@ -152,7 +155,7 @@ export class PouchdbService {
             }).on('complete', function(info) {
               //console.log("have info", info);
             }).on('error', function (err) {
-              console.log(err);
+              console.log("errou", err);
               // resolve(false)
             });
 
@@ -210,7 +213,7 @@ export class PouchdbService {
         return self.formatService.compareField(a, b, sort, direction);
       })
       .slice(start, end);
-      console.log(docs)
+      // console.log(docs)
       resolve(docs);
     });
   }
@@ -243,7 +246,7 @@ export class PouchdbService {
       this.db.query(viewName, options).then(function (res) {
         resolve(res.rows);
       }).catch(function (err) {
-        console.log("error", err);
+        console.log("view error", err);
       });
     });
   }
@@ -469,11 +472,17 @@ export class PouchdbService {
 
   getList(list, includeAttach=false) {
     return new Promise((resolve, reject)=>{
+        let list2 = [];
+        list.forEach(variable => {
+          if (variable && JSON.stringify(variable) != '{}'){
+            list2.push(variable)
+          }
+        });
         this.db.allDocs({
           include_docs : true,
           attachments: includeAttach,
           // binary: true,
-          keys: list
+          keys: list2
         }).then((res) => {
           resolve(res.rows);
         }).catch((err) => {

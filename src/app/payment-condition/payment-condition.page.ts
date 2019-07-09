@@ -82,13 +82,13 @@ export class PaymentConditionPage implements OnInit {
           accountFrom: accountFrom,
           accountFrom_id: accountFrom._id,
         })
-        console.log("accountTo", accountTo);
+        // console.log("accountTo", accountTo);
         //this.loading.dismiss();
       }
     }
 
     selectAccountTo() {
-      console.log("selectAccount");
+      // console.log("selectAccount");
       // if (this.paymentConditionForm.value.state=='QUOTATION'){
         return new Promise(async resolve => {
           // this.avoidAlertMessage = true;
@@ -116,7 +116,7 @@ export class PaymentConditionPage implements OnInit {
     }
 
     selectAccountFrom() {
-      console.log("selectAccount");
+      // console.log("selectAccount");
       // if (this.paymentConditionForm.value.state=='QUOTATION'){
         return new Promise(async resolve => {
           // this.avoidAlertMessage = true;

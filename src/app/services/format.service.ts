@@ -293,7 +293,7 @@ export class FormatService {
           //console.log("Writing content to file");
           fileWriter.write(DataBlob);
         }, function() {
-          console.log("Ponto7", folderpath);
+          // console.log("Ponto7", folderpath);
           alert('Unable to save file in path ' + folderpath);
         });
       });

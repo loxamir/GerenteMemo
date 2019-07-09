@@ -110,7 +110,7 @@ export class ContactPage implements OnInit {
     });
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-    console.log("paramap", this.route.snapshot.paramMap.get('_id'), this._id, this.select);
+    // console.log("paramap", this.route.snapshot.paramMap.get('_id'), this._id, this.select);
     if (this._id){
       this.getContact(this._id).then((data) => {
         this.contactForm.patchValue(data);
@@ -126,7 +126,7 @@ export class ContactPage implements OnInit {
   changedDocument(){
     let dv = this.contactForm.value.document.split('-')[1] || '';
     if (dv && dv.length == 1){
-      console.log("ruc", this.contactForm.value.document);
+      // console.log("ruc", this.contactForm.value.document);
       this.getLegalName();
     }
   }
@@ -151,8 +151,8 @@ export class ContactPage implements OnInit {
           user["report"] = data.report;
           user["config"] = data.config;
           user["registered"] = data.registered;
-          console.log("data user", data);
-          console.log("user user", user);
+          // console.log("data user", data);
+          // console.log("user user", user);
           this.contactForm.patchValue({
             user_details: user,
           });
@@ -193,7 +193,7 @@ export class ContactPage implements OnInit {
         // this.contactForm.patchValue({
         //   _id: doc.doc.id,
         // });
-        console.log("create contact", doc);
+        // console.log("create contact", doc);
         this._id = doc.doc.id;
         // this.navCtrl.pop().then(() => {
         if (this.select){
@@ -246,7 +246,7 @@ export class ContactPage implements OnInit {
     return new Promise((resolve, reject)=>{
       contact.docType = 'contact';
       if (contact.code != ''){
-        console.log("sin code", contact.code);
+        // console.log("sin code", contact.code);
         this.pouchdbService.createDoc(contact).then(doc => {
           resolve({doc: doc, contact: contact});
         });
@@ -304,7 +304,7 @@ export class ContactPage implements OnInit {
 
   getLegalName(){
     this.restProvider.getRucName(this.contactForm.value.document).then((data: any)=>{
-      console.log("data", data);
+      // console.log("data", data);
       if (data.name!='HttpErrorResponse'){
         let dict = {
           'name_legal': data.name,

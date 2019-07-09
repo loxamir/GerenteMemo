@@ -81,8 +81,8 @@ export class CashMoveService {
     docs.forEach(item=>{
       docDict[item.id] = item;
     })
-    console.log("docs", docDict);
-    console.log("cash", cash);
+    // console.log("docs", docDict);
+    // console.log("cash", cash);
 
     if (cash.contact){
       cash.contact_name = cash.contact.name;
@@ -95,7 +95,7 @@ export class CashMoveService {
     if (cash.accountFrom){
       cash.accountFrom_name = cash.accountFrom.name;
     } else {
-      console.log("docDict[cash.accountFrom_id]", docDict[cash.accountFrom_id])
+      // console.log("docDict[cash.accountFrom_id]", docDict[cash.accountFrom_id])
       cash.accountFrom_name = docDict[cash.accountFrom_id].doc.name;
     }
     if (cash.accountTo){

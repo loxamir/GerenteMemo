@@ -157,10 +157,10 @@ export class WarehouseListPage implements OnInit {
         ['0'],
         ['z']
       ).then((planneds: any[]) => {
-        console.log("Caixas", planneds);
+        //console.log("Caixas", planneds);
         let warehouses = [];
         this.pouchdbService.searchDocTypeData('warehouse', keyword).then((warehouseList: any[]) => {
-          console.log("warehouseList", warehouseList);
+          //console.log("warehouseList", warehouseList);
           warehouseList.forEach(warehouse=>{
             warehouse.balance = 0;
             // if (warehouse._id == 'warehouse.my'){
@@ -169,12 +169,12 @@ export class WarehouseListPage implements OnInit {
               // console.log("index", planneds.filter(x => x.key[0]==warehouse._id)[0]);
               let warehouseReport = planneds.filter(x => x.key[0]==warehouse._id)[0]
               warehouse.balance = warehouseReport && warehouseReport.value || 0;
-              console.log("identificado", warehouse);
+              //console.log("identificado", warehouse);
               warehouses.push(warehouse);
             } else if (select){
               let warehouseReport = planneds.filter(x => x.key[0]==warehouse._id)[0]
               warehouse.balance = warehouseReport && warehouseReport.value || 0;
-              console.log("identificado", warehouse);
+              //console.log("identificado", warehouse);
               warehouses.push(warehouse);
             }
           })

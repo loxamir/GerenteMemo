@@ -103,6 +103,9 @@ export class StockMovePage implements OnInit {
     if (this._id){
       this.stockMoveService.getStockMove(this._id).then((data) => {
         this.stockMoveForm.patchValue(data);
+        if (this.stockMoveForm.value.state=='done'){
+          this.stockMoveForm.controls.date.disable();
+        }
         this.loading.dismiss();
       });
     } else {
@@ -222,7 +225,7 @@ export class StockMovePage implements OnInit {
   selectWarehouseFrom() {
     return new Promise(async resolve => {
       this.events.subscribe('select-warehouse', (data) => {
-        console.log("data98", data);
+        // console.log("data98", data);
         this.stockMoveForm.patchValue({
           warehouseFrom: data,
           warehouseFrom_id: data._id,

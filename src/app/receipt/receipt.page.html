@@ -43,7 +43,7 @@
           <ion-item>
             <ion-label *ngIf="receiptForm.value.signal == '+'" position="floating" style="font-size:14px">{{'AMOUNT_RECEIVED' | translate}}</ion-label>
             <ion-label *ngIf="receiptForm.value.signal == '-'" position="floating" style="font-size:14px">{{'AMOUNT_PAID' | translate}}</ion-label>
-            <ion-input #amount_paid type="number" formControlName="amount_paid" (ionChange)="recomputeValues()" [disabled]="!this.isEmpty(receiptForm.value.check) || receiptForm.value.cash_paid.type == 'check'"></ion-input>
+            <ion-input #amount_paid type="number" formControlName="amount_paid" (ionChange)="recomputeValues()"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col (click)="selectCash()" style="margin-top: 20px;">
