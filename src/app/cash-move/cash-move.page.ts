@@ -371,7 +371,7 @@ export class CashMovePage implements OnInit {
 
   async confirmCashMove() {
     let state = 'DONE';
-    if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'bank' || JSON.stringify(this.cashMoveForm.value.check) != '{}') {
+    if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'bank' && JSON.stringify(this.cashMoveForm.value.check) != '{}') {
       state = 'WAITING'
     }
     this.cashMoveForm.patchValue({
