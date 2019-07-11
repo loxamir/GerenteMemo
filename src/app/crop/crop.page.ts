@@ -99,7 +99,7 @@ export class CropPage implements OnInit {
         if (this.select){
           this.modalCtrl.dismiss();
         } else {
-          this.navCtrl.navigateBack('/agro-tabs/crop-list');
+          this.navCtrl.navigateBack('/crops');
         }
       // });
     } else {
@@ -115,7 +115,7 @@ export class CropPage implements OnInit {
         if (this.select){
           this.modalCtrl.dismiss();
         } else {
-          this.navCtrl.navigateBack('/agro-tabs/crop-list');
+          this.navCtrl.navigateBack('/crops');
         }
       });
     }
@@ -241,7 +241,7 @@ export class CropPage implements OnInit {
       this.modalCtrl.dismiss();
     } else {
       this.cropForm.markAsPristine();
-      this.navCtrl.navigateBack('/agro-tabs/crop-list');
+      this.navCtrl.navigateBack('/crops');
     }
   }
 

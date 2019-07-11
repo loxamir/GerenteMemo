@@ -116,7 +116,7 @@ export class WorkPage implements OnInit {
   calculate(formula) {
     if (formula) {
       let form = this.workForm.value;
-      console.log("eval", formula);
+      // console.log("eval", formula);
       let result = eval(formula);
       return result;
     } else {
@@ -250,19 +250,19 @@ export class WorkPage implements OnInit {
 
   setSummary(){
       let summary = this.workForm.value.summary || "";
-      console.log("summary", summary);
+      // console.log("summary", summary);
       if (summary){
         let list = summary.split("${").splice(1);
         list.forEach(variable=>{
             variable = variable.split("}")[0];
-            console.log("variable", variable);
+            // console.log("variable", variable);
             summary = summary.replace("${"+variable+"}", this.workForm.value[variable]);
         })
       }
       this.workForm.patchValue({
         summary: summary
       })
-      console.log("summary2", summary);
+      // console.log("summary2", summary);
       // return summary;
   }
 
@@ -270,7 +270,7 @@ export class WorkPage implements OnInit {
     return new Promise(async (resolve, reject)=>{
       let form = this.workForm.value;
       let result = await eval(this.activity.saveScript);
-      console.log("resultads", result)
+      // console.log("resultads", result)
       resolve(result);
     })
   }
@@ -290,13 +290,13 @@ export class WorkPage implements OnInit {
   async updateDoc(doc_id, changes){
     return new Promise(async (resolve, reject)=>{
       let doc = await this.pouchdbService.getDoc(doc_id);
-      console.log("doc1", doc);
+      // console.log("doc1", doc);
       changes.forEach((data: any)=>{
         Object.keys(data).forEach((d: any, key)=>{
           doc[d] = data[d];
         })
       })
-      console.log("doc2", doc);
+      // console.log("doc2", doc);
       await this.pouchdbService.updateDoc(doc);
       resolve(doc);
     })
@@ -305,7 +305,7 @@ export class WorkPage implements OnInit {
   async createDoc(data){
     return new Promise(async (resolve, reject)=>{
     let doc = await this.pouchdbService.createDoc(data);
-    console.log("created doc", doc);
+    // console.log("created doc", doc);
     resolve(doc);
   })
   }
@@ -413,7 +413,7 @@ export class WorkPage implements OnInit {
     }, 200);
     // this.workForm.markAsDirty();
     this.events.unsubscribe('select-activity');
-    console.log("note", this.note);
+    // console.log("note", this.note);
     if (this.note){
       this.workForm.value.note = this.note;
       this.buttonSave();
@@ -697,7 +697,6 @@ export class WorkPage implements OnInit {
         'product_name': product.name,
         'docType': "stock-move",
         'date': new Date(),
-        // 'cost': product.cost,
         'cost': parseFloat(product.cost)*parseFloat(quantity),
         'warehouseFrom_id': 'warehouse.production',
         'warehouseFrom_name': "Producción",
@@ -761,7 +760,7 @@ export class WorkPage implements OnInit {
     Create a list of stock moves based on a list
     */
     return new Promise(async (resolve, reject)=>{
-      console.log("fieldsd ddd", this.workForm.controls[list_field].dirty);
+      // console.log("fieldsd ddd", this.workForm.controls[list_field].dirty);
       if (this.workForm.controls[list_field].dirty){
         this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
           if(item.doc_id){
@@ -773,7 +772,7 @@ export class WorkPage implements OnInit {
             item.doc_id = move.id;
           }
         }).then((data)=>{
-          console.log("data", data);
+          // console.log("data", data);
           resolve(true);
         })
       } else {
@@ -787,8 +786,11 @@ export class WorkPage implements OnInit {
     Create a list of stock moves based on a list with a fixed product
     */
     return new Promise(async (resolve, reject)=>{
+      if (typeof product === 'string'){
+        product = await this.pouchdbService.getDoc(product);
+      }
       if (this.workForm.controls[list_field].dirty){
-        this.formatService.asyncForEach(this.workForm.controls[list_field], async (item)=>{
+        let data:any = await this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
           if(item.doc_id){
             let update = await this.updateDoc(item.doc_id, [{
               'quantity': parseFloat(item[qty_field]),
@@ -797,10 +799,8 @@ export class WorkPage implements OnInit {
             let move:any = await this.stockMoveInCreate(name, item[qty_field], product)
             item.doc_id = move.id;
           }
-        }).then((data)=>{
-          console.log("data", data);
-          resolve(true);
         })
+        resolve(true);
       } else {
         resolve(false)
       }
