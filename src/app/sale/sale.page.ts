@@ -201,6 +201,7 @@ export class SalePage implements OnInit {
         write_time: new FormControl(''),
         crop: new FormControl(this.crop||{}),
         date_delivery: new FormControl(this.crop && this.crop.date_end||this.today),
+        delivered: new FormControl(0),
         warehouse: new FormControl(this.warehouse||{}),
       });
       this.loading = await this.loadingCtrl.create({});

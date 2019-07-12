@@ -700,7 +700,7 @@ export class WorkPage implements OnInit {
     }
   }
 
-  async stockMoveInCreate(name, quantity, product, warehouse=undefined){
+  async stockMoveInCreate(name, quantity, product, warehouse=undefined, sale_id=undefined){
     /*
     Just create an iconming stock move
     */
@@ -715,6 +715,7 @@ export class WorkPage implements OnInit {
         'name': name,
         'quantity': parseFloat(quantity),
         'origin_id': this.workForm.value._id,
+        'sale_id': sale_id,
         'contact_id': 'contact.myCompany',
         'contact_name': this.config.name,
         'product_id': product._id,
@@ -815,6 +816,10 @@ export class WorkPage implements OnInit {
       }
       if (this.workForm.controls[list_field].dirty){
         let data:any = await this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
+          let sale_id:any = undefined;
+          if (item['sale'] && JSON.stringify(item['sale']) != '{}'){
+            sale_id = item['sale']._id
+          }
           if(item.doc_id){
             let warehouse:any = item['warehouse'];
             if (!item['warehouse'] || JSON.stringify(item['warehouse']) == '{}'){
@@ -827,10 +832,14 @@ export class WorkPage implements OnInit {
               'quantity': parseFloat(item[qty_field]),
               'warehouseTo_id': warehouse._id,
               'warehouseTo_name': warehouse.name,
+              'sale_id': sale_id
             }]);
           } else {
-            let move:any = await this.stockMoveInCreate(name, item[qty_field], product, item['warehouse'])
+            let move:any = await this.stockMoveInCreate(name, item[qty_field], product, item['warehouse'], sale_id)
             item.doc_id = move.id;
+            let sale = await this.pouchdbService.getDoc(sale_id);
+            sale['delivered'] += parseFloat(item[qty_field]);
+            await this.pouchdbService.updateDoc(sale)
           }
         })
         resolve(true);
