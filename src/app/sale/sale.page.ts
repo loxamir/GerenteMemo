@@ -1000,7 +1000,10 @@ export class SalePage implements OnInit {
             docList.forEach(item=>{
               docDict[item.id] = item;
             })
-
+            let warehouse = {
+              _id: this.saleForm.value.warehouse && this.saleForm.value.warehouse._id || config.warehouse_id,
+              name: this.saleForm.value.warehouse && this.saleForm.value.warehouse.name || docDict[config.warehouse_id].doc.name
+            }
             this.saleForm.value.items.forEach(async (item) => {
               let product_id = item.product_id || item.product._id;
               let product_name = item.product_name || item.product.name;
@@ -1015,8 +1018,8 @@ export class SalePage implements OnInit {
                 'docType': "stock-move",
                 'date': new Date(),
                 'cost': parseFloat(item.cost)*parseFloat(item.quantity),
-                'warehouseFrom_id': config.warehouse_id,
-                'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
+                'warehouseFrom_id': warehouse._id,
+                'warehouseFrom_name': warehouse.name,
                 'warehouseTo_id': 'warehouse.client',
                 'warehouseTo_name': docDict['warehouse.client'].doc.name,
               })

@@ -95,8 +95,8 @@ export class SaleService {
         let getList = [
           pouchData['contact_id'],
           pouchData['pay_cond_id'],
-          pouchData['crop'],
-          pouchData['warehouse'],
+          pouchData['crop_id'],
+          pouchData['warehouse_id'],
         ];
         pouchData['lines'].forEach((item) => {
           if (getList.indexOf(item['product_id'])==-1){
