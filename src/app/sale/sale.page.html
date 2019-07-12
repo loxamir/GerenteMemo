@@ -85,14 +85,22 @@
         formControlName="date">
         </ion-datetime>
       </ion-item>
-      <ion-item no-padding (click)="selectSeller()" class="field-100">
-        <h4 class="field-label">{{'SELLER' | translate }}</h4>
-        <h4 class="field-value">{{saleForm.value.seller_name || 'Selecionar'}}</h4>
+      <ion-item no-padding (click)="selectCrop()" class="field-50">
+        <h4 class="field-label">{{'CROP' | translate }}</h4>
+        <h4 class="field-value">{{saleForm.value.crop.name || 'Selecionar'}}</h4>
       </ion-item>
-      <!-- <ion-item no-padding (click)="selectCurrency()" class="field-50">
-        <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-        <h4 class="field-value">{{saleForm.value.currency && saleForm.value.currency.name || 'Selecionar'}}</h4>
-      </ion-item> -->
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'DATE_DELIVERY' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="date_delivery">
+        </ion-datetime>
+      </ion-item>
+      <ion-item no-padding (click)="selectWarehouse()" class="field-100">
+        <h4 class="field-label">{{'WAREHOUSE' | translate }}</h4>
+        <h4 class="field-value">{{saleForm.value.warehouse.name || 'Selecionar'}}</h4>
+      </ion-item>
     </ion-row>
     <ion-row>
       <ion-col *ngIf="saleForm.value.state != 'QUOTATION' && saleForm.value.amount_unInvoiced == saleForm.value.total">
@@ -162,6 +170,7 @@
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-textarea autoGrow="true" rows="1" #note formControlName="note"></ion-textarea>
     </ion-item>
+
     <ion-list no-lines>
     <section>
       <h2 class="section-title">{{'Pagarés' | translate}}</h2>
@@ -230,6 +239,79 @@
               Borrar
             </ion-item-option>
           </ion-item-options>
+        </ion-item-sliding>
+      </section>
+    </ion-list>
+
+
+    <ion-list no-lines>
+    <section>
+      <h2 class="section-title">{{'Entregas' | translate}}</h2>
+        <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.deliveries">
+        <ion-item no-padding (click)="selectStockMove(item)" style="margin-bottom: 0px; margin-top:0px;">
+          <ion-card class="list-card" style="border-radius: 5px;">
+            <!-- <ion-row no-padding>
+              <ion-col no-padding>
+                <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
+              </ion-col>
+            </ion-row> -->
+       <ion-row no-padding class="content-row one-line">
+          <ion-col no-padding width-25 class="schedule-date">
+            <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.doc.date|date: 'dd/MM/yyyy'}}</h3>
+            <!-- <h3 class="item-title" style="font-size:15px;">{{item.doc.date|date: 'HH:mm:ss'}}</h3> -->
+          </ion-col>
+          <!-- <ion-col no-padding width-35  >
+            <ion-row no-padding>
+              <ion-col class="item-name" style="white-space: normal;">
+                {{item.doc.name}}
+              </ion-col>
+            </ion-row>
+
+          </ion-col> -->
+          <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+            <!-- <h2 *ngIf="item.doc.amount > 0" class="list-big-number amount" style="color: green;">$ {{item.doc.amount| number:'1.'+currency_precision}}</h2> -->
+            <h2 class="list-big-number amount" style="color: red;">{{item.doc.quantity| number:'1.'+currency_precision}}</h2>
+            <!-- <div *ngIf="item.doc.amount_residual != 0" class="residual-value">
+              $ {{ item.doc.amount | number:'1.'+currency_precision }}
+            </div> -->
+          </ion-col>
+        </ion-row>
+
+        <!-- <ion-row no-padding
+          [class.paid]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] == 'cash'"
+          [class.due]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] != 'cash'"
+          [class.quotation]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] == 'cash'"
+          [class.confirmed]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] != 'cash'">
+          <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+            {{ item.accountFrom_name | translate}}
+          </ion-col>
+          <ion-col no-padding width-10 class="item-icon" (click)="openAsset(item)">
+            <ion-icon name="arrow-forward"></ion-icon>
+          </ion-col>
+          <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+            {{ item.accountTo_name | translate}}
+          </ion-col>
+        </ion-row> -->
+
+        <!-- <ion-row no-padding>
+          <ion-col *ngIf="item.amount_residual>0 && (item.dateDue.split('T')[0]>=today.split('T')[0])" no-padding class="list-tag quotation">
+            {{ 'PENDING' | translate }}
+          </ion-col>
+          <ion-col *ngIf="item.amount_residual>0 && item.dateDue.split('T')[0]<today.split('T')[0]" no-padding class="list-tag due">
+              {{ 'DUE' | translate }}
+          </ion-col>
+          <ion-col *ngIf="item.amount_residual==0" no-padding class="list-tag paid">
+              {{ 'PAID' | translate }}
+          </ion-col>
+        </ion-row> -->
+        </ion-card>
+      </ion-item>
+          <!-- <ion-item-options>
+            <ion-item-option (click)="deleteCashMove(item)"
+            *ngIf="!item.fixed">
+              Borrar
+            </ion-item-option>
+          </ion-item-options> -->
         </ion-item-sliding>
       </section>
     </ion-list>

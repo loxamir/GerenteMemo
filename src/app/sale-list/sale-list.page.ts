@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
   NavController, LoadingController, PopoverController, Events,
-  NavParams
+  NavParams, ModalController
 } from '@ionic/angular';
 import 'rxjs/Rx';
 import { File } from '@ionic-native/file/ngx';
@@ -26,6 +26,7 @@ export class SaleListPage implements OnInit {
   page = 0;
   languages: Array<LanguageModel>;
   currency_precision = 2;
+  select;
 
   constructor(
     public navCtrl: NavController,
@@ -37,8 +38,10 @@ export class SaleListPage implements OnInit {
     public file: File,
     public pouchdbService: PouchdbService,
     public languageService: LanguageService,
+    public modalCtrl: ModalController,
     public translate: TranslateService,
   ) {
+    this.select = this.route.snapshot.paramMap.get('select');
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -111,14 +114,42 @@ export class SaleListPage implements OnInit {
     });
   }
 
+  // async openSale(sale) {
+  //   this.events.subscribe('open-sale', (data) => {
+  //     this.events.unsubscribe('open-sale');
+  //   })
+  //   this.loading = await this.loadingCtrl.create({});
+  //   await this.loading.present();
+  //   await this.navCtrl.navigateForward(['/sale', {'_id': sale._id}]);
+  //   await this.loading.dismiss();
+  // }
+
+  selectSale(sale) {
+    if (this.select) {
+      this.modalCtrl.dismiss();
+      this.events.publish('select-sale', sale);
+    } else {
+      this.openSale(sale);
+    }
+  }
+
   async openSale(sale) {
     this.events.subscribe('open-sale', (data) => {
       this.events.unsubscribe('open-sale');
     })
-    this.loading = await this.loadingCtrl.create({});
-    await this.loading.present();
-    await this.navCtrl.navigateForward(['/sale', {'_id': sale._id}]);
-    await this.loading.dismiss();
+    if (this.select) {
+      let profileModal = await this.modalCtrl.create({
+        component: SalePage,
+        componentProps: {
+          "select": true,
+          "_id": sale._id,
+        }
+      })
+      profileModal.present();
+    } else {
+      this.navCtrl.navigateForward(['/sale', { '_id': sale._id }]);
+      await this.loading.dismiss();
+    }
   }
 
   async createSale(){

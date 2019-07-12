@@ -56,6 +56,7 @@ import { CashMovePageModule } from './cash-move/cash-move.module';
 import { StockMovePageModule } from './stock-move/stock-move.module';
 import { LoginPageModule } from './login/login.module';
 import { SalePageModule } from './sale/sale.module';
+import { SaleListPageModule } from './sale-list/sale-list.module';
 
 import { ServicePageModule } from './service/service.module';
 
@@ -114,6 +115,7 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
 @NgModule({
   declarations: [
     AppComponent,
+    // SaleListPage,
     // CurrencyListPage,
     // PaymentConditionListPage,
     // ProductListPage,
@@ -123,19 +125,20 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     // AccountListPage,
     // CashListPage,
   ],
-  entryComponents: [
-    ContactListPage,
-    CurrencyListPage,
-    PaymentConditionListPage,
-    ProductListPage,
-    ReceiptPage,
-    InvoicePage,
-    WarehouseListPage,
-    AccountListPage,
-    CashListPage,
-  ],
+  // entryComponents: [
+  //   ContactListPage,
+  //   CurrencyListPage,
+  //   PaymentConditionListPage,
+  //   ProductListPage,
+  //   ReceiptPage,
+  //   InvoicePage,
+  //   WarehouseListPage,
+  //   AccountListPage,
+  //   CashListPage,
+  // ],
   imports: [
     LoginPageModule,
+    SaleListPageModule,
     AgroTabsPageModule,
     ContactPageModule,
     ContractPageModule,

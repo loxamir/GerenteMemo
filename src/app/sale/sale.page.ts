@@ -13,8 +13,9 @@ import { LanguageModel } from "../services/language/language.model";
 // import { Crop } from '@ionic-native/crop';
 import { SaleService } from './sale.service';
 import { ContactListPage } from '../contact-list/contact-list.page';
+import { CropsPage } from '../crops/crops.page';
 //import { SaleItemPage } from '../sale-item/sale-item';
-//import { CashMovePage } from '../cash/move/cash-move';
+import { StockMovePage } from '../stock-move/stock-move.page';
 import { ProductService } from '../product/product.service';
 //import { SalesPage } from '../sales/sales';
 import { ProductListPage } from '../product-list/product-list.page';
@@ -40,6 +41,7 @@ import html2canvas from 'html2canvas';
 import { DiscountPage } from '../discount/discount.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { ContactPage } from '../contact/contact.page';
+import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 
 @Component({
   selector: 'app-sale',
@@ -110,6 +112,8 @@ export class SalePage implements OnInit {
     select;
     languages: Array<LanguageModel>;
     contact;
+    crop;
+    warehouse;
     contact_name;
     items;
     origin_id;
@@ -157,6 +161,8 @@ export class SalePage implements OnInit {
       this.avoidAlertMessage = false;
 
       this.contact = this.route.snapshot.paramMap.get('contact');
+      this.crop = this.route.snapshot.paramMap.get('crop');
+      this.warehouse = this.route.snapshot.paramMap.get('warehouse');
       this.contact_name = this.route.snapshot.paramMap.get('contact_name');
       this.items = this.route.snapshot.paramMap.get('items');
       this.origin_id = this.route.snapshot.paramMap.get('origin_id');
@@ -183,6 +189,7 @@ export class SalePage implements OnInit {
         payment_name: new FormControl(''),
         invoice: new FormControl(''),
         invoices: new FormControl([]),
+        deliveries: new FormControl([]),
         amount_unInvoiced: new FormControl(0),
         seller: new FormControl(this.route.snapshot.paramMap.get('seller')||{}, Validators.required),
         seller_name: new FormControl(this.route.snapshot.paramMap.get('seller_name')||''),
@@ -192,6 +199,9 @@ export class SalePage implements OnInit {
         create_time: new FormControl(''),
         write_user: new FormControl(''),
         write_time: new FormControl(''),
+        crop: new FormControl(this.crop||{}),
+        date_delivery: new FormControl(this.crop && this.crop.date_end||this.today),
+        warehouse: new FormControl(this.warehouse||{}),
       });
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
@@ -289,6 +299,48 @@ export class SalePage implements OnInit {
         componentProps: {
           "select": true,
           "_id": item._id,
+        }
+      });
+      await profileModal.present();
+      await profileModal.onDidDismiss();
+      this.listenBarcode = true;
+    }
+
+    async selectStockMove(item) {
+      this.listenBarcode = false;
+      this.events.unsubscribe('open-stock-move');
+      this.events.subscribe('open-stock-move', (data) => {
+        this.events.unsubscribe('open-stock-move');
+        // profileModal.dismiss();
+      });
+      // this.events.subscribe('cancel-receipt', (data) => {
+      //   let newPayments = [];
+      //   let residual = this.saleForm.value.residual;
+      //   this.saleForm.value.payments.forEach((receipt, index)=>{
+      //     if (receipt._id != data){
+      //       this.saleForm.value.payments.slice(index, 1);
+      //       newPayments.push(receipt);
+      //     } else {
+      //       residual += receipt.paid;
+      //     }
+      //   })
+      //   this.pouchdbService.getRelated(
+      //   "cash-move", "origin_id", this.saleForm.value._id).then((planned) => {
+      //     this.saleForm.patchValue({
+      //       payments: newPayments,
+      //       residual: residual,
+      //       state: 'CONFIRMED',
+      //       planned: planned
+      //     })
+      //     this.buttonSave();
+      //   });
+      //   this.events.unsubscribe('cancel-receipt');
+      // });
+      let profileModal = await this.modalCtrl.create({
+        component: StockMovePage,
+        componentProps: {
+          "select": true,
+          "_id": item.doc._id,
         }
       });
       await profileModal.present();
@@ -1304,6 +1356,71 @@ export class SalePage implements OnInit {
               "select": true,
               "filter": "customer",
               'customer': true,
+            }
+          });
+          await profileModal.present();
+          await this.loading.dismiss();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
+        });
+      }
+    }
+
+    async selectCrop() {
+      if (this.saleForm.value.state=='QUOTATION'){
+        this.loading = await this.loadingCtrl.create({});
+        await this.loading.present();
+        this.listenBarcode = false;
+        return new Promise(async resolve => {
+          this.avoidAlertMessage = true;
+          this.events.unsubscribe('select-crop');
+          this.events.subscribe('select-crop', (data) => {
+            this.saleForm.patchValue({
+              crop: data,
+              date_delivery: data.date_end,
+            });
+            this.saleForm.markAsDirty();
+            this.avoidAlertMessage = false;
+            this.events.unsubscribe('select-crop');
+            profileModal.dismiss();
+            resolve(true);
+          })
+          let profileModal = await this.modalCtrl.create({
+            component: CropsPage,
+            componentProps: {
+              "select": true,
+            }
+          });
+          await profileModal.present();
+          await this.loading.dismiss();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
+        });
+      }
+    }
+
+    async selectWarehouse() {
+      if (this.saleForm.value.state=='QUOTATION'){
+        this.loading = await this.loadingCtrl.create({});
+        await this.loading.present();
+        this.listenBarcode = false;
+        return new Promise(async resolve => {
+          this.avoidAlertMessage = true;
+          this.events.unsubscribe('select-warehouse');
+          this.events.subscribe('select-warehouse', (data) => {
+            this.saleForm.patchValue({
+              warehouse: data,
+            });
+            this.saleForm.markAsDirty();
+            this.avoidAlertMessage = false;
+            this.events.unsubscribe('select-warehouse');
+            profileModal.dismiss();
+            resolve(true);
+          })
+          let profileModal = await this.modalCtrl.create({
+            component: WarehouseListPage,
+            componentProps: {
+              "select": true,
             }
           });
           await profileModal.present();

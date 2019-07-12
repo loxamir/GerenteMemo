@@ -66,8 +66,8 @@ export class CropPage implements OnInit {
     this.cropForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
-      dateStart: new FormControl(new Date()),
-      dateEnd: new FormControl(new Date()),
+      date_start: new FormControl(new Date()),
+      date_end: new FormControl(new Date()),
       product: new FormControl({}),
       product_name: new FormControl(),
       // currency_name: new FormControl(''),

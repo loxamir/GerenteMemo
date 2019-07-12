@@ -54,6 +54,15 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'warehouse-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../warehouse-list/warehouse-list.module#WarehouseListPageModule'
+          }
+        ]
+      },
+      {
         path: 'work-list',
         children: [
           {

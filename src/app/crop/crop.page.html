@@ -25,12 +25,12 @@
       <ion-input #name type="text"
       formControlName="name"></ion-input>
     </ion-item>
-    <!-- <ion-item no-padding class="field-50">
+    <ion-item no-padding class="field-50">
       <h4 class="field-label">{{'Fecha de Inicio' | translate }}</h4>
       <ion-datetime class="field-50-datetime"
       displayFormat="DD/MM/YYYY"
       pickerFormat="DD/MM/YYYY"
-      formControlName="dateStart">
+      formControlName="date_start">
       </ion-datetime>
     </ion-item>
     <ion-item no-padding class="field-50">
@@ -38,9 +38,9 @@
       <ion-datetime class="field-50-datetime"
       displayFormat="DD/MM/YYYY"
       pickerFormat="DD/MM/YYYY"
-      formControlName="dateEnd">
+      formControlName="date_end">
       </ion-datetime>
-    </ion-item> -->
+    </ion-item>
     <ion-item no-padding (click)="selectProduct()" class="field-100">
       <div class="field-many2one">
         <h4 class="field-label">{{'Producto Producido' | translate}}</h4>

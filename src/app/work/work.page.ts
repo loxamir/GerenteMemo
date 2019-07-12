@@ -23,6 +23,8 @@ import { MachinesPage } from '../machines/machines.page';
 import { CropsPage } from '../crops/crops.page';
 import { StockMoveService } from '../stock-move/stock-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
+import { SaleListPage } from '../sale-list/sale-list.page';
 
 @Component({
   selector: 'app-work',
@@ -491,6 +493,12 @@ export class WorkPage implements OnInit {
         break;
       case 'crop':
         this.showModal(CropsPage, context)
+        break;
+      case 'warehouse':
+        this.showModal(WarehouseListPage, context)
+        break;
+      case 'sale':
+        this.showModal(SaleListPage, context)
         break;
     }
   }

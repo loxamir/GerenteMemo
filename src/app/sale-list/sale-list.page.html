@@ -24,7 +24,7 @@
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding *ngFor="let item of sales" #slidingItem>
-      <ion-item no-padding (click)="openSale(item)">
+      <ion-item no-padding (click)="selectSale(item)">
         <ion-card class="list-card" no-padding button="true">
           <ion-row>
             <ion-col>
