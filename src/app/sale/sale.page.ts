@@ -265,6 +265,13 @@ export class SalePage implements OnInit {
       });
     }
 
+    setContracted(){
+      this.saleForm.patchValue({
+        'state': 'CONTRACTED'
+      })
+      this.buttonSave();
+    }
+
     async selectCashMove(item) {
       this.listenBarcode = false;
       this.events.unsubscribe('open-cash-move');

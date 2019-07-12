@@ -36,13 +36,18 @@
   </ion-col>
   </ion-row>
   <ion-row  class="state-header">
-    <ion-col size="4">
+    <ion-col size="4" *ngIf="saleForm.value.state=='QUOTATION'">
       <div class="clicked arron">
         <span class="state-label">Presupuesto</span>
       </div>
     </ion-col>
+    <ion-col size="4" *ngIf="saleForm.value.state=='CONTRACTED'">
+      <div class="clicked arron" style="background: #4CAF50">
+        <span class="state-label">Contratado</span>
+      </div>
+    </ion-col>
     <ion-col size="4">
-      <div [class.unclicked]="saleForm.value.state=='QUOTATION'" [class.clicked]="saleForm.value.state!='QUOTATION'" class="arrow">
+      <div [class.unclicked]="saleForm.value.state=='QUOTATION' || saleForm.value.state=='CONTRACTED'" [class.clicked]="saleForm.value.state!='QUOTATION' && saleForm.value.state!='CONTRACTED'" class="arrow">
         <span class="state-label">Confirmada</span>
       </div>
     </ion-col>
@@ -402,9 +407,16 @@
   </form>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'QUOTATION' && saleForm.value.items.length">
+    <ion-button (click)="setContracted()"  class="next-button" color="primary">
+      <ion-icon name="checkmark"> </ion-icon>
+      Contratar
+    </ion-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'CONTRACTED' && saleForm.value.items.length">
     <ion-button (click)="goNextStep()"  class="next-button" color="primary">
       <ion-icon name="checkmark"> </ion-icon>
-      Confirmar
+      Entregar
     </ion-button>
   </ion-fab>
 

@@ -51,6 +51,7 @@
       <ion-row no-padding>
         <ion-col no-padding class="list-tag"
         [class.quotation]="item.state=='QUOTATION'"
+        [class.contracted]="item.state=='CONTRACTED'"
         [class.confirmed]="item.state=='CONFIRMED'"
         [class.paid]="item.state=='PAID'"
         [class.cancel]="item.state=='CANCELED'">

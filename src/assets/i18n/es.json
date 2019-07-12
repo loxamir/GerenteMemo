@@ -235,6 +235,13 @@
   "DUE": "Vencido",
   "PENDING": "Pendiente",
   "WAITING": "En Espera",
+  "DATE_DELIVERY": "Fecha de Entrega",
+  "CROP": "Safra",
+  "DEFAULT_PAYMENT": "Pago Definido",
+  "DEFAULT_CONTACT": "Contacto Definido",
+  "CONFIG": "Configuración",
+  "MODEL": "Modelo",
+  "CONTRACTED": "Contratado",
   "RESULT": "Resultado"
 
 }
