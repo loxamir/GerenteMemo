@@ -103,7 +103,7 @@
             <ion-item *ngIf="field.type == 'many2one'"  class="field-100" (click)="selectM2O(field, field.model, field.context)">
               <div class="field-many2one">
                 <h4 class="field-label">{{field.label || field.name}}</h4>
-                <h4 class="field-value-bigger">{{workForm.value[field.name] && workForm.value[field.name].name || 'Selecionar'}}</h4>
+                <h4 class="field-value-bigger">{{workForm.value[field.name] && (workForm.value[field.name].name || workForm.value[field.name].code) || 'Selecionar'}}</h4>
               </div>
             </ion-item>
 

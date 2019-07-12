@@ -452,7 +452,7 @@ export class WorkPage implements OnInit {
 
   selectM2O(fielD, model, context="{}") {
     context = JSON.parse(context || "{}");
-    this.events.subscribe('select-' + model, (data) => {
+    this.events.subscribe('select-' + model, async (data) => {
       let field = {};
       field[fielD.name] = data;
       this.workForm.patchValue(field);
@@ -462,21 +462,31 @@ export class WorkPage implements OnInit {
       let self = this;
       let d = {}
       if(fielD.onchange){
-        fielD.onchange.split(';').forEach(item=>{
+        await this.formatService.asyncForEach(fielD.onchange.split(';'), async item=>{
+        // .forEach(async item=>{
           let fieldName = item.split('=')[0];
           let fieldData = item.split('=')[1];
-          if (isNaN(fieldData)){
-            d[fieldName] = data[fieldData];
-          } else {
-            d[fieldName] = fieldData;
+          if (fieldData){
+            if (isNaN(fieldData)){
+              if (fieldData[0] == '#'){
+                let split = fieldData.split('#')
+                let ddoc = data[split[1]];
+                let fieldDoc:any = await this.pouchdbService.getDoc(ddoc);
+                d[fieldName] = fieldDoc;
+              } else {
+                d[fieldName] = data[fieldData];
+              }
+            } else {
+              d[fieldName] = fieldData;
+            }
           }
         })
         this.workForm.patchValue(d);
       }
       // this.goNextStep();
-      setTimeout(function(){
-        self.goNextStep();
-      }, 200);
+      // setTimeout(function(){
+      //   self.goNextStep();
+      // }, 200);
     })
     switch (model) {
       case 'contact':
@@ -600,7 +610,7 @@ export class WorkPage implements OnInit {
         let element = this.elementRef.nativeElement.querySelector(
           '#'+field.name+' > input'
         );
-        if (element.value=="0" || element.value==""){
+        if (element && (element.value=="0" || element.value=="")){
           element.focus();
           element.select();
           done = false;
@@ -690,10 +700,16 @@ export class WorkPage implements OnInit {
     }
   }
 
-  async stockMoveInCreate(name, quantity, product){
+  async stockMoveInCreate(name, quantity, product, warehouse=undefined){
     /*
     Just create an iconming stock move
     */
+    if (!warehouse){
+      warehouse = {
+        _id: this.config.warehouse_id,
+        name: this.config.warehouse_name,
+      }
+    }
     return new Promise(async (resolve, reject)=>{
       let move:any = await this.createDoc({
         'name': name,
@@ -708,8 +724,8 @@ export class WorkPage implements OnInit {
         'cost': parseFloat(product.cost)*parseFloat(quantity),
         'warehouseFrom_id': 'warehouse.production',
         'warehouseFrom_name': "Producción",
-        'warehouseTo_id': this.config.warehouse_id,
-        'warehouseTo_name': this.config.warehouse_name,
+        'warehouseTo_id': warehouse._id,
+        'warehouseTo_name': warehouse.name,
       });
       // return move
       resolve(move);
@@ -800,11 +816,20 @@ export class WorkPage implements OnInit {
       if (this.workForm.controls[list_field].dirty){
         let data:any = await this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
           if(item.doc_id){
+            let warehouse:any = item['warehouse'];
+            if (!item['warehouse'] || JSON.stringify(item['warehouse']) == '{}'){
+              warehouse = {
+                _id: this.config.warehouse_id,
+                name: this.config.warehouse_name,
+              }
+            }
             let update = await this.updateDoc(item.doc_id, [{
               'quantity': parseFloat(item[qty_field]),
+              'warehouseTo_id': warehouse._id,
+              'warehouseTo_name': warehouse.name,
             }]);
           } else {
-            let move:any = await this.stockMoveInCreate(name, item[qty_field], product)
+            let move:any = await this.stockMoveInCreate(name, item[qty_field], product, item['warehouse'])
             item.doc_id = move.id;
           }
         })
