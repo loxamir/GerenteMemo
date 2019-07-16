@@ -42,6 +42,7 @@ import { DiscountPage } from '../discount/discount.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { ContactPage } from '../contact/contact.page';
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
+import { WorkPage } from '../work/work.page';
 
 @Component({
   selector: 'app-future-contract',
@@ -276,45 +277,21 @@ export class FutureContractPage implements OnInit {
     }
 
     async selectStockMove(item) {
-      this.listenBarcode = false;
-      this.events.unsubscribe('open-stock-move');
-      this.events.subscribe('open-stock-move', (data) => {
-        this.events.unsubscribe('open-stock-move');
-        // profileModal.dismiss();
-      });
-      // this.events.subscribe('cancel-receipt', (data) => {
-      //   let newPayments = [];
-      //   let residual = this.futureContractForm.value.residual;
-      //   this.futureContractForm.value.payments.forEach((receipt, index)=>{
-      //     if (receipt._id != data){
-      //       this.futureContractForm.value.payments.slice(index, 1);
-      //       newPayments.push(receipt);
-      //     } else {
-      //       residual += receipt.paid;
-      //     }
-      //   })
-      //   this.pouchdbService.getRelated(
-      //   "cash-move", "origin_id", this.futureContractForm.value._id).then((planned) => {
-      //     this.futureContractForm.patchValue({
-      //       payments: newPayments,
-      //       residual: residual,
-      //       state: 'CONFIRMED',
-      //       planned: planned
-      //     })
-      //     this.buttonSave();
-      //   });
-      //   this.events.unsubscribe('cancel-receipt');
-      // });
+      let activity: any = this.pouchdbService.getDoc('activity.loads');
+      let args = Object.assign({}, item);
+      let context = {
+        data: args,
+        list: true,
+        go: true,
+        activity: activity,
+        select: true,
+      }
       let profileModal = await this.modalCtrl.create({
-        component: StockMovePage,
-        componentProps: {
-          "select": true,
-          "_id": item.doc._id,
-        }
+        component:WorkPage,
+        componentProps: context
       });
       await profileModal.present();
       await profileModal.onDidDismiss();
-      this.listenBarcode = true;
     }
 
     computePercent(){

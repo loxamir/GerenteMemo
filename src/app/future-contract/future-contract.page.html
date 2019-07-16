@@ -237,7 +237,7 @@
     <section>
       <h2 class="section-title">{{'Entregas' | translate}}</h2>
         <ion-item-sliding class="list-item" *ngFor="let item of futureContractForm.value.deliveries">
-        <ion-item no-padding (click)="selectStockMove(item)" style="margin-bottom: 0px; margin-top:0px;">
+        <ion-item no-padding (click)="selectStockMove(item.value[1])" style="margin-bottom: 0px; margin-top:0px;">
           <ion-card class="list-card" style="border-radius: 5px;">
             <!-- <ion-row no-padding>
               <ion-col no-padding>
@@ -246,7 +246,7 @@
             </ion-row> -->
        <ion-row no-padding class="content-row one-line">
           <ion-col no-padding width-25 class="schedule-date">
-            <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.doc.date|date: 'dd/MM/yyyy'}}</h3>
+            <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.value[1].date|date: 'dd/MM/yyyy'}}</h3>
             <!-- <h3 class="item-title" style="font-size:15px;">{{item.doc.date|date: 'HH:mm:ss'}}</h3> -->
           </ion-col>
           <!-- <ion-col no-padding width-35  >
@@ -259,7 +259,7 @@
           </ion-col> -->
           <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
             <!-- <h2 *ngIf="item.doc.amount > 0" class="list-big-number amount" style="color: green;">$ {{item.doc.amount| number:'1.'+currency_precision}}</h2> -->
-            <h2 class="list-big-number amount" style="color: red;">{{item.doc.quantity| number:'1.'+currency_precision}}</h2>
+            <h2 class="list-big-number amount" style="color: red;">{{item.value[0]| number:'1.'+currency_precision}}</h2>
             <!-- <div *ngIf="item.doc.amount_residual != 0" class="residual-value">
               $ {{ item.doc.amount | number:'1.'+currency_precision }}
             </div> -->
