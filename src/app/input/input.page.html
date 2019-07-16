@@ -11,16 +11,14 @@
     </ion-title>
   </ion-toolbar>
   <ion-toolbar *ngIf="!showForm" color="primary">
-    <ion-buttons slot="start" (click)="goBack()">
+    <!-- <ion-buttons slot="start" (click)="goBack()">
       <ion-icon name="arrow-back" style="font-size: 25px;"></ion-icon>
       <ion-thumbnail style="--border-radius:10px;">
         <img [src]="inputForm.value.image" id="avatarImage" #avatarImage *ngIf="inputForm.value.image">
       </ion-thumbnail>
-    </ion-buttons>
-    <ion-title
-    (click)="showEdit()"
-    style="padding-left: 5px;">{{inputForm.value.name}}
-      <h1 class="subtitle" *ngIf="inputForm.value.lastRain && diffDays  > 1">
+    </ion-buttons> -->
+    <ion-title style="padding-left: 5px;">{{inputForm.value.name}}
+      <!-- <h1 class="subtitle" *ngIf="inputForm.value.lastRain && diffDays  > 1">
         Ultima chuva {{inputForm.value.lastRain}}mm a {{ diffDays }} dias
       </h1>
       <h1 class="subtitle" *ngIf="inputForm.value.lastRain && diffDays == 1">
@@ -31,13 +29,13 @@
       </h1>
       <h1 class="subtitle" *ngIf="!inputForm.value.lastRain">
         Sem dados de Chuva
-      </h1>
+      </h1> -->
     </ion-title>
-    <ion-buttons slot="end">
+    <!-- <ion-buttons slot="end">
       <ion-button (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -69,7 +67,7 @@
                     </h3>
                     <div [innerHTML]="item.summary"></div>
                     <h1 class="activity-note">
-                      <b>Valor:</b> {{item.amount||item.total|number:'1.0'}}
+                      <b>Valor:</b> {{item.quantity||item.total|number:'1.0'}}
                     </h1>
                     <h1 class="activity-note">
                       {{item.note}}
@@ -126,7 +124,7 @@
   </form>
 
 
-  <ion-fab vertical="top" class="rotate180" style="left: 0px;right:0px;top: 0px;background: #dddddd;" horizontal="start" slot="fixed">
+  <!-- <ion-fab vertical="top" class="rotate180" style="left: 0px;right:0px;top: 0px;background: #dddddd;" horizontal="start" slot="fixed">
     <ion-row style="padding-bottom:5px;padding-top: 5px;">
       <ion-col [class.left-round]="true" [class.all-round]="false">
         <ion-textarea #note [(ngModel)]="inputForm.value.note" placeholder="Escribir Anotación" style="margin-top: 2px;" rows="1">
@@ -187,7 +185,7 @@
           Registro Financiero
         </h1>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
 
     <!-- <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
 
@@ -211,11 +209,11 @@
       </ion-col>
 
     </ion-row> -->
-  </ion-fab>
+  <!-- </ion-fab> -->
 
 </ion-content>
 
-<ion-content class="list-mini-content" *ngIf="showForm">
+<!-- <ion-content class="list-mini-content" *ngIf="showForm">
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
   <div id="pwa">
     <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
@@ -271,4 +269,4 @@
       <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
     </ion-row>
   </form>
-</ion-content>
+</ion-content> -->

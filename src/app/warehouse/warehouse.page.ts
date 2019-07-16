@@ -14,7 +14,7 @@ import { LanguageModel } from "../services/language/language.model";
 import { StockMovePage } from '../stock-move/stock-move.page';
 // import { StockMoveService } from '../stock-move.service';
 // import { WarehouseTransferPage } from './transfer/warehouse-transfer';
-// import { CurrencyListPage } from '../currency/list/currency-list';
+import { InputPage } from '../input/input.page';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -34,7 +34,7 @@ export class WarehousePage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -142,18 +142,15 @@ export class WarehousePage implements OnInit {
   }
 
 
-  openItem(item) {
-    this.events.subscribe('open-warehouse-move', (data) => {
-      //console.log("Payment", data);
-      item.amount = data.amount;
-      item.date = data.date;
-      this.recomputeValues();
-      this.events.unsubscribe('open-warehouse-move');
+  async openItem(item) {
+    let profileModal = await this.modalCtrl.create({
+      component: InputPage,
+      componentProps: {
+        "select": true,
+        "_id": item._id,
+      }
     });
-    //console.log("item", item);
-    this.navCtrl.navigateForward(['/stock-move', {
-      "_id": item._id,
-    }]);
+    await profileModal.present();
   }
 
   recomputeValues() {
@@ -186,7 +183,7 @@ export class WarehousePage implements OnInit {
         this.events.unsubscribe('select-warehouse');
         resolve(data);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: WarehouseListPage,
         componentProps: {
           "select": true
@@ -204,7 +201,7 @@ export class WarehousePage implements OnInit {
     });
     fab.close();
     this.selectWarehouse().then(async warehouse=>{
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: StockMovePage,
         componentProps: {
           "warehouseFrom": warehouse,
@@ -223,7 +220,7 @@ export class WarehousePage implements OnInit {
     });
     fab.close();
     this.selectWarehouse().then(async (warehouse)=>{
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: StockMovePage,
         componentProps: {
         "warehouseFrom": this.warehouseForm.value,

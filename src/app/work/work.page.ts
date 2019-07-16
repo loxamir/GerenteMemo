@@ -24,7 +24,7 @@ import { CropsPage } from '../crops/crops.page';
 import { StockMoveService } from '../stock-move/stock-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
-import { SaleListPage } from '../sale-list/sale-list.page';
+import { FutureContractListPage } from '../future-contract-list/future-contract-list.page';
 
 @Component({
   selector: 'app-work',
@@ -507,8 +507,8 @@ export class WorkPage implements OnInit {
       case 'warehouse':
         this.showModal(WarehouseListPage, context)
         break;
-      case 'sale':
-        this.showModal(SaleListPage, context)
+      case 'future-contract':
+        this.showModal(FutureContractListPage, context)
         break;
     }
   }
@@ -700,7 +700,7 @@ export class WorkPage implements OnInit {
     }
   }
 
-  async stockMoveInCreate(name, quantity, product, warehouse=undefined, sale_id=undefined){
+  async stockMoveInCreate(name, quantity, product, warehouse=undefined, contract_id=undefined){
     /*
     Just create an iconming stock move
     */
@@ -715,7 +715,7 @@ export class WorkPage implements OnInit {
         'name': name,
         'quantity': parseFloat(quantity),
         'origin_id': this.workForm.value._id,
-        'sale_id': sale_id,
+        'contract_id': contract_id,
         'contact_id': 'contact.myCompany',
         'contact_name': this.config.name,
         'product_id': product._id,
@@ -816,9 +816,9 @@ export class WorkPage implements OnInit {
       }
       if (this.workForm.controls[list_field].dirty){
         let data:any = await this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
-          let sale_id:any = undefined;
-          if (item['sale'] && JSON.stringify(item['sale']) != '{}'){
-            sale_id = item['sale']._id
+          let contract_id:any = undefined;
+          if (item['contract'] && JSON.stringify(item['contract']) != '{}'){
+            contract_id = item['contract']._id
           }
           if(item.doc_id){
             let warehouse:any = item['warehouse'];
@@ -832,14 +832,14 @@ export class WorkPage implements OnInit {
               'quantity': parseFloat(item[qty_field]),
               'warehouseTo_id': warehouse._id,
               'warehouseTo_name': warehouse.name,
-              'sale_id': sale_id
+              'contract_id': contract_id
             }]);
           } else {
-            let move:any = await this.stockMoveInCreate(name, item[qty_field], product, item['warehouse'], sale_id)
+            let move:any = await this.stockMoveInCreate(name, item[qty_field], product, item['warehouse'], contract_id)
             item.doc_id = move.id;
-            let sale = await this.pouchdbService.getDoc(sale_id);
-            sale['delivered'] += parseFloat(item[qty_field]);
-            await this.pouchdbService.updateDoc(sale)
+            let contract = await this.pouchdbService.getDoc(contract_id);
+            contract['delivered'] += parseFloat(item[qty_field]);
+            await this.pouchdbService.updateDoc(contract)
           }
         })
         resolve(true);

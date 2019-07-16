@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
+import { FormatService } from '../services/format.service';
 
 @Component({
   selector: 'app-future-contract-list',
@@ -30,7 +31,7 @@ export class FutureContractListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public futureContractsService: FutureContractsService,
+    public formatService: FormatService,
     public loadingCtrl: LoadingController,
     public popoverCtrl: PopoverController,
     public events:Events,
@@ -160,15 +161,28 @@ export class FutureContractListPage implements OnInit {
   }
 
   getFutureContractsPage(keyword, page){
-    return new Promise(resolve => {
-      this.pouchdbService.searchDocTypeData(
+    return new Promise(async resolve => {
+      let futureContracts:any = await this.pouchdbService.searchDocTypeData(
         'future-contract',
         keyword,
         page,
         "contact_name"
-      ).then((futureContracts: any[]) => {
+      );//.then((futureContracts: any[]) => {
+      await this.formatService.asyncForEach(futureContracts, async item=>{
+      // futureContracts.forEach(async item=> {
+        let deliveries:any = await this.pouchdbService.getView(
+          'Informes/EntregasLista', 1,
+          [item._id],
+          [item._id+"z"],
+        );//.then((view: any[]) => {})
+        item.delivered = deliveries[0] && deliveries[0].value || 0;
+        console.log("deliveries", deliveries, item);
+
+      })
+      console.log("futureContract", futureContracts);
+
         resolve(futureContracts);
-      });
+      // });
     });
   }
 

@@ -397,7 +397,7 @@
     </ion-button>
   </ion-fab> -->
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" >
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="futureContractForm.value.state == 'QUOTATION'">
     <ion-button (click)="confirmState()"  class="next-button" color="primary">
       <ion-icon name="checkmark"> </ion-icon>
       Confirmar
