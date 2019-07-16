@@ -157,6 +157,11 @@ export class FutureContractService {
             undefined
           );//.then((view: any[]) => {})
           pouchData['deliveries'] = deliveries;
+          var sum = deliveries.reduce( function( prevVal, elem ) {
+            return prevVal + elem.value[0];
+          }, 0 );
+          pouchData['delivered'] = sum;
+          pouchData['residual'] = pouchData.quantity - sum;
           resolve(pouchData);
         })
       }));
