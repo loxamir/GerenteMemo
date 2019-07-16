@@ -53,6 +53,7 @@ export class InputPage implements OnInit {
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
+  warehouse_id: string;
   today: any;
   showForm = false;
   isCordova = false;
@@ -97,6 +98,7 @@ export class InputPage implements OnInit {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
+    this.warehouse_id = this.route.snapshot.paramMap.get('warehouse_id');
     this.events.subscribe('changed-sale', (change) => {
       this.inputService.handleChange(this.inputForm.value.moves, change);
     })
@@ -442,7 +444,7 @@ export class InputPage implements OnInit {
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
-      this.inputService.getWorksPage(this._id, this.skip).then((works: any[]) => {
+      this.inputService.getWorksPage(this._id, this.skip, this.warehouse_id).then((works: any[]) => {
         works.forEach(wor => {
           this.inputForm.value.moves.push(wor);
         })

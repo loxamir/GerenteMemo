@@ -148,6 +148,7 @@ export class WarehousePage implements OnInit {
       componentProps: {
         "select": true,
         "_id": item._id,
+        "warehouse_id": this._id,
       }
     });
     await profileModal.present();

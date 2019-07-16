@@ -112,13 +112,13 @@ export class InputService {
     this.pouchdbService.localHandleChangeData(list, change)
   }
 
-  getWorksPage(input_id, skip = 0): Promise<any> {
+  getWorksPage(input_id, skip = 0, warehouse_id = 'warehouse.physical.my'): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/InputDiario', 4,
-        [input_id + "z"],
-        [input_id],
+        'stock/InputDiario', 5,
+        [input_id, warehouse_id+"z"],
+        [input_id, warehouse_id],
         true,
         true,
         15,
@@ -127,7 +127,7 @@ export class InputService {
         console.log("planned", planneds);
         let getList = [];
         planneds.forEach(item => {
-          getList.push(item.key[3]);
+          getList.push(item.key[4]);
         })
         let docs: any = await this.pouchdbService.getList(getList, true);
         let moves = [];
