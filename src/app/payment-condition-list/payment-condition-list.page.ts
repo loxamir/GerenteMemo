@@ -24,7 +24,6 @@ export class PaymentConditionListPage implements OnInit {
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
-    public modal: ModalController,
     public route: ActivatedRoute,
     public events: Events,
   ) {

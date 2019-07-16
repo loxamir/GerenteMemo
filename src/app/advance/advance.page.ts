@@ -34,7 +34,7 @@ export class AdvancePage implements OnInit {
 
     constructor(
       public navCtrl: NavController,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
@@ -102,7 +102,7 @@ export class AdvancePage implements OnInit {
             this.events.unsubscribe('select-contact');
             resolve(true);
           })
-          let profileModal = await this.modal.create({
+          let profileModal = await this.modalCtrl.create({
             component: ContactListPage,
             componentProps: {
             "select": true,
@@ -237,7 +237,7 @@ export class AdvancePage implements OnInit {
       this.events.subscribe('open-receipt', (data) => {
         this.events.unsubscribe('open-receipt');
       });
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: ReceiptPage,
         componentProps: {
           "_id": item._id,
@@ -265,7 +265,7 @@ export class AdvancePage implements OnInit {
         });
         let plannedItems = [await this.pouchdbService.getDoc(this.advanceForm.value.cash_move)];
 
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ReceiptPage,
           componentProps: {
             // "addPayment": true,

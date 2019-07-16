@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController,   ModalController, Events} from '@ionic/angular';
+import { NavController, LoadingController, Events} from '@ionic/angular';
 // import { HelpPage } from '../help';
 import 'rxjs/Rx';
 // import { HelpsService } from './helps.service';
@@ -25,7 +25,6 @@ export class HelpListPage implements OnInit {
     // public helpsService: HelpsService,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
-    public modal: ModalController,
     public route: ActivatedRoute,
     public events: Events,
   ) {

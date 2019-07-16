@@ -46,7 +46,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
     constructor(
       public navCtrl: NavController,
-      // public modal: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,

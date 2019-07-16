@@ -37,7 +37,7 @@ export class StockMovePage implements OnInit {
   constructor(
 
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -235,7 +235,7 @@ export class StockMovePage implements OnInit {
         profileModal.dismiss();
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: WarehouseListPage,
         componentProps: {
           "select": true
@@ -256,7 +256,7 @@ export class StockMovePage implements OnInit {
         profileModal.dismiss();
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: WarehouseListPage,
         componentProps: {
           "select": true
@@ -278,7 +278,7 @@ export class StockMovePage implements OnInit {
          profileModal.dismiss();
          resolve(true);
        })
-       let profileModal = await this.modal.create({
+       let profileModal = await this.modalCtrl.create({
          component: ProductListPage,
          componentProps: {
            "select": true,
@@ -299,7 +299,7 @@ export class StockMovePage implements OnInit {
           profileModal.dismiss();
           resolve(true);
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ContactListPage,
           componentProps: {
             "select": true

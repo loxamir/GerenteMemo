@@ -150,7 +150,6 @@ export class ContractPage implements OnInit {
       public formatService: FormatService,
       public events:Events,
       public pouchdbService: PouchdbService,
-      // public modal: ModalController,
       public popoverCtrl: PopoverController,
       // public socialSharing: SocialSharing,
       // public file: File,

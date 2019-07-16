@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, PopoverController , Events,  ModalController  } from '@ionic/angular';
+import { NavController, LoadingController, PopoverController , Events } from '@ionic/angular';
 // import { PurchasePage } from '../purchase';
 //import { DecimalPipe } from '@angular/common';
 import 'rxjs/Rx';
@@ -41,7 +41,6 @@ export class PurchaseListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public events:Events,
     public route: ActivatedRoute,
-    public modal: ModalController,
   ) {
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');

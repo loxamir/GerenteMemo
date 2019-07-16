@@ -120,7 +120,6 @@ export class ProductionPage implements OnInit {
       public configService: ConfigService,
       public formatService: FormatService,
       public events:Events,
-      public modal: ModalController,
       // public speechRecognition: SpeechRecognition,
       // public tts: TextToSpeech,
       public pouchdbService: PouchdbService,

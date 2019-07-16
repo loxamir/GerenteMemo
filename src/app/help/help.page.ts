@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events } from '@ionic/angular';
+import { NavController,  LoadingController,  Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import 'rxjs/Rx';
@@ -28,7 +28,6 @@ export class HelpPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
     public pouchdbService: PouchdbService,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,

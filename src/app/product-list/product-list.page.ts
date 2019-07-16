@@ -36,7 +36,6 @@ export class ProductListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public formatService: FormatService,
-    // public modal: ModalController,
     public events: Events,
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,

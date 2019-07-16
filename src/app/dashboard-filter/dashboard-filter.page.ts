@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events } from '@ionic/angular';
+import { NavController, LoadingController,  Events } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -22,7 +22,6 @@ export class DashboardFilterPage implements OnInit {
 
     constructor(
       public navCtrl: NavController,
-      public modal: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,

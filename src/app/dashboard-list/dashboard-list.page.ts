@@ -1,6 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, Input, ViewChild, OnInit } from '@angular/core';
-import { NavController, LoadingController,   ModalController, Events, PopoverController} from '@ionic/angular';
+import { NavController, LoadingController, Events, PopoverController} from '@ionic/angular';
 // import { DashboardPage } from '../dashboard/dashboard.page';
 import 'rxjs/Rx';
 import { DashboardsService } from './dashboard-list.service';
@@ -29,8 +29,6 @@ export class DashboardListPage implements OnInit {
     public navCtrl: NavController,
     public dashboardsService: DashboardsService,
     public loadingCtrl: LoadingController,
-
-    public modal: ModalController,
     public route: ActivatedRoute,
     public events: Events,
     public popoverCtrl: PopoverController,

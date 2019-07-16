@@ -74,7 +74,7 @@ export class DashboardPage implements OnInit {
 
     constructor(
       public navCtrl: NavController,
-      public modal: ModalController,
+      public modalCtrl: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
@@ -369,7 +369,7 @@ export class DashboardPage implements OnInit {
 
     async addFilter(){
       // if (this.serviceForm.value.state=='QUOTATION'){
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: DashboardFilterPage,
           componentProps: {fields: this.fields, field_value: this.field_value}
         });
@@ -389,7 +389,7 @@ export class DashboardPage implements OnInit {
       fie.fields = this.fields;
       fie.field_value = this.field_value;
 
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: DashboardFilterPage,
         componentProps: fie
       });
