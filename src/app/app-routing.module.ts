@@ -100,6 +100,9 @@ const routes: Routes = [
   { path: 'inputs', loadChildren: './inputs/inputs.module#InputsPageModule' },
   { path: 'filter', loadChildren: './filter/filter.module#FilterPageModule' },
   { path: 'image-modal', loadChildren: './image-modal/image-modal.module#ImageModalPageModule' },
+
+  { path: 'future-contract', loadChildren: './future-contract/future-contract.module#FutureContractPageModule' },
+  { path: 'future-contract-list', loadChildren: './future-contract-list/future-contract-list.module#FutureContractListPageModule' },
 ];
 
 @NgModule({

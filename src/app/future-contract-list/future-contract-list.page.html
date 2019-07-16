@@ -1,0 +1,103 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-searchbar
+      placeholder="Buscar Venta"
+      [(ngModel)]="searchTerm"
+      #searchbar
+      (ionChange)="searchItems()">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button icon-only
+              (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list no-lines>
+    <ion-item-sliding *ngFor="let item of futureContracts" #slidingItem>
+      <ion-item no-padding (click)="selectFutureContract(item)">
+        <ion-card class="list-card" no-padding button="true">
+          <ion-row>
+            <ion-col>
+              <h3 class="item-name"><b>{{ item.contact_name || 'No Informado'}}</b></h3>
+            </ion-col>
+          </ion-row>
+     <ion-row no-padding class="content-row one-line">
+        <ion-col no-padding size="6">
+          <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.date|date: 'dd/MM/yyyy HH:mm:ss'}}</h3>
+          <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;">
+            <span style="margin-left: 5px">{{item.code}}</span>
+          </h3>
+          <h3 class="item-title" style="font-size:15px;">{{item.payment_name | translate}}</h3>
+        </ion-col>
+        <ion-col no-padding size="6" align-self-center>
+          <h2 *ngIf="item.quantity > 0" class="list-big-number" style="color: blue;">{{item.quantity| number:'1.0'}} Sacas</h2>
+          <h2 *ngIf="item.price > 0" class="list-big-number" style="color: green;">$ {{item.price| number:'1.'+currency_precision}}</h2>
+          <!-- <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.'+currency_precision}}</h2> -->
+          <!-- <h2 *ngIf="item.residual > 0" class="list-big-number" style="color: red;"> {{item.residual| number:'1.0'}}</h2> -->
+          <div *ngIf="item.residual > 0 && item.state!='CANCELED'" class="residual-value">
+            A Entregar {{ item.residual | number:'1.0' }}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row no-padding>
+        <ion-col no-padding class="list-tag"
+        [class.quotation]="item.state=='QUOTATION'"
+        [class.contracted]="item.state=='CONTRACTED'"
+        [class.confirmed]="item.state=='CONFIRMED'"
+        [class.paid]="item.state=='PAID'"
+        [class.cancel]="item.state=='CANCELED'">
+            {{ item.state | translate }}
+        </ion-col>
+      </ion-row>
+      <ion-row no-padding class="content-row one-line" *ngIf="item.note">
+        <ion-col class="item-content" style="white-space: normal;">
+          {{item.note}}
+        </ion-col>
+      </ion-row>
+      </ion-card>
+
+    </ion-item>
+      <ion-item-options  side="end">
+        <ion-item-option (click)="deleteFutureContract(slidingItem, item)"
+        *ngIf="item.state=='QUOTATION'">
+          Borrar
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-row style="height:15px;">
+  </ion-row>
+  <ion-row *ngIf="!futureContracts.length">
+    <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
+      <ion-row>
+        <ion-col>
+          <h1>Aún no tienes ventas registradas</h1>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <h4>Para crear tu primera venta, pulsa el botón más</h4>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      <ion-fab-button (click)="createFutureContract()" color="primary">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
+  </ion-fab>
+</ion-content>

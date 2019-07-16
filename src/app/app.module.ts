@@ -80,6 +80,9 @@ import { WorksPageModule } from './works/works.module';
 import { ContractPageModule } from './contract/contract.module';
 import { ContractListPageModule } from './contract-list/contract-list.module';
 
+import { FutureContractPageModule } from './future-contract/future-contract.module';
+import { FutureContractListPageModule } from './future-contract-list/future-contract-list.module';
+
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
 import { TicketConfigPageModule } from './ticket-config/ticket-config.module';
@@ -143,6 +146,8 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     ContactPageModule,
     ContractPageModule,
     ContractListPageModule,
+    FutureContractPageModule,
+    FutureContractListPageModule,
     DiscountPageModule,
     CashMovePageModule,
     StockMovePageModule,

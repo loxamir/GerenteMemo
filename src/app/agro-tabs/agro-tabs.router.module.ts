@@ -63,6 +63,15 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'future-contract-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../future-contract-list/future-contract-list.module#FutureContractListPageModule'
+          }
+        ]
+      },
+      {
         path: 'work-list',
         children: [
           {
