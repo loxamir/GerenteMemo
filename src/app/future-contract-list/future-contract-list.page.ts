@@ -14,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { FormatService } from '../services/format.service';
+import { SalePage } from '../sale/sale.page';
 
 @Component({
   selector: 'app-future-contract-list',
@@ -28,6 +29,7 @@ export class FutureContractListPage implements OnInit {
   languages: Array<LanguageModel>;
   currency_precision = 2;
   select;
+  selecting=false;
 
   constructor(
     public navCtrl: NavController,
@@ -86,8 +88,61 @@ export class FutureContractListPage implements OnInit {
     popover.present();
   }
 
+  selectItem(item){
+    item.selected = !item.selected;
+    let selecteds = this.futureContracts.filter(word=>word.selected);
+    if (selecteds.length){
+      this.selecting = true;
+    } else {
+      this.selecting = false;
+    }
+  }
+
+  async createSale() {
+    let selecteds = this.futureContracts.filter(word=>word.selected);
+    let contact_id = selecteds[0].contact_id;
+    let contactError = false;
+    selecteds.forEach(row=>{
+      if (row.contact_id != contact_id){
+        console.log("cliente diferente");
+        contactError = true;
+      }
+    })
+    if (contactError){
+      return;
+    }
+    var getList = selecteds.map( function( elem ) {
+      return elem.product_id
+    });
+    getList.push(selecteds[0].contact_id);
+    getList.push(selecteds[0].warehouse_id);
+    getList.push(selecteds[0].crop_id);
+    let docs:any = await this.pouchdbService.getList(getList);
+    var doc_dict = {};
+    docs.forEach(row=>{
+      doc_dict[row.id] = row.doc;
+    })
+    var items = selecteds.map(function( elem ) {
+      return {
+        'quantity': elem.quantity,
+        'price': elem.price - elem.cost,
+        'product': doc_dict[elem.product_id],
+      };
+    });
+    let profileModal = await this.modalCtrl.create({
+      component: SalePage,
+      componentProps: {
+        "select": true,
+        contact: doc_dict[selecteds[0].contact_id],
+        crop: doc_dict[selecteds[0].crop_id],
+        warehouse: doc_dict[selecteds[0].warehouse_id],
+        items: items
+      }
+    })
+    profileModal.present();
+  }
+
   async ngOnInit() {
-    //this.loading.present();
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -111,7 +166,7 @@ export class FutureContractListPage implements OnInit {
     ).then((futureContracts) => {
       this.futureContracts = futureContracts;
       this.page = 1;
-      this.loading.dismiss();
+      // this.loading.dismiss();
     });
   }
 
