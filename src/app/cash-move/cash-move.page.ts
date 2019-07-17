@@ -149,9 +149,11 @@ export class CashMovePage implements OnInit {
 
     let pyg = await this.pouchdbService.getDoc('currency.PYG');
     let usd = await this.pouchdbService.getDoc('currency.USD');
+    let brl = await this.pouchdbService.getDoc('currency.BRL');
     this.currencies = {
       "currency.PYG": pyg,
       "currency.USD": usd,
+      "currency.BRL": brl,
     }
     if (this._id) {
       this.cashMoveService.getCashMove(this._id).then((data) => {
