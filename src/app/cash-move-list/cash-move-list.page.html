@@ -70,7 +70,7 @@
   </ion-item>
       <ion-item-options>
         <ion-item-option (click)="deleteCashMove(item)"
-        *ngIf="!item.fixed">
+        *ngIf="!item.fixed && !item.close_id">
           Borrar
         </ion-item-option>
       </ion-item-options>

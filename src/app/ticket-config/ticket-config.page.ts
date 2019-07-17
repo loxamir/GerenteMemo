@@ -64,6 +64,7 @@ export class TicketConfigPage implements OnInit {
       // closeComment: new FormControl(this.navParams.data.closeComment),
       showCloseSign: new FormControl(this.navParams.data.showCloseSign),
       showCloseSignSuper: new FormControl(this.navParams.data.showCloseSignSuper),
+      ticket_count: new FormControl(this.navParams.data.ticket_count||1),
     });
   }
 

@@ -244,11 +244,13 @@ export class PurchasePage implements OnInit {
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.company_currency_id = config.currency_id || this.company_currency_id;
-      let pyg = await this.pouchdbService.getDoc('currency.PYG')
-      let usd = await this.pouchdbService.getDoc('currency.USD')
+      let pyg = await this.pouchdbService.getDoc('currency.PYG');
+      let usd = await this.pouchdbService.getDoc('currency.USD');
+      let brl = await this.pouchdbService.getDoc('currency.BRL');
       this.currencies = {
         "currency.PYG": pyg,
         "currency.USD": usd,
+        "currency.BRL": brl,
       }
       this.company_currency_precision = config.currency_precision;
       this.company_currency_symbol = this.currencies[config.currency_id].symbol;

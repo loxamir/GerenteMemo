@@ -150,7 +150,7 @@ export class PouchdbService {
               attachments: true,
               // binary: true,
             }).on('change', (change) => {
-              console.log("changed", change);
+              // console.log("changed", change);
               this.handleChangeData(change);
             }).on('complete', function(info) {
               //console.log("have info", info);

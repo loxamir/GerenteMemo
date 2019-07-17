@@ -1620,7 +1620,15 @@ export class SalePage implements OnInit {
           duration: 3000
         });
         //console.log("ticket", ticket);
-        toast.present();
+        if (data.ticketPrint.ticket_count > 1){
+          let page = ticket.toString();
+          let i = data.ticketPrint.ticket_count;
+          while(i>1){
+            ticket += page;
+            i--;
+          }
+        }
+        await toast.present();
         this.bluetoothSerial.isEnabled().then(res => {
           this.bluetoothSerial.list().then((data)=> {
             this.bluetoothSerial.connect(data[0].id).subscribe((data)=>{
@@ -1800,12 +1808,20 @@ export class SalePage implements OnInit {
         }
       }
       // console.log("ticket", ticket);
-      this.formatService.printMatrixClean(ticket, prefix + this.saleForm.value.code + extension);
+      if (data.ticketPrint.ticket_count > 1){
+        let page = ticket.toString();
+        let i = data.ticketPrint.ticket_count;
+        while(i>1){
+          ticket += page;
+          i--;
+        }
+      }
       let toast = await this.toastCtrl.create({
         message: "Imprimiendo...",
         duration: 3000
       });
-      toast.present();
+      await toast.present();
+      this.formatService.printMatrixClean(ticket, prefix + this.saleForm.value.code + extension);
     });
   }
 

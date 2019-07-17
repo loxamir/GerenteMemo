@@ -150,14 +150,19 @@ export class CashMovePage implements OnInit {
 
     let pyg = await this.pouchdbService.getDoc('currency.PYG');
     let usd = await this.pouchdbService.getDoc('currency.USD');
+    let brl = await this.pouchdbService.getDoc('currency.BRL');
     this.currencies = {
       "currency.PYG": pyg,
       "currency.USD": usd,
+      "currency.BRL": brl,
     }
     if (this._id) {
       this.cashMoveService.getCashMove(this._id).then((data) => {
         this.cashMoveForm.patchValue(data);
         this.cash_move_currency_id = data.currency_id || this.company_currency_id;
+        if (data.close_id){
+          this.cashMoveForm.disable();
+        }
         this.loading.dismiss();
       });
     } else {
@@ -302,34 +307,36 @@ export class CashMovePage implements OnInit {
 
   buttonSave() {
     return new Promise(async resolve => {
-      if (this.cashMoveForm.value.currency && this.cashMoveForm.value.currency._id != this.company_currency_id) {
-        this.cashMoveForm.patchValue({
-          "currency_residual": this.cashMoveForm.value.currency_amount
-        })
-      }
-      if (this._id) {
-        await this.cashMoveService.updateCashMove(this.cashMoveForm.value);
-        this.cashMoveForm.markAsPristine();
-        if (this.select) {
-          this.modalCtrl.dismiss();
-          resolve(true);
-        } else {
-          this.navCtrl.navigateBack('/cash-move-list');
-          resolve(true);
+      if (!this.cashMoveForm.value.close_id){
+        if (this.cashMoveForm.value.currency && this.cashMoveForm.value.currency._id != this.company_currency_id) {
+          this.cashMoveForm.patchValue({
+            "currency_residual": this.cashMoveForm.value.currency_amount
+          })
         }
-      } else {
-        this.cashMoveService.createCashMove(this.cashMoveForm.value).then(doc => {
-          this.cashMoveForm.value._id = doc['id'];
-          this._id = doc['id'];
+        if (this._id) {
+          await this.cashMoveService.updateCashMove(this.cashMoveForm.value);
+          this.cashMoveForm.markAsPristine();
           if (this.select) {
-            this.modalCtrl.dismiss()
+            this.modalCtrl.dismiss();
             resolve(true);
           } else {
-            this.cashMoveForm.markAsPristine();
             this.navCtrl.navigateBack('/cash-move-list');
             resolve(true);
           }
-        });
+        } else {
+          this.cashMoveService.createCashMove(this.cashMoveForm.value).then(doc => {
+            this.cashMoveForm.value._id = doc['id'];
+            this._id = doc['id'];
+            if (this.select) {
+              this.modalCtrl.dismiss()
+              resolve(true);
+            } else {
+              this.cashMoveForm.markAsPristine();
+              this.navCtrl.navigateBack('/cash-move-list');
+              resolve(true);
+            }
+          });
+        }
       }
     })
   }
@@ -372,7 +379,7 @@ export class CashMovePage implements OnInit {
 
   async confirmCashMove() {
     let state = 'DONE';
-    if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'bank' || JSON.stringify(this.cashMoveForm.value.check) != '{}') {
+    if (this.cashMoveForm.value.accountTo_id.split('.')[1] == 'bank' && JSON.stringify(this.cashMoveForm.value.check) != '{}') {
       state = 'WAITING'
     }
     this.cashMoveForm.patchValue({
@@ -484,172 +491,178 @@ export class CashMovePage implements OnInit {
   }
 
   selectCheck() {
-    return new Promise(async resolve => {
-      let profileModal = await this.modalCtrl.create({
-        component: CheckListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-      this.events.subscribe('select-check', (data) => {
-        this.cashMoveForm.patchValue({
-          check: data,
-          amount: data.amount,
-          currency: data.currency,
-          currency_amount: data.currency_amount,
-          exchange_rate: data.exchange_rate
+    if (!this.cashMoveForm.value.close_id){
+      return new Promise(async resolve => {
+        let profileModal = await this.modalCtrl.create({
+          component: CheckListPage,
+          componentProps: {
+            "select": true
+          }
         });
-        this.cashMoveForm.markAsDirty();
-        profileModal.dismiss();
-        this.events.unsubscribe('select-check');
-        resolve(true);
-      })
-    });
+        profileModal.present();
+        this.events.subscribe('select-check', (data) => {
+          this.cashMoveForm.patchValue({
+            check: data,
+            amount: data.amount,
+            currency: data.currency,
+            currency_amount: data.currency_amount,
+            exchange_rate: data.exchange_rate
+          });
+          this.cashMoveForm.markAsDirty();
+          profileModal.dismiss();
+          this.events.unsubscribe('select-check');
+          resolve(true);
+        })
+      });
+    }
   }
 
   selectCurrency() {
-    return new Promise(async resolve => {
-      let profileModal = await this.modalCtrl.create({
-        component: CurrencyListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-      this.events.subscribe('select-currency', (data) => {
-        let amount = this.cashMoveForm.value.amount;
-        let amountCurrency = this.cashMoveForm.value.amount;
-        if (
-          data._id != this.company_currency_id &&
-          this.cashMoveForm.value.currency._id == this.company_currency_id
-        ) {
-          amountCurrency = this.cashMoveForm.value.amount;
-          amount = this.cashMoveForm.value.amount * parseFloat(data.exchange_rate);
-        } else if (
-          data._id == this.company_currency_id &&
-          this.cashMoveForm.value.currency._id != this.company_currency_id
-        ) {
-          amount = this.cashMoveForm.value.currency_amount;
-          amountCurrency = amount;
-        }
-        // console.log("data", data);
-        // console.log("amount", amount);
-        // console.log("amountCurrency", amountCurrency);
-        // console.log("this.company_currency_id", this.company_currency_id);
-        this.cashMoveForm.patchValue({
-          amount: amount,
-          currency_amount: amountCurrency,
-          exchange_rate: data.exchange_rate,
-          currency: data,
-          currency_id: data._id,
-        });
-        this.cash_move_currency_id = data._id;
-        this.cashMoveForm.markAsDirty();
-        profileModal.dismiss();
-        setTimeout(() => {
-          if (data && data._id == this.company_currency_id) {
-            this.amount.setFocus();
-          } else {
-            this.currency_amountField.setFocus();
+    if (!this.cashMoveForm.value.close_id){
+      return new Promise(async resolve => {
+        let profileModal = await this.modalCtrl.create({
+          component: CurrencyListPage,
+          componentProps: {
+            "select": true
           }
-        }, 200);
-        this.events.unsubscribe('select-currency');
-        resolve(true);
-      })
-    });
+        });
+        profileModal.present();
+        this.events.subscribe('select-currency', (data) => {
+          let amount = this.cashMoveForm.value.amount;
+          let amountCurrency = this.cashMoveForm.value.amount;
+          if (
+            data._id != this.company_currency_id &&
+            this.cashMoveForm.value.currency._id == this.company_currency_id
+          ) {
+            amountCurrency = this.cashMoveForm.value.amount;
+            amount = this.cashMoveForm.value.amount * parseFloat(data.exchange_rate);
+          } else if (
+            data._id == this.company_currency_id &&
+            this.cashMoveForm.value.currency._id != this.company_currency_id
+          ) {
+            amount = this.cashMoveForm.value.currency_amount;
+            amountCurrency = amount;
+          }
+          this.cashMoveForm.patchValue({
+            amount: amount,
+            currency_amount: amountCurrency,
+            exchange_rate: data.exchange_rate,
+            currency: data,
+            currency_id: data._id,
+          });
+          this.cash_move_currency_id = data._id;
+          this.cashMoveForm.markAsDirty();
+          profileModal.dismiss();
+          setTimeout(() => {
+            if (data && data._id == this.company_currency_id) {
+              this.amount.setFocus();
+            } else {
+              this.currency_amountField.setFocus();
+            }
+          }, 200);
+          this.events.unsubscribe('select-currency');
+          resolve(true);
+        })
+      });
+    }
   }
 
   selectAccountFrom() {
-    return new Promise(async resolve => {
-      let profileModal = await this.modalCtrl.create({
-        component: AccountListPage,
-        componentProps: {
-          "select": true,
-          show_cash_in: this.to_cash,
-          show_cash_out: this.from_cash,
-          transfer: this.transfer,
-          accountFrom: this.accountFrom,
-          payable: this.payable,
-          receivable: this.receivable,
-        }
+    if (!this.cashMoveForm.value.close_id){
+      return new Promise(async resolve => {
+        let profileModal = await this.modalCtrl.create({
+          component: AccountListPage,
+          componentProps: {
+            "select": true,
+            show_cash_in: this.to_cash,
+            show_cash_out: this.from_cash,
+            transfer: this.transfer,
+            accountFrom: this.accountFrom,
+            payable: this.payable,
+            receivable: this.receivable,
+          }
+        });
+        profileModal.present();
+        this.events.subscribe('select-account', async (data) => {
+          let dict = {
+            accountFrom: data,
+            accountFrom_id: data._id,
+          }
+          if (data.currency_id) {
+            let currency: any = await this.pouchdbService.getDoc(data.currency_id);
+            dict['currency'] = currency;
+            dict['currency_id'] = data.currency_id;
+            dict['exchange_rate'] = currency.exchange_rate;
+          }
+          this.cashMoveForm.patchValue(dict);
+          this.cashMoveForm.markAsDirty();
+          profileModal.dismiss();
+          this.events.unsubscribe('select-account');
+          resolve(true);
+        })
       });
-      profileModal.present();
-      this.events.subscribe('select-account', async (data) => {
-        let dict = {
-          accountFrom: data,
-          accountFrom_id: data._id,
-        }
-        if (data.currency_id) {
-          let currency: any = await this.pouchdbService.getDoc(data.currency_id);
-          dict['currency'] = currency;
-          dict['currency_id'] = data.currency_id;
-          dict['exchange_rate'] = currency.exchange_rate;
-        }
-        this.cashMoveForm.patchValue(dict);
-        this.cashMoveForm.markAsDirty();
-        profileModal.dismiss();
-        this.events.unsubscribe('select-account');
-        resolve(true);
-      })
-    });
+    }
   }
 
   selectAccountTo() {
-    return new Promise(async resolve => {
-      let profileModal = await this.modalCtrl.create({
-        component: AccountListPage,
-        componentProps: {
-          "select": true,
-          show_cash_in: this.to_cash,
-          show_cash_out: this.from_cash,
-          transfer: this.transfer,
-          accountFrom: this.accountFrom,
-          payable: this.payable,
-          receivable: this.receivable
-        }
+    if (!this.cashMoveForm.value.close_id){
+      return new Promise(async resolve => {
+        let profileModal = await this.modalCtrl.create({
+          component: AccountListPage,
+          componentProps: {
+            "select": true,
+            show_cash_in: this.to_cash,
+            show_cash_out: this.from_cash,
+            transfer: this.transfer,
+            accountFrom: this.accountFrom,
+            payable: this.payable,
+            receivable: this.receivable
+          }
+        });
+        profileModal.present();
+        this.events.subscribe('select-account', async (data) => {
+          let dict = {
+            accountTo: data,
+            accountTo_id: data._id,
+          }
+          if (data.currency_id) {
+            let currency: any = await this.pouchdbService.getDoc(data.currency_id);
+            dict['currency'] = currency;
+            dict['currency_id'] = data.currency_id;
+            dict['exchange_rate'] = currency.exchange_rate;
+          }
+          this.cashMoveForm.patchValue(dict);
+          this.cashMoveForm.markAsDirty();
+          profileModal.dismiss();
+          this.events.unsubscribe('select-account');
+          resolve(true);
+        })
       });
-      profileModal.present();
-      this.events.subscribe('select-account', async (data) => {
-        let dict = {
-          accountTo: data,
-          accountTo_id: data._id,
-        }
-        if (data.currency_id) {
-          let currency: any = await this.pouchdbService.getDoc(data.currency_id);
-          dict['currency'] = currency;
-          dict['currency_id'] = data.currency_id;
-          dict['exchange_rate'] = currency.exchange_rate;
-        }
-        this.cashMoveForm.patchValue(dict);
-        this.cashMoveForm.markAsDirty();
-        profileModal.dismiss();
-        this.events.unsubscribe('select-account');
-        resolve(true);
-      })
-    });
+    }
   }
 
   selectContact() {
-    return new Promise(async resolve => {
-      let profileModal = await this.modalCtrl.create({
-        component: ContactListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-      this.events.subscribe('select-contact', (data) => {
-        this.cashMoveForm.patchValue({
-          contact: data,
-          contact_id: data._id,
+    if (!this.cashMoveForm.value.close_id){
+      return new Promise(async resolve => {
+        let profileModal = await this.modalCtrl.create({
+          component: ContactListPage,
+          componentProps: {
+            "select": true
+          }
         });
-        this.cashMoveForm.markAsDirty();
-        profileModal.dismiss();
-        this.events.unsubscribe('select-contact');
-        resolve(true);
-      })
-    });
+        profileModal.present();
+        this.events.subscribe('select-contact', (data) => {
+          this.cashMoveForm.patchValue({
+            contact: data,
+            contact_id: data._id,
+          });
+          this.cashMoveForm.markAsDirty();
+          profileModal.dismiss();
+          this.events.unsubscribe('select-contact');
+          resolve(true);
+        })
+      });
+    }
   }
 
   // selectProject() {
