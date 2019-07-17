@@ -509,47 +509,6 @@ export class FutureContractPage implements OnInit {
     // }
 
 
-    beforeConfirm(){
-      return new Promise(async resolve =>{
-        if (this.futureContractForm.value.items.length == 0){
-          // await this.loading.dismiss();
-          this.addItem();
-          resolve(true);
-        } else {
-          if (Object.keys(this.futureContractForm.value.contact).length === 0){
-            // await this.loading.dismiss();
-            this.selectContact().then(async teste => {
-              await this.loading.dismiss();
-              if (Object.keys(this.futureContractForm.value.paymentCondition).length === 0){
-                this.selectPaymentCondition().then(async ()=>{
-                  this.loading = await this.loadingCtrl.create({});
-                  await this.loading.present();
-                  await this.afterConfirm();
-                  await this.loading.dismiss();
-                  resolve(true);
-                });
-              }
-            });
-          } else if (Object.keys(this.futureContractForm.value.paymentCondition).length === 0){
-            // await this.loading.dismiss();
-            this.selectPaymentCondition().then(async ()=>{
-              this.loading = await this.loadingCtrl.create({});
-              await this.loading.present();
-              await this.afterConfirm();
-              await this.loading.dismiss();
-              resolve(true);
-            });
-          } else {
-            // await this.loading.dismiss();
-            this.loading = await this.loadingCtrl.create({});
-            await this.loading.present();
-            await this.afterConfirm();
-            await this.loading.dismiss();
-            resolve(true);
-          }
-        }
-      })
-    }
 
 
 

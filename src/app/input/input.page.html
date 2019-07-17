@@ -10,7 +10,7 @@
       {{ 'NEW_PLACE' | translate }}
     </ion-title>
   </ion-toolbar>
-  <ion-toolbar *ngIf="!showForm" color="primary">
+  <ion-toolbar *ngIf="!showForm" color="primary" (click)="editProduct(_id)">
     <!-- <ion-buttons slot="start" (click)="goBack()">
       <ion-icon name="arrow-back" style="font-size: 25px;"></ion-icon>
       <ion-thumbnail style="--border-radius:10px;">
@@ -67,10 +67,10 @@
                     </h3>
                     <div [innerHTML]="item.summary"></div>
                     <h1 class="activity-note" style="color:red;" *ngIf="item.warehouseFrom_id == warehouse_id">
-                      <b>Valor:</b> {{-item.quantity||-item.total|number:'1.0'}}
+                      <b>Cantidad:</b> {{-item.quantity||-item.total|number:'1.0'}}
                     </h1>
                     <h1 class="activity-note" style="color: green;" *ngIf="item.warehouseTo_id == warehouse_id">
-                      <b>Valor:</b> {{item.quantity||item.total|number:'1.0'}}
+                      <b>Cantidad:</b> {{item.quantity||item.total|number:'1.0'}}
                     </h1>
                     <h1 class="activity-note">
                       {{item.note}}

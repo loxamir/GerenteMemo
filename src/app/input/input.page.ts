@@ -39,6 +39,7 @@ import { SalePage } from '../sale/sale.page';
 import { ReceiptPage } from '../receipt/receipt.page';
 import { ServicePage } from '../service/service.page';
 import { PlannedListPage } from '../planned-list/planned-list.page';
+import { ProductPage } from '../product/product.page';
 
 @Component({
   selector: 'app-input',
@@ -665,6 +666,17 @@ export class InputPage implements OnInit {
       'note': this.inputForm.value.note,
     })
     this.inputForm.value.note = '';
+  }
+
+  async editProduct(product_id){
+      let profileModal = await this.modalCtrl.create({
+        component: ProductPage,
+        componentProps: {
+          "select": true,
+          "_id": product_id
+        }
+      });
+      profileModal.present();
   }
 
   async selectImage() {

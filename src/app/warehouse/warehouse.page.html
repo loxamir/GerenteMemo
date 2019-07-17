@@ -33,7 +33,7 @@
         formControlName="name"></ion-input>
       </ion-item>
       <ion-col style="width: calc(50% - 0px);background-color: #fff;border: 1px solid #ddd;">
-        {{'CURRENT_STOCK' | translate }}<div class="warehouse-move-amount" style="text-align: center"> {{warehouseForm.value.balance|number:'1.'+currency_precision}} Un.</div>
+        {{'CURRENT_STOCK' | translate }}<div class="warehouse-move-amount" style="text-align: center"> {{warehouseForm.value.count|number:'1.0'}} Items</div>
       </ion-col>
     </ion-row>
     <ion-list no-lines>
@@ -46,12 +46,15 @@
              <h2 class="item-title">{{item.name}}</h2>
            </ion-row>
            <ion-row>
-              <h3 class="list-title">Codigo: {{item.code}}</h3>
+              <!-- <h3 class="list-title">Codigo: {{item.code}}</h3> -->
+              <h3 class="item-title" style="font-size:15px;">
+                  Codigo: <b style="  margin-left: 5px">{{item.code}}</b>
+              </h3>
            </ion-row>
          </ion-col>
          <ion-col no-padding class="item-icon" align-self-center style="text-align: right">
-           <h2 *ngIf="item.stock > 0" class="list-big-number" style="margin-right:10px;"><div style="color: green;">{{item.stock| number:'1.'+currency_precision}}</div><div style="font-size:12px;color: #000">Un.</div></h2>
-           <h2 *ngIf="item.stock <= 0" class="list-big-number" style="margin-right:10px;"><div style="color: red;">{{item.stock| number:'1.'+currency_precision}}</div><div style="font-size:12px;color: #000">Un.</div></h2>
+           <h2 *ngIf="item.stock > 0" class="list-big-number" style="margin-right:10px;"><div style="color: green;">{{item.stock| number:'1.0'}}</div><div style="font-size:12px;color: #000">{{item.unity|translate}}</div></h2>
+           <h2 *ngIf="item.stock <= 0" class="list-big-number" style="margin-right:10px;"><div style="color: red;">{{item.stock| number:'1.0'}}</div><div style="font-size:12px;color: #000">{{item.unity|translate}}</div></h2>
          </ion-col>
        </ion-row>
 

@@ -58,6 +58,7 @@ export class WarehousePage implements OnInit {
     this.warehouseForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
+      count: new FormControl(0),
       currency: new FormControl({}),
       currency_name: new FormControl(''),
       moves: new FormControl([]),
@@ -73,16 +74,18 @@ export class WarehousePage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
     if (this._id){
       this.getWarehouse(this._id).then((data) => {
         this.warehouseForm.patchValue(data);
         this.recomputeValues();
-        //this.loading.dismiss();
+        this.loading.dismiss();
       });
     } else {
-      //this.loading.dismiss();
+      this.loading.dismiss();
     }
   }
 
@@ -370,12 +373,14 @@ export class WarehousePage implements OnInit {
         let promise_ids = [];
         let pts = [];
         let balance = 0;
+        let count = 0;
         planneds.forEach(item => {
           // if (item.value != 0){
             pts.push(item);
             //console.log("ites", item);
             promise_ids.push(this.pouchdbService.getDoc(item.key[1]));
             balance += parseFloat(item.value);
+            count += 1;
           // }
         })
         promise_ids.push(this.pouchdbService.getDoc(doc_id));
@@ -387,6 +392,7 @@ export class WarehousePage implements OnInit {
           let warehouse = Object.assign({}, stockMoves[stockMoves.length-1]);
           warehouse.moves = [];
           warehouse.balance = balance;
+          warehouse.count = count;
           warehouse.warehouse = stockMoves[stockMoves.length-1];
           warehouse.name
           for(let i=0;i<pts.length;i++){
