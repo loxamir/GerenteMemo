@@ -214,12 +214,12 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="cashMoveForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!cashMoveForm.dirty"> </ion-icon>
-      <span *ngIf="cashMoveForm.dirty">Descartar</span>
-      <span *ngIf="!cashMoveForm.dirty">Volver</span>
+      <span *ngIf="cashMoveForm.dirty && !cashMoveForm.value.close_id">Descartar</span>
+      <span *ngIf="!cashMoveForm.dirty || cashMoveForm.value.close_id">Volver</span>
     </ion-button>
   </ion-fab>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showSave()">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showSave() && !cashMoveForm.value.close_id">
     <ion-button (click)="confirmCashMove()"  color="success">
       <ion-icon name="save"> </ion-icon>
       Guardar
