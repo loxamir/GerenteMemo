@@ -13,7 +13,7 @@ import { LanguageModel } from "../services/language/language.model";
 // import { Crop } from '@ionic-native/crop';
 import { SaleService } from './sale.service';
 import { ContactListPage } from '../contact-list/contact-list.page';
-import { CropsPage } from '../crops/crops.page';
+// import { CropsPage } from '../crops/crops.page';
 //import { SaleItemPage } from '../sale-item/sale-item';
 import { StockMovePage } from '../stock-move/stock-move.page';
 import { ProductService } from '../product/product.service';
@@ -112,7 +112,7 @@ export class SalePage implements OnInit {
     select;
     languages: Array<LanguageModel>;
     contact;
-    crop;
+    // crop;
     warehouse;
     contact_name;
     items;
@@ -160,7 +160,7 @@ export class SalePage implements OnInit {
       this.avoidAlertMessage = false;
 
       this.contact = this.route.snapshot.paramMap.get('contact');
-      this.crop = this.route.snapshot.paramMap.get('crop');
+      // this.crop = this.route.snapshot.paramMap.get('crop');
       this.warehouse = this.route.snapshot.paramMap.get('warehouse');
       this.contact_name = this.route.snapshot.paramMap.get('contact_name');
       this.items = this.route.snapshot.paramMap.get('items');
@@ -198,8 +198,8 @@ export class SalePage implements OnInit {
         create_time: new FormControl(''),
         write_user: new FormControl(''),
         write_time: new FormControl(''),
-        crop: new FormControl(this.crop||{}),
-        date_delivery: new FormControl(this.crop && this.crop.date_end||this.today),
+        // crop: new FormControl(this.crop||{}),
+        // date_delivery: new FormControl(this.crop && this.crop.date_end||this.today),
         delivered: new FormControl(0),
         warehouse: new FormControl(this.warehouse||{}),
       });
@@ -217,6 +217,12 @@ export class SalePage implements OnInit {
         let default_payment:any = await this.pouchdbService.getDoc(config.default_payment_id);
         this.saleForm.patchValue({
           'paymentCondition': default_payment
+        })
+      }
+      if (config.warehouse_id && !this.warehouse){
+        let warehouse:any = await this.pouchdbService.getDoc(config.warehouse_id);
+        this.saleForm.patchValue({
+          'warehouse': warehouse
         })
       }
       if (this._id){
@@ -266,13 +272,6 @@ export class SalePage implements OnInit {
         });
         profileModal.present();
       });
-    }
-
-    setContracted(){
-      this.saleForm.patchValue({
-        'state': 'CONTRACTED'
-      })
-      this.buttonSave();
     }
 
     async selectCashMove(item) {
@@ -1380,38 +1379,38 @@ export class SalePage implements OnInit {
       }
     }
 
-    async selectCrop() {
-      if (this.saleForm.value.state=='QUOTATION'){
-        this.loading = await this.loadingCtrl.create({});
-        await this.loading.present();
-        this.listenBarcode = false;
-        return new Promise(async resolve => {
-          this.avoidAlertMessage = true;
-          this.events.unsubscribe('select-crop');
-          this.events.subscribe('select-crop', (data) => {
-            this.saleForm.patchValue({
-              crop: data,
-              date_delivery: data.date_end,
-            });
-            this.saleForm.markAsDirty();
-            this.avoidAlertMessage = false;
-            this.events.unsubscribe('select-crop');
-            profileModal.dismiss();
-            resolve(true);
-          })
-          let profileModal = await this.modalCtrl.create({
-            component: CropsPage,
-            componentProps: {
-              "select": true,
-            }
-          });
-          await profileModal.present();
-          await this.loading.dismiss();
-          await profileModal.onDidDismiss();
-          this.listenBarcode = true;
-        });
-      }
-    }
+    // async selectCrop() {
+    //   if (this.saleForm.value.state=='QUOTATION'){
+    //     this.loading = await this.loadingCtrl.create({});
+    //     await this.loading.present();
+    //     this.listenBarcode = false;
+    //     return new Promise(async resolve => {
+    //       this.avoidAlertMessage = true;
+    //       this.events.unsubscribe('select-crop');
+    //       this.events.subscribe('select-crop', (data) => {
+    //         this.saleForm.patchValue({
+    //           crop: data,
+    //           date_delivery: data.date_end,
+    //         });
+    //         this.saleForm.markAsDirty();
+    //         this.avoidAlertMessage = false;
+    //         this.events.unsubscribe('select-crop');
+    //         profileModal.dismiss();
+    //         resolve(true);
+    //       })
+    //       let profileModal = await this.modalCtrl.create({
+    //         component: CropsPage,
+    //         componentProps: {
+    //           "select": true,
+    //         }
+    //       });
+    //       await profileModal.present();
+    //       await this.loading.dismiss();
+    //       await profileModal.onDidDismiss();
+    //       this.listenBarcode = true;
+    //     });
+    //   }
+    // }
 
     async selectWarehouse() {
       if (this.saleForm.value.state=='QUOTATION'){

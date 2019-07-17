@@ -36,18 +36,13 @@
   </ion-col>
   </ion-row>
   <ion-row  class="state-header">
-    <ion-col size="4" *ngIf="saleForm.value.state=='QUOTATION'">
+    <ion-col size="4">
       <div class="clicked arron">
         <span class="state-label">Presupuesto</span>
       </div>
     </ion-col>
-    <ion-col size="4" *ngIf="saleForm.value.state=='CONTRACTED'">
-      <div class="clicked arron" style="background: #4CAF50">
-        <span class="state-label">Contratado</span>
-      </div>
-    </ion-col>
     <ion-col size="4">
-      <div [class.unclicked]="saleForm.value.state=='QUOTATION' || saleForm.value.state=='CONTRACTED'" [class.clicked]="saleForm.value.state!='QUOTATION' && saleForm.value.state!='CONTRACTED'" class="arrow">
+      <div [class.unclicked]="saleForm.value.state=='QUOTATION'" [class.clicked]="saleForm.value.state!='QUOTATION'" class="arrow">
         <span class="state-label">Confirmada</span>
       </div>
     </ion-col>
@@ -90,7 +85,7 @@
         formControlName="date">
         </ion-datetime>
       </ion-item>
-      <ion-item no-padding (click)="selectCrop()" class="field-50">
+      <!-- <ion-item no-padding (click)="selectCrop()" class="field-50">
         <h4 class="field-label">{{'CROP' | translate }}</h4>
         <h4 class="field-value">{{saleForm.value.crop.name || 'Selecionar'}}</h4>
       </ion-item>
@@ -101,7 +96,7 @@
         pickerFormat="DD/MM/YYYY"
         formControlName="date_delivery">
         </ion-datetime>
-      </ion-item>
+      </ion-item> -->
       <ion-item no-padding (click)="selectWarehouse()" class="field-100">
         <h4 class="field-label">{{'WAREHOUSE' | translate }}</h4>
         <h4 class="field-value">{{saleForm.value.warehouse.name || 'Selecionar'}}</h4>
@@ -176,7 +171,7 @@
         <ion-textarea autoGrow="true" rows="1" #note formControlName="note"></ion-textarea>
     </ion-item>
 
-    <ion-list no-lines>
+    <ion-list no-lines *ngIf="saleForm.value.planned.length">
     <section>
       <h2 class="section-title">{{'Pagarés' | translate}}</h2>
         <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.planned">
@@ -249,7 +244,7 @@
     </ion-list>
 
 
-    <ion-list no-lines>
+    <ion-list no-lines  *ngIf="saleForm.value.deliveries.length">
     <section>
       <h2 class="section-title">{{'Entregas' | translate}}</h2>
         <ion-item-sliding class="list-item" *ngFor="let item of saleForm.value.deliveries">
@@ -407,13 +402,6 @@
   </form>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'QUOTATION' && saleForm.value.items.length">
-    <ion-button (click)="setContracted()"  class="next-button" color="primary">
-      <ion-icon name="checkmark"> </ion-icon>
-      Contratar
-    </ion-button>
-  </ion-fab>
-
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'CONTRACTED' && saleForm.value.items.length">
     <ion-button (click)="goNextStep()"  class="next-button" color="primary">
       <ion-icon name="checkmark"> </ion-icon>
       Confirmar
