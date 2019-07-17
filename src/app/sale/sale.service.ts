@@ -70,8 +70,8 @@ export class SaleService {
     delete sale.planned;
     delete sale.deliveries;
 
-    sale.crop_id = sale.crop._id;
-    delete sale.crop;
+    // sale.crop_id = sale.crop._id;
+    // delete sale.crop;
     sale.warehouse_id = sale.warehouse._id;
     delete sale.warehouse;
     return sale;
@@ -96,7 +96,7 @@ export class SaleService {
         let getList = [
           pouchData['contact_id'],
           pouchData['pay_cond_id'],
-          pouchData['crop_id'],
+          // pouchData['crop_id'],
           pouchData['warehouse_id'],
         ];
         pouchData['lines'].forEach((item) => {
@@ -118,7 +118,7 @@ export class SaleService {
           })
           pouchData.contact = doc_dict[pouchData.contact_id] || {};
           pouchData.paymentCondition = doc_dict[pouchData.pay_cond_id] || {};
-          pouchData.crop = doc_dict[pouchData.crop_id] || {};
+          // pouchData.crop = doc_dict[pouchData.crop_id] || {};
           pouchData.warehouse = doc_dict[pouchData.warehouse_id] || {};
           pouchData['items'] = [];
           pouchData.lines.forEach((line: any)=>{
