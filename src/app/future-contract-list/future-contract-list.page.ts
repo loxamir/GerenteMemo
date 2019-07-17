@@ -124,9 +124,10 @@ export class FutureContractListPage implements OnInit {
     })
     var items = selecteds.map(function( elem ) {
       return {
-        'quantity': elem.quantity,
+        'quantity': elem.delivered-elem.sold,
         'price': elem.price - elem.cost,
         'product': doc_dict[elem.product_id],
+        'contract_id': elem._id,
       };
     });
     let profileModal = await this.modalCtrl.create({
@@ -233,8 +234,18 @@ export class FutureContractListPage implements OnInit {
         item.delivered = deliveries[0] && deliveries[0].value || 0;
         console.log("deliveries", deliveries, item);
 
+        let sales:any = await this.pouchdbService.getView(
+          'Informes/VentasContratoLista', 1,
+          [item._id],
+          [item._id+"z"],
+        );//.then((view: any[]) => {})
+        item.sold = sales[0] && sales[0].value || 0;
+        console.log("sold", sales, item);
+
       })
       console.log("futureContract", futureContracts);
+
+
 
         resolve(futureContracts);
       // });

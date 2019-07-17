@@ -4,10 +4,10 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item style="background-color: white;" ion-item (click)="receivable()">Cuentas A Cobrar</ion-item>
-    <ion-item style="background-color: white;" ion-item (click)="invoice()">Facturas</ion-item>
+    <ion-item style="background-color: white;" ion-item (click)="sales()">Ventas</ion-item>
+    <!--ion-item style="background-color: white;" ion-item (click)="invoice()">Facturas</ion-item>
     <ion-item style="background-color: white;" ion-item (click)="receipts()">Recibos</ion-item>
-    <ion-item style="background-color: white;" ion-item (click)="contracts()">Contractos</ion-item>
+    <ion-item style="background-color: white;" ion-item (click)="contracts()">Contractos</ion-item-->
     <!--ion-item ion-item (click)="importer()">Importador Ventas</ion-item>
     <ion-item (click)="importerLine()">Importador Lineas</ion-item-->
   </ion-list>
@@ -48,8 +48,8 @@ export class FutureContractsPopover {
     this.navCtrl.navigateForward(['/contract-list', {}]);
     this.pop.dismiss();
   }
-  products() {
-    this.navCtrl.navigateForward(['/product-list', {}]);
+  sales() {
+    this.navCtrl.navigateForward(['/tabs/sale-list', {}]);
     this.pop.dismiss();
   }
   receivable() {

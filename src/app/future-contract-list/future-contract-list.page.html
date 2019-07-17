@@ -44,8 +44,11 @@
           <h2 *ngIf="item.price > 0" class="list-big-number" style="color: green;">$ {{item.price| number:'1.'+currency_precision}}</h2>
           <!-- <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.'+currency_precision}}</h2> -->
           <!-- <h2 *ngIf="item.residual > 0" class="list-big-number" style="color: red;"> {{item.residual| number:'1.0'}}</h2> -->
-          <div *ngIf="item.residual > 0 && item.state!='CANCELED'" class="residual-value">
-            A Entregar {{ item.residual-item.delivered | number:'1.0' }}
+          <div *ngIf="(item.delivered-item.sold) > 0" class="residual-value">
+            A Facturar $ {{ (item.delivered-item.sold)*(item.price-item.cost) | number:'1.'+currency_precision }}
+          </div>
+          <div *ngIf="(item.quantity-item.delivered) > 0" class="residual-value">
+          A Entregar {{ item.quantity-item.delivered | number:'1.0' }} Sacas
           </div>
           <!-- <div *ngIf="item.residual > 0 && item.state!='CANCELED'" class="residual-value">
             Entregue {{ item.delivered | number:'1.0' }}

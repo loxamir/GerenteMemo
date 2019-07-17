@@ -144,7 +144,7 @@ export class FutureContractService {
             // });
           // }
 
-          this.pouchdbService.getView("Informes/Entregas", )
+          // this.pouchdbService.getView("Informes/Entregas", )
           let deliveries:any = await this.pouchdbService.getView(
             'Informes/Entregas', 2,
             [doc_id, '0'],
@@ -162,6 +162,25 @@ export class FutureContractService {
           }, 0 );
           pouchData['delivered'] = sum;
           pouchData['residual'] = pouchData.quantity - sum;
+
+          // this.pouchdbService.getView("Informes/VendasContrato", )
+          let sales:any = await this.pouchdbService.getView(
+            'Informes/VentasContrato', 2,
+            [doc_id, '0'],
+            [doc_id, 'z'],
+            true,
+            true,
+            undefined,
+            undefined,
+            true,
+            undefined
+          );//.then((view: any[]) => {})
+          pouchData['sales'] = sales;
+          let sumsale = sales.reduce( function( prevVal, elem ) {
+            return prevVal + elem.value[0];
+          }, 0 );
+          pouchData['sold'] = sumsale;
+
           resolve(pouchData);
         })
       }));

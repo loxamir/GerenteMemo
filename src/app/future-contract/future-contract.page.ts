@@ -156,6 +156,8 @@ export class FutureContractPage implements OnInit {
         date_delivery: new FormControl(this.crop && this.crop.date_end||this.today),
         delivered: new FormControl(0),
         warehouse: new FormControl(this.warehouse||{}),
+        sales: new FormControl([]),
+        sold: new FormControl(0),
       });
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();

@@ -56,6 +56,7 @@ export class SaleService {
       sale.lines.push({
         product_id: item.product_id || item.product._id,
         product_name: item.product.name || item.product_name,
+        contract_id: item.contract_id || item.contract._id,
         quantity: item.quantity,
         price: item.price,
         cost: item.cost,
@@ -126,6 +127,7 @@ export class SaleService {
               'description': doc_dict[line.product_id].name,
               'quantity': line.quantity,
               'price': line.price,
+              'contract_id': line.contract_id,
               'cost': line.cost || 0,
             })
           })

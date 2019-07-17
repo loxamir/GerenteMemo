@@ -233,6 +233,10 @@ export class SalePage implements OnInit {
       if (this.return){
         this.recomputeValues();
       }
+      if (this.items && this.items.length){
+        this.saleForm.markAsDirty();
+        this.recomputeValues();
+      }
     }
 
     editContact() {
