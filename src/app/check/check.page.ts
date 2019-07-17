@@ -110,11 +110,13 @@ export class CheckPage implements OnInit {
     this.currency_precision = config.currency_precision;
     this.company_currency_id = config.currency._id;
     this.check_currency_id = this.currency && this.currency._id || this.company_currency_id;
-    let pyg = await this.pouchdbService.getDoc('currency.PYG')
-    let usd = await this.pouchdbService.getDoc('currency.USD')
+    let pyg = await this.pouchdbService.getDoc('currency.PYG');
+    let usd = await this.pouchdbService.getDoc('currency.USD');
+    let brl = await this.pouchdbService.getDoc('currency.BRL');
     this.currencies = {
       "currency.PYG": pyg,
       "currency.USD": usd,
+      "currency.BRL": brl,
     }
     this.company_currency_name = config.currency.name;
     if (config.currency.inverted_rate) {

@@ -25,6 +25,10 @@
             <ion-label position="floating">{{'Lineas de Margin Inferior' | translate}}</ion-label>
             <ion-input type="number" formControlName="marginBottom"></ion-input>
           </ion-item>
+          <ion-item class="field-100">
+            <ion-label position="floating">{{'Cantidad de Vias' | translate}}</ion-label>
+            <ion-input type="number" formControlName="ticket_count"></ion-input>
+          </ion-item>
           <ion-item  class="field-100">
             <ion-label position="stacked">{{ 'Comentario en Presupuesto' | translate }}</ion-label>
             <ion-textarea #clrequest formControlName="ticketComment"

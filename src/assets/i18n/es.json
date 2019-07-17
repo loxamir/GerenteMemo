@@ -323,5 +323,9 @@
   "DUE": "Vencido",
   "PENDING": "Pendiente",
   "WAITING": "En Espera",
+  "DEFAULT_PAYMENT": "Pago Definido",
+  "DEFAULT_CONTACT": "Contacto Definido",
+  "CONFIG": "Configuración",
+  "MODEL": "Modelo",
   "RESULT": "Resultado"
 }
