@@ -42,12 +42,12 @@
       </div>
     </ion-col>
     <ion-col size="4">
-      <div [class.unclicked]="futureContractForm.value.state=='QUOTATION' || futureContractForm.value.state=='CONTRACTED'" [class.clicked]="futureContractForm.value.state!='QUOTATION' && futureContractForm.value.state!='CONTRACTED'" class="arrow">
+      <div [class.unclicked]="futureContractForm.value.state=='QUOTATION'" [class.clicked]="futureContractForm.value.state!='QUOTATION'" class="arrow">
         <span class="state-label">Confirmada</span>
       </div>
     </ion-col>
     <ion-col size="4">
-      <div [class.unclicked]="futureContractForm.value.state!='PAID'" [class.clicked]="futureContractForm.value.state=='PAID'" class="arrow">
+      <div [class.unclicked]="!(futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == futureContractForm.value.sold))" [class.clicked]="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == futureContractForm.value.sold)" class="arrow">
         <span class="state-label">Concluido</span>
       </div>
     </ion-col>

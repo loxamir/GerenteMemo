@@ -25,7 +25,7 @@
   <ion-list no-lines>
     <ion-item-sliding *ngFor="let item of futureContracts" #slidingItem>
       <ion-item no-padding (tap)="selectFutureContract(item)" (press)="selectItem(item)">
-        <ion-card class="list-card" no-padding button="true" [class.selected]="item.selected">
+        <ion-card class="list-card" style="padding-bottom: 0px;padding-top: 0px;" no-padding button="true" [class.selected]="item.selected">
           <ion-row [class.selected]="item.selected">
             <ion-col>
               <h3 class="item-name"><b>{{ item.contact_name || 'No Informado'}}</b></h3>
@@ -55,7 +55,12 @@
           </div> -->
         </ion-col>
       </ion-row>
-      <ion-row no-padding>
+      <ion-row no-padding class="content-row one-line" *ngIf="item.note" style="border-top: 1px solid #72707047;">
+        <ion-col class="item-content" style="white-space: normal;">
+          {{item.note}}
+        </ion-col>
+      </ion-row>
+      <ion-row no-padding *ngIf="!(item.state=='CONFIRMED' && (item.quantity == item.sold))">
         <ion-col no-padding class="list-tag"
         [class.quotation]="item.state=='QUOTATION'"
         [class.contracted]="item.state=='CONTRACTED'"
@@ -65,9 +70,9 @@
             {{ item.state | translate }}
         </ion-col>
       </ion-row>
-      <ion-row no-padding class="content-row one-line" *ngIf="item.note">
-        <ion-col class="item-content" style="white-space: normal;">
-          {{item.note}}
+      <ion-row no-padding *ngIf="(item.state=='CONFIRMED' && (item.quantity == item.sold))">
+        <ion-col no-padding class="list-tag paid">
+            {{ 'Concluido' | translate }}
         </ion-col>
       </ion-row>
       </ion-card>
