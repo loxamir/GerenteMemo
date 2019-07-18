@@ -108,22 +108,21 @@
       </ion-col> -->
     </ion-row>
       <ion-row>
-      <!-- <ion-item
+      <ion-item
        no-padding
-       *ngIf="contactForm.value.employee"
        class="field-50">
-        <ion-label position="floating">{{'SALARY' | translate }}</ion-label>
+        <ion-label position="floating">{{'Costo' | translate }}</ion-label>
         <ion-input #salary type="number"
         formControlName="salary"></ion-input>
       </ion-item>
-      <ion-item *ngIf="contactForm.value.employee" no-padding (click)="selectCurrency()"
+      <ion-item no-padding (click)="selectCurrency()"
       class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
           <h4 class="field-value">{{contactForm.value.currency && contactForm.value.currency.name || 'Selecionar'}}</h4>
         </div>
       </ion-item>
-      <ion-item
+      <!-- <ion-item
       *ngIf="contactForm.value.employee"
       no-padding
       class="field-100">

@@ -158,6 +158,8 @@ export class FutureContractPage implements OnInit {
         warehouse: new FormControl(this.warehouse||{}),
         sales: new FormControl([]),
         sold: new FormControl(0),
+        settlements: new FormControl([]),
+        settled: new FormControl(0),
       });
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
@@ -189,6 +191,73 @@ export class FutureContractPage implements OnInit {
       if (this.return){
         this.recomputeValues();
       }
+    }
+
+    async addSettlement(){
+      // if (this.saleForm.value.state=='QUOTATION'){
+        let prompt = await this.alertCtrl.create({
+          header: 'Cantidad acertada',
+          message: 'Cual es la cantidad entregada',
+          inputs: [
+            {
+              type: 'number',
+              name: 'quantity',
+              value: this.futureContractForm.value.quantity - this.futureContractForm.value.delivered - this.futureContractForm.value.settled,
+          },
+
+          ],
+          buttons: [
+            {
+              text: 'Cancelar'
+            },
+            {
+              text: 'Confirmar',
+              handler: data => {
+                // item.price = data.price;
+                // this.recomputeValues();
+                // this.saleForm.markAsDirty();
+                this.futureContractForm.value.settlements.push({
+                  value: [parseFloat(data.quantity), {date: "2019-07-11T12:48:47.650Z"}]
+                });
+                this.futureContractForm.value.settled += parseFloat(data.quantity);
+              }
+            }
+          ]
+        });
+
+        prompt.present();
+      // }
+    }
+
+    async editSettle(item){
+      // if (this.saleForm.value.state=='QUOTATION'){
+        let prompt = await this.alertCtrl.create({
+          header: 'Cantidad acertada',
+          message: 'Cual es la cantidad entregada',
+          inputs: [
+            {
+              type: 'number',
+              name: 'quantity',
+              value: item.value[0]
+          },
+
+          ],
+          buttons: [
+            {
+              text: 'Cancelar'
+            },
+            {
+              text: 'Confirmar',
+              handler: data => {
+                this.futureContractForm.value.settled += parseFloat(data.quantity) - parseFloat(item.value[0]);
+                item.value[0] = data.quantity
+              }
+            }
+          ]
+        });
+
+        prompt.present();
+      // }
     }
 
     editContact() {

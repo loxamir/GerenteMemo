@@ -32,7 +32,7 @@
   <ion-col
   *ngIf="futureContractForm.value.state=='CONFIRMED'">
       <h4 class="field-label-col">{{'A Entregar' | translate}}</h4>
-      <h4 class="field-value-col" style="color:red">{{futureContractForm.value.quantity - futureContractForm.value.delivered|number:'1.0'}}</h4>
+      <h4 class="field-value-col" style="color:red">{{futureContractForm.value.quantity - futureContractForm.value.delivered - futureContractForm.value.settled|number:'1.0'}}</h4>
   </ion-col>
   </ion-row>
   <ion-row  class="state-header">
@@ -47,7 +47,7 @@
       </div>
     </ion-col>
     <ion-col size="4">
-      <div [class.unclicked]="!(futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == futureContractForm.value.sold))" [class.clicked]="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == futureContractForm.value.sold)" class="arrow">
+      <div [class.unclicked]="!(futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == (futureContractForm.value.sold + futureContractForm.value.settled)))" [class.clicked]="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == (futureContractForm.value.sold + futureContractForm.value.settled))" class="arrow">
         <span class="state-label">Concluido</span>
       </div>
     </ion-col>
@@ -261,12 +261,44 @@
       </section>
     </ion-list>
 
+    <ion-row>
+      <ion-col size="12">
+        <ion-button class="button-100" (click)="addSettlement()" color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> Entrega Manual</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-list no-lines *ngIf="futureContractForm.value.settlements.length">
+    <section>
+      <ion-row no-padding class="content-row one-line">
+         <ion-col no-padding width-25 class="schedule-date">
+           <h2 class="section-title">{{'Entreguas Manuales:' | translate}}</h2>
+         </ion-col>
+         <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+           <h2 class="list-big-number amount" style="color: red;">{{ futureContractForm.value.settled }}</h2>
+         </ion-col>
+       </ion-row>
+        <ion-item-sliding class="list-item" *ngFor="let item of futureContractForm.value.settlements">
+        <ion-item no-padding (click)="editSettle(item)" style="margin-bottom: 0px; margin-top:0px;">
+          <ion-card class="list-card" style="border-radius: 5px;">
+       <ion-row no-padding class="content-row one-line">
+          <ion-col no-padding width-25 class="schedule-date">
+            <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.value[1].date|date: 'dd/MM/yyyy'}}</h3>
+          </ion-col>
+          <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+            <h2 class="list-big-number amount" style="color: black;">{{item.value[0]| number:'1.0'}}</h2>
+          </ion-col>
+        </ion-row>
 
+        </ion-card>
+      </ion-item>
+
+        </ion-item-sliding>
+      </section>
+    </ion-list>
     <ion-list no-lines *ngIf="futureContractForm.value.deliveries.length">
     <section>
       <ion-row no-padding class="content-row one-line">
          <ion-col no-padding width-25 class="schedule-date">
-           <h2 class="section-title">{{'Total Entregado:' | translate}}</h2>
+           <h2 class="section-title">{{'Cargas Entregues:' | translate}}</h2>
          </ion-col>
          <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
            <h2 class="list-big-number amount" style="color: red;">{{ futureContractForm.value.delivered }}</h2>
@@ -412,6 +444,7 @@
       Guardar
     </ion-button>
   </ion-fab>
+
   <div style="height: 100px;">
   </div>
 </ion-content>

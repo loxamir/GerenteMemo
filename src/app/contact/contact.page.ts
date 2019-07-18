@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
+import { CurrencyListPage } from '../currency-list/currency-list.page';
 
 @Component({
   selector: 'app-contact',
@@ -129,6 +130,27 @@ export class ContactPage implements OnInit {
       // console.log("ruc", this.contactForm.value.document);
       this.getLegalName();
     }
+  }
+
+  selectCurrency() {
+    return new Promise(async resolve => {
+      this.events.subscribe('select-currency', (data) => {
+        this.contactForm.patchValue({
+          currency: data,
+        });
+        this.contactForm.markAsDirty();
+        this.events.unsubscribe('select-currency');
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: CurrencyListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      await profileModal.present();
+      await profileModal.onDidDismiss();
+    });
   }
 
   async editUser(user) {

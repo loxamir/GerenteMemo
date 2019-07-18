@@ -124,7 +124,7 @@ export class FutureContractListPage implements OnInit {
     })
     var items = selecteds.map(function( elem ) {
       return {
-        'quantity': elem.delivered-elem.sold,
+        'quantity': elem.delivered+elem.settled-elem.sold,
         'price': elem.price - elem.cost,
         'product': doc_dict[elem.product_id],
         'contract_id': elem._id,
