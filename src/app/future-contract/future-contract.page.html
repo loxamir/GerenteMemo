@@ -47,7 +47,7 @@
       </div>
     </ion-col>
     <ion-col size="4">
-      <div [class.unclicked]="!(futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == (futureContractForm.value.sold + futureContractForm.value.settled)))" [class.clicked]="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == (futureContractForm.value.sold + futureContractForm.value.settled))" class="arrow">
+      <div [class.unclicked]="!(futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == futureContractForm.value.sold))" [class.clicked]="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == futureContractForm.value.sold)" class="arrow">
         <span class="state-label">Concluido</span>
       </div>
     </ion-col>
@@ -262,8 +262,11 @@
     </ion-list>
 
     <ion-row>
-      <ion-col size="12">
-        <ion-button class="button-100" (click)="addSettlement()" color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> Entrega Manual</ion-button>
+      <ion-col *ngIf="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity > (futureContractForm.value.delivered + futureContractForm.value.settled))">
+        <ion-button class="button-100" (click)="addSettlement()"  color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> Entrega Manual</ion-button>
+      </ion-col>
+      <ion-col *ngIf="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.delivered + futureContractForm.value.settled) > futureContractForm.value.sold">
+        <ion-button class="button-100" (click)="createSale()"  color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> Crear Venta</ion-button>
       </ion-col>
     </ion-row>
     <ion-list no-lines *ngIf="futureContractForm.value.settlements.length">

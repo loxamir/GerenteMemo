@@ -43,6 +43,7 @@ import { CashMovePage } from '../cash-move/cash-move.page';
 import { ContactPage } from '../contact/contact.page';
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 import { WorkPage } from '../work/work.page';
+import { SalePage } from '../sale/sale.page';
 
 @Component({
   selector: 'app-future-contract',
@@ -227,6 +228,35 @@ export class FutureContractPage implements OnInit {
 
         prompt.present();
       // }
+    }
+
+    async createSale() {
+      this.events.unsubscribe('create-sale');
+      this.events.subscribe('create-sale', (data) => {
+        this.futureContractForm.patchValue({
+          sold: data,
+          sales: data,
+        });
+        this.futureContractForm.markAsDirty();
+        this.events.unsubscribe('create-sale');
+      })
+      var items = [{
+          'quantity': this.futureContractForm.value.delivered+this.futureContractForm.value.settled-this.futureContractForm.value.sold,
+          'price': this.futureContractForm.value.price - this.futureContractForm.value.cost,
+          'product': this.futureContractForm.value.product,
+          'contract_id': this.futureContractForm.value._id,
+        }];
+      let profileModal = await this.modalCtrl.create({
+        component: SalePage,
+        componentProps: {
+          "select": true,
+          contact: this.futureContractForm.value.contact,
+          crop: this.futureContractForm.value.crop,
+          warehouse: this.futureContractForm.value.warehouse,
+          items: items
+        }
+      })
+      profileModal.present();
     }
 
     async editSettle(item){
