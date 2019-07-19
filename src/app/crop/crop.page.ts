@@ -107,9 +107,9 @@ export class CropPage implements OnInit {
       this.cropService.createCrop(this.cropForm.value).then(doc => {
         //console.log("docss", doc);
         this.cropForm.patchValue({
-          _id: doc['id'],
+          _id: doc['doc']['id'],
         });
-        this._id = doc['id'];
+        this._id = doc['doc']['id'];
         // this.navCtrl.navigateBack().then(() => {
           this.events.publish('create-crop', this.cropForm.value);
         // });
