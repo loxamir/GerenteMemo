@@ -50,6 +50,7 @@ export class WorkPage implements OnInit {
   config;
   deleteList = [];
   currency_precision = 2;
+  editDate = false;
 
   constructor(
     public navCtrl: NavController,
@@ -93,6 +94,10 @@ export class WorkPage implements OnInit {
     if (this.select){
       this.modalCtrl.dismiss(this.workForm.value);
     }
+  }
+
+  showDate(){
+    this.editDate = !this.editDate;
   }
 
   filterFields(fieldsList) {
