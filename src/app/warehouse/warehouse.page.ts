@@ -18,6 +18,7 @@ import { InputPage } from '../input/input.page';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ConfigService } from '../config/config.service';
 
 @Component({
   selector: 'app-warehouse',
@@ -46,6 +47,7 @@ export class WarehousePage implements OnInit {
     public alertCtrl: AlertController,
     public pouchdbService: PouchdbService,
     public events: Events,
+    public configService: ConfigService,
   ) {
     this.languages = this.languageService.getLanguages();
     // this._id = this.navParams.data._id;
@@ -419,27 +421,15 @@ export class WarehousePage implements OnInit {
     warehouse.docType = 'warehouse';
     delete warehouse.moves;
     delete warehouse.warehouse;
-    return new Promise((resolve, reject)=>{
-      let code= 'es';
-      if (warehouse.code != ''){
-        this.pouchdbService.createDoc(warehouse).then(doc => {
-          if (warehouse.type == 'physical'){
-            warehouse._id = "warehouse.physical."+warehouse.code;
-          }
-          resolve({doc: doc, warehouse: warehouse});
-        });
-      } else {
-        // this.configService.getSequence('warehouse').then((code) => {
-        //   warehouse['code'] = code;
-          if (warehouse.type == 'physical'){
-            warehouse._id = "warehouse.physical."+code;
-          }
-          this.pouchdbService.createDoc(warehouse).then(doc => {
-            resolve({doc: doc, warehouse: warehouse});
-          });
-        // });
+    return new Promise(async (resolve, reject)=>{
+      let code = await this.configService.getSequence('warehouse');
+      warehouse['code'] = code;
+      if (warehouse.type == 'physical'){
+        warehouse._id = "warehouse.physical."+code;
       }
-
+      this.pouchdbService.createDoc(warehouse).then(doc => {
+        resolve({doc: doc, warehouse: warehouse});
+      });
     });
   }
 
