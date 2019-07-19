@@ -354,7 +354,10 @@ export class ActivityReportPage implements OnInit {
             this.loading.dismiss();
             resolve(output);
           }
-          else if (this.reportActivityForm.value.groupBy == 'yieldCrop') {
+          else if (
+            this.reportActivityForm.value.groupBy == 'yieldCrop'
+            || this.reportActivityForm.value.groupBy == 'yieldCropkg'
+          ) {
             // console.log("crop", );
           items = [];
           activitys.forEach(activityLine => {
@@ -413,7 +416,10 @@ export class ActivityReportPage implements OnInit {
           console.log("output", output);
           resolve(output);
         }
-        else if (this.reportActivityForm.value.groupBy == 'yieldArea') {
+        else if (
+          this.reportActivityForm.value.groupBy == 'yieldArea'
+          || this.reportActivityForm.value.groupBy == 'yieldAreakg'
+        ) {
           // console.log("crop", );
         items = [];
         activitys.forEach(activityLine => {
@@ -1118,8 +1124,8 @@ export class ActivityReportPage implements OnInit {
         .attr("transform", "rotate(-90)")
         .attr("x", -height/2)
         .attr("dy", "-5em")
-        .style("text-anchor", "middle")
-        .text("Grafico de Barras");
+        .style("text-anchor", "middle");
+        // .text("Grafico de Barras");
 
       svg.append("g")
           .attr("class", "axis axis--y")
