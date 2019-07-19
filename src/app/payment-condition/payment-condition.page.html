@@ -29,12 +29,23 @@
         <h4 class="field-value">{{paymentConditionForm.value.accountFrom && paymentConditionForm.value.accountFrom.name || 'Selecionar'}}</h4>
       </ion-item>
     </ion-row>
-    <ion-button class="button-100" (click)="addItem()">
+
+    <ion-item no-padding class="field-100">
+      <h4 class="field-label">{{'Fecha de Vencimiento' | translate }}</h4>
+      <ion-datetime class="field-50-datetime"
+      displayFormat="DD/MM/YYYY"
+      pickerFormat="DD/MM/YYYY"
+      formControlName="date_due"
+      [max]="today.getFullYear()+5">
+      </ion-datetime>
+    </ion-item>
+
+    <ion-button class="button-100" (click)="addItem()" *ngIf="!paymentConditionForm.value.date_due">
       <ion-icon name="add" style="margin-right:10px;"></ion-icon> Agregar Quota
     </ion-button>
 
-    <h2 class="section-title" *ngIf="paymentConditionForm.value.items.length">{{'Quotas' | translate}}</h2>
-    <ion-list>
+    <ion-list *ngIf="!paymentConditionForm.value.date_due">
+      <h2 class="section-title" *ngIf="paymentConditionForm.value.items.length">{{'Quotas' | translate}}</h2>
       <ion-item-sliding no-padding *ngFor="let item of paymentConditionForm.value.items">
         <ion-row>
           <ion-item no-padding (click)="editItem(item)" class="field-50">

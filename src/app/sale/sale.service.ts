@@ -56,7 +56,7 @@ export class SaleService {
       sale.lines.push({
         product_id: item.product_id || item.product._id,
         product_name: item.product.name || item.product_name,
-        contract_id: item.contract_id || item.contract._id,
+        contract_id: item.contract_id,
         quantity: item.quantity,
         price: item.price,
         cost: item.cost,

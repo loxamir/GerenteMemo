@@ -780,10 +780,8 @@ export class PurchasePage implements OnInit {
                 'accountTo_name': docDict['account.other.stock'].doc.name,
               })
             });
-            this.purchaseForm.value.paymentCondition.items.forEach(item => {
-              let dateDue = this.addDays(this.today, item.days);
-              // console.log("dentro", this.purchaseForm.value);
-              let amount = (item.percent/100)*this.purchaseForm.value.total;
+            if (this.purchaseForm.value.paymentCondition.date_due){
+              let amount = this.purchaseForm.value.total;
               let receivableCashMove = {
                 '_return': true,
                 'docType': "cash-move",
@@ -797,7 +795,7 @@ export class PurchasePage implements OnInit {
                 'payments': [],
                 'invoices': [],
                 'origin_id': this.purchaseForm.value._id,
-                'dateDue': dateDue,
+                'dateDue': this.purchaseForm.value.paymentCondition.date_due,
                 'accountFrom_id': this.purchaseForm.value.paymentCondition.accountFrom_id,
                 'accountFrom_name': docDict[this.purchaseForm.value.paymentCondition.accountFrom_id].doc.name,
                 'accountTo_id': 'account.other.transitStock',
@@ -813,7 +811,40 @@ export class PurchasePage implements OnInit {
 
               }
               createList.push(receivableCashMove);
-            });
+            } else {
+              this.purchaseForm.value.paymentCondition.items.forEach(item => {
+                let dateDue = this.addDays(this.today, item.days);
+                let amount = (item.percent/100)*this.purchaseForm.value.total;
+                let receivableCashMove = {
+                  '_return': true,
+                  'docType': "cash-move",
+                  'date': new Date(),
+                  'name': "Compra "+this.purchaseForm.value.code,
+                  'contact_id': this.purchaseForm.value.contact._id,
+                  'contact_name': this.purchaseForm.value.contact.name,
+                  'amount': amount,
+                  'amount_residual': amount,
+                  'amount_unInvoiced': amount,
+                  'payments': [],
+                  'invoices': [],
+                  'origin_id': this.purchaseForm.value._id,
+                  'dateDue': dateDue,
+                  'accountFrom_id': this.purchaseForm.value.paymentCondition.accountFrom_id,
+                  'accountFrom_name': docDict[this.purchaseForm.value.paymentCondition.accountFrom_id].doc.name,
+                  'accountTo_id': 'account.other.transitStock',
+                  'accountTo_name': docDict['account.other.transitStock'].doc.name,
+                }
+                if (JSON.stringify(this.purchaseForm.value.currency) != '{}' && this.purchaseForm.value.currency._id != this.company_currency_id) {
+                  receivableCashMove['currency_amount'] = amount;
+                  receivableCashMove['currency_id'] = this.purchaseForm.value.currency._id;
+                  receivableCashMove['exchange_rate'] = this.purchase_exchange_rate;
+                  receivableCashMove['currency_residual'] = amount;
+                  receivableCashMove['amount'] = amount*this.purchase_exchange_rate;
+                  receivableCashMove['amount_residual'] = amount*this.purchase_exchange_rate;
+                }
+                createList.push(receivableCashMove);
+              });
+            }
 
             this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.purchaseForm.patchValue({

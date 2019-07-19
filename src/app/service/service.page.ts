@@ -1484,39 +1484,30 @@ export class ServicePage implements OnInit {
                 })
               }
             });
-
-
-            if (this.serviceForm.value.production){
-              let product_id = this.serviceForm.value.product_id || this.serviceForm.value.product._id;
-              let product_name = this.serviceForm.value.product.name || this.serviceForm.value.product_name;
-              let unit_cost = this.serviceForm.value.input_amount/this.serviceForm.value.quantity;
+            if (this.serviceForm.value.paymentCondition.date_due){
+              let amount = this.serviceForm.value.total;
               createList.push({
-                'docType': "stock-move",
+                '_return': true,
+                'docType': "cash-move",
+                'date': new Date(),
                 'name': "Servicio "+this.serviceForm.value.code,
-                'quantity': parseFloat(this.serviceForm.value.quantity),
-                'origin_id': this.serviceForm.value._id,
                 'contact_id': this.serviceForm.value.contact._id,
                 'contact_name': this.serviceForm.value.contact.name,
-                'product_id': product_id,
-                'product_name': product_name,
-                'date': new Date(),
-                'cost': this.serviceForm.value.input_amount,
-                'warehouseFrom_id': 'warehouse.production',
-                'warehouseFrom_name': docDict['warehouse.production'].doc.name,
-                'warehouseTo_id': config.warehouse_id,
-                'warehouseTo_name': docDict[config.warehouse_id].doc.name,
+                'amount': amount,
+                'amount_residual': amount,
+                'amount_unInvoiced': amount,
+                'payments': [],
+                'invoices': [],
+                'origin_id': this.serviceForm.value._id,
+                'dateDue': this.serviceForm.value.paymentCondition.date_due,
+                'accountFrom_id': 'account.income.service',
+                'accountFrom_name': docDict['account.income.service'].doc.name,
+                'accountTo_id': this.serviceForm.value.paymentCondition.accountTo_id,
+                'accountTo_name': docDict[this.serviceForm.value.paymentCondition.accountTo_id].doc.name,
               });
-              this.productService.updateStockAndCost(
-                product_id,
-                this.serviceForm.value.quantity,
-                this.serviceForm.value.input_amount/this.serviceForm.value.quantity,
-                this.serviceForm.value.product.stock,
-                this.serviceForm.value.product.cost);
-
             } else {
               this.serviceForm.value.paymentCondition.items.forEach(item => {
                 let dateDue = this.addDays(this.today, item.days);
-                //console.log("dentro", this.serviceForm.value);
                 let amount = (item.percent/100)*this.serviceForm.value.total;
                 createList.push({
                   '_return': true,
@@ -1551,7 +1542,6 @@ export class ServicePage implements OnInit {
                 amount_unInvoiced: this.serviceForm.value.total,
                 planned: created,
               });
-              //console.log("Purchase created", created);
               this.buttonSave();
               resolve(true);
             })

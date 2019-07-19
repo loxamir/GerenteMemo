@@ -27,6 +27,7 @@ export class PaymentConditionPage implements OnInit {
     languages: Array<LanguageModel>;
     _id: string;
     select;
+    today = new Date();
 
     constructor(
       public navCtrl: NavController,
@@ -62,6 +63,7 @@ export class PaymentConditionPage implements OnInit {
         accountFrom_id: new FormControl(''),
         items: new FormControl([]),
         _id: new FormControl(''),
+        date_due: new FormControl(),
         create_user: new FormControl(''),
         create_time: new FormControl(''),
         write_user: new FormControl(''),

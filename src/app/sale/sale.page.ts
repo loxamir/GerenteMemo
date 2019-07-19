@@ -1058,10 +1058,8 @@ export class SalePage implements OnInit {
                   old_cost);
               }
             });
-            this.saleForm.value.paymentCondition.items.forEach(item => {
-              let dateDue = this.formatService.addDays(this.today, item.days);
-              // console.log("dentro", this.saleForm.value);
-              let amount = (item.percent/100)*this.saleForm.value.total;
+            if (this.saleForm.value.paymentCondition.date_due){
+              let amount = this.saleForm.value.total;
               let cashMoveTemplate = {
                 '_return': true,
                 'date': new Date(),
@@ -1075,7 +1073,7 @@ export class SalePage implements OnInit {
                 'payments': [],
                 'invoices': [],
                 'origin_id': this.saleForm.value._id,
-                'dateDue': dateDue.toISOString(),
+                'dateDue': this.saleForm.value.paymentCondition.date_due,
                 'accountFrom_id': 'account.income.sale',
                 'accountFrom_name': docDict['account.income.sale'].doc.name,
                 'accountTo_id': this.saleForm.value.paymentCondition.accountTo_id,
@@ -1089,7 +1087,39 @@ export class SalePage implements OnInit {
                 cashMoveTemplate['residual'] = amount*this.saleForm.value.currency.exchange_rate;
               }
               createList.push(cashMoveTemplate);
-            });
+            } else {
+              this.saleForm.value.paymentCondition.items.forEach(item => {
+                let dateDue = this.formatService.addDays(this.today, item.days);
+                let amount = (item.percent/100)*this.saleForm.value.total;
+                let cashMoveTemplate = {
+                  '_return': true,
+                  'date': item.date || new Date(),
+                  'name': "Venta "+this.saleForm.value.code,
+                  'contact_id': this.saleForm.value.contact._id,
+                  'contact_name': this.saleForm.value.contact.name,
+                  'amount': amount,
+                  'amount_residual': amount,
+                  'amount_unInvoiced': amount,
+                  'docType': "cash-move",
+                  'payments': [],
+                  'invoices': [],
+                  'origin_id': this.saleForm.value._id,
+                  'dateDue': dateDue.toISOString(),
+                  'accountFrom_id': 'account.income.sale',
+                  'accountFrom_name': docDict['account.income.sale'].doc.name,
+                  'accountTo_id': this.saleForm.value.paymentCondition.accountTo_id,
+                  'accountTo_name': docDict[this.saleForm.value.paymentCondition.accountTo_id].doc.name,
+                }
+                if (this.saleForm.value.currency._id){
+                  cashMoveTemplate['currency'] = this.saleForm.value.currency;
+                  cashMoveTemplate['currency_amount'] = amount;
+                  cashMoveTemplate['currency_residual'] = amount;
+                  cashMoveTemplate['amount'] = amount*this.saleForm.value.currency.exchange_rate;
+                  cashMoveTemplate['residual'] = amount*this.saleForm.value.currency.exchange_rate;
+                }
+                createList.push(cashMoveTemplate);
+              });
+            }
             //console.log("createList", createList);
             this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.saleForm.patchValue({
