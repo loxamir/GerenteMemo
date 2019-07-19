@@ -156,7 +156,8 @@
               <ion-datetime displayFormat="DD/MM/YYYY"
               pickerFormat="DD/MM/YYYY"
               [disabled]="calculate(field.readonly)"
-              [formControlName]="field.name">
+              [formControlName]="field.name"
+              [max]="today.getFullYear()+5">
               </ion-datetime>
             </ion-item>
           </ion-item-sliding>

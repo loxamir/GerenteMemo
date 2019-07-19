@@ -445,9 +445,9 @@ export class AreaPage implements OnInit {
     } else {
       this.areaService.createArea(this.areaForm.value, this.avatar).then(doc => {
         this.areaForm.patchValue({
-          _id: doc['id'],
+          _id: doc['doc'].id,
         });
-        this._id = doc['id'];
+        this._id = doc['doc'].id;
         this.events.publish('create-area', this.areaForm.value);
         this.showForm = false;
       });

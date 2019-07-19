@@ -30,7 +30,8 @@
       <ion-datetime class="field-50-datetime"
       displayFormat="DD/MM/YYYY"
       pickerFormat="DD/MM/YYYY"
-      formControlName="date_start">
+      formControlName="date_start"
+      [max]="today.getFullYear()+5">
       </ion-datetime>
     </ion-item>
     <ion-item no-padding class="field-50">
@@ -38,7 +39,8 @@
       <ion-datetime class="field-50-datetime"
       displayFormat="DD/MM/YYYY"
       pickerFormat="DD/MM/YYYY"
-      formControlName="date_end">
+      formControlName="date_end"
+      [max]="today.getFullYear()+5">
       </ion-datetime>
     </ion-item>
     <ion-item no-padding (click)="selectProduct()" class="field-100">

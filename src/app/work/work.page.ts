@@ -73,7 +73,7 @@ export class WorkPage implements OnInit {
     public stockMoveService: StockMoveService,
     private elementRef: ElementRef
   ) {
-    this.today = new Date().toISOString();
+    this.today = new Date();
     this.languages = this.languageService.getLanguages();
     this.translate.setDefaultLang('es');
     this.translate.use('es');
@@ -140,7 +140,7 @@ export class WorkPage implements OnInit {
       name: new FormControl(''),
       activity: new FormControl(this.activity||{}),
       // code: new FormControl(''),
-      date: new FormControl(this.today),
+      date: new FormControl(this.today.toISOString()),
       note: new FormControl(),
       state: new FormControl('QUOTATION'),
       // language: new FormControl(''),
@@ -368,7 +368,7 @@ export class WorkPage implements OnInit {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||0));
       }
       else if (field.type == "date") {
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||this.today));
+        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||this.today.toISOString()));
       }
       else if (field.type == "many2one") {
         this.workForm.addControl(

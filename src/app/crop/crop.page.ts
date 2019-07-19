@@ -33,6 +33,7 @@ export class CropPage implements OnInit {
   _id: string;
   select;
   create;
+  today = new Date();
 
   constructor(
     public navCtrl: NavController,

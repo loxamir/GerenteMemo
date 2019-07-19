@@ -810,7 +810,7 @@ export class MachineReportPage implements OnInit {
       .attr("x", -height / 2)
       .attr("dy", "-5em")
       .style("text-anchor", "middle")
-      .text("Valor Vendido");
+      .text("Grafico de Barras");
 
     svg.append("g")
       .attr("class", "axis axis--y")

@@ -476,9 +476,9 @@ export class MachinePage implements OnInit {
     } else {
       this.machineService.createMachine(this.machineForm.value, this.avatar).then(doc => {
         this.machineForm.patchValue({
-          _id: doc['id'],
+          _id: doc['doc'].id,
         });
-        this._id = doc['id'];
+        this._id = doc['doc'].id;
         this.events.publish('create-machine', this.machineForm.value);
         if (this.select){
           this.modalCtrl.dismiss();
