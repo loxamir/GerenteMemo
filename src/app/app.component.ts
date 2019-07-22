@@ -6,6 +6,9 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { PouchdbService } from './services/pouchdb/pouchdb-service';
+import { firebase } from '@firebase/app';
+import { environment } from '../environments/environment';
+import { NotificationsService } from './notifications.service';
 
 @Component({
   selector: 'app-root',
@@ -59,13 +62,15 @@ export class AppComponent implements OnInit {
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
+    public notificationsService: NotificationsService,
   ) {
     this.initializeApp();
     this.backButtonListener();
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
+    this.platform.ready().then(async () => {
+      await this.notificationsService.requestPermission();
       if (this.platform.is('cordova')){
         // this.translate.setDefaultLang('es');
         // this.translate.use('es');
@@ -92,6 +97,8 @@ export class AppComponent implements OnInit {
   async ngOnInit(){
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
+    firebase.initializeApp(environment.firebase);
+    await this.notificationsService.init();
     this.user = (await this.pouchdbService.getUser());
     if (this.user && !this.user['admin']){
       this.appPages = [

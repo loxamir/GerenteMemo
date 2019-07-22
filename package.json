@@ -68,6 +68,7 @@
     "d3-shape": "^1.2.2",
     "es6-promise-plugin": "^4.2.2",
     "file-saver": "^2.0.2",
+    "firebase": "^6.3.1",
     "html2canvas": "^1.0.0-rc.3",
     "jspdf": "^1.5.3",
     "papaparse": "^4.6.3",
