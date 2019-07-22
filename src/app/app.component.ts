@@ -64,13 +64,12 @@ export class AppComponent implements OnInit {
     public pouchdbService: PouchdbService,
     public notificationsService: NotificationsService,
   ) {
-    this.initializeApp();
+    // this.initializeApp();
     this.backButtonListener();
   }
 
   initializeApp() {
-    this.platform.ready().then(async () => {
-      await this.notificationsService.requestPermission();
+    // this.platform.ready().then(() => {
       if (this.platform.is('cordova')){
         // this.translate.setDefaultLang('es');
         // this.translate.use('es');
@@ -81,7 +80,7 @@ export class AppComponent implements OnInit {
         this.statusBar.backgroundColorByHexString('#1652a0');
         this.splashScreen.hide();
       }
-    });
+    // });
   }
 
   backButtonListener(): void {
@@ -95,10 +94,14 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit(){
-    this.loading = await this.loadingCtrl.create({});
-    await this.loading.present();
     firebase.initializeApp(environment.firebase);
     await this.notificationsService.init();
+    this.platform.ready().then(async () => {
+      await this.notificationsService.requestPermission();
+      this.initializeApp();
+    })
+    // this.loading = await this.loadingCtrl.create({});
+    // await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
     if (this.user && !this.user['admin']){
       this.appPages = [
@@ -134,6 +137,6 @@ export class AppComponent implements OnInit {
         });
       }
     })
-    this.loading.dismiss();
+    // this.loading.dismiss();
   }
 }

@@ -7,10 +7,14 @@ import { environment } from '../environments/environment';
 })
 export class NotificationsService {
 init(): Promise<void> {
+    console.log("init");
     return new Promise<void>((resolve, reject) => {
+        console.log("serviceWorker notready");
         navigator.serviceWorker.ready.then((registration) => {
+          console.log("serviceWorker ready");
             // Don't crash an error if messaging not supported
             if (!firebase.messaging.isSupported()) {
+                console.log("Sin Soporte1");
                    resolve();
                    return;
             }
@@ -33,6 +37,7 @@ init(): Promise<void> {
             // Optional and not covered in the article
             // Handle token refresh
             messaging.onTokenRefresh(() => {
+                console.log("refresh");
                 messaging.getToken().then(
                 (refreshedToken: string) => {
                     console.log(refreshedToken);
@@ -49,16 +54,20 @@ init(): Promise<void> {
   }
 
   requestPermission(): Promise<void> {
+    console.log("requestPermission");
     return new Promise<void>(async (resolve) => {
         if (!Notification) {
+            console.log("Sin Notification");
             resolve();
             return;
         }
         if (!firebase.messaging.isSupported()) {
+            console.log("Sin Soporte");
             resolve();
             return;
         }
         try {
+            console.log("try");
             const messaging = firebase.messaging();
             await messaging.requestPermission();
 
@@ -66,6 +75,7 @@ init(): Promise<void> {
 
             console.log('User notifications token:', token);
         } catch (err) {
+          console.log("errou", err);
             // No notifications granted
         }
 
