@@ -93,6 +93,7 @@ export class LoginPage implements OnInit {
 
   payDatabase(database){
     console.log("pay database", database);
+    this.restProvider.createPayLink();
   }
 
   async presentPopover(myEvent) {

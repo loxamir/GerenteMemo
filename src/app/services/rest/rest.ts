@@ -5,6 +5,8 @@ const httpOptions = {
     'Content-Type':  'application/json',
   })
 };
+declare var require: any;
+import CryptoJS from 'crypto-js';
 // declare var Buffer: any;
 /*
   Generated class for the RestProvider provider.
@@ -289,4 +291,73 @@ export class RestProvider {
   //   });
   // }
 
+  createPayLink(){
+    return new Promise(resolve => {
+      let url = "https://api.pagopar.com/api/comercios/1.1/iniciar-transaccion";
+      // let method = "POST";
+      let private_key = "29407eee2e04018c1e3e796d6c19ca2c";
+      let public_key = "39ac921133884f1b86ab6f9fc0bcbf7f";
+      let order_id = "";
+      let amount = 1000;
+      // var sha1 = require('sha1');
+      // var request = require('request');
+      let hash = CryptoJS.SHA1(private_key+"."+order_id+"."+amount);
+      let token = CryptoJS.enc.Hex.stringify(hash);
+      let today = new Date();
+      //Last day of month
+      let pay_date = (new Date(today.getFullYear(), today.getMonth() + 1, 0)).toJSON().replace("T", " ").split('.')[0];
+      let orderData = {
+        "token": token,
+        "comprador": {
+          "ruc": "7486241-3",
+          "email": "loxamir@gmail.com",
+          "ciudad": null,
+          "nombre": "Marcelo Pickler",
+          "telefono": "0984637042",
+          "direccion": "",
+          "documento": "7486241",
+          "coordenadas": "",
+          "razon_social": "Marcelo Pickler",
+          "tipo_documento": "CI",
+          "direccion_referencia": null
+        },
+        "public_key": public_key,
+        "monto_total": amount,
+        "tipo_pedido": "VENTA-COMERCIO",
+        "compras_items": [
+          {
+            "ciudad": "1",
+            "nombre": "Mensualidad Sistema Memo",
+            "cantidad": 1,
+            "categoria": "909",
+            "public_key": public_key,
+            "url_imagen": "https://app.sistemamemo.com/assets/images/logo.png",
+            "descripcion": "Mensualidad Sistema Memo Julho/2019",
+            "id_producto": 1,
+            "precio_total": amount,
+            "vendedor_telefono": "",
+            "vendedor_direccion": "",
+            "vendedor_direccion_referencia": "",
+            "vendedor_direccion_coordenadas": ""
+          }
+        ],
+        "fecha_maxima_pago": pay_date,
+        "id_pedido_comercio": "1134",
+        "descripcion_resumen": "",
+      }
+      console.log("orderData", orderData);
+      this.http.post(
+        url,
+        orderData,
+        {
+          headers: new HttpHeaders({
+            'Accept' : 'application/json',
+            'Content-Type': 'application/json'
+          })
+        }
+      ).subscribe((userData: any) => {
+        console.log("userData", userData);
+      })
+    })
+  }
 }
