@@ -92,8 +92,7 @@ export class LoginPage implements OnInit {
   }
 
   payDatabase(database){
-    console.log("pay database", database);
-    this.restProvider.createPayLink();
+    window.open("https://www.pagopar.com/pagos/"+database.paylink);
   }
 
   async presentPopover(myEvent) {

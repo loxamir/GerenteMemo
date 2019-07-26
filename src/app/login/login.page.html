@@ -105,7 +105,7 @@
       <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 20px;">Empresas</h2>
       <ion-item *ngFor="let database of databaseList"
       class="bg-white"
-      [class.bg-yellow]="database.date_due && database.date_due.split('T')[0] < today.split('T')[0]"
+      [class.bg-yellow]="database.admin && database.date_due && database.date_due.split('T')[0] < today.split('T')[0]"
       >
         <ion-col (click)="selectDatabase(database)">
           {{database.name}}
@@ -114,8 +114,8 @@
         *ngIf="!database.date_due || (database.date_due.split('T')[0] > today.split('T')[0] || today.split('-')[1] == database.date_due.split('-')[1])">
           <ion-button class="button-100" color="success">Entrar</ion-button>
         </ion-col>
-        <ion-col (click)="payDatabase(database.database)"
-        *ngIf="database.date_due && database.date_due.split('T')[0] < today.split('T')[0]">
+        <ion-col (click)="payDatabase(database)"
+        *ngIf="database.admin && database.date_due && database.date_due.split('T')[0] < today.split('T')[0]">
           <ion-button class="button-100" [class.bg-blue]="today.split('-')[1] == database.date_due.split('-')[1]" [class.bg-red]="today.split('-')[1] != database.date_due.split('-')[1]">Pagar</ion-button>
         </ion-col>
       </ion-item>
