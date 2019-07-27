@@ -21,7 +21,7 @@ import { AccountCategoryPage } from '../account-category/account-category.page';
   styleUrls: ['./result-report.page.scss'],
 })
 export class ResultReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   resultForm: FormGroup;
   loading: any;

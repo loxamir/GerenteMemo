@@ -15,8 +15,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./travel.page.scss'],
 })
 export class ServiceTravelPage implements OnInit {
-  @ViewChild('description') descriptionField;
-  @ViewChild('distance') distanceField;
+  @ViewChild('description', { static: true }) descriptionField;
+  @ViewChild('distance', { static: true }) distanceField;
     travelForm: FormGroup;
     loading: any;
     _id: string;

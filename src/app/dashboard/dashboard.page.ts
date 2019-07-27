@@ -32,8 +32,8 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./dashboard.page.scss'],
 })
 export class DashboardPage implements OnInit {
-  @ViewChild('name') name;
-  @ViewChild('view') view;
+  @ViewChild('name', { static: true }) name;
+  @ViewChild('view', { static: true }) view;
 
     dashboardForm: FormGroup;
     loading: any;

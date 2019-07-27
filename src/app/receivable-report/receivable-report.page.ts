@@ -26,7 +26,7 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./receivable-report.page.scss'],
 })
 export class ReceivableReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   receivableReportForm: FormGroup;
   loading: any;

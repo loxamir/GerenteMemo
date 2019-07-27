@@ -23,7 +23,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AccountsReportPage implements OnInit {
 
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
     accountsReportForm: FormGroup;
     loading: any;

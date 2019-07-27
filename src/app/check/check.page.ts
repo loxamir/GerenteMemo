@@ -22,9 +22,9 @@ import { ConfigService } from '../config/config.service';
   styleUrls: ['./check.page.scss'],
 })
 export class CheckPage implements OnInit {
-  @ViewChild('amount') amountField;
-  @ViewChild('name') name;
-  @ViewChild('currency_amount') currency_amountField;
+  @ViewChild('amount', { static: false }) amountField;
+  @ViewChild('name', { static: true }) name;
+  @ViewChild('currency_amount', { static: false }) currency_amountField;
 
   checkForm: FormGroup;
   loading: any;

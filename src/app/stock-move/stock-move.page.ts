@@ -24,7 +24,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   styleUrls: ['./stock-move.page.scss'],
 })
 export class StockMovePage implements OnInit {
-  @ViewChild('input') myInput;
+  @ViewChild('input', { static: true }) myInput;
 
   stockMoveForm: FormGroup;
   loading: any;

@@ -25,7 +25,7 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./cash-flow.page.scss'],
 })
 export class CashFlowPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   cashFlowForm: FormGroup;
   loading: any;
