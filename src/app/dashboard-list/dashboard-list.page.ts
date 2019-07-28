@@ -13,7 +13,7 @@ import { File } from '@ionic-native/file/ngx';
   styleUrls: ['./dashboard-list.page.scss'],
 })
 export class DashboardListPage implements OnInit {
-  @ViewChild('searchBar') myInput;
+  @ViewChild('searchBar', { static: true }) myInput;
   dashboards: any;
   loading: any;
   select:any;

@@ -47,9 +47,9 @@ import { ProductPage } from '../product/product.page';
   styleUrls: ['./input.page.scss'],
 })
 export class InputPage implements OnInit {
-  @ViewChild('pwaphoto') pwaphoto: ElementRef;
-  @ViewChild('pwacamera') pwacamera: ElementRef;
-  @ViewChild('pwagalery') pwagalery: ElementRef;
+  @ViewChild('pwaphoto', { static: false }) pwaphoto: ElementRef;
+  @ViewChild('pwacamera', { static: false }) pwacamera: ElementRef;
+  @ViewChild('pwagalery', { static: false }) pwagalery: ElementRef;
   inputForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;

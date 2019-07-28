@@ -32,7 +32,7 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./machine-report.page.scss'],
 })
 export class MachineReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   reportMachineForm: FormGroup;
   loading: any;

@@ -29,7 +29,7 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./sale-report.page.scss'],
 })
 export class SaleReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   reportSaleForm: FormGroup;
   loading: any;

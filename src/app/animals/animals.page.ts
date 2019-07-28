@@ -22,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./animals.page.scss'],
 })
 export class AnimalsPage implements OnInit {
-  @ViewChild('searchBar') searchBar;
+  @ViewChild('searchBar', { static: false }) searchBar;
   showSearch = false;
   animals: any;
   loading: any;

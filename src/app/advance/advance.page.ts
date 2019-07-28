@@ -22,8 +22,8 @@ import { ConfigService } from '../config/config.service';
   styleUrls: ['./advance.page.scss'],
 })
 export class AdvancePage implements OnInit {
-  @ViewChild('name') name;
-  @ViewChild('amount') amount;
+  @ViewChild('name', { static: true }) name;
+  @ViewChild('amount', { static: true }) amount;
 
     advanceForm: FormGroup;
     loading: any;

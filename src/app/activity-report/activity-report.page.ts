@@ -30,7 +30,7 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./activity-report.page.scss'],
 })
 export class ActivityReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   reportActivityForm: FormGroup;
   loading: any;

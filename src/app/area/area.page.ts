@@ -41,9 +41,9 @@ const STORAGE_KEY = 'my_images';
   styleUrls: ['./area.page.scss'],
 })
 export class AreaPage implements OnInit {
-  @ViewChild('pwaphoto') pwaphoto: ElementRef;
-  @ViewChild('pwacamera') pwacamera: ElementRef;
-  @ViewChild('pwagalery') pwagalery: ElementRef;
+  @ViewChild('pwaphoto', { static: false }) pwaphoto: ElementRef;
+  @ViewChild('pwacamera', { static: false }) pwacamera: ElementRef;
+  @ViewChild('pwagalery', { static: false }) pwagalery: ElementRef;
   areaForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;

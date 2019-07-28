@@ -15,7 +15,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   styleUrls: ['./contact-list.page.scss'],
 })
 export class ContactListPage implements OnInit {
-  @ViewChild('searchBar') searchBar;
+  @ViewChild('searchBar', { static: true }) searchBar;
 
   contacts: any;
   loading: any;

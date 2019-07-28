@@ -22,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./areas.page.scss'],
 })
 export class AreasPage implements OnInit {
-  @ViewChild('searchBar') searchBar;
+  @ViewChild('searchBar', { static: false }) searchBar;
   showSearch = false;
   areas: any;
   loading: any;

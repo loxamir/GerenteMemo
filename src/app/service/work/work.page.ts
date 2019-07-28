@@ -16,8 +16,8 @@ import { ProductListPage } from '../../product-list/product-list.page';
   styleUrls: ['./work.page.scss'],
 })
 export class ServiceWorkPage implements OnInit {
-  @ViewChild('description') descriptionField;
-  @ViewChild('quantity') quantityField;
+  @ViewChild('description', { static: true }) descriptionField;
+  @ViewChild('quantity', { static: true }) quantityField;
     workForm: FormGroup;
     loading: any;
     _id: string;

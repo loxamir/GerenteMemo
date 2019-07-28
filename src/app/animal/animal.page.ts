@@ -46,9 +46,9 @@ import { PlannedListPage } from '../planned-list/planned-list.page';
   styleUrls: ['./animal.page.scss'],
 })
 export class AnimalPage implements OnInit {
-  @ViewChild('pwaphoto') pwaphoto: ElementRef;
-  @ViewChild('pwacamera') pwacamera: ElementRef;
-  @ViewChild('pwagalery') pwagalery: ElementRef;
+  @ViewChild('pwaphoto', { static: false }) pwaphoto: ElementRef;
+  @ViewChild('pwacamera', { static: false }) pwacamera: ElementRef;
+  @ViewChild('pwagalery', { static: false }) pwagalery: ElementRef;
   animalForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;

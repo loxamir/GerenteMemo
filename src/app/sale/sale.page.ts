@@ -49,8 +49,8 @@ import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
   styleUrls: ['./sale.page.scss'],
 })
 export class SalePage implements OnInit {
-  @ViewChild('note') note;
-  @ViewChild('corpo') corpo;
+  @ViewChild('note', { static: false }) note;
+  @ViewChild('corpo', { static: true }) corpo;
   @HostListener('document:keypress', ['$event'])
     async handleKeyboardEvent(event: KeyboardEvent) {
       if (this.listenBarcode && this.saleForm.value.state == 'QUOTATION'){

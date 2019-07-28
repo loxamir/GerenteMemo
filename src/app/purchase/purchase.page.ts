@@ -26,7 +26,7 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
   styleUrls: ['./purchase.page.scss'],
 })
 export class PurchasePage implements OnInit {
-@ViewChild('select') select;
+@ViewChild('select', { static: false }) select;
 @HostListener('document:keypress', ['$event'])
     async handleKeyboardEvent(event: KeyboardEvent) {
       //this.key = event.key;

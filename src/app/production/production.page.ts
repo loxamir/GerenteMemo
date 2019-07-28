@@ -30,7 +30,7 @@ import { ProductionPopover } from './production.popover';
   styleUrls: ['./production.page.scss'],
 })
 export class ProductionPage implements OnInit {
-  @ViewChild('clrequest') clientRequest;
+  @ViewChild('clrequest', { static: false }) clientRequest;
   // @ViewChild(Select) select: Select;
   // @HostListener('document:keypress', ['$event'])
   //   handleKeyboardEvent(event: KeyboardEvent) {

@@ -20,7 +20,7 @@ import { PouchdbService } from "../services/pouchdb/pouchdb-service";
   styleUrls: ['./machines.page.scss'],
 })
 export class MachinesPage implements OnInit {
-  @ViewChild('searchBar') searchBar;
+  @ViewChild('searchBar', { static: false }) searchBar;
   showSearch = false;
   machines: any;
   loading: any;

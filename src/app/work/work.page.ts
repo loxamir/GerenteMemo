@@ -32,7 +32,7 @@ import { FutureContractListPage } from '../future-contract-list/future-contract-
   styleUrls: ['./work.page.scss'],
 })
 export class WorkPage implements OnInit {
-  @ViewChild('teste') pageFields: any[];
+  @ViewChild('teste', { static: false }) pageFields: any[];
   workForm: FormGroup;
   loading: any;
   today: any;

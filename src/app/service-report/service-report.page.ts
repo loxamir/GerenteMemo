@@ -25,7 +25,7 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./service-report.page.scss'],
 })
 export class ServiceReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   reportServiceForm: FormGroup;
   loading: any;

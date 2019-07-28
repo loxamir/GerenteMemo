@@ -26,7 +26,7 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./payable-report.page.scss'],
 })
 export class PayableReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   payableReportForm: FormGroup;
   loading: any;

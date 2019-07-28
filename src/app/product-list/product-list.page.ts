@@ -17,7 +17,7 @@ import { FormatService } from '../services/format.service';
   styleUrls: ['./product-list.page.scss'],
 })
 export class ProductListPage implements OnInit {
-  @ViewChild('searchBar') searchBar;
+  @ViewChild('searchBar', { static: true }) searchBar;
 
   products: any = [];
   loading: any;

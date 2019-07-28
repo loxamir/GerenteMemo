@@ -21,10 +21,10 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 })
 export class AccountPage implements OnInit {
 
-  @ViewChild('name') name;
-  @ViewChild('type') type;
-  @ViewChild('bank_name') bank_name;
-  @ViewChild('code') code;
+  @ViewChild('name', { static: true }) name;
+  @ViewChild('type', { static: false }) type;
+  @ViewChild('bank_name', { static: false }) bank_name;
+  @ViewChild('code', { static: true }) code;
 
   accountForm: FormGroup;
   loading: any;

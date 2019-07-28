@@ -20,7 +20,7 @@ import { FilterPage } from '../filter/filter.page';
   styleUrls: ['./crops.page.scss'],
 })
 export class CropsPage implements OnInit {
-  @ViewChild('searchBar') searchBar;
+  @ViewChild('searchBar', { static: false }) searchBar;
   showSearch = false;
   crops: any;
   loading: any;

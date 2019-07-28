@@ -30,7 +30,7 @@ import { AccountListPage } from '../account-list/account-list.page';
   styleUrls: ['./receipt.page.scss'],
 })
 export class ReceiptPage implements OnInit {
-  @ViewChild('amount_paid') amount_paid;
+  @ViewChild('amount_paid', { static: false }) amount_paid;
   receiptForm: FormGroup;
   loading: any;
   today: any;

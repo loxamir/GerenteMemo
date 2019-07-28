@@ -20,7 +20,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   styleUrls: ['./help.page.scss'],
 })
 export class HelpPage implements OnInit {
-  @ViewChild('content') content;
+  @ViewChild('content', { static: false }) content;
   helpForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;

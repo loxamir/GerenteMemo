@@ -14,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./works.page.scss'],
 })
 export class WorksPage implements OnInit {
-  @ViewChild('searchBar') searchBar;
+  @ViewChild('searchBar', { static: false }) searchBar;
   works: any;
   loading: any;
   searchTerm: string = '';

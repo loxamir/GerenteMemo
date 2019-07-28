@@ -40,7 +40,7 @@ export class InvoicePage implements OnInit {
   @Input() origin_id;
   currency_precision = 2;
 
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
   @HostListener('document:keypress', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent) {
       let timeStamp = event.timeStamp - this.timeStamp;

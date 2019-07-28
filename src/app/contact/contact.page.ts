@@ -19,11 +19,11 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
   styleUrls: ['./contact.page.scss'],
 })
 export class ContactPage implements OnInit {
-@ViewChild('name') name;
-@ViewChild('document') document;
-@ViewChild('phone') phone;
-@ViewChild('address') address;
-@ViewChild('salary') salary;
+@ViewChild('name', { static: true }) name;
+@ViewChild('document', { static: true }) document;
+@ViewChild('phone', { static: true }) phone;
+@ViewChild('address', { static: true }) address;
+@ViewChild('salary', { static: true }) salary;
 
   contactForm: FormGroup;
   loading: any;

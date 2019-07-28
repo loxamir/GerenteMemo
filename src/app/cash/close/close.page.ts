@@ -17,7 +17,7 @@ import { ConfigService } from '../../config/config.service';
   styleUrls: ['./close.page.scss'],
 })
 export class ClosePage implements OnInit {
-  @ViewChild('input') input;
+  @ViewChild('input', { static: true }) input;
   @Input() amount_theoretical;
   @Input() accountMoves;
   @Input() cash_id;

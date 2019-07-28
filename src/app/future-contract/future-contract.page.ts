@@ -51,9 +51,9 @@ import { SalePage } from '../sale/sale.page';
   styleUrls: ['./future-contract.page.scss'],
 })
 export class FutureContractPage implements OnInit {
-  @ViewChild('note') note;
-  @ViewChild('quantity') quantity;
-  @ViewChild('corpo') corpo;
+  @ViewChild('note', { static: true }) note;
+  @ViewChild('quantity', { static: true }) quantity;
+  @ViewChild('corpo', { static: true }) corpo;
     listenBarcode = true;
     timeStamp: any;
     barcode: string = "";
