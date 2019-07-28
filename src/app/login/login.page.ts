@@ -27,6 +27,7 @@ export class LoginPage implements OnInit {
   selected_user: boolean = false;
   databaseList: [];
   username: '';
+  today = new Date().toISOString();
   // campaign;
 
   constructor(
@@ -89,6 +90,10 @@ export class LoginPage implements OnInit {
       this.menuCtrl.enable(false);
     }, 500);
 
+  }
+
+  payDatabase(database){
+    window.open("https://www.pagopar.com/pagos/"+database.paylink);
   }
 
   async presentPopover(myEvent) {
@@ -226,9 +231,16 @@ export class LoginPage implements OnInit {
   }
 
   async selectDatabase(database){
+    if (
+      !database.date_due
+      || (
+        database.date_due.split('T')[0] > this.today.split('T')[0]
+        || this.today.split('-')[1] == database.date_due.split('-')[1]
+      )
+    ){
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
-      await this.storage.set('database', database);
+      await this.storage.set('database', database.database);
       let toast = await this.toastCtrl.create({
         message: "Sincronizando...",
       });
@@ -241,6 +253,7 @@ export class LoginPage implements OnInit {
         await toast.dismiss();
         await this.loading.dismiss();
       })
+    }
   }
 
   logout(){
