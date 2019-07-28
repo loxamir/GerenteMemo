@@ -21,7 +21,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   styleUrls: ['./payment-condition.page.scss'],
 })
 export class PaymentConditionPage implements OnInit {
-    @ViewChild('nameField') nameField;
+    @ViewChild('nameField', { static: true }) nameField;
     paymentConditionForm: FormGroup;
     loading: any;
     languages: Array<LanguageModel>;

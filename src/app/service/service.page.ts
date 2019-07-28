@@ -32,7 +32,7 @@ import html2canvas from 'html2canvas';
   styleUrls: ['./service.page.scss'],
 })
 export class ServicePage implements OnInit {
-  @ViewChild('clrequest') clientRequest;
+  @ViewChild('clrequest', { static: true }) clientRequest;
   // @ViewChild(Select) select: Select;
   // @HostListener('document:keypress', ['$event'])
   //   handleKeyboardEvent(event: KeyboardEvent) {

@@ -5,6 +5,8 @@ const httpOptions = {
     'Content-Type':  'application/json',
   })
 };
+declare var require: any;
+import CryptoJS from 'crypto-js';
 // declare var Buffer: any;
 /*
   Generated class for the RestProvider provider.

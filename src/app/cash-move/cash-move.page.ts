@@ -23,9 +23,9 @@ import { CheckPage } from '../check/check.page';
   styleUrls: ['./cash-move.page.scss'],
 })
 export class CashMovePage implements OnInit {
-  @ViewChild('amount') amount;
-  @ViewChild('description') description;
-  @ViewChild('currency_amount') currency_amountField;
+  @ViewChild('amount', { static: false }) amount;
+  @ViewChild('description', { static: true }) description;
+  @ViewChild('currency_amount', { static: false }) currency_amountField;
   @Input() _id;
   @Input() origin_id;
   @Input() accountFrom_id;

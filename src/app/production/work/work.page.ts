@@ -15,8 +15,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./work.page.scss'],
 })
 export class ProductionWorkPage implements OnInit {
-  @ViewChild('description') descriptionField;
-  @ViewChild('time') timeField;
+  @ViewChild('description', { static: true }) descriptionField;
+  @ViewChild('time', { static: true }) timeField;
     workForm: FormGroup;
     loading: any;
     _id: string;

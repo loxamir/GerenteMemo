@@ -41,7 +41,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   styleUrls: ['./report.page.scss'],
 })
 export class ReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
     reportForm: FormGroup;
     loading: any;

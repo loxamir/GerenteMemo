@@ -15,8 +15,8 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./discount.page.scss'],
 })
 export class DiscountPage implements OnInit {
-  @ViewChild('discount_percent') discount_percent;
-  @ViewChild('discount_amount') discount_amount;
+  @ViewChild('discount_percent', { static: true }) discount_percent;
+  @ViewChild('discount_amount', { static: true }) discount_amount;
   // @ViewChild('new_amount') new_amountField;
 
   discountForm: FormGroup;

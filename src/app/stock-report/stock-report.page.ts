@@ -25,7 +25,7 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./stock-report.page.scss'],
 })
 export class StockReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   reportStockForm: FormGroup;
   loading: any;

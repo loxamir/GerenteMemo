@@ -14,6 +14,18 @@
   margin-top: -5px;
   height: 24px;
 }
+.bg-white{
+  --background: white;
+}
+.bg-yellow{
+  --background: #ffeb3b;
+}
+.bg-red{
+  --background: #f04141;
+}
+.bg-blue{
+  --background: #1a73e8;
+}
 .list-card {
   width: 100%;
   --background: #fff;

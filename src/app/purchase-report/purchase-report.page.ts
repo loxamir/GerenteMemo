@@ -23,7 +23,7 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./purchase-report.page.scss'],
 })
 export class PurchaseReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   reportPurchaseForm: FormGroup;
   loading: any;

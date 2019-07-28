@@ -25,7 +25,7 @@ import * as d3Axis from "d3-axis";
   styleUrls: ['./production-report.page.scss'],
 })
 export class ProductionReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   reportProductionForm: FormGroup;
   loading: any;

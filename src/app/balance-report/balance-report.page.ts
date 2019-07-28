@@ -21,7 +21,7 @@ import { AccountCategoryPage } from '../account-category/account-category.page';
   styleUrls: ['./balance-report.page.scss'],
 })
 export class BalanceReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
     balanceForm: FormGroup;
     loading: any;

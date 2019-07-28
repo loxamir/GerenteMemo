@@ -25,16 +25,16 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 })
 export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
-  @ViewChild('name') name;
-  @ViewChild('price') price;
-  @ViewChild('cost') cost;
-  @ViewChild('type') type;
-  @ViewChild('stock') stock;
+  @ViewChild('name', { static: true }) name;
+  @ViewChild('price', { static: true }) price;
+  @ViewChild('cost', { static: true }) cost;
+  @ViewChild('type', { static: true }) type;
+  @ViewChild('stock', { static: false }) stock;
   // @ViewChild('barcode') barcodeField;
 
-  @ViewChild('category') category;
-  @ViewChild('brand') brand;
-  @ViewChild('tax')tax;
+  @ViewChild('category', { static: true }) category;
+  @ViewChild('brand', { static: true }) brand;
+  @ViewChild('tax', { static: false })tax;
     productForm: FormGroup;
     loading: any;
     _id: string;
