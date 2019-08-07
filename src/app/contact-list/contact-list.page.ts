@@ -1,6 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, Input, ViewChild, OnInit  } from '@angular/core';
-import { NavController, LoadingController, ModalController, Events, PopoverController} from '@ionic/angular';
+import { NavController, LoadingController, ModalController, Events,
+  PopoverController, ToastController } from '@ionic/angular';
 import { ContactPage } from '../contact/contact.page';
 import 'rxjs/Rx';
 // import { ContactsService } from './contacts.service';
@@ -36,6 +37,7 @@ export class ContactListPage implements OnInit {
     public events: Events,
     public pouchdbService: PouchdbService,
     public popoverCtrl: PopoverController,
+    public toastCtrl: ToastController,
     public file: File,
     public loadingCtrl: LoadingController,
   ) {
@@ -114,8 +116,23 @@ export class ContactListPage implements OnInit {
     })
   }
 
-  deleteContact(contact) {
-    return this.pouchdbService.deleteDoc(contact);
+  async deleteContact(contact) {
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
+    let viewList: any = await this.pouchdbService.getView('Informes/contactUse', 1,
+    [contact._id],
+    [contact._id+"z"]);
+    if (viewList.length){
+      this.loading.dismiss();
+      let toast = await this.toastCtrl.create({
+      message: "No se puede borrar, contacto en uso",
+      duration: 1000
+      });
+      toast.present();
+    } else {
+      await this.pouchdbService.deleteDoc(contact);
+      this.loading.dismiss();
+    }
   }
 
   handleChange(list, change){
