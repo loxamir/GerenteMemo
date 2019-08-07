@@ -765,7 +765,7 @@ export class InvoicePage implements OnInit {
           docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top + topo);
           docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top + topo);
 
-          let date = this.invoiceForm.value.date.split('T')[0].split('-');
+          let date = this.today.split('T')[0].split('-');
           if (data.invoicePrint.invoiceDateType == 'normal'){
             date = date[2]+"/"+date[1]+"/"+date[0]
             docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);

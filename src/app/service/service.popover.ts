@@ -29,7 +29,7 @@ export class ServicePopover {
         state: 'DRAFT',
         _id: '',
         code: '',
-        residual: this.navParams.data.doc.purchaseForm.value.total,
+        residual: this.navParams.data.doc.serviceForm.value.total,
         planned: [],
         payments: [],
         invoices: [],
