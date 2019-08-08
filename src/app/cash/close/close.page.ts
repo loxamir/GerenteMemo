@@ -140,6 +140,8 @@ export class ClosePage implements OnInit {
   }
 
   async closeConfirm(){
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
     this.accountMoves = [];
     // this.closeForm.value.accountMoves.forEach(async accountMove => {
     let accountMoves2 = [];
@@ -156,6 +158,7 @@ export class ClosePage implements OnInit {
     })
     await this.buttonSave();
     await this.changeAccountMovesState();
+    this.loading.dismiss();
 
   }
 

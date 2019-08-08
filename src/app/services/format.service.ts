@@ -393,12 +393,13 @@ export class FormatService {
       page_printed[marginTop][x + b] = dataModel.toString()[x];
     }
     //put date
+    let date = new Date();
     if (layout.invoiceDateType == 'normal'){
       marginTop = layout.invoiceDate_top / 4.4;
       marginLeft = layout.invoiceDate_left / 1.35;
       marginTop = parseInt(marginTop);
       marginLeft = parseInt(marginLeft);
-      dataModel = (new Date(order.date)).toLocaleDateString('es-PY');
+      dataModel = date.toLocaleDateString('es-PY');
       for (var x = 0; x < dataModel.toString().length; x++) {
         let b = marginLeft;
         page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -409,7 +410,7 @@ export class FormatService {
       marginLeft = layout.invoiceDate_left / 1.35;
       marginTop = parseInt(marginTop);
       marginLeft = parseInt(marginLeft);
-      dataModel = (new Date(order.date)).toLocaleDateString('es-PY').split('/')[0];
+      dataModel = date.toLocaleDateString('es-PY').split('/')[0];
       for (var x = 0; x < dataModel.toString().length; x++) {
         let b = marginLeft;
         page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -420,7 +421,7 @@ export class FormatService {
       marginLeft = layout.invoiceMonth_left / 1.35;
       marginTop = parseInt(marginTop);
       marginLeft = parseInt(marginLeft);
-      dataModel = this.getMonth((new Date(order.date)).toLocaleDateString('es-PY').split('/')[1]);
+      dataModel = this.getMonth(parseInt(date.toLocaleDateString('es-PY').split('/')[1]));
       for (var x = 0; x < dataModel.toString().length; x++) {
         let b = marginLeft;
         page_printed[marginTop][x + b] = dataModel.toString()[x];
@@ -431,7 +432,7 @@ export class FormatService {
       marginLeft = layout.invoiceYear_left / 1.35;
       marginTop = parseInt(marginTop);
       marginLeft = parseInt(marginLeft);
-      dataModel = (new Date(order.date)).toLocaleDateString('es-PY').split('/')[2];
+      dataModel = date.toLocaleDateString('es-PY').split('/')[2];
       for (var x = 0; x < dataModel.toString().length; x++) {
         let b = marginLeft;
         page_printed[marginTop][x + b] = dataModel.toString()[x];

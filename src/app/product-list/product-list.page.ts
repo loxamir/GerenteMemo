@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, LoadingController, ModalController, Events, PopoverController } from '@ionic/angular';
+import { NavController, LoadingController, ModalController, Events,
+  PopoverController, ToastController } from '@ionic/angular';
 import { ProductPage } from '../product/product.page';
 import 'rxjs/Rx';
 import { File } from '@ionic-native/file/ngx';
@@ -34,6 +35,7 @@ export class ProductListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public formatService: FormatService,
     // public modal: ModalController,
+    public toastCtrl: ToastController,
     public events: Events,
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
@@ -217,8 +219,23 @@ export class ProductListPage implements OnInit {
     })
   }
 
-  deleteProduct(product) {
-    return this.pouchdbService.deleteDoc(product);
+  async deleteProduct(product) {
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
+    let viewList: any = await this.pouchdbService.getView('Informes/productUse', 1,
+    [product._id],
+    [product._id+"z"]);
+    if (viewList.length){
+      this.loading.dismiss();
+      let toast = await this.toastCtrl.create({
+      message: "No se puede borrar, producto en uso",
+      duration: 1000
+      });
+      toast.present();
+    } else {
+      await this.pouchdbService.deleteDoc(product);
+      this.loading.dismiss();
+    }
   }
 
   handleChange(list, change) {

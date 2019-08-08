@@ -1857,6 +1857,7 @@ export class ProductionPage implements OnInit {
               })
             })
 
+            resolve(pouchData);
           })
         }));
       });

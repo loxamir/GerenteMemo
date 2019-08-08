@@ -131,7 +131,7 @@
                 {{item.product && item.product.code}}
               </ion-col>
               <ion-col (click)="editItemDescription(item)">
-                {{item.product && item.product.name}}
+                {{item.description || item.product && item.product.name}}
               </ion-col>
             </ion-row>
         <ion-row>

@@ -119,46 +119,8 @@
           </ion-item>
 
         </ion-row>
-        <ion-row
-          *ngIf="!productionForm.value.production"
-           style="background: white;border: 1px solid #ddd">
-          <ion-col>
-            <ion-item  style="--background: white">
-              <ion-label position="stacked">{{ 'CLIENT_REQUEST' | translate }}</ion-label>
-              <ion-textarea #clrequest formControlName="client_request"
-                rows="3">
-              </ion-textarea>
-            </ion-item>
-          </ion-col>
-          <ion-col size="2" color="primary">
-            <ion-button icon-only  style="height: 100%;margin-top: 0px;"
-            color="primary"
-            (click)="listenRequest()">
-              <ion-icon name="mic"></ion-icon>
-            </ion-button>
-          </ion-col>
-        </ion-row>
-          <ion-row>
-          <ion-item
-           no-padding
-           (click)="selectPaymentCondition()"
-           *ngIf="!productionForm.value.production && (productionForm.value.state == 'CONFIRMED' || productionForm.value.state == 'PAID' || productionForm.value.state == 'STARTED')"
-           class="field-50">
-            <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
-            <h4 class="field-value">{{productionForm.value.paymentCondition && productionForm.value.paymentCondition.name || 'Selecionar'}}</h4>
-          </ion-item>
-          <ion-item no-padding class="item-content"
-          *ngIf="!productionForm.value.production && (productionForm.value.state == 'CONFIRMED' || productionForm.value.state == 'PAID' || productionForm.value.state == 'STARTED')"
-          class="field-50">
 
-            <h4 class="field-label">{{'DATE' | translate }}</h4>
-            <ion-datetime
-            class="field-50-datetime"
-            displayFormat="DD/MM/YYYY"
-            pickerFormat="DD/MM/YYYY"
-            formControlName="date">
-            </ion-datetime>
-        </ion-item>
+          <ion-row>
         <ion-item no-padding class="item-content"
         *ngIf="!(!productionForm.value.production && (productionForm.value.state == 'CONFIRMED' || productionForm.value.state == 'PAID' || productionForm.value.state == 'STARTED'))"
         class="field-100">

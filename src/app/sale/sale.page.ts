@@ -952,35 +952,38 @@ export class SalePage implements OnInit {
             this.saleForm.value.items.forEach(async (item) => {
               let product_id = item.product_id || item.product._id;
               let product_name = item.product_name || item.product.name;
-              createList.push({
-                'name': "Venta "+this.saleForm.value.code,
-                'quantity': parseFloat(item.quantity),
-                'origin_id': this.saleForm.value._id,
-                'contact_id': this.saleForm.value.contact._id,
-                'contact_name': this.saleForm.value.contact.name,
-                'product_id': product_id,
-                'product_name': product_name,
-                'docType': "stock-move",
-                'date': new Date(),
-                'cost': parseFloat(item.cost)*parseFloat(item.quantity),
-                'warehouseFrom_id': config.warehouse_id,
-                'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
-                'warehouseTo_id': 'warehouse.client',
-                'warehouseTo_name': docDict['warehouse.client'].doc.name,
-              })
-              createList.push({
-                'name': "Venta "+this.saleForm.value.code,
-                'contact_id': this.saleForm.value.contact._id,
-                'contact_name': this.saleForm.value.contact.name,
-                'amount': item.quantity*item.cost,
-                'origin_id': this.saleForm.value._id,
-                'date': new Date(),
-                'accountFrom_id': 'account.other.stock',
-                'accountFrom_name': docDict['account.other.stock'].doc.name,
-                'accountTo_id': 'account.expense.soldGoodCost',
-                'accountTo_name': docDict['account.expense.soldGoodCost'].doc.name,
-                'docType': "cash-move",
-              })
+              item.cost = item.product.cost;
+              if (item.product.type == 'product'){
+                createList.push({
+                  'name': "Venta "+this.saleForm.value.code,
+                  'quantity': parseFloat(item.quantity),
+                  'origin_id': this.saleForm.value._id,
+                  'contact_id': this.saleForm.value.contact._id,
+                  'contact_name': this.saleForm.value.contact.name,
+                  'product_id': product_id,
+                  'product_name': product_name,
+                  'docType': "stock-move",
+                  'date': new Date(),
+                  'cost': parseFloat(item.cost)*parseFloat(item.quantity),
+                  'warehouseFrom_id': config.warehouse_id,
+                  'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
+                  'warehouseTo_id': 'warehouse.client',
+                  'warehouseTo_name': docDict['warehouse.client'].doc.name,
+                })
+                createList.push({
+                  'name': "Venta "+this.saleForm.value.code,
+                  'contact_id': this.saleForm.value.contact._id,
+                  'contact_name': this.saleForm.value.contact.name,
+                  'amount': item.quantity*item.cost,
+                  'origin_id': this.saleForm.value._id,
+                  'date': new Date(),
+                  'accountFrom_id': 'account.other.stock',
+                  'accountFrom_name': docDict['account.other.stock'].doc.name,
+                  'accountTo_id': 'account.expense.soldGoodCost',
+                  'accountTo_name': docDict['account.expense.soldGoodCost'].doc.name,
+                  'docType': "cash-move",
+                })
+              }
               if (item.quantity < 0){
                 // let product = await this.productService.getProduct(product_id);
                 let old_stock = item.product.stock || 0;

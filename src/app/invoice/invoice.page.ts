@@ -186,9 +186,9 @@ export class InvoicePage implements OnInit {
       if (this._id){
         this.getInvoice(this._id).then((data) => {
           this.invoiceForm.patchValue(data);
-          if (data.state != 'QUOTATION'){
-            this.invoiceForm.controls.date.disable();
-          }
+          // if (data.state != 'QUOTATION'){
+          //   this.invoiceForm.controls.date.disable();
+          // }
           this.loading.dismiss();
         });
       } else {
@@ -765,7 +765,7 @@ export class InvoicePage implements OnInit {
           docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top + topo);
           docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top + topo);
 
-          let date = this.invoiceForm.value.date.split('T')[0].split('-');
+          let date = this.today.split('T')[0].split('-');
           if (data.invoicePrint.invoiceDateType == 'normal'){
             date = date[2]+"/"+date[1]+"/"+date[0]
             docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
@@ -850,7 +850,7 @@ export class InvoicePage implements OnInit {
           if (data.invoicePrint.copy_count>=2){
             topo += data.invoicePrint.invoice_height + data.invoicePrint.copy_height;
               number = this.invoiceForm.value.code || "";
-              date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
+              date = this.today.split('T')[0].split('-'); //"25 de Abril de 2018";
               if (data.invoicePrint.invoiceDateType == 'normal'){
                 date = date[2]+"/"+date[1]+"/"+date[0]
                 docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
@@ -947,7 +947,7 @@ export class InvoicePage implements OnInit {
           if (data.invoicePrint.copy_count==3){
             topo += data.invoicePrint.invoice_height + data.invoicePrint.copy_height;
               number = this.invoiceForm.value.code || "";
-              date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
+              date = this.today.split('T')[0].split('-'); //"25 de Abril de 2018";
               if (data.invoicePrint.invoiceDateType == 'normal'){
                 date = date[2]+"/"+date[1]+"/"+date[0]
                 docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
@@ -1079,7 +1079,7 @@ export class InvoicePage implements OnInit {
 
         // this.printer.pick().then(printer => {
           let number = this.invoiceForm.value.code || "";
-          let date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
+          let date = this.today.split('T')[0].split('-'); //"25 de Abril de 2018";
           date = date[2]+"/"+date[1]+"/"+date[0]
           //console.log("date", date);
           let payment_condition = this.invoiceForm.value.paymentCondition || "";
@@ -1241,7 +1241,7 @@ export class InvoicePage implements OnInit {
             pouchData.lines.forEach((line: any)=>{
               pouchData['items'].push({
                 'product': doc_dict[line.product_id],
-                'description': doc_dict[line.product_id].name,
+                'description': line.description || doc_dict[line.product_id].name,
                 'quantity': line.quantity,
                 'price': line.price,
               })
