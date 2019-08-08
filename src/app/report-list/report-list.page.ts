@@ -203,10 +203,8 @@ export class ReportListPage implements OnInit {
   computeSaleValues() {
     let self = this;
     return new Promise((resolve, reject)=>{
-      //console.log("dateStart", this.reportsForm.value.dateStart);
-      //console.log("dateEnd", this.reportsForm.value.dateEnd);
-      let startkey=(new Date(this.reportsForm.value.dateStart.split("T")[0]+"T00:00:00")).toJSON();
-      let endkey=(new Date(this.reportsForm.value.dateEnd.split("T")[0]+"T23:59:59")).toJSON();
+      let startkey=this.reportsForm.value.dateStart.split("T")[0];
+      let endkey=this.reportsForm.value.dateEnd.split("T")[0];
       this.pouchdbService.getView(
         'Informes/VentaDiaria',
         4,

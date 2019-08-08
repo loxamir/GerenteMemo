@@ -219,8 +219,8 @@ export class SaleReportPage implements OnInit {
     await this.loading.present();
     return new Promise(resolve => {
       if (this.reportSaleForm.value.reportType == 'sale') {
-        let startkey=(new Date(this.reportSaleForm.value.dateStart)).toJSON();
-        let endkey=(new Date(this.reportSaleForm.value.dateEnd)).toJSON();
+        let startkey=this.reportSaleForm.value.dateStart.split("T")[0];
+        let endkey=this.reportSaleForm.value.dateEnd.split("T")[0];
         this.pouchdbService.getView(
           'Informes/ProductoDiario',
           20,
