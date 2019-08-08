@@ -952,6 +952,7 @@ export class SalePage implements OnInit {
             this.saleForm.value.items.forEach(async (item) => {
               let product_id = item.product_id || item.product._id;
               let product_name = item.product_name || item.product.name;
+              item.cost = item.product.cost;
               if (item.product.type == 'product'){
                 createList.push({
                   'name': "Venta "+this.saleForm.value.code,
