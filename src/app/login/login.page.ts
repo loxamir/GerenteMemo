@@ -207,7 +207,7 @@ export class LoginPage implements OnInit {
     let dbList:any = await this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
     this.username = this.loginForm.value.user.toLowerCase();
     if (dbList.length == 1){
-      this.selectDatabase(dbList[0].database);
+      this.selectDatabase(dbList[0]);
     }
     this.menuCtrl.enable(false);
     this.loading.dismiss();
