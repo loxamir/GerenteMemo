@@ -34,12 +34,15 @@ export class InvoiceConfigPage implements OnInit {
     public formatService: FormatService,
     public pouchdbService: PouchdbService,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+    
+    
+    
   }
 
   ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.invoiceForm = this.formBuilder.group({
       contactName_top: new FormControl(this.navParams.data.contactName_top),
       contactName_left: new FormControl(this.navParams.data.contactName_left),
@@ -257,16 +260,16 @@ export class InvoiceConfigPage implements OnInit {
   async canDeactivate() {
     if (this.invoiceForm.dirty) {
       let alertPopup = await this.alertCtrl.create({
-        header: 'Descartar',
-        message: '¿Deseas salir sin guardar?',
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
         buttons: [{
-          text: 'Si',
+          text: this.translate.instant('YES'),
           handler: () => {
             this.exitPage();
           }
         },
         {
-          text: 'No',
+          text: this.translate.instant('NO'),
           handler: () => { }
         }]
       });

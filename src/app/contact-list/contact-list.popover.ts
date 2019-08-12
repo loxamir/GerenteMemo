@@ -4,7 +4,7 @@ import {  NavController, PopoverController, NavParams } from '@ionic/angular';
 @Component({
   template: `
   <ion-list>
-    <ion-item (click)="importer()">Importar Contactos</ion-item>
+    <ion-item (click)="importer()">{{'IMPORT_CONTACTS'| translate</ion-item>
   </ion-list>
   `
 })

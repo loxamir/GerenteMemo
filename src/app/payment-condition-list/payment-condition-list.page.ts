@@ -4,7 +4,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { NavController, LoadingController,   ModalController, Events} from '@ionic/angular';
 import { PaymentConditionPage } from '../payment-condition/payment-condition.page';
 import 'rxjs/Rx';
-// import { PaymentConditionService } from '../payment-condition.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payment-condition-list',
@@ -20,7 +20,7 @@ export class PaymentConditionListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public paymentConditionService: PaymentConditionService,
+    public translate: TranslateService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
@@ -40,6 +40,9 @@ export class PaymentConditionListPage implements OnInit {
     this.has_search = ! this.has_search;
   }
   ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     //this.loading.present();
     this.setFilteredItems();
   }

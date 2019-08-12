@@ -48,8 +48,8 @@
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="discountForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!discountForm.dirty"> </ion-icon>
-      <span *ngIf="discountForm.dirty">Descartar</span>
-      <span *ngIf="!discountForm.dirty">Volver</span>
+      <span *ngIf="discountForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!discountForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="discountForm.dirty">

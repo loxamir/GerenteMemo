@@ -45,9 +45,7 @@ export class LoginPage implements OnInit {
     public router: Router,
   ) {
 
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
     this.storage.get("username").then((username)=>{
       this.username = username;
       if (username){
@@ -64,6 +62,9 @@ export class LoginPage implements OnInit {
   // }
 
   async ngOnInit() {
+    let language = navigator.language.split('-')[0];
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loginForm = new FormGroup({
       name: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.compose([

@@ -144,15 +144,15 @@
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="ticketForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!ticketForm.dirty"> </ion-icon>
-      <span *ngIf="ticketForm.dirty">Descartar</span>
-      <span *ngIf="!ticketForm.dirty">Volver</span>
+      <span *ngIf="ticketForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!ticketForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="ticketForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
   <div style="height: 100px;">

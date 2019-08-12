@@ -47,14 +47,17 @@ export class WarehousePage implements OnInit {
     public pouchdbService: PouchdbService,
     public events: Events,
   ) {
-    this.languages = this.languageService.getLanguages();
+    
     // this._id = this.navParams.data._id;
     this._id = this.route.snapshot.paramMap.get('_id');
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+    
+    
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.warehouseForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       balance: new FormControl(0),
@@ -347,7 +350,7 @@ export class WarehousePage implements OnInit {
           text: 'Cancel'
         },
         {
-          text: 'Confirmar',
+          text: this.translate.instant('CONFIRM'),
           handler: data => {
             //console.log("sale", data);
             this.warehouseForm.value.name = data.name;

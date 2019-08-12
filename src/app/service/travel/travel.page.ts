@@ -47,9 +47,9 @@ export class ServiceTravelPage implements OnInit {
       public events: Events,
       public pouchdbService: PouchdbService,
     ) {
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       // this._id = this._id');
       // this.today = new Date().toISOString();
       var foo = { foo: true };
@@ -57,6 +57,9 @@ export class ServiceTravelPage implements OnInit {
     }
 
     ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
       this.travelForm = this.formBuilder.group({
         description: new FormControl(this.distance||null),
         distance: new FormControl(this.distance||null),
@@ -184,30 +187,31 @@ export class ServiceTravelPage implements OnInit {
     }
     async canDeactivate() {
         if(this.travelForm.dirty) {
-            let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
-                buttons: [{
-                        text: 'Si',
-                        handler: () => {
-                            // alertPopup.dismiss().then(() => {
-                                this.exitPage();
-                            // });
-                        }
-                    },
-                    {
-                        text: 'No',
-                        handler: () => {
-                            // need to do something if the user stays?
-                        }
-                    }]
-            });
+          let alertPopup = await this.alertCtrl.create({
+            header: this.translate.instant('DISCARD'),
+            // message: this.translate.instant('SURE_DONT_SAVE'),
+            message: this.translate.instant('SURE_DONT_SAVE'),
+              buttons: [{
+                      text: this.translate.instant('YES'),
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: this.translate.instant('NO'),
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
 
-            // Show the alert
-            alertPopup.present();
+          // Show the alert
+          alertPopup.present();
 
-            // Return false to avoid the page to be popped up
-            return false;
+          // Return false to avoid the page to be popped up
+          return false;
         } else {
           this.exitPage();
         }

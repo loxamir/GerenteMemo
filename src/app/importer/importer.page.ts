@@ -11,6 +11,7 @@ import { FormatService } from '../services/format.service';
 import { SaleService } from '../sale/sale.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RestProvider } from "../services/rest/rest";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-importer',
@@ -41,7 +42,7 @@ export class ImporterPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public route: ActivatedRoute,
-    // public http: Http,
+    public translate: TranslateService,
     // public fileChooser: FileChooser,
     // public filePath: FilePath,
     // public file: File,
@@ -174,7 +175,7 @@ export class ImporterPage implements OnInit {
             text: 'Cancel'
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: data => {
               if (data.value > 0 && data.value < this.csvData.length){
                 this.page = parseInt(data.value);
@@ -1133,6 +1134,9 @@ export class ImporterPage implements OnInit {
   // }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     // console.log('ionViewDidLoad ImporterPage');
     // this.loading.dismiss();
   }

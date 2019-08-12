@@ -214,21 +214,21 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="cashMoveForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!cashMoveForm.dirty"> </ion-icon>
-      <span *ngIf="cashMoveForm.dirty && !cashMoveForm.value.close_id">Descartar</span>
-      <span *ngIf="!cashMoveForm.dirty || cashMoveForm.value.close_id">Volver</span>
+      <span *ngIf="cashMoveForm.dirty && !cashMoveForm.value.close_id">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!cashMoveForm.dirty || cashMoveForm.value.close_id">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showSave() && !cashMoveForm.value.close_id">
     <ion-button (click)="confirmCashMove()"  color="success">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+      {{'NEXT'|translate}}
     </ion-button>
   </ion-fab>
 

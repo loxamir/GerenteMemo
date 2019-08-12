@@ -1,17 +1,8 @@
 
 <ion-header *ngIf="selected_user">
   <ion-toolbar color="primary">
-    <!-- <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-    </ion-buttons> -->
-    <!-- <ion-searchbar
-      placeholder="Buscar Venta"
-      [(ngModel)]="searchTerm"
-      #searchbar
-      (ionChange)="searchItems()">
-    </ion-searchbar> -->
     <ion-title>
-      Bien Venido {{ username }}
+      {{ 'WELCOME' | translate }} {{ username }}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button icon-only (click)="presentPopover($event)">
@@ -77,10 +68,10 @@
         </div>
 
         <ion-button class="print-invoice" (click)="login()" *ngIf="!show_create" style="border-radius:10px;width:100%">
-          Entrar
+          {{ 'LOG_IN' | translate }}
         </ion-button>
         <ion-button class="print-invoice" (click)="register()" [disabled]="!loginForm.valid" *ngIf="show_create" style="border-radius:10px;width:100%">
-          Registrar
+          {{ 'SIGN_UP' | translate }}
         </ion-button>
         <ion-row>
           <ion-col>
@@ -88,8 +79,8 @@
         </ion-row>
         <ion-row>
           <ion-col style="text-align: center;">
-            <a style="font-size:15px;" (click)="showCreate()" *ngIf="!show_create">Crear Cuenta</a>
-            <a style="font-size:15px;" (click)="showLogin()" *ngIf="show_create">Volver al Login</a>
+            <a style="font-size:15px;" (click)="showCreate()" *ngIf="!show_create">{{ 'CREATE_ACCOUNT' | translate }}</a>
+            <a style="font-size:15px;" (click)="showLogin()" *ngIf="show_create">{{ 'BACK_TO_LOGIN' | translate }}</a>
           </ion-col>
         </ion-row>
       </ion-col>
@@ -102,7 +93,7 @@
 
 
     <div *ngIf="selected_user">
-      <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 20px;">Empresas</h2>
+      <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 20px;">{{ 'COMPANIES' | translate}}</h2>
       <ion-item *ngFor="let database of databaseList"
       class="bg-white"
       [class.bg-yellow]="database.admin && database.date_due && database.date_due.split('T')[0] < today.split('T')[0]"
@@ -112,7 +103,7 @@
         </ion-col>
         <ion-col (click)="selectDatabase(database)"
         *ngIf="!database.date_due || (database.date_due.split('T')[0] > today.split('T')[0] || today.split('-')[1] == database.date_due.split('-')[1])">
-          <ion-button class="button-100" color="success">Entrar</ion-button>
+          <ion-button class="button-100" color="success">{{ 'ENTER' | translate }}</ion-button>
         </ion-col>
         <ion-col (click)="payDatabase(database)"
         *ngIf="database.admin && database.date_due && database.date_due.split('T')[0] < today.split('T')[0]">
@@ -125,7 +116,7 @@
     <ion-button style="--color: white; --background: white;">
       <ion-icon name="logo-youtube" style="margin-right: 5px;color: red;"> </ion-icon>
 
-      <span style="color: black;font-weight: bold;">Videos</span>
+      <span style="color: black;font-weight: bold;">{{ 'VIDEOS'| translate }}</span>
     </ion-button>
   </a>
   </ion-fab>
@@ -133,7 +124,7 @@
     <a target="_blank" href="https://wa.me/595986154975" rel="noopener">
     <ion-button style="--color: white; --background: white;">
       <ion-icon name="logo-whatsapp" style="margin-right: 5px;color: green;"> </ion-icon>
-      <span style="color: black;font-weight: bold;">Contacto</span>
+      <span style="color: black;font-weight: bold;">{{ 'CONTACT' | translate }}</span>
     </ion-button>
   </a>
   </ion-fab>

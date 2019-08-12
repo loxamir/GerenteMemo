@@ -5,7 +5,7 @@ import { NavController, LoadingController,   Events, ModalController } from '@io
 import 'rxjs/Rx';
 //import { ViewModel } from './view.model';
 import { ViewService } from './view.service';
-
+import { TranslateService } from '@ngx-translate/core';
 import { AccountPage } from '../account/account.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { ProductPage } from '../product/product.page';
@@ -38,7 +38,7 @@ export class ViewReportPage implements OnInit {
     public viewService: ViewService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
-
+    public translate: TranslateService,
     public route: ActivatedRoute,
     public events: Events,
   ) {
@@ -54,6 +54,9 @@ export class ViewReportPage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

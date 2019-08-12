@@ -4,6 +4,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BrandPage } from '../brand/brand.page';
 import 'rxjs/Rx';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-brand-list',
@@ -25,7 +26,7 @@ export class BrandListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
     public router: Router,
-    // public navParams: NavParams,
+    public translate: TranslateService,
     public events: Events,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
@@ -33,6 +34,9 @@ export class BrandListPage implements OnInit {
   }
 
   ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.setFilteredItems();
   }
 

@@ -8,6 +8,7 @@ import 'rxjs/Rx';
 // import { ReceiptsPopover } from './receipts.popover';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-receipt-list',
@@ -29,6 +30,7 @@ export class ReceiptListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
+    public translate: TranslateService,
     public events: Events,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
@@ -69,6 +71,9 @@ export class ReceiptListPage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

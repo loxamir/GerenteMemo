@@ -4,7 +4,7 @@ import { NavController, LoadingController,  Events, PopoverController, ModalCont
 import { ActivatedRoute, Router } from '@angular/router';
 import 'rxjs/Rx';
 // import { StockMoveListService } from './stock-move-list.service';
-// import { StockMoveListPopover } from './stock-move-list.popover';
+import { TranslateService } from '@ngx-translate/core';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 @Component({
@@ -23,7 +23,7 @@ export class StockMoveListPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     // public app: App,
-    // public stockMoveListService: StockMoveListService,
+    public translate: TranslateService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
@@ -39,6 +39,9 @@ export class StockMoveListPage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

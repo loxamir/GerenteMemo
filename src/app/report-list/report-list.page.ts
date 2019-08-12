@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, LoadingController, PopoverController, NavParams } from '@ionic/angular';
-import { ReportPage } from '../report/report.page';
+// import { ReportPage } from '../report/report.page';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ResultReportPage } from '../result-report/result-report.page';
 import { ViewReportPage } from '../view-report/view-report.page';
@@ -14,7 +14,6 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { SaleReportPage } from '../sale-report/sale-report.page';
 import { PurchaseReportPage } from '../purchase-report/purchase-report.page';
 import { ProductService } from '../product/product.service';
-import { ReportService } from '../report/report.service';
 import { CashFlowPage } from '../cash-flow/cash-flow.page';
 import * as d3 from 'd3';
 import { TranslateService } from '@ngx-translate/core';
@@ -94,17 +93,19 @@ export class ReportListPage implements OnInit {
     public languageService: LanguageService,
     public pouchdbService: PouchdbService,
     public productService: ProductService,
-    public reportService: ReportService,
     public formatService: FormatService,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this.select = this.route.snapshot.paramMap.get('select');
     this.today = new Date();
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     let today = new Date().toISOString();
     // console.log("today", today);
     let timezone = new Date().toString().split(" ")[5].split('-')[1];

@@ -9,7 +9,6 @@ import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { ProductService } from '../product/product.service';
 import { FormatService } from '../services/format.service';
-import { ReportService } from '../report/report.service';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { TitlePage } from '../title/title.page';
 import { AccountCategoryPage } from '../account-category/account-category.page';
@@ -45,14 +44,13 @@ export class AccountsReportPage implements OnInit {
       public formBuilder: FormBuilder,
       public alertCtrl: AlertController,
       public productService: ProductService,
-      public reportService: ReportService,
       public toastCtrl: ToastController,
       public formatService: FormatService,
       public pouchdbService: PouchdbService,
       public modalCtrl: ModalController,
     ) {
       this.today = new Date();
-      this.languages = this.languageService.getLanguages();
+
       this._id = this.route.snapshot.paramMap.get('_id');
     }
 
@@ -138,6 +136,9 @@ export class AccountsReportPage implements OnInit {
     }
 
     async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
 
       this.accountsReportForm = this.formBuilder.group({
         contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),

@@ -5,6 +5,7 @@ import 'rxjs/Rx';
 // import { HelpsService } from './helps.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-help-list',
@@ -22,7 +23,7 @@ export class HelpListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public helpsService: HelpsService,
+    public translate: TranslateService,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public modal: ModalController,
@@ -37,6 +38,9 @@ export class HelpListPage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     //this.loading.present();

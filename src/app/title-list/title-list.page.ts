@@ -4,7 +4,7 @@ import { NavController, LoadingController, ModalController, Events, PopoverContr
 import { TitlePage } from '../title/title.page';
 import 'rxjs/Rx';
 // import { TitlesService } from './titles.service';
-// import { TitlesPopover } from './titles.popover';
+import { TranslateService } from '@ngx-translate/core';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 @Component({
   selector: 'app-title-list',
@@ -23,7 +23,7 @@ export class TitleListPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     // public app: App,
-    // public titlesService: TitlesService,
+    public translate: TranslateService,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public modalCtrl: ModalController,
@@ -39,6 +39,9 @@ export class TitleListPage implements OnInit {
   }
 
   ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     //this.loading.present();
     this.setFilteredItems();
   }

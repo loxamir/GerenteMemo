@@ -56,11 +56,11 @@ export class CashPage implements OnInit {
       public events: Events,
       public formatService: FormatService,
     ) {
-      this.languages = this.languageService.getLanguages();
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
       this.events.unsubscribe('changed-cash-move');
       this.events.subscribe('changed-cash-move', (change)=>{
         if (!this.changes.hasOwnProperty(change.seq) && change.doc.docType){
@@ -98,6 +98,9 @@ export class CashPage implements OnInit {
     }
 
     async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
       this.cashForm = this.formBuilder.group({
         name: new FormControl('', Validators.required),
         balance: new FormControl(0),
@@ -374,34 +377,34 @@ export class CashPage implements OnInit {
       this.cashForm.controls.section.markAsPristine();
     }
 
-    async changeName(){
-      let prompt = await this.alertCtrl.create({
-        header: 'Nombre del Caja',
-        message: 'Cual es el nombre de este caja?',
-        inputs: [
-          {
-            name: 'name',
-            placeholder: 'Caja Chica',
-            value: this.cashForm.value.name
-        },
-
-        ],
-        buttons: [
-          {
-            text: 'Cancel'
-          },
-          {
-            text: 'Confirmar',
-            handler: data => {
-              //console.log("sale", data);
-              this.cashForm.value.name = data.name;
-            }
-          }
-        ]
-      });
-
-      prompt.present();
-    }
+    // async changeName(){
+    //   let prompt = await this.alertCtrl.create({
+    //     header: 'Nombre del Caja',
+    //     message: 'Cual es el nombre de este caja?',
+    //     inputs: [
+    //       {
+    //         name: 'name',
+    //         placeholder: 'Caja Chica',
+    //         value: this.cashForm.value.name
+    //     },
+    //
+    //     ],
+    //     buttons: [
+    //       {
+    //         text: 'Cancel'
+    //       },
+    //       {
+    //         text: this.translate.instant('CONFIRM'),
+    //         handler: data => {
+    //           //console.log("sale", data);
+    //           this.cashForm.value.name = data.name;
+    //         }
+    //       }
+    //     ]
+    //   });
+    //
+    //   prompt.present();
+    // }
 
 
     discard(){
@@ -410,18 +413,16 @@ export class CashPage implements OnInit {
     async canDeactivate() {
         if(this.cashForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+              header: this.translate.instant('DISCARD'),
+              message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
-                            // alertPopup.dismiss().then(() => {
-                                this.exitPage();
-                            // });
+                          this.exitPage();
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

@@ -45,14 +45,17 @@ export class AccountPage implements OnInit {
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+    
+    
+    
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
   ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.accountForm = this.formBuilder.group({
       name: new FormControl(null, Validators.required),
       category: new FormControl({}),
@@ -318,10 +321,10 @@ export class AccountPage implements OnInit {
   async canDeactivate() {
       if(this.accountForm.dirty) {
           let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
+              header: this.translate.instant('DISCARD'),
+              message: this.translate.instant('SURE_DONT_SAVE'),
               buttons: [{
-                      text: 'Si',
+                      text: this.translate.instant('YES'),
                       handler: () => {
                           // alertPopup.dismiss().then(() => {
                               this.exitPage();
@@ -329,7 +332,7 @@ export class AccountPage implements OnInit {
                       }
                   },
                   {
-                      text: 'No',
+                      text: this.translate.instant('NO'),
                       handler: () => {
                           // need to do something if the user stays?
                       }

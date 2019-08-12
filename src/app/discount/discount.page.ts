@@ -40,9 +40,9 @@ export class DiscountPage implements OnInit {
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+    
+    
+    
     this.showProduct = this.route.snapshot.paramMap.get('showProduct');
     this.discountProduct = this.route.snapshot.paramMap.get('discountProduct');
     this.amount_original = parseFloat(this.route.snapshot.paramMap.get('amount_original'));
@@ -51,6 +51,9 @@ export class DiscountPage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     // console.log("this.amount_original", this.amount_original, "this.new_amount", this.new_amount)
     let default_percent:any = 0;
     let discount_amount:any = 0;
@@ -153,10 +156,10 @@ export class DiscountPage implements OnInit {
   async canDeactivate() {
       if(this.discountForm.dirty) {
           let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
+              header: this.translate.instant('DISCARD'),
+              message: this.translate.instant('SURE_DONT_SAVE'),
               buttons: [{
-                      text: 'Si',
+                      text: this.translate.instant('YES'),
                       handler: () => {
                           // alertPopup.dismiss().then(() => {
                               this.exitPage();
@@ -164,7 +167,7 @@ export class DiscountPage implements OnInit {
                       }
                   },
                   {
-                      text: 'No',
+                      text: this.translate.instant('NO'),
                       handler: () => {
                           // need to do something if the user stays?
                       }

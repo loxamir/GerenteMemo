@@ -34,12 +34,15 @@ export class TicketConfigPage implements OnInit {
     public formatService: FormatService,
     public pouchdbService: PouchdbService,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+    
+    
+    
   }
 
   ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.ticketForm = this.formBuilder.group({
       paperWidth: new FormControl(this.navParams.data.paperWidth),
       marginBottom: new FormControl(this.navParams.data.marginBottom),
@@ -198,10 +201,10 @@ export class TicketConfigPage implements OnInit {
   async canDeactivate() {
       if(this.ticketForm.dirty) {
           let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
+              header: this.translate.instant('DISCARD'),
+              message: this.translate.instant('SURE_DONT_SAVE'),
               buttons: [{
-                      text: 'Si',
+                      text: this.translate.instant('YES'),
                       handler: () => {
                           // alertPopup.dismiss().then(() => {
                               this.exitPage();
@@ -209,7 +212,7 @@ export class TicketConfigPage implements OnInit {
                       }
                   },
                   {
-                      text: 'No',
+                      text: this.translate.instant('NO'),
                       handler: () => {
                           // need to do something if the user stays?
                       }

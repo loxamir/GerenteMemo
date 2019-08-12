@@ -76,9 +76,9 @@ export class CashMovePage implements OnInit {
     public configService: ConfigService,
     public alertCtrl: AlertController,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+    
+    
+    
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     var foo = { foo: true };
@@ -88,6 +88,9 @@ export class CashMovePage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.cashMoveForm = this.formBuilder.group({
       name: new FormControl(this.default_name),
       amount: new FormControl(this.default_amount || '', Validators.required),
@@ -267,12 +270,12 @@ export class CashMovePage implements OnInit {
         //   message: 'Estas seguro que deseas confirmar el movimiento?',
         //   buttons: [
         //     {
-        //       text: 'No',
+        //       text: this.translate.instant('NO'),
         //       handler: data => {
         //       }
         //     },
         //     {
-        //       text: 'Si',
+        //       text: this.translate.instant('YES'),
         //       handler: data => {
         //         // this.addTravel();
         //         this.confirmCashMove();
@@ -738,16 +741,16 @@ export class CashMovePage implements OnInit {
   async canDeactivate() {
     if (this.cashMoveForm.dirty) {
       let alertPopup = await this.alertCtrl.create({
-        header: 'Descartar',
-        message: '¿Deseas salir sin guardar?',
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
         buttons: [{
-          text: 'Si',
+          text: this.translate.instant('YES'),
           handler: () => {
             this.exitPage();
           }
         },
         {
-          text: 'No',
+          text: this.translate.instant('NO'),
           handler: () => { }
         }]
       });

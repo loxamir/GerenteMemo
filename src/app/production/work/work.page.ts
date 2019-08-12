@@ -40,15 +40,18 @@ export class ProductionWorkPage implements OnInit {
       // public speechRecognition: SpeechRecognition,
       public events: Events,
     ) {
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+      
+      
+      
       var foo = { foo: true };
       history.pushState(foo, "Anything", " ");
       // this._id = this.route.snapshot.paramMap.get(_id);
     }
 
     ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
       this.workForm = this.formBuilder.group({
         description: new FormControl(this.description||null),
         date: new FormControl(this.date||new Date().toISOString()),
@@ -143,10 +146,10 @@ export class ProductionWorkPage implements OnInit {
     async canDeactivate() {
         if(this.workForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+                header: this.translate.instant('DISCARD'),
+                message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -154,7 +157,7 @@ export class ProductionWorkPage implements OnInit {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

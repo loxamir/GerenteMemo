@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ModalController, Events, PopoverController} from '@ionic/angular';
 import { AccountCategoryPage } from '../account-category/account-category.page';
 import 'rxjs/Rx';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account-category-list',
@@ -26,6 +27,7 @@ export class AccountCategoryListPage implements OnInit {
     public modalCtrl: ModalController,
     public route: ActivatedRoute,
     public events: Events,
+    public translate: TranslateService,
     public popoverCtrl: PopoverController,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
@@ -36,6 +38,9 @@ export class AccountCategoryListPage implements OnInit {
   }
 
   ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     //this.loading.present();
     this.setFilteredItems();
   }

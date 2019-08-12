@@ -7,7 +7,6 @@ import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-import { ReportService } from '../report/report.service';
 import { ProductService } from '../product/product.service';
 import { FormatService } from '../services/format.service';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
@@ -64,7 +63,6 @@ export class PayableReportPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    public reportService: ReportService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
@@ -76,7 +74,7 @@ export class PayableReportPage implements OnInit {
     public modalCtrl: ModalController,
   ) {
     this.today = new Date();
-    this.languages = this.languageService.getLanguages();
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.avoidAlertMessage = false;
   }
@@ -380,6 +378,9 @@ export class PayableReportPage implements OnInit {
   // }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.payableReportForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || undefined, Validators.required),
       name: new FormControl(''),

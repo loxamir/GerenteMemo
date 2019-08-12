@@ -43,9 +43,9 @@ export class PurchaseListPage implements OnInit {
     public route: ActivatedRoute,
     public modal: ModalController,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+    
+    
+    
     this.select = this.route.snapshot.paramMap.get('select');
     this.events.subscribe('changed-purchase', (change)=>{
       this.handleChange(this.purchases, change);
@@ -101,6 +101,9 @@ export class PurchaseListPage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

@@ -8,7 +8,7 @@ import 'rxjs/Rx';
 import { ContactListPopover } from './contact-list.popover';
 import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-contact-list',
@@ -40,6 +40,7 @@ export class ContactListPage implements OnInit {
     public toastCtrl: ToastController,
     public file: File,
     public loadingCtrl: LoadingController,
+    public translate: TranslateService,
   ) {
     // this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
@@ -59,6 +60,9 @@ export class ContactListPage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.setFilteredItems();

@@ -40,9 +40,9 @@ export class CheckListPage implements OnInit {
     public translate: TranslateService,
     // public navParams: NavParams,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+    
+    
+    
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
     this.select = this.route.snapshot.paramMap.get('select');
@@ -51,6 +51,9 @@ export class CheckListPage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

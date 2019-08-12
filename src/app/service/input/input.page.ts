@@ -33,10 +33,13 @@ export class ServiceInputPage implements OnInit {
     public events: Events,
     // public speechRecognition: SpeechRecognition,
   ) {
-    this.languages = this.languageService.getLanguages();
+    
   }
 
   ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.inputForm = this.formBuilder.group({
       product: new FormControl({}),
       description: new FormControl(this.route.snapshot.paramMap.get('description')||''),

@@ -16,34 +16,34 @@ export class AppComponent implements OnInit {
   loading: any;
   public appPages = [
     {
-      title: 'Operativo',
+      title: 'OPERATIVE',
       url: '/tabs',
       icon: 'infinite'
     },
     {
-      title: 'Informes',
+      title: 'REPORTS',
       url: '/report-list',
       icon: 'stats',
       restrict: true
     },
     {
-      title: 'Productos',
+      title: 'PRODUCTS',
       url: '/product-list',
       icon: 'cube'
     },
     {
-      title: 'Personas',
+      title: 'PEOPLE',
       url: '/contact-list',
       icon: 'contacts'
     },
     {
-      title: 'Ajustes',
+      title: 'CONFIG',
       url: '/config',
       icon: 'settings',
       restrict: true
     },
     {
-      title: 'Salir',
+      title: 'EXIT',
       url: '/login',
       icon: 'exit'
     },
@@ -67,8 +67,8 @@ export class AppComponent implements OnInit {
   initializeApp() {
     this.platform.ready().then(() => {
       if (this.platform.is('cordova')){
-        // this.translate.setDefaultLang('es');
-        // this.translate.use('es');
+        //
+        //
         // this.statusBar.styleDefault();
         this.statusBar.show()
         // this.statusBar.overlaysWebView(true);
@@ -90,28 +90,31 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit(){
+    let language = navigator.language.split('-')[0];
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
     if (this.user && !this.user['admin']){
       this.appPages = [
         {
-          title: 'Operativo',
+          title: 'OPERATIVE',
           url: '/tabs',
           icon: 'infinite'
         },
         {
-          title: 'Productos',
+          title: 'PRODUCTS',
           url: '/product-list',
           icon: 'cube'
         },
         {
-          title: 'Personas',
+          title: 'PEOPLE',
           url: '/contact-list',
           icon: 'contacts'
         },
         {
-          title: 'Salir',
+          title: 'EXIT',
           url: '/login',
           icon: 'exit'
         },

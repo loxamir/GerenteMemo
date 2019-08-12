@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Recibo"
+      placeholder="{{ 'SEARCH_RECEIPT' | translate }}"
       [(ngModel)]="searchTerm"
       (ionChange)="searchItems()">
     </ion-searchbar>
@@ -50,7 +50,7 @@
       <ion-item-options>
         <ion-item-option (click)="deleteReceipt(item)"
         *ngIf="item.state=='QUOTATION'">
-          Borrar
+          {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>

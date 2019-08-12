@@ -45,9 +45,9 @@ export class ResultReportPage implements OnInit {
     public modalCtrl: ModalController,
   ) {
     this.today = new Date();
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+    
+    
+    
     this._id = this.route.snapshot.paramMap.get('_id');
   }
 
@@ -107,6 +107,9 @@ export class ResultReportPage implements OnInit {
   }
 
  async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.resultForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact')
       || {}, Validators.required),

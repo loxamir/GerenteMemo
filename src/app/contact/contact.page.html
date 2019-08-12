@@ -171,7 +171,7 @@
             </ion-item>
             <ion-item-options>
               <ion-item-option (click)="removeSalary(item)">
-                Borrar
+                {{ 'DELETE'| translate }}
               </ion-item-option>
 
             </ion-item-options>
@@ -202,7 +202,7 @@
             </ion-item>
             <ion-item-options>
               <ion-item-option (click)="removeAdvance(item)">
-                Borrar
+                {{ 'DELETE'| translate }}
               </ion-item-option>
             </ion-item-options>
           </ion-item-sliding>
@@ -214,7 +214,7 @@
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+      {{'NEXT'|translate}}
     </ion-button>
   </ion-fab>
 
@@ -222,15 +222,15 @@
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="contactForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!contactForm.dirty"> </ion-icon>
-      <span *ngIf="contactForm.dirty">Descartar</span>
-      <span *ngIf="!contactForm.dirty">Volver</span>
+      <span *ngIf="contactForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!contactForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="contactForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
   <div style="height: 100px;">

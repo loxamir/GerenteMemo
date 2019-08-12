@@ -4,6 +4,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { NavController,  LoadingController,  Events, PopoverController } from '@ionic/angular';
 import { CashMoveListPopover } from './cash-move-list.popover';
 import 'rxjs/Rx';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cash-move-list',
@@ -25,6 +26,7 @@ export class CashMoveListPage implements OnInit {
     public route: ActivatedRoute,
     public events: Events,
     public popoverCtrl: PopoverController,
+    public translate: TranslateService,
   ) {
   this.select = this.route.snapshot.paramMap.get('select');
   this.events.subscribe('changed-cash-move', (change)=>{
@@ -53,6 +55,9 @@ export class CashMoveListPage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

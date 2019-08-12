@@ -156,9 +156,9 @@ export class ContractPage implements OnInit {
       // public file: File,
     ) {
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+      
+      
+      
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       this.avoidAlertMessage = false;
@@ -171,6 +171,9 @@ export class ContractPage implements OnInit {
     }
 
     async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
       //var today = new Date().toISOString();
       this.contractForm = this.formBuilder.group({
         contact: new FormControl(this.contact||{}, Validators.required),
@@ -277,10 +280,10 @@ export class ContractPage implements OnInit {
     // async ionViewCanLeave() {
     //     if(this.contractForm.dirty && ! this.avoidAlertMessage) {
     //         let alertPopup = await this.alertCtrl.create({
-    //             header: 'Descartar',
-    //             message: '¿Deseas salir sin guardar?',
+    //             header: this.translate.instant('DISCARD'),
+    //             message: this.translate.instant('SURE_DONT_SAVE'),
     //             buttons: [{
-    //                     text: 'Si',
+    //                     text: this.translate.instant('YES'),
     //                     handler: () => {
     //                         // alertPopup.dismiss().then(() => {
     //                             this.exitPage();
@@ -288,7 +291,7 @@ export class ContractPage implements OnInit {
     //                     }
     //                 },
     //                 {
-    //                     text: 'No',
+    //                     text: this.translate.instant('NO'),
     //                     handler: () => {
     //                         // need to do something if the user stays?
     //                     }
@@ -464,7 +467,7 @@ export class ContractPage implements OnInit {
                 text: 'Cancel'
               },
               {
-                text: 'Confirmar',
+                text: this.translate.instant('CONFIRM'),
                 handler: async data => {
                   // console.log("vars", data);
                   self.contractForm.value.items.unshift({
@@ -497,7 +500,7 @@ export class ContractPage implements OnInit {
                       //   }
                       // },
                       {
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: data => {
                           this.addItem();
                         }
@@ -580,7 +583,7 @@ export class ContractPage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -612,7 +615,7 @@ export class ContractPage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.quantity = data.quantity;
                 this.recomputeValues();
@@ -671,11 +674,11 @@ export class ContractPage implements OnInit {
         message: 'Si la confirmas no podras cambiar los productos ni el cliente',
         buttons: [
           {
-            text: 'Cancelar',
+            text: this.translate.instant('CANCEL'),
             handler: data => {}
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: data => {
               this.afterConfirm();
             }
@@ -823,13 +826,13 @@ export class ContractPage implements OnInit {
         message: 'Al cancelar el contrato todos los registros asociados serán borrados',
         buttons: [
           {
-            text: 'No',
+            text: this.translate.instant('NO'),
             handler: data => {
               //console.log("Cancelar");
             }
           },
           {
-            text: 'Si',
+            text: this.translate.instant('YES'),
             handler: data => {
               //console.log("Confirmar");
               this.contractForm.value.items.forEach((item) => {
@@ -1424,10 +1427,10 @@ export class ContractPage implements OnInit {
     async canDeactivate() {
         if(this.contractForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+                header: this.translate.instant('DISCARD'),
+                message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -1435,7 +1438,7 @@ export class ContractPage implements OnInit {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

@@ -66,9 +66,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public stockMoveService: StockMoveService,
       public cashMoveService: CashMoveService,
     ) {
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+      
+      
+      
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       if (this.route.snapshot.paramMap.get('_id')){
@@ -101,6 +101,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
       setTimeout(() => {
         this.name.setFocus();
         this.productForm.markAsPristine();
@@ -203,12 +206,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         //     message: 'Estas seguro que deseas confirmar el movimiento?',
         //     buttons: [
         //       {
-        //         text: 'No',
+        //         text: this.translate.instant('NO'),
         //         handler: data => {
         //         }
         //       },
         //       {
-        //         text: 'Si',
+        //         text: this.translate.instant('YES'),
         //         handler: data => {
         //           // this.addTravel();
         //           this.confirmCashMove();
@@ -473,10 +476,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     async canDeactivate() {
         if(this.productForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+                header: this.translate.instant('DISCARD'),
+                message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -484,7 +487,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

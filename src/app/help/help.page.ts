@@ -42,7 +42,7 @@ export class HelpPage implements OnInit {
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    this.languages = this.languageService.getLanguages();
+    
     this._id = this.route.snapshot.paramMap.get('_id');
   }
 
@@ -56,6 +56,9 @@ export class HelpPage implements OnInit {
   }
 
   ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.helpForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       content: new FormControl(''),

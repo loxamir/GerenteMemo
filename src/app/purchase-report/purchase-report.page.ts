@@ -6,7 +6,6 @@ import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-import { ReportService } from '../report/report.service';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 import * as d3 from 'd3';
@@ -62,7 +61,6 @@ export class PurchaseReportPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    public reportService: ReportService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
@@ -70,7 +68,7 @@ export class PurchaseReportPage implements OnInit {
     public pouchdbService: PouchdbService,
   ) {
     this.today = new Date();
-    this.languages = this.languageService.getLanguages();
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.avoidAlertMessage = false;
   }
@@ -477,6 +475,9 @@ export class PurchaseReportPage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.reportPurchaseForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
       name: new FormControl(''),
@@ -492,13 +493,6 @@ export class PurchaseReportPage implements OnInit {
     });
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    if (this._id) {
-      this.reportService.getReport(this._id).then((data) => {
-        this.reportPurchaseForm.patchValue(data);
-      });
-    } else {
-      //this.loading.dismiss();
-    }
     this.goNextStep();
   }
 

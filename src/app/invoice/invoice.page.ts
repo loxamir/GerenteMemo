@@ -122,9 +122,9 @@ export class InvoicePage implements OnInit {
       // public popoverCtrl: PopoverController,
     ) {
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+      
+      
+      
       this._id = this.route.snapshot.paramMap.get('_id');
       this.note = this.route.snapshot.paramMap.get('note');
       this.discount = this.route.snapshot.paramMap.get('discount');
@@ -136,6 +136,9 @@ export class InvoicePage implements OnInit {
     }
 
     async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
       let items = [];
       if (this.items){
         let lista: any = this.items;
@@ -219,7 +222,7 @@ export class InvoicePage implements OnInit {
         }
       },
       {
-        text: 'Cancelar',
+        text: this.translate.instant('CANCEL'),
         icon: 'close',
         role: 'cancel',
         handler: () => {}
@@ -484,7 +487,7 @@ export class InvoicePage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -515,7 +518,7 @@ export class InvoicePage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.quantity = data.quantity;
                 this.recomputeValues();
@@ -546,7 +549,7 @@ export class InvoicePage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.description = data.description;
               }
@@ -662,7 +665,7 @@ export class InvoicePage implements OnInit {
             text: 'Cancel'
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: data => {
               this.invoiceForm.patchValue({
                 code: data.code,
@@ -1275,10 +1278,10 @@ export class InvoicePage implements OnInit {
     async canDeactivate() {
         if(this.invoiceForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+                header: this.translate.instant('DISCARD'),
+                message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -1286,7 +1289,7 @@ export class InvoicePage implements OnInit {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

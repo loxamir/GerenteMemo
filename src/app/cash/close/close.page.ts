@@ -55,6 +55,9 @@ export class ClosePage implements OnInit {
   }
 
   async ngOnInit() {
+  let language = navigator.language.split('-')[0];
+  this.translate.setDefaultLang(language);
+  this.translate.use(language);
     this.closeForm = this.formBuilder.group({
       name: new FormControl(''),
       date: new FormControl(new Date()),
@@ -333,7 +336,7 @@ export class ClosePage implements OnInit {
     let filename = "Cierre_"+date+".prt";
     this.formatService.printMatrix(content, filename);
     let toast = await this.toastCtrl.create({
-      message: "Imprimiendo...",
+      message: this.translate.instant('PRINTING...'),
       duration: 3000
     });
     toast.present();
@@ -349,10 +352,11 @@ export class ClosePage implements OnInit {
   async canDeactivate() {
       if(this.closeForm.dirty) {
           let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
+            header: this.translate.instant('DISCARD'),
+            // message: this.translate.instant('SURE_DONT_SAVE'),
+            message: this.translate.instant('SURE_DONT_SAVE'),
               buttons: [{
-                      text: 'Si',
+                      text: this.translate.instant('YES'),
                       handler: () => {
                           // alertPopup.dismiss().then(() => {
                               this.exitPage();
@@ -360,7 +364,7 @@ export class ClosePage implements OnInit {
                       }
                   },
                   {
-                      text: 'No',
+                      text: this.translate.instant('NO'),
                       handler: () => {
                           // need to do something if the user stays?
                       }
