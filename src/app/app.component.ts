@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
       icon: 'contacts'
     },
     {
-      title: 'CONFIG',
+      title: 'SETTINGS',
       url: '/config',
       icon: 'settings',
       restrict: true
