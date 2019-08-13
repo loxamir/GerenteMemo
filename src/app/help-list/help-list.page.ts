@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, Events} from '@ionic/angular';
-// import { HelpPage } from '../help';
+import { NavController, LoadingController,   ModalController, Events} from '@ionic/angular';
 import 'rxjs/Rx';
-// import { HelpsService } from './helps.service';
+import { LanguageService } from "../services/language/language.service";
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-help-list',
@@ -22,10 +22,11 @@ export class HelpListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public helpsService: HelpsService,
+    public translate: TranslateService,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
+    public languageService: LanguageService,
     public events: Events,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
@@ -36,6 +37,9 @@ export class HelpListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     //this.loading.present();

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, ModalController, LoadingController, Events, PopoverController, AlertController } from '@ionic/angular';
 import { CashPage } from '../cash/cash.page';
-
+import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/Rx';
 import { CashListPopover } from './cash-list.popover';
 import { FormatService } from '../services/format.service';
@@ -9,6 +9,7 @@ import { CashService } from '../cash/cash.service';
 import { CashMoveService } from '../cash-move/cash-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-cash-list',
@@ -30,10 +31,12 @@ export class CashListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public route: ActivatedRoute,
     public pouchdbService: PouchdbService,
+    public languageService: LanguageService,
     public formatService: FormatService,
     public cashService: CashService,
     public events: Events,
     public popoverCtrl: PopoverController,
+    public translate: TranslateService,
     public cashMoveService: CashMoveService,
     public alertCtrl: AlertController,
     public modalCtrl: ModalController,
@@ -44,6 +47,9 @@ export class CashListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
@@ -134,48 +140,47 @@ export class CashListPage implements OnInit {
 
   async createCash() {
     let prompt = await this.alertCtrl.create({
-      header: 'Crear Caja',
-      message: 'Nombre del Caja?',
+      header: this.translate.instant('CREATE_CASHIER'),
+      message: this.translate.instant('CASHIER_NAME'),
       inputs: [
         {
           type: 'text',
           name: 'name',
-          value: "Caja Nuevo"
+          value: this.translate.instant('NEW_CASHIER')
         },
       ],
       buttons: [
         {
-          text: 'Cancelar',
+          text: this.translate.instant('CANCEL'),
         },
         {
-          text: 'Confirmar',
+          text: this.translate.instant('CONFIRM'),
           handler: async data => {
             let prompt = await this.alertCtrl.create({
-              header: 'Tipo de Caja',
-              message: 'Tipo del Caja?',
+              header: this.translate.instant('CASHIER_TYPE'),
               inputs: [
                 {
                   type: 'radio',
-                  label: 'Caixa',
+                  label: this.translate.instant('MONEY'),
                   value: 'cash'
                 },
                 {
                   type: 'radio',
-                  label: 'Banco',
+                  label: this.translate.instant('BANK'),
                   value: 'bank'
                 },
                 {
                   type: 'radio',
-                  label: 'Cheque',
+                  label: this.translate.instant('CHECK'),
                   value: 'check'
                 }
               ],
               buttons: [
                 {
-                  text: 'Cancelar',
+                  text: this.translate.instant('CANCEL'),
                 },
                 {
-                  text: 'Confirmar',
+                  text: this.translate.instant('CONFIRM'),
                   handler: type => {
                     this.cashService.createCash({
                       'name': data.name,
@@ -202,8 +207,8 @@ export class CashListPage implements OnInit {
   async setInitialBalance(cash) {
     let self = this;
     let prompt = await this.alertCtrl.create({
-      header: 'Balance del Caja',
-      message: 'Cuanto dinero tenes en la Caja ' + cash.name + '?',
+      header: this.translate.instant('CASHIER_BALANCE'),
+      message: this.translate.instant('HOW_MUCH_CASHIER') + cash.name + '\'?',
       inputs: [
         {
           type: 'number',
@@ -213,10 +218,10 @@ export class CashListPage implements OnInit {
       ],
       buttons: [
         {
-          text: 'Cancelar',
+          text: this.translate.instant('CANCEL'),
         },
         {
-          text: 'Confirmar',
+          text: this.translate.instant('CONFIRM'),
           handler: data => {
             self.cashMoveService.createCashMove({
               "amount": data.balance,

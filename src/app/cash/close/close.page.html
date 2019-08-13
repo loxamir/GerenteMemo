@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Cierre de Caja</ion-title>
+    <ion-title>{{'CASHIER_CLOSE'|translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -9,14 +9,14 @@
     <ion-row>
       <ion-item no-padding class="field-50">
         <ion-label position="floating" style="font-size:14px">
-          {{'Monto Real' | translate}}
+          {{'REAL_AMOUNT' | translate}}
         </ion-label>
         <ion-input #input type="number" formControlName="amount_physical"></ion-input>
       </ion-item>
       <ion-item no-padding class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">
-            {{'Monto Teorico' | translate }}
+            {{'THEORETICAL_AMOUNT' | translate }}
           </h4>
           <h4 class="field-value" style="color: green;">
             {{closeForm.value.amount_theoretical|number:'1.'+currency_precision}}
@@ -26,7 +26,7 @@
       <ion-item no-padding class="field-100">
         <div class="field-many2one">
           <h4 class="field-label">
-            {{'Differencia de Caja' | translate }}
+            {{'CASH_DIFFERENCE' | translate }}
           </h4>
           <h4 class="field-value" style="color: green;" *ngIf="closeForm.value.amount_physical - closeForm.value.amount_theoretical > 0">
             +{{closeForm.value.amount_physical - closeForm.value.amount_theoretical|number:'1.'+currency_precision}}
@@ -39,7 +39,7 @@
       <ion-item no-padding class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">
-            {{'Monto Recibido' | translate }}
+            {{'AMOUNT_RECEIVED' | translate }}
           </h4>
           <h4 class="field-value" style="color: green;">
             {{closeForm.value.amount_income|number:'1.'+currency_precision}}
@@ -49,7 +49,7 @@
       <ion-item no-padding class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">
-            {{'Monto Entregado' | translate }}
+            {{'AMOUNT_DELIVERED' | translate }}
           </h4>
           <h4 class="field-value" style="color: red;">
             {{closeForm.value.amount_expense|number:'1.'+currency_precision}}
@@ -59,7 +59,7 @@
       <ion-item no-padding class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">
-            {{'Monto Inicial' | translate }}
+            {{'START_AMOUNT' | translate }}
           </h4>
           <h4 class="field-value" style="color: green;">
             {{closeForm.value.amount_open|number:'1.'+currency_precision}}
@@ -69,7 +69,7 @@
       <ion-item no-padding class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">
-            {{'Variación' | translate }}
+            {{'VARIATION' | translate }}
           </h4>
           <h4 class="field-value" style="color: green;" *ngIf="(closeForm.value.amount_physical || 0)-closeForm.value.amount_open > 0">
             +{{(closeForm.value.amount_physical || 0)-closeForm.value.amount_open|number:'1.'+currency_precision}}
@@ -84,7 +84,7 @@
     <ion-row>
       <ion-col size="12" *ngIf="closeForm.value._id">
         <ion-button class="button-100" (click)="print()">
-          <ion-icon name="print" style="margin-right:10px;"></ion-icon> Imprimir
+          <ion-icon name="print" style="margin-right:10px;"></ion-icon> {{'PRINT'|translate}}
         </ion-button>
       </ion-col>
     </ion-row>
@@ -139,15 +139,15 @@
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!closeForm.value._id">
     <ion-button (click)="closeConfirm()"  color="success">
       <ion-icon name="checkmark-circle-outline"> </ion-icon>
-      Confirmar
+      {{'CONFIRM'|translate}}
     </ion-button>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">
       <ion-icon name="backspace" *ngIf="closeForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!closeForm.dirty"> </ion-icon>
-      <span *ngIf="closeForm.dirty">Descartar</span>
-      <span *ngIf="!closeForm.dirty">Volver</span>
+      <span *ngIf="closeForm.dirty">{{'DISCARD'|translate}}</span>
+      <span *ngIf="!closeForm.dirty">{{'GO_BACK'|translate}}</span>
     </ion-button>
   </ion-fab>
 

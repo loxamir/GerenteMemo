@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/product-list"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Marca"
+      placeholder="{{ 'SEARCH_BRAND' | translate }}"
       [(ngModel)]="searchTerm"
       (ionChange)="setFilteredItems()">
     </ion-searchbar>
@@ -53,7 +53,7 @@
     <ion-item-options>
       <ion-item-option (click)="deleteBrand(item)"
       *ngIf="!item.fixed">
-        Borrar
+        {{ 'DELETE'| translate }}
       </ion-item-option>
     </ion-item-options>
   </ion-item-sliding>

@@ -85,9 +85,9 @@ export class ReceiptPage implements OnInit {
     public events: Events,
   ) {
     this.today = new Date().toISOString();
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     this.avoidAlertMessage = false;
@@ -132,6 +132,9 @@ export class ReceiptPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
@@ -594,7 +597,7 @@ export class ReceiptPage implements OnInit {
             text: 'Cancel'
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: data => {
               item.amount = data.amount;
               this.recomputeValues();
@@ -844,7 +847,7 @@ export class ReceiptPage implements OnInit {
         message: 'Estas seguro que deseas confirmar la el recibo?',
         buttons: [
           {
-            text: 'Cancelar',
+            text: this.translate.instant('CANCEL'),
             role: 'cancel',
             handler: data => {
               //console.log("Cancelar");
@@ -852,7 +855,7 @@ export class ReceiptPage implements OnInit {
             }
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: async data => {
               //console.log("Confirmar");
               this.loading = await this.loadingCtrl.create({});
@@ -1746,10 +1749,10 @@ export class ReceiptPage implements OnInit {
   async canDeactivate() {
     if (this.receiptForm.dirty) {
       let alertPopup = await this.alertCtrl.create({
-        header: 'Descartar',
-        message: '¿Deseas salir sin guardar?',
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
         buttons: [{
-          text: 'Si',
+          text: this.translate.instant('YES'),
           handler: () => {
             // alertPopup.dismiss().then(() => {
             this.exitPage();
@@ -1757,7 +1760,7 @@ export class ReceiptPage implements OnInit {
           }
         },
         {
-          text: 'No',
+          text: this.translate.instant('NO'),
           handler: () => {
             // need to do something if the user stays?
           }
@@ -1804,12 +1807,12 @@ export class ReceiptPage implements OnInit {
         message: 'Al cancelar el Recibo todos los registros asociados serán borrados',
         buttons: [
           {
-            text: 'No',
+            text: this.translate.instant('NO'),
             handler: data => {
             }
           },
           {
-            text: 'Si',
+            text: this.translate.instant('YES'),
             handler: async data => {
               await this.removeCashMoves();
               this.events.publish('cancel-receipt', this.receiptForm.value._id);

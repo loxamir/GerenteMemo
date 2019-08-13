@@ -59,9 +59,9 @@ export class ConfigPage implements OnInit {
     public restProvider: RestProvider,
     public pouchdbService: PouchdbService,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
   }
@@ -107,6 +107,9 @@ export class ConfigPage implements OnInit {
       users: [],
       _id: [''],
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.configService.getConfig().then((data) => {
@@ -528,10 +531,10 @@ export class ConfigPage implements OnInit {
   async canDeactivate() {
       if(this.configForm.dirty) {
           let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
+              header: this.translate.instant('DISCARD'),
+              message: this.translate.instant('SURE_DONT_SAVE'),
               buttons: [{
-                      text: 'Si',
+                      text: this.translate.instant('YES'),
                       handler: () => {
                           // alertPopup.dismiss().then(() => {
                               this.exitPage();
@@ -539,7 +542,7 @@ export class ConfigPage implements OnInit {
                       }
                   },
                   {
-                      text: 'No',
+                      text: this.translate.instant('NO'),
                       handler: () => {
                           // need to do something if the user stays?
                       }

@@ -5,14 +5,14 @@
     </ion-buttons>
     <ion-searchbar
       *ngIf="this.signal=='+'"
-      placeholder="Buscar Contas a Cobrar"
+      placeholder="{{ 'SEARCH_RECEIVABLE_ACCOUNT' | translate }}"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-searchbar
       *ngIf="this.signal=='-'"
-      placeholder="Buscar Contas a Pagar"
+      placeholder="{{ 'SEARCH_PAYMENT_ACCOUNT' | translate }}"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionChange)="setFilteredItems()">

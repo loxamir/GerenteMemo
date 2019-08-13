@@ -192,7 +192,7 @@
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+      {{'NEXT'|translate}}
     </ion-button>
   </ion-fab>
 
@@ -200,15 +200,15 @@
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="checkForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!checkForm.dirty"> </ion-icon>
-      <span *ngIf="checkForm.dirty">Descartar</span>
-      <span *ngIf="!checkForm.dirty">Volver</span>
+      <span *ngIf="checkForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!checkForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showSaveButton()">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
   <div style="height: 100px">

@@ -52,10 +52,10 @@ export class StockMovePage implements OnInit {
     // public configService: ConfigService,
     public pouchdbService: PouchdbService,
   ) {
-    this.languages = this.languageService.getLanguages();
+
     this._id = this.route.snapshot.paramMap.get('_id');
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
     // this.cash_id = this.route.snapshot.paramMap.get('cash_id;
     // this.default_quantity = parseFloat(this.route.snapshot.paramMap.get('default_quantity'))||1;
     // this.default_name = this.route.snapshot.paramMap.get('default_name');
@@ -98,6 +98,9 @@ export class StockMovePage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     if (this._id){

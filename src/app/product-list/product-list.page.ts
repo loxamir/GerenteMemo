@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, LoadingController, ModalController, Events, PopoverController } from '@ionic/angular';
+import { NavController, LoadingController, ModalController, Events,
+  PopoverController, ToastController } from '@ionic/angular';
 import { ProductPage } from '../product/product.page';
 import 'rxjs/Rx';
 import { File } from '@ionic-native/file/ngx';
@@ -10,6 +11,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { FormatService } from '../services/format.service';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-product-list',
@@ -31,7 +34,6 @@ export class ProductListPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public router: Router,
-    // public productsService: ProductsService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
@@ -62,6 +64,9 @@ export class ProductListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
@@ -224,8 +229,23 @@ export class ProductListPage implements OnInit {
     })
   }
 
-  deleteProduct(product) {
-    return this.pouchdbService.deleteDoc(product);
+  async deleteProduct(product) {
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
+    let viewList: any = await this.pouchdbService.getView('Informes/productUse', 1,
+    [product._id],
+    [product._id+"z"]);
+    if (viewList.length){
+      this.loading.dismiss();
+      let toast = await this.toastCtrl.create({
+      message: "No se puede borrar, producto en uso",
+      duration: 1000
+      });
+      toast.present();
+    } else {
+      await this.pouchdbService.deleteDoc(product);
+      this.loading.dismiss();
+    }
   }
 
   handleChange(list, change) {

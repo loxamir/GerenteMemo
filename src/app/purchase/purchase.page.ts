@@ -65,10 +65,12 @@ export class PurchasePage implements OnInit {
                 } else {
                   // console.log("barco", this.barcode);
                   let alertPopup = await this.alertCtrl.create({
-                      header: 'Producto no Encontrado',
-                      message: '¿Deseas catastrarlo?',
+                      // header: 'Producto no Encontrado',
+                      header: this.translate.instant('PRODUCT_NOT_FOUND'),
+                      // message: '¿Deseas catastrarlo?',
+                      message: this.translate.instant('WANT_REGISTER'),
                       buttons: [{
-                              text: 'Si',
+                              text: this.translate.instant('YES'),
                               handler: () => {
                                   // alertPopup.dismiss().then(() => {
                                       this.createBarcodeProduct(bacode);
@@ -77,7 +79,7 @@ export class PurchasePage implements OnInit {
                               }
                           },
                           {
-                              text: 'No',
+                              text: this.translate.instant('NO'),
                               handler: () => {
                                   // need to do something if the user stays?
                               }
@@ -153,9 +155,9 @@ export class PurchasePage implements OnInit {
       public popoverCtrl: PopoverController,
     ) {
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.avoidAlertMessage = false;
       this.contact = this.route.snapshot.paramMap.get('contact');
@@ -240,6 +242,9 @@ export class PurchasePage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -316,18 +321,15 @@ export class PurchasePage implements OnInit {
           this.selectContact().then( teste => {
             if (Object.keys(this.purchaseForm.value.paymentCondition).length === 0){
               this.selectPaymentCondition().then(()=>{
-                // this.purchaseConfimation();
                 this.afterConfirm();
               });
             }
           });
         } else if (Object.keys(this.purchaseForm.value.paymentCondition).length === 0){
           this.selectPaymentCondition().then(()=>{
-            // this.purchaseConfimation();
             this.afterConfirm();
           });
         } else {
-          // this.purchaseConfimation();
           this.afterConfirm();
         }
       }
@@ -564,8 +566,10 @@ export class PurchasePage implements OnInit {
     async editItemPrice(item){
       if (this.purchaseForm.value.state=='QUOTATION'){
         let prompt = await this.alertCtrl.create({
-          header: 'Precio del Producto',
-          message: 'Cual es el precio de este producto?',
+          // header: 'Precio del Producto',
+          header: this.translate.instant('PRODUCT_PRICE'),
+          // message: 'Cual es el precio de este producto?',
+          message: this.translate.instant('WHAT_PRODUCT_PRICE'),
           inputs: [
             {
               type: 'number',
@@ -576,10 +580,10 @@ export class PurchasePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -596,8 +600,8 @@ export class PurchasePage implements OnInit {
     async editItemQuantity(item){
       if (this.purchaseForm.value.state=='QUOTATION'){
         let prompt = await this.alertCtrl.create({
-          header: 'Cantidad del Producto',
-          message: 'Cual es el Cantidad de este producto?',
+          header: this.translate.instant('PRODUCT_QUANTITY'),
+          message: this.translate.instant('WHAT_PRODUCT_QUANTITY'),
           inputs: [
             {
               type: 'number',
@@ -608,10 +612,10 @@ export class PurchasePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.quantity = data.quantity;
                 this.recomputeValues();
@@ -692,27 +696,6 @@ export class PurchasePage implements OnInit {
       if (this.purchaseForm.value.state=='QUOTATION'){
         this.beforeConfirm();
       }
-    }
-
-    async purchaseConfimation(){
-      let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas confirmar la venta?',
-        message: 'Si la confirmas no podras cambiar los productos ni el cliente',
-        buttons: [
-          {
-            text: 'Cancelar',
-            handler: data => {
-            }
-          },
-          {
-            text: 'Confirmar',
-            handler: data => {
-              this.afterConfirm();
-            }
-          }
-        ]
-      });
-      prompt.present();
     }
 
     afterConfirm(){
@@ -863,17 +846,19 @@ export class PurchasePage implements OnInit {
 
     async purchaseCancel(){
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas Cancelar la Compra?',
-        message: 'Al cancelar la Compra todos los registros asociados serán borrados',
+        // header: 'Estas seguro que deseas Cancelar la Compra?',
+        header: this.translate.instant('SURE_CANCEL_PURCHASE'),
+        // message: 'Al cancelar la Compra todos los registros asociados serán borrados',
+        message: this.translate.instant('WARNING_CANCEL_PURCHASE'),
         buttons: [
           {
-            text: 'No',
+            text: this.translate.instant('NO'),
             handler: data => {
               //console.log("Cancelar");
             }
           },
           {
-            text: 'Si',
+            text: this.translate.instant('YES'),
             handler: data => {
               //console.log("Confirmar");
               this.purchaseForm.value.items.forEach((item) => {
@@ -1317,10 +1302,11 @@ export class PurchasePage implements OnInit {
       async canDeactivate() {
           if(this.purchaseForm.dirty) {
               let alertPopup = await this.alertCtrl.create({
-                  header: 'Descartar',
-                  message: '¿Deseas salir sin guardar?',
+                  header: this.translate.instant('DISCARD'),
+                  // message: this.translate.instant('SURE_DONT_SAVE'),
+                  message: this.translate.instant('SURE_DONT_SAVE'),
                   buttons: [{
-                          text: 'Si',
+                          text: this.translate.instant('YES'),
                           handler: () => {
                               // alertPopup.dismiss().then(() => {
                                   this.exitPage();
@@ -1328,7 +1314,7 @@ export class PurchasePage implements OnInit {
                           }
                       },
                       {
-                          text: 'No',
+                          text: this.translate.instant('NO'),
                           handler: () => {
                               // need to do something if the user stays?
                           }

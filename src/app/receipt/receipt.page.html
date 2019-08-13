@@ -67,13 +67,13 @@
       <ion-item class="field-100" *ngIf="!(receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '-') && receiptForm.value.cash_paid.type != 'cash' && hasCheck" (click)="editCheck()">
         <div class="field-many2one">
           <h4 class="field-label">{{'Cheque' | translate}}</h4>
-          <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'Seleccionar'}}</h4>
+          <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'SELECT'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item class="field-100" *ngIf="receiptForm.value.cash_paid.type == 'check' && receiptForm.value.signal == '-'" (click)="selectCheck()">
         <div class="field-many2one">
           <h4 class="field-label">{{'Cheque' | translate}}</h4>
-          <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'Seleccionar'}}</h4>
+          <h4 class="field-value">{{receiptForm.value.check && receiptForm.value.check.name || 'SELECT'|translate}}</h4>
         </div>
       </ion-item>
     </ion-card>
@@ -207,15 +207,15 @@
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="receiptForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!receiptForm.dirty"> </ion-icon>
-      <span *ngIf="receiptForm.dirty">Descartar</span>
-      <span *ngIf="!receiptForm.dirty">Volver</span>
+      <span *ngIf="receiptForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!receiptForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
 
   <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="receiptForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab> -->
   <div style="height: 100px;">

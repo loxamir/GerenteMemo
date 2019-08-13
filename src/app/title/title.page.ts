@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, ModalController, LoadingController, AlertController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-
 import 'rxjs/Rx';
-
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -28,45 +26,31 @@ export class TitlePage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    // public imagePicker: ImagePicker,
-    // public cropService: Crop,
-    // public platform: Platform,
-    // public titleService: TitleService,
     public alertCtrl: AlertController,
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
-
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.titleForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
-      // address: new FormControl(''),
-      // phone: new FormControl(''),
-      // document: new FormControl(''),
       code: new FormControl(''),
-      // email: new FormControl(''),
       note: new FormControl(''),
-      // image: new FormControl(''),
-      // customer: new FormControl(true),
-      // supplier: new FormControl(false),
-      // seller: new FormControl(false),
-      // employee: new FormControl(false),
       _id: new FormControl(''),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
-    if (this._id){
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
+    if (this._id) {
       this.getTitle(this._id).then((data) => {
         this.titleForm.patchValue(data);
         //this.loading.dismiss();
@@ -77,7 +61,7 @@ export class TitlePage implements OnInit {
   }
 
   buttonSave() {
-    if (this._id){
+    if (this._id) {
       this.updateTitle(this.titleForm.value);
       this.events.publish('open-title', this.titleForm.value);
     } else {
@@ -89,7 +73,7 @@ export class TitlePage implements OnInit {
         this.events.publish('create-title', this.titleForm.value);
       });
     }
-    if (this.select){
+    if (this.select) {
       this.modalCtrl.dismiss();
     }
     else {
@@ -97,10 +81,10 @@ export class TitlePage implements OnInit {
     }
   }
 
-  setLanguage(lang: LanguageModel){
+  setLanguage(lang: LanguageModel) {
     let language_to_set = this.translate.getDefaultLang();
 
-    if(lang){
+    if (lang) {
       language_to_set = lang.code;
     }
     this.translate.setDefaultLang(language_to_set);
@@ -113,60 +97,53 @@ export class TitlePage implements OnInit {
     ]
   };
 
-  onSubmit(values){
-    //console.log("teste", values);
+  onSubmit(values) {
   }
 
   getTitle(doc_id): Promise<any> {
     return this.pouchdbService.getDoc(doc_id);
   }
 
-  createTitle(title){
+  createTitle(title) {
     title.docType = 'title';
     return this.pouchdbService.createDoc(title);
   }
 
-  updateTitle(title){
+  updateTitle(title) {
     title.docType = 'title';
     return this.pouchdbService.updateDoc(title);
   }
 
-  discard(){
+  discard() {
     this.canDeactivate();
   }
+
   async canDeactivate() {
-      if(this.titleForm.dirty) {
-          let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
-              buttons: [{
-                      text: 'Si',
-                      handler: () => {
-                          // alertPopup.dismiss().then(() => {
-                              this.exitPage();
-                          // });
-                      }
-                  },
-                  {
-                      text: 'No',
-                      handler: () => {
-                          // need to do something if the user stays?
-                      }
-                  }]
-          });
-
-          // Show the alert
-          alertPopup.present();
-
-          // Return false to avoid the page to be popped up
-          return false;
-      } else {
-        this.exitPage();
-      }
+    if (this.titleForm.dirty) {
+      let alertPopup = await this.alertCtrl.create({
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
+        buttons: [{
+          text: this.translate.instant('YES'),
+          handler: () => {
+            this.exitPage();
+          }
+        },
+        {
+          text: this.translate.instant('NO'),
+          handler: () => {
+          }
+        }]
+      });
+      alertPopup.present();
+      return false;
+    } else {
+      this.exitPage();
+    }
   }
 
   private exitPage() {
-    if (this.select){
+    if (this.select) {
       this.modalCtrl.dismiss();
     } else {
       this.titleForm.markAsPristine();

@@ -6,7 +6,6 @@ import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-import { ReportService } from '../report/report.service';
 import { ProductService } from '../product/product.service';
 import { FormatService } from '../services/format.service';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
@@ -69,7 +68,6 @@ export class SaleReportPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    public reportService: ReportService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
@@ -81,7 +79,7 @@ export class SaleReportPage implements OnInit {
     public modalCtrl: ModalController,
   ) {
     this.today = new Date();
-    this.languages = this.languageService.getLanguages();
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.avoidAlertMessage = false;
   }
@@ -219,8 +217,8 @@ export class SaleReportPage implements OnInit {
     await this.loading.present();
     return new Promise(resolve => {
       if (this.reportSaleForm.value.reportType == 'sale') {
-        let startkey=(new Date(this.reportSaleForm.value.dateStart)).toJSON();
-        let endkey=(new Date(this.reportSaleForm.value.dateEnd)).toJSON();
+        let startkey=this.reportSaleForm.value.dateStart.split("T")[0];
+        let endkey=this.reportSaleForm.value.dateEnd.split("T")[0];
         this.pouchdbService.getView(
           'Informes/ProductoDiario',
           20,
@@ -798,6 +796,9 @@ export class SaleReportPage implements OnInit {
       paymentCondition: new FormControl({}),
       seller: new FormControl({}),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
     //this.loading.dismiss();

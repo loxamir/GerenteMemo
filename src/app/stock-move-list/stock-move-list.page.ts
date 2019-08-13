@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController,  Events, PopoverController, ModalController } from '@ionic/angular';
-// import { StockMovePage } from '../stock-move';
 import { ActivatedRoute, Router } from '@angular/router';
 import 'rxjs/Rx';
-// import { StockMoveListService } from './stock-move-list.service';
-// import { StockMoveListPopover } from './stock-move-list.popover';
+import { LanguageService } from "../services/language/language.service";
+import { TranslateService } from '@ngx-translate/core';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 @Component({
@@ -22,8 +21,7 @@ export class StockMoveListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public app: App,
-    // public stockMoveListService: StockMoveListService,
+    public translate: TranslateService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
@@ -31,6 +29,7 @@ export class StockMoveListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public router: Router,
     public route: ActivatedRoute,
+    public languageService: LanguageService,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
     this.events.subscribe('changed-stock-move', (change)=>{
@@ -39,6 +38,9 @@ export class StockMoveListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -68,13 +70,6 @@ export class StockMoveListPage implements OnInit {
     });
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(StockMoveListPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
-
   openStockMove(stockMove) {
     if (!this.select){
       this.events.subscribe('open-stock-move', (data) => {
@@ -89,11 +84,8 @@ export class StockMoveListPage implements OnInit {
 
   selectStockMove(stockMove) {
     if (this.select){
-      // this.navCtrl.navigateBack('/stock-move-list');
-      // .then(() => {
-        this.modalCtrl.dismiss();
-        this.events.publish('select-stock-move', stockMove);
-      // });
+      this.modalCtrl.dismiss();
+      this.events.publish('select-stock-move', stockMove);
     } else {
       this.openStockMove(stockMove);
     }
@@ -102,15 +94,11 @@ export class StockMoveListPage implements OnInit {
   createStockMove(){
     this.events.subscribe('create-stock-move', (data) => {
       if (this.select){
-        // this.navCtrl.navigateBack('').then(() => {
         this.modalCtrl.dismiss();
         this.events.publish('select-stock-move', data);
-        // });
       }
       this.events.unsubscribe('create-stock-move');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(StockMovePage, {});
     this.navCtrl.navigateForward('/stock-move', {});
   }
 

@@ -122,9 +122,9 @@ export class InvoicePage implements OnInit {
       // public popoverCtrl: PopoverController,
     ) {
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.note = this.route.snapshot.paramMap.get('note');
       this.discount = this.route.snapshot.paramMap.get('discount');
@@ -178,6 +178,9 @@ export class InvoicePage implements OnInit {
         origin_id: new FormControl(this.origin_id||''),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -186,9 +189,9 @@ export class InvoicePage implements OnInit {
       if (this._id){
         this.getInvoice(this._id).then((data) => {
           this.invoiceForm.patchValue(data);
-          if (data.state != 'QUOTATION'){
-            this.invoiceForm.controls.date.disable();
-          }
+          // if (data.state != 'QUOTATION'){
+          //   this.invoiceForm.controls.date.disable();
+          // }
           this.loading.dismiss();
         });
       } else {
@@ -219,7 +222,7 @@ export class InvoicePage implements OnInit {
         }
       },
       {
-        text: 'Cancelar',
+        text: this.translate.instant('CANCEL'),
         icon: 'close',
         role: 'cancel',
         handler: () => {}
@@ -484,7 +487,7 @@ export class InvoicePage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -515,7 +518,7 @@ export class InvoicePage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.quantity = data.quantity;
                 this.recomputeValues();
@@ -546,7 +549,7 @@ export class InvoicePage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.description = data.description;
               }
@@ -662,7 +665,7 @@ export class InvoicePage implements OnInit {
             text: 'Cancel'
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: data => {
               this.invoiceForm.patchValue({
                 code: data.code,
@@ -765,7 +768,7 @@ export class InvoicePage implements OnInit {
           docPdf.text(number, data.invoicePrint.invoiceNumber_left, data.invoicePrint.invoiceNumber_top + topo);
           docPdf.text(contact_name, data.invoicePrint.contactName_left, data.invoicePrint.contactName_top + topo);
 
-          let date = this.invoiceForm.value.date.split('T')[0].split('-');
+          let date = this.today.split('T')[0].split('-');
           if (data.invoicePrint.invoiceDateType == 'normal'){
             date = date[2]+"/"+date[1]+"/"+date[0]
             docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
@@ -850,7 +853,7 @@ export class InvoicePage implements OnInit {
           if (data.invoicePrint.copy_count>=2){
             topo += data.invoicePrint.invoice_height + data.invoicePrint.copy_height;
               number = this.invoiceForm.value.code || "";
-              date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
+              date = this.today.split('T')[0].split('-'); //"25 de Abril de 2018";
               if (data.invoicePrint.invoiceDateType == 'normal'){
                 date = date[2]+"/"+date[1]+"/"+date[0]
                 docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
@@ -947,7 +950,7 @@ export class InvoicePage implements OnInit {
           if (data.invoicePrint.copy_count==3){
             topo += data.invoicePrint.invoice_height + data.invoicePrint.copy_height;
               number = this.invoiceForm.value.code || "";
-              date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
+              date = this.today.split('T')[0].split('-'); //"25 de Abril de 2018";
               if (data.invoicePrint.invoiceDateType == 'normal'){
                 date = date[2]+"/"+date[1]+"/"+date[0]
                 docPdf.text(date, data.invoicePrint.invoiceDate_left, data.invoicePrint.invoiceDate_top + topo);
@@ -1079,7 +1082,7 @@ export class InvoicePage implements OnInit {
 
         // this.printer.pick().then(printer => {
           let number = this.invoiceForm.value.code || "";
-          let date = this.invoiceForm.value.date.split('T')[0].split('-'); //"25 de Abril de 2018";
+          let date = this.today.split('T')[0].split('-'); //"25 de Abril de 2018";
           date = date[2]+"/"+date[1]+"/"+date[0]
           //console.log("date", date);
           let payment_condition = this.invoiceForm.value.paymentCondition || "";
@@ -1241,7 +1244,7 @@ export class InvoicePage implements OnInit {
             pouchData.lines.forEach((line: any)=>{
               pouchData['items'].push({
                 'product': doc_dict[line.product_id],
-                'description': doc_dict[line.product_id].name,
+                'description': line.description || doc_dict[line.product_id].name,
                 'quantity': line.quantity,
                 'price': line.price,
               })
@@ -1275,10 +1278,10 @@ export class InvoicePage implements OnInit {
     async canDeactivate() {
         if(this.invoiceForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+                header: this.translate.instant('DISCARD'),
+                message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -1286,7 +1289,7 @@ export class InvoicePage implements OnInit {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

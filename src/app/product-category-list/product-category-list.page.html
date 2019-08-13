@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/product-list"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Categoria"
+      placeholder="{{ 'SEARCH_PRODUCT_CATEGORY' | translate }}"
       [(ngModel)]="searchTerm"
       (ionChange)="setFilteredItems()">
     </ion-searchbar>
@@ -42,7 +42,7 @@
     <ion-item-options>
       <ion-item-option (click)="deleteCategory(item)"
       *ngIf="!item.fixed">
-        Borrar
+        {{ 'DELETE'| translate }}
       </ion-item-option>
     </ion-item-options>
   </ion-item-sliding>
