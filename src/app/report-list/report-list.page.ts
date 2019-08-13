@@ -95,17 +95,11 @@ export class ReportListPage implements OnInit {
     public productService: ProductService,
     public formatService: FormatService,
   ) {
-
-
-
     this.select = this.route.snapshot.paramMap.get('select');
     this.today = new Date();
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
     let today = new Date().toISOString();
     // console.log("today", today);
     let timezone = new Date().toString().split(" ")[5].split('-')[1];
@@ -121,6 +115,9 @@ export class ReportListPage implements OnInit {
       // sales: new FormControl(0),
       // purchases: new FormControl(0),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

@@ -5,6 +5,7 @@ import { NavController, LoadingController,   ModalController, Events} from '@ion
 import { PaymentConditionPage } from '../payment-condition/payment-condition.page';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-payment-condition-list',
@@ -26,6 +27,7 @@ export class PaymentConditionListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public modal: ModalController,
     public route: ActivatedRoute,
+    public languageService: LanguageService,
     public events: Events,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
@@ -39,10 +41,10 @@ export class PaymentConditionListPage implements OnInit {
     }
     this.has_search = ! this.has_search;
   }
-  ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+  async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     //this.loading.present();
     this.setFilteredItems();
   }

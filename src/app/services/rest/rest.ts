@@ -248,7 +248,7 @@ export class RestProvider {
           }
         ).subscribe((userData: any) => {
           // console.log("userData", userData);
-          resolve(userData.db_list);
+          resolve({db_list: userData.db_list, userData});
           // resolve(data);
           // userData.password = new_password;
           // delete userData._rev;

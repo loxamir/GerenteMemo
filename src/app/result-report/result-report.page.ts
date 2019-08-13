@@ -45,9 +45,9 @@ export class ResultReportPage implements OnInit {
     public modalCtrl: ModalController,
   ) {
     this.today = new Date();
-    
-    
-    
+
+
+
     this._id = this.route.snapshot.paramMap.get('_id');
   }
 
@@ -107,9 +107,6 @@ export class ResultReportPage implements OnInit {
   }
 
  async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
     this.resultForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact')
       || {}, Validators.required),
@@ -148,6 +145,9 @@ export class ResultReportPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

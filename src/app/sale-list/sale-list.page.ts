@@ -39,9 +39,9 @@ export class SaleListPage implements OnInit {
     public languageService: LanguageService,
     public translate: TranslateService,
   ) {
-    
-    
-    
+
+
+
     this.events.subscribe('changed-sale', (change)=>{
       this.handleChange(this.sales, change);
     })
@@ -83,9 +83,9 @@ export class SaleListPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     //this.loading.present();
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();

@@ -85,9 +85,9 @@ export class ReceiptPage implements OnInit {
     public events: Events,
   ) {
     this.today = new Date().toISOString();
-    
-    
-    
+
+
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     this.avoidAlertMessage = false;
@@ -96,9 +96,6 @@ export class ReceiptPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
     this.receiptForm = this.formBuilder.group({
       contact: new FormControl(this.contact || {}, Validators.required),
       name: new FormControl(this.name || 'Recibo'),
@@ -135,6 +132,9 @@ export class ReceiptPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());

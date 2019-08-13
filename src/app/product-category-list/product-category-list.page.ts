@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductCategoryPage } from '../product-category/product-category.page';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-product-category-list',
@@ -20,7 +21,7 @@ export class ProductCategoryListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public navPush: IonNavPush,
+    public languageService: LanguageService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
@@ -33,10 +34,10 @@ export class ProductCategoryListPage implements OnInit {
 
   }
 
-  ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+  async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.setFilteredItems();
   }
 

@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductListPopover } from './product-list.popover';
 import { FormatService } from '../services/format.service';
 import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-product-list',
@@ -35,7 +36,7 @@ export class ProductListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public formatService: FormatService,
-    // public modal: ModalController,
+    public languageService: LanguageService,
     public toastCtrl: ToastController,
     public events: Events,
     public route: ActivatedRoute,
@@ -59,9 +60,9 @@ export class ProductListPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile'));

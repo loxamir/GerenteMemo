@@ -33,16 +33,9 @@ export class InvoiceConfigPage implements OnInit {
     public formBuilder: FormBuilder,
     public formatService: FormatService,
     public pouchdbService: PouchdbService,
-  ) {
-    
-    
-    
-  }
+  ) { }
 
-  ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+  async ngOnInit() {
     this.invoiceForm = this.formBuilder.group({
       contactName_top: new FormControl(this.navParams.data.contactName_top),
       contactName_left: new FormControl(this.navParams.data.contactName_left),
@@ -136,6 +129,9 @@ export class InvoiceConfigPage implements OnInit {
       marginLeft_config: new FormControl(this.navParams.data.marginLeft_config),
       printerFactor_config: new FormControl(this.navParams.data.printerFactor_config),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
   }
 
   async printTest() {

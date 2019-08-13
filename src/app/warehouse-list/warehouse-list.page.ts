@@ -3,7 +3,7 @@ import { NavController, LoadingController,  Events, PopoverController, ModalCont
 import { WarehousePage } from '../warehouse/warehouse.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-
+import { LanguageService } from "../services/language/language.service";
 import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/Rx';
 
@@ -30,6 +30,7 @@ export class WarehouseListPage implements OnInit {
     public translate: TranslateService,
     public popoverCtrl: PopoverController,
     public modalCtrl: ModalController,
+    public languageService: LanguageService,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
   }
@@ -43,9 +44,9 @@ export class WarehouseListPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     //this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;

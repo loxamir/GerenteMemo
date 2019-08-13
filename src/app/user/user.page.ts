@@ -33,98 +33,86 @@ export class UserPage implements OnInit {
     public formBuilder: FormBuilder,
     public configService: ConfigService,
     public pouchdbService: PouchdbService,
-  ) {
-    
-    
-    
-  }
+  ) { }
 
-  ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+  async ngOnInit() {
     this.form = this.formBuilder.group({
-      name: [this.navParams.data.name||''],
-      username: [this.navParams.data.username||''],
-      sale: [this.navParams.data.sale||false],
-      purchase: [this.navParams.data.purchase||false],
-      finance: [this.navParams.data.finance||false],
-      service: [this.navParams.data.service||false],
-      report: [this.navParams.data.report||false],
-      config: [this.navParams.data.config||false],
-      registered: [this.navParams.data.registered||false]
+      name: [this.navParams.data.name || ''],
+      username: [this.navParams.data.username || ''],
+      sale: [this.navParams.data.sale || false],
+      purchase: [this.navParams.data.purchase || false],
+      finance: [this.navParams.data.finance || false],
+      service: [this.navParams.data.service || false],
+      report: [this.navParams.data.report || false],
+      config: [this.navParams.data.config || false],
+      registered: [this.navParams.data.registered || false]
     });
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
   }
 
-  async buttonSave(){
-    if (this.form.value.registered==true){
-      // console.log("Guardou");
+  async buttonSave() {
+    if (this.form.value.registered == true) {
       this.form.value.registered = true;
     }
     else {
       let user_code = await this.configService.getSequence('user');
       let createList = [{
-          '_id': 'sequence.sale.'+this.form.value.username,
-          'value': user_code+'-0001',
-          'docType': 'sequence',
-        },
-        {
-          '_id': 'sequence.purchase.'+this.form.value.username,
-          'value': user_code+'-0001'
-        },
-        {
-          '_id': 'sequence.invoice.'+this.form.value.username,
-          'value': user_code+'-0001'
-        },
-        {
-          '_id': 'sequence.service.'+this.form.value.username,
-          'value': user_code+'-0001'
-        },
-        {
-          '_id': 'sequence.receipt.'+this.form.value.username,
-          'value': user_code+'-0001'
+        '_id': 'sequence.sale.' + this.form.value.username,
+        'value': user_code + '-0001',
+        'docType': 'sequence',
+      },
+      {
+        '_id': 'sequence.purchase.' + this.form.value.username,
+        'value': user_code + '-0001'
+      },
+      {
+        '_id': 'sequence.invoice.' + this.form.value.username,
+        'value': user_code + '-0001'
+      },
+      {
+        '_id': 'sequence.service.' + this.form.value.username,
+        'value': user_code + '-0001'
+      },
+      {
+        '_id': 'sequence.receipt.' + this.form.value.username,
+        'value': user_code + '-0001'
       }]
       this.pouchdbService.createDocList(createList);
     }
     this.modalCtrl.dismiss(this.form.value);
   }
 
-  discard(){
+  discard() {
     this.canDeactivate();
   }
   async canDeactivate() {
-      if(this.form.dirty) {
-          let alertPopup = await this.alertCtrl.create({
-              header: this.translate.instant('DISCARD'),
-              message: this.translate.instant('SURE_DONT_SAVE'),
-              buttons: [{
-                      text: this.translate.instant('YES'),
-                      handler: () => {
-                          // alertPopup.dismiss().then(() => {
-                              this.exitPage();
-                          // });
-                      }
-                  },
-                  {
-                      text: this.translate.instant('NO'),
-                      handler: () => {
-                          // need to do something if the user stays?
-                      }
-                  }]
-          });
-
-          // Show the alert
-          alertPopup.present();
-
-          // Return false to avoid the page to be popped up
-          return false;
-      } else {
-        this.exitPage();
-      }
+    if (this.form.dirty) {
+      let alertPopup = await this.alertCtrl.create({
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
+        buttons: [{
+          text: this.translate.instant('YES'),
+          handler: () => {
+            this.exitPage();
+          }
+        },
+        {
+          text: this.translate.instant('NO'),
+          handler: () => {
+          }
+        }]
+      });
+      alertPopup.present();
+      return false;
+    } else {
+      this.exitPage();
+    }
   }
 
   private exitPage() {
-    if (this.select){
+    if (this.select) {
       this.modalCtrl.dismiss();
     } else {
       this.form.markAsPristine();

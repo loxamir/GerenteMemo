@@ -43,9 +43,9 @@ export class PlannedListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public alertCtrl: AlertController,
   ) {
-    
-    
-    
+
+
+
     this.select = this.route.snapshot.paramMap.get('select');
     this.signal = this.route.snapshot.paramMap.get('signal') || '+';
     // this.contact = {"name": "Todos"};
@@ -104,9 +104,9 @@ export class PlannedListPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

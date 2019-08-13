@@ -164,9 +164,6 @@ export class SalePage implements OnInit {
     }
 
     async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
       this.saleForm = this.formBuilder.group({
         contact: new FormControl(this.contact||{}, Validators.required),
         contact_name: new FormControl(this.contact_name||''),
@@ -198,6 +195,9 @@ export class SalePage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
       if (config.default_contact_id){

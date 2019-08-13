@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { PouchdbService } from './services/pouchdb/pouchdb-service';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-root',
@@ -59,6 +60,7 @@ export class AppComponent implements OnInit {
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
+    public storage: Storage,
   ) {
     this.initializeApp();
     this.backButtonListener();
@@ -90,9 +92,12 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit(){
-    let language = navigator.language.split('-')[0];
-    this.translate.setDefaultLang(language);
-    this.translate.use(language);
+    let lenguage = await this.storage.get("language");
+    if (!lenguage){
+      lenguage = navigator.language.split('-')[0];
+    }
+    this.translate.setDefaultLang(lenguage);
+    this.translate.use(lenguage);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());

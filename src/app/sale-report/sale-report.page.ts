@@ -773,9 +773,6 @@ export class SaleReportPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
     let today = new Date().toISOString();
     let timezone = new Date().toString().split(" ")[5].split('-')[1];
     let start_date = new Date(today.split("T")[0]+"T00:00:00.000"+timezone).toISOString();
@@ -799,6 +796,9 @@ export class SaleReportPage implements OnInit {
       paymentCondition: new FormControl({}),
       seller: new FormControl({}),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
     //this.loading.dismiss();

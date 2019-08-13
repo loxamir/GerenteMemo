@@ -9,6 +9,7 @@ import { AccountPage } from '../account/account.page';
 import 'rxjs/Rx';
 import { AccountListPopover} from './account-list.popover';
 import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-account-list',
@@ -32,8 +33,7 @@ export class AccountListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public app: App,
-    // public accountsService: AccountsService,
+    public languageService: LanguageService,
     public translate: TranslateService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
@@ -51,7 +51,7 @@ export class AccountListPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
+  let language:any = await this.languageService.getDefaultLanguage();
   this.translate.setDefaultLang(language);
   this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});

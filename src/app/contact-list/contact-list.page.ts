@@ -4,7 +4,7 @@ import { NavController, LoadingController, ModalController, Events,
   PopoverController, ToastController } from '@ionic/angular';
 import { ContactPage } from '../contact/contact.page';
 import 'rxjs/Rx';
-// import { ContactsService } from './contacts.service';
+import { LanguageService } from "../services/language/language.service";
 import { ContactListPopover } from './contact-list.popover';
 import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
@@ -40,6 +40,7 @@ export class ContactListPage implements OnInit {
     public toastCtrl: ToastController,
     public file: File,
     public loadingCtrl: LoadingController,
+    public languageService: LanguageService,
     public translate: TranslateService,
   ) {
     // this._id = this.route.snapshot.paramMap.get('_id');
@@ -60,9 +61,9 @@ export class ContactListPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.setFilteredItems();

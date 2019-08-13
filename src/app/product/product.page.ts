@@ -66,9 +66,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public stockMoveService: StockMoveService,
       public cashMoveService: CashMoveService,
     ) {
-      
-      
-      
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       if (this.route.snapshot.paramMap.get('_id')){
@@ -101,9 +101,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
       setTimeout(() => {
         this.name.setFocus();
         this.productForm.markAsPristine();
@@ -131,6 +128,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       if (this._id){

@@ -45,17 +45,11 @@ export class AccountPage implements OnInit {
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    
-    
-    
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+  async ngOnInit() {
     this.accountForm = this.formBuilder.group({
       name: new FormControl(null, Validators.required),
       category: new FormControl({}),
@@ -77,10 +71,12 @@ export class AccountPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     //this.loading.present();
-    if (this._id){
+    if (this._id) {
       this.getAccount(this._id).then((data) => {
-        //let currentLang = this.translate.currentLang;
         this.accountForm.patchValue(data);
         //this.loading.dismiss();
       });
@@ -96,7 +92,7 @@ export class AccountPage implements OnInit {
   }
 
   buttonSave() {
-    if (this._id){
+    if (this._id) {
       this.updateAccount(this.accountForm.value);
       this.events.publish('open-account', this.accountForm.value);
     } else {
@@ -104,7 +100,7 @@ export class AccountPage implements OnInit {
       this.events.publish('create-account', this.accountForm.value);
       // this.navCtrl.navigateBack('/account-list');
     }
-    if (this.select){
+    if (this.select) {
       this.modalCtrl.dismiss();
     }
     else {
@@ -113,29 +109,29 @@ export class AccountPage implements OnInit {
   }
 
   goNextStep() {
-      if (!this.accountForm.value.name){
-        this.name.setFocus();
-      }
-      else if (
-        Object.keys(this.accountForm.value.category).length==0
-      ){
-        this.selectCategory();
-      }
-      else if (!this.accountForm.value.code){
-        this.code.setFocus();
-      }
-      else if (!this.accountForm.value.type){
-        this.type.open();
-      }
-      else if (
-        this.accountForm.value.bank_name==null
-        && this.accountForm.value.type=='bank'
-      ){
-        this.bank_name.open();
-      }
-      // else if (this.accountForm.dirty) {
-      //   this.buttonSave();
-      // }
+    if (!this.accountForm.value.name) {
+      this.name.setFocus();
+    }
+    else if (
+      Object.keys(this.accountForm.value.category).length == 0
+    ) {
+      this.selectCategory();
+    }
+    else if (!this.accountForm.value.code) {
+      this.code.setFocus();
+    }
+    else if (!this.accountForm.value.type) {
+      this.type.open();
+    }
+    else if (
+      this.accountForm.value.bank_name == null
+      && this.accountForm.value.type == 'bank'
+    ) {
+      this.bank_name.open();
+    }
+    // else if (this.accountForm.dirty) {
+    //   this.buttonSave();
+    // }
   }
 
   selectCurrency() {
@@ -162,9 +158,9 @@ export class AccountPage implements OnInit {
     });
   }
 
-  setLanguage(lang: LanguageModel){
+  setLanguage(lang: LanguageModel) {
     let language_to_set = this.translate.getDefaultLang();
-    if(lang){
+    if (lang) {
       language_to_set = lang.code;
     }
     this.translate.setDefaultLang(language_to_set);
@@ -177,20 +173,20 @@ export class AccountPage implements OnInit {
     ]
   };
 
-  onSubmit(values){
+  onSubmit(values) {
     //console.log(values);
   }
 
   selectCategory() {
     // console.log("selectContact");
-    let self=this;
+    let self = this;
     return new Promise(async resolve => {
       // this.avoidAlertMessage = true;
       this.events.unsubscribe('select-accountCategory');
       this.events.subscribe('select-accountCategory', (data) => {
         let type = data.type;
-        if (type == 'liquidity'){
-          type='cash';
+        if (type == 'liquidity') {
+          type = 'cash';
         }
         this.accountForm.patchValue({
           category: data,
@@ -200,7 +196,7 @@ export class AccountPage implements OnInit {
           payable: data.payable,
           receivable: data.receivable,
           type: type,
-          code: data.code+"."
+          code: data.code + "."
         });
         this.accountForm.markAsDirty();
         // this.avoidAlertMessage = false;
@@ -250,26 +246,15 @@ export class AccountPage implements OnInit {
     });
   }
 
-  // getAccount2(doc_id): Promise<any> {
-  //   return new Promise(async (resolve, reject)=>{
-  //     let account:any = await this.pouchdbService.getDoc(doc_id);//.then((account: any)=>{
-  //     let category = this.pouchdbService.getList([account.category_id, account.currency_id,]);//.then(category=>{
-  //     account.category = category || {};
-  //     let currency = this.pouchdbService.getList([account.category_id, account.currency_id,]);//.then(category=>{
-  //     account.currency = currency || {};
-  //     resolve(account);
-  //   });
-  // }
-
   getAccount(doc_id): Promise<any> {
-    return new Promise(async (resolve, reject)=>{
+    return new Promise(async (resolve, reject) => {
       let pouchData = await this.pouchdbService.getDoc(doc_id);
       let docList: any = await this.pouchdbService.getList([
         pouchData['category_id'],
         pouchData['currency_id'],
       ]);
       let docDict = {}
-      docList.forEach(item=>{
+      docList.forEach(item => {
         docDict[item.id] = item.doc;
       })
       // pouchData['bank'] = docDict[pouchData['bank_id']];
@@ -279,24 +264,24 @@ export class AccountPage implements OnInit {
     });
   }
 
-  async createAccount(viewData){
+  async createAccount(viewData) {
     //console.log("try create", account);
     let account = Object.assign({}, viewData);
     account.docType = 'account';
     // account['code'] = account['code'] || this.pouchdbService.getUUID();
-     // = code;
+    // = code;
 
-    if (account.type == 'cash'){
+    if (account.type == 'cash') {
       // account['code'] == account['code'] || ;
-      account._id = "account.cash."+await this.configService.getSequence('cash');
+      account._id = "account.cash." + await this.configService.getSequence('cash');
     }
-    else if (account.type == 'bank'){
+    else if (account.type == 'bank') {
       // account['code'] == account['code'] || await this.configService.getSequence('cash');
-      account._id = "account.bank."+await this.configService.getSequence('cash');
+      account._id = "account.bank." + await this.configService.getSequence('cash');
     }
-    else if (account.type == 'check'){
+    else if (account.type == 'check') {
       // account['code'] == account['code'] || await this.configService.getSequence('cash');
-      account._id = "account.check."+await this.configService.getSequence('cash');
+      account._id = "account.check." + await this.configService.getSequence('cash');
     }
     account.category_id = account.category && account.category._id || account.category_id;
     delete account.category;
@@ -305,7 +290,7 @@ export class AccountPage implements OnInit {
     return this.pouchdbService.createDoc(account);
   }
 
-  updateAccount(viewData){
+  updateAccount(viewData) {
     let account = Object.assign({}, viewData);
     account.docType = 'account';
     account.category_id = account.category && account.category._id || account.category_id;
@@ -315,68 +300,68 @@ export class AccountPage implements OnInit {
     return this.pouchdbService.updateDoc(account);
   }
 
-  discard(){
+  discard() {
     this.canDeactivate();
   }
   async canDeactivate() {
-      if(this.accountForm.dirty) {
-          let alertPopup = await this.alertCtrl.create({
-              header: this.translate.instant('DISCARD'),
-              message: this.translate.instant('SURE_DONT_SAVE'),
-              buttons: [{
-                      text: this.translate.instant('YES'),
-                      handler: () => {
-                          // alertPopup.dismiss().then(() => {
-                              this.exitPage();
-                          // });
-                      }
-                  },
-                  {
-                      text: this.translate.instant('NO'),
-                      handler: () => {
-                          // need to do something if the user stays?
-                      }
-                  }]
-          });
+    if (this.accountForm.dirty) {
+      let alertPopup = await this.alertCtrl.create({
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
+        buttons: [{
+          text: this.translate.instant('YES'),
+          handler: () => {
+            // alertPopup.dismiss().then(() => {
+            this.exitPage();
+            // });
+          }
+        },
+        {
+          text: this.translate.instant('NO'),
+          handler: () => {
+            // need to do something if the user stays?
+          }
+        }]
+      });
 
-          // Show the alert
-          alertPopup.present();
+      // Show the alert
+      alertPopup.present();
 
-          // Return false to avoid the page to be popped up
-          return false;
-      } else {
-        this.exitPage();
-      }
+      // Return false to avoid the page to be popped up
+      return false;
+    } else {
+      this.exitPage();
+    }
   }
 
   private exitPage() {
-    if (this.select){
+    if (this.select) {
       this.modalCtrl.dismiss();
     } else {
       this.accountForm.markAsPristine();
       this.navCtrl.navigateBack('/tabs/sale-list');
     }
   }
-  showNextButton(){
+  showNextButton() {
     // console.log("stock",this.accountForm.value.stock);
-    if (!this.accountForm.value.name){
+    if (!this.accountForm.value.name) {
       return true;
     }
     else if (
       !Object.keys(this.accountForm.value.category).length
-    ){
+    ) {
       return true;
     }
-    else if (!this.accountForm.value.code){
+    else if (!this.accountForm.value.code) {
       return true;
     }
-    else if (!this.accountForm.value.type){
+    else if (!this.accountForm.value.type) {
       return true;
     }
     else if (
-      this.accountForm.value.bank_name==null
-      && this.accountForm.value.type=='bank'
-    ){
+      this.accountForm.value.bank_name == null
+      && this.accountForm.value.type == 'bank'
+    ) {
       return true;
     }
     else {
@@ -384,23 +369,23 @@ export class AccountPage implements OnInit {
     }
   }
 
-  showSaveButton(){
+  showSaveButton() {
     // console.log("stock",this.accountForm.value.stock);
-    if (this.accountForm.dirty){
-      if (!this.accountForm.value.name){
+    if (this.accountForm.dirty) {
+      if (!this.accountForm.value.name) {
         return false;
       }
-      else if (!Object.keys(this.accountForm.value.category).length){
+      else if (!Object.keys(this.accountForm.value.category).length) {
         return false;
       }
-      else if (!this.accountForm.value.code){
+      else if (!this.accountForm.value.code) {
         return false;
       }
-      else if (!this.accountForm.value.type){
+      else if (!this.accountForm.value.type) {
         return false;
       }
-      else if (this.accountForm.value.bank_name==null
-        &&this.accountForm.value.type=='bank'){
+      else if (this.accountForm.value.bank_name == null
+        && this.accountForm.value.type == 'bank') {
         return false;
       }
       else {

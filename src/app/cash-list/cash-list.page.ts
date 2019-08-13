@@ -9,6 +9,7 @@ import { CashService } from '../cash/cash.service';
 import { CashMoveService } from '../cash-move/cash-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-cash-list',
@@ -30,6 +31,7 @@ export class CashListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public route: ActivatedRoute,
     public pouchdbService: PouchdbService,
+    public languageService: LanguageService,
     public formatService: FormatService,
     public cashService: CashService,
     public events: Events,
@@ -45,9 +47,9 @@ export class CashListPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
@@ -206,7 +208,7 @@ export class CashListPage implements OnInit {
     let self = this;
     let prompt = await this.alertCtrl.create({
       header: this.translate.instant('CASHIER_BALANCE'),
-      message:this.translate.instant('HOW_MUCH_CASHIER') + cash.name + '\'?',
+      message: this.translate.instant('HOW_MUCH_CASHIER') + cash.name + '\'?',
       inputs: [
         {
           type: 'number',

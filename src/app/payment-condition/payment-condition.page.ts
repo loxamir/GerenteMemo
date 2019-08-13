@@ -45,15 +45,12 @@ export class PaymentConditionPage implements OnInit {
       public events: Events,
       public alertCtrl: AlertController,
     ) {
-      
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
     }
 
     async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
       setTimeout(() => {
         this.nameField.setFocus();
       }, 500);
@@ -70,6 +67,9 @@ export class PaymentConditionPage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       //this.loading.present();
       if (this._id){
         this.getPaymentCondition(this._id).then((data) => {

@@ -9,6 +9,7 @@ import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { TranslateService } from '@ngx-translate/core';
 
+
 @Component({
   selector: 'app-check-list',
   templateUrl: './check-list.page.html',
@@ -29,7 +30,6 @@ export class CheckListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public app: App,
     public checkListService: CheckListService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
@@ -38,11 +38,7 @@ export class CheckListPage implements OnInit {
     public events: Events,
     public languageService: LanguageService,
     public translate: TranslateService,
-    // public navParams: NavParams,
   ) {
-    
-    
-    
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
     this.select = this.route.snapshot.paramMap.get('select');
@@ -51,9 +47,9 @@ export class CheckListPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -84,7 +80,6 @@ export class CheckListPage implements OnInit {
 
   doRefresh(refresher) {
     setTimeout(() => {
-      // console.log("this.field, this.filter)", this.field, this.filter);
       this.checkListService.getChecks(this.searchTerm, 0, this.field, this.filter).then((checks: any[]) => {
         this.checks = checks;
       });
@@ -120,10 +115,8 @@ export class CheckListPage implements OnInit {
   }
 
   async openCheck(check) {
-    // console.log("openCheck", this.select);
     this.events.subscribe('open-check', (data) => {
       this.events.unsubscribe('open-check');
-      // this.doRefreshList();
     })
     if (this.select){
       let profileModal = await this.modalCtrl.create({
@@ -142,13 +135,10 @@ export class CheckListPage implements OnInit {
   async createCheck(){
     this.events.subscribe('create-check', (data) => {
       if (this.select){
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('select-check', data);
-          this.modalCtrl.dismiss()
-        // });
+        this.events.publish('select-check', data);
+        this.modalCtrl.dismiss()
       }
       this.events.unsubscribe('create-check');
-      // this.doRefreshList();
     })
     if (this.select){
       let profileModal = await this.modalCtrl.create({

@@ -64,7 +64,7 @@ export class CheckPage implements OnInit {
     public pouchdbService: PouchdbService,
     public configService: ConfigService,
   ) {
-    
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     this.contact = this.route.snapshot.paramMap.get('contact');
@@ -74,14 +74,11 @@ export class CheckPage implements OnInit {
     this.amount = this.route.snapshot.paramMap.get('amount');
     this.signal = this.route.snapshot.paramMap.get('signal');
     this.my_check = this.route.snapshot.paramMap.get('my_check');
-    
-    
+
+
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
     this.checkForm = this.formBuilder.group({
       bank_name: new FormControl(this.bank && this.bank.name || ''),
       bank: new FormControl(this.bank || {}),
@@ -107,6 +104,9 @@ export class CheckPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config = await this.configService.getConfig();

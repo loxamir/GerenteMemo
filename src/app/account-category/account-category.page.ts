@@ -40,17 +40,14 @@ export class AccountCategoryPage implements OnInit {
       public formBuilder: FormBuilder,
       public events: Events,
     ) {
-      
-      
-      
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
     }
 
-    ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+  async ngOnInit() {
       this.accountCategoryForm = this.formBuilder.group({
         name: new FormControl('', Validators.required),
         type: new FormControl('receivable'),
@@ -70,6 +67,9 @@ export class AccountCategoryPage implements OnInit {
         write_time: new FormControl(''),
       });
       //this.loading.present();
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       if (this._id){
         this.getAccountCategory(this._id).then((data) => {
           this.accountCategoryForm.patchValue(data);

@@ -2,10 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, PopoverController, Events, NavParams } from '@ionic/angular';
 import { ReceiptPage } from '../receipt/receipt.page';
 import { ActivatedRoute, Router } from '@angular/router';
-//import { DecimalPipe } from '@angular/common';
 import 'rxjs/Rx';
-// import { ReceiptsService } from './receipts.service';
-// import { ReceiptsPopover } from './receipts.popover';
+import { LanguageService } from "../services/language/language.service";
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -31,6 +29,7 @@ export class ReceiptListPage implements OnInit {
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
     public translate: TranslateService,
+    public languageService: LanguageService,
     public events: Events,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
@@ -71,9 +70,9 @@ export class ReceiptListPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

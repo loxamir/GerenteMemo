@@ -33,17 +33,11 @@ export class ProductCategoryPage implements OnInit {
     public route: ActivatedRoute,
     public alertCtrl: AlertController,
   ) {
-    
-    
-    
     this.select = this.route.snapshot.paramMap.get('select');
     this._id = this.route.snapshot.paramMap.get('_id');
   }
 
-  ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+  async ngOnInit() {
     this.categoryForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       // dre:  new FormControl('sale'),
@@ -54,6 +48,9 @@ export class ProductCategoryPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     if (this._id){
       this.getCategory(this._id).then((data) => {
         //let currentLang = this.translate.currentLang;

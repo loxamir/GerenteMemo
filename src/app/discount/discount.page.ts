@@ -40,9 +40,9 @@ export class DiscountPage implements OnInit {
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    
-    
-    
+
+
+
     this.showProduct = this.route.snapshot.paramMap.get('showProduct');
     this.discountProduct = this.route.snapshot.paramMap.get('discountProduct');
     this.amount_original = parseFloat(this.route.snapshot.paramMap.get('amount_original'));
@@ -51,9 +51,6 @@ export class DiscountPage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
     // console.log("this.amount_original", this.amount_original, "this.new_amount", this.new_amount)
     let default_percent:any = 0;
     let discount_amount:any = 0;
@@ -74,6 +71,9 @@ export class DiscountPage implements OnInit {
       new_amount: new FormControl(this.new_amount || 0),
       discountProduct: new FormControl(this.discountProduct || false),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
   }
 
   changedPercent() {

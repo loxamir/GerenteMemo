@@ -44,6 +44,7 @@ export class ClosePage implements OnInit {
     public closeService: CloseService,
     public events: Events,
     public configService: ConfigService,
+    public languageService: LanguageService,
     public pouchdbService: PouchdbService,
   ) {
     this.amount_theoretical = this.route.snapshot.paramMap.get('amount_theoretical');
@@ -55,9 +56,6 @@ export class ClosePage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
     this.closeForm = this.formBuilder.group({
       name: new FormControl(''),
       date: new FormControl(new Date()),
@@ -76,6 +74,9 @@ export class ClosePage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

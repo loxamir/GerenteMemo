@@ -122,9 +122,9 @@ export class InvoicePage implements OnInit {
       // public popoverCtrl: PopoverController,
     ) {
       this.today = new Date().toISOString();
-      
-      
-      
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.note = this.route.snapshot.paramMap.get('note');
       this.discount = this.route.snapshot.paramMap.get('discount');
@@ -136,9 +136,6 @@ export class InvoicePage implements OnInit {
     }
 
     async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
       let items = [];
       if (this.items){
         let lista: any = this.items;
@@ -181,6 +178,9 @@ export class InvoicePage implements OnInit {
         origin_id: new FormControl(this.origin_id||''),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));

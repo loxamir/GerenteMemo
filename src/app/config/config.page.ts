@@ -59,17 +59,14 @@ export class ConfigPage implements OnInit {
     public restProvider: RestProvider,
     public pouchdbService: PouchdbService,
   ) {
-    
-    
-    
+
+
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
     this.configForm = this.formBuilder.group({
       name: ['', Validators.required],
       image: [''],
@@ -110,6 +107,9 @@ export class ConfigPage implements OnInit {
       users: [],
       _id: [''],
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.configService.getConfig().then((data) => {

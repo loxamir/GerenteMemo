@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BrandPage } from '../brand/brand.page';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-brand-list',
@@ -20,7 +21,7 @@ export class BrandListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public navPush: IonNavPush,
+    public languageService: LanguageService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
@@ -33,8 +34,8 @@ export class BrandListPage implements OnInit {
 
   }
 
-  ngOnInit() {
-  let language = navigator.language.split('-')[0];
+  async ngOnInit() {
+  let language:any = await this.languageService.getDefaultLanguage();
   this.translate.setDefaultLang(language);
   this.translate.use(language);
     this.setFilteredItems();

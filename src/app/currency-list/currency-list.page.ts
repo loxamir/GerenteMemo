@@ -5,6 +5,7 @@ import { NavController, LoadingController,   ModalController, Events} from '@ion
 import 'rxjs/Rx';
 import { CurrencyPage } from '../currency/currency.page';
 import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-currency-list',
@@ -24,15 +25,16 @@ export class CurrencyListPage implements OnInit {
     public modalCtrl: ModalController,
     public translate: TranslateService,
     public route: ActivatedRoute,
+    public languageService: LanguageService,
     public events: Events,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
+  async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     //this.loading.present();
     this.setFilteredItems();
   }

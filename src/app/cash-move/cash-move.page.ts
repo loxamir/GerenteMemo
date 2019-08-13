@@ -76,9 +76,6 @@ export class CashMovePage implements OnInit {
     public configService: ConfigService,
     public alertCtrl: AlertController,
   ) {
-    
-    
-    
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     var foo = { foo: true };
@@ -88,9 +85,6 @@ export class CashMovePage implements OnInit {
   }
 
   async ngOnInit() {
-  let language = navigator.language.split('-')[0];
-  this.translate.setDefaultLang(language);
-  this.translate.use(language);
     this.cashMoveForm = this.formBuilder.group({
       name: new FormControl(this.default_name),
       amount: new FormControl(this.default_amount || '', Validators.required),
@@ -130,6 +124,9 @@ export class CashMovePage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     if (this.accountTo && (this.accountTo['_id'].split('.')[1] == 'cash' || this.accountTo['_id'].split('.')[1] == 'bank' || this.accountTo['_id'].split('.')[1] == 'check')) {
@@ -162,7 +159,7 @@ export class CashMovePage implements OnInit {
       this.cashMoveService.getCashMove(this._id).then((data) => {
         this.cashMoveForm.patchValue(data);
         this.cash_move_currency_id = data.currency_id || this.company_currency_id;
-        if (data.close_id){
+        if (data.close_id) {
           this.cashMoveForm.disable();
         }
         this.loading.dismiss();
@@ -309,7 +306,7 @@ export class CashMovePage implements OnInit {
 
   buttonSave() {
     return new Promise(async resolve => {
-      if (!this.cashMoveForm.value.close_id){
+      if (!this.cashMoveForm.value.close_id) {
         if (this.cashMoveForm.value.currency && this.cashMoveForm.value.currency._id != this.company_currency_id) {
           this.cashMoveForm.patchValue({
             "currency_residual": this.cashMoveForm.value.currency_amount
@@ -493,7 +490,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectCheck() {
-    if (!this.cashMoveForm.value.close_id){
+    if (!this.cashMoveForm.value.close_id) {
       return new Promise(async resolve => {
         let profileModal = await this.modalCtrl.create({
           component: CheckListPage,
@@ -520,7 +517,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectCurrency() {
-    if (!this.cashMoveForm.value.close_id){
+    if (!this.cashMoveForm.value.close_id) {
       return new Promise(async resolve => {
         let profileModal = await this.modalCtrl.create({
           component: CurrencyListPage,
@@ -570,7 +567,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectAccountFrom() {
-    if (!this.cashMoveForm.value.close_id){
+    if (!this.cashMoveForm.value.close_id) {
       return new Promise(async resolve => {
         let profileModal = await this.modalCtrl.create({
           component: AccountListPage,
@@ -607,7 +604,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectAccountTo() {
-    if (!this.cashMoveForm.value.close_id){
+    if (!this.cashMoveForm.value.close_id) {
       return new Promise(async resolve => {
         let profileModal = await this.modalCtrl.create({
           component: AccountListPage,
@@ -644,7 +641,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectContact() {
-    if (!this.cashMoveForm.value.close_id){
+    if (!this.cashMoveForm.value.close_id) {
       return new Promise(async resolve => {
         let profileModal = await this.modalCtrl.create({
           component: ContactListPage,
