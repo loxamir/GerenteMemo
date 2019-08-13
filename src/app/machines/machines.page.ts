@@ -9,7 +9,7 @@ import 'rxjs/Rx';
 import { MachinesService } from './machines.service';
 import { MachineService } from '../machine/machine.service';
 import { WorkService } from '../work/work.service';
-// import { ProductPage } from '../product/product.page';
+import { LanguageService } from "../services/language/language.service";
 import { FilterPage } from '../filter/filter.page';
 import { MachinesPopover } from './machines.popover';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
@@ -43,11 +43,10 @@ export class MachinesPage implements OnInit {
     public machineService: MachineService,
     public alertCtrl: AlertController,
     public translate: TranslateService,
+    public languageService: LanguageService,
   ) {
     this.today = new Date().toISOString();
     this.select = this.route.snapshot.paramMap.get('select');
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
   }
 
   changeSearch(){
@@ -83,8 +82,9 @@ export class MachinesPage implements OnInit {
   }
 
   async ngOnInit() {
-
-
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.setFilteredItems();

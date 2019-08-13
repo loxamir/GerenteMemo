@@ -1,4 +1,12 @@
 {
+  "AGRO_REPORT": "Relatorio Agricola",
+  "ACTIVITIES": "Actividades",
+  "CROP": "Safra",
+  "CROPS": "Safras",
+  "SEARCH_MACHINE": "Search Machine",
+  "MACHINE_REPORT": "Relatorio de Maquinas",
+  "TO_SALE": "Vender",
+
   "SETTINGS": "Ajustes",
   "SAVE": "Guardar",
   "NAME": "Nombre",
@@ -179,12 +187,14 @@
   "BARCODE": "Código de Barras",
   "PRINTED": "Impreso",
   "VEHICLE": "Vehiculo",
-  "MACHINE": "Maquinario",
+  "MACHINE": "Maquina",
+  "MACHINES": "Maquinas",
   "REAL_STATE": "Inmueblre",
   "METER": "Medidor",
   "HORIMETER": "Horimetro",
   "HODOMETER": "Odómetro(Km)",
   "AREA": "Area(m²)",
+  "AREAS": "Areas",
   "NEW_PASSWORD": "Nova Contraseña",
   "WORK_DONE": "Trabajo Realizado",
   "WORKS_DONE": "Trabajos Realizados",
@@ -226,7 +236,6 @@
   "OWN_PLACE": "Area Propria",
   "EDIT_PLACE": "Editar Area",
   "NEW_PLACE": "Nueva Area",
-  "PLACES": "Areas",
   "SEARCH_AREA": "Buscar Area",
   "IMPLEMENT": "Implemento",
   "EDIT_MACHINE": "Editar Maquina",
@@ -256,7 +265,6 @@
   "PENDING": "Pendiente",
   "WAITING": "En Espera",
   "DATE_DELIVERY": "Fecha de Entrega",
-  "CROP": "Safra",
   "CONTRACTED": "Contratado",
   "FUTURE_CONTRACT": "Contrato Futuro",
   "DEFAULT_PAYMENT": "Pago Estandar",
@@ -427,7 +435,5 @@
   "TOTAL_INCOME": "Total de Ingresos",
   "TOTAL_EXPENSE": "Total de Despesas",
   "PROFIT_MARGIN": "Margen de Lucro",
-
   "RESULT": "Resultado"
-
 }

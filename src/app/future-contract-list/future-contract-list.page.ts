@@ -45,9 +45,6 @@ export class FutureContractListPage implements OnInit {
     public translate: TranslateService,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
     this.events.subscribe('changed-future-contract', (change)=>{
       this.handleChange(this.futureContracts, change);
     })
@@ -79,7 +76,6 @@ export class FutureContractListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: FutureContractsPopover,
       event: myEvent,
@@ -144,6 +140,9 @@ export class FutureContractListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

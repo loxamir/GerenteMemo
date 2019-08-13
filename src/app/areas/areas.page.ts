@@ -9,7 +9,7 @@ import 'rxjs/Rx';
 import { AreasService } from './areas.service';
 import { AreaService } from '../area/area.service';
 import { WorkService } from '../work/work.service';
-// import { ProductPage } from '../product/product.page';
+import { LanguageService } from "../services/language/language.service";
 import { FilterPage } from '../filter/filter.page';
 import { AreasPopover } from './areas.popover';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
@@ -38,6 +38,7 @@ export class AreasPage implements OnInit {
     public pouchdbService: PouchdbService,
     public loadingCtrl: LoadingController,
     public route: ActivatedRoute,
+    public languageService: LanguageService,
     public modalCtrl: ModalController,
     public events: Events,
     public popoverCtrl: PopoverController,
@@ -49,8 +50,6 @@ export class AreasPage implements OnInit {
   ) {
     this.today = new Date().toISOString();
     this.select = this.route.snapshot.paramMap.get('select');
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
     // this.events.subscribe('changed-work', (change)=>{
     //   TODO: Should get the last event and update the view
     //   this.areasService.handleViewChange(this.areas, change);
@@ -96,6 +95,9 @@ export class AreasPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.setFilteredItems();

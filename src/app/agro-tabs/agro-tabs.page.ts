@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-agro-tabs',
@@ -7,9 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AgroTabsPage implements OnInit {
 
-  constructor() { }
+  constructor(
+    public translate: TranslateService,
+    public languageService: LanguageService,
+  ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
   }
 
 }

@@ -4,7 +4,7 @@
         <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Contrato"
+      [placeholder]="'SEARCH_CONTRACT'|translate"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionChange)="searchItems()">
@@ -28,7 +28,7 @@
         <ion-card class="list-card" style="padding-bottom: 0px;padding-top: 0px;" no-padding button="true" [class.selected]="item.selected">
           <ion-row [class.selected]="item.selected">
             <ion-col>
-              <h3 class="item-name"><b>{{ item.contact_name || 'No Informado'}}</b></h3>
+              <h3 class="item-name"><b>{{ item.contact_name || 'NOT_INFORMED'|translate}}</b></h3>
             </ion-col>
           </ion-row>
      <ion-row no-padding class="content-row one-line" [class.selected]="item.selected">
@@ -45,10 +45,10 @@
           <!-- <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.'+currency_precision}}</h2> -->
           <!-- <h2 *ngIf="item.residual > 0" class="list-big-number" style="color: red;"> {{item.residual| number:'1.0'}}</h2> -->
           <div *ngIf="(item.delivered + item.settled -item.sold) > 0" class="residual-value">
-            A Facturar $ {{ (item.delivered + item.settled -item.sold)*(item.price-item.cost) | number:'1.'+currency_precision }}
+            {{'TO_INVOICE'|translate}} $ {{ (item.delivered + item.settled -item.sold)*(item.price-item.cost) | number:'1.'+currency_precision }}
           </div>
           <div *ngIf="(item.quantity-item.delivered - item.settled ) > 0" class="residual-value">
-          A Entregar {{ item.quantity-item.delivered - item.settled| number:'1.0' }} Kg
+          {{'TO_DELIVERY'| translate}} {{ item.quantity-item.delivered - item.settled| number:'1.0' }} Kg
           </div>
           <!-- <div *ngIf="item.residual > 0 && item.state!='CANCELED'" class="residual-value">
             Entregue {{ item.delivered | number:'1.0' }}
@@ -72,7 +72,7 @@
       </ion-row>
       <ion-row no-padding *ngIf="(item.state=='CONFIRMED' && (item.quantity == item.sold))">
         <ion-col no-padding class="list-tag paid">
-            {{ 'Concluido' | translate }}
+            {{ 'DONE' | translate }}
         </ion-col>
       </ion-row>
       </ion-card>
@@ -81,7 +81,7 @@
       <ion-item-options  side="end">
         <ion-item-option (click)="deleteFutureContract(slidingItem, item)"
         *ngIf="item.state=='QUOTATION'">
-          Borrar
+          {{'DELETE'|translate}}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -95,12 +95,12 @@
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
       <ion-row>
         <ion-col>
-          <h1>Aún no tienes contratos futuros registrados</h1>
+          <h1>{{'NO_FUTURE_CONTRACT'|translate}}</h1>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
-          <h4>Para crear tu primero contrato futuro, pulsa el botón más</h4>
+          <h4>{{'FIRST_FUTURE_CONTRACT'|translate}}</h4>
         </ion-col>
       </ion-row>
     </ion-col>
@@ -114,7 +114,7 @@
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="selecting">
     <ion-button (click)="createSale()"  class="next-button" color="primary">
       <ion-icon name="checkmark"> </ion-icon>
-      Vender
+      {{'TO_SALE'|translate}}
     </ion-button>
   </ion-fab>
 </ion-content>

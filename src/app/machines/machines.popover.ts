@@ -4,7 +4,7 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item class="popover-item" (click)="gotoReport()">Relatorio de Maquinas</ion-item>
+    <ion-item class="popover-item" (click)="gotoReport()">{{'MACHINE_REPORT'|translate}}</ion-item>
   </ion-list>
   `
 })
@@ -24,14 +24,7 @@ export class MachinesPopover {
     this.pop.dismiss();
   }
 
-  // gotoCrops(){
-  //   // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
-  //   this.navCtrl.navigateForward(['/crops', {}]);
-  //   this.pop.dismiss();
-  // }
-
   gotoReport(){
-    // this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
     this.navCtrl.navigateForward(['/machine-report', {}]);
     this.pop.dismiss();
   }
@@ -40,29 +33,4 @@ export class MachinesPopover {
     this.navCtrl.navigateForward(['/activitys', {}]);
     this.pop.dismiss();
   }
-
-  // importerLine(){
-  //   this.navCtrl.navigateForward(['/importer', {'docType': 'sale-line'}]);
-  //   this.pop.dismiss();
-  // }
-  // invoice() {
-  //   this.navCtrl.navigateForward(['/invoice-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // contact() {
-  //   this.navCtrl.navigateForward(['/contact-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // products() {
-  //   this.navCtrl.navigateForward(['/product-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // receivable() {
-  //   this.navCtrl.navigateForward(['/planned-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // receipts() {
-  //   this.pop.dismiss();
-  //   this.navCtrl.navigateForward(['/receipt-list', {}]);
-  // }
 }
