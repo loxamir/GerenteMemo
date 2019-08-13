@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController, Events, ToastController, MenuController, PopoverController } from '@ionic/angular';
+import { LoadingController, Events, ToastController, MenuController,
+  PopoverController, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -37,6 +38,7 @@ export class LoginPage implements OnInit {
     public storage: Storage,
     public events: Events,
     public popoverCtrl: PopoverController,
+    public alertCtrl: AlertController,
     public menuCtrl: MenuController,
     public pouchdbService: PouchdbService,
     public toastCtrl: ToastController,
@@ -77,7 +79,9 @@ export class LoginPage implements OnInit {
     this.translate.setDefaultLang(this.language);
     this.translate.use(this.language);
     this.username = await this.storage.get('username');
-    this.menuCtrl.enable(false);
+    setTimeout(() => {
+      this.menuCtrl.enable(false);
+    }, 500);
   }
 
   payDatabase(database){
@@ -208,6 +212,55 @@ export class LoginPage implements OnInit {
     }
     this.menuCtrl.enable(false);
     this.loading.dismiss();
+  }
+
+  async changeLanguage() {
+    const alert = await this.alertCtrl.create({
+      header: 'CHOOSE_LANGUAGE',
+      inputs: [
+        {
+          name: 'english',
+          type: 'radio',
+          label: 'English',
+          value: 'en',
+          checked: this.language == 'en'
+        },
+        {
+          name: 'spanish',
+          type: 'radio',
+          label: 'Español',
+          value: 'es',
+          checked: this.language == 'es'
+        },
+        {
+          name: 'portuguese',
+          type: 'radio',
+          label: 'Português',
+          value: 'pt',
+          checked: this.language == 'pt'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {}
+        }, {
+          text: 'Ok',
+          handler: async (language) => {
+            this.language = language;
+            this.storage.set("language", language);
+            this.translate.setDefaultLang(this.language);
+            this.translate.use(this.language);
+            let password = await this.storage.get("password");
+            this.restProvider.setUserLanguage(this.username, password, this.language);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async showDatabaseList(username, password){

@@ -33,7 +33,6 @@ export class RestProvider {
     });
   }
 
-
   getNews() {
     return new Promise(resolve => {
         this.http.get(this.apiUrl+'/engine-rest/task?unassigned=true').subscribe(data => {
@@ -196,14 +195,14 @@ export class RestProvider {
     });
   }
 
-  changePassword(username, old_passowrd, new_password) {
+  changePassword(username, old_password, new_password) {
     // return new Promise(resolve => {
       return new Promise(resolve => {
         this.http.get(
           this.databaseUrl+'/_users/org.couchdb.user:' + username,
           {
             // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
-            headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + old_passowrd))
+            headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + old_password))
           }
         ).subscribe((userData: any) => {
           // console.log("userData", userData);
@@ -220,7 +219,7 @@ export class RestProvider {
             userData,
             {
               // headers: new HttpHeaders().set('Authorization', "Basic YWRtaW46YWp2MTQzOXM=")
-              headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + old_passowrd))
+              headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + old_password))
             }
           ).subscribe(data => {
             console.log("changed Password", data);
@@ -235,6 +234,34 @@ export class RestProvider {
         });
       });
     // });
+  }
+
+  setUserLanguage(username, password, language){
+    return new Promise(resolve => {
+      this.http.get(
+        this.databaseUrl+'/_users/org.couchdb.user:' + username,
+        {
+          headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + password))
+        }
+      ).subscribe((userData: any) => {
+        userData.language = language;
+        this.http.put(
+          this.databaseUrl+'/_users/org.couchdb.user:'+ username,
+          userData,
+          {
+            headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + password))
+          }
+        ).subscribe(data => {
+          resolve(data);
+        }, err => {
+          resolve(err);
+          console.log("change language error", err);
+        });
+      }, err => {
+        console.log("change language get user error", err);
+        resolve(err);
+      });
+    });
   }
 
   getUserDbList(username, password) {
