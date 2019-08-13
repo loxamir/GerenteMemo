@@ -7,8 +7,6 @@ import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductListPopover} from './product-list.popover';
-import { TranslateService } from '@ngx-translate/core';
-import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { FormatService } from '../services/format.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,6 +36,7 @@ export class ProductListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public formatService: FormatService,
+    public toastCtrl: ToastController,
     public events: Events,
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,

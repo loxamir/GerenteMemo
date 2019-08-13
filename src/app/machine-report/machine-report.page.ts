@@ -9,7 +9,6 @@ import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-import { ReportService } from '../report/report.service';
 import { ProductService } from '../product/product.service';
 import { FormatService } from '../services/format.service';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
@@ -70,7 +69,6 @@ export class MachineReportPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    public reportService: ReportService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
@@ -692,16 +690,6 @@ export class MachineReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
-    if (this._id) {
-      this.reportService.getReport(this._id).then((data) => {
-        //console.log("data", data);
-        this.reportMachineForm.patchValue(data);
-        //this.loading.dismiss();
-      });
-    } else {
-      //this.loading.dismiss();
-    }
-    // if (this.route.snapshot.paramMap.get('compute){
     this.goNextStep();
   }
 

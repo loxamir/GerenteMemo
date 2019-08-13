@@ -30,6 +30,7 @@
     "@ionic-native/file": "^5.11.0",
     "@ionic-native/file-chooser": "^5.11.0",
     "@ionic-native/file-path": "^5.11.0",
+    "@ionic-native/ionic-webview": "^5.12.0",
     "@ionic-native/native-storage": "^5.11.0",
     "@ionic-native/printer": "^5.11.0",
     "@ionic-native/social-sharing": "^5.11.0",
