@@ -399,7 +399,6 @@
   "TOTAL_INCOME": "Total Income",
   "TOTAL_EXPENSE": "Total expense",
   "PROFIT_MARGIN": "Profit Margin",
-
   "CONTRACT_ITEMS":"Contract Items",
   "NEXT_RUN": "Next Run",
   "DAY":"Day",
@@ -416,6 +415,6 @@
   "COMPONENT": "Component",
   "MEDIA": "Media",
   "QUANT": "Quant",
-
+  "ALL": "All",
   "RESULT": "Result"
 }
