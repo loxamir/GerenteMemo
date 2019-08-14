@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'Plan de Cuentas' | translate }}
+        {{ 'CHART_OF_ACCOUNT' | translate }}
       </ion-row>
     </ion-title>
     <ion-buttons slot="end" >
@@ -20,7 +20,7 @@
   <form class="sample-form validations-form" [formGroup]="accountsReportForm" (ngSubmit)="onSubmit(accountsReportForm.value)">
     <ion-row justify-content-center>
       <ion-item no-padding class="field-50">
-        <h4 class="field-label">{{'Desde' | translate }}</h4>
+        <h4 class="field-label">{{'FROM' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="recomputeValues()"
         displayFormat="DD/MM/YYYY"
@@ -30,7 +30,7 @@
         </ion-datetime>
       </ion-item>
       <ion-item no-padding class="field-50">
-        <h4 class="field-label">{{'Hasta' | translate }}</h4>
+        <h4 class="field-label">{{'TO' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="recomputeValues()"
         displayFormat="DD/MM/YYYY"
@@ -44,19 +44,19 @@
       <ion-item
       no-padding
       class="field-50">
-      <ion-label>{{'Mostrar Titulos' | translate}}</ion-label>
+      <ion-label>{{'SHOW_TITLES' | translate}}</ion-label>
       <ion-toggle formControlName="showTitle"></ion-toggle>
     </ion-item>
     <ion-item
     no-padding
     class="field-50">
-    <ion-label>{{'Mostrar Categorias' | translate}}</ion-label>
+    <ion-label>{{'SHOW_CATEGORIES' | translate}}</ion-label>
     <ion-toggle formControlName="showCateg"></ion-toggle>
   </ion-item>
   <ion-item
   no-padding
   class="field-100">
-  <ion-label>{{'Mostrar Cuentas' | translate}}</ion-label>
+  <ion-label>{{'SHOW_ACCOUNTS' | translate}}</ion-label>
   <ion-toggle formControlName="showAccounts"></ion-toggle>
   </ion-item>
     </ion-row>

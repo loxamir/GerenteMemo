@@ -506,5 +506,23 @@
   "TOTAL_INCOME": "Total Income",
   "TOTAL_EXPENSE": "Total expense",
   "PROFIT_MARGIN": "Profit Margin",
+
+  "CONTRACT_ITEMS":"Contract Items",
+  "NEXT_RUN": "Next Run",
+  "DAY":"Day",
+  "WEEK":"Week",
+  "MONTH":"Month",
+  "YEAR":"Year",
+  "REPEAT_EACH":"Repeat each",
+  "CONTRACT":"Contract",
+  "SHOW_TITLES": "Show titles",
+  "SHOW_CATEGORIES": "Show Categories",
+  "SHOW_ACCOUNTS": "Show Accounts",
+  "GROUP_BY":"Group By",
+  "TOTAL_UPPER": "TOTAL",
+  "COMPONENT": "Component",
+  "MEDIA": "Media",
+  "QUANT": "Quant",
+
   "RESULT": "Result"
 }

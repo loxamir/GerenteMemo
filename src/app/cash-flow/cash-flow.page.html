@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'Flujo de Caja' | translate }}: {{cashFlowForm.value.code}}
+        {{ 'CASH_FLOW' | translate }}: {{cashFlowForm.value.code}}
       </ion-row>
     </ion-title>
     <ion-buttons slot="end">
@@ -17,7 +17,7 @@
   <form class="sample-form validations-form" [formGroup]="cashFlowForm" (ngSubmit)="onSubmit(cashFlowForm.value)">
     <ion-row justify-content-center>
       <ion-item no-padding class="field-50">
-        <h4 class="field-label">{{'Desde' | translate }}</h4>
+        <h4 class="field-label">{{'FROM' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="goNextStep()"
         displayFormat="DD/MM/YYYY"
@@ -26,7 +26,7 @@
         </ion-datetime>
       </ion-item>
       <ion-item no-padding class="field-50">
-        <h4 class="field-label">{{'Hasta' | translate }}</h4>
+        <h4 class="field-label">{{'TO' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="goNextStep()"
         displayFormat="DD/MM/YYYY"
@@ -37,14 +37,14 @@
       <ion-item
       no-padding
       class="field-100">
-        <ion-label>{{'Agrupado Por' | translate}}</ion-label>
+        <ion-label>{{'GROUP_BY' | translate}}</ion-label>
         <ion-select #groupBy formControlName="groupBy"
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
-          <ion-select-option value="account">Cuenta</ion-select-option>
-          <ion-select-option value="contact">Contato</ion-select-option>
-          <ion-select-option value="date">Fecha</ion-select-option>
+          <ion-select-option value="account">{{'ACCOUNT'|translate}}</ion-select-option>
+          <ion-select-option value="contact">{{'CONTACT'|translate}}</ion-select-option>
+          <ion-select-option value="date">{{'DATE'|translate}}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-card class="list-card">
@@ -54,16 +54,16 @@
               <ion-list no-lines>
                 <ion-row class="report-title">
                   <ion-col size="4" (click)="orderByName()">
-                    Cuenta
+                    {{'ACCOUNT'|translate}}
                   </ion-col>
                   <ion-col style="text-align: right" (click)="orderByIncome()">
-                    Entradas
+                    {{'INCOME'|translate}}
                   </ion-col>
                   <ion-col style="text-align: right" (click)="orderByExpense()">
-                    Salidas
+                    {{'EXPENSE'|translate}}
                   </ion-col>
                   <ion-col style="text-align: right" (click)="orderByTotal()">
-                    Total
+                  {{'TOTAL'|translate}}
                   </ion-col>
                 </ion-row>
                 <ion-row *ngFor="let item of cashFlowForm.value.items">
@@ -82,7 +82,7 @@
                 </ion-row>
                 <ion-row class="report-title">
                   <ion-col size="4">
-                    TOTAL
+                  {{'TOTAL_UPPER'|translate}}
                   </ion-col>
                   <ion-col style="text-align: right">
                     {{items_income|number:'1.'+currency_precision}}
@@ -101,16 +101,16 @@
             <ion-list no-lines *ngIf="cashFlowForm.value.groupBy == 'contact'">
               <ion-row class="report-title">
                 <ion-col size="4" (click)="orderByName()">
-                  Contato
+                  {{'CONTACT'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByIncome()">
-                  Entradas
+                  {{'INCOME'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByExpense()">
-                  Salidas
+                  {{'EXPENSE'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByTotal()">
-                  Total
+                {{'TOTAL'|translate}}
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of cashFlowForm.value.items">
@@ -129,7 +129,7 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col size="4">
-                  TOTAL
+                {{'TOTAL_UPPER'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right">
                   {{items_income|number:'1.'+currency_precision}}
@@ -150,16 +150,16 @@
 
               <ion-row class="report-title">
                 <ion-col size="4" (click)="orderByName()">
-                  Fecha
+                  {{'DATE'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByIncome()">
-                  Entradas
+                  {{'INCOME'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByExpense()">
-                  Salidas
+                  {{'EXPENSE'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByTotal()">
-                  Total
+                {{'TOTAL'|translate}}
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of cashFlowForm.value.items">
@@ -178,7 +178,7 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col size="4">
-                  TOTAL
+                {{'TOTAL_UPPER'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right">
                   {{items_income|number:'1.'+currency_precision}}

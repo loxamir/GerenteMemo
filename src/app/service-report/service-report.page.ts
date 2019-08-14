@@ -607,6 +607,7 @@ export class ServiceReportPage implements OnInit {
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
     this.goNextStep();
+    this.loading.dismiss();
   }
 
   getFirstDateOfMonth() {
