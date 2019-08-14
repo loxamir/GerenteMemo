@@ -669,8 +669,7 @@ export class MachineReportPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    //var today = new Date().toISOString();
+  async ngOnInit() {
     this.reportMachineForm = this.formBuilder.group({
       contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
       name: new FormControl(''),
@@ -690,6 +689,9 @@ export class MachineReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.goNextStep();
   }
 

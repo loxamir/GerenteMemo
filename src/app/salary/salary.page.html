@@ -17,7 +17,7 @@
     <ion-row>
       <ion-item no-padding (click)="selectContact()" style="width: calc(100% - 0px);;background-color: #fff;border: 1px solid #ddd;height: 50px;">
         <h4 class="field-label">{{'EMPLOYEE' | translate }}</h4>
-        <h4 class="field-value">{{salaryForm.value.contact && salaryForm.value.contact.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{salaryForm.value.contact && salaryForm.value.contact.name || 'SELECT'|translate}}</h4>
       </ion-item>
       <ion-item class="field-100">
         <ion-label position="floating" style="font-size:14px">{{'DESCRIPTION' | translate}}</ion-label>
@@ -66,7 +66,7 @@
           </ion-item>
           <ion-item-options>
             <ion-item-option (click)="removeInput(item)">
-              Borrar
+              {{'DELETE'|translate}}
             </ion-item-option>
           </ion-item-options>
         </ion-item-sliding>

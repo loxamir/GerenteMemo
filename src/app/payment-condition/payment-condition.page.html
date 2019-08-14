@@ -22,11 +22,11 @@
       </div>
       <ion-item class="field-100" no-padding (click)="selectAccountTo()">
         <h4 class="field-label">{{'Cuenta para Venta' | translate}}</h4>
-        <h4 class="field-value">{{paymentConditionForm.value.accountTo && paymentConditionForm.value.accountTo.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{paymentConditionForm.value.accountTo && paymentConditionForm.value.accountTo.name || 'SELECT'|translate}}</h4>
       </ion-item>
       <ion-item class="field-100" no-padding (click)="selectAccountFrom()">
         <h4 class="field-label">{{'Cuenta para Compra' | translate}}</h4>
-        <h4 class="field-value">{{paymentConditionForm.value.accountFrom && paymentConditionForm.value.accountFrom.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{paymentConditionForm.value.accountFrom && paymentConditionForm.value.accountFrom.name || 'SELECT'|translate}}</h4>
       </ion-item>
     </ion-row>
 

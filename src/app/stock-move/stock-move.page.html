@@ -15,7 +15,7 @@
     (click)="selectProduct()"
      class="field-100">
       <h4 class="field-label">{{'PRODUCT' | translate}}</h4>
-      <h4 class="field-value">{{stockMoveForm.value.product && stockMoveForm.value.product.name || stockMoveForm.value.product_name || 'Selecionar'}}</h4>
+      <h4 class="field-value">{{stockMoveForm.value.product && stockMoveForm.value.product.name || stockMoveForm.value.product_name || 'SELECT'|translate}}</h4>
     </ion-item>
     <ion-item
      no-padding
@@ -35,21 +35,21 @@
      (click)="selectWarehouseFrom()"
      class="field-50">
       <h4 class="field-label">{{'Origen' | translate }}</h4>
-      <h4 class="field-value">{{stockMoveForm.value.warehouseFrom && stockMoveForm.value.warehouseFrom.name || stockMoveForm.value.warehouseFrom_name || 'Selecionar'}}</h4>
+      <h4 class="field-value">{{stockMoveForm.value.warehouseFrom && stockMoveForm.value.warehouseFrom.name || stockMoveForm.value.warehouseFrom_name || 'SELECT'|translate}}</h4>
     </ion-item>
     <ion-item
      no-padding
      (click)="selectWarehouseTo()"
      class="field-50">
       <h4 class="field-label">{{'Destino' | translate }}</h4>
-      <h4 class="field-value">{{stockMoveForm.value.warehouseTo && stockMoveForm.value.warehouseTo.name || stockMoveForm.value.warehouseTo_name || 'Selecionar'}}</h4>
+      <h4 class="field-value">{{stockMoveForm.value.warehouseTo && stockMoveForm.value.warehouseTo.name || stockMoveForm.value.warehouseTo_name || 'SELECT'|translate}}</h4>
     </ion-item>
     <ion-item
     no-padding
     (click)="selectContact()"
      class="field-100">
       <h4 class="field-label">{{'Contact' | translate}}</h4>
-      <h4 class="field-value">{{stockMoveForm.value.contact && stockMoveForm.value.contact.name || stockMoveForm.value.contact_name || 'Selecionar'}}</h4>
+      <h4 class="field-value">{{stockMoveForm.value.contact && stockMoveForm.value.contact.name || stockMoveForm.value.contact_name || 'SELECT'|translate}}</h4>
     </ion-item>
 
     <ion-item class="field-100">

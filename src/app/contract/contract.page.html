@@ -55,19 +55,19 @@
     <ion-row justify-content-center>
       <ion-item no-padding (click)="selectContact()" class="field-100">
         <h4 class="field-label">{{'CLIENT' | translate}}</h4>
-        <h4 class="field-value">{{contractForm.value.contact && contractForm.value.contact.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{contractForm.value.contact && contractForm.value.contact.name || 'SELECT'|translate}}</h4>
       </ion-item>
       <ion-item no-padding (click)="selectPaymentCondition()" class="field-50">
         <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
-        <h4 class="field-value">{{contractForm.value.paymentCondition && contractForm.value.paymentCondition.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{contractForm.value.paymentCondition && contractForm.value.paymentCondition.name || 'SELECT'|translate}}</h4>
       </ion-item>
       <ion-item no-padding (click)="selectSeller()" class="field-50">
         <h4 class="field-label">{{'SELLER' | translate }}</h4>
-        <h4 class="field-value">{{contractForm.value.seller_name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{contractForm.value.seller_name || 'SELECT'|translate}}</h4>
       </ion-item>
       <!-- <ion-item no-padding (click)="selectCurrency()" class="field-50">
         <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-        <h4 class="field-value">{{contractForm.value.currency && contractForm.value.currency.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{contractForm.value.currency && contractForm.value.currency.name || 'SELECT'|translate}}</h4>
       </ion-item> -->
       <ion-item no-padding class="field-50">
         <!-- <ion-row>

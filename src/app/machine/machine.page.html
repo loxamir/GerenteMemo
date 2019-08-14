@@ -21,16 +21,18 @@
     (click)="showEdit()"
     style="padding-left: 5px;">{{machineForm.value.name}}
       <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && diffDays  > 1">
-        Ultimo mantenimiento a {{ diffDays }} dias
+        {{'LAST_MAINTENANCE_AT'|translate}} {{ diffDays }} {{'DAYS'|translate}}
       </h1>
       <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && diffDays == 1">
-        Ultimo mantenimiento a {{ diffDays }} dia
+        {{'LAST_MAINTENANCE_AT'|translate}} {{ diffDays }} {{'DAY'}}
       </h1>
       <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && !diffDays">
         Ultimo mantenimiento hoy
+        {{'LAST_MAINTENANCE_TODAY'|translate}}
       </h1>
       <h1 class="subtitle" *ngIf="!machineForm.value.lastReviewDate">
         Sin datos de mantenimiento
+        {{'NO_MAINTENANCE_DATA'|translate}}
       </h1>
     </ion-title>
     <ion-buttons slot="end">
@@ -65,11 +67,11 @@
                 <ion-row>
                   <ion-col size="8.5" no-padding>
                     <h3 class="activity-name">
-                      {{ item.name || item.activity_name || 'No Informado'}}
+                      {{ item.name || item.activity_name || 'NOT_INFORMED'|translate}}
                     </h3>
                     <div [innerHTML]="item.summary"></div>
                     <h1 class="activity-note" *ngIf="item.cost">
-                      Costo: $ {{item.cost|number:'1.'+currency_precision}}
+                      {{'COST'|translate}}: $ {{item.cost|number:'1.'+currency_precision}}
                     </h1>
                     <h1 class="activity-note">
                       {{item.note}}
@@ -111,7 +113,7 @@
         </ion-item>
         <ion-item-options>
           <ion-item-option (click)="deleteWork(item)" *ngIf="!item.fixed">
-            Borrar
+            {{'DELETE'|translate}}
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
@@ -129,7 +131,7 @@
   <ion-fab class="rotate180" vertical="top" style="left: 0px;right:0px;top: 0px;background: #dddddd;" horizontal="start" slot="fixed">
     <ion-row style="padding-bottom:5px;padding-top: 5px;">
       <ion-col [class.left-round]="true" [class.all-round]="false">
-        <ion-textarea #note [(ngModel)]="machineForm.value.note" placeholder="Escribir Anotación" style="margin-top: 2px;" rows="1">
+        <ion-textarea #note [(ngModel)]="machineForm.value.note" [placeholder]="'WRITE_NOTE'|translate" style="margin-top: 2px;" rows="1">
         </ion-textarea>
       </ion-col>
       <div size="1.6" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;    width: 40px;padding-top: 5px;">
@@ -152,19 +154,19 @@
       <ion-col (click)="addActivity('activity.fuel')" *ngIf="machineForm.value.type!='IMPLEMENT'">
         <ion-img [src]="'./assets/icons/activity.fuel.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Abastecimiento
+          {{'FUEL_ACTIVITY'|translate}}
         </h1>
       </ion-col>
       <ion-col (click)="addActivity('activity.maintenance')">
         <ion-img [src]="'./assets/icons/activity.maintenance.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Mantenimiento
+          {{'MAINTENANCE_ACTIVITY'|translate}}
         </h1>
       </ion-col>
       <ion-col (click)="addActivity('activity.workMachine')">
         <ion-img [src]="'./assets/icons/activity.workMachine.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Otro Servicio
+          {{'OTHER_SERVICE_ACTIVITY'|translate}}
         </h1>
       </ion-col>
     </ion-row>
@@ -184,67 +186,30 @@
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input #name type="text" formControlName="name"></ion-input>
       </ion-item>
-      <!-- <ion-item no-padding class="field-50">
-        <ion-label position="floating">{{'Machine(ha)' | translate}}</ion-label>
-        <ion-input type="number" style="height: 47px;" formControlName="surface"></ion-input>
-      </ion-item> -->
       <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
         <ion-select #type formControlName="type" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
           <ion-select-option value="MACHINE">{{ 'MACHINE' | translate }}</ion-select-option>
           <ion-select-option value="IMPLEMENT">{{ 'IMPLEMENT' | translate }}</ion-select-option>
-          <!-- <ion-select-option value="SPRAYER">{{ 'SPRAYER' | translate }}</ion-select-option>
-          <ion-select-option value="FERTILIZER">{{ 'FERTILIZER' | translate }}</ion-select-option> -->
-          <!-- <ion-select-option value="VEHICLE">{{ 'VEHICLE' | translate }}</ion-select-option>
-          <ion-select-option value="OTHER">{{ 'OTHER' | translate }}</ion-select-option> -->
         </ion-select>
       </ion-item>
       <ion-item no-padding (click)="selectFuel()" class="field-100" *ngIf="machineForm.value.type != 'IMPLEMENT'">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Combustible' | translate}}</h4>
+          <h4 class="field-label">{{'FUEL' | translate}}</h4>
           <h4 class="field-value">
-            {{machineForm.value.fuel && machineForm.value.fuel.name || 'Selecionar'}}
+            {{machineForm.value.fuel && machineForm.value.fuel.name || 'SELECT'|translate}}
           </h4>
         </div>
       </ion-item>
       <ion-item no-padding class="field-50">
-        <ion-label position="floating">{{'Costo por Hora' | translate}}</ion-label>
+        <ion-label position="floating">{{'COST_BY_HOUR' | translate}}</ion-label>
         <ion-input #hourCost type="number" formControlName="hourCost"></ion-input>
       </ion-item>
       <ion-item no-padding class="field-50">
-        <ion-label position="floating">{{'Horimetro' | translate}}</ion-label>
+        <ion-label position="floating">{{'HORIMETER' | translate}}</ion-label>
         <ion-input #horimeter type="number" formControlName="horimeter"></ion-input>
       </ion-item>
-      <!-- <ion-item no-padding class="field-100">
-        <ion-label>{{'Maquina Propria' | translate}}</ion-label>
-        <ion-toggle formControlName="own"></ion-toggle>
-      </ion-item>
-      <ion-item no-padding (click)="selectContact()" *ngIf="!machineForm.value.own" class="field-100">
-        <div class="field-many2one">
-          <h4 class="field-label">{{'Proprietario' | translate}}</h4>
-          <h4 class="field-value">
-            {{machineForm.value.contact && machineForm.value.contact.name || 'Selecionar'}}
-          </h4>
-        </div>
-      </ion-item>
-      <ion-item no-padding class="field-50" *ngIf="!machineForm.value.own">
-        <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
-        <ion-select #type (ionChange)="getDefaultCategory()" formControlName="rentingType" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
-          <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
-          <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
-          <ion-select-option value="percent">Porcentage</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item no-padding class="field-50" *ngIf="!machineForm.value.own">
-        <ion-label position="floating" *ngIf="machineForm.value.rentingType == 'fixedAmount'">
-          {{'Valor em $' | translate}}</ion-label>
-        <ion-label position="floating" *ngIf="machineForm.value.rentingType == 'fixedWeight'">
-          {{'Peso em Kg' | translate}}</ion-label>
-        <ion-label position="floating" *ngIf="machineForm.value.rentingType == 'percent'">
-          {{'Porcentage %' | translate}}</ion-label>
-        <ion-input type="number" formControlName="rentingAmount"></ion-input>
-      </ion-item> -->
-      <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
+      <ion-button class="button-100" color="success" (click)="buttonSave()">{{'SAVE'|translate}}</ion-button>
     </ion-row>
   </form>
 </ion-content>

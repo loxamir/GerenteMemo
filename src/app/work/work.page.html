@@ -44,20 +44,20 @@
           *ngFor="let field of filterFields(workForm.value.fields)"
           [style.width]="field.class == 'half-width' ? '50%' : '100%'">
             <ion-item class="field-100" *ngIf="field.type == 'boolean'">
-              <ion-label>{{field.label || field.name}}</ion-label>
+              <ion-label>{{field.label|translate}}</ion-label>
               <ion-toggle [formControlName]="field.name"></ion-toggle>
             </ion-item>
             <ion-item class="switcher-item" *ngIf="field.type == 'button'">
               <ion-button class="print-invoice"
                   (click)="buttonPress(field)">
-                  {{ field.label || field.name }}
+                  {{ field.label|translate }}
                 </ion-button>
             </ion-item>
             <ion-item
             class="field-100"
             *ngIf="field.type == 'integer'"
             (ionChange)="recomputeFields()">
-              <ion-label position="floating">{{field.label || field.name}}</ion-label>
+              <ion-label position="floating">{{field.label|translate}}</ion-label>
               <ion-input type="number"
               [disabled]="calculate(field.readonly)"
               [formControlName]="field.name"
@@ -67,7 +67,7 @@
             </ion-item>
             <ion-item class="field-100"
             *ngIf="field.type == 'float'">
-              <ion-label position="floating">{{field.label || field.name}}</ion-label>
+              <ion-label position="floating">{{field.label|translate}}</ion-label>
               <ion-input type="number"
               style="height: 47px"
               [formControlName]="field.name"
@@ -78,7 +78,7 @@
             </ion-input>
             </ion-item>
             <ion-item class="field-100" *ngIf="field.type == 'string'">
-              <ion-label position="floating">{{field.label || field.name}}</ion-label>
+              <ion-label position="floating">{{field.label|translate}}</ion-label>
               <ion-input type="text"
               [formControlName]="field.name"
               text-center
@@ -86,7 +86,7 @@
               </ion-input>
             </ion-item>
             <ion-item class="field-100" *ngIf="field.type == 'progress'">
-              <span style="margin-top: -20px;position: absolute;font-size: 13px;">{{field.label || field.name}}</span>
+              <span style="margin-top: -20px;position: absolute;font-size: 13px;">{{field.label|translate}}</span>
               <ion-range min="0" max="100" color="primary"
               [formControlName]="field.name"
               pin="true" snaps="true">
@@ -96,20 +96,20 @@
             </ion-item>
             <ion-item *ngIf="field.type == 'formula'" class="field-100" style="--background: #dddddd;border:0px;">
               <div class="field-many2one" style="border: 0px;">
-                <h4 class="field-label">{{field.label || field.name}}</h4>
+                <h4 class="field-label">{{field.label|translate}}</h4>
                 <h4 class="field-value-bigger" style="font-size: 20px;color: #1a73e8;margin-top: 10px;">{{ fields[field.name]|number:'1.'+currency_precision}}</h4>
               </div>
             </ion-item>
             <ion-item *ngIf="field.type == 'many2one'"  class="field-100" (click)="selectM2O(field, field.model, field.context)">
               <div class="field-many2one">
-                <h4 class="field-label">{{field.label || field.name}}</h4>
-                <h4 class="field-value-bigger">{{workForm.value[field.name] && (workForm.value[field.name].name || workForm.value[field.name].code) || 'Selecionar'}}</h4>
+                <h4 class="field-label">{{field.label|translate}}</h4>
+                <h4 class="field-value-bigger">{{workForm.value[field.name] && (workForm.value[field.name].name || workForm.value[field.name].code) || 'SELECT'|translate}}</h4>
               </div>
             </ion-item>
 
 
             <ion-list style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name] && workForm.value[field.name].length > 0">
-              <h2 class="section-title" style="color:#1c61f3;background: white;border: 1px solid;border-top-left-radius: 5px;border-top-right-radius: 5px;">{{ field.label || field.name | translate}}</h2>
+              <h2 class="section-title" style="color:#1c61f3;background: white;border: 1px solid;border-top-left-radius: 5px;border-top-right-radius: 5px;">{{ field.label|translate | translate}}</h2>
               <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
                 <ion-item style="--background: white;">
                   <div style="width: 100%">
@@ -128,14 +128,14 @@
                 </ion-item>
                 <ion-item-options>
                   <ion-item-option (click)="removeFieldItem(field.name, i)">
-                    Borrar
+                    {{'DELETE'|translate}}
                   </ion-item-option>
                 </ion-item-options>
               </ion-item-sliding>
               <ion-row style="background: #1c61f3;border-radius: 7px;border: 1px solid #1c61f3; border-top-left-radius: 0px;border-top-right-radius: 0px;"
               (click)="addFieldItem(field.name)">
                 <a style="color:white;cursor: default;font-size:16px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
-                  Agregar {{ field.label || field.name }}
+                  {{'ADD'|translate}} {{ field.label|translate }}
                 </a>
               </ion-row>
             </ion-list>
@@ -146,13 +146,13 @@
               <ion-row style="background: #1c61f3;border: 1px solid #1c61f3;width: 100%;"
               (click)="addFieldItem(field.name)">
                 <a style="color:white;cursor: default;font-size:16px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
-                  Agregar {{ field.label || field.name }}
+                  {{'ADD'|translate}} {{ field.label|translate }}
                 </a>
               </ion-row>
             </ion-item>
 
             <ion-item class="field-100" *ngIf="field.type == 'date'" >
-              <ion-label position="floating">{{field.label || field.name}}</ion-label>
+              <ion-label position="floating">{{field.label|translate}}</ion-label>
               <ion-datetime displayFormat="DD/MM/YYYY"
               pickerFormat="DD/MM/YYYY"
               [disabled]="calculate(field.readonly)"
@@ -168,7 +168,7 @@
       <ion-segment-button class="list-item"
       *ngFor="let field of filterTabs(workForm.value.fields)"
       [value]="field.name">
-        {{ field.label }}
+        {{ field.label|translate }}
       </ion-segment-button>
     </ion-segment>
 
@@ -194,7 +194,7 @@
               <ion-item-options>
                 <ion-item-option (click)="removeFieldItem(field.name, i)"
                 *ngIf="!item.fixed">
-                  Borrar
+                  {{'DELETE'|translate}}
                 </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
@@ -204,7 +204,7 @@
               (click)="addFieldItem(field.name)"
               class="button-100"
               color="success">
-                Agregar {{ field.label || field.name }}
+                {{'ADD'|translate}} {{ field.label|translate }}
               </ion-button>
             </ion-col>
         </div>
@@ -227,15 +227,15 @@
     <ion-button (click)="discard()" color="danger" class="discard-button">
       <ion-icon name="backspace" *ngIf="workForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!workForm.dirty"> </ion-icon>
-      <span *ngIf="workForm.dirty">Descartar</span>
-      <span *ngIf="!workForm.dirty">Volver</span>
+      <span *ngIf="workForm.dirty">{{'DISCARD'|translate}}</span>
+      <span *ngIf="!workForm.dirty">{{'GO_BACK'|translate}}</span>
     </ion-button>
   </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="workForm.dirty">
     <ion-button (click)="buttonSave()"  color="success" class="save-button">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{'SAVE'|translate}}
     </ion-button>
   </ion-fab>
   <div style="height: 100px;">

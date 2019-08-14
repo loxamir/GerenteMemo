@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/agro-tabs/machine-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
-        {{ 'Informe de Maquinas' | translate }}
+        {{ 'MACHINE_REPORT' | translate }}
     </ion-title>
     <ion-buttons slot="end">
     </ion-buttons>
@@ -56,37 +56,37 @@
       <ion-item
         no-padding
         class="field-100">
-        <ion-label>{{'Filtros' | translate}}</ion-label>
+        <ion-label>{{'FILTERS' | translate}}</ion-label>
         <ion-toggle formControlName="showFilter"></ion-toggle>
       </ion-item>
       <ion-item *ngIf="reportMachineForm.value.showFilter" no-padding (click)="selectCrop()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Safra' | translate}}</h4>
-          <h4 class="field-value">{{reportMachineForm.value.crop && reportMachineForm.value.crop.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'CROP' | translate}}</h4>
+          <h4 class="field-value">{{reportMachineForm.value.crop && reportMachineForm.value.crop.name || 'ALL'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item *ngIf="reportMachineForm.value.showFilter" no-padding (click)="selectArea()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Lugar' | translate}}</h4>
-          <h4 class="field-value">{{reportMachineForm.value.area && reportMachineForm.value.area.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'AREA' | translate}}</h4>
+          <h4 class="field-value">{{reportMachineForm.value.area && reportMachineForm.value.area.name || 'ALL'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item *ngIf="reportMachineForm.value.showFilter" no-padding (click)="selectInput()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Insumo' | translate}}</h4>
-          <h4 class="field-value">{{reportMachineForm.value.input && reportMachineForm.value.input.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'INPUT' | translate}}</h4>
+          <h4 class="field-value">{{reportMachineForm.value.input && reportMachineForm.value.input.name || 'ALL'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item *ngIf="reportMachineForm.value.showFilter" no-padding (click)="selectMachine()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Maquina' | translate}}</h4>
-          <h4 class="field-value">{{reportMachineForm.value.machine && reportMachineForm.value.machine.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'MACHINE' | translate}}</h4>
+          <h4 class="field-value">{{reportMachineForm.value.machine && reportMachineForm.value.machine.name || 'ALL'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item *ngIf="reportMachineForm.value.showFilter" no-padding (click)="selectMachine()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Actividade' | translate}}</h4>
-          <h4 class="field-value">{{reportMachineForm.value.activity && reportMachineForm.value.activity.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'ACTIVITY' | translate}}</h4>
+          <h4 class="field-value">{{reportMachineForm.value.activity && reportMachineForm.value.activity.name || 'ALL'|translate}}</h4>
         </div>
       </ion-item>
       <!-- <ion-button class="button-100" color="success" (click)="setFilter()">Filtrar</ion-button> -->

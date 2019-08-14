@@ -91,8 +91,6 @@ export class MachinePage implements OnInit {
     private ref: ChangeDetectorRef,
   ) {
     this.today = new Date().toISOString();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.events.subscribe('changed-work', (change) => {
@@ -405,6 +403,9 @@ export class MachinePage implements OnInit {
       horimeter: new FormControl(0),
       type: new FormControl('TRACTOR'),
     });
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
@@ -649,26 +650,20 @@ export class MachinePage implements OnInit {
   async canDeactivate() {
     if (this.machineForm.dirty) {
       let alertPopup = await this.alertCtrl.create({
-        header: 'Descartar',
-        message: '¿Deseas salir sin guardar?',
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
         buttons: [{
-          text: 'Si',
+          text: this.translate.instant('YES'),
           handler: () => {
             this.exitPage();
           }
         },
         {
-          text: 'No',
-          handler: () => {
-            // need to do something if the user stays?
-          }
+          text: this.translate.instant('NO'),
+          handler: () => { }
         }]
       });
-
-      // Show the alert
       alertPopup.present();
-
-      // Return false to avoid the page to be popped up
       return false;
     } else {
       this.exitPage();

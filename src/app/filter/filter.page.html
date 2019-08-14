@@ -37,7 +37,7 @@
         <div class="field-many2one">
           <h4 class="field-label">{{'Comparado' | translate}}</h4>
           <h4 class="field-value">
-            {{filterForm.value.value && filterForm.value.value.name || 'Selecionar'}}
+            {{filterForm.value.value && filterForm.value.value.name || 'SELECT'|translate}}
           </h4>
         </div>
       </ion-item> -->
@@ -47,8 +47,8 @@
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="filterForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!filterForm.dirty"> </ion-icon>
-      <span *ngIf="filterForm.dirty">Descartar</span>
-      <span *ngIf="!filterForm.dirty">Volver</span>
+      <span *ngIf="filterForm.dirty">{{'DISCARD'|translate}}</span>
+      <span *ngIf="!filterForm.dirty">{{'GO_BACK'|translate}}</span>
     </ion-button>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">

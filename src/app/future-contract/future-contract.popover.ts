@@ -4,11 +4,10 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
 @Component({
   template: `
   <ion-list>
-    <ion-item (click)="duplicate()">Duplicar</ion-item>
-    <ion-item (click)="return()" *ngIf="navParams.data.doc.futureContractForm.value.state!='QUOTATION'">Devolver</ion-item>
-    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.futureContractForm.value.state=='CONFIRMED' && !navParams.data.doc.futureContractForm.value.payments.length">Desconfirmar</ion-item>
+    <ion-item (click)="duplicate()">{{'DUPLICATE'|translate}}</ion-item>
+    <!--ion-item (click)="cancel()" *ngIf="navParams.data.doc.futureContractForm.value.state=='CONFIRMED' && !navParams.data.doc.futureContractForm.value.payments.length">Desconfirmar</ion-item>
     <ion-item (click)="share()">Compartir</ion-item>
-    <ion-item (click)="print()">Imprimir</ion-item>
+    <ion-item (click)="print()">Imprimir</ion-item-->
   </ion-list>
   `
 })
@@ -38,7 +37,7 @@ export class FutureContractPopover {
       });
       this.navParams.data.doc.futureContractForm.markAsDirty();
       let toast = await this.toastCtrl.create({
-        message: "Venta Duplicada",
+        message: "Contracto Duplicado",
         duration: 500
       });
       toast.present();

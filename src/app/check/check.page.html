@@ -90,7 +90,7 @@
         </ion-item>
         <ion-item no-padding (click)="selectContact()" class="field-100" *ngIf="!checkForm.value.my_check">
           <h4 class="field-label">{{'CLIENT' | translate}}</h4>
-          <h4 class="field-value">{{checkForm.value.contact && checkForm.value.contact.name || 'Selecionar'}}</h4>
+          <h4 class="field-value">{{checkForm.value.contact && checkForm.value.contact.name || 'SELECT'|translate}}</h4>
         </ion-item>
         <ion-item (click)="selectBank()" class="field-100" *ngIf="checkForm.value.my_check">
           <!-- <div class="field-many2one"> -->
@@ -169,11 +169,11 @@
       </ion-item>
         <!-- <ion-item no-padding (click)="selectCurrency()" class="field-100">
           <h4 class="field-label">{{'CURRENCY' | translate}}</h4>
-          <h4 class="field-value">{{checkForm.value.currency && checkForm.value.currency.name || 'Selecionar'}}</h4>
+          <h4 class="field-value">{{checkForm.value.currency && checkForm.value.currency.name || 'SELECT'|translate}}</h4>
         </ion-item> -->
         <!-- <ion-item no-padding class="field-100" *ngIf="checkForm.value.account._id">
           <h4 class="field-label">{{'ACCOUNT' | translate}}</h4>
-          <h4 class="field-value">{{checkForm.value.account && checkForm.value.account.name || 'Selecionar'}}</h4>
+          <h4 class="field-value">{{checkForm.value.account && checkForm.value.account.name || 'SELECT'|translate}}</h4>
         </ion-item> -->
 
     </ion-row>

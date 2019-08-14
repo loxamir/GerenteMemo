@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NavController, LoadingController,  Events, PopoverController,
   AlertController, ModalController } from '@ionic/angular';
 import { InputPage } from '../input/input.page';
-
+import { LanguageService } from "../services/language/language.service";
 import 'rxjs/Rx';
 import { InputsService } from './inputs.service';
 import { InputService } from '../input/input.service';
@@ -40,6 +40,7 @@ export class InputsPage implements OnInit {
     public route: ActivatedRoute,
     public modalCtrl: ModalController,
     public events: Events,
+    public languageService: LanguageService,
     // public popoverCtrl: PopoverController,
     public workService: WorkService,
     public inputService: InputService,
@@ -96,6 +97,9 @@ export class InputsPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.setFilteredItems();

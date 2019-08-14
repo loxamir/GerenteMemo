@@ -1,17 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { NavController,  LoadingController,  Events, PopoverController,
-  AlertController, ModalController } from '@ionic/angular';
+import {
+  NavController, LoadingController, Events, PopoverController,
+  AlertController, ModalController
+} from '@ionic/angular';
 
 import 'rxjs/Rx';
 import { CropsService } from './crops.service';
-// import { CropsPopover } from './crops.popover';
-// import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 import { CropService } from '../crop/crop.service';
 import { CropPage } from '../crop/crop.page';
 import { WorkService } from '../work/work.service';
-// import { ProjectPage } from '../../project/project';
 import { FilterPage } from '../filter/filter.page';
 
 @Component({
@@ -37,16 +38,17 @@ export class CropsPage implements OnInit {
     public popoverCtrl: PopoverController,
     public workService: WorkService,
     public cropService: CropService,
+    public translate: TranslateService,
+    public languageService: LanguageService,
     public alertCtrl: AlertController,
   ) {
-    //this.loading = //this.loadingCtrl.create({});
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  changeSearch(){
+  changeSearch() {
     this.showSearch = !this.showSearch;
     this.searchTerm = '';
-    if (this.showSearch){
+    if (this.showSearch) {
       setTimeout(() => {
         this.searchBar.setFocus();
       }, 500);
@@ -54,34 +56,35 @@ export class CropsPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.setFilteredItems();
-    this.events.subscribe('changed-work', (change)=>{
+    this.events.subscribe('changed-work', (change) => {
       this.cropsService.handleViewChange(this.crops, change);
     })
-    this.events.subscribe('changed-project', (change)=>{
-      // this.cropsService.handleChange(this.crops, change);
+    this.events.subscribe('changed-project', (change) => {
       this.setFilteredItems();
     })
-    this.events.subscribe('got-database', ()=>{
+    this.events.subscribe('got-database', () => {
       this.setFilteredItems();
     })
   }
 
-
-    async showFilter() {
-      this.events.subscribe('get-filter', (data) => {
-        //Do your stuff
-        this.events.unsubscribe('get-filter');
-      });
-      let profileModal = await this.modalCtrl.create({
-        component: FilterPage,
-        componentProps: {
-        }
-      });
-      profileModal.present();
-    }
+  async showFilter() {
+    this.events.subscribe('get-filter', (data) => {
+      //Do your stuff
+      this.events.unsubscribe('get-filter');
+    });
+    let profileModal = await this.modalCtrl.create({
+      component: FilterPage,
+      componentProps: {
+      }
+    });
+    profileModal.present();
+  }
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
@@ -115,39 +118,24 @@ export class CropsPage implements OnInit {
     });
   }
 
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(CropsPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
-
   openCrop(crop) {
     this.events.subscribe('open-crop', (data) => {
       this.events.unsubscribe('open-crop');
     })
-    // let newRootNav = <NavController>this.app.getRootNavById('n4');
-    // newRootNav.push(CropPage, {'_id': crop._id});
-    this.navCtrl.navigateForward(['/crop', {'_id': crop._id}]);
+    this.navCtrl.navigateForward(['/crop', { '_id': crop._id }]);
   }
 
   selectCrop(crop) {
-    if (this.select){
-      // this.navCtrl.navigateBack().then(() => {
+    if (this.select) {
       this.modalCtrl.dismiss();
-        this.events.publish('select-crop', crop);
-      // });
+      this.events.publish('select-crop', crop);
     } else {
       this.openCrop(crop);
     }
   }
 
-  // createCrop() {
-  //   this.navCtrl.navigateForward(['/crop', {"create": true}]);
-  // }
-
-  async createCrop(){
-    if (this.select){
+  async createCrop() {
+    if (this.select) {
       let profileModal = await this.modalCtrl.create({
         component: CropPage,
         componentProps: {
@@ -160,7 +148,7 @@ export class CropsPage implements OnInit {
     }
     this.events.subscribe('create-crop', (data) => {
       console.log("select", data);
-      if (this.select){
+      if (this.select) {
         this.events.publish('select-crop', data);
         console.log("dismiss");
         this.modalCtrl.dismiss();
@@ -169,9 +157,9 @@ export class CropsPage implements OnInit {
     })
   }
 
-  deleteCrop(crop){
+  deleteCrop(crop) {
     let index = this.crops.indexOf(crop);
-    if (crop.balance == 0){
+    if (crop.balance == 0) {
       this.crops.splice(index, 1);
       this.cropsService.deleteCrop(crop);
     }

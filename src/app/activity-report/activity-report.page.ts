@@ -77,7 +77,6 @@ export class ActivityReportPage implements OnInit {
     public pouchdbService: PouchdbService,
   ) {
     this.today = new Date().toISOString();
-    this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.avoidAlertMessage = false;
   }
@@ -1012,6 +1011,9 @@ export class ActivityReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.goNextStep();

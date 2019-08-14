@@ -111,7 +111,7 @@
         </ion-item>
         <ion-item-options>
           <ion-item-option (click)="deleteWork(item)" *ngIf="!item.fixed">
-            Borrar
+            {{'DELETE'|translate}}
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
@@ -235,7 +235,7 @@
         <div class="field-many2one">
           <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
           <h4 class="field-value">
-            {{animalForm.value.crop && animalForm.value.crop.name || 'Selecionar'}}
+            {{animalForm.value.crop && animalForm.value.crop.name || 'SELECT'|translate}}
           </h4>
         </div>
       </ion-item>
@@ -247,7 +247,7 @@
         <div class="field-many2one">
           <h4 class="field-label">{{'Proprietario' | translate}}</h4>
           <h4 class="field-value">
-            {{animalForm.value.contact && animalForm.value.contact.name || 'Selecionar'}}
+            {{animalForm.value.contact && animalForm.value.contact.name || 'SELECT'|translate}}
           </h4>
         </div>
       </ion-item>
@@ -268,7 +268,7 @@
           {{'Porcentage %' | translate}}</ion-label>
         <ion-input type="number" formControlName="rentingAmount"></ion-input>
       </ion-item>
-      <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
+      <ion-button class="button-100" color="success" (click)="buttonSave()">{{'DELETE'|translate}}</ion-button>
     </ion-row>
   </form>
 </ion-content>

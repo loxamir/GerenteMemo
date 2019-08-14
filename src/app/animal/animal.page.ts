@@ -741,26 +741,20 @@ export class AnimalPage implements OnInit {
   async canDeactivate() {
     if (this.animalForm.dirty) {
       let alertPopup = await this.alertCtrl.create({
-        header: 'Descartar',
-        message: '¿Deseas salir sin guardar?',
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
         buttons: [{
-          text: 'Si',
+          text: this.translate.instant('YES'),
           handler: () => {
             this.exitPage();
           }
         },
         {
-          text: 'No',
-          handler: () => {
-            // need to do something if the user stays?
-          }
+          text: this.translate.instant('NO'),
+          handler: () => { }
         }]
       });
-
-      // Show the alert
       alertPopup.present();
-
-      // Return false to avoid the page to be popped up
       return false;
     } else {
       this.exitPage();

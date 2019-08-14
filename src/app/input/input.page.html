@@ -67,10 +67,10 @@
                     </h3>
                     <div [innerHTML]="item.summary"></div>
                     <h1 class="activity-note" style="color:red;" *ngIf="item.warehouseFrom_id == warehouse_id">
-                      <b>Cantidad:</b> {{-item.quantity||-item.total|number:'1.0'}}
+                      <b>{{'QUANTITY'|translate}}:</b> {{-item.quantity||-item.total|number:'1.0'}}
                     </h1>
                     <h1 class="activity-note" style="color: green;" *ngIf="item.warehouseTo_id == warehouse_id">
-                      <b>Cantidad:</b> {{item.quantity||item.total|number:'1.0'}}
+                      <b>{{'QUANTITY'|translate}}:</b> {{item.quantity||item.total|number:'1.0'}}
                     </h1>
                     <h1 class="activity-note">
                       {{item.note}}
@@ -112,7 +112,7 @@
         </ion-item>
         <ion-item-options>
           <ion-item-option (click)="deleteWork(item)" *ngIf="!item.fixed">
-            Borrar
+            {{'DELETE'|translate}}
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
@@ -121,155 +121,7 @@
       <ion-infinite-scroll-content class="rotate180" loadingSpinner="bubbles" loadingText="Cargando mas atividades...">
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
-
     <ion-row style="height:15px;">
     </ion-row>
   </form>
-
-
-  <!-- <ion-fab vertical="top" class="rotate180" style="left: 0px;right:0px;top: 0px;background: #dddddd;" horizontal="start" slot="fixed">
-    <ion-row style="padding-bottom:5px;padding-top: 5px;">
-      <ion-col [class.left-round]="true" [class.all-round]="false">
-        <ion-textarea #note [(ngModel)]="inputForm.value.note" placeholder="Escribir Anotación" style="margin-top: 2px;" rows="1">
-        </ion-textarea>
-      </ion-col>
-      <div size="1.6" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;    width: 40px;padding-top: 5px;">
-        <ion-icon name="camera" (click)="selectImage()" style="font-size: 26px;color: gray;margin-top:7px;"></ion-icon>
-      </div>
-      <div size="2" style="padding-top: 6px;padding-right: 5px;">
-        <ion-fab-button *ngIf="!inputForm.value.note" style="width:40px;height:40px;margin-left: 5px;">
-          <ion-icon name="add" (click)="addButton()" *ngIf="!showBotom">
-          </ion-icon>
-          <ion-icon name="close" (click)="addButton()" *ngIf="showBotom">
-          </ion-icon>
-        </ion-fab-button>
-        <ion-fab-button *ngIf="inputForm.value.note" (click)="sendButton()" style="width:40px;height:40px;margin-left: 5px;">
-          <ion-icon name="send" style="font-size: 22px;margin-left: 3px;">
-          </ion-icon>
-        </ion-fab-button>
-      </div>
-    </ion-row>
-    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-      <ion-col size="4" (click)="createSale()">
-        <ion-img [src]="'./assets/icons/sale.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Venta
-        </h1>
-      </ion-col>
-      <ion-col size="4" (click)="createPurchase()">
-        <ion-img [src]="'./assets/icons/purchase.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Compra
-        </h1>
-      </ion-col>
-      <ion-col size="4" (click)="createService()">
-        <ion-img [src]="'./assets/icons/service.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Servicio
-        </h1>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-      <ion-col size="4" (click)="createReception()">
-        <ion-img [src]="'./assets/icons/receipt.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Cobro
-        </h1>
-      </ion-col>
-      <ion-col size="4" (click)="createPayment()">
-        <ion-img [src]="'./assets/icons/stock-move.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Pago
-        </h1>
-      </ion-col>
-      <ion-col size="4" (click)="createCashMove()">
-        <ion-img [src]="'./assets/icons/cash-move.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Registro Financiero
-        </h1>
-      </ion-col>
-    </ion-row> -->
-
-    <!-- <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
-
-      <ion-col size="4" (click)="addActivity('activity.analisis')">
-        <ion-img [src]="'./assets/icons/cash-move.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Facturación
-        </h1>
-      </ion-col>
-      <ion-col size="4" (click)="addActivity('activity.rain')">
-        <ion-img [src]="'./assets/icons/stock-move.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Recepciones
-        </h1>
-      </ion-col>
-      <ion-col size="4" (click)="addActivity('activity.harvest')">
-        <ion-img [src]="'./assets/icons/receipt.png'" class="activity-menu"></ion-img>
-        <h1 class="activity-title">
-          Entregas
-        </h1>
-      </ion-col>
-
-    </ion-row> -->
-  <!-- </ion-fab> -->
-
 </ion-content>
-
-<!-- <ion-content class="list-mini-content" *ngIf="showForm">
-  <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
-  <div id="pwa">
-    <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
-  </div>
-  <form class="sample-form validations-form" [formGroup]="inputForm">
-    <ion-row>
-      <img [src]="inputForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
-      <ion-item no-padding class="field-100">
-        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-        <ion-input #name type="text" formControlName="name"></ion-input>
-      </ion-item>
-      <ion-item no-padding class="field-50">
-        <ion-label position="floating">{{'Input(ha)' | translate}}</ion-label>
-        <ion-input type="number" style="--padding-top: 21px;" formControlName="surface"></ion-input>
-      </ion-item>
-      <ion-item no-padding (click)="selectCrop()" class="field-50">
-        <div class="field-many2one">
-          <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
-          <h4 class="field-value">
-            {{inputForm.value.crop && inputForm.value.crop.name || 'Selecionar'}}
-          </h4>
-        </div>
-      </ion-item>
-      <ion-item no-padding class="field-100">
-        <ion-label>{{'OWN_PLACE' | translate}}</ion-label>
-        <ion-toggle formControlName="own"></ion-toggle>
-      </ion-item>
-      <ion-item no-padding (click)="selectContact()" *ngIf="!inputForm.value.own" class="field-100">
-        <div class="field-many2one">
-          <h4 class="field-label">{{'Proprietario' | translate}}</h4>
-          <h4 class="field-value">
-            {{inputForm.value.contact && inputForm.value.contact.name || 'Selecionar'}}
-          </h4>
-        </div>
-      </ion-item>
-      <ion-item no-padding class="field-50" *ngIf="!inputForm.value.own">
-        <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
-        <ion-select #type formControlName="rentingType" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
-          <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
-          <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
-          <ion-select-option value="percent">Porcentage</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item no-padding class="field-50" *ngIf="!inputForm.value.own">
-        <ion-label position="floating" *ngIf="inputForm.value.rentingType == 'fixedAmount'">
-          {{'Valor em $' | translate}}</ion-label>
-        <ion-label position="floating" *ngIf="inputForm.value.rentingType == 'fixedWeight'">
-          {{'Peso em Kg' | translate}}</ion-label>
-        <ion-label position="floating" *ngIf="inputForm.value.rentingType == 'percent'">
-          {{'Porcentage %' | translate}}</ion-label>
-        <ion-input type="number" formControlName="rentingAmount"></ion-input>
-      </ion-item>
-      <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
-    </ion-row>
-  </form>
-</ion-content> -->

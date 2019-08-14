@@ -75,16 +75,12 @@ export class WorkPage implements OnInit {
     private elementRef: ElementRef
   ) {
     this.today = new Date();
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.activity = this.route.snapshot.paramMap.get('activity');
     this.area = eval(this.route.snapshot.paramMap.get('area'));
     this.machine = eval(this.route.snapshot.paramMap.get('machine'));
     this.select = this.route.snapshot.paramMap.get('select');
     this.note = this.route.snapshot.paramMap.get('note');
-    // console.log("note", this.route.snapshot.paramMap.get('note'));
   }
 
   dismissData(){
@@ -144,17 +140,18 @@ export class WorkPage implements OnInit {
     this.workForm = this.formBuilder.group({
       name: new FormControl(''),
       activity: new FormControl(this.activity||{}),
-      // code: new FormControl(''),
       date: new FormControl(this.today.toISOString()),
       note: new FormControl(),
       state: new FormControl('QUOTATION'),
-      // language: new FormControl(''),
       fields: new FormControl([]),
       summary: new FormControl(""),
       section: new FormControl(null),
       doc_id: new FormControl(''),
       _id: new FormControl(''),
     });
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
 
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
@@ -666,34 +663,26 @@ export class WorkPage implements OnInit {
     this.canDeactivate();
   }
   async canDeactivate() {
-      if(this.workForm.dirty) {
-          let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
-              buttons: [{
-                      text: 'Si',
-                      handler: () => {
-                          // alertPopup.dismiss().then(() => {
-                              this.exitPage();
-                          // });
-                      }
-                  },
-                  {
-                      text: 'No',
-                      handler: () => {
-                          // need to do something if the user stays?
-                      }
-                  }]
-          });
-
-          // Show the alert
-          alertPopup.present();
-
-          // Return false to avoid the page to be popped up
-          return false;
-      } else {
-        this.exitPage();
-      }
+    if(this.workForm.dirty) {
+      let alertPopup = await this.alertCtrl.create({
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
+        buttons: [{
+          text: this.translate.instant('YES'),
+          handler: () => {
+            this.exitPage();
+          }
+        },
+        {
+          text: this.translate.instant('NO'),
+          handler: () => { }
+        }]
+      });
+      alertPopup.present();
+      return false;
+    } else {
+      this.exitPage();
+    }
   }
 
   private exitPage() {

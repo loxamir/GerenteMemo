@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/report-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
-        {{ 'Informe Agricola' | translate }}
+        {{ 'AGRO_REPORT' | translate }}
     </ion-title>
     <ion-buttons slot="end">
     </ion-buttons>
@@ -35,7 +35,7 @@
       <ion-item
       no-padding
       class="field-100">
-        <ion-label  position="floating">{{'Informe' | translate}}</ion-label>
+        <ion-label  position="floating">{{'REPORT' | translate}}</ion-label>
         <ion-select #groupBy formControlName="groupBy"
           style="text-align: center;"
           interface="popover"
@@ -43,12 +43,12 @@
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
           <ion-select-option value="area">Costos por Lugar</ion-select-option>
-          <ion-select-option value="crop">Costos por Safra</ion-select-option>
+          <ion-select-option value="crop">Costos por {{'CROP'|translate}}</ion-select-option>
           <ion-select-option value="activity">Costos por Atividade</ion-select-option>
           <ion-select-option value="name">Costos por Item</ion-select-option>
           <!-- <ion-select-option value="date">Costos por Fecha</ion-select-option> -->
-          <ion-select-option value="yieldCrop">Rendimiento por Safra en Saca</ion-select-option>
-          <ion-select-option value="yieldCropkg">Rendimiento por Safra en Kg</ion-select-option>
+          <ion-select-option value="yieldCrop">Rendimiento por {{'CROP'|translate}} en Saca</ion-select-option>
+          <ion-select-option value="yieldCropkg">Rendimiento por {{'CROP'|translate}} en Kg</ion-select-option>
           <ion-select-option value="yieldArea">Rendimiento por Lugar en Saca</ion-select-option>
           <ion-select-option value="yieldAreakg">Rendimiento por Lugar en Kg</ion-select-option>
           <!-- <ion-select-option value="yieldDate">Rendimiento por Fecha</ion-select-option> -->
@@ -57,37 +57,37 @@
       <ion-item
         no-padding
         class="field-100">
-        <ion-label>{{'Filtros' | translate}}</ion-label>
+        <ion-label>{{'FILTERS' | translate}}</ion-label>
         <ion-toggle formControlName="showFilter"></ion-toggle>
       </ion-item>
       <ion-item *ngIf="reportActivityForm.value.showFilter" no-padding (click)="selectCrop()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Safra' | translate}}</h4>
-          <h4 class="field-value">{{reportActivityForm.value.crop && reportActivityForm.value.crop.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'CROP' | translate}}</h4>
+          <h4 class="field-value">{{reportActivityForm.value.crop && reportActivityForm.value.crop.name || 'ALL'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item *ngIf="reportActivityForm.value.showFilter" no-padding (click)="selectArea()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Lugar' | translate}}</h4>
-          <h4 class="field-value">{{reportActivityForm.value.area && reportActivityForm.value.area.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'AREA' | translate}}</h4>
+          <h4 class="field-value">{{reportActivityForm.value.area && reportActivityForm.value.area.name || 'ALL'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item *ngIf="reportActivityForm.value.showFilter" no-padding (click)="selectInput()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Insumo' | translate}}</h4>
-          <h4 class="field-value">{{reportActivityForm.value.input && reportActivityForm.value.input.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'INPUT' | translate}}</h4>
+          <h4 class="field-value">{{reportActivityForm.value.input && reportActivityForm.value.input.name || 'ALL'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item *ngIf="reportActivityForm.value.showFilter" no-padding (click)="selectMachine()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Maquina' | translate}}</h4>
-          <h4 class="field-value">{{reportActivityForm.value.machine && reportActivityForm.value.machine.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'MACHINE' | translate}}</h4>
+          <h4 class="field-value">{{reportActivityForm.value.machine && reportActivityForm.value.machine.name || 'ALL'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item *ngIf="reportActivityForm.value.showFilter" no-padding (click)="selectActivity()" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Actividade' | translate}}</h4>
-          <h4 class="field-value">{{reportActivityForm.value.activity && reportActivityForm.value.activity.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'ACTIVITY' | translate}}</h4>
+          <h4 class="field-value">{{reportActivityForm.value.activity && reportActivityForm.value.activity.name || 'ALL'|translate}}</h4>
         </div>
       </ion-item>
       <!-- <ion-button class="button-100" color="success" (click)="setFilter()">Filtrar</ion-button> -->
@@ -98,10 +98,10 @@
               <ion-list no-lines>
                 <ion-row class="report-title">
                   <ion-col width-40 (click)="orderByName()">
-                    Producto
+                    {{'PRODUCT'|translate}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                    Precio
+                    {{'PRICE'|translate}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
                     Cant.
@@ -145,7 +145,7 @@
             <ion-list no-lines *ngIf="reportActivityForm.value.groupBy == 'crop'">
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Safra
+                  {{'CROP'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
                   Costo/ha
@@ -189,7 +189,7 @@
             <ion-list no-lines *ngIf="reportActivityForm.value.groupBy == 'yieldCrop'">
               <ion-row class="report-title">
                 <ion-col (click)="orderByName()">
-                  Safra
+                  {{'CROP'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByQuantity()">
                   Costo/Saca
@@ -234,7 +234,7 @@
             <ion-list no-lines *ngIf="reportActivityForm.value.groupBy == 'yieldCropkg'">
               <ion-row class="report-title">
                 <ion-col (click)="orderByName()">
-                  Safra
+                  {{'CROP'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByQuantity()">
                   Costo/Kg

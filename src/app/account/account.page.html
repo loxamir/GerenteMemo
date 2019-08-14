@@ -27,7 +27,7 @@
     <ion-row>
       <ion-col no-padding class="field-many2one-edit" (click)="selectCategory()">
         <h4 class="field-label-col">{{'CATEGORY' | translate }}</h4>
-        <h4 class="field-value-col">{{accountForm.value.category && accountForm.value.category.name || 'Selecionar'}}</h4>
+        <h4 class="field-value-col">{{accountForm.value.category && accountForm.value.category.name || 'SELECT'|translate}}</h4>
       </ion-col>
       <ion-col size="2" class="open-item-col" (click)="editCategory()">
         <ion-icon name="open" class="open-item-arrow"></ion-icon>
@@ -65,7 +65,7 @@
        class="field-50">
        <div class="field-many2one">
          <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-         <h4 class="field-value-max">{{accountForm.value.currency && accountForm.value.currency.name || 'Selecionar'}}</h4>
+         <h4 class="field-value-max">{{accountForm.value.currency && accountForm.value.currency.name || 'SELECT'|translate}}</h4>
        </div>
       </ion-item>
 

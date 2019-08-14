@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/agro-tabs/future-contract-list"></ion-back-button>
     </ion-buttons>
     <ion-title *ngIf="return">
-      {{ 'Devolucion' | translate }}: {{futureContractForm.value.code}}
+      {{ 'RETURN' | translate }}: {{futureContractForm.value.code}}
     </ion-title>
     <ion-title *ngIf="!return">
       {{ 'FUTURE_CONTRACT' | translate }}: {{futureContractForm.value.code}}
@@ -17,7 +17,7 @@
   </ion-toolbar>
   <ion-row style="height: 50px;">
     <ion-col (click)="setDiscount()">
-      <h4 class="field-label-col">{{'Valor Total' | translate}}</h4>
+      <h4 class="field-label-col">{{'TOTAL_AMOUNT' | translate}}</h4>
       <h4 class="field-value-col" style="color:blue">$ {{futureContractForm.value.quantity*(futureContractForm.value.price-futureContractForm.value.cost)|number:'1.'+currency_precision}}</h4>
   </ion-col>
   <!-- <ion-col
@@ -31,24 +31,24 @@
   </ion-col> -->
   <ion-col
   *ngIf="futureContractForm.value.state=='CONFIRMED'">
-      <h4 class="field-label-col">{{'A Entregar' | translate}}</h4>
+      <h4 class="field-label-col">{{'TO_DELIVERY' | translate}}</h4>
       <h4 class="field-value-col" style="color:red">{{futureContractForm.value.quantity - futureContractForm.value.delivered - futureContractForm.value.settled|number:'1.0'}}</h4>
   </ion-col>
   </ion-row>
   <ion-row  class="state-header">
     <ion-col size="4">
       <div class="clicked arron">
-        <span class="state-label">Borrador</span>
+        <span class="state-label">{{'DRAFT'|translate}}</span>
       </div>
     </ion-col>
     <ion-col size="4">
       <div [class.unclicked]="futureContractForm.value.state=='QUOTATION'" [class.clicked]="futureContractForm.value.state!='QUOTATION'" class="arrow">
-        <span class="state-label">Confirmada</span>
+        <span class="state-label">{{'CONFIRMED'|translate}}</span>
       </div>
     </ion-col>
     <ion-col size="4">
       <div [class.unclicked]="!(futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == futureContractForm.value.sold))" [class.clicked]="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == futureContractForm.value.sold)" class="arrow">
-        <span class="state-label">Concluido</span>
+        <span class="state-label">{{'DONE'|translate}}</span>
       </div>
     </ion-col>
   </ion-row>
@@ -78,11 +78,11 @@
       </ion-item>
       <ion-item no-padding (click)="selectCrop()" class="field-50">
         <h4 class="field-label">{{'CROP' | translate }}</h4>
-        <h4 class="field-value">{{futureContractForm.value.crop.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{futureContractForm.value.crop.name || 'SELECT'|translate}}</h4>
       </ion-item>
       <ion-item no-padding (click)="selectProduct()" class="field-50">
-        <h4 class="field-label">{{'Producto' | translate }}</h4>
-        <h4 class="field-value">{{futureContractForm.value.product && futureContractForm.value.product.name || 'Selecionar'}}</h4>
+        <h4 class="field-label">{{'PRODUCT' | translate }}</h4>
+        <h4 class="field-value">{{futureContractForm.value.product && futureContractForm.value.product.name || 'SELECT'|translate}}</h4>
       </ion-item>
       <ion-item no-padding class="field-50">
         <h4 class="field-label">{{'DATE_DELIVERY' | translate }}</h4>
@@ -107,14 +107,14 @@
       <ion-col no-padding class="field-many2one-edit"
       (click)="selectContact()">
         <h4 class="field-label-col">{{'CONTACT' | translate }}</h4>
-        <h4 class="field-value-col">{{futureContractForm.value.contact && futureContractForm.value.contact.name || 'Selecionar'}}</h4>
+        <h4 class="field-value-col">{{futureContractForm.value.contact && futureContractForm.value.contact.name || 'SELECT'|translate}}</h4>
       </ion-col>
       <ion-col size="2" class="open-item-col" (click)="editContact()">
         <ion-icon name="open" class="open-item-arrow"></ion-icon>
       </ion-col>
       <ion-item no-padding (click)="selectWarehouse()" class="field-100">
         <h4 class="field-label">{{'WAREHOUSE' | translate }}</h4>
-        <h4 class="field-value">{{futureContractForm.value.warehouse.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{futureContractForm.value.warehouse.name || 'SELECT'|translate}}</h4>
       </ion-item>
     </ion-row>
     <!-- <ion-row>
@@ -225,7 +225,7 @@
           <ion-item-options>
             <ion-item-option (click)="deleteCashMove(item)"
             *ngIf="!item.fixed">
-              Borrar
+              {{'DELETE'|translate}}
             </ion-item-option>
           </ion-item-options>
         </ion-item-sliding>
@@ -236,7 +236,7 @@
     <section>
       <ion-row no-padding class="content-row one-line">
          <ion-col no-padding width-25 class="schedule-date">
-           <h2 class="section-title">{{'Total Vendido:' | translate}}</h2>
+           <h2 class="section-title">{{'TOTAL_SOLD:' | translate}}</h2>
          </ion-col>
          <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
            <h2 class="list-big-number amount" style="color: red;">{{ futureContractForm.value.sold }}</h2>
@@ -263,17 +263,17 @@
 
     <ion-row>
       <ion-col *ngIf="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity > (futureContractForm.value.delivered + futureContractForm.value.settled))">
-        <ion-button class="button-100" (click)="addSettlement()"  color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> Entrega Manual</ion-button>
+        <ion-button class="button-100" (click)="addSettlement()"  color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon>{{'MANUAL_DELIVERY' | translate}}</ion-button>
       </ion-col>
       <ion-col *ngIf="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.delivered + futureContractForm.value.settled) > futureContractForm.value.sold">
-        <ion-button class="button-100" (click)="createSale()"  color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> Crear Venta</ion-button>
+        <ion-button class="button-100" (click)="createSale()"  color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> {{'CREATE_SALE' | translate}}</ion-button>
       </ion-col>
     </ion-row>
     <ion-list no-lines *ngIf="futureContractForm.value.settlements.length">
     <section>
       <ion-row no-padding class="content-row one-line">
          <ion-col no-padding width-25 class="schedule-date">
-           <h2 class="section-title">{{'Entreguas Manuales:' | translate}}</h2>
+           <h2 class="section-title">{{'MANUAL_DELIVERIES' | translate}}</h2>
          </ion-col>
          <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
            <h2 class="list-big-number amount" style="color: red;">{{ futureContractForm.value.settled }}</h2>
@@ -301,7 +301,7 @@
     <section>
       <ion-row no-padding class="content-row one-line">
          <ion-col no-padding width-25 class="schedule-date">
-           <h2 class="section-title">{{'Cargas Entregues:' | translate}}</h2>
+           <h2 class="section-title">{{'LOADS_DELIVERED:' | translate}}</h2>
          </ion-col>
          <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
            <h2 class="list-big-number amount" style="color: red;">{{ futureContractForm.value.delivered }}</h2>
@@ -403,7 +403,7 @@
       </ion-item>
         <ion-item-options  side="end">
           <ion-item-option (click)="deleteItem(slidingItem, item)"  *ngIf="futureContractForm.value.state=='QUOTATION'">
-            Borrar
+            {{'DELETE'|translate}}
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
@@ -421,7 +421,7 @@
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="futureContractForm.value.state == 'QUOTATION'">
     <ion-button (click)="confirmState()"  class="next-button" color="primary">
       <ion-icon name="checkmark"> </ion-icon>
-      Confirmar
+      {{'CONFIRM'|translate}}
     </ion-button>
   </ion-fab>
 
@@ -436,15 +436,15 @@
     <ion-button (click)="discard()" color="danger" class="discard-button">
       <ion-icon name="backspace" *ngIf="futureContractForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!futureContractForm.dirty"> </ion-icon>
-      <span *ngIf="futureContractForm.dirty">Descartar</span>
-      <span *ngIf="!futureContractForm.dirty">Volver</span>
+      <span *ngIf="futureContractForm.dirty">{{'DISCARD'|translate}}</span>
+      <span *ngIf="!futureContractForm.dirty">{{'GO_BACK'|translate}}</span>
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="futureContractForm.dirty">
     <ion-button (click)="buttonSave()"  color="success" class="save-button">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{'SAVE'|translate}}
     </ion-button>
   </ion-fab>
 

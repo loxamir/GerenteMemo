@@ -87,7 +87,7 @@
       </ion-item>
       <!-- <ion-item no-padding (click)="selectCrop()" class="field-50">
         <h4 class="field-label">{{'CROP' | translate }}</h4>
-        <h4 class="field-value">{{saleForm.value.crop.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{saleForm.value.crop.name || 'SELECT'|translate}}</h4>
       </ion-item>
       <ion-item no-padding class="field-50">
         <h4 class="field-label">{{'DATE_DELIVERY' | translate }}</h4>
@@ -99,7 +99,7 @@
       </ion-item> -->
       <ion-item no-padding (click)="selectWarehouse()" class="field-100">
         <h4 class="field-label">{{'WAREHOUSE' | translate }}</h4>
-        <h4 class="field-value">{{saleForm.value.warehouse.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{saleForm.value.warehouse.name || 'SELECT'|translate}}</h4>
       </ion-item>
     </ion-row>
     <ion-row>
@@ -308,7 +308,7 @@
           <!-- <ion-item-options>
             <ion-item-option (click)="deleteCashMove(item)"
             *ngIf="!item.fixed">
-              Borrar
+              {{'DELETE'|translate}}
             </ion-item-option>
           </ion-item-options> -->
         </ion-item-sliding>

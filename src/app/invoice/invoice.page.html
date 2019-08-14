@@ -56,11 +56,11 @@
       <ion-item no-padding (click)="selectContact()" class="field-100">
         <h4 class="field-label" *ngIf="invoiceForm.value.type == 'out'">{{'CLIENT' | translate}}</h4>
         <h4 class="field-label" *ngIf="invoiceForm.value.type == 'in'">{{'SUPPLIER' | translate}}</h4>
-        <h4 class="field-value">{{invoiceForm.value.contact && invoiceForm.value.contact.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{invoiceForm.value.contact && invoiceForm.value.contact.name || 'SELECT'|translate}}</h4>
       </ion-item>
       <!-- <ion-item no-padding (click)="selectPaymentCondition()" class="field-100">
         <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
-        <h4 class="field-value">{{invoiceForm.value.paymentCondition && invoiceForm.value.paymentCondition.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{invoiceForm.value.paymentCondition && invoiceForm.value.paymentCondition.name || 'SELECT'|translate}}</h4>
       </ion-item> -->
       <ion-item
       no-padding
@@ -93,7 +93,7 @@
       </ion-item>
       <ion-item no-padding (click)="selectCurrency()" class="field-50">
         <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-        <h4 class="field-value">{{invoiceForm.value.currency && invoiceForm.value.currency.name || 'Selecionar'}}</h4>
+        <h4 class="field-value">{{invoiceForm.value.currency && invoiceForm.value.currency.name || 'SELECT'|translate}}</h4>
       </ion-item>
     </ion-row>
 

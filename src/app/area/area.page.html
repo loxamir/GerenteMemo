@@ -21,16 +21,16 @@
     (click)="showEdit()"
     style="padding-left: 5px;">{{areaForm.value.name}}
       <h1 class="subtitle" *ngIf="areaForm.value.lastRain && diffDays  > 1">
-        Ultima chuva {{areaForm.value.lastRain}}mm a {{ diffDays }} dias
+        {{'LAST_RAIN'|translate}} {{areaForm.value.lastRain}}mm {{'WAS_AT'|translate}} {{ diffDays }} {{'DAYS'|translate}}
       </h1>
       <h1 class="subtitle" *ngIf="areaForm.value.lastRain && diffDays == 1">
-        Ultima chuva {{areaForm.value.lastRain}}mm a {{ diffDays }} dia
+        {{'LAST_RAIN'|translate}} {{areaForm.value.lastRain}}mm {{'WAS_AT'|translate}} {{ diffDays }} {{'DAY'|translate}}
       </h1>
       <h1 class="subtitle" *ngIf="areaForm.value.lastRain && !diffDays">
-        Ultima chuva {{areaForm.value.lastRain}}mm hoje
+        {{'LAST_RAIN'|translate}} {{areaForm.value.lastRain}}mm {{'TODAY'|translate}}
       </h1>
       <h1 class="subtitle" *ngIf="!areaForm.value.lastRain">
-        Sem dados de Chuva
+        {{'NO_RAIN_DATA'|translate}}
       </h1>
     </ion-title>
     <ion-buttons slot="end">
@@ -65,11 +65,11 @@
                 <ion-row>
                   <ion-col size="8.5" no-padding>
                     <h3 class="activity-name">
-                      {{ item.name || item.activity_name || 'No Informado'}}
+                      {{ item.name || item.activity_name || 'NOT_INFORMED'|translate}}
                     </h3>
                     <div [innerHTML]="item.summary"></div>
                     <h1 class="activity-note" *ngIf="item.cost">
-                      Costo: $ {{item.cost|number:'1.'+currency_precision}}
+                      {{'COST'|translate}}: $ {{item.cost|number:'1.'+currency_precision}}
                     </h1>
                     <h1 class="activity-note">
                       {{item.note}}
@@ -111,7 +111,7 @@
         </ion-item>
         <ion-item-options>
           <ion-item-option (click)="deleteWork(item)" *ngIf="!item.fixed">
-            Borrar
+            {{'DELETE'|translate}}
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
@@ -129,7 +129,7 @@
   <ion-fab vertical="top" class="rotate180" style="left: 0px;right:0px;top: 0px;background: #dddddd;" horizontal="start" slot="fixed">
     <ion-row style="padding-bottom:5px;padding-top: 5px;">
       <ion-col [class.left-round]="true" [class.all-round]="false">
-        <ion-textarea #note [(ngModel)]="areaForm.value.note" placeholder="Escribir Anotación" style="margin-top: 2px;" rows="1">
+        <ion-textarea #note [(ngModel)]="areaForm.value.note" [placeholder]="'WRITE_NOTE'|translate" style="margin-top: 2px;" rows="1">
         </ion-textarea>
       </ion-col>
       <div size="1.6" style="background: white;border-top-right-radius: 25px;    border-bottom-right-radius: 25px;    width: 40px;padding-top: 5px;">
@@ -152,19 +152,19 @@
       <ion-col size="4" (click)="addActivity('activity.plant')">
         <ion-img [src]="'./assets/icons/activity.plant.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Plantio
+          {{'PLANT_ACTIVITY'|translate}}
         </h1>
       </ion-col>
       <ion-col size="4" (click)="addActivity('activity.spray')">
         <ion-img [src]="'./assets/icons/activity.spray.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Pulverización
+          {{'SPRAY_ACTIVITY'|translate}}
         </h1>
       </ion-col>
       <ion-col size="4" (click)="addActivity('activity.work')">
         <ion-img [src]="'./assets/icons/activity.work.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Otro Servicio
+          {{'OTHER_SERVICE_ACTIVITY'|translate}}
         </h1>
       </ion-col>
     </ion-row>
@@ -172,19 +172,19 @@
       <ion-col size="4" (click)="addActivity('activity.harvest')">
         <ion-img [src]="'./assets/icons/activity.harvest.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Cosecha
+          {{'HARVEST_ACTIVITY'|translate}}
         </h1>
       </ion-col>
       <ion-col size="4" (click)="addActivity('activity.rain')">
         <ion-img [src]="'./assets/icons/activity.rain.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Lluvia
+          {{'RAIN_ACTIVITY'|translate}}
         </h1>
       </ion-col>
       <ion-col size="4" (click)="addActivity('activity.analisis')">
         <ion-img [src]="'./assets/icons/activity.analisis.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">
-          Analisis
+          {{'ANALISIS_ACTIVITY'|translate}}
         </h1>
       </ion-col>
     </ion-row>
@@ -205,14 +205,14 @@
         <ion-input #name type="text" formControlName="name"></ion-input>
       </ion-item>
       <ion-item no-padding class="field-50">
-        <ion-label position="floating">{{'Area(ha)' | translate}}</ion-label>
+        <ion-label position="floating">{{'AREA' | translate}}(ha)</ion-label>
         <ion-input type="number" formControlName="surface"></ion-input>
       </ion-item>
       <ion-item no-padding (click)="selectCrop()" class="field-50">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Safra Actual' | translate}}</h4>
+          <h4 class="field-label">{{'CURRENT_CROP' | translate}}</h4>
           <h4 class="field-value">
-            {{areaForm.value.crop && areaForm.value.crop.name || 'Selecionar'}}
+            {{areaForm.value.crop && areaForm.value.crop.name || 'SELECT'|translate}}
           </h4>
         </div>
       </ion-item>
@@ -222,30 +222,30 @@
       </ion-item>
       <ion-item no-padding (click)="selectContact()" *ngIf="!areaForm.value.own" class="field-100">
         <div class="field-many2one">
-          <h4 class="field-label">{{'Proprietario' | translate}}</h4>
+          <h4 class="field-label">{{'OWNER' | translate}}</h4>
           <h4 class="field-value">
-            {{areaForm.value.contact && areaForm.value.contact.name || 'Selecionar'}}
+            {{areaForm.value.contact && areaForm.value.contact.name || 'SELECT'|translate}}
           </h4>
         </div>
       </ion-item>
       <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
-        <ion-label position="floating">{{'Tipo de Arendamento' | translate}}</ion-label>
+        <ion-label position="floating">{{'LEASING_TYPE' | translate}}</ion-label>
         <ion-select #type formControlName="rentingType" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
-          <ion-select-option value="fixedAmount">Valor Fixo</ion-select-option>
-          <ion-select-option value="fixedWeight">Peso Fixo</ion-select-option>
-          <ion-select-option value="percent">Porcentage</ion-select-option>
+          <ion-select-option value="fixedAmount">{{'FIXED_AMOUNT'|translate}}</ion-select-option>
+          <ion-select-option value="fixedWeight">{{'FIXED_WEIGHT'|translate}}</ion-select-option>
+          <ion-select-option value="percent">{{'PERCENTAGE'|translate}}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item no-padding class="field-50" *ngIf="!areaForm.value.own">
         <ion-label position="floating" *ngIf="areaForm.value.rentingType == 'fixedAmount'">
-          {{'Valor em $' | translate}}</ion-label>
+          {{'VALUE_IN_SIFRA' | translate}}</ion-label>
         <ion-label position="floating" *ngIf="areaForm.value.rentingType == 'fixedWeight'">
-          {{'Peso em Kg' | translate}}</ion-label>
+          {{'WEIGHT_IN_KG' | translate}}</ion-label>
         <ion-label position="floating" *ngIf="areaForm.value.rentingType == 'percent'">
-          {{'Porcentage %' | translate}}</ion-label>
+          {{'PERCENTAGE_IN_PERCENT' | translate}}</ion-label>
         <ion-input type="number" formControlName="rentingAmount"></ion-input>
       </ion-item>
-      <ion-button class="button-100" color="success" (click)="buttonSave()">Guardar</ion-button>
+      <ion-button class="button-100" color="success" (click)="buttonSave()">{{'SAVE'|translate}}</ion-button>
     </ion-row>
   </form>
 </ion-content>
