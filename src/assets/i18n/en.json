@@ -73,7 +73,6 @@
   "COST_BAG": "Cost/Bag",
   "COST_KG": "Cost/Kg",
   "COST_HA": "Cost/Ha",
-  "ALL": "All",
   "COST_BY_MACHINE": "Cost by Machine",
   "ITEM": "Item",
 
@@ -505,7 +504,6 @@
   "TOTAL_INCOME": "Total Income",
   "TOTAL_EXPENSE": "Total expense",
   "PROFIT_MARGIN": "Profit Margin",
-
   "CONTRACT_ITEMS":"Contract Items",
   "NEXT_RUN": "Next Run",
   "DAY":"Day",
@@ -522,6 +520,6 @@
   "COMPONENT": "Component",
   "MEDIA": "Media",
   "QUANT": "Quant",
-
+  "ALL": "All",
   "RESULT": "Result"
 }

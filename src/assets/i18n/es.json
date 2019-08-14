@@ -69,7 +69,6 @@
   "COST_BAG": "Costo/Saca",
   "COST_KG": "Costo/Kg",
   "COST_HA": "Costo/Ha",
-  "ALL": "Todos",
   "COST_BY_MACHINE": "Costos por Maquina",
   "ITEM": "Iten",
 
@@ -501,7 +500,6 @@
   "TOTAL_INCOME": "Total de Ingresos",
   "TOTAL_EXPENSE": "Total de Despesas",
   "PROFIT_MARGIN": "Margen de Lucro",
-
   "CONTRACT_ITEMS":"Itens del Contrato",
   "NEXT_RUN": "Proxima Ejecución",
   "DAY":"Dia",
@@ -518,5 +516,6 @@
   "COMPONENT": "Componente",
   "MEDIA": "Promedio",
   "QUANT": "Cant.",
+  "ALL": "Todos",
   "RESULT": "Resultado"
 }
