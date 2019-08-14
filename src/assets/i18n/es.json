@@ -399,5 +399,22 @@
   "TOTAL_INCOME": "Total de Ingresos",
   "TOTAL_EXPENSE": "Total de Despesas",
   "PROFIT_MARGIN": "Margen de Lucro",
+
+  "CONTRACT_ITEMS":"Itens del Contrato",
+  "NEXT_RUN": "Proxima Ejecución",
+  "DAY":"Dia",
+  "WEEK":"Semana",
+  "MONTH":"Mês",
+  "YEAR":"Año",
+  "REPEAT_EACH":"Repetir a cada",
+  "CONTRACT":"Contracto",
+  "SHOW_TITLES": "Mostrar Titulos",
+  "SHOW_CATEGORIES": "Mostrar Categorias",
+  "SHOW_ACCOUNTS": "Mostrar Cuentas",
+  "GROUP_BY":"Agrupado Por",
+  "TOTAL_UPPER": "TOTAL",
+  "COMPONENT": "Componente",
+  "MEDIA": "Promedio",
+  "QUANT": "Cant.",
   "RESULT": "Resultado"
 }
