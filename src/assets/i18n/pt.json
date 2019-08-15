@@ -416,5 +416,13 @@
   "MEDIA": "Media",
   "QUANT": "Cant.",
   "ALL": "Todos",
+  "BACK_TO_QUOTATION": "Voltar a Orçamento",
+  "PRODUCT_COST": "Custo do Produto",
+  "LABOUR": "Mão de Obra",
+  "NOBODY": "Ninguém",
+  "COST_BY_PRODUCT":"Custo por Produto",
+  "COST_BY_CATEGORY":"Custo por Categoria",
+  "COST_BY_BRAND":"Custo por Marca",
+  "AVERAGE": "Médio",
   "RESULT": "Resultado"
 }

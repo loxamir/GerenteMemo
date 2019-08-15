@@ -210,7 +210,7 @@ export class ServiceReportPage implements OnInit {
         resolve(output);
       })
     }
-      else if (this.reportServiceForm.value.reportType == 'service') {
+      else  {
         this.pouchdbService.getView(
           'Informes/ServicioProductoDiario',
           10,
@@ -391,18 +391,22 @@ export class ServiceReportPage implements OnInit {
           else if (this.reportServiceForm.value.groupBy == 'payment') {
           items = [];
           services.forEach(serviceLine => {
+            let quantity = 0;
+            if (serviceLine.key[6]){
+              quantity = 1;
+            }
             if (result.hasOwnProperty(serviceLine.key[7])) {
               items[result[serviceLine.key[7]]] = {
                 'name': items[result[serviceLine.key[7]]].name,
-                'quantity': items[result[serviceLine.key[7]]].quantity + parseFloat(serviceLine.key[4]),
-                'margin': items[result[serviceLine.key[7]]].margin + serviceLine.key[3],
+                'quantity': items[result[serviceLine.key[7]]].quantity + quantity,
+                'margin': items[result[serviceLine.key[7]]].margin + parseFloat(serviceLine.key[4])*serviceLine.key[6],
                 'total': items[result[serviceLine.key[7]]].total + parseFloat(serviceLine.key[4])*serviceLine.key[5],
               };
             } else {
               items.push({
                 'name': serviceLine.key[7],
-                'quantity': parseFloat(serviceLine.key[4]),
-                'margin': serviceLine.key[3],
+                'quantity': quantity,
+                'margin': parseFloat(serviceLine.key[4])*serviceLine.key[6],
                 'total': parseFloat(serviceLine.key[4])*serviceLine.key[5],
               });
               result[serviceLine.key[7]] = items.length-1;
@@ -426,19 +430,24 @@ export class ServiceReportPage implements OnInit {
           else if (this.reportServiceForm.value.groupBy == 'contact') {
             items = [];
             services.forEach(serviceLine => {
+              let quantity = 0;
+              if (serviceLine.key[6]){
+                quantity = 1;
+              }
               if (result.hasOwnProperty(serviceLine.key[2])) {
                 // console.log("items[result[serviceLine.key[1]]]", items[result[serviceLine.key[1]]]);
+
                 items[result[serviceLine.key[2]]] = {
                   'name': items[result[serviceLine.key[2]]].name,
-                  'quantity': items[result[serviceLine.key[2]]].quantity + parseFloat(serviceLine.key[4]),
-                  'margin': items[result[serviceLine.key[2]]].margin + serviceLine.key[3],
+                  'quantity': items[result[serviceLine.key[2]]].quantity + quantity,
+                  'margin': items[result[serviceLine.key[2]]].margin + parseFloat(serviceLine.key[4])*serviceLine.key[6],
                   'total': items[result[serviceLine.key[2]]].total + parseFloat(serviceLine.key[4])*serviceLine.key[5],
                 };
               } else {
                 items.push({
                   'name': serviceLine.key[2],
-                  'quantity': parseFloat(serviceLine.key[4]),
-                  'margin': serviceLine.key[3],
+                  'quantity': quantity,
+                  'margin': parseFloat(serviceLine.key[4])*serviceLine.key[6],
                   'total': parseFloat(serviceLine.key[4])*serviceLine.key[5],
                 });
                 result[serviceLine.key[2]] = items.length-1;
@@ -462,19 +471,23 @@ export class ServiceReportPage implements OnInit {
           else if (this.reportServiceForm.value.groupBy == 'date') {
             items = [];
             services.forEach(serviceLine => {
+              let quantity = 0;
+              if (serviceLine.key[6]){
+                quantity = 1;
+              }
               if (result.hasOwnProperty(serviceLine.key[0])) {
                 // console.log("items[result[serviceLine.key[1]]]", items[result[serviceLine.key[1]]]);
                 items[result[serviceLine.key[0]]] = {
                   'name': items[result[serviceLine.key[0]]].name,
-                  'quantity': items[result[serviceLine.key[0]]].quantity + parseFloat(serviceLine.key[4]),
-                  'margin': items[result[serviceLine.key[0]]].margin + serviceLine.key[3],
+                  'quantity': items[result[serviceLine.key[0]]].quantity + quantity,
+                  'margin': items[result[serviceLine.key[0]]].margin + parseFloat(serviceLine.key[4])*serviceLine.key[6],
                   'total': items[result[serviceLine.key[0]]].total + parseFloat(serviceLine.key[4])*serviceLine.key[5],
                 };
               } else {
                 items.push({
                   'name': serviceLine.key[0],
                   'quantity': parseFloat(serviceLine.key[4]),
-                  'margin': serviceLine.key[3],
+                  'margin': parseFloat(serviceLine.key[4])*serviceLine.key[6],
                   'total': parseFloat(serviceLine.key[4])*serviceLine.key[5],
                 });
                 result[serviceLine.key[0]] = items.length-1;
@@ -500,19 +513,23 @@ export class ServiceReportPage implements OnInit {
           else if (this.reportServiceForm.value.groupBy == 'seller') {
             items = [];
             services.forEach(serviceLine => {
+              let quantity = 0;
+              if (serviceLine.key[6]){
+                quantity = 1;
+              }
               if (result.hasOwnProperty(serviceLine.key[8])) {
                 // console.log("items[result[serviceLine.key[1]]]", items[result[serviceLine.key[1]]]);
                 items[result[serviceLine.key[8]]] = {
                   'name': items[result[serviceLine.key[8]]].name,
-                  'quantity': items[result[serviceLine.key[8]]].quantity + parseFloat(serviceLine.key[4]),
-                  'margin': items[result[serviceLine.key[8]]].margin + serviceLine.key[3],
+                  'quantity': items[result[serviceLine.key[8]]].quantity + quantity,
+                  'margin': items[result[serviceLine.key[8]]].margin + parseFloat(serviceLine.key[4])*serviceLine.key[6],
                   'total': items[result[serviceLine.key[8]]].total + parseFloat(serviceLine.key[4])*serviceLine.key[5],
                 };
               } else {
                 items.push({
                   'name': serviceLine.key[8],
-                  'quantity': parseFloat(serviceLine.key[4]),
-                  'margin': serviceLine.key[3],
+                  'quantity': quantity,
+                  'margin': parseFloat(serviceLine.key[4])*serviceLine.key[6],
                   'total': parseFloat(serviceLine.key[4])*serviceLine.key[5],
                 });
                 result[serviceLine.key[8]] = items.length-1;
@@ -587,17 +604,11 @@ export class ServiceReportPage implements OnInit {
 
   async ngOnInit() {
     this.reportServiceForm = this.formBuilder.group({
-      contact: new FormControl(this.route.snapshot.paramMap.get('contact') || {}, Validators.required),
-      name: new FormControl(''),
       dateStart: new FormControl(this.route.snapshot.paramMap.get('dateStart')||this.getFirstDateOfMonth()),
       dateEnd: new FormControl(this.route.snapshot.paramMap.get('dateEnd') || this.today.toISOString()),
-      total: new FormControl(0),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
-      reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'service'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'contact'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
-      filterBy: new FormControl('contact'),
-      filter: new FormControl(''),
     });
     let language:any = await this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang(language);

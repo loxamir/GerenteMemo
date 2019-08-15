@@ -416,5 +416,13 @@
   "MEDIA": "Media",
   "QUANT": "Quant",
   "ALL": "All",
+  "BACK_TO_QUOTATION": "Back to Quotation",
+  "PRODUCT_COST": "Product Cost",
+  "LABOUR": "Labour",
+  "NOBODY": "Nobody",
+  "COST_BY_PRODUCT":"Cost by Product",
+  "COST_BY_CATEGORY":"Cost by Category",
+  "COST_BY_BRAND":"Cost by Brand",
+  "AVERAGE": "Average",
   "RESULT": "Result"
 }

@@ -3,32 +3,32 @@
     <ion-buttons slot="start">
       <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/service-list')"></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="!serviceForm.value.production">
+    <ion-title>
         {{ 'SERVICE' | translate }}: {{serviceForm.value.code}}
     </ion-title>
-
-    <ion-buttons slot="end" >
-      <ion-button icon-only
-              (click)="presentPopover($event)">
+    <ion-buttons slot="end">
+      <ion-button icon-only (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-
 
   <ion-row style="height:50px;">
     <ion-col>
       <h4 class="field-label-col">{{'TOTAL' | translate}}</h4>
       <h4 class="field-value-col" style="color:blue">$ {{serviceForm.value.total|number:'1.'+currency_precision}}</h4>
     </ion-col>
-
     <ion-col>
+      <h4 class="field-label-col">{{'COST' | translate}}</h4>
+      <h4 class="field-value-col" style="color:red">$ {{serviceForm.value.cost|number:'1.'+currency_precision}}</h4>
+    </ion-col>
+    <ion-col *ngIf="serviceForm.value.state == 'CONFIRMED'">
       <h4 class="field-label-col">{{'TO_RECEIVE' | translate}}</h4>
       <h4 class="field-value-col" style="color:red">$ {{serviceForm.value.residual|number:'1.'+currency_precision}}</h4>
     </ion-col>
   </ion-row>
   <ion-row class="state-header">
-    <ion-col size="4" *ngIf="(serviceForm.value.state == 'DRAFT' || serviceForm.value.state == 'PRODUCED') || serviceForm.value.production">
+    <ion-col size="4" *ngIf="serviceForm.value.state == 'QUOTATION'">
       <div class="clicked arron">
         <span class="state-label">
           {{'STATE_QUOTATION'|translate}}
@@ -40,10 +40,9 @@
         <span class="state-label">{{'SCHEDULED'|translate}}</span>
       </div>
     </ion-col>
-    <ion-col size="4" *ngIf="(serviceForm.value.state == 'STARTED' || serviceForm.value.state == 'CONFIRMED' || serviceForm.value.state == 'PAID' || serviceForm.value.state == 'PRODUCED') || serviceForm.value.production">
+    <ion-col size="4" *ngIf="(serviceForm.value.state == 'STARTED' || serviceForm.value.state == 'CONFIRMED' || serviceForm.value.state == 'PAID')">
       <div
-      [class.arrow]="serviceForm.value.production"
-      [class.arron]="!serviceForm.value.production"
+      class="arron"
       [class.unclicked]="serviceForm.value.state=='SCHEDULED'"
       [class.clicked]="serviceForm.value.state=='STARTED' || serviceForm.value.state=='CONFIRMED' || serviceForm.value.state=='PAID'">
         <span class="state-label">{{'STARTED'|translate}}</span>
@@ -75,19 +74,18 @@
           <ion-item
           no-padding
           (click)="selectContact()"
-          *ngIf="!serviceForm.value.production"
            class="field-100">
             <h4 class="field-label">{{'CLIENT' | translate}}</h4>
             <h4 class="field-value">{{serviceForm.value.contact && serviceForm.value.contact.name || 'SELECT'|translate}}</h4>
           </ion-item>
-          <ion-item
+          <!-- <ion-item
           no-padding
           (click)="selectProduct()"
           *ngIf="serviceForm.value.product && serviceForm.value.product.name"
            class="field-100">
             <h4 class="field-label">{{'SERVICE_DONE' | translate}}</h4>
             <h4 class="field-value">{{serviceForm.value.product && serviceForm.value.product.name || 'SELECT'|translate}}</h4>
-          </ion-item>
+          </ion-item> -->
           <ion-item no-padding class="item-content"  class="field-50">
             <h4 class="field-label">{{'DATE' | translate }}</h4>
             <ion-datetime
@@ -116,14 +114,14 @@
     <ion-row>
       <ion-col
        class="item-content"
-       *ngIf="serviceForm.value.state == 'DRAFT' || serviceForm.value.state == 'SCHEDULED'">
+       *ngIf="serviceForm.value.state == 'QUOTATION' || serviceForm.value.state == 'DRAFT' || serviceForm.value.state == 'SCHEDULED'">
         <ion-button class="button-100"
          (click)="setStarted()">
          {{'START'|translate}}
         </ion-button>
       </ion-col>
       <ion-col class="item-content"
-       *ngIf="serviceForm.value.state == 'DRAFT'">
+       *ngIf="serviceForm.value.state == 'QUOTATION' || serviceForm.value.state == 'DRAFT'">
         <ion-button class="button-100"
          (click)="setSchedule()">
          {{'SCHEDULE'|translate}}
@@ -132,14 +130,14 @@
 
 
       <!-- <ion-col size="6"
-      *ngIf="serviceForm.value.state == 'CONFIRMED' && ! serviceForm.value.production">
+      *ngIf="serviceForm.value.state == 'CONFIRMED'">
         <ion-button class="button-100"
         (click)="print()">
           Imprimir OS
         </ion-button>
       </ion-col> -->
       <ion-col size="6"
-      *ngIf="serviceForm.value.state == 'CONFIRMED' && ! serviceForm.value.production">
+      *ngIf="serviceForm.value.state == 'CONFIRMED'">
         <ion-button class="button-100"
         (click)="beforeAddPayment()">
           {{'TO_RECEIVE'|translate}}
@@ -148,7 +146,6 @@
       <ion-col
       *ngIf="(serviceForm.value.state == 'CONFIRMED'
        || serviceForm.value.state == 'PAID')
-       && ! serviceForm.value.production
        && ! serviceForm.value.invoices.length">
         <ion-button class="button-100"
         (click)="addInvoice()">
@@ -253,34 +250,30 @@
               <ion-row>
                 <ion-col size="6" style="white-space: normal;">
                   <ion-row style="margin-top: -5px;">
-                    <ion-col  size="12" (click)="editWorkPrice(item)"
-                    *ngIf="!serviceForm.value.production">
+                    <ion-col  size="12" (click)="editWorkPrice(item)">
                       <span class="price-label">{{'PRICE'|translate}}:</span>
                       <div style="font-size: 15px;display: contents; color:red">
                          $ {{item.price|number:'1.'+currency_precision}}<div style="color: gray;display:inline"></div>
                       </div>
                     </ion-col>
-                    <ion-col  size="12"
-                    *ngIf="serviceForm.value.production">
+                    <!-- <ion-col  size="12">
                       <span class="price-label">{{'COST'| translate}}:</span>
                       <div style="font-size: 15px;display: contents; color:red">
                          $ {{item.cost|number:'1.'+currency_precision}}<div style="color: gray;display:inline"></div>
                       </div>
-                    </ion-col>
+                    </ion-col> -->
                   </ion-row>
                   <ion-row (click)="editWorkPrice(item)">
                     <ion-col  size="12">
                       <span class="price-label">{{'SUBTOTAL'| translate}}:</span>
                       <div
-                      *ngIf="!serviceForm.value.production"
                       style="font-size: 20px;color:green;">
                          ${{item.price*item.quantity|number:'1.'+currency_precision}}
                       </div>
-                      <div
-                      *ngIf="serviceForm.value.production"
+                      <!-- <div
                       style="font-size: 20px;color:green;">
                          ${{item.cost*item.quantity|number:'1.'+currency_precision}}
-                      </div>
+                      </div> -->
                     </ion-col>
                   </ion-row>
                 </ion-col>
@@ -332,13 +325,13 @@
               <ion-row>
                 <ion-col size="6" style="white-space: normal;">
                   <ion-row style="margin-top: -5px;">
-                    <ion-col  size="12" (click)="editItemPrice(item)" *ngIf="!serviceForm.value.production">
+                    <!-- <ion-col  size="12" (click)="editItemPrice(item)">
                       <span class="price-label">{{'PRICE'| translate}}:</span>
                       <div style="font-size: 15px;display: contents; color:red">
                          ${{item.price|number:'1.'+currency_precision}}
                       </div>
-                    </ion-col>
-                    <ion-col  size="12" (click)="editItemPrice(item)" *ngIf="serviceForm.value.production">
+                    </ion-col> -->
+                    <ion-col  size="12" (click)="editItemCost(item)">
                       <span class="price-label">{{'COST'| translate}}:</span>
                       <div style="font-size: 15px;display: contents; color:red">
                          ${{item.cost|number:'1.'+currency_precision}}
@@ -347,12 +340,12 @@
 
                   </ion-row>
                   <ion-row (click)="openItem(item)">
-                    <ion-col  size="12" class="item-content price-tag" (click)="editItemPrice(item)" >
+                    <ion-col  size="12" class="item-content price-tag" (click)="editItemCost(item)" >
                       <span class="price-label">{{'SUBTOTAL'| translate}}:</span>
-                      <div style="font-size: 20px;color:green;"  *ngIf="!serviceForm.value.production">
+                      <!-- <div style="font-size: 20px;color:green;">
                          ${{item.price*item.quantity|number:'1.'+currency_precision}}
-                      </div>
-                      <div style="font-size: 20px;color:green;"  *ngIf="serviceForm.value.production">
+                      </div> -->
+                      <div style="font-size: 20px;color:green;">
                          ${{item.cost*item.quantity|number:'1.'+currency_precision}}
                       </div>
                     </ion-col>

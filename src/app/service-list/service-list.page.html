@@ -32,14 +32,14 @@
             </ion-col>
           </ion-row>
      <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-35 class="schedule-date">
+        <ion-col no-padding class="schedule-date">
           <h3 class="schedule-month" style="font-size:15px;margin-left:5px;">{{item.date|date: 'dd/MM/yyyy'}}</h3>
           <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;">
             <span style="margin-left: 5px">{{item.code}}</span>
           </h3>
           <h3 class="item-title" style="font-size:15px;">{{item.payment_name | translate}}</h3>
         </ion-col>
-        <ion-col no-padding width-65 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
           <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.total| number:'1.'+currency_precision}}</h2>
           <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.'+currency_precision}}</h2>
           <div *ngIf="item.residual != 0 && item.state!='CANCELED'" style="color: red;">
@@ -54,7 +54,7 @@
       </ion-row>
       <ion-row no-padding>
         <ion-col no-padding style="text-align: center;"
-        [class.draft]="item.state=='DRAFT'"
+        [class.draft]="item.state=='DRAFT' || item.state=='QUOTATION'"
         [class.started]="item.state=='STARTED'"
         [class.scheduled]="item.state=='SCHEDULED'"
         [class.confirmed]="item.state=='CONFIRMED'"
@@ -68,7 +68,7 @@
     </ion-item>
       <ion-item-options>
         <ion-item-option (click)="deleteService(item)"
-        *ngIf="item.state=='DRAFT'">
+        *ngIf="item.state=='DRAFT' || item.state=='QUOTATION'">
           {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>

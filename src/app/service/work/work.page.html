@@ -17,7 +17,7 @@
       no-padding
       (click)="selectProduct()">
         <h4 class="field-label">{{'SERVICE' | translate}}</h4>
-        <h4 class="field-value">{{workForm.value.product && workForm.value.product.name || 'Ninguno'}}</h4>
+        <h4 class="field-value">{{workForm.value.product && workForm.value.product.name || 'LABO'|translate}}</h4>
       </ion-item>
 
       <ion-item class="field-50">
@@ -42,7 +42,7 @@
       no-padding
       (click)="selectResponsible()">
         <h4 class="field-label">{{'RESPONSABLE' | translate}}</h4>
-        <h4 class="field-value">{{workForm.value.responsible && workForm.value.responsible.name || 'Nadie'}}</h4>
+        <h4 class="field-value">{{workForm.value.responsible && workForm.value.responsible.name || 'NOBODY'|translate}}</h4>
       </ion-item>
       <!-- <ion-item class="field-100">
           <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
