@@ -8,7 +8,6 @@
   "TO_SALE": "Vender",
   "TO_DELIVERY": "To Delivery",
   "TO_INVOICE": "To Invoice",
-
   "NO_FUTURE_CONTRACT": "Aun no fueron registrados Contratos",
   "FIRST_FUTURE_CONTRACT": "Para crear tu primero Contrato, presiona el boton más",
   "NO_RAIN_DATA": "Sin datos de Lluvia",
@@ -47,14 +46,12 @@
   "SHOW_WORKS": "Mostrar Trabajos",
   "HIDE_WORKS": "Esconder Trabajos",
   "EDIT_MACHINE": "Editar Maquina",
-
   "TOTAL_AMOUNT": "Monto Total",
   "TOTAL_SOLD": "Total Vendido",
   "MANUAL_DELIVERIES": "Entregas Manuales",
   "LOADS_DELIVERED": "Cargas Entregadas",
   "MANUAL_DELIVERY":"Entrega Manual",
   "CREATE_SALE":"Crear Venta",
-
   "COST_BY_PLACE": "Costos por Lugar",
   "COST_BY_CROP": "Costos por Zafra",
   "COST_BY_ACTIVITY": "Costos por Atividade",
@@ -63,7 +60,6 @@
   "YIELD_BY_CROP_KG": "Rendimiento por Zafra en Kg",
   "YIELD_BY_PLACE_BAG": "Rendimiento por Lugar en Saca",
   "YIELD_BY_PLACE_KG": "Rendimiento por Lugar en Kg",
-
   "PRODUCTION_IN_KG": "Producción en Kg",
   "PRODUCTION_IN_BAG": "Produccion en Sacas",
   "COST_BAG": "Costo/Saca",
@@ -71,7 +67,6 @@
   "COST_HA": "Costo/Ha",
   "COST_BY_MACHINE": "Costos por Maquina",
   "ITEM": "Iten",
-
   "SETTINGS": "Ajustes",
   "SAVE": "Guardar",
   "NAME": "Nombre",
@@ -106,13 +101,11 @@
   "CHANGE_LANGUAGE": "Cambiar Idioma",
   "FORMS": "Formularios",
   "LISTING": "Listado",
-
   "USERNAME": "Nombre de usuario",
   "EMAIL": "E-mail",
   "PASSWORD": "Contraseña",
   "CONFIRM_PASSWORD": "Confirmar contraseña",
   "SUBMIT": "Enviar",
-
   "SALE": "Venta",
   "SALES": "Ventas",
   "PURCHASE": "Compra",
@@ -336,14 +329,12 @@
   "DEFAULT_CONTACT": "Contacto Estandar",
   "CONFIG": "Configuración",
   "MODEL": "Modelo",
-
   "ENTER": "Entrar",
   "COMPANIES": "Empresas",
   "VIDEOS": "Videos",
   "STATE_CONFIRMED": "Confirmada",
   "STATE_RECEIVED": "Cobrada",
   "RETURN": "Devolución",
-
   "SELECT": "Seleccionar",
   "CREATE_INVOICE": "Crear Factura",
   "ADD_ITEM": "Agregar Item",
@@ -360,36 +351,29 @@
   "NOT_FOUND_SALE": "Aun no fueron registradas Ventas",
   "CREATE_FIRST_SALE": "Para crear tu primera Venta, presiona el boton más",
   "MANUFACTURING": "Fabricación",
-
   "OPERATIVE": "Operativo",
   "EXIT": "Salir",
   "REGISTER_INVOICE": "Registrar Factura",
   "PURCHASE_ITEMS": "Items de la Compra",
   "STATE_PAID": "Pagada",
-
   "PRODUCT_PRICE": "Precio del Producto",
   "WHAT_PRODUCT_PRICE": "Cual es el precio de este producto?",
   "PRODUCT_QUANTITY": "Cantidad del Producto",
   "WHAT_PRODUCT_QUANTITY": "Cual es la cantidad de este producto?",
-
   "SURE_CANCEL_PURCHASE": "Estas seguro que deseas Cancelar la Compra?",
   "WARNING_CANCEL_PURCHASE": "Al cancelar la Compra todos los registros asociados serán borrados",
   "NO": "No",
   "YES": "Si",
-
   "PRODUCT_NOT_FOUND": "Producto no Encontrado",
   "WANT_REGISTER": "Deseas catastrar-lo?",
-
   "SURE_DONT_SAVE": "Deseas salir sin guardar?",
   "SURE_CANCEL_SALE": "Estas seguro que deseas Cancelar la Venta?",
   "WARNING_CANCEL_SALE": "Al cancelar la Venta todos los registros asociados serán borrados",
-
   "PRINTING...": "Imprimiendo...",
   "SEARCH_PURCHASE": "Buscar Compra",
   "NOT_FOUND_PURCHASE": "Aun no fueron registradas Compras",
   "CREATE_FIRST_PURCHASE": "Para crear tu primera Compra, presiona el boton más",
   "PAYABLE_ACCOUNTS": "Cuentas a Pagar",
-
   "RECEIVABLE_ACCOUNTS": "Cuentas a Cobrar",
   "CONTRACTS": "Contratos",
   "SEARCH_CASHIER": "Buscar Caja",
@@ -399,7 +383,6 @@
   "EXTRACT": "Extracto",
   "REGISTER_UNTIL_CLOSE": "Lanzamientos desde ultimo cierre",
   "PREVIOUS_CLOSES": "Cierres Anteriores",
-
   "NO_CASH_REGISTER": "Aun no fue registrado nada",
   "FIRST_CASH_REGISTER": "Empieces registrando tu saldo actual, pulsa el botón más",
   "INCOME": "Entrada",
@@ -414,7 +397,6 @@
   "VARIATION": "Variación",
   "SALE_PRODUCT": "Venta de Mercadorias",
   "PRINT": "Imprimir",
-
   "NEW_CASHIER": "Nuevo Caja",
   "CASHIER_NAME":"Nombre del Caja",
   "CREATE_CASHIER": "Crear Caja",
@@ -549,5 +531,8 @@
   "OK": "Ok",
   "DATE_ERROR": "Error de Fecha",
   "DATE_END_LOWER_THAN_START": "La Fecha de Fin debe ser mayor que la Fecha de Inicio",
+  "START_DATE": "Fecha de Inicio",
+  "END_DATE": "Fecha de Fin",
+  "SEARCH_CROP": "Buscar Zafra",
   "RESULT": "Resultado"
 }

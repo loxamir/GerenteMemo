@@ -8,7 +8,6 @@
   "TO_SALE": "Sale",
   "TO_DELIVERY": "To Delivery",
   "TO_INVOICE": "To Invoice",
-
   "NO_FUTURE_CONTRACT": "No Future Contract was registered yet",
   "FIRST_FUTURE_CONTRACT":  "To register your first product press the add button",
   "NO_RAIN_DATA": "No Rain data",
@@ -44,21 +43,15 @@
   "LAST_MAINTENANCE_TODAY": "Last maintenance today",
   "NO_MAINTENANCE_DATA": "No Maintenance data",
   "COST_BY_HOUR": "Cost by Hour",
-
   "SHOW_WORKS": "Show Works",
   "HIDE_WORKS": "Hide Works",
   "EDIT_MACHINE": "Edit Machine",
-
   "TOTAL_AMOUNT": "Total Amount",
   "TOTAL_SOLD": "Total Sold",
   "MANUAL_DELIVERIES": "Manual Deliveries",
   "LOADS_DELIVERED": "Loads Delivered",
   "MANUAL_DELIVERY":"Manual Delivery",
   "CREATE_SALE":"Create Sale",
-  "START_DATE": "Start Date",
-  "END_DATE": "End Date",
-  "SEARCH_CROP": "Search Crop",
-
   "COST_BY_PLACE": "Cost by Place",
   "COST_BY_CROP": "Cost by Crop",
   "COST_BY_ACTIVITY": "Cost by Ativity",
@@ -67,7 +60,6 @@
   "YIELD_BY_CROP_KG": "Yield by Crop en Kg",
   "YIELD_BY_PLACE_BAG": "Yield by Place en Bag",
   "YIELD_BY_PLACE_KG": "Yield by Place en Kg",
-
   "PRODUCTION_IN_KG": "Yield in Kg",
   "PRODUCTION_IN_BAG": "Yield in Bag",
   "COST_BAG": "Cost/Bag",
@@ -75,7 +67,6 @@
   "COST_HA": "Cost/Ha",
   "COST_BY_MACHINE": "Cost by Machine",
   "ITEM": "Item",
-
   "SETTINGS": "Settings",
   "SAVE": "Save",
   "NAME": "Name",
@@ -110,13 +101,11 @@
   "CHANGE_LANGUAGE": "Change Language",
   "FORMS": "Forms",
   "LISTING": "Listing",
-
   "USERNAME": "Username",
   "EMAIL": "E-mail",
   "PASSWORD": "Password",
   "CONFIRM_PASSWORD": "Confirm Password",
   "SUBMIT": "Submit",
-
   "SALE": "Sale",
   "SALES": "Sales",
   "PURCHASE": "Purchase",
@@ -340,14 +329,12 @@
   "DEFAULT_CONTACT": "Default Contact",
   "CONFIG": "Config",
   "MODEL": "Model",
-
   "ENTER": "Enter",
   "COMPANIES": "Companies",
   "VIDEOS": "Videos",
   "STATE_CONFIRMED": "Confirmed",
   "STATE_RECEIVED": "Received",
   "RETURN": "Return",
-
   "SELECT": "Select",
   "CREATE_INVOICE": "Create Invoice",
   "ADD_ITEM": "Add Item",
@@ -364,36 +351,29 @@
   "NOT_FOUND_SALE": "No sale was registered",
   "CREATE_FIRST_SALE": "To create your first Sale press the add button",
   "MANUFACTURING": "Manufacturing",
-
   "OPERATIVE": "Operative",
   "EXIT": "Exit",
   "REGISTER_INVOICE": "Register Invoice",
   "PURCHASE_ITEMS": "Purchase Items",
   "STATE_PAID": "Paid",
-
   "PRODUCT_PRICE": "Product Price",
   "WHAT_PRODUCT_PRICE": "What is the product price?",
   "PRODUCT_QUANTITY": "Product Quantity",
   "WHAT_PRODUCT_QUANTITY": "What is the product quantity?",
-
   "SURE_CANCEL_PURCHASE": "Are you sure wanna Cancel the Purchase?",
   "WARNING_CANCEL_PURCHASE": "When canceling the Purchase all asociated registers will be removed",
   "NO": "No",
   "YES": "Yes",
-
   "PRODUCT_NOT_FOUND": "Product Not Found",
   "WANT_REGISTER": "Wanna Register it?",
-
   "SURE_DONT_SAVE": "Do you want exit without Save?",
   "SURE_CANCEL_SALE": "Are you sure wanna Cancel the Sale?",
   "WARNING_CANCEL_SALE": "When canceling the Sale all asociated registers will be removed",
-
   "PRINTING...": "Printing...",
   "SEARCH_PURCHASE": "Search Purchase",
   "NOT_FOUND_PURCHASE": "No purchase was registered",
   "CREATE_FIRST_PURCHASE": "To create your first Purchase press the add button",
   "PAYABLE_ACCOUNTS": "Payable Accounts",
-
   "RECEIVABLE_ACCOUNTS": "Receivable Accounts",
   "CONTRACTS": "Contracts",
   "SEARCH_CASHIER": "Search Cashier",
@@ -403,7 +383,6 @@
   "EXTRACT": "Extract",
   "REGISTER_UNTIL_CLOSE": "Register after last close",
   "PREVIOUS_CLOSES": "Previous Closes",
-
   "NO_CASH_REGISTER": "No register was made",
   "FIRST_CASH_REGISTER": "Start registering your current balance.",
   "INCOME": "Income",
@@ -418,7 +397,6 @@
   "VARIATION": "Variation",
   "SALE_PRODUCT": "Product Sales",
   "PRINT": "Print",
-
   "NEW_CASHIER": "New Cashier",
   "CASHIER_NAME":"Cashier Name",
   "CREATE_CASHIER": "Create Cashier",
@@ -553,5 +531,8 @@
   "OK": "Ok",
   "DATE_ERROR": "Date Error",
   "DATE_END_LOWER_THAN_START": "The End Date must be bigger than the Start Date",
+  "START_DATE": "Start Date",
+  "END_DATE": "End Date",
+  "SEARCH_CROP": "Search Crop",
   "RESULT": "Result"
 }
