@@ -547,5 +547,11 @@
   "QUANTITY_RAINED_MM": "Quantity Rained(mm)",
   "SERVICE_NAME": "Service Name",
   "SERVICE_IN_MACHINE": "Service in Machine",
+  "STATE_PLANNED": "Planned",
+  "STATE_STARTED": "Started",
+  "STATE_DONE": "Done",
+  "OK": "Ok",
+  "DATE_ERROR": "Date Error",
+  "DATE_END_LOWER_THAN_START": "The End Date must be bigger than the Start Date",
   "RESULT": "Result"
 }

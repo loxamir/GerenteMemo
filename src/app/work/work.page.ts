@@ -51,6 +51,8 @@ export class WorkPage implements OnInit {
   deleteList = [];
   currency_precision = 2;
   editDate = false;
+  showPlan = false;
+  tmpData = {};
 
   constructor(
     public navCtrl: NavController,
@@ -141,12 +143,14 @@ export class WorkPage implements OnInit {
       name: new FormControl(''),
       activity: new FormControl(this.activity||{}),
       date: new FormControl(this.today.toISOString()),
+      dateEnd: new FormControl(this.today.toISOString()),
       note: new FormControl(),
-      state: new FormControl('QUOTATION'),
+      state: new FormControl('PLANNED'),
       fields: new FormControl([]),
       summary: new FormControl(""),
       section: new FormControl(null),
       doc_id: new FormControl(''),
+      plan: new FormControl({}),
       _id: new FormControl(''),
     });
     let language: any = await this.languageService.getDefaultLanguage();
@@ -216,6 +220,9 @@ export class WorkPage implements OnInit {
 
   async buttonSave() {
     let dict = {}
+    // if (this.workForm.value.state == 'PLANNED' && this.workForm.value.date > this.today){
+    //   dict['state'] = 'PLANNED';
+    // }
     this.workForm.value.fields.forEach(field=>{
       if (field.type == 'formula'){
         dict[field.name] = this.fields[field.name]
@@ -250,6 +257,44 @@ export class WorkPage implements OnInit {
         });
       }
     }
+  }
+
+  async justSave() {
+    let dict = {}
+    this.workForm.value.fields.forEach(field=>{
+      if (field.type == 'formula'){
+        dict[field.name] = this.fields[field.name]
+      }
+    })
+    this.workForm.patchValue(dict);
+    // if (this.select && this.list) {
+    //   this.dismissData();
+    // } else {
+      await this.preSave();
+      this.setSummary();
+      this.deleteRemoved();
+      if (this._id) {
+        this.workService.updateWork(this.workForm.value);
+        this.events.publish('open-work', this.workForm.value);
+        this.workForm.markAsPristine();
+        // this.navCtrl.navigateBack('/works');
+        // this.modalCtrl.dismiss();
+        // this.postSave();
+      } else {
+        this.workService.createWork(this.workForm.value).then(doc => {
+          this.workForm.patchValue({
+            _id: doc['doc'].id,
+            code: doc['work'].code,
+          });
+          this._id = doc['doc'].id;
+          this.events.publish('create-work', this.workForm.value);
+          this.workForm.markAsPristine();
+          // this.navCtrl.navigateBack('/works');
+          // this.modalCtrl.dismiss();
+          // this.postSave();
+        });
+      }
+    // }
   }
 
   setSummary(){
@@ -841,6 +886,63 @@ export class WorkPage implements OnInit {
         resolve(false)
       }
     })
+  }
+
+  startWork() {
+    // this.workForm.value.state="STARTED";
+    this.workForm.patchValue({
+      state: "STARTED",
+      plan: this.workForm.value
+    })
+    this.justSave();
+  }
+  concludeWork() {
+    // this.workForm.value.state="DONE";
+    this.workForm.patchValue({
+      state: "DONE"
+    })
+    this.buttonSave();
+  }
+
+  showPlanData(){
+    if (this.showPlan){
+      this.showPlan = false;
+      this.workForm.patchValue(this.tmpData);
+    } else {
+      this.showPlan = true;
+      this.tmpData = this.workForm.value;
+      this.workForm.value.state = 'TMP_PLANNED';
+      this.workForm.patchValue(this.workForm.value.plan);
+      console.log("plan", this.workForm.value);
+      this.recomputeFields();
+    }
+  }
+
+  dateChanged(){
+    if (this.workForm.value.dateEnd > this.workForm.value.date){
+      this.workForm.patchValue({
+        dateEnd: this.workForm.value.date,
+      })
+    }
+  }
+
+  async dateEndChanged(){
+    if (this.workForm.value.dateEnd < this.workForm.value.date){
+      let alertPopup = await this.alertCtrl.create({
+        header: this.translate.instant('DATE_ERROR'),
+        message: this.translate.instant('DATE_END_LOWER_THAN_START'),
+        buttons: [
+        {
+          text: this.translate.instant('OK'),
+          handler: () => {
+            // this.workForm.patchValue({
+            //   dateEnd: this.workForm.value.date,
+            // })
+          }
+        }]
+      });
+      alertPopup.present();
+    }
   }
 
 }

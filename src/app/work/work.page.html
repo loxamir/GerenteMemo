@@ -9,25 +9,54 @@
     <ion-title>
       {{ workForm.value.name || workForm.value.activity && workForm.value.activity.name || 'TASK' | translate }}
       <h1 class="subtitle" (click)="showDate()">
-        {{ workForm.value.date|date: 'dd/MM/yyyy' }}
+        {{'FROM'|translate}} {{ workForm.value.date|date: 'dd/MM/yyyy' }} {{'TO'|translate}} {{ workForm.value.dateEnd|date: 'dd/MM/yyyy' }}
       </h1>
     </ion-title>
     <ion-buttons slot="end">
     </ion-buttons>
   </ion-toolbar>
+  <ion-row  class="state-header" *ngIf="!this.list">
+    <ion-col size="4" (click)="showPlanData()">
+      <div class="clicked arron">
+        <span class="state-label">{{ 'STATE_PLANNED' | translate}}</span>
+      </div>
+    </ion-col>
+    <ion-col size="4">
+      <div [class.unclicked]="workForm.value.state=='PLANNED'" [class.clicked]="workForm.value.state!='PLANNED'" class="arrow">
+        <span class="state-label">{{ 'STATE_STARTED' | translate}}</span>
+      </div>
+    </ion-col>
+    <ion-col size="4">
+      <div [class.unclicked]="workForm.value.state!='DONE'" [class.clicked]="workForm.value.state=='DONE'" class="arrow">
+        <span class="state-label">{{ 'STATE_DONE' | translate}}</span>
+      </div>
+    </ion-col>
+  </ion-row>
 </ion-header>
 
 
 <ion-content class="work-content" style="background-color: #ddd">
 
   <form class="sample-form validations-form" [formGroup]="workForm" (ngSubmit)="onSubmit(workForm.value)" >
-    <ion-row justify-content-center *ngIf="editDate">
-        <ion-item no-padding class="field-100">
-          <h4 class="field-label">{{'DATE' | translate }}</h4>
+    <ion-row justify-content-center *ngIf="editDate ||( workForm.value.state == 'PLANNED'  && !this.list)">
+        <ion-item no-padding class="field-50">
+          <h4 class="field-label">{{'DATE_START' | translate }}</h4>
           <ion-datetime class="field-50-datetime"
-          displayFormat="DD/MM/YYYY"
-          pickerFormat="DD/MM/YYYY"
+          displayFormat="DD/MM/YYYY hh:mm"
+          pickerFormat="DD/MM/YYYY hh:mm"
+          (ionChange)="dateChanged()"
+          [max]="today.getFullYear()+5"
           formControlName="date">
+          </ion-datetime>
+        </ion-item>
+        <ion-item no-padding class="field-50">
+          <h4 class="field-label">{{'DATE_END' | translate }}</h4>
+          <ion-datetime class="field-50-datetime"
+          displayFormat="DD/MM/YYYY hh:mm"
+          pickerFormat="DD/MM/YYYY hh:mm"
+          (ionChange)="dateEndChanged()"
+          [max]="today.getFullYear()+5"
+          formControlName="dateEnd">
           </ion-datetime>
         </ion-item>
         <!-- <ion-item no-padding (click)="selectActivity()" class="field-50">
@@ -216,12 +245,19 @@
       </ion-textarea>
     </ion-item>
   </form>
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-button (click)="goNextStep()"  class="next-button">
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="workForm.value.state=='PLANNED' && !this.list">
+    <ion-button (click)="startWork()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+      {{'START'|translate}}
     </ion-button>
-  </ion-fab> -->
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="workForm.value.state=='STARTED' && !this.list">
+    <ion-button (click)="concludeWork()"  class="next-button">
+      <ion-icon name="fastforward"> </ion-icon>
+      {{'CONCLUDE'|translate}}
+    </ion-button>
+  </ion-fab>
 
   <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">

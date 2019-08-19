@@ -518,5 +518,11 @@
   "QUANTITY_RAINED_MM": "Quantidade Chovida(mm)",
   "SERVICE_NAME": "Nome do Serviço",
   "SERVICE_IN_MACHINE": "Serviço na Maquina",
+  "STATE_PLANNED": "Planejado",
+  "STATE_STARTED": "Iniciado",
+  "STATE_DONE": "Concluido",
+  "OK": "Ok",
+  "DATE_ERROR": "Erro de Data",
+  "DATE_END_LOWER_THAN_START": "A Data de Fin deve ser maior que a Data de Inicio",
   "RESULT": "Resultado"
 }
