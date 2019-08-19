@@ -908,6 +908,7 @@ export class WorkPage implements OnInit {
     if (this.showPlan){
       this.showPlan = false;
       this.workForm.patchValue(this.tmpData);
+      this.recomputeFields();
     } else {
       this.showPlan = true;
       this.tmpData = this.workForm.value;
