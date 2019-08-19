@@ -534,5 +534,10 @@
   "START_DATE": "Start Date",
   "END_DATE": "End Date",
   "SEARCH_CROP": "Search Crop",
+  "PLANNED": "Planned",
+  "PLANNED_COST_KG":"Plan. Custo Kg",
+  "PLANNED_COST":"Plann Cost",
+  "PLANNED_YIELD":"Plan Yield",
+  "PLANNED_COST_BAG":"Plan. Bag Cost",
   "RESULT": "Result"
 }

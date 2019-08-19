@@ -534,5 +534,10 @@
   "START_DATE": "Data de Inicio",
   "END_DATE": "Data de Fim",
   "SEARCH_CROP": "Buscar Safra",
+  "PLANNED": "Planejado",
+  "PLANNED_COST_KG":"Plan. Custo Kg",
+  "PLANNED_COST":"Plan Custo",
+  "PLANNED_YIELD":"Plan Rendimento",
+  "PLANNED_COST_BAG":"Plan. Custo Saca",
   "RESULT": "Resultado"
 }

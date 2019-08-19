@@ -534,5 +534,10 @@
   "START_DATE": "Fecha de Inicio",
   "END_DATE": "Fecha de Fin",
   "SEARCH_CROP": "Buscar Zafra",
+  "PLANNED": "Planeado",
+  "PLANNED_COST_KG":"Plan. Costo Kg",
+  "PLANNED_COST":"Plan Costo",
+  "PLANNED_YIELD":"Plan Rendimiento",
+  "PLANNED_COST_BAG":"Plan. Costo Saca",
   "RESULT": "Resultado"
 }

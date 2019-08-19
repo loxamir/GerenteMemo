@@ -40,6 +40,8 @@ export class ActivityReportPage implements OnInit {
   items_margin;
   items_quantity;
   total;
+  planned;
+  planned_yield;
   languages: Array<LanguageModel>;
 
   title: string = 'D3.js with Ionic 2!';
@@ -193,23 +195,47 @@ export class ActivityReportPage implements OnInit {
             items = [];
             let getList = [];
             activitys.forEach(activityLine => {
-              if (result.hasOwnProperty(activityLine.key[9])) {
-                // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
-                items[result[activityLine.key[9]]] = {
-                  'name': items[result[activityLine.key[9]]].name,
-                  'quantity': items[result[activityLine.key[9]]].quantity + parseFloat(activityLine.key[4]),
-                  'margin': items[result[activityLine.key[9]]].margin + parseFloat(activityLine.key[3]),
-                  'total': items[result[activityLine.key[9]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
-                };
+              if (activityLine.key[11]){
+                if (result.hasOwnProperty(activityLine.key[9])) {
+                  // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                  items[result[activityLine.key[9]]] = {
+                    'name': items[result[activityLine.key[9]]].name,
+                    'quantity': items[result[activityLine.key[9]]].quantity + parseFloat(activityLine.key[4]),
+                    'margin': items[result[activityLine.key[9]]].margin + parseFloat(activityLine.key[3]),
+                    'planned': items[result[activityLine.key[9]]].planned,
+                    'total': items[result[activityLine.key[9]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
+                  };
+                } else {
+                  items.push({
+                    'name': activityLine.key[9],
+                    'quantity': parseFloat(activityLine.key[4]),
+                    'margin': parseFloat(activityLine.key[3]),
+                    'planned': 0,
+                    'total': parseFloat(activityLine.key[4])*activityLine.key[5],
+                  });
+                  getList.push(activityLine.key[9]);
+                  result[activityLine.key[9]] = items.length-1;
+                }
               } else {
-                items.push({
-                  'name': activityLine.key[9],
-                  'quantity': parseFloat(activityLine.key[4]),
-                  'margin': parseFloat(activityLine.key[3]),
-                  'total': parseFloat(activityLine.key[4])*activityLine.key[5],
-                });
-                getList.push(activityLine.key[9]);
-                result[activityLine.key[9]] = items.length-1;
+                if (result.hasOwnProperty(activityLine.key[7])) {
+                  // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                  items[result[activityLine.key[7]]] = {
+                    'name': items[result[activityLine.key[7]]].name,
+                    'quantity': items[result[activityLine.key[7]]].quantity + parseFloat(activityLine.key[4]),
+                    'margin': items[result[activityLine.key[7]]].margin + activityLine.key[5],
+                    'planned': items[result[activityLine.key[7]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                    'total': items[result[activityLine.key[7]]].total,
+                  };
+                } else {
+                  items.push({
+                    'name': activityLine.key[7],
+                    'quantity': parseFloat(activityLine.key[4]),
+                    'margin': activityLine.key[5],
+                    'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                    'total': 0,
+                  });
+                  result[activityLine.key[7]] = items.length-1;
+                }
               }
             });
 
@@ -226,6 +252,7 @@ export class ActivityReportPage implements OnInit {
                   'name': doc_dict[item.name].category_name,
                   'quantity': litems[categories[doc_dict[item.name].category_name]].quantity + parseFloat(item.quantity),
                   'margin': litems[categories[doc_dict[item.name].category_name]].margin + item.margin,
+                  'planned': litems[categories[doc_dict[item.name].category_name]].planned + item.planned,
                   'total': litems[categories[doc_dict[item.name].category_name]].total + item.total,
                 };
               } else {
@@ -233,6 +260,7 @@ export class ActivityReportPage implements OnInit {
                   'name': doc_dict[item.name].category_name,
                   'quantity': item.quantity,
                   'margin': item.margin,
+                  'planned': item.planned,
                   'total': item.total,
                 });
                 categories[doc_dict[item.name].category_name] = litems.length-1;
@@ -244,10 +272,12 @@ export class ActivityReportPage implements OnInit {
             })
             let marker = false;
             let total = 0;
+            let planned = 0;
             output.forEach(item => {
               item['marker'] = marker,
                 marker = !marker;
               total += parseFloat(item['total']);
+              planned += parseFloat(item['planned']);
             });
             this.loading.dismiss();
             resolve(output);
@@ -256,23 +286,47 @@ export class ActivityReportPage implements OnInit {
             items = [];
             let getList = [];
             activitys.forEach(activityLine => {
-              if (result.hasOwnProperty(activityLine.key[9])) {
-                // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
-                items[result[activityLine.key[9]]] = {
-                  'name': items[result[activityLine.key[9]]].name,
-                  'quantity': items[result[activityLine.key[9]]].quantity + parseFloat(activityLine.key[4]),
-                  'margin': items[result[activityLine.key[9]]].margin + parseFloat(activityLine.key[3]),
-                  'total': items[result[activityLine.key[9]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
-                };
+              if (activityLine.key[11]){
+                if (result.hasOwnProperty(activityLine.key[9])) {
+                  // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                  items[result[activityLine.key[9]]] = {
+                    'name': items[result[activityLine.key[9]]].name,
+                    'quantity': items[result[activityLine.key[9]]].quantity + parseFloat(activityLine.key[4]),
+                    'margin': items[result[activityLine.key[9]]].margin + parseFloat(activityLine.key[3]),
+                    'planned': items[result[activityLine.key[9]]].planned,
+                    'total': items[result[activityLine.key[9]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
+                  };
+                } else {
+                  items.push({
+                    'name': activityLine.key[9],
+                    'quantity': parseFloat(activityLine.key[4]),
+                    'margin': parseFloat(activityLine.key[3]),
+                    'planned': 0,
+                    'total': parseFloat(activityLine.key[4])*activityLine.key[5],
+                  });
+                  getList.push(activityLine.key[9]);
+                  result[activityLine.key[9]] = items.length-1;
+                }
               } else {
-                items.push({
-                  'name': activityLine.key[9],
-                  'quantity': parseFloat(activityLine.key[4]),
-                  'margin': parseFloat(activityLine.key[3]),
-                  'total': parseFloat(activityLine.key[4])*activityLine.key[5],
-                });
-                getList.push(activityLine.key[9]);
-                result[activityLine.key[9]] = items.length-1;
+                if (result.hasOwnProperty(activityLine.key[7])) {
+                  // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                  items[result[activityLine.key[7]]] = {
+                    'name': items[result[activityLine.key[7]]].name,
+                    'quantity': items[result[activityLine.key[7]]].quantity + parseFloat(activityLine.key[4]),
+                    'margin': items[result[activityLine.key[7]]].margin + activityLine.key[5],
+                    'planned': items[result[activityLine.key[7]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                    'total': items[result[activityLine.key[7]]].total,
+                  };
+                } else {
+                  items.push({
+                    'name': activityLine.key[7],
+                    'quantity': parseFloat(activityLine.key[4]),
+                    'margin': activityLine.key[5],
+                    'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                    'total': 0,
+                  });
+                  result[activityLine.key[7]] = items.length-1;
+                }
               }
             });
 
@@ -289,6 +343,7 @@ export class ActivityReportPage implements OnInit {
                   'name': doc_dict[item.name].brand_name,
                   'quantity': litems[brands[doc_dict[item.name].brand_name]].quantity + parseFloat(item.quantity),
                   'margin': litems[brands[doc_dict[item.name].brand_name]].margin + item.margin,
+                  'planned': litems[brands[doc_dict[item.name].brand_name]].planned + item.planned,
                   'total': litems[brands[doc_dict[item.name].brand_name]].total + item.total,
                 };
               } else {
@@ -296,6 +351,7 @@ export class ActivityReportPage implements OnInit {
                   'name': doc_dict[item.name].brand_name,
                   'quantity': item.quantity,
                   'margin': item.margin,
+                  'planned': item.planned,
                   'total': item.total,
                 });
                 brands[doc_dict[item.name].brand_name] = litems.length-1;
@@ -307,10 +363,12 @@ export class ActivityReportPage implements OnInit {
             })
             let marker = false;
             let total = 0;
+            let planned = 0;
             output.forEach(item => {
               item['marker'] = marker,
                 marker = !marker;
               total += parseFloat(item['total']);
+              planned += parseFloat(item['planned']);
             });
             this.loading.dismiss();
             resolve(output);
@@ -318,22 +376,46 @@ export class ActivityReportPage implements OnInit {
           else if (this.reportActivityForm.value.groupBy == 'name') {
             items = [];
             activitys.forEach(activityLine => {
-              if (result.hasOwnProperty(activityLine.key[3])) {
-                // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
-                items[result[activityLine.key[3]]] = {
-                  'name': items[result[activityLine.key[3]]].name,
-                  'quantity': items[result[activityLine.key[3]]].quantity + parseFloat(activityLine.key[4]),
-                  'margin': items[result[activityLine.key[3]]].margin + parseFloat(activityLine.key[3]),
-                  'total': items[result[activityLine.key[3]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-                };
+              if (activityLine.key[11]){
+                if (result.hasOwnProperty(activityLine.key[3])) {
+                  // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                  items[result[activityLine.key[3]]] = {
+                    'name': items[result[activityLine.key[3]]].name,
+                    'quantity': items[result[activityLine.key[3]]].quantity + parseFloat(activityLine.key[4]),
+                    'margin': items[result[activityLine.key[3]]].margin + parseFloat(activityLine.key[3]),
+                    'planned': items[result[activityLine.key[3]]].planned,
+                    'total': items[result[activityLine.key[3]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                  };
+                } else {
+                  items.push({
+                    'name': activityLine.key[3],
+                    'quantity': parseFloat(activityLine.key[4]),
+                    'margin': parseFloat(activityLine.key[5]),
+                    'planned': 0,
+                    'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                  });
+                  result[activityLine.key[3]] = items.length-1;
+                }
               } else {
-                items.push({
-                  'name': activityLine.key[3],
-                  'quantity': parseFloat(activityLine.key[4]),
-                  'margin': parseFloat(activityLine.key[5]),
-                  'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-                });
-                result[activityLine.key[3]] = items.length-1;
+                if (result.hasOwnProperty(activityLine.key[3])) {
+                  // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                  items[result[activityLine.key[3]]] = {
+                    'name': items[result[activityLine.key[3]]].name,
+                    'quantity': items[result[activityLine.key[3]]].quantity + parseFloat(activityLine.key[4]),
+                    'margin': items[result[activityLine.key[3]]].margin + parseFloat(activityLine.key[3]),
+                    'planned': items[result[activityLine.key[3]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                    'total': items[result[activityLine.key[3]]].total,
+                  };
+                } else {
+                  items.push({
+                    'name': activityLine.key[3],
+                    'quantity': parseFloat(activityLine.key[4]),
+                    'margin': parseFloat(activityLine.key[5]),
+                    'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                    'total': 0,
+                  });
+                  result[activityLine.key[3]] = items.length-1;
+                }
               }
             });
 
@@ -343,10 +425,12 @@ export class ActivityReportPage implements OnInit {
             })
             let marker = false;
             let total = 0;
+            let planned = 0;
             output.forEach(item => {
               item['marker'] = marker,
                 marker = !marker;
               total += parseFloat(item['total']);
+              planned += parseFloat(item['planned']);
             });
             this.loading.dismiss();
             resolve(output);
@@ -358,21 +442,44 @@ export class ActivityReportPage implements OnInit {
             // console.log("crop", );
           items = [];
           activitys.forEach(activityLine => {
-            if (result.hasOwnProperty(activityLine.key[0])) {
-              items[result[activityLine.key[0]]] = {
-                'name': items[result[activityLine.key[0]]].name,
-                'quantity': items[result[activityLine.key[0]]].quantity + parseFloat(activityLine.key[4]),
-                'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[5]),
-                'total': items[result[activityLine.key[0]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-              };
+            if (activityLine.key[11]){
+              if (result.hasOwnProperty(activityLine.key[0])) {
+                items[result[activityLine.key[0]]] = {
+                  'name': items[result[activityLine.key[0]]].name,
+                  'quantity': items[result[activityLine.key[0]]].quantity + parseFloat(activityLine.key[4]),
+                  'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[5]),
+                  'planned': items[result[activityLine.key[0]]].planned,
+                  'total': items[result[activityLine.key[0]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                };
+              } else {
+                items.push({
+                  'name': activityLine.key[0],
+                  'quantity': parseFloat(activityLine.key[4]),
+                  'margin': parseFloat(activityLine.key[5]),
+                  'planned': 0,
+                  'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                });
+                result[activityLine.key[0]] = items.length-1;
+              }
             } else {
-              items.push({
-                'name': activityLine.key[0],
-                'quantity': parseFloat(activityLine.key[4]),
-                'margin': parseFloat(activityLine.key[5]),
-                'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-              });
-              result[activityLine.key[0]] = items.length-1;
+              if (result.hasOwnProperty(activityLine.key[0])) {
+                items[result[activityLine.key[0]]] = {
+                  'name': items[result[activityLine.key[0]]].name,
+                  'quantity': items[result[activityLine.key[0]]].quantity + parseFloat(activityLine.key[4]),
+                  'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[5]),
+                  'planned': items[result[activityLine.key[0]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                  'total': items[result[activityLine.key[0]]].total,
+                };
+              } else {
+                items.push({
+                  'name': activityLine.key[0],
+                  'quantity': parseFloat(activityLine.key[4]),
+                  'margin': parseFloat(activityLine.key[5]),
+                  'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                  'total': 0,
+                });
+                result[activityLine.key[0]] = items.length-1;
+              }
             }
           });
 
@@ -382,14 +489,18 @@ export class ActivityReportPage implements OnInit {
           })
           let marker = false;
           let total = 0;
+          let planned = 0;
+          let planned_yield = 0;
           output.forEach(item => {
             item['marker'] = marker,
               marker = !marker;
             total += parseFloat(item['total']);
+            planned += parseFloat(item['planned']);
+            planned_yield += parseFloat(item['planned']);
           });
           this.loading.dismiss();
           console.log("output", output);
-          let yields:any = await this.pouchdbService.getView('Informes/AgroRend',10);
+          let yields:any = await this.pouchdbService.getView('Informes/AgroRend',11);
           // if (Object.keys(this.reportActivityForm.value.crop).length > 0) {
           //   yields = yields.filter(word => word['key'][0] == this.reportActivityForm.value.crop.name);
           // }
@@ -404,9 +515,14 @@ export class ActivityReportPage implements OnInit {
           // let otro = output
           output.forEach((doc: any, index)=>{
             doc['margin'] = 0;
+            doc['planned_yield'] = 0;
             yields.forEach((yie: any)=>{
               if (doc.name == yie.key[0]){
-                doc['margin'] += yie.value;
+                if (doc.name == yie.key[8]){
+                  doc['margin'] += yie.value;
+                } else {
+                  doc['planned_yield'] += yie.value;
+                }
               }
             })
           })
@@ -420,21 +536,44 @@ export class ActivityReportPage implements OnInit {
           // console.log("crop", );
         items = [];
         activitys.forEach(activityLine => {
-          if (result.hasOwnProperty(activityLine.key[1])) {
-            items[result[activityLine.key[1]]] = {
-              'name': items[result[activityLine.key[1]]].name,
-              'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
-              'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
-              'total': items[result[activityLine.key[1]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-            };
+          if (activityLine.key[11]){
+            if (result.hasOwnProperty(activityLine.key[1])) {
+              items[result[activityLine.key[1]]] = {
+                'name': items[result[activityLine.key[1]]].name,
+                'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
+                'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
+                'planned': items[result[activityLine.key[1]]].planned,
+                'total': items[result[activityLine.key[1]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+              };
+            } else {
+              items.push({
+                'name': activityLine.key[1],
+                'quantity': parseFloat(activityLine.key[4]),
+                'margin': parseFloat(activityLine.key[5]),
+                'planned': 0,
+                'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+              });
+              result[activityLine.key[1]] = items.length-1;
+            }
           } else {
-            items.push({
-              'name': activityLine.key[1],
-              'quantity': parseFloat(activityLine.key[4]),
-              'margin': parseFloat(activityLine.key[5]),
-              'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-            });
-            result[activityLine.key[1]] = items.length-1;
+            if (result.hasOwnProperty(activityLine.key[1])) {
+              items[result[activityLine.key[1]]] = {
+                'name': items[result[activityLine.key[1]]].name,
+                'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
+                'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
+                'planned': items[result[activityLine.key[1]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                'total': items[result[activityLine.key[1]]].total,
+              };
+            } else {
+              items.push({
+                'name': activityLine.key[1],
+                'quantity': parseFloat(activityLine.key[4]),
+                'margin': parseFloat(activityLine.key[5]),
+                'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                'total': 0,
+              });
+              result[activityLine.key[1]] = items.length-1;
+            }
           }
         });
 
@@ -444,14 +583,19 @@ export class ActivityReportPage implements OnInit {
         })
         let marker = false;
         let total = 0;
+
+        let planned = 0;
+        let planned_yield = 0;
         output.forEach(item => {
           item['marker'] = marker,
             marker = !marker;
           total += parseFloat(item['total']);
+          planned += parseFloat(item['planned']);
+          planned_yield += parseFloat(item['planned']);
         });
         this.loading.dismiss();
         console.log("output", output);
-        let yields:any = await this.pouchdbService.getView('Informes/AgroRend',10);
+        let yields:any = await this.pouchdbService.getView('Informes/AgroRend',11);
         if (Object.keys(this.reportActivityForm.value.crop).length > 0) {
           yields = yields.filter(word => word['key'][0] == this.reportActivityForm.value.crop.name);
         }
@@ -466,9 +610,17 @@ export class ActivityReportPage implements OnInit {
         // let otro = output
         output.forEach((doc: any, index)=>{
           doc['margin'] = 0;
+          doc['planned_yield'] = 0;
           yields.forEach((yie: any)=>{
+            // if (doc.name == yie.key[1]){
+            //   doc['margin'] += yie.value;
+            // }
             if (doc.name == yie.key[1]){
-              doc['margin'] += yie.value;
+              if (doc.name == yie.key[8]){
+                doc['margin'] += yie.value;
+              } else {
+                doc['planned_yield'] += yie.value;
+              }
             }
           })
         })
@@ -484,22 +636,45 @@ export class ActivityReportPage implements OnInit {
             if (getList.indexOf(activityLine.key[10]) == -1){
               getList.push(activityLine.key[10]);
             }
-            if (result.hasOwnProperty(activityLine.key[0])) {
-              items[result[activityLine.key[0]]] = {
-                'name': items[result[activityLine.key[0]]].name,
-                'quantity': items[result[activityLine.key[0]]].quantity + parseFloat(activityLine.key[4]),
-                'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[5]),
-                'total': items[result[activityLine.key[0]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-              };
-              crops
+            if (activityLine.key[11]){
+              if (result.hasOwnProperty(activityLine.key[0])) {
+                items[result[activityLine.key[0]]] = {
+                  'name': items[result[activityLine.key[0]]].name,
+                  'quantity': items[result[activityLine.key[0]]].quantity + parseFloat(activityLine.key[4]),
+                  'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[5]),
+                  'planned': items[result[activityLine.key[0]]].planned,
+                  'total': items[result[activityLine.key[0]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                };
+                crops
+              } else {
+                items.push({
+                  'name': activityLine.key[0],
+                  'quantity': parseFloat(activityLine.key[4]),
+                  'margin': parseFloat(activityLine.key[5]),
+                  'planned': 0,
+                  'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                });
+                result[activityLine.key[0]] = items.length-1;
+              }
             } else {
-              items.push({
-                'name': activityLine.key[0],
-                'quantity': parseFloat(activityLine.key[4]),
-                'margin': parseFloat(activityLine.key[5]),
-                'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-              });
-              result[activityLine.key[0]] = items.length-1;
+              if (result.hasOwnProperty(activityLine.key[0])) {
+                items[result[activityLine.key[0]]] = {
+                  'name': items[result[activityLine.key[0]]].name,
+                  'quantity': items[result[activityLine.key[0]]].quantity + parseFloat(activityLine.key[4]),
+                  'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[5]),
+                  'planned': items[result[activityLine.key[0]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                  'total': items[result[activityLine.key[0]]].total,
+                };
+              } else {
+                items.push({
+                  'name': activityLine.key[0],
+                  'quantity': parseFloat(activityLine.key[4]),
+                  'margin': parseFloat(activityLine.key[5]),
+                  'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                  'total': 0,
+                });
+                result[activityLine.key[0]] = items.length-1;
+              }
             }
 
             if (crops.hasOwnProperty(activityLine.key[0])){
@@ -530,9 +705,10 @@ export class ActivityReportPage implements OnInit {
               if (categories.hasOwnProperty(doc_dict[are].name)) {
                 litems[categories[doc_dict[are].name]] = {
                   // 'name': doc_dict[are].name,
+                  'name': doc_dict[are].name,
                   // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
                   'quantity': doc_dict[are].surface,
-                  // 'total': litems[categories[doc_dict[are].name]].total,
+                  'planned': litems[categories[doc_dict[are].name]].planned,
                 };
                 cropList[item] += doc_dict[are].surface;
               } else {
@@ -541,6 +717,7 @@ export class ActivityReportPage implements OnInit {
                   'quantity': doc_dict[are].surface,
                   // 'area': doc_dict[item.name].surface,
                   // 'total': 0,
+                  'planned': 1,
                 });
                 categories[doc_dict[are].name] = litems.length-1;
                 cropList[item] = doc_dict[are].surface;
@@ -557,10 +734,12 @@ export class ActivityReportPage implements OnInit {
           })
           let marker = false;
           let total = 0;
+          let planned = 0;
           output.forEach(item => {
             item['marker'] = marker,
               marker = !marker;
             total += parseFloat(item['total']);
+            planned += parseFloat(item['planned']);
           });
           this.loading.dismiss();
           resolve(output);
@@ -574,21 +753,45 @@ export class ActivityReportPage implements OnInit {
             if (getList.indexOf(activityLine.key[10]) == -1){
               getList.push(activityLine.key[10]);
             }
-            if (result.hasOwnProperty(activityLine.key[1])) {
-              items[result[activityLine.key[1]]] = {
-                'name': items[result[activityLine.key[1]]].name,
-                'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
-                'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
-                'total': items[result[activityLine.key[1]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-              };
+
+            if (activityLine.key[11]){
+              if (result.hasOwnProperty(activityLine.key[1])) {
+                items[result[activityLine.key[1]]] = {
+                  'name': items[result[activityLine.key[1]]].name,
+                  'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
+                  'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
+                  'planned': items[result[activityLine.key[1]]].planned,
+                  'total': items[result[activityLine.key[1]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                };
+              } else {
+                items.push({
+                  'name': activityLine.key[1],
+                  'quantity': parseFloat(activityLine.key[4]),
+                  'margin': parseFloat(activityLine.key[5]),
+                  'planned': 0,
+                  'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                });
+                result[activityLine.key[1]] = items.length-1;
+              }
             } else {
-              items.push({
-                'name': activityLine.key[1],
-                'quantity': parseFloat(activityLine.key[4]),
-                'margin': parseFloat(activityLine.key[5]),
-                'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-              });
-              result[activityLine.key[1]] = items.length-1;
+              if (result.hasOwnProperty(activityLine.key[1])) {
+                items[result[activityLine.key[1]]] = {
+                  'name': items[result[activityLine.key[1]]].name,
+                  'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
+                  'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
+                  'planned': items[result[activityLine.key[1]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                  'total': items[result[activityLine.key[1]]].total,
+                };
+              } else {
+                items.push({
+                  'name': activityLine.key[1],
+                  'quantity': parseFloat(activityLine.key[4]),
+                  'margin': parseFloat(activityLine.key[5]),
+                  'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                  'total': 0,
+                });
+                result[activityLine.key[1]] = items.length-1;
+              }
             }
           });
           let products: any = await this.pouchdbService.getList(getList);
@@ -611,6 +814,7 @@ export class ActivityReportPage implements OnInit {
                   'name': doc_dict[item.name].name,
                   // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
                   'quantity': doc_dict[item.name].surface,
+                  'planned': litems[categories[doc_dict[item.name].name]].planned + item.planned,
                   'total': litems[categories[doc_dict[item.name].name]].total + item.total,
                 };
               } else {
@@ -618,6 +822,7 @@ export class ActivityReportPage implements OnInit {
                   'name': doc_dict[item.name].name,
                   'quantity': doc_dict[item.name].surface,
                   // 'area': doc_dict[item.name].surface,
+                  'planned': item.planned,
                   'total': item.total,
                 });
                 categories[doc_dict[item.name].name] = litems.length-1;
@@ -633,10 +838,12 @@ export class ActivityReportPage implements OnInit {
           })
           let marker = false;
           let total = 0;
+          let planned = 0;
           output.forEach(item => {
             item['marker'] = marker,
               marker = !marker;
             total += parseFloat(item['total']);
+            planned += parseFloat(item['planned']);
           });
           this.loading.dismiss();
           console.log("ouch put", output);
@@ -649,28 +856,58 @@ export class ActivityReportPage implements OnInit {
       let getList = [];
       let activityArea = {};
       activitys.forEach(activityLine => {
-        if (result.hasOwnProperty(activityLine.key[2])) {
-          items[result[activityLine.key[2]]] = {
-            'name': items[result[activityLine.key[2]]].name,
-            'quantity': items[result[activityLine.key[2]]].quantity + parseFloat(activityLine.key[4]),
-            'margin': items[result[activityLine.key[2]]].margin + parseFloat(activityLine.key[5]),
-            'total': items[result[activityLine.key[2]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-          };
-          if (activityArea.hasOwnProperty(activityLine.key[1])) {
-            activityArea[activityLine.key[2]][activityLine.key[1]] += 1;
+        if (activityLine.key[11]){
+          if (result.hasOwnProperty(activityLine.key[2])) {
+            items[result[activityLine.key[2]]] = {
+              'name': items[result[activityLine.key[2]]].name,
+              'quantity': items[result[activityLine.key[2]]].quantity + parseFloat(activityLine.key[4]),
+              'margin': items[result[activityLine.key[2]]].margin + parseFloat(activityLine.key[5]),
+              'planned': items[result[activityLine.key[2]]].planned,
+              'total': items[result[activityLine.key[2]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+            };
+            if (activityArea.hasOwnProperty(activityLine.key[1])) {
+              activityArea[activityLine.key[2]][activityLine.key[1]] += 1;
+            } else {
+              activityArea[activityLine.key[2]][activityLine.key[1]] = 1;
+            }
           } else {
+            items.push({
+              'name': activityLine.key[2],
+              'quantity': parseFloat(activityLine.key[4]),
+              'margin': parseFloat(activityLine.key[5]),
+              'planned': 0,
+              'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+            });
+            result[activityLine.key[2]] = items.length-1;
+            activityArea[activityLine.key[2]] = {}
             activityArea[activityLine.key[2]][activityLine.key[1]] = 1;
           }
         } else {
-          items.push({
-            'name': activityLine.key[2],
-            'quantity': parseFloat(activityLine.key[4]),
-            'margin': parseFloat(activityLine.key[5]),
-            'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
-          });
-          result[activityLine.key[2]] = items.length-1;
-          activityArea[activityLine.key[2]] = {}
-          activityArea[activityLine.key[2]][activityLine.key[1]] = 1;
+          if (result.hasOwnProperty(activityLine.key[2])) {
+            items[result[activityLine.key[2]]] = {
+              'name': items[result[activityLine.key[2]]].name,
+              'quantity': items[result[activityLine.key[2]]].quantity + parseFloat(activityLine.key[4]),
+              'margin': items[result[activityLine.key[2]]].margin + parseFloat(activityLine.key[5]),
+              'planned': items[result[activityLine.key[2]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+              'total': items[result[activityLine.key[2]]].total,
+            };
+            if (activityArea.hasOwnProperty(activityLine.key[1])) {
+              activityArea[activityLine.key[2]][activityLine.key[1]] += 1;
+            } else {
+              activityArea[activityLine.key[2]][activityLine.key[1]] = 1;
+            }
+          } else {
+            items.push({
+              'name': activityLine.key[2],
+              'quantity': parseFloat(activityLine.key[4]),
+              'margin': parseFloat(activityLine.key[5]),
+              'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+              'total': 0,
+            });
+            result[activityLine.key[2]] = items.length-1;
+            activityArea[activityLine.key[2]] = {}
+            activityArea[activityLine.key[2]][activityLine.key[1]] = 1;
+          }
         }
         if (getList.indexOf(activityLine.key[10]) == -1){
           getList.push(activityLine.key[10]);
@@ -699,11 +936,13 @@ export class ActivityReportPage implements OnInit {
       })
       let marker = false;
       let total = 0;
+      let planned = 0;
       output.forEach(item => {
         item['marker'] = marker,
           marker = !marker;
         total += parseFloat(item['total']);
         item['quantity'] = activityArea[item['name']];
+        planned += parseFloat(item['planned']);
       });
       this.loading.dismiss();
       resolve(output);
@@ -711,22 +950,46 @@ export class ActivityReportPage implements OnInit {
           else if (this.reportActivityForm.value.groupBy == 'contact') {
             items = [];
             activitys.forEach(activityLine => {
-              if (result.hasOwnProperty(activityLine.key[2])) {
-                // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
-                items[result[activityLine.key[2]]] = {
-                  'name': items[result[activityLine.key[2]]].name,
-                  'quantity': items[result[activityLine.key[2]]].quantity + parseFloat(activityLine.key[4]),
-                  'margin': items[result[activityLine.key[2]]].margin + activityLine.key[5],
-                  'total': items[result[activityLine.key[2]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
-                };
+              if (activityLine.key[11]){
+                if (result.hasOwnProperty(activityLine.key[2])) {
+                  // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                  items[result[activityLine.key[2]]] = {
+                    'name': items[result[activityLine.key[2]]].name,
+                    'quantity': items[result[activityLine.key[2]]].quantity + parseFloat(activityLine.key[4]),
+                    'margin': items[result[activityLine.key[2]]].margin + activityLine.key[5],
+                    'planned': items[result[activityLine.key[2]]].planned,
+                    'total': items[result[activityLine.key[2]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
+                  };
+                } else {
+                  items.push({
+                    'name': activityLine.key[2],
+                    'quantity': parseFloat(activityLine.key[4]),
+                    'margin': activityLine.key[5],
+                    'planned': 0,
+                    'total': parseFloat(activityLine.key[4])*activityLine.key[5],
+                  });
+                  result[activityLine.key[2]] = items.length-1;
+                }
               } else {
-                items.push({
-                  'name': activityLine.key[2],
-                  'quantity': parseFloat(activityLine.key[4]),
-                  'margin': activityLine.key[5],
-                  'total': parseFloat(activityLine.key[4])*activityLine.key[5],
-                });
-                result[activityLine.key[2]] = items.length-1;
+                if (result.hasOwnProperty(activityLine.key[2])) {
+                  // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                  items[result[activityLine.key[2]]] = {
+                    'name': items[result[activityLine.key[2]]].name,
+                    'quantity': items[result[activityLine.key[2]]].quantity + parseFloat(activityLine.key[4]),
+                    'margin': items[result[activityLine.key[2]]].margin + activityLine.key[5],
+                    'planned': items[result[activityLine.key[2]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                    'total': items[result[activityLine.key[2]]].total,
+                  };
+                } else {
+                  items.push({
+                    'name': activityLine.key[2],
+                    'quantity': parseFloat(activityLine.key[4]),
+                    'margin': activityLine.key[5],
+                    'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                    'total': 0,
+                  });
+                  result[activityLine.key[2]] = items.length-1;
+                }
               }
             });
 
@@ -736,10 +999,12 @@ export class ActivityReportPage implements OnInit {
             })
             let marker = false;
             let total = 0;
+            let planned = 0;
             output.forEach(item => {
               item['marker'] = marker,
                 marker = !marker;
               total += parseFloat(item['total']);
+              planned += parseFloat(item['planned']);
             });
             this.loading.dismiss();
             resolve(output);
@@ -747,22 +1012,46 @@ export class ActivityReportPage implements OnInit {
           else if (this.reportActivityForm.value.groupBy == 'date') {
             items = [];
             activitys.forEach(activityLine => {
-              if (result.hasOwnProperty(activityLine.key[7])) {
-                // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
-                items[result[activityLine.key[7]]] = {
-                  'name': items[result[activityLine.key[7]]].name,
-                  'quantity': items[result[activityLine.key[7]]].quantity + parseFloat(activityLine.key[4]),
-                  'margin': items[result[activityLine.key[7]]].margin + activityLine.key[5],
-                  'total': items[result[activityLine.key[7]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
-                };
+              if (activityLine.key[11]){
+                if (result.hasOwnProperty(activityLine.key[7])) {
+                  // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                  items[result[activityLine.key[7]]] = {
+                    'name': items[result[activityLine.key[7]]].name,
+                    'quantity': items[result[activityLine.key[7]]].quantity + parseFloat(activityLine.key[4]),
+                    'margin': items[result[activityLine.key[7]]].margin + activityLine.key[5],
+                    'planned': items[result[activityLine.key[7]]].planned,
+                    'total': items[result[activityLine.key[7]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
+                  };
+                } else {
+                  items.push({
+                    'name': activityLine.key[7],
+                    'quantity': parseFloat(activityLine.key[4]),
+                    'margin': activityLine.key[5],
+                    'planned': 0,
+                    'total': parseFloat(activityLine.key[4])*activityLine.key[5],
+                  });
+                  result[activityLine.key[7]] = items.length-1;
+                }
               } else {
-                items.push({
-                  'name': activityLine.key[7],
-                  'quantity': parseFloat(activityLine.key[4]),
-                  'margin': activityLine.key[5],
-                  'total': parseFloat(activityLine.key[4])*activityLine.key[5],
-                });
-                result[activityLine.key[7]] = items.length-1;
+                if (result.hasOwnProperty(activityLine.key[7])) {
+                  // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+                  items[result[activityLine.key[7]]] = {
+                    'name': items[result[activityLine.key[7]]].name,
+                    'quantity': items[result[activityLine.key[7]]].quantity + parseFloat(activityLine.key[4]),
+                    'margin': items[result[activityLine.key[7]]].margin + activityLine.key[5],
+                    'planned': items[result[activityLine.key[7]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                    'total': items[result[activityLine.key[7]]].total,
+                  };
+                } else {
+                  items.push({
+                    'name': activityLine.key[7],
+                    'quantity': parseFloat(activityLine.key[4]),
+                    'margin': activityLine.key[5],
+                    'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+                    'total': 0,
+                  });
+                  result[activityLine.key[7]] = items.length-1;
+                }
               }
             });
 
@@ -772,48 +1061,12 @@ export class ActivityReportPage implements OnInit {
             })
             let marker = false;
             let total = 0;
+            let planned = 0;
             output.forEach(item => {
               item['marker'] = marker,
                 marker = !marker;
               total += parseFloat(item['total']);
-            });
-            this.loading.dismiss();
-            resolve(output);
-
-          }
-
-          else if (this.reportActivityForm.value.groupBy == 'seller') {
-            items = [];
-            activitys.forEach(activityLine => {
-              if (result.hasOwnProperty(activityLine.key[8])) {
-                // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
-                items[result[activityLine.key[8]]] = {
-                  'name': items[result[activityLine.key[8]]].name,
-                  'quantity': items[result[activityLine.key[8]]].quantity + parseFloat(activityLine.key[4]),
-                  'margin': items[result[activityLine.key[8]]].margin + activityLine.key[3],
-                  'total': items[result[activityLine.key[8]]].total + parseFloat(activityLine.key[4])*activityLine.key[5],
-                };
-              } else {
-                items.push({
-                  'name': activityLine.key[8],
-                  'quantity': parseFloat(activityLine.key[4]),
-                  'margin': activityLine.key[3],
-                  'total': parseFloat(activityLine.key[4])*activityLine.key[5],
-                });
-                result[activityLine.key[8]] = items.length-1;
-              }
-            });
-
-            let self = this;
-            let output = items.sort(function(a, b) {
-              return self.compare(a, b, self.reportActivityForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
+              planned += parseFloat(item['planned']);
             });
             this.loading.dismiss();
             resolve(output);
@@ -1058,16 +1311,22 @@ export class ActivityReportPage implements OnInit {
     let items_product_total = 0;
     let items_margin = 0;
     let items_quantity = 0;
+    let planned = 0;
+    let planned_yield = 0;
     this.reportActivityForm.value.items.forEach((item) => {
       total += parseFloat(item.total);
       items_product_total += 1;
       items_margin += parseFloat(item.margin);
       items_quantity += parseFloat(item.quantity);
+      planned += parseFloat(item.planned);
+      planned_yield += parseFloat(item.planned_yield);
     });
     this.items_product_total = items_product_total;
     this.items_margin = items_margin;
     this.items_quantity = items_quantity;
     this.total = total;
+    this.planned = planned;
+    this.planned_yield = planned_yield;
     this.reportActivityForm.patchValue({
       "total": total,
     });
