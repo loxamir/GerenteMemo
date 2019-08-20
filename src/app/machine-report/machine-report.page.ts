@@ -186,7 +186,6 @@ export class MachineReportPage implements OnInit {
 
         items = [];
         machines.forEach(activityLine => {
-          console.log
           if (result.hasOwnProperty(activityLine.key[6])) {
             // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
             items[result[activityLine.key[6]]] = {
@@ -224,13 +223,130 @@ export class MachineReportPage implements OnInit {
 
 
 
-      } else {
+      }
+      else if (this.reportMachineForm.value.groupBy == 'machineIncome') {
+        this.pouchdbService.getView(
+          'Informes/MachineIncome',
+          10,
+        ).then(async (machines1: any[]) => {
+          console.log("machine1", machines1);
+          let machines = machines1;
+          //This is the filter
+          if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
+            machines = machines.filter(word => word['key'][0] == this.reportMachineForm.value.machine._id);
+          }
+          if (Object.keys(this.reportMachineForm.value.activity).length > 0) {
+            machines = machines.filter(word => word['key'][1] == this.reportMachineForm.value.activity._id);
+          }
+
+        items = [];
+        machines.forEach(activityLine => {
+          let quantity = 0;
+          if (activityLine.value){
+            quantity = 1;
+          }
+          if (result.hasOwnProperty(activityLine.key[0])) {
+            // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+            items[result[activityLine.key[0]]] = {
+              'name': items[result[activityLine.key[0]]].name,
+              'quantity': items[result[activityLine.key[0]]].quantity + quantity,
+              'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[7]),
+              'total': items[result[activityLine.key[0]]].total + activityLine.value,
+            };
+          } else {
+            items.push({
+              'name': activityLine.key[3],
+              'quantity': quantity,
+              'margin': parseFloat(activityLine.key[7]),
+              'total': parseFloat(activityLine.value),
+            });
+            result[activityLine.key[0]] = items.length-1;
+          }
+        });
+
+        let self = this;
+        let output = items.sort(function(a, b) {
+          return self.compare(a, b, self.reportMachineForm.value.orderBy);
+        })
+        let marker = false;
+        let total = 0;
+        let filteredOutput = []
+        output.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+          total += parseFloat(item['total']);
+          if (item.quantity){
+            filteredOutput.push(item);
+          }
+        });
+        this.loading.dismiss();
+        resolve(filteredOutput);
+      })
+      // } else {
+
+
+
+      }
+      else if (this.reportMachineForm.value.groupBy == 'activityIncome') {
+        this.pouchdbService.getView(
+          'Informes/MachineIncome',
+          10,
+        ).then(async (machines1: any[]) => {
+          console.log("machine1", machines1);
+          let machines = machines1;
+          //This is the filter
+          if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
+            machines = machines.filter(word => word['key'][0] == this.reportMachineForm.value.machine._id);
+          }
+          if (Object.keys(this.reportMachineForm.value.activity).length > 0) {
+            machines = machines.filter(word => word['key'][1] == this.reportMachineForm.value.activity._id);
+          }
+
+        items = [];
+        machines.forEach(activityLine => {
+          if (activityLine.value){
+            if (result.hasOwnProperty(activityLine.key[1])) {
+              // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
+              items[result[activityLine.key[1]]] = {
+                'name': items[result[activityLine.key[1]]].name,
+                'quantity': items[result[activityLine.key[1]]].quantity + 1,
+                'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[7]),
+                'total': items[result[activityLine.key[1]]].total + activityLine.value,
+              };
+            } else {
+              items.push({
+                'name': activityLine.key[6],
+                'quantity': 1,
+                'margin': parseFloat(activityLine.key[7]),
+                'total': parseFloat(activityLine.value),
+              });
+              result[activityLine.key[1]] = items.length-1;
+            }
+          }
+        });
+
+        let self = this;
+        let output = items.sort(function(a, b) {
+          return self.compare(a, b, self.reportMachineForm.value.orderBy);
+        })
+        let marker = false;
+        let total = 0;
+        output.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+          total += parseFloat(item['total']);
+        });
+        this.loading.dismiss();
+        resolve(output);
+      })
+      }
+      else {
 
         this.pouchdbService.getView(
           'Informes/Machine',
           10,
         ).then(async (machines1: any[]) => {
-          console.log("machine1", machines1);
+          console.log("machine2", machines1);
           let machines = machines1;
           //This is the filter
           if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
@@ -254,7 +370,7 @@ export class MachineReportPage implements OnInit {
             let tmpDict = {};
 
 
-            console.log("machine");
+            // console.log("machine");
             let getList = [];
             items = [];
             machines.forEach(machineLine => {
@@ -283,7 +399,7 @@ export class MachineReportPage implements OnInit {
             let products: any = await this.pouchdbService.getList(getList);
             var doc_dict = {};
             products.forEach((row, index) => {
-              console.log("row.doc.name", row);
+              // console.log("row.doc.name", row);
               if (row.doc) {
                 doc_dict[row.doc._id] = row.doc;
               }
@@ -294,7 +410,7 @@ export class MachineReportPage implements OnInit {
             tmpDict = {};
             let litems = [];
             items.forEach(item => {
-              console.log("item", item.id, doc_dict, doc_dict[item.id]);
+              // console.log("item", item.id, doc_dict, doc_dict[item.id]);
               if (doc_dict[item.id]) {
                 if (tmpDict.hasOwnProperty(doc_dict[item.id].name)) {
                   litems[tmpDict[doc_dict[item.id].name]] = {
@@ -314,7 +430,7 @@ export class MachineReportPage implements OnInit {
                 }
               }
             })
-            console.log("litems", litems);
+            // console.log("litems", litems);
             let self = this;
             // let output = items.sort(function(a, b) {
             //   return self.compare(a, b, self.reportMachineForm.value.orderBy);
@@ -330,8 +446,92 @@ export class MachineReportPage implements OnInit {
               total += parseFloat(item['total']);
             });
             this.loading.dismiss();
-            console.log("ouch put", output);
+            // console.log("ouch put", output);
             resolve(output);
+
+
+
+
+
+
+
+
+
+
+          }
+          else if (this.reportMachineForm.value.groupBy == 'machineIncome_Old') {
+            let tmpDict = {};
+            console.log("machineIncome");
+            let getList = [];
+            items = [];
+            machines.forEach(machineLine => {
+              if (getList.indexOf(machineLine.key[0]) == -1) {
+                getList.push(machineLine.key[0]);
+              }
+
+              if (tmpDict.hasOwnProperty(machineLine.key[0])) {
+                items[tmpDict[machineLine.key[0]]] = {
+                  'id': machineLine.key[0],
+                  'total': items[tmpDict[machineLine.key[0]]].total + machineLine.value,
+                };
+              } else {
+                items.push({
+                  'id': machineLine.key[0],
+                  'total': machineLine.value,
+                });
+                tmpDict[machineLine.key[0]] = items.length - 1;
+              }
+            });
+            let products: any = await this.pouchdbService.getList(getList);
+            var doc_dict = {};
+            products.forEach((row, index) => {
+              // console.log("row.doc.name", row);
+              if (row.doc) {
+                doc_dict[row.doc._id] = row.doc;
+              }
+              else {
+                products = products.slice(index, 1);
+              }
+            })
+            tmpDict = {};
+            let litems = [];
+            console.log("items", items);
+            items.forEach(item => {
+              // console.log("item", item.id, doc_dict, doc_dict[item.id]);
+              if (doc_dict[item.id]) {
+                if (tmpDict.hasOwnProperty(doc_dict[item.id].name)) {
+                  litems[tmpDict[doc_dict[item.id].name]] = {
+                    'name': doc_dict[item.id].name,
+                    'total': litems[tmpDict[doc_dict[item.id].name]].total + item.total,
+                  };
+                } else {
+                  litems.push({
+                    'name': doc_dict[item.id].name,
+                    'total': item.total,
+                  });
+                  tmpDict[doc_dict[item.id].name] = litems.length - 1;
+                }
+              }
+            })
+            console.log("litems", litems);
+            let self = this;
+            let output = litems.sort(function(a, b) {
+              return self.compare(a, b, self.reportMachineForm.value.orderBy);
+            })
+            let marker = false;
+            let total = 0;
+            output.forEach(item => {
+              item['marker'] = marker,
+                marker = !marker;
+              total += parseFloat(item['total']);
+            });
+            this.loading.dismiss();
+            // console.log("ouch put", output);
+            resolve(output);
+
+
+
+
 
 
 

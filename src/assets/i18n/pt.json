@@ -542,5 +542,7 @@
   "TRUCK":"Caminhão",
   "CAR":"Carro",
   "FREIGHT":"Frete",
+  "INCOME_BY_MACHINE": "Ingresso por Maquina",
+  "INCOME_BY_ACTIVITY": "Ingresso por Atividade",
   "RESULT": "Resultado"
 }

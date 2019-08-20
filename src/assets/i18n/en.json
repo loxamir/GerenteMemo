@@ -542,5 +542,7 @@
   "TRUCK":"Truck",
   "CAR":"Car",
   "FREIGHT":"Freight",
+  "INCOME_BY_MACHINE": "Income by Machine",
+  "INCOME_BY_ACTIVITY": "Income by Activity",
   "RESULT": "Result"
 }
