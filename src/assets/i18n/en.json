@@ -539,5 +539,8 @@
   "PLANNED_COST":"Plann Cost",
   "PLANNED_YIELD":"Plan Yield",
   "PLANNED_COST_BAG":"Plan. Bag Cost",
+  "TRUCK":"Truck",
+  "CAR":"Car",
+  "FREIGHT":"Freight",
   "RESULT": "Result"
 }

@@ -539,5 +539,8 @@
   "PLANNED_COST":"Plan Costo",
   "PLANNED_YIELD":"Plan Rendimiento",
   "PLANNED_COST_BAG":"Plan. Costo Saca",
+  "TRUCK":"Camion",
+  "CAR":"Auto",
+  "FREIGHT":"Flete",
   "RESULT": "Resultado"
 }

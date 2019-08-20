@@ -170,6 +170,14 @@
         </h1>
       </ion-col>
     </ion-row>
+    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;">
+      <ion-col (click)="addActivity('activity.freight')" *ngIf="machineForm.value.type=='TRUCK'">
+        <ion-img [src]="'./assets/icons/activity.freight.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          {{'FREIGHT'|translate}}
+        </h1>
+      </ion-col>
+    </ion-row>
   </ion-fab>
 
 </ion-content>
@@ -191,6 +199,8 @@
         <ion-select #type formControlName="type" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
           <ion-select-option value="MACHINE">{{ 'MACHINE' | translate }}</ion-select-option>
           <ion-select-option value="IMPLEMENT">{{ 'IMPLEMENT' | translate }}</ion-select-option>
+          <ion-select-option value="TRUCK">{{ 'TRUCK' | translate }}</ion-select-option>
+          <ion-select-option value="CAR">{{ 'CAR' | translate }}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item no-padding (click)="selectFuel()" class="field-100" *ngIf="machineForm.value.type != 'IMPLEMENT'">
@@ -206,7 +216,8 @@
         <ion-input #hourCost type="number" formControlName="hourCost"></ion-input>
       </ion-item>
       <ion-item no-padding class="field-50">
-        <ion-label position="floating">{{'HORIMETER' | translate}}</ion-label>
+        <ion-label position="floating" *ngIf="machineForm.value.type!='CAR' && machineForm.value.type!='TRUCK'">{{'HORIMETER' | translate}}</ion-label>
+        <ion-label position="floating" *ngIf="machineForm.value.type=='CAR' || machineForm.value.type=='TRUCK'">{{'HODOMETER' | translate}}</ion-label>
         <ion-input #horimeter type="number" formControlName="horimeter"></ion-input>
       </ion-item>
       <ion-button class="button-100" color="success" (click)="buttonSave()">{{'SAVE'|translate}}</ion-button>
