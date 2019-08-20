@@ -882,7 +882,7 @@
             "enableBackdropDismiss": true
           },
           "default": null,
-          "context": "{}",
+          "context": "{\"operation\": \"purchase\"}",
           "onchange": "quantity=1;cost=cost;"
         }
       ],
@@ -939,7 +939,7 @@
           },
           "activity_id": "",
           "default": null,
-          "context": "{}",
+          "context": "{\"operation\": \"purchase\"}",
           "onchange": null
         },
         {
@@ -1887,7 +1887,7 @@
                   "enableBackdropDismiss": true
                 },
                 "default": null,
-                "context": "{}",
+                "context": "{\"operation\": \"purchase\"}",
                 "onchange": "quantity=1;cost=cost;"
               }
             ],
@@ -2419,7 +2419,7 @@
                   "enableBackdropDismiss": true
                 },
                 "default": null,
-                "context": "{}",
+                "context": "{\"operation\": \"purchase\"}",
                 "onchange": "quantity=1;cost=cost;"
               }
             ],
@@ -2983,7 +2983,7 @@
                   "enableBackdropDismiss": true
                 },
                 "default": null,
-                "context": "{}",
+                "context": "{\"operation\": \"purchase\"}",
                 "onchange": "quantity=1;cost=cost;"
               }
             ],
@@ -3479,7 +3479,7 @@
                   "enableBackdropDismiss": true
                 },
                 "default": null,
-                "context": "{}",
+                "context": "{\"operation\": \"purchase\"}",
                 "onchange": "quantity=1;cost=cost;"
               }
             ],
@@ -3823,7 +3823,7 @@
                   "enableBackdropDismiss": true
                 },
                 "default": null,
-                "context": "{}",
+                "context": "{\"operation\": \"purchase\"}",
                 "onchange": "quantity=1;cost=cost;"
               }
             ],
@@ -3870,6 +3870,368 @@
       "show": true,
       "type": "area",
       "docType": "activity"
+    },
+    {
+      "_id": "activity.freight",
+      "name": "FREIGHT",
+      "fields": [
+        {
+          "name": "distance",
+          "type": "float",
+          "label": "DISTANCE_KM",
+          "model": "",
+          "formula": "",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 3,
+          "activity": {},
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },
+        {
+          "name": "quantity",
+          "type": "float",
+          "label": "TOTAL_WEIGHT_TON",
+          "model": "",
+          "formula": "",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 2,
+          "activity": {},
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },
+        {
+          "name": "price",
+          "type": "float",
+          "label": "FREIGHT_PRICE",
+          "model": "",
+          "formula": "",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 6,
+          "activity": {},
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },
+        {
+          "name": "contact",
+          "type": "many2one",
+          "label": "CLIENT",
+          "model": "contact",
+          "formula": "",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "full-width",
+          "sequence": 1,
+          "activity": {},
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },
+        {
+          "name": "cost",
+          "type": "formula",
+          "label": "TOTAL_COST",
+          "model": "",
+          "formula": "this.sumListFieldMulti('inputs', 'quantity', 'cost')+this.sumListFieldMulti('machines', 'quantity', 'cost')+this.sumListFieldMulti('contacts', 'quantity', 'cost')",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 8,
+          "activity": {},
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },
+        {
+          "name": "contacts",
+          "type": "tab",
+          "label": "PERSONAL",
+          "model": "",
+          "formula": "",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [
+            {
+              "name": "contact",
+              "label": "NAME"
+            },
+            {
+              "name": "quantity",
+              "label": "QUANTITY"
+            }
+          ],
+          "class": "full-width",
+          "sequence": 46,
+          "activity": {
+            "name": "ADD_PERSON",
+            "fields": [
+              {
+                "name": "subtotal",
+                "type": "formula",
+                "label": "SUBTOTAL",
+                "model": "",
+                "formula": "form.cost*form.quantity",
+                "script": "",
+                "invisible": "",
+                "readonly": "",
+                "note": "",
+                "attributes": [],
+                "class": "full-width",
+                "sequence": 99,
+                "activity": {},
+                "activity_id": "",
+                "onchange": null,
+                "default": null,
+                "context": "{}"
+              },
+              {
+                "name": "quantity",
+                "type": "float",
+                "label": "QUANTITY",
+                "model": "",
+                "formula": "",
+                "script": "",
+                "invisible": "",
+                "readonly": "",
+                "note": "",
+                "attributes": [],
+                "class": "half-width",
+                "sequence": 20,
+                "activity": {},
+                "activity_id": "",
+                "onchange": null,
+                "default": null,
+                "context": "{}"
+              },
+              {
+                "name": "cost",
+                "type": "float",
+                "label": "COST",
+                "model": "",
+                "formula": "",
+                "script": "",
+                "invisible": "",
+                "readonly": "",
+                "note": "",
+                "attributes": [],
+                "class": "half-width",
+                "sequence": 25,
+                "activity": {},
+                "activity_id": "",
+                "onchange": null,
+                "default": null,
+                "context": "{}"
+              },
+              {
+                "name": "contact",
+                "type": "many2one",
+                "label": "PERSON",
+                "model": "contact",
+                "formula": "",
+                "script": "",
+                "invisible": "",
+                "readonly": "",
+                "note": "",
+                "attributes": [],
+                "class": "full-width",
+                "sequence": 10,
+                "activity": {},
+                "activity_id": "",
+                "default": null,
+                "context": "{}",
+                "onchange": "quantity=1;cost=salary;"
+              }
+            ],
+            "note": "",
+            "summary": null,
+            "saveScript": null,
+            "show": false,
+            "type": "area",
+            "docType": "activity",
+            "_id": "activity.contacts"
+          },
+          "activity_id": "activity.contacts",
+          "default": null,
+          "context": "{}",
+          "onchange": null
+        },
+        {
+          "name": "inputs",
+          "type": "tab",
+          "label": "EXPENSES",
+          "model": "",
+          "formula": "",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [
+            {
+              "name": "product",
+              "label": "INPUT"
+            },
+            {
+              "name": "quantity",
+              "label": "QUANTITY"
+            }
+          ],
+          "class": "full-width",
+          "sequence": 40,
+          "activity": {
+            "name": "ADD_INPUT",
+            "fields": [
+              {
+                "name": "subtotal",
+                "type": "formula",
+                "label": "SUBTOTAL",
+                "model": "",
+                "formula": "form.quantity*form.cost",
+                "script": "",
+                "invisible": "",
+                "readonly": "",
+                "note": "",
+                "attributes": [],
+                "class": "full-width",
+                "sequence": 99,
+                "activity": {},
+                "activity_id": "",
+                "onchange": null,
+                "default": null,
+                "context": "{}"
+              },
+              {
+                "name": "cost",
+                "type": "float",
+                "label": "UNIT_COST",
+                "model": "",
+                "formula": "",
+                "script": "",
+                "invisible": "",
+                "readonly": "",
+                "note": "",
+                "attributes": [],
+                "class": "half-width",
+                "sequence": 25,
+                "activity": {},
+                "activity_id": "",
+                "onchange": null,
+                "default": null,
+                "context": "{}"
+              },
+              {
+                "name": "quantity",
+                "type": "float",
+                "label": "QUANTITY",
+                "model": "",
+                "formula": "",
+                "script": "",
+                "invisible": "",
+                "readonly": "",
+                "note": "",
+                "attributes": [],
+                "class": "half-width",
+                "sequence": 20,
+                "activity": {},
+                "activity_id": "",
+                "default": null,
+                "context": "{}",
+                "onchange": null
+              },
+              {
+                "name": "product",
+                "type": "many2one",
+                "label": "INPUT",
+                "model": "product",
+                "formula": "",
+                "script": "",
+                "invisible": "",
+                "readonly": "",
+                "note": "",
+                "attributes": [],
+                "class": "full-width",
+                "sequence": 0,
+                "activity": {},
+                "activity_id": "",
+                "opts": {
+                  "showBackdrop": true,
+                  "enableBackdropDismiss": true
+                },
+                "default": null,
+                "context": "{\"operation\": \"purchase\"}",
+                "onchange": "quantity=1;cost=cost;"
+              }
+            ],
+            "note": "",
+            "summary": null,
+            "saveScript": null,
+            "show": false,
+            "type": "area",
+            "docType": "activity",
+            "_id": "activity.inputs"
+          },
+          "activity_id": "activity.inputs",
+          "default": null,
+          "context": "{}",
+          "onchange": null
+        },
+        {
+          "name": "machine",
+          "type": "many2one",
+          "label": "TRUCK",
+          "model": "machine",
+          "formula": "",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "class": "full-width",
+          "sequence": 10,
+          "attributes": [],
+          "activity": {},
+          "activity_id": "",
+          "context": "{}",
+          "onchange": null,
+          "default": null
+        }
+      ],
+      "note": "",
+      "summary": "",
+      "saveScript": "this.stockMoveCreateList(\"inputs\", \"Flete\")",
+      "show": true,
+      "type": "machine",
+      "docType": "activity",
+      "write_user": "agromagro",
+      "write_time": "2019-08-20T12:19:43.182Z"
     }
   ]
 }

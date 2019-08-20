@@ -27,7 +27,7 @@ export class LoginPage implements OnInit {
   show_create: boolean = false;
   selected_user: boolean = false;
   databaseList: [];
-  username: '';
+  username = '';
   today = new Date().toISOString();
   language;
 
@@ -255,7 +255,9 @@ export class LoginPage implements OnInit {
             this.translate.setDefaultLang(this.language);
             this.translate.use(this.language);
             let password = await this.storage.get("password");
-            this.restProvider.setUserLanguage(this.username, password, this.language);
+            if (this.username!='agromemo'){
+              this.restProvider.setUserLanguage(this.username, password, this.language);
+            }
           }
         }
       ]

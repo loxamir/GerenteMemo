@@ -160,7 +160,7 @@
               </ion-row>
               <ion-row *ngFor="let item of reportMachineForm.value.items">
                 <ion-col width-60 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.name}}
+                  {{item.name| translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   $ {{item.total/item.quantity|number:'1.2-2'}}
@@ -323,7 +323,7 @@
                   </ion-row>
                   <ion-row *ngFor="let item of reportMachineForm.value.items">
                     <ion-col width-40 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                      {{item.name}}
+                      {{item.name| translate}}
                     </ion-col>
                     <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                       $ {{item.margin|number:'1.2-2'}}

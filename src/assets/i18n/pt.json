@@ -545,5 +545,7 @@
   "INCOME_BY_MACHINE": "Ingresso por Maquina",
   "INCOME_BY_ACTIVITY": "Ingresso por Atividade",
   "TO_PLAN": "Planejado",
+  "TOTAL_WEIGHT_TON": "Peso Total(Ton)",
+  "FREIGHT_PRICE": "Preço do Frete",
   "RESULT": "Resultado"
 }
