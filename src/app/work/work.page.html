@@ -16,18 +16,37 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-row  class="state-header" *ngIf="!this.list">
-    <ion-col size="4" (click)="showPlanData()">
+    <ion-col
+     (click)="showPlanData()"
+    *ngIf="workForm.value.state =='DRAFT'">
       <div class="clicked arron">
-        <span class="state-label">{{ 'STATE_PLANNED' | translate}}</span>
+        <span class="state-label">{{ 'DRAFT' | translate}}</span>
       </div>
     </ion-col>
-    <ion-col size="4">
-      <div [class.unclicked]="workForm.value.state=='PLANNED'" [class.clicked]="workForm.value.state!='PLANNED'" class="arrow">
+    <ion-col (click)="showPlanData()"
+    *ngIf="workForm.value.state =='SCHEDULED' || workForm.value.scheduled">
+      <div class="clicked arron">
+        <span class="state-label">{{ 'SCHEDULED' | translate}}</span>
+      </div>
+    </ion-col>
+    <ion-col *ngIf="workForm.value.state =='SCHEDULED' || workForm.value.state =='DRAFT'|| workForm.value.scheduled">
+      <div
+      [class.unclicked]="workForm.value.state!='STARTED' && workForm.value.state!='DONE'"
+      [class.clicked]="workForm.value.state=='STARTED' || workForm.value.state=='DONE'"
+      class="arrow">
         <span class="state-label">{{ 'STATE_STARTED' | translate}}</span>
       </div>
     </ion-col>
-    <ion-col size="4">
-      <div [class.unclicked]="workForm.value.state!='DONE'" [class.clicked]="workForm.value.state=='DONE'" class="arrow">
+    <ion-col (click)="showPlanData()"
+    *ngIf="(workForm.value.state =='STARTED' || workForm.value.state=='DONE') && !workForm.value.scheduled">
+      <div class="clicked arron">
+        <span class="state-label">{{ 'STATE_STARTED' | translate}}</span>
+      </div>
+    </ion-col>
+    <ion-col>
+      <div [class.unclicked]="workForm.value.state!='DONE'"
+      [class.clicked]="workForm.value.state=='DONE'"
+      class="arrow">
         <span class="state-label">{{ 'STATE_DONE' | translate}}</span>
       </div>
     </ion-col>
@@ -37,8 +56,11 @@
 
 <ion-content class="work-content" style="background-color: #ddd">
 
-  <form class="sample-form validations-form" [formGroup]="workForm" (ngSubmit)="onSubmit(workForm.value)" >
-    <ion-row justify-content-center *ngIf="editDate ||( workForm.value.state == 'PLANNED'  && !this.list)">
+  <form class="sample-form validations-form"
+  [formGroup]="workForm"
+  (ngSubmit)="onSubmit(workForm.value)" >
+    <ion-row justify-content-center
+    *ngIf="editDate ||((workForm.value.state == 'DRAFT')  && !this.list)">
         <ion-item no-padding class="field-50">
           <h4 class="field-label">{{'DATE_START' | translate }}</h4>
           <ion-datetime class="field-50-datetime"
@@ -244,8 +266,32 @@
         rows="2">
       </ion-textarea>
     </ion-item>
+    <!-- <ion-item>
+      <ion-button
+        class="button-50"
+        color="primary"
+        (click)="startPlan()"
+        *ngIf="workForm.value.date>this.today">
+        {{'TO_PLAN'|translate}}
+      </ion-button>
+    </ion-item> -->
+    <!-- <ion-button
+      class="button-50"
+      color="primary"
+      (click)="startWork()"
+      *ngIf="((workForm.value.date<=today && workForm.value.state=='DRAFT') || workForm.value.state=='SCHEDULED') && !this.list">
+      {{'START'|translate}}
+    </ion-button> -->
+    <!-- <ion-button class="button-100" color="primary" (click)="concludeWork()" *ngIf="workForm.value.state=='STARTED' && !this.list">{{'CONCLUDE'|translate}}</ion-button> -->
   </form>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="workForm.value.state=='PLANNED' && !this.list">
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="workForm.value.state=='DRAFT' && workForm.value.date>today.toISOString() && !this.list">
+    <ion-button (click)="startPlan()"  class="next-button">
+      <ion-icon name="fastforward"> </ion-icon>
+      {{'SCHEDULE'|translate}}
+    </ion-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="((workForm.value.state=='DRAFT' && workForm.value.date<=today.toISOString()) || workForm.value.state=='SCHEDULED') && !this.list">
     <ion-button (click)="startWork()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
       {{'START'|translate}}

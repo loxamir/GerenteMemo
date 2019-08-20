@@ -544,5 +544,6 @@
   "FREIGHT":"Freight",
   "INCOME_BY_MACHINE": "Income by Machine",
   "INCOME_BY_ACTIVITY": "Income by Activity",
+  "TO_PLAN": "Planned",
   "RESULT": "Result"
 }

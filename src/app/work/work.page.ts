@@ -145,12 +145,13 @@ export class WorkPage implements OnInit {
       date: new FormControl(this.today.toISOString()),
       dateEnd: new FormControl(this.today.toISOString()),
       note: new FormControl(),
-      state: new FormControl('PLANNED'),
+      state: new FormControl('DRAFT'),
       fields: new FormControl([]),
       summary: new FormControl(""),
       section: new FormControl(null),
       doc_id: new FormControl(''),
       plan: new FormControl({}),
+      scheduled: new FormControl(false),
       _id: new FormControl(''),
     });
     let language: any = await this.languageService.getDefaultLanguage();
@@ -220,8 +221,6 @@ export class WorkPage implements OnInit {
 
   async buttonSave() {
     let dict = {}
-    // if (this.workForm.value.state == 'PLANNED' && this.workForm.value.date > this.today){
-    //   dict['state'] = 'PLANNED';
     // }
     this.workForm.value.fields.forEach(field=>{
       if (field.type == 'formula'){
@@ -892,10 +891,19 @@ export class WorkPage implements OnInit {
     // this.workForm.value.state="STARTED";
     this.workForm.patchValue({
       state: "STARTED",
-      plan: this.workForm.value
     })
     this.justSave();
   }
+
+  startPlan(){
+    this.workForm.patchValue({
+      state: "SCHEDULED",
+      plan: this.workForm.value,
+      scheduled: true,
+    })
+    this.buttonSave();
+  }
+
   concludeWork() {
     // this.workForm.value.state="DONE";
     this.workForm.patchValue({
@@ -905,22 +913,21 @@ export class WorkPage implements OnInit {
   }
 
   showPlanData(){
-    if (this.showPlan){
-      this.showPlan = false;
-      this.workForm.patchValue(this.tmpData);
-      this.recomputeFields();
-    } else {
-      this.showPlan = true;
-      this.tmpData = this.workForm.value;
-      this.workForm.value.state = 'TMP_PLANNED';
-      this.workForm.patchValue(this.workForm.value.plan);
-      console.log("plan", this.workForm.value);
-      this.recomputeFields();
-    }
+    // if (this.showPlan){
+    //   this.showPlan = false;
+    //   this.workForm.patchValue(this.tmpData);
+    //   this.recomputeFields();
+    // } else {
+    //   this.showPlan = true;
+    //   this.tmpData = this.workForm.value;
+    //   delete this.workForm.value.plan.state;
+    //   this.workForm.patchValue(this.workForm.value.plan);
+    //   this.recomputeFields();
+    // }
   }
 
   dateChanged(){
-    if (this.workForm.value.dateEnd > this.workForm.value.date){
+    if (this.workForm.value.date < this.workForm.value.dateEnd){
       this.workForm.patchValue({
         dateEnd: this.workForm.value.date,
       })
