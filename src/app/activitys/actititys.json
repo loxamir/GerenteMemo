@@ -1291,7 +1291,7 @@
             "docType": "activity",
             "write_user": "agrotoro",
             "write_time": "2019-07-25T19:44:03.537Z",
-            "_id": "activity.loads",
+            "_id": "activity.loads"
           },
           "activity_id": "activity.loads",
           "default": null,
@@ -1420,7 +1420,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.contacts",
+            "_id": "activity.contacts"
           },
           "activity_id": "activity.contacts",
           "default": null,
@@ -1572,7 +1572,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.machines",
+            "_id": "activity.machines"
           },
           "activity_id": "activity.machines",
           "default": null,
@@ -1764,7 +1764,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.contacts",
+            "_id": "activity.contacts"
           },
           "activity_id": "activity.contacts",
           "default": null,
@@ -1897,7 +1897,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.inputs",
+            "_id": "activity.inputs"
           },
           "activity_id": "activity.inputs",
           "default": null,
@@ -2144,7 +2144,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.contacts",
+            "_id": "activity.contacts"
           },
           "activity_id": "activity.contacts",
           "default": null,
@@ -2296,7 +2296,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.machines",
+            "_id": "activity.machines"
           },
           "activity_id": "activity.machines",
           "default": null,
@@ -2429,7 +2429,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.inputs",
+            "_id": "activity.inputs"
           },
           "activity_id": "activity.inputs",
           "opts": {
@@ -2708,7 +2708,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.contacts",
+            "_id": "activity.contacts"
           },
           "activity_id": "activity.contacts",
           "default": null,
@@ -2860,7 +2860,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.machines",
+            "_id": "activity.machines"
           },
           "activity_id": "activity.machines",
           "context": "{}",
@@ -2993,7 +2993,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.inputs",
+            "_id": "activity.inputs"
           },
           "activity_id": "activity.inputs",
           "default": null,
@@ -3204,7 +3204,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.contacts",
+            "_id": "activity.contacts"
           },
           "activity_id": "activity.contacts",
           "default": null,
@@ -3356,7 +3356,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.machines",
+            "_id": "activity.machines"
           },
           "activity_id": "activity.machines",
           "context": "{}",
@@ -3489,7 +3489,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.inputs",
+            "_id": "activity.inputs"
           },
           "activity_id": "activity.inputs",
           "default": null,
@@ -3700,7 +3700,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.contacts",
+            "_id": "activity.contacts"
           },
           "activity_id": "activity.contacts",
           "default": null,
@@ -3833,7 +3833,7 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "_id": "activity.inputs",
+            "_id": "activity.inputs"
           },
           "activity_id": "activity.inputs",
           "default": null,

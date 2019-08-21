@@ -518,7 +518,7 @@ export class ActivityReportPage implements OnInit {
             doc['planned_yield'] = 0;
             yields.forEach((yie: any)=>{
               if (doc.name == yie.key[0]){
-                if (doc.name == yie.key[8]){
+                if (yie.key[8]){
                   doc['margin'] += yie.value;
                 } else {
                   doc['planned_yield'] += yie.value;
@@ -616,7 +616,7 @@ export class ActivityReportPage implements OnInit {
             //   doc['margin'] += yie.value;
             // }
             if (doc.name == yie.key[1]){
-              if (doc.name == yie.key[8]){
+              if (yie.key[8]){
                 doc['margin'] += yie.value;
               } else {
                 doc['planned_yield'] += yie.value;
