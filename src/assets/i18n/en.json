@@ -547,6 +547,7 @@
   "TO_PLAN": "Planned",
   "TOTAL_WEIGHT_TON": "Total Weight(Ton)",
   "FREIGHT_PRICE": "Freight Price",
+  "FREIGHT_COST": "Freight Cost",
   "COST_BAG": "Cost/Bag",
   "RESULT": "Result"
 }

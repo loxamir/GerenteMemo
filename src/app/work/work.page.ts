@@ -53,6 +53,7 @@ export class WorkPage implements OnInit {
   editDate = false;
   showPlan = false;
   tmpData = {};
+  state = 'DRAFT';
 
   constructor(
     public navCtrl: NavController,
@@ -83,6 +84,7 @@ export class WorkPage implements OnInit {
     this.machine = eval(this.route.snapshot.paramMap.get('machine'));
     this.select = this.route.snapshot.paramMap.get('select');
     this.note = this.route.snapshot.paramMap.get('note');
+    this.state = this.route.snapshot.paramMap.get('state') || this.state;
   }
 
   dismissData(){
@@ -145,7 +147,7 @@ export class WorkPage implements OnInit {
       date: new FormControl(this.today.toISOString()),
       dateEnd: new FormControl(this.today.toISOString()),
       note: new FormControl(),
-      state: new FormControl('DRAFT'),
+      state: new FormControl(this.state),
       fields: new FormControl([]),
       summary: new FormControl(""),
       section: new FormControl(null),
@@ -186,8 +188,6 @@ export class WorkPage implements OnInit {
           }
           this.recomputeFields();
           this.loading.dismiss();
-
-
         });
       }
       else if (this.data){
@@ -196,6 +196,7 @@ export class WorkPage implements OnInit {
             field.name, new FormControl(this.data[field.name])
           );
         })
+        this.data['state'] = this.state;
         this.workForm.patchValue(this.data);
         if (Object.keys(this.workForm.value.activity).length === 0
         && !this.activity) {
@@ -497,65 +498,63 @@ export class WorkPage implements OnInit {
   }
 
   selectM2O(fielD, model, context="{}") {
-    context = JSON.parse(context || "{}");
-    this.events.subscribe('select-' + model, async (data) => {
-      let field = {};
-      field[fielD.name] = data;
-      this.workForm.patchValue(field);
-      this.recomputeFields();
-      this.events.unsubscribe('select-' + model);
-      this.workForm.controls[fielD.name].markAsDirty();
-      let self = this;
-      let d = {}
-      if(fielD.onchange){
-        await this.formatService.asyncForEach(fielD.onchange.split(';'), async item=>{
-        // .forEach(async item=>{
-          let fieldName = item.split('=')[0];
-          let fieldData = item.split('=')[1];
-          if (fieldData){
-            if (isNaN(fieldData)){
-              if (fieldData[0] == '#'){
-                let split = fieldData.split('#')
-                let ddoc = data[split[1]];
-                let fieldDoc:any = await this.pouchdbService.getDoc(ddoc);
-                d[fieldName] = fieldDoc;
+    if (this.workForm.value.state=='DRAFT' || this.workForm.value.state=='STARTED'){
+      context = JSON.parse(context || "{}");
+      this.events.subscribe('select-' + model, async (data) => {
+        let field = {};
+        field[fielD.name] = data;
+        this.workForm.patchValue(field);
+        this.recomputeFields();
+        this.events.unsubscribe('select-' + model);
+        this.workForm.controls[fielD.name].markAsDirty();
+        let self = this;
+        let d = {}
+        if(fielD.onchange){
+          await this.formatService.asyncForEach(fielD.onchange.split(';'), async item=>{
+            // .forEach(async item=>{
+            let fieldName = item.split('=')[0];
+            let fieldData = item.split('=')[1];
+            if (fieldData){
+              if (isNaN(fieldData)){
+                if (fieldData[0] == '#'){
+                  let split = fieldData.split('#')
+                  let ddoc = data[split[1]];
+                  let fieldDoc:any = await this.pouchdbService.getDoc(ddoc);
+                  d[fieldName] = fieldDoc;
+                } else {
+                  d[fieldName] = data[fieldData];
+                }
               } else {
-                d[fieldName] = data[fieldData];
+                d[fieldName] = fieldData;
               }
-            } else {
-              d[fieldName] = fieldData;
             }
-          }
-        })
-        this.workForm.patchValue(d);
-      }
-      // this.goNextStep();
-      // setTimeout(function(){
-      //   self.goNextStep();
-      // }, 200);
-    })
-    switch (model) {
-      case 'contact':
+          })
+          this.workForm.patchValue(d);
+        }
+      })
+      switch (model) {
+        case 'contact':
         this.showModal(ContactListPage, context)
         break;
-      case 'product':
+        case 'product':
         this.showModal(ProductListPage, context)
         break;
-      case 'area':
+        case 'area':
         this.showModal(AreasPage, context)
         break;
-      case 'machine':
+        case 'machine':
         this.showModal(MachinesPage, context)
         break;
-      case 'crop':
+        case 'crop':
         this.showModal(CropsPage, context)
         break;
-      case 'warehouse':
+        case 'warehouse':
         this.showModal(WarehouseListPage, context)
         break;
-      case 'future-contract':
+        case 'future-contract':
         this.showModal(FutureContractListPage, context)
         break;
+      }
     }
   }
 
@@ -612,6 +611,7 @@ export class WorkPage implements OnInit {
       list: true,
       go: true,
       activity: activity,
+      state: this.workForm.value.state,
       select: true,
     }
 
@@ -887,7 +887,7 @@ export class WorkPage implements OnInit {
     })
   }
 
-  startWork() {
+  setStarted() {
     // this.workForm.value.state="STARTED";
     this.workForm.patchValue({
       state: "STARTED",
@@ -895,7 +895,7 @@ export class WorkPage implements OnInit {
     this.justSave();
   }
 
-  startPlan(){
+  setScheduled(){
     this.workForm.patchValue({
       state: "SCHEDULED",
       plan: this.workForm.value,

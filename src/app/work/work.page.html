@@ -66,6 +66,7 @@
           <ion-datetime class="field-50-datetime"
           displayFormat="DD/MM/YYYY hh:mm"
           pickerFormat="DD/MM/YYYY hh:mm"
+          [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
           (ionChange)="dateChanged()"
           [max]="today.getFullYear()+5"
           formControlName="date">
@@ -78,6 +79,7 @@
           pickerFormat="DD/MM/YYYY hh:mm"
           (ionChange)="dateEndChanged()"
           [max]="today.getFullYear()+5"
+          [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
           formControlName="dateEnd">
           </ion-datetime>
         </ion-item>
@@ -110,6 +112,7 @@
             (ionChange)="recomputeFields()">
               <ion-label position="floating">{{field.label|translate}}</ion-label>
               <ion-input type="number"
+              [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
               [disabled]="calculate(field.readonly)"
               [formControlName]="field.name"
               [id]="field.name"
@@ -120,6 +123,7 @@
             *ngIf="field.type == 'float'">
               <ion-label position="floating">{{field.label|translate}}</ion-label>
               <ion-input type="number"
+              [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
               style="height: 47px"
               [formControlName]="field.name"
               [id]="field.name"
@@ -132,6 +136,7 @@
               <ion-label position="floating">{{field.label|translate}}</ion-label>
               <ion-input type="text"
               [formControlName]="field.name"
+              [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
               text-center
               [id]="field.name">
               </ion-input>
@@ -139,6 +144,7 @@
             <ion-item class="field-100" *ngIf="field.type == 'progress'">
               <span style="margin-top: -20px;position: absolute;font-size: 13px;">{{field.label|translate}}</span>
               <ion-range min="0" max="100" color="primary"
+              [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
               [formControlName]="field.name"
               pin="true" snaps="true">
                 <ion-label slot="start">0</ion-label>
@@ -178,13 +184,15 @@
                   </div>
                 </ion-item>
                 <ion-item-options>
-                  <ion-item-option (click)="removeFieldItem(field.name, i)">
+                  <ion-item-option (click)="removeFieldItem(field.name, i)"
+                  *ngIf="(workForm.value.state == 'STARTED' || workForm.value.state == 'DRAFT')">
                     {{'DELETE'|translate}}
                   </ion-item-option>
                 </ion-item-options>
               </ion-item-sliding>
               <ion-row style="background: #1c61f3;border-radius: 7px;border: 1px solid #1c61f3; border-top-left-radius: 0px;border-top-right-radius: 0px;"
-              (click)="addFieldItem(field.name)">
+              (click)="addFieldItem(field.name)"
+              *ngIf="(workForm.value.state == 'STARTED' || workForm.value.state == 'DRAFT')">
                 <a style="color:white;cursor: default;font-size:16px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
                   {{'ADD'|translate}} {{ field.label|translate }}
                 </a>
@@ -193,7 +201,7 @@
 
 
 
-            <ion-item style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name].length == 0">
+            <ion-item style="background-color: #ddd" *ngIf="field.type == 'list' && workForm.value[field.name].length == 0 && (workForm.value.state == 'STARTED' || workForm.value.state == 'DRAFT')">
               <ion-row style="background: #1c61f3;border: 1px solid #1c61f3;width: 100%;"
               (click)="addFieldItem(field.name)">
                 <a style="color:white;cursor: default;font-size:16px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
@@ -244,13 +252,13 @@
               </ion-item>
               <ion-item-options>
                 <ion-item-option (click)="removeFieldItem(field.name, i)"
-                *ngIf="!item.fixed">
+                *ngIf="!item.fixed && (workForm.value.state == 'STARTED' || workForm.value.state == 'DRAFT')">
                   {{'DELETE'|translate}}
                 </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
           </ion-list>
-            <ion-col size="12">
+            <ion-col size="12" *ngIf="(workForm.value.state == 'STARTED' || workForm.value.state == 'DRAFT')">
               <ion-button
               (click)="addFieldItem(field.name)"
               class="button-100"
@@ -260,9 +268,11 @@
             </ion-col>
         </div>
     </div>
-    <ion-item  class="field-100">
+    <ion-item  class="field-100" style="margin-top: 10px;">
       <ion-label position="stacked">{{ 'NOTE' | translate }}</ion-label>
       <ion-textarea #note formControlName="note"
+        [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
+        autoGrow="true"
         rows="2">
       </ion-textarea>
     </ion-item>
@@ -285,14 +295,14 @@
     <!-- <ion-button class="button-100" color="primary" (click)="concludeWork()" *ngIf="workForm.value.state=='STARTED' && !this.list">{{'CONCLUDE'|translate}}</ion-button> -->
   </form>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="workForm.value.state=='DRAFT' && workForm.value.date>today.toISOString() && !this.list">
-    <ion-button (click)="startPlan()"  class="next-button">
+    <ion-button (click)="setScheduled()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
       {{'SCHEDULE'|translate}}
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="((workForm.value.state=='DRAFT' && workForm.value.date<=today.toISOString()) || workForm.value.state=='SCHEDULED') && !this.list">
-    <ion-button (click)="startWork()"  class="next-button">
+    <ion-button (click)="setStarted()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
       {{'START'|translate}}
     </ion-button>

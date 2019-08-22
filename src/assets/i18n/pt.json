@@ -547,6 +547,7 @@
   "TO_PLAN": "Planejado",
   "TOTAL_WEIGHT_TON": "Peso Total(Ton)",
   "FREIGHT_PRICE": "Preço do Frete",
+  "FREIGHT_COST": "Custo de Frete",
   "COST_BAG": "Custo/Saca",
   "RESULT": "Resultado"
 }
