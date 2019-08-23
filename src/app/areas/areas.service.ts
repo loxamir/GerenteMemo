@@ -25,7 +25,7 @@ export class AreasService {
               true,
               1
             ).then((planneds: any[]) => {
-              area.lastActivity =  planneds[0] && planneds[0].value.replace('<br/>', ' ') || '';
+              area.lastActivity =  planneds[0] && planneds[0].value || '';
               area.lastDate = planneds[0] && planneds[0].key[1] || null;
               areaList.push(area);
           })
