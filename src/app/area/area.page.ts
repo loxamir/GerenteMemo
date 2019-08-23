@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   NavController, ModalController, LoadingController,
   AlertController, Events, PopoverController, Platform,
-  ActionSheetController, ToastController
+  ActionSheetController, ToastController, IonContent
 } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
@@ -44,6 +44,7 @@ export class AreaPage implements OnInit {
   @ViewChild('pwaphoto', { static: false }) pwaphoto: ElementRef;
   @ViewChild('pwacamera', { static: false }) pwacamera: ElementRef;
   @ViewChild('pwagalery', { static: false }) pwagalery: ElementRef;
+  @ViewChild(IonContent, { static: false }) content: IonContent;
   areaForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -56,9 +57,11 @@ export class AreaPage implements OnInit {
   imgURI: string = null;
   images = [];
   skip = 0;
+  skip2 = 0;
   lastWork = '0';
   avatar = undefined;
   currency_precision = 2;
+  ready = false;
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -384,6 +387,7 @@ export class AreaPage implements OnInit {
       contact_name: new FormControl(''),
       image: new FormControl(''),
       moves: new FormControl([]),
+      moves2: new FormControl([]),
       lastRain: new FormControl(0),
       lastRainDate: new FormControl(),
       note: new FormControl(""),
@@ -403,7 +407,7 @@ export class AreaPage implements OnInit {
         this.doInfinite(false);
         data.note = '';
         this.areaForm.patchValue(data);
-        this.loading.dismiss();
+
         let rain = await this.areaService.getAreaRain(this._id);
         if (rain) {
           this.areaForm.value.lastRainDate = rain['date'];
@@ -414,6 +418,12 @@ export class AreaPage implements OnInit {
           var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
           this.diffDays = diffDays - 1;
         }
+        setTimeout(() => {
+          // this.content.scrollToPoint(0, 50, 100);
+          this.content.scrollToBottom(100);
+          this.ready = true;
+          this.loading.dismiss();
+        }, 250);
       });
     } else {
       this.showForm = true;
@@ -428,6 +438,23 @@ export class AreaPage implements OnInit {
           this.areaForm.value.moves.push(wor);
         })
         this.skip += 15;
+        if (infiniteScroll) {
+          infiniteScroll.target.complete();
+          if (works.length < 15) {
+            infiniteScroll.target.disabled = true;
+          }
+        }
+      });
+    }, 50);
+  }
+
+  doInfinite2(infiniteScroll) {
+    setTimeout(() => {
+      this.areaService.getScheduledTasks(this._id, this.skip2).then((works: any[]) => {
+        works.forEach(wor => {
+          this.areaForm.value.moves2.push(wor);
+        })
+        this.skip2 += 15;
         if (infiniteScroll) {
           infiniteScroll.target.complete();
           if (works.length < 15) {

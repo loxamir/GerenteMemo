@@ -632,15 +632,15 @@ h3.activity-name {
 
 .area-card {
     min-height: 48px;
-    width: 100%;
+    width: 98%;
     --background: #fff;
     --ion-background-color: #fff;
     border-radius: 7px;
     margin-top: 0px;
     margin-bottom: 3px;
-    margin-right: 0px;
+    margin-right: auto;
+    margin-left: auto;
     padding-right: 0px;
-    margin-left: 0px;
     padding-bottom: 0px;
     padding-top: 8px;
 }
@@ -663,14 +663,14 @@ h3.activity-name {
 
 .memo-card {
     min-height: 48px;
-    width: 85%;
+    width: 98%;
     --background: #dcf8c6;
     border-radius: 7px;
     margin-top: 0px;
     margin-bottom: 3px;
-    margin-right: 0px;
     padding-right: 0px;
-    margin-left: 13%;
+    margin-right: auto;
+    margin-left: auto;
     padding-bottom: 0px;
     padding-top: 8px;
 }

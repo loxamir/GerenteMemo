@@ -11,7 +11,6 @@ export class AreaService {
     public configService: ConfigService,
   ) { }
 
-
   getArea(doc_id): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let area: any = await this.pouchdbService.getDoc(doc_id, true);
@@ -24,10 +23,6 @@ export class AreaService {
         true,
         5
       ).then(async (planneds: any[]) => {
-        let getList = [];
-        planneds.forEach(item => {
-          getList.push(item.key[3]);
-        })
         if (area._attachments && area._attachments['avatar.png']) {
           let avatar = area._attachments['avatar.png'].data;
           area.image = "data:image/png;base64," + avatar;
@@ -79,13 +74,13 @@ export class AreaService {
           this.pouchdbService.createDoc(area).then(async doc => {
             if (blob) {
               console.log("blob", doc);
-              let avai = await this.pouchdbService.attachFile(doc['id'], 'avatar.png', blob);
+              let avai = await this.pouchdbService.attachFile(
+                doc['id'], 'avatar.png', blob);
             }
             resolve({ doc: doc, area: area });
           });
         });
       }
-
     });
   }
 
@@ -116,24 +111,35 @@ export class AreaService {
     return new Promise(async (resolve, reject) => {
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/AreaDiario', 4,
+        'stock/AreaDiario', 1,
         [area_id + "z", "z"],
         [area_id, "0"],
-        true,
+        false,
         true,
         15,
-        skip
-      ).then(async (planneds: any[]) => {
-        let getList = [];
-        planneds.forEach(item => {
-          getList.push(item.key[3]);
-        })
-        let docs: any = await this.pouchdbService.getList(getList, true);
-        let moves = [];
-        docs.forEach(row => {
-          moves.push(row.doc);
-        })
-        resolve(moves);
+        skip,
+        true
+      ).then(async (works: any[]) => {
+        resolve(works);
+      });
+    });
+  }
+
+  getScheduledTasks(area_id, skip = 0): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      let payableList = [];
+      this.pouchdbService.getViewInv(
+        'stock/AgendadoDiario', 1,
+        [area_id + "z", "z"],
+        [area_id, "0"],
+        false,
+        true,
+        15,
+        skip,
+        true
+      ).then(async (works: any[]) => {
+        console.log("works", works);
+        resolve(works);
       });
     });
   }

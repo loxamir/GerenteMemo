@@ -891,6 +891,7 @@ export class WorkPage implements OnInit {
     // this.workForm.value.state="STARTED";
     this.workForm.patchValue({
       state: "STARTED",
+      date: this.today.toISOString(),
     })
     this.justSave();
   }
@@ -907,7 +908,8 @@ export class WorkPage implements OnInit {
   concludeWork() {
     // this.workForm.value.state="DONE";
     this.workForm.patchValue({
-      state: "DONE"
+      state: "DONE",
+      dateEnd: this.today.toISOString(),
     })
     this.buttonSave();
   }
