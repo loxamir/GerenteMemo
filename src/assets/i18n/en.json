@@ -549,5 +549,8 @@
   "FREIGHT_PRICE": "Freight Price",
   "FREIGHT_COST": "Freight Cost",
   "COST_BAG": "Cost/Bag",
+  "LOADING_SCHEDULED_ACTIVITY": "Loading Scheduled Activityies...",
+  "SCHEDULED_WORKS": "Scheduled Works",
+  "LOADING_MORE_ACTIVITIES": "Loading Activityies...",
   "RESULT": "Result"
 }

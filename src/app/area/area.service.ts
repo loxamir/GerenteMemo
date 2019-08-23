@@ -138,7 +138,6 @@ export class AreaService {
         skip,
         true
       ).then(async (works: any[]) => {
-        console.log("works", works);
         resolve(works);
       });
     });

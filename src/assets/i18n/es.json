@@ -549,5 +549,8 @@
   "FREIGHT_PRICE": "Precio del Flete",
   "FREIGHT_COST": "Costo del Flete",
   "COST_BAG": "Costo/Saca",
+  "LOADING_SCHEDULED_ACTIVITY": "Cargando mas Actividades Agendadas...",
+  "SCHEDULED_WORKS": "Actividades Agendadas",
+  "LOADING_MORE_ACTIVITIES": "Cargando mas actividades...",
   "RESULT": "Resultado"
 }

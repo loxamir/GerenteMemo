@@ -50,7 +50,7 @@
   </div>
   <form class="sample-form validations-form" [formGroup]="areaForm">
     <ion-infinite-scroll threshold="100px" position="top" (ionInfinite)="doInfinite($event)">
-      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando mas atividades...">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" [loadingText]="'LOADING_MORE_ACTIVITIES'|translate">
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;">
@@ -121,7 +121,7 @@
     </div> -->
     <div style="margin-top:25px;margin-bottom:25px;margin-left: auto;margin-right: auto;text-align: center;"
     *ngIf="areaForm.value.moves2.length">
-      Atividades Agendadas
+      {{ 'SCHEDULED_WORKS'| translate}}
     </div>
     <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;">
       <ion-item-sliding class="list-item" *ngFor="let item of areaForm.value.moves2">
@@ -190,7 +190,7 @@
       </ion-item-sliding>
     </ion-list>
     <ion-infinite-scroll threshold="100px" position="bottom" (ionInfinite)="doInfinite2($event)" *ngIf="ready">
-      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando mas atividades Agendadas...">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" [loadingText]="'LOADING_SCHEDULED_ACTIVITY'|translate">
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <div style="height:50px;">
