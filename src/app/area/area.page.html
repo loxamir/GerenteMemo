@@ -76,6 +76,14 @@
                     </h1>
                   </ion-col>
                   <ion-col>
+                    <h3 no-padding class="item-title-second"
+                      [class.quotation]="item.doc.state=='DRAFT'"
+                      [class.confirmed]="item.doc.state=='SCHEDULED'"
+                      [class.paid]="item.doc.state=='DONE'"
+                      [class.due]="item.doc.state=='STARTED'"
+                      style="border-radius:10px;text-align: center">
+                      {{ item.doc.state | translate }}
+                    </h3>
                     <h3 class="item-title-second">
                       {{item.doc.date|date: 'dd/MM/yyyy'}}
                     </h3>
@@ -149,6 +157,14 @@
                     </h1>
                   </ion-col>
                   <ion-col>
+                    <h3 no-padding class="item-title-second"
+                      [class.quotation]="item.doc.state=='DRAFT'"
+                      [class.confirmed]="item.doc.state=='SCHEDULED'"
+                      [class.paid]="item.doc.state=='DONE'"
+                      [class.due]="item.doc.state=='STARTED'"
+                      style="border-radius:10px;text-align: center">
+                      {{ item.doc.state | translate }}
+                    </h3>
                     <h3 class="item-title-second">
                       {{item.doc.date|date: 'dd/MM/yyyy'}}
                     </h3>
