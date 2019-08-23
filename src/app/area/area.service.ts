@@ -104,7 +104,7 @@ export class AreaService {
   }
 
   handleChange(list, change) {
-    this.pouchdbService.localHandleChangeData(list, change)
+    this.pouchdbService.localHandleChangeDataDoc(list, change)
   }
 
   getWorksPage(area_id, skip = 0): Promise<any> {

@@ -690,4 +690,30 @@ export class PouchdbService {
       }
     }
   }
+
+  localHandleChangeDataDoc(list, change){
+    console.log("change1", change);
+    let changedDoc = null;
+    let changedIndex = null;
+    list.forEach((doc, index) => {
+      if(doc.doc._id === change.id){
+        changedDoc = doc.doc;
+        changedIndex = index;
+      }
+    });
+    //A document was deleted
+    if(change.deleted){
+      list.splice(changedIndex, 1);
+    }
+    else {
+      //A document was updated
+      if(changedDoc){
+        list[changedIndex].doc = change.doc;
+      }
+      //A document was added
+      else {
+        list.unshift({doc: change.doc});
+      }
+    }
+  }
 }

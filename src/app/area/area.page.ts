@@ -94,7 +94,10 @@ export class AreaPage implements OnInit {
     this.today = new Date().toISOString();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.events.subscribe('changed-work', (change) => {
-      this.areaService.handleChange(this.areaForm.value.moves, change);
+      this.today = new Date().toISOString();
+      // if (change.doc.date <= this.today){
+        this.areaService.handleChange(this.areaForm.value.moves, change);
+      // }
     })
     this.events.subscribe('changed-picture', (change) => {
       this.areaService.handleChange(this.areaForm.value.moves, change);

@@ -55,7 +55,7 @@
     </ion-infinite-scroll>
     <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;">
       <ion-item-sliding class="list-item" *ngFor="let item of areaForm.value.moves">
-        <ion-item no-padding (click)="openItem(item.doc)" *ngIf="!(item?.doc?._attachments && item.doc._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        <ion-item no-padding (click)="openItem(item.doc)" *ngIf="item && item.doc && !(item.doc._attachments && item.doc._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
           <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.date>=today">
             <ion-row no-padding>
               <ion-thumbnail style="--border-radius:10px;">
@@ -118,7 +118,7 @@
           </ion-card>
         </ion-item>
         <ion-item-options>
-          <ion-item-option (click)="deleteWork(item.doc)" *ngIf="!item.doc.fixed">
+          <ion-item-option (click)="deleteWork(item.doc)" *ngIf="item && item.doc && (item.doc.state == 'SCHEDULED' || item.doc.state == 'DRAFT')">
             {{'DELETE'|translate}}
           </ion-item-option>
         </ion-item-options>
@@ -178,7 +178,7 @@
           </ion-card>
         </ion-item>
 
-        <ion-item no-padding (click)="openPreview(item.doc)" *ngIf="item?.doc?._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        <ion-item no-padding (click)="openPreview(item.doc)" *ngIf="item && item.doc && item.doc._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
           <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.activity_name=='Memo'">
             <ion-row no-padding>
               <ion-col no-padding>
@@ -199,7 +199,7 @@
           </ion-card>
         </ion-item>
         <ion-item-options>
-          <ion-item-option (click)="deleteWork(item.doc)" *ngIf="!item.doc.fixed">
+          <ion-item-option (click)="deleteWork(item.doc)" *ngIf="item && item.doc && (item.doc.state == 'SCHEDULED' || item.doc.state == 'DRAFT')">
             {{'DELETE'|translate}}
           </ion-item-option>
         </ion-item-options>
