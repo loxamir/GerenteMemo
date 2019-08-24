@@ -137,7 +137,7 @@
         (click)="openItem(item.doc)"
         *ngIf="!(item?.doc?._attachments && item.doc._attachments['image.png'])"
         style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
-          <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.date>=today">
+          <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.date>today">
             <ion-row no-padding>
               <ion-thumbnail style="--border-radius:10px;">
                 <ion-img [src]="'./assets/icons/'+item.doc.activity_id+'.png'"></ion-img>

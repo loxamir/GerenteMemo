@@ -94,10 +94,18 @@ export class AreaPage implements OnInit {
     this.today = new Date().toISOString();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.events.subscribe('changed-work', (change) => {
-      this.today = new Date().toISOString();
-      // if (change.doc.date <= this.today){
-        this.areaService.handleChange(this.areaForm.value.moves, change);
-      // }
+      if (change.deleted){
+        this.removeItem(change.id);
+      } else {
+        this.today = new Date().toISOString();
+        if (change.doc.date.split('T')[0] <= this.today.split('T')[0]){
+          this.areaService.handleChange(this.areaForm.value.moves, change);
+          this.removeItemList(this.areaForm.value.moves2, change.id);
+        } else {
+          this.areaService.handleChange(this.areaForm.value.moves2, change);
+          this.removeItemList(this.areaForm.value.moves, change.id);
+        }
+      }
     })
     this.events.subscribe('changed-picture', (change) => {
       this.areaService.handleChange(this.areaForm.value.moves, change);
@@ -111,6 +119,19 @@ export class AreaPage implements OnInit {
     //       .then((result) => console.log("result1", result))
     //   }
     // })
+  }
+
+  removeItemList(moves, doc_id){
+    moves.forEach((work, index)=>{
+      if (work.doc._id == doc_id){
+        moves.splice(index, 1);
+      }
+    })
+  }
+
+  removeItem(doc_id){
+    this.removeItemList(this.areaForm.value.moves, doc_id);
+    this.removeItemList(this.areaForm.value.moves2, doc_id);
   }
 
   goBack() {
