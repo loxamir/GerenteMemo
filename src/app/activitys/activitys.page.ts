@@ -4,6 +4,8 @@ import { ActivityPage } from '../activity/activity.page';
 import 'rxjs/Rx';
 import { ActivitysService } from './activitys.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-activitys',
@@ -22,7 +24,8 @@ export class ActivitysPage implements OnInit {
     public navCtrl: NavController,
     public activitysService: ActivitysService,
     public loadingCtrl: LoadingController,
-
+    public translate: TranslateService,
+    public languageService: LanguageService,
     public modalCtrl: ModalController,
     public route: ActivatedRoute,
     public events: Events,
@@ -37,7 +40,9 @@ export class ActivitysPage implements OnInit {
   }
 
   async ngOnInit() {
-    //this.loading.present();
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.setFilteredItems();
