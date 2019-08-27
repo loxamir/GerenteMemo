@@ -109,10 +109,11 @@ export class AreaService {
 
   getWorksPage(area_id, skip = 0): Promise<any> {
     return new Promise(async (resolve, reject) => {
+      let today = new Date().toISOString().split("T")[0];
       let payableList = [];
       this.pouchdbService.getViewInv(
         'stock/AreaDiario', 1,
-        [area_id + "z", "z"],
+        [area_id, today],
         [area_id, "0"],
         false,
         true,
@@ -127,11 +128,12 @@ export class AreaService {
 
   getScheduledTasks(area_id, skip = 0): Promise<any> {
     return new Promise(async (resolve, reject) => {
+      let today = new Date().toISOString().split("T")[0];
       let payableList = [];
-      this.pouchdbService.getViewInv(
-        'stock/AgendadoDiario', 1,
-        [area_id + "z", "z"],
-        [area_id, "0"],
+      this.pouchdbService.getView(
+        'stock/AreaDiario', 1,
+        [area_id, today],
+        [area_id, "z"],
         false,
         true,
         15,
