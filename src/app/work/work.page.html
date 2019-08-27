@@ -272,7 +272,7 @@
       <ion-label position="stacked">{{ 'NOTE' | translate }}</ion-label>
       <ion-textarea #note formControlName="note"
         [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
-        autoGrow="true"
+        autoGrow="false"
         rows="2">
       </ion-textarea>
     </ion-item>

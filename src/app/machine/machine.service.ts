@@ -91,7 +91,7 @@ export class MachineService {
   }
 
   handleChange(list, change) {
-    this.pouchdbService.localHandleChangeData(list, change)
+    this.pouchdbService.localHandleChangeDataDoc(list, change)
   }
 
   getWorksPage(machine_id, skip = 0): Promise<any> {
