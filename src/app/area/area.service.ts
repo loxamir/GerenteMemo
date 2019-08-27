@@ -62,7 +62,6 @@ export class AreaService {
           area['code'] = code;
           this.pouchdbService.createDoc(area).then(async doc => {
             if (blob) {
-              console.log("blob", doc);
               let avai = await this.pouchdbService.attachFile(
                 doc['id'], 'avatar.png', blob);
             }

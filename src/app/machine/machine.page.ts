@@ -481,7 +481,6 @@ export class MachinePage implements OnInit {
   doInfinite2(infiniteScroll) {
     setTimeout(() => {
       this.machineService.getScheduledTasks(this._id, this.skip2).then((works: any[]) => {
-        console.log("infinite2", works);
         works.forEach(wor => {
           this.machineForm.value.moves2.push(wor);
         })
@@ -648,7 +647,6 @@ export class MachinePage implements OnInit {
   }
 
   getAudio() {
-    console.log("get audio");
   }
 
   selectContact() {

@@ -324,7 +324,6 @@ export class AreaPage implements OnInit {
   }
 
   ask(question) {
-    console.log("question", question);
     ApiAIPromises.requestText({
       query: question,
       contexts: [{
@@ -335,7 +334,6 @@ export class AreaPage implements OnInit {
       }]
     })
       .then((result) => {
-        console.log("resultad", result);
         this.ngZone.run(() => {
           this.tts.speak({
             text: result.result.fulfillment.speech,
@@ -348,7 +346,6 @@ export class AreaPage implements OnInit {
           })
         });
       }, (tset) => {
-        console.log("return", tset);
       })
   }
 
@@ -362,7 +359,6 @@ export class AreaPage implements OnInit {
           this.speechRecognition.requestPermission();
         } else {
           this.speechRecognition.startListening(options).subscribe(matches => {
-            console.log("matches", matches);
             this.ask(matches[0]);
           });
         }
@@ -559,7 +555,6 @@ export class AreaPage implements OnInit {
     this.showBotom = !this.showBotom;
   }
   sendButton() {
-    console.log("send");
     this.pouchdbService.createDoc({
       'docType': 'work',
       'date': new Date().toISOString(),
@@ -618,7 +613,6 @@ export class AreaPage implements OnInit {
   }
 
   getAudio() {
-    console.log("get audio");
   }
 
   selectContact() {

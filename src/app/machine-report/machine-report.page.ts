@@ -174,7 +174,6 @@ export class MachineReportPage implements OnInit {
           'Informes/MachineItems',
           10,
         ).then(async (machines1: any[]) => {
-          console.log("machine1", machines1);
           let machines = machines1;
           //This is the filter
           if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
@@ -229,7 +228,6 @@ export class MachineReportPage implements OnInit {
           'Informes/MachineIncome',
           10,
         ).then(async (machines1: any[]) => {
-          console.log("machine1", machines1);
           let machines = machines1;
           //This is the filter
           if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
@@ -292,7 +290,6 @@ export class MachineReportPage implements OnInit {
           'Informes/MachineIncome',
           10,
         ).then(async (machines1: any[]) => {
-          console.log("machine1", machines1);
           let machines = machines1;
           //This is the filter
           if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
@@ -346,7 +343,6 @@ export class MachineReportPage implements OnInit {
           'Informes/Machine',
           10,
         ).then(async (machines1: any[]) => {
-          console.log("machine2", machines1);
           let machines = machines1;
           //This is the filter
           if (Object.keys(this.reportMachineForm.value.machine).length > 0) {
@@ -364,7 +360,6 @@ export class MachineReportPage implements OnInit {
           // if (Object.keys(this.reportMachineForm.value.input).length > 0) {
           //   machines = machines.filter(word => word['key'][6] == this.reportMachineForm.value.input._id);
           // }
-          console.log("machine lines", machines);
 
           if (this.reportMachineForm.value.groupBy == 'machine') {
             let tmpDict = {};
@@ -461,7 +456,6 @@ export class MachineReportPage implements OnInit {
           }
           else if (this.reportMachineForm.value.groupBy == 'machineIncome_Old') {
             let tmpDict = {};
-            console.log("machineIncome");
             let getList = [];
             items = [];
             machines.forEach(machineLine => {
@@ -495,7 +489,6 @@ export class MachineReportPage implements OnInit {
             })
             tmpDict = {};
             let litems = [];
-            console.log("items", items);
             items.forEach(item => {
               // console.log("item", item.id, doc_dict, doc_dict[item.id]);
               if (doc_dict[item.id]) {
@@ -513,7 +506,6 @@ export class MachineReportPage implements OnInit {
                 }
               }
             })
-            console.log("litems", litems);
             let self = this;
             let output = litems.sort(function(a, b) {
               return self.compare(a, b, self.reportMachineForm.value.orderBy);
@@ -538,7 +530,6 @@ export class MachineReportPage implements OnInit {
 
           }
           else if (this.reportMachineForm.value.groupBy == 'activity') {
-            console.log("activity", );
             // let tmpDict = {};
             // let getList = [];
             // items = [];
@@ -620,7 +611,6 @@ export class MachineReportPage implements OnInit {
 
             items = [];
             machines.forEach(activityLine => {
-              console.log
               if (result.hasOwnProperty(activityLine.key[4])) {
                 // console.log("items[result[activityLine.key[1]]]", items[result[activityLine.key[1]]]);
                 items[result[activityLine.key[4]]] = {
@@ -1376,7 +1366,6 @@ export class MachineReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1397,7 +1386,6 @@ export class MachineReportPage implements OnInit {
         states.sort((a, b) => {
           return self.compare(a, b, "date");
         })
-        console.log("d3.event.pageX", d3.event.pageX);
         tooltip.html(date)
           .style('display', 'block')
           .style('left', d3.event.pageX + 20)
@@ -1412,6 +1400,5 @@ export class MachineReportPage implements OnInit {
         if (tooltip) tooltip.style('display', 'none');
         if (tooltipLine) tooltipLine.attr('stroke', 'none');
       });
-    console.log("fim");
   }
 }

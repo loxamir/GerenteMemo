@@ -110,7 +110,6 @@ export class MachineService {
         skip,
         true
       ).then(async (works: any[]) => {
-        console.log("worksssss", works);
         resolve(works);
       });
     });
