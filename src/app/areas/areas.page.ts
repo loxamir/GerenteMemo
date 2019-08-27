@@ -182,10 +182,8 @@ export class AreasPage implements OnInit {
       this.navCtrl.navigateForward(['/area', {}]);
     }
     this.events.subscribe('create-area', (data) => {
-      console.log("select", data);
       if (this.select){
         this.events.publish('select-area', data);
-        console.log("dismiss");
         this.modalCtrl.dismiss();
       }
       this.events.unsubscribe('create-area');

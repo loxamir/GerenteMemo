@@ -130,10 +130,10 @@ export class AreaService {
     return new Promise(async (resolve, reject) => {
       let today = new Date().toISOString().split("T")[0];
       let payableList = [];
-      this.pouchdbService.getView(
+      this.pouchdbService.getViewInv(
         'stock/AreaDiario', 1,
-        [area_id, today],
         [area_id, "z"],
+        [area_id, today],
         false,
         true,
         15,

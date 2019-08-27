@@ -327,7 +327,6 @@ export class FormatService {
   }
 
   compareField(a, b, field, direction = 'increase') {
-    console.log("a", a);
     const genreA = a[field] && a[field].toString().toUpperCase() || a[field];
     const genreB = b[field] && b[field].toString().toUpperCase() || b[field];
     if (direction == 'increase') {

@@ -16,11 +16,12 @@ export class AreasService {
         this.pouchdbService.searchDocTypeData(
           'area', keyword, page
         ).then(async (areas: any[]) => {
+          let today = new Date().toISOString().split("T")[0];
           await this.formatService.asyncForEach(areas, async area=>{
             await this.pouchdbService.getViewInv(
               'Informes/AreaDiario', 3,
-              [area._id+'z'],
-              [area._id],
+              [area._id, today],
+              [area._id, "0"],
               true,
               true,
               1
