@@ -230,7 +230,6 @@ export class ServicePage implements OnInit {
     }
 
     async presentPopover(myEvent) {
-      //console.log("teste my event");
       let popover = await this.popoverCtrl.create({
         component: ServicePopover,
         event: myEvent,

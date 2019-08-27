@@ -24,7 +24,7 @@ export class CropService {
       resolve(crop);
       // let payableList = [];
       // this.pouchdbService.getView(
-      //   'stock/Crops', 2,
+      //   'Informes/Crops', 2,
       //   [doc_id, '0'],
       //   [doc_id, 'z']
       // ).then((planneds: any[]) => {

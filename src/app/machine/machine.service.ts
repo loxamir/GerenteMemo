@@ -11,37 +11,21 @@ export class MachineService {
     public configService: ConfigService,
   ) { }
 
-
   getMachine(doc_id): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let machine: any = await this.pouchdbService.getDoc(doc_id, true);
-      let payableList = [];
-      this.pouchdbService.getViewInv(
-        'stock/MachineDiario', 4,
-        ['z', doc_id, 'z'],
-        ['0', doc_id, '0'],
-        true,
-        true,
-        5
-      ).then(async (planneds: any[]) => {
-        let getList = [];
-        planneds.forEach(item => {
-          getList.push(item.key[3]);
-        })
-        if (machine._attachments && machine._attachments['avatar.png']) {
-          let avatar = machine._attachments['avatar.png'].data;
-          machine.image = "data:image/png;base64," + avatar;
-        } else {
-          machine.image = "./assets/icons/field.jpg";
-        }
-        resolve(machine);
-      });
+      if (machine._attachments && machine._attachments['avatar.png']) {
+        let avatar = machine._attachments['avatar.png'].data;
+        machine.image = "data:image/png;base64," + avatar;
+      } else {
+        machine.image = "./assets/icons/field.jpg";
+      }
+      resolve(machine);
     });
   }
 
   getMachineReview(doc_id): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      let payableList = [];
       this.pouchdbService.getViewInv(
         'Informes/Revisao', 2,
         [doc_id, 'z'],
@@ -78,14 +62,12 @@ export class MachineService {
           machine['code'] = code;
           this.pouchdbService.createDoc(machine).then(async doc => {
             if (blob) {
-              console.log("blob", doc);
               let avai = await this.pouchdbService.attachFile(doc['id'], 'avatar.png', blob);
             }
             resolve({ doc: doc, machine: machine });
           });
         });
       }
-
     });
   }
 
@@ -114,52 +96,64 @@ export class MachineService {
 
   getWorksPage(machine_id, skip = 0): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      let payableList = [];
+      var today = new Date();
+      var tomorrow = new Date();
+      tomorrow.setDate(today.getDate()+1);
+      let day = tomorrow.toISOString().split("T")[0];
       this.pouchdbService.getViewInv(
-        'Informes/MachineDiario', 4,
-        [machine_id + "z", "z"],
+        'Informes/MachineDiario', 1,
+        [machine_id, day],
         [machine_id, "0"],
-        true,
+        false,
         true,
         15,
-        skip
-      ).then(async (planneds: any[]) => {
-        let getList = [];
-        planneds.forEach(item => {
-          getList.push(item.key[3]);
-        })
-        let docs: any = await this.pouchdbService.getList(getList, true);
-        let moves = [];
-        docs.forEach(row => {
-          moves.push(row.doc);
-        })
-        resolve(moves);
+        skip,
+        true
+      ).then(async (works: any[]) => {
+        console.log("worksssss", works);
+        resolve(works);
       });
     });
   }
 
   getWorksPageAll(machine_id, skip = 0): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      let payableList = [];
+      var today = new Date();
+      var tomorrow = new Date();
+      tomorrow.setDate(today.getDate()+1);
+      let day = tomorrow.toISOString().split("T")[0];
       this.pouchdbService.getViewInv(
-        'Informes/MachineDiarioAll', 4,
-        [machine_id + "z", "z"],
+        'Informes/MachineDiarioAll', 1,
+        [machine_id, day],
         [machine_id, "0"],
-        true,
+        false,
         true,
         15,
-        skip
-      ).then(async (planneds: any[]) => {
-        let getList = [];
-        planneds.forEach(item => {
-          getList.push(item.key[3]);
-        })
-        let docs: any = await this.pouchdbService.getList(getList, true);
-        let moves = [];
-        docs.forEach(row => {
-          moves.push(row.doc);
-        })
-        resolve(moves);
+        skip,
+        true
+      ).then(async (machines: any[]) => {
+        resolve(machines);
+      });
+    });
+  }
+
+  getScheduledTasks(machine_id, skip = 0): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      var today = new Date();
+      var tomorrow = new Date();
+      tomorrow.setDate(today.getDate()+1);
+      let day = tomorrow.toISOString().split("T")[0];
+      this.pouchdbService.getViewInv(
+        'Informes/MachineDiario', 1,
+        [machine_id, "z"],
+        [machine_id, day],
+        false,
+        true,
+        15,
+        skip,
+        true
+      ).then(async (machines: any[]) => {
+        resolve(machines);
       });
     });
   }

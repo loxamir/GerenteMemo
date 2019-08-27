@@ -14,31 +14,20 @@ export class AreaService {
   getArea(doc_id): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let area: any = await this.pouchdbService.getDoc(doc_id, true);
-      let payableList = [];
-      this.pouchdbService.getViewInv(
-        'stock/AreaDiario', 4,
-        ['z', doc_id, 'z'],
-        ['0', doc_id, '0'],
-        true,
-        true,
-        5
-      ).then(async (planneds: any[]) => {
-        if (area._attachments && area._attachments['avatar.png']) {
-          let avatar = area._attachments['avatar.png'].data;
-          area.image = "data:image/png;base64," + avatar;
-        } else {
-          area.image = "./assets/icons/field.jpg";
-        }
-        resolve(area);
-      });
+      if (area._attachments && area._attachments['avatar.png']) {
+        let avatar = area._attachments['avatar.png'].data;
+        area.image = "data:image/png;base64," + avatar;
+      } else {
+        area.image = "./assets/icons/field.jpg";
+      }
+      resolve(area);
     });
   }
 
   getAreaRain(doc_id): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/Chuva', 2,
+        'Informes/Chuva', 2,
         [doc_id, 'z'],
         [doc_id, '0'],
         true,
@@ -109,11 +98,13 @@ export class AreaService {
 
   getWorksPage(area_id, skip = 0): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      let today = new Date().toISOString().split("T")[0];
-      let payableList = [];
+      var today = new Date();
+      var tomorrow = new Date();
+      tomorrow.setDate(today.getDate()+1);
+      let day = tomorrow.toISOString().split("T")[0];
       this.pouchdbService.getViewInv(
-        'stock/AreaDiario', 1,
-        [area_id, today],
+        'Informes/AreaDiario', 1,
+        [area_id, day],
         [area_id, "0"],
         false,
         true,
@@ -128,10 +119,12 @@ export class AreaService {
 
   getScheduledTasks(area_id, skip = 0): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      let today = new Date().toISOString().split("T")[0];
-      let payableList = [];
+      var today = new Date();
+      var tomorrow = new Date();
+      tomorrow.setDate(today.getDate()+1);
+      let day = tomorrow.toISOString().split("T")[0];
       this.pouchdbService.getViewInv(
-        'stock/AreaDiario', 1,
+        'Informes/AreaDiario', 1,
         [area_id, "z"],
         [area_id, today],
         false,

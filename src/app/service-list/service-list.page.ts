@@ -83,7 +83,6 @@ export class ServiceListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    //console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ServiceListPopover,
       event: myEvent,

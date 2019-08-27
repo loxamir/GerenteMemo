@@ -33,8 +33,6 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { ImageModalPage } from '../image-modal/image-modal.page';
 import { WorksService } from '../works/works.service';
 
-const STORAGE_KEY = 'my_images';
-
 @Component({
   selector: 'app-area',
   templateUrl: './area.page.html',
@@ -153,15 +151,9 @@ export class AreaPage implements OnInit {
         var percentage = 1;
         let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
         var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
-        console.log("preview.height", preview.height)
-        console.log("preview.width", preview.width)
-        console.log("image_diameter", image_diameter)
-        console.log("max_diameter", max_diameter)
-        console.log("max_diameter/image_diameter", max_diameter / image_diameter)
         if (image_diameter > max_diameter) {
           percentage = max_diameter / image_diameter
         }
-        console.log("percent", percentage);
 
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
@@ -177,7 +169,6 @@ export class AreaPage implements OnInit {
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
 
         let jpg = ctx.canvas.toDataURL("image/jpeg");
-        console.log("jpg", jpg);
         fetch(jpg)
           .then(res => res.blob())
           .then(blob => self.avatar = blob)
@@ -217,7 +208,6 @@ export class AreaPage implements OnInit {
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
         let jpg = ctx.canvas.toDataURL("image/jpeg");
-        console.log("jpg", jpg);
         let attachment = {};
         attachment['image.png'] = {
           content_type: 'image/jpg',
@@ -257,15 +247,9 @@ export class AreaPage implements OnInit {
         var percentage = 1;
         let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
         var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
-        console.log("preview.height", preview.height)
-        console.log("preview.width", preview.width)
-        console.log("image_diameter", image_diameter)
-        console.log("max_diameter", max_diameter)
-        console.log("max_diameter/image_diameter", max_diameter / image_diameter)
         if (image_diameter > max_diameter) {
           percentage = max_diameter / image_diameter
         }
-        console.log("percent", percentage);
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         canvas.height = canvas.width * (preview.height / preview.width);
@@ -279,7 +263,6 @@ export class AreaPage implements OnInit {
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
         let jpg = ctx.canvas.toDataURL("image/jpeg");
-        console.log("jpg", jpg);
         let attachment = {};
         attachment['image.png'] = {
           content_type: 'image/jpg',
@@ -446,6 +429,7 @@ export class AreaPage implements OnInit {
           // this.content.scrollToPoint(0, 50, 100);
           this.content.scrollToBottom(100);
           this.ready = true;
+          this.doInfinite2(false);
           this.loading.dismiss();
         }, 250);
       });

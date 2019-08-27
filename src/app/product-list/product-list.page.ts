@@ -134,7 +134,6 @@ export class ProductListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ProductListPopover,
       event: myEvent,

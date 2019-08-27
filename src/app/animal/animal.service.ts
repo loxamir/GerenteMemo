@@ -17,7 +17,7 @@ export class AnimalService {
       let animal: any = await this.pouchdbService.getDoc(doc_id, true);
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/AnimalDiario', 4,
+        'Informes/AnimalDiario', 4,
         [doc_id, 'z'],
         [doc_id, '0'],
         true,
@@ -43,7 +43,7 @@ export class AnimalService {
     return new Promise(async (resolve, reject) => {
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/Chuva', 2,
+        'Informes/Chuva', 2,
         [doc_id, 'z'],
         [doc_id, '0'],
         true,
@@ -116,7 +116,7 @@ export class AnimalService {
     return new Promise(async (resolve, reject) => {
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/AnimalDiario', 4,
+        'Informes/AnimalDiario', 4,
         [animal_id + "z"],
         [animal_id],
         true,

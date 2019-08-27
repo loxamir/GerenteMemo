@@ -633,7 +633,6 @@ export class ContractPage implements OnInit {
   // }
 
   async presentPopover(myEvent) {
-    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ContractPopover,
       event: myEvent,

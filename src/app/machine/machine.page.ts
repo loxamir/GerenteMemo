@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   NavController, ModalController, LoadingController,
   AlertController, Events, PopoverController, Platform,
-  ActionSheetController, ToastController
+  ActionSheetController, ToastController, IonContent
 } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
@@ -33,8 +33,6 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { ImageModalPage } from '../image-modal/image-modal.page';
 import { WorksService } from '../works/works.service';
 
-const STORAGE_KEY = 'my_images';
-
 @Component({
   selector: 'app-machine',
   templateUrl: './machine.page.html',
@@ -44,6 +42,7 @@ export class MachinePage implements OnInit {
   @ViewChild('pwaphoto', { static: false }) pwaphoto: ElementRef;
   @ViewChild('pwacamera', { static: false }) pwacamera: ElementRef;
   @ViewChild('pwagalery', { static: false }) pwagalery: ElementRef;
+  @ViewChild(IonContent, { static: false }) content: IonContent;
   machineForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -56,11 +55,13 @@ export class MachinePage implements OnInit {
   imgURI: string = null;
   images = [];
   skip = 0;
+  skip2 = 0;
   lastWork = '0';
   avatar = undefined;
   showAll = false;
   select;
   currency_precision = 2;
+  ready = false;
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -94,7 +95,18 @@ export class MachinePage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.events.subscribe('changed-work', (change) => {
-      this.machineService.handleChange(this.machineForm.value.moves, change);
+      if (change.deleted){
+        this.removeItem(change.id);
+      } else {
+        this.today = new Date().toISOString();
+        if (change.doc.date.split('T')[0] <= this.today.split('T')[0]){
+          this.machineService.handleChange(this.machineForm.value.moves, change);
+          this.removeItemList(this.machineForm.value.moves2, change.id);
+        } else {
+          this.machineService.handleChange(this.machineForm.value.moves2, change);
+          this.removeItemList(this.machineForm.value.moves, change.id);
+        }
+      }
     })
     this.events.subscribe('changed-picture', (change) => {
       this.machineService.handleChange(this.machineForm.value.moves, change);
@@ -108,6 +120,19 @@ export class MachinePage implements OnInit {
     //       .then((result) => console.log("result1", result))
     //   }
     // })
+  }
+
+  removeItemList(moves, doc_id){
+    moves.forEach((work, index)=>{
+      if (work.doc._id == doc_id){
+        moves.splice(index, 1);
+      }
+    })
+  }
+
+  removeItem(doc_id){
+    this.removeItemList(this.machineForm.value.moves, doc_id);
+    this.removeItemList(this.machineForm.value.moves2, doc_id);
   }
 
   goBack() {
@@ -136,15 +161,9 @@ export class MachinePage implements OnInit {
         var percentage = 1;
         let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
         var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
-        console.log("preview.height", preview.height)
-        console.log("preview.width", preview.width)
-        console.log("image_diameter", image_diameter)
-        console.log("max_diameter", max_diameter)
-        console.log("max_diameter/image_diameter", max_diameter / image_diameter)
         if (image_diameter > max_diameter) {
           percentage = max_diameter / image_diameter
         }
-        console.log("percent", percentage);
 
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
@@ -160,7 +179,6 @@ export class MachinePage implements OnInit {
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
 
         let jpg = ctx.canvas.toDataURL("image/jpeg");
-        console.log("jpg", jpg);
         fetch(jpg)
           .then(res => res.blob())
           .then(blob => self.avatar = blob)
@@ -200,7 +218,6 @@ export class MachinePage implements OnInit {
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
         let jpg = ctx.canvas.toDataURL("image/jpeg");
-        console.log("jpg", jpg);
         let attachment = {};
         attachment['image.png'] = {
           content_type: 'image/jpg',
@@ -240,15 +257,9 @@ export class MachinePage implements OnInit {
         var percentage = 1;
         let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
         var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
-        console.log("preview.height", preview.height)
-        console.log("preview.width", preview.width)
-        console.log("image_diameter", image_diameter)
-        console.log("max_diameter", max_diameter)
-        console.log("max_diameter/image_diameter", max_diameter / image_diameter)
         if (image_diameter > max_diameter) {
           percentage = max_diameter / image_diameter
         }
-        console.log("percent", percentage);
         var canvas: any = window.document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         canvas.height = canvas.width * (preview.height / preview.width);
@@ -262,7 +273,6 @@ export class MachinePage implements OnInit {
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
         let jpg = ctx.canvas.toDataURL("image/jpeg");
-        console.log("jpg", jpg);
         let attachment = {};
         attachment['image.png'] = {
           content_type: 'image/jpg',
@@ -324,7 +334,6 @@ export class MachinePage implements OnInit {
   }
 
   ask(question) {
-    console.log("question", question);
     ApiAIPromises.requestText({
       query: question,
       contexts: [{
@@ -335,7 +344,6 @@ export class MachinePage implements OnInit {
       }]
     })
       .then((result) => {
-        console.log("resultad", result);
         this.ngZone.run(() => {
           this.tts.speak({
             text: result.result.fulfillment.speech,
@@ -348,7 +356,6 @@ export class MachinePage implements OnInit {
           })
         });
       }, (tset) => {
-        console.log("return", tset);
       })
   }
 
@@ -362,7 +369,6 @@ export class MachinePage implements OnInit {
           this.speechRecognition.requestPermission();
         } else {
           this.speechRecognition.startListening(options).subscribe(matches => {
-            console.log("matches", matches);
             this.ask(matches[0]);
           });
         }
@@ -393,6 +399,7 @@ export class MachinePage implements OnInit {
       contact_name: new FormControl(''),
       image: new FormControl(''),
       moves: new FormControl([]),
+      moves2: new FormControl([]),
       // lastReview: new FormControl(0), //Abastecimento
       lastReviewDate: new FormControl(),
       note: new FormControl(''),
@@ -426,6 +433,12 @@ export class MachinePage implements OnInit {
           var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
           this.diffDays = diffDays - 1;
         }
+        setTimeout(() => {
+          this.content.scrollToBottom(100);
+          this.ready = true;
+          this.loading.dismiss();
+          this.doInfinite2(false);
+        }, 250);
       });
     } else {
       this.showForm = true;
@@ -462,6 +475,24 @@ export class MachinePage implements OnInit {
           }
         });
       }
+    }, 50);
+  }
+
+  doInfinite2(infiniteScroll) {
+    setTimeout(() => {
+      this.machineService.getScheduledTasks(this._id, this.skip2).then((works: any[]) => {
+        console.log("infinite2", works);
+        works.forEach(wor => {
+          this.machineForm.value.moves2.push(wor);
+        })
+        this.skip2 += 15;
+        if (infiniteScroll) {
+          infiniteScroll.target.complete();
+          if (works.length < 15) {
+            infiniteScroll.target.disabled = true;
+          }
+        }
+      });
     }, 50);
   }
 
@@ -559,7 +590,6 @@ export class MachinePage implements OnInit {
     this.showBotom = !this.showBotom;
   }
   sendButton() {
-    console.log("send");
     this.pouchdbService.createDoc({
       'docType': 'work',
       'date': new Date().toISOString(),

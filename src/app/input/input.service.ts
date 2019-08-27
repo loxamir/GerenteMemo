@@ -17,7 +17,7 @@ export class InputService {
       let input: any = await this.pouchdbService.getDoc(doc_id, true);
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/InputDiario', 4,
+        'Informes/InputDiario', 4,
         [doc_id, 'z'],
         [doc_id, '0'],
         true,
@@ -43,7 +43,7 @@ export class InputService {
     return new Promise(async (resolve, reject) => {
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/Chuva', 2,
+        'Informes/Chuva', 2,
         [doc_id, 'z'],
         [doc_id, '0'],
         true,
@@ -116,7 +116,7 @@ export class InputService {
     return new Promise(async (resolve, reject) => {
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/InputDiario', 5,
+        'Informes/InputDiario', 5,
         [input_id, warehouse_id+"z"],
         [input_id, warehouse_id],
         true,

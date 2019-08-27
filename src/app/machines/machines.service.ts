@@ -16,16 +16,20 @@ export class MachinesService {
         this.pouchdbService.searchDocTypeData(
           'machine', keyword, page
         ).then((machines: any[]) => {
+          var today = new Date();
+          var tomorrow = new Date();
+          tomorrow.setDate(today.getDate()+1);
+          let day = tomorrow.toISOString().split("T")[0];
           machines.forEach(machine=>{
             this.pouchdbService.getViewInv(
-              'Informes/MachineDiario', 3,
-              [machine._id+'z'],
-              [machine._id],
-              true,
+              'Informes/MachineDiario', 1,
+              [machine._id, day],
+              [machine._id, "0"],
+              false,
               true,
               1
             ).then((planneds: any[]) => {
-              machine.lastActivity =  planneds[0] && planneds[0].value.replace('<br/>', ' ') || '';
+              machine.lastActivity =  planneds[0] && planneds[0].value || '';
               machine.lastDate = planneds[0] && planneds[0].key[1] || null;
               machineList.push(machine);
           })

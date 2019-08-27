@@ -11,7 +11,7 @@ export class CropsService {
   getCrops(keyword, page){
     return new Promise((resolve, reject)=>{
       this.pouchdbService.getView(
-        'stock/Crops', 2,
+        'Informes/Crops', 2,
         ['0'],
         ['z']
       ).then((planneds: any[]) => {
@@ -45,7 +45,7 @@ export class CropsService {
 
   handleViewChange(list, change){
     this.pouchdbService.getView(
-      'stock/Crops', 1,
+      'Informes/Crops', 1,
       ['0'],
       ['z']
     ).then((crops: any[]) => {

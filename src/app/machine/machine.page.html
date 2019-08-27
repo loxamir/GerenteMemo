@@ -24,14 +24,12 @@
         {{'LAST_MAINTENANCE_AT'|translate}} {{ diffDays }} {{'DAYS'|translate}}
       </h1>
       <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && diffDays == 1">
-        {{'LAST_MAINTENANCE_AT'|translate}} {{ diffDays }} {{'DAY'}}
+        {{'LAST_MAINTENANCE_AT'|translate}} {{ diffDays }} {{'DAY'|translate}}
       </h1>
       <h1 class="subtitle" *ngIf="machineForm.value.lastReviewDate && !diffDays">
-        Ultimo mantenimiento hoy
         {{'LAST_MAINTENANCE_TODAY'|translate}}
       </h1>
       <h1 class="subtitle" *ngIf="!machineForm.value.lastReviewDate">
-        Sin datos de mantenimiento
         {{'NO_MAINTENANCE_DATA'|translate}}
       </h1>
     </ion-title>
@@ -43,46 +41,54 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="list-mini-content rotate180" *ngIf="!showForm">
+<ion-content class="list-mini-content" *ngIf="!showForm">
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
-  <img id="imgtmp" #imgtmp class="rotate180" style="display:none">
+  <img id="imgtmp" #imgtmp style="display:none">
   <div id="pwa">
     <input type="file" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
     <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
   </div>
-  <div style="height:100px;">
-  </div>
-  <div style="height:200px;" *ngIf="showBotom">
-  </div>
   <form class="sample-form validations-form" [formGroup]="machineForm">
-    <ion-list no-lines class="rotate180" style="overflow: auto;display: flex;flex-direction: column-reverse;">
+    <ion-infinite-scroll threshold="100px" position="top" (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" [loadingText]="'LOADING_MORE_ACTIVITIES'|translate">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;">
       <ion-item-sliding class="list-item" *ngFor="let item of machineForm.value.moves">
-        <ion-item no-padding (click)="openItem(item)" *ngIf="!(item._attachments && item._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
-          <ion-card [class.area-card]="item.activity_name!='Memo'" [class.sent-card]="item.activity_name=='Abastecimento'">
+        <ion-item no-padding (click)="openItem(item.doc)" *ngIf="item && item.doc && !(item.doc._attachments && item.doc._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.sent-card]="item.doc.activity_name=='Abastecimento'">
             <ion-row no-padding>
               <ion-thumbnail style="--border-radius:10px;">
-                <ion-img [src]="'./assets/icons/'+item.activity_id+'.png'"></ion-img>
+                <ion-img [src]="'./assets/icons/'+item.doc.activity_id+'.png'"></ion-img>
               </ion-thumbnail>
               <ion-col>
                 <ion-row>
                   <ion-col size="8.5" no-padding>
                     <h3 class="activity-name">
-                      {{ item.name || item.activity_name || 'NOT_INFORMED'|translate}}
+                      {{ item.doc.name || item.doc.activity_name || 'NOT_INFORMED'|translate}}
                     </h3>
-                    <div [innerHTML]="item.summary"></div>
-                    <h1 class="activity-note" *ngIf="item.cost">
-                      {{'COST'|translate}}: $ {{item.cost|number:'1.'+currency_precision}}
+                    <div [innerHTML]="item.doc.summary"></div>
+                    <h1 class="activity-note" *ngIf="item.doc.cost">
+                      {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}}
                     </h1>
                     <h1 class="activity-note">
-                      {{item.note}}
+                      {{item.doc.note}}
                     </h1>
                   </ion-col>
                   <ion-col>
-                    <h3 class="item-title-second">
-                      {{item.date|date: 'dd/MM/yyyy'}}
+                    <h3 no-padding class="item-title-second"
+                      [class.quotation]="item.doc.state=='DRAFT'"
+                      [class.confirmed]="item.doc.state=='SCHEDULED'"
+                      [class.paid]="item.doc.state=='DONE'"
+                      [class.due]="item.doc.state=='STARTED'"
+                      style="border-radius:10px;text-align: center">
+                      {{ item.doc.state | translate }}
                     </h3>
                     <h3 class="item-title-second">
-                      {{item.date|date: 'HH:mm'}}
+                      {{item.doc.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.doc.date|date: 'HH:mm'}}
                     </h3>
                   </ion-col>
                 </ion-row>
@@ -91,44 +97,125 @@
           </ion-card>
         </ion-item>
 
-        <ion-item no-padding (click)="openPreview(item)" *ngIf="item._attachments && item._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
-          <ion-card [class.area-card]="item.activity_name!='Memo'" [class.sent-card]="item.activity_name=='Abastecimento'">
+        <ion-item no-padding (click)="openPreview(item.doc)" *ngIf="item && item.doc && item.doc._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.sent-card]="item.doc.activity_name=='Abastecimento'">
             <ion-row no-padding>
               <ion-col no-padding>
-                <ion-img *ngIf="item._attachments['image.png'].data" style="max-height: 200px;width: 100%;" [src]="'data:image/png;base64,'+item._attachments['image.png'].data"></ion-img>
+                <ion-img *ngIf="item.doc._attachments['image.png'].data" style="max-height: 200px;width: 100%;" [src]="'data:image/png;base64,'+item.doc._attachments['image.png'].data"></ion-img>
               </ion-col>
             </ion-row>
             <ion-row style="background: white">
-              <ion-col size="8.5" style="background: white" *ngIf="item.note">
-                {{item.note}}
+              <ion-col size="8.5" style="background: white" *ngIf="item.doc.note">
+                {{item.doc.note}}
               </ion-col>
               <ion-col style="background: white">
                 <h3 class="item-title-second">
-                  {{item.date|date: 'dd/MM/yyyy'}}
-                  {{item.date|date: 'HH:mm'}}
+                  {{item.doc.date|date: 'dd/MM/yyyy'}}
+                  {{item.doc.date|date: 'HH:mm'}}
                 </h3>
               </ion-col>
             </ion-row>
           </ion-card>
         </ion-item>
         <ion-item-options>
-          <ion-item-option (click)="deleteWork(item)" *ngIf="!item.fixed">
+          <ion-item-option (click)="deleteWork(item.doc)" *ngIf="item && item.doc && (item.doc.state == 'SCHEDULED' || item.doc.state == 'DRAFT')">
             {{'DELETE'|translate}}
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
-    <ion-infinite-scroll threshold="100px" position="bottom" (ionInfinite)="doInfinite($event)">
-      <ion-infinite-scroll-content class="rotate180" loadingSpinner="bubbles" loadingText="Cargando mas atividades...">
+
+    <div style="margin-top:25px;margin-bottom:25px;margin-left: auto;margin-right: auto;text-align: center;"
+    *ngIf="machineForm.value.moves2.length">
+      {{ 'SCHEDULED_WORKS'| translate}}
+    </div>
+    <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;">
+      <ion-item-sliding class="list-item" *ngFor="let item of machineForm.value.moves2">
+        <ion-item no-padding
+        (click)="openItem(item.doc)"
+        *ngIf="item && item.doc && !(item?.doc?._attachments && item.doc._attachments['image.png'])"
+        style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card class="memo-card">
+            <ion-row no-padding>
+              <ion-thumbnail style="--border-radius:10px;">
+                <ion-img [src]="'./assets/icons/'+item.doc.activity_id+'.png'"></ion-img>
+              </ion-thumbnail>
+              <ion-col>
+                <ion-row>
+                  <ion-col size="8.5" no-padding>
+                    <h3 class="activity-name">
+                      {{ item.doc.name || item.doc.activity_name || 'NOT_INFORMED'|translate}}
+                    </h3>
+                    <div [innerHTML]="item.doc.summary"></div>
+                    <h1 class="activity-note" *ngIf="item.doc.cost">
+                      {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}}
+                    </h1>
+                    <h1 class="activity-note">
+                      {{item.doc.note}}
+                    </h1>
+                  </ion-col>
+                  <ion-col>
+                    <h3 no-padding class="item-title-second"
+                      [class.quotation]="item.doc.state=='DRAFT'"
+                      [class.confirmed]="item.doc.state=='SCHEDULED'"
+                      [class.paid]="item.doc.state=='DONE'"
+                      [class.due]="item.doc.state=='STARTED'"
+                      style="border-radius:10px;text-align: center">
+                      {{ item.doc.state | translate }}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.doc.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.doc.date|date: 'HH:mm'}}
+                    </h3>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
+
+        <ion-item no-padding (click)="openPreview(item.doc)" *ngIf="item && item.doc && item.doc._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.activity_name=='Memo'">
+            <ion-row no-padding>
+              <ion-col no-padding>
+                <ion-img *ngIf="item.doc._attachments['image.png'].data" style="max-height: 200px;width: 100%;" [src]="'data:image/png;base64,'+item.doc._attachments['image.png'].data"></ion-img>
+              </ion-col>
+            </ion-row>
+            <ion-row style="background: white">
+              <ion-col size="8.5" style="background: white" *ngIf="item.doc.note">
+                {{item.doc.note}}
+              </ion-col>
+              <ion-col style="background: white">
+                <h3 class="item-title-second">
+                  {{item.doc.date|date: 'dd/MM/yyyy'}}
+                  {{item.doc.date|date: 'HH:mm'}}
+                </h3>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
+        <ion-item-options>
+          <ion-item-option (click)="deleteWork(item.doc)" *ngIf="item && item.doc && (item.doc.state == 'SCHEDULED' || item.doc.state == 'DRAFT')">
+            {{'DELETE'|translate}}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+    <ion-infinite-scroll threshold="100px" position="bottom" (ionInfinite)="doInfinite2($event)" *ngIf="ready">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" [loadingText]="'LOADING_SCHEDULED_ACTIVITY'|translate">
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
+    <div style="height:50px;">
+    </div>
 
-    <ion-row style="height:15px;">
-    </ion-row>
+    <div style="height:200px;" *ngIf="showBotom">
+    </div>
   </form>
 
 
-  <ion-fab class="rotate180" vertical="top" style="left: 0px;right:0px;top: 0px;background: #dddddd;" horizontal="start" slot="fixed">
+  <ion-fab vertical="bottom" style="left: 0px;right:0px;bottom: 0px;background: #dddddd;" horizontal="start" slot="fixed">
     <ion-row style="padding-bottom:5px;padding-top: 5px;">
       <ion-col [class.left-round]="true" [class.all-round]="false">
         <ion-textarea #note [(ngModel)]="machineForm.value.note" [placeholder]="'WRITE_NOTE'|translate" style="margin-top: 2px;" rows="1">
@@ -179,7 +266,6 @@
       </ion-col>
     </ion-row>
   </ion-fab>
-
 </ion-content>
 
 <ion-content class="list-mini-content" *ngIf="showForm">

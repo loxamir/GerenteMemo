@@ -43,7 +43,7 @@ export class PersonService {
     return new Promise(async (resolve, reject) => {
       let payableList = [];
       this.pouchdbService.getViewInv(
-        'stock/Chuva', 2,
+        'Informes/Chuva', 2,
         [doc_id, 'z'],
         [doc_id, '0'],
         true,
