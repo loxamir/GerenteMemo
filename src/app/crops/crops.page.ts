@@ -62,9 +62,6 @@ export class CropsPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.setFilteredItems();
-    this.events.subscribe('changed-work', (change) => {
-      this.cropsService.handleViewChange(this.crops, change);
-    })
     this.events.subscribe('changed-project', (change) => {
       this.setFilteredItems();
     })
