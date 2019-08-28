@@ -264,6 +264,40 @@ export class RestProvider {
     });
   }
 
+  setUserToken(username, password, token){
+    return new Promise(resolve => {
+      this.http.get(
+        this.databaseUrl+'/_users/org.couchdb.user:' + username,
+        {
+          headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + password))
+        }
+      ).subscribe((userData: any) => {
+        if (!userData.devices){
+          userData['devices'] = [];
+        }
+        let tokenIndex = userData.devices.indexOf(token);
+        if (tokenIndex == -1){
+          userData.devices.push(token);
+          this.http.put(
+            this.databaseUrl+'/_users/org.couchdb.user:'+ username,
+            userData,
+            {
+              headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + password))
+            }
+          ).subscribe(data => {
+            resolve(data);
+          }, err => {
+            resolve(err);
+            console.log("change language error", err);
+          });
+        }
+      }, err => {
+        console.log("change language get user error", err);
+        resolve(err);
+      });
+    });
+  }
+
   getUserDbList(username, password) {
     // return new Promise(resolve => {
       return new Promise(resolve => {

@@ -10,6 +10,7 @@ import { firebase } from '@firebase/app';
 import { environment } from '../environments/environment';
 import { NotificationsService } from './notifications.service';
 import { Storage } from '@ionic/storage';
+import { RestProvider } from './services/rest/rest';
 
 @Component({
   selector: 'app-root',
@@ -69,6 +70,7 @@ export class AppComponent implements OnInit {
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public notificationsService: NotificationsService,
+    public restProvider: RestProvider,
     public storage: Storage,
   ) {
     // this.initializeApp();
@@ -104,7 +106,16 @@ export class AppComponent implements OnInit {
     firebase.initializeApp(environment.firebase);
     await this.notificationsService.init();
     this.platform.ready().then(async () => {
-      await this.notificationsService.requestPermission();
+      let token = await this.notificationsService.requestPermission();
+      console.log("tokk1", token);
+      if (typeof token === 'string'){
+        let username = await this.storage.get('username');
+        let password = await this.storage.get('password');
+        if (username && password){
+          this.restProvider.setUserToken(username, password, token);
+        }
+      }
+      console.log("initialized");
       this.initializeApp();
     })
     let lenguage = await this.storage.get("language");
@@ -150,6 +161,6 @@ export class AppComponent implements OnInit {
         });
       }
     })
-    // this.loading.dismiss();
+    this.loading.dismiss();
   }
 }

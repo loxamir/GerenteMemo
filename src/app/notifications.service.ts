@@ -70,16 +70,17 @@ init(): Promise<void> {
             console.log("try");
             const messaging = firebase.messaging();
             await messaging.requestPermission();
-
-            const token: string = await messaging.getToken();
+            let token:any = await messaging.getToken();
 
             console.log('User notifications token:', token);
+
+            resolve(token);
         } catch (err) {
           console.log("errou", err);
             // No notifications granted
+            resolve();
         }
 
-        resolve();
     });
   }
 }
