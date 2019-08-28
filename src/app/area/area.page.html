@@ -68,6 +68,17 @@
                       {{ item.doc.name || item.doc.activity_name || 'NOT_INFORMED'|translate}}
                     </h3>
                     <div [innerHTML]="item.doc.summary"></div>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.rain'">
+                      {{item.doc.quantity|number:'1.0'}} mm
+                    </h1>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
+                      {{item.doc.croped/60|number:'1.0'}} {{'BAGS'|translate}}
+                    </h1>
+                    <ul class="activity-note" *ngIf="item.doc.activity_id == 'activity.spray' || item.doc.activity_id == 'activity.work' || item.doc.activity_id == 'activity.plant'">
+                      <li *ngFor="let input of item.doc.inputs">
+                        {{ input.product.name }}
+                      </li>
+                    </ul>
                     <h1 class="activity-note" *ngIf="item.doc.cost">
                       {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}}
                     </h1>
@@ -149,6 +160,17 @@
                       {{ item.doc.name || item.doc.activity_name || 'NOT_INFORMED'|translate}}
                     </h3>
                     <div [innerHTML]="item.doc.summary"></div>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.rain'">
+                      {{item.doc.quantity|number:'1.0'}} mm
+                    </h1>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
+                      {{item.doc.croped/60|number:'1.0'}} {{'BAGS'|translate}}
+                    </h1>
+                    <ul class="activity-note" *ngIf="item.doc.activity_id == 'activity.spray' || item.doc.activity_id == 'activity.plant' || item.doc.activity_id == 'activity.plant'">
+                      <li *ngFor="let input of item.doc.inputs">
+                        {{ input.product.name }}
+                      </li>
+                    </ul>
                     <h1 class="activity-note" *ngIf="item.doc.cost">
                       {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}}
                     </h1>
