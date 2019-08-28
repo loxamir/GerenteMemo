@@ -1,0 +1,453 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/agro-tabs/future-contract-list"></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="return">
+      {{ 'RETURN' | translate }}: {{futureContractForm.value.code}}
+    </ion-title>
+    <ion-title *ngIf="!return">
+      {{ 'FUTURE_CONTRACT' | translate }}: {{futureContractForm.value.code}}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button icon-only (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-row style="height: 50px;">
+    <ion-col (click)="setDiscount()">
+      <h4 class="field-label-col">{{'TOTAL_AMOUNT' | translate}}</h4>
+      <h4 class="field-value-col" style="color:blue">$ {{futureContractForm.value.quantity*(futureContractForm.value.price-futureContractForm.value.cost)|number:'1.'+currency_precision}}</h4>
+  </ion-col>
+  <!-- <ion-col
+  (click)="setDiscount()"
+  *ngIf="futureContractForm.value.discount.value || futureContractForm.value.discount.lines">
+      <h4 class="field-label-col">{{'Descuento' | translate}}</h4>
+      <h4 class="field-value-col" style="color:red">
+        $ {{computeDiscount()|number:'1.'+currency_precision}}
+        <ion-icon name="arrow-down">
+      </ion-icon>{{computePercent()}}%</h4>
+  </ion-col> -->
+  <ion-col
+  *ngIf="futureContractForm.value.state=='CONFIRMED'">
+      <h4 class="field-label-col">{{'TO_DELIVERY' | translate}}</h4>
+      <h4 class="field-value-col" style="color:red">{{futureContractForm.value.quantity - futureContractForm.value.delivered - futureContractForm.value.settled|number:'1.0'}}</h4>
+  </ion-col>
+  </ion-row>
+  <ion-row  class="state-header">
+    <ion-col size="4">
+      <div class="clicked arron">
+        <span class="state-label">{{'DRAFT'|translate}}</span>
+      </div>
+    </ion-col>
+    <ion-col size="4">
+      <div [class.unclicked]="futureContractForm.value.state=='QUOTATION'" [class.clicked]="futureContractForm.value.state!='QUOTATION'" class="arrow">
+        <span class="state-label">{{'CONFIRMED'|translate}}</span>
+      </div>
+    </ion-col>
+    <ion-col size="4">
+      <div [class.unclicked]="!(futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == futureContractForm.value.sold))" [class.clicked]="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity == futureContractForm.value.sold)" class="arrow">
+        <span class="state-label">{{'DONE'|translate}}</span>
+      </div>
+    </ion-col>
+  </ion-row>
+
+
+
+
+
+</ion-header>
+
+<ion-content background="#ddd" >
+  <ion-input #corpo style="height: 0px;--padding-top: 0px;--padding-bottom: 0px;--padding-start: 0px;"></ion-input>
+  <form [formGroup]="futureContractForm" (ngSubmit)="onSubmit(futureContractForm.value)">
+
+    <ion-row justify-content-center>
+      <ion-item no-padding class="field-100">
+        <ion-label position="floating">{{'QUANTITY' | translate}}</ion-label>
+        <ion-input type="number" #quantity formControlName="quantity"></ion-input>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
+        <ion-input type="number" #price formControlName="price"></ion-input>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <ion-label position="floating">{{'COST' | translate}}</ion-label>
+        <ion-input type="number" #cost formControlName="cost"></ion-input>
+      </ion-item>
+      <ion-item no-padding (click)="selectCrop()" class="field-50">
+        <h4 class="field-label">{{'CROP' | translate }}</h4>
+        <h4 class="field-value">{{futureContractForm.value.crop.name || 'SELECT'|translate}}</h4>
+      </ion-item>
+      <ion-item no-padding (click)="selectProduct()" class="field-50">
+        <h4 class="field-label">{{'PRODUCT' | translate }}</h4>
+        <h4 class="field-value">{{futureContractForm.value.product && futureContractForm.value.product.name || 'SELECT'|translate}}</h4>
+      </ion-item>
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'DATE_DELIVERY' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="date_delivery">
+        </ion-datetime>
+      </ion-item>
+
+      <ion-item no-padding class="field-50">
+        <h4 class="field-label">{{'DATE' | translate }}</h4>
+        <ion-datetime class="field-50-datetime"
+        displayFormat="DD/MM/YYYY"
+        pickerFormat="DD/MM/YYYY"
+        formControlName="date">
+        </ion-datetime>
+      </ion-item>
+
+    <!-- </ion-row>
+    <ion-row> -->
+      <ion-col no-padding class="field-many2one-edit"
+      (click)="selectContact()">
+        <h4 class="field-label-col">{{'CONTACT' | translate }}</h4>
+        <h4 class="field-value-col">{{futureContractForm.value.contact && futureContractForm.value.contact.name || 'SELECT'|translate}}</h4>
+      </ion-col>
+      <ion-col size="2" class="open-item-col" (click)="editContact()">
+        <ion-icon name="open" class="open-item-arrow"></ion-icon>
+      </ion-col>
+      <ion-item no-padding (click)="selectWarehouse()" class="field-100">
+        <h4 class="field-label">{{'WAREHOUSE' | translate }}</h4>
+        <h4 class="field-value">{{futureContractForm.value.warehouse.name || 'SELECT'|translate}}</h4>
+      </ion-item>
+    </ion-row>
+    <!-- <ion-row>
+      <ion-col *ngIf="futureContractForm.value.state != 'QUOTATION' && futureContractForm.value.amount_unInvoiced == futureContractForm.value.total">
+        <ion-button class="button-100" (click)="addInvoice()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>Crear Factura</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" *ngIf="futureContractForm.value.state == 'QUOTATION'">
+        <ion-button class="button-100" (click)="addItem()" color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> Agregar Item</ion-button>
+      </ion-col>
+    </ion-row> -->
+
+
+    <!-- <ion-list no-lines *ngIf="futureContractForm.value.invoices.length">
+      <section>
+      <h2 class="section-title">{{'INVOICE' | translate}}</h2>
+      <ion-item-sliding class="list-item" *ngFor="let item of futureContractForm.value.invoices">
+        <ion-item (click)="openInvoice(item)"  style="background-color: #ddd;">
+          <ion-card class="list-card">
+          <ion-row style="padding-top:10px; padding-bottom:10px;height:50px;">
+          <ion-col >
+            <h4 class="field-label">{{'NUMBER' | translate}}</h4>
+            <h4 class="field-value">{{item.number || item.code}}</h4>
+          </ion-col>
+          <ion-col >
+            <h4 class="field-label">{{'TAX' | translate}}</h4>
+            <h4 class="field-value">$ {{item.tax|number:'1.'+currency_precision}}</h4>
+          </ion-col>
+          </ion-row>
+          </ion-card>
+        </ion-item>
+      </ion-item-sliding>
+    </section>
+    </ion-list>
+
+
+    <ion-list no-lines *ngIf="futureContractForm.value.payments.length">
+      <section>
+      <h2 class="section-title">{{'Recibos' | translate}}</h2>
+      <ion-item-sliding class="list-item" *ngFor="let item of futureContractForm.value.payments">
+        <ion-item  (click)="openPayment(item)" style="background-color: #ddd;">
+          <ion-card class="list-card">
+          <ion-row style="padding-top:10px; padding-bottom:10px;height:50px;">
+          <ion-col >
+            <h4 class="field-label">{{'Fecha' | translate}}</h4>
+            <h4 class="field-value">{{item.date|date: 'dd/MM/yyyy'}}</h4>
+          </ion-col>
+          <ion-col>
+            <h4 class="field-label">{{'AMOUNT' | translate}}</h4>
+            <h4 class="field-value">$ {{item.paid|number:'1.'+currency_precision}}</h4>
+          </ion-col>
+          </ion-row>
+          </ion-card>
+        </ion-item>
+        <ion-item-options>
+        </ion-item-options>
+      </ion-item-sliding>
+    </section>
+    </ion-list> -->
+
+    <ion-item class="field-100">
+        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+        <ion-textarea autoGrow="true" rows="1" #note formControlName="note"></ion-textarea>
+    </ion-item>
+
+    <!-- <ion-list no-lines>
+    <section>
+      <h2 class="section-title">{{'Pagarés' | translate}}</h2>
+        <ion-item-sliding class="list-item" *ngFor="let item of futureContractForm.value.planned">
+        <ion-item no-padding (click)="selectCashMove(item)" style="margin-bottom: 0px; margin-top:0px;">
+          <ion-card class="list-card" style="border-radius: 5px;">
+
+       <ion-row no-padding class="content-row one-line">
+          <ion-col no-padding width-25 class="schedule-date">
+            <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.date|date: 'dd/MM/yyyy'}}</h3>
+          </ion-col>
+          <ion-col no-padding width-35  >
+            <ion-row no-padding>
+              <ion-col class="item-name" style="white-space: normal;">
+                {{item.name}}
+              </ion-col>
+            </ion-row>
+
+          </ion-col>
+          <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+            <h2 class="list-big-number amount" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
+            <div *ngIf="item.amount_residual != 0" class="residual-value">
+              $ {{ item.amount_residual | number:'1.'+currency_precision }}
+            </div>
+          </ion-col>
+        </ion-row>
+
+
+        <ion-row no-padding>
+          <ion-col *ngIf="item.amount_residual>0 && (item.dateDue.split('T')[0]>=today.split('T')[0])" no-padding class="list-tag quotation">
+            {{ 'PENDING' | translate }}
+          </ion-col>
+          <ion-col *ngIf="item.amount_residual>0 && item.dateDue.split('T')[0]<today.split('T')[0]" no-padding class="list-tag due">
+              {{ 'DUE' | translate }}
+          </ion-col>
+          <ion-col *ngIf="item.amount_residual==0" no-padding class="list-tag paid">
+              {{ 'PAID' | translate }}
+          </ion-col>
+        </ion-row>
+        </ion-card>
+      </ion-item>
+          <ion-item-options>
+            <ion-item-option (click)="deleteCashMove(item)"
+            *ngIf="!item.fixed">
+              {{'DELETE'|translate}}
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </section>
+    </ion-list> -->
+
+    <ion-list no-lines *ngIf="futureContractForm.value.sales.length">
+    <section>
+      <ion-row no-padding class="content-row one-line">
+         <ion-col no-padding width-25 class="schedule-date">
+           <h2 class="section-title">{{'TOTAL_SOLD:' | translate}}</h2>
+         </ion-col>
+         <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+           <h2 class="list-big-number amount" style="color: red;">{{ futureContractForm.value.sold }}</h2>
+         </ion-col>
+       </ion-row>
+        <ion-item-sliding class="list-item" *ngFor="let item of futureContractForm.value.sales">
+        <ion-item no-padding (click)="selectStockMove(item.value[1])" style="margin-bottom: 0px; margin-top:0px;">
+          <ion-card class="list-card" style="border-radius: 5px;">
+       <ion-row no-padding class="content-row one-line">
+          <ion-col no-padding width-25 class="schedule-date">
+            <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.value[1].date|date: 'dd/MM/yyyy'}}</h3>
+          </ion-col>
+          <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+            <h2 class="list-big-number amount" style="color: black;">{{item.value[0]| number:'1.0'}}</h2>
+          </ion-col>
+        </ion-row>
+
+        </ion-card>
+      </ion-item>
+
+        </ion-item-sliding>
+      </section>
+    </ion-list>
+
+    <ion-row>
+      <ion-col *ngIf="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.quantity > (futureContractForm.value.delivered + futureContractForm.value.settled))">
+        <ion-button class="button-100" (click)="addSettlement()"  color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon>{{'MANUAL_DELIVERY' | translate}}</ion-button>
+      </ion-col>
+      <ion-col *ngIf="futureContractForm.value.state=='CONFIRMED' && (futureContractForm.value.delivered + futureContractForm.value.settled) > futureContractForm.value.sold">
+        <ion-button class="button-100" (click)="createSale()"  color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> {{'CREATE_SALE' | translate}}</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-list no-lines *ngIf="futureContractForm.value.settlements.length">
+    <section>
+      <ion-row no-padding class="content-row one-line">
+         <ion-col no-padding width-25 class="schedule-date">
+           <h2 class="section-title">{{'MANUAL_DELIVERIES' | translate}}</h2>
+         </ion-col>
+         <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+           <h2 class="list-big-number amount" style="color: red;">{{ futureContractForm.value.settled }}</h2>
+         </ion-col>
+       </ion-row>
+        <ion-item-sliding class="list-item" *ngFor="let item of futureContractForm.value.settlements">
+        <ion-item no-padding (click)="editSettle(item)" style="margin-bottom: 0px; margin-top:0px;">
+          <ion-card class="list-card" style="border-radius: 5px;">
+       <ion-row no-padding class="content-row one-line">
+          <ion-col no-padding width-25 class="schedule-date">
+            <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.value[1].date|date: 'dd/MM/yyyy'}}</h3>
+          </ion-col>
+          <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+            <h2 class="list-big-number amount" style="color: black;">{{item.value[0]| number:'1.0'}}</h2>
+          </ion-col>
+        </ion-row>
+
+        </ion-card>
+      </ion-item>
+
+        </ion-item-sliding>
+      </section>
+    </ion-list>
+    <ion-list no-lines *ngIf="futureContractForm.value.deliveries.length">
+    <section>
+      <ion-row no-padding class="content-row one-line">
+         <ion-col no-padding width-25 class="schedule-date">
+           <h2 class="section-title">{{'LOADS_DELIVERED:' | translate}}</h2>
+         </ion-col>
+         <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+           <h2 class="list-big-number amount" style="color: red;">{{ futureContractForm.value.delivered }}</h2>
+         </ion-col>
+       </ion-row>
+        <ion-item-sliding class="list-item" *ngFor="let item of futureContractForm.value.deliveries">
+        <ion-item no-padding (click)="selectStockMove(item.value[1])" style="margin-bottom: 0px; margin-top:0px;">
+          <ion-card class="list-card" style="border-radius: 5px;">
+       <ion-row no-padding class="content-row one-line">
+          <ion-col no-padding width-25 class="schedule-date">
+            <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.value[1].date|date: 'dd/MM/yyyy'}}</h3>
+          </ion-col>
+          <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+            <h2 class="list-big-number amount" style="color: black;">{{item.value[0]| number:'1.0'}}</h2>
+          </ion-col>
+        </ion-row>
+
+        </ion-card>
+      </ion-item>
+
+        </ion-item-sliding>
+      </section>
+    </ion-list>
+
+    <!-- <ion-list no-lines *ngIf="futureContractForm.value.items.length">
+      <section>
+        <ion-item-sliding  class="list-item" *ngFor="let item of futureContractForm.value.items" #slidingItem>
+          <ion-item *ngIf="item.product._id=='product.discount'" class="internal-item">
+            <ion-card class="list-card" style="--background: #ffe38a" (click)="setDiscount()">
+              <ion-row class="product-name-row">
+                <ion-col size="6" style="white-space: normal;">
+                  Descuento sobre Total
+                </ion-col>
+                <ion-col size="6" style="white-space: normal;">
+                  <div style="font-size: 20px;color:red;">
+                    $ {{item.price*item.quantity|number:'1.'+currency_precision}}
+                    <ion-icon name="arrow-down">
+                    </ion-icon>{{computeDiscountPercent()}}%
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-card>
+          </ion-item>
+        </ion-item-sliding>
+      <h2 class="section-title">{{'Itenes de la Venta' | translate}}</h2>
+      <ion-item-sliding  class="list-item" *ngFor="let item of futureContractForm.value.items" #slidingItem>
+        <ion-item *ngIf="item.product._id!='product.discount'" class="internal-item">
+          <ion-card class="list-card">
+            <ion-row (click)="openItem(item)" class="product-name-row">
+              {{item.product && item.product.code}} - {{item.product && item.product.name}}
+            </ion-row>
+        <ion-row>
+          <ion-col size="6" style="white-space: normal;">
+            <ion-row style="margin-top: -5px;" (click)="setLineDiscount(item)">
+              <ion-col size="12">
+                <span class="price-label">Precio:</span>
+                <div *ngIf="item.price_original" style="font-size: 12px;display: contents; color:red;    text-decoration: line-through;">
+                   ${{item.price_original |number:'1.'+currency_precision}}
+                </div>
+                <div *ngIf="item.price_original" style="font-size: 12px;display: contents; color:red;">
+                  <ion-icon name="arrow-down" style="padding-top:2px;">
+                  </ion-icon>{{lineDiscountPercent(item)}}%
+                </div>
+                <div style="font-size: 15px;display: contents; color:red">
+                   ${{item.price|number:'1.'+currency_precision}}
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row (click)="setLineDiscount(item)">
+              <ion-col  size="12" class="item-content price-tag">
+                <span class="price-label">SubTotal:</span>
+                <div style="font-size: 20px;color:green;">
+                   ${{item.price*item.quantity|number:'1.'+currency_precision}}
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+          <ion-col size="6">
+
+            <ion-row>
+              <ion-col style="text-align: center;">
+                Cantidad
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="3">
+                <ion-button class="quantity-button" (click)="remItem(item)">-</ion-button>
+              </ion-col>
+              <ion-col size="6" (click)="editItemQuantity(item)" style="text-align: center;font-size: 20px;margin-top: 8px;">
+                {{item.quantity}}
+              </ion-col>
+              <ion-col size="3">
+                <ion-button class="quantity-button" (click)="sumItem(item)">+</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      </ion-item>
+        <ion-item-options  side="end">
+          <ion-item-option (click)="deleteItem(slidingItem, item)"  *ngIf="futureContractForm.value.state=='QUOTATION'">
+            {{'DELETE'|translate}}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </section>
+    </ion-list> -->
+  </form>
+
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="futureContractForm.value.state == 'QUOTATION' && futureContractForm.value.items.length">
+    <ion-button (click)="setContracted()"  class="next-button" color="primary">
+      <ion-icon name="checkmark"> </ion-icon>
+      Contratar
+    </ion-button>
+  </ion-fab> -->
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="futureContractForm.value.state == 'QUOTATION'">
+    <ion-button (click)="confirmState()"  class="next-button" color="primary">
+      <ion-icon name="checkmark"> </ion-icon>
+      {{'CONFIRM'|translate}}
+    </ion-button>
+  </ion-fab>
+
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="futureContractForm.value.state == 'CONFIRMED'">
+    <ion-button (click)="addPayment()"  class="next-button" color="primary">
+      <ion-icon name="cash"> </ion-icon>
+      Cobrar
+    </ion-button>
+  </ion-fab> -->
+
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-button (click)="discard()" color="danger" class="discard-button">
+      <ion-icon name="backspace" *ngIf="futureContractForm.dirty"> </ion-icon>
+      <ion-icon name="arrow-back" *ngIf="!futureContractForm.dirty"> </ion-icon>
+      <span *ngIf="futureContractForm.dirty">{{'DISCARD'|translate}}</span>
+      <span *ngIf="!futureContractForm.dirty">{{'GO_BACK'|translate}}</span>
+    </ion-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="futureContractForm.dirty">
+    <ion-button (click)="buttonSave()"  color="success" class="save-button">
+      <ion-icon name="save"> </ion-icon>
+      {{'SAVE'|translate}}
+    </ion-button>
+  </ion-fab>
+
+  <div style="height: 100px;">
+  </div>
+</ion-content>

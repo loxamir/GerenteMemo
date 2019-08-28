@@ -33,14 +33,14 @@ export class BrandPage implements OnInit {
     public route: ActivatedRoute,
     public alertCtrl: AlertController,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this.select = this.route.snapshot.paramMap.get('select');
     this._id = this.route.snapshot.paramMap.get('_id');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.brandForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       // dre:  new FormControl('sale'),
@@ -51,6 +51,9 @@ export class BrandPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     if (this._id){
       this.getBrand(this._id).then((data) => {
         //let currentLang = this.translate.currentLang;
@@ -109,10 +112,10 @@ export class BrandPage implements OnInit {
   async canDeactivate() {
       if(this.brandForm.dirty) {
           let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
+              header: this.translate.instant('DISCARD'),
+              message: this.translate.instant('SURE_DONT_SAVE'),
               buttons: [{
-                      text: 'Si',
+                      text: this.translate.instant('YES'),
                       handler: () => {
                           // alertPopup.dismiss().then(() => {
                               this.exitPage();
@@ -120,7 +123,7 @@ export class BrandPage implements OnInit {
                       }
                   },
                   {
-                      text: 'No',
+                      text: this.translate.instant('NO'),
                       handler: () => {
                           // need to do something if the user stays?
                       }

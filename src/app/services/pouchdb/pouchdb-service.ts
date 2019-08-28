@@ -49,6 +49,29 @@ export class PouchdbService {
     });
   }
 
+  attachFile(doc_id, file_name, file_data){
+    return new Promise(async (resolve, reject)=>{
+      let document: any = await this.getDoc(doc_id);
+      let attach = await this.db.putAttachment(doc_id, file_name, document._rev, file_data, 'image/png');
+      resolve(attach);
+    })
+  }
+
+  async getAttachment(doc_id, file_name){
+    let self = this;
+    return new Promise(async (resolve, reject)=>{
+      try {
+        let data = await self.db.getAttachment(doc_id, file_name);
+        console.log("data", data);
+        resolve(data)
+      }
+      catch (err) {
+        console.log(err);
+        resolve(false);
+      }
+    })
+  }
+
   getConnect(){
     let self = this;
     return new Promise((resolve, reject)=>{
@@ -59,7 +82,7 @@ export class PouchdbService {
           return;
         }
         this.username = username;
-        this.storage.get("database").then(database => {
+        this.storage.get("database").then(async database => {
           if (! database){
             resolve(false);
             return;
@@ -68,24 +91,64 @@ export class PouchdbService {
           PouchDB.plugin(PouchdbUpsert);
           if (this.platform.is('cordova')){
             PouchDB.plugin(cordovaSqlitePlugin);
-            this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+            this.db = new PouchDB(database, {
+              adapter: 'cordova-sqlite',
+              location: 'default',
+              androidDatabaseImplementation: 2
+            })
           } else {
             this.db = new PouchDB(database);
           }
           console.log("database", database);
           this.db.setMaxListeners(50);
           self.events.publish('got-database');
+          let loadDemo = await this.storage.get('loadDemo');
           this.storage.get('password').then(password => {
             this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
-            let options = {
-              live: true,
-              retry: true
-            };
+            if (database != 'agromemo' || !loadDemo){
+              let options = {
+                live: true,
+                retry: true
+              };
+              let syncJob = this.db.sync(this.remote, options);
+
+              syncJob
+              .on('change', function (info) {
+                // handle change
+                console.log("sync change", info);
+              }).on('paused', function (err) {
+                console.log("sync paused", err);
+                if (username == 'agromemo'){
+                  self.storage.set('loadDemo', true);
+                  syncJob.cancel();
+                }
+                self.events.publish('end-sync');
+                // replication paused (e.g. replication up to date, user went offline)
+              }).on('active', function () {
+                console.log("sync activated");
+                // replicate resumed (e.g. new changes replicating, user went back online)
+              }).on('denied', function (err) {
+                console.log("sync no permissions", err);
+                // a document failed to replicate (e.g. due to permissions)
+              }).on('complete', function (info) {
+                console.log("sync complete", info);
+                // handle complete
+              }).on('error', function (err) {
+                console.log("sync other error", err);
+                // handle error
+              });
+            } else {
+              setTimeout(function(){
+                self.events.publish('end-sync');
+              }, 500);
+            }
 
             this.db.changes({
               live: true,
               since: 'now',
-              include_docs: true
+              include_docs: true,
+              attachments: true,
+              // binary: true,
             }).on('change', (change) => {
               // console.log("changed", change);
               this.handleChangeData(change);
@@ -96,27 +159,6 @@ export class PouchdbService {
               // resolve(false)
             });
 
-            this.db.sync(this.remote, options)
-            .on('change', function (info) {
-              // handle change
-              // console.log("sync change", info);
-            }).on('paused', function () {
-              console.log("sync done");
-              self.events.publish('end-sync');
-              // replication paused (e.g. replication up to date, user went offline)
-            }).on('active', function () {
-              console.log("sync activated");
-              // replicate resumed (e.g. new changes replicating, user went back online)
-            }).on('denied', function (info) {
-              console.log("sync no permissions", info);
-              // a document failed to replicate (e.g. due to permissions)
-            }).on('complete', function (info) {
-              console.log("sync complete", info);
-              // handle complete
-            }).on('error', function (err) {
-              console.log("sync other error", err);
-              // handle error
-            });
           })
         });
       });
@@ -209,11 +251,14 @@ export class PouchdbService {
     });
   }
 
-  getDoc(doc_id) {
+  getDoc(doc_id, attachments=false) {
     return new Promise(async (resolve, reject)=>{
       if (typeof doc_id === "string"){
         try {
-          let test = await this.db.get(doc_id);
+          let test = await this.db.get(doc_id, {
+            attachments: attachments,
+            // binary: true
+          });
           resolve(test);
         } catch {
           resolve({})
@@ -224,10 +269,60 @@ export class PouchdbService {
     })
   }
 
+  /*getDoc(doc_id) {
+    return new Promise((resolve, reject)=>{
+      if (typeof doc_id === "string"){
+        if (this.db){
+          resolve(this.db.get(doc_id));
+        } else {
+          resolve({})
+        }
+      } else {
+        resolve({})
+      }
+    })
+  }*/
+
+/*  getDoc(doc_id) {
+    let self = this;
+    return new Promise((resolve, reject)=>{
+      if (typeof doc_id === "string"){
+        resolve(self.db.get(doc_id));
+      } else {
+        resolve({})
+      }
+    })
+  }*/
+
   getUUID(){
     const uuidv4 = require('uuid/v4');
     return uuidv4();
   }
+
+/*  createDocList(list){
+    return new Promise((resolve, reject)=>{
+      let returns = [];
+      let processedList = [];
+      list.forEach((item: any)=>{
+        if (!item._id){
+          item._id = item.docType+"."+this.getUUID();
+        }
+        let time = new Date().toJSON();
+        item.create_user = this.username;
+        item.create_time = time;
+        item.write_user = this.username;
+        item.write_time = time;
+        if (item._return){
+          delete item._return;
+          returns.push(item);
+        }
+        processedList.push(item);
+      })
+      this.db.bulkDocs(processedList).then(createdDocs=>{
+        resolve(returns);
+      })
+    })
+  }*/
 
   createDocList(list){
     return new Promise((resolve, reject)=>{
@@ -253,6 +348,7 @@ export class PouchdbService {
       })
     })
   }
+
 
   updateDocList(list){
     return new Promise((resolve, reject)=>{
@@ -303,8 +399,8 @@ export class PouchdbService {
     });
   }
 
-  deleteDoc(doc){
-    this.db.remove(doc).catch((err) => {
+  deleteDoc(doc_id){
+    this.db.remove(doc_id).catch((err) => {
       console.log("Delete error", err);
     });
   }
@@ -319,12 +415,48 @@ export class PouchdbService {
     });
   }
 
+  getViewInv(
+    viewName,
+    level=undefined,
+    startkey=undefined,
+    endkey=undefined,
+    reduce=true,
+    group=true,
+    limit=undefined,
+    skip=undefined,
+    include_docs=false,
+    keys=undefined
+  ){
+    return new Promise((resolve, reject)=>{
+      let options = {
+        'reduce': reduce,
+        'group': group,
+        'group_level':level,
+        'startkey': startkey,
+        'endkey': endkey,
+        'limit': limit,
+        'skip': skip,
+        'include_docs': include_docs,
+        'keys': keys,
+        'descending': true,
+        'inclusive_end': true,
+      }
+      this.db.query(viewName, options).then(function (res) {
+        resolve(res.rows);
+      }).catch(function (err) {
+        console.log("error", err);
+      });
+    });
+  }
+
   getDocType(docType) {
     return new Promise((resolve, reject)=>{
       let self = this;
         this.db.allDocs({
           include_docs : true,
           startkey: docType+".",
+          attachments: true,
+          // binary: true,
           endkey: docType+".z",
         }).then((res) => {
           let docs = [];
@@ -338,7 +470,7 @@ export class PouchdbService {
     });
   }
 
-  getList(list) {
+  getList(list, includeAttach=false) {
     return new Promise((resolve, reject)=>{
         let list2 = [];
         list.forEach(variable => {
@@ -348,6 +480,8 @@ export class PouchdbService {
         });
         this.db.allDocs({
           include_docs : true,
+          attachments: includeAttach,
+          // binary: true,
           keys: list2
         }).then((res) => {
           resolve(res.rows);
@@ -536,6 +670,10 @@ export class PouchdbService {
         changedIndex = index;
       }
     });
+    // if (change.doc._attachments && change.doc._attachments['image.png']){
+    //   let image = change.doc._attachments['image.png'].data;
+    //   change.doc.image = "data:image/png;base64,"+image;
+    // }
     //A document was deleted
     if(change.deleted){
       list.splice(changedIndex, 1);
@@ -548,6 +686,31 @@ export class PouchdbService {
       //A document was added
       else {
         list.unshift(change.doc);
+      }
+    }
+  }
+
+  localHandleChangeDataDoc(list, change){
+    let changedDoc = null;
+    let changedIndex = null;
+    list.forEach((doc, index) => {
+      if(doc.doc._id === change.id){
+        changedDoc = doc.doc;
+        changedIndex = index;
+      }
+    });
+    //A document was deleted
+    if(change.deleted){
+      list.splice(changedIndex, 1);
+    }
+    else {
+      //A document was updated
+      if(changedDoc){
+        list[changedIndex].doc = change.doc;
+      }
+      //A document was added
+      else {
+        list.unshift({doc: change.doc});
       }
     }
   }

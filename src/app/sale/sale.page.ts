@@ -13,8 +13,9 @@ import { LanguageModel } from "../services/language/language.model";
 // import { Crop } from '@ionic-native/crop';
 import { SaleService } from './sale.service';
 import { ContactListPage } from '../contact-list/contact-list.page';
+// import { CropsPage } from '../crops/crops.page';
 //import { SaleItemPage } from '../sale-item/sale-item';
-//import { CashMovePage } from '../cash/move/cash-move';
+import { StockMovePage } from '../stock-move/stock-move.page';
 import { ProductService } from '../product/product.service';
 //import { SalesPage } from '../sales/sales';
 import { ProductListPage } from '../product-list/product-list.page';
@@ -40,6 +41,7 @@ import html2canvas from 'html2canvas';
 import { DiscountPage } from '../discount/discount.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { ContactPage } from '../contact/contact.page';
+import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 
 @Component({
   selector: 'app-sale',
@@ -47,8 +49,8 @@ import { ContactPage } from '../contact/contact.page';
   styleUrls: ['./sale.page.scss'],
 })
 export class SalePage implements OnInit {
-  @ViewChild('note') note;
-  @ViewChild('corpo') corpo;
+  @ViewChild('note', { static: false }) note;
+  @ViewChild('corpo', { static: true }) corpo;
   @HostListener('document:keypress', ['$event'])
     async handleKeyboardEvent(event: KeyboardEvent) {
       if (this.listenBarcode && this.saleForm.value.state == 'QUOTATION'){
@@ -110,6 +112,8 @@ export class SalePage implements OnInit {
     select;
     languages: Array<LanguageModel>;
     contact;
+    // crop;
+    warehouse;
     contact_name;
     items;
     origin_id;
@@ -143,20 +147,21 @@ export class SalePage implements OnInit {
       public formatService: FormatService,
       public events:Events,
       public pouchdbService: PouchdbService,
-      // public modal: ModalController,
       public popoverCtrl: PopoverController,
       public socialSharing: SocialSharing,
       // public file: File,
     ) {
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       this.avoidAlertMessage = false;
 
       this.contact = this.route.snapshot.paramMap.get('contact');
+      // this.crop = this.route.snapshot.paramMap.get('crop');
+      this.warehouse = this.route.snapshot.paramMap.get('warehouse');
       this.contact_name = this.route.snapshot.paramMap.get('contact_name');
       this.items = this.route.snapshot.paramMap.get('items');
       this.origin_id = this.route.snapshot.paramMap.get('origin_id');
@@ -183,6 +188,7 @@ export class SalePage implements OnInit {
         payment_name: new FormControl(''),
         invoice: new FormControl(''),
         invoices: new FormControl([]),
+        deliveries: new FormControl([]),
         amount_unInvoiced: new FormControl(0),
         seller: new FormControl(this.route.snapshot.paramMap.get('seller')||{}, Validators.required),
         seller_name: new FormControl(this.route.snapshot.paramMap.get('seller_name')||''),
@@ -192,9 +198,16 @@ export class SalePage implements OnInit {
         create_time: new FormControl(''),
         write_user: new FormControl(''),
         write_time: new FormControl(''),
+        // crop: new FormControl(this.crop||{}),
+        // date_delivery: new FormControl(this.crop && this.crop.date_end||this.today),
+        delivered: new FormControl(0),
+        warehouse: new FormControl(this.warehouse||{}),
       });
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
       if (config.default_contact_id){
@@ -209,6 +222,12 @@ export class SalePage implements OnInit {
           'paymentCondition': default_payment
         })
       }
+      if (config.warehouse_id && !this.warehouse){
+        let warehouse:any = await this.pouchdbService.getDoc(config.warehouse_id);
+        this.saleForm.patchValue({
+          'warehouse': warehouse
+        })
+      }
       if (this._id){
         this.saleService.getSale(this._id).then((data) => {
           this.saleForm.patchValue(data);
@@ -221,6 +240,10 @@ export class SalePage implements OnInit {
         this.loading.dismiss();
       }
       if (this.return){
+        this.recomputeValues();
+      }
+      if (this.items && this.items.length){
+        this.saleForm.markAsDirty();
         this.recomputeValues();
       }
     }
@@ -289,6 +312,48 @@ export class SalePage implements OnInit {
         componentProps: {
           "select": true,
           "_id": item._id,
+        }
+      });
+      await profileModal.present();
+      await profileModal.onDidDismiss();
+      this.listenBarcode = true;
+    }
+
+    async selectStockMove(item) {
+      this.listenBarcode = false;
+      this.events.unsubscribe('open-stock-move');
+      this.events.subscribe('open-stock-move', (data) => {
+        this.events.unsubscribe('open-stock-move');
+        // profileModal.dismiss();
+      });
+      // this.events.subscribe('cancel-receipt', (data) => {
+      //   let newPayments = [];
+      //   let residual = this.saleForm.value.residual;
+      //   this.saleForm.value.payments.forEach((receipt, index)=>{
+      //     if (receipt._id != data){
+      //       this.saleForm.value.payments.slice(index, 1);
+      //       newPayments.push(receipt);
+      //     } else {
+      //       residual += receipt.paid;
+      //     }
+      //   })
+      //   this.pouchdbService.getRelated(
+      //   "cash-move", "origin_id", this.saleForm.value._id).then((planned) => {
+      //     this.saleForm.patchValue({
+      //       payments: newPayments,
+      //       residual: residual,
+      //       state: 'CONFIRMED',
+      //       planned: planned
+      //     })
+      //     this.buttonSave();
+      //   });
+      //   this.events.unsubscribe('cancel-receipt');
+      // });
+      let profileModal = await this.modalCtrl.create({
+        component: StockMovePage,
+        componentProps: {
+          "select": true,
+          "_id": item.doc._id,
         }
       });
       await profileModal.present();
@@ -479,10 +544,10 @@ export class SalePage implements OnInit {
     // async ionViewCanLeave() {
     //     if(this.saleForm.dirty && ! this.avoidAlertMessage) {
     //         let alertPopup = await this.alertCtrl.create({
-    //             header: 'Descartar',
-    //             message: '¿Deseas salir sin guardar?',
+    //             header: this.translate.instant('DISCARD'),
+    //             message: this.translate.instant('SURE_DONT_SAVE'),
     //             buttons: [{
-    //                     text: 'Si',
+    //                     text: this.translate.instant('YES'),
     //                     handler: () => {
     //                         // alertPopup.dismiss().then(() => {
     //                             this.exitPage();
@@ -490,7 +555,7 @@ export class SalePage implements OnInit {
     //                     }
     //                 },
     //                 {
-    //                     text: 'No',
+    //                     text: this.translate.instant('NO'),
     //                     handler: () => {
     //                         // need to do something if the user stays?
     //                     }
@@ -608,16 +673,6 @@ export class SalePage implements OnInit {
           });
         }
       })
-    }
-
-    setLanguage(lang: LanguageModel){
-      let language_to_set = this.translate.getDefaultLang();
-
-      if(lang){
-        language_to_set = lang.code;
-      }
-      this.translate.setDefaultLang(language_to_set);
-      this.translate.use(language_to_set);
     }
 
     async deleteItem(slidingItem, item){
@@ -787,8 +842,9 @@ export class SalePage implements OnInit {
     async editItemPrice(item){
       if (this.saleForm.value.state=='QUOTATION'){
         let prompt = await this.alertCtrl.create({
-          header: 'Precio del Producto',
-          message: 'Cual es el precio de este producto?',
+          header: this.translate.instant('PRODUCT_PRICE'),
+          // message: 'Cual es el precio de este producto?',
+          message: this.translate.instant('WHAT_PRODUCT_PRICE'),
           inputs: [
             {
               type: 'number',
@@ -799,10 +855,10 @@ export class SalePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -820,8 +876,8 @@ export class SalePage implements OnInit {
       if (this.saleForm.value.state=='QUOTATION'){
         this.listenBarcode = false;
         let prompt = await this.alertCtrl.create({
-          header: 'Cantidad del Producto',
-          message: 'Cual es el Cantidad de este producto?',
+          header: this.translate.instant('PRODUCT_QUANTITY'),
+          message: this.translate.instant('WHAT_PRODUCT_QUANTITY'),
           inputs: [
             {
               type: 'number',
@@ -832,10 +888,10 @@ export class SalePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.quantity = data.quantity;
                 this.recomputeValues();
@@ -948,39 +1004,45 @@ export class SalePage implements OnInit {
             docList.forEach(item=>{
               docDict[item.id] = item;
             })
-
+            let warehouse = {
+              _id: this.saleForm.value.warehouse && this.saleForm.value.warehouse._id || config.warehouse_id,
+              name: this.saleForm.value.warehouse && this.saleForm.value.warehouse.name || docDict[config.warehouse_id].doc.name
+            }
             this.saleForm.value.items.forEach(async (item) => {
               let product_id = item.product_id || item.product._id;
               let product_name = item.product_name || item.product.name;
-              createList.push({
-                'name': "Venta "+this.saleForm.value.code,
-                'quantity': parseFloat(item.quantity),
-                'origin_id': this.saleForm.value._id,
-                'contact_id': this.saleForm.value.contact._id,
-                'contact_name': this.saleForm.value.contact.name,
-                'product_id': product_id,
-                'product_name': product_name,
-                'docType': "stock-move",
-                'date': new Date(),
-                'cost': parseFloat(item.cost)*parseFloat(item.quantity),
-                'warehouseFrom_id': config.warehouse_id,
-                'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
-                'warehouseTo_id': 'warehouse.client',
-                'warehouseTo_name': docDict['warehouse.client'].doc.name,
-              })
-              createList.push({
-                'name': "Venta "+this.saleForm.value.code,
-                'contact_id': this.saleForm.value.contact._id,
-                'contact_name': this.saleForm.value.contact.name,
-                'amount': item.quantity*item.cost,
-                'origin_id': this.saleForm.value._id,
-                'date': new Date(),
-                'accountFrom_id': 'account.other.stock',
-                'accountFrom_name': docDict['account.other.stock'].doc.name,
-                'accountTo_id': 'account.expense.soldGoodCost',
-                'accountTo_name': docDict['account.expense.soldGoodCost'].doc.name,
-                'docType': "cash-move",
-              })
+              item.cost = item.product.cost;
+              if (item.product.type == 'product'){
+                createList.push({
+                  'name': "Venta "+this.saleForm.value.code,
+                  'quantity': parseFloat(item.quantity),
+                  'origin_id': this.saleForm.value._id,
+                  'contact_id': this.saleForm.value.contact._id,
+                  'contact_name': this.saleForm.value.contact.name,
+                  'product_id': product_id,
+                  'product_name': product_name,
+                  'docType': "stock-move",
+                  'date': new Date(),
+                  'cost': parseFloat(item.cost)*parseFloat(item.quantity),
+                  'warehouseFrom_id': config.warehouse_id,
+                  'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
+                  'warehouseTo_id': 'warehouse.client',
+                  'warehouseTo_name': docDict['warehouse.client'].doc.name,
+                })
+                createList.push({
+                  'name': "Venta "+this.saleForm.value.code,
+                  'contact_id': this.saleForm.value.contact._id,
+                  'contact_name': this.saleForm.value.contact.name,
+                  'amount': item.quantity*item.cost,
+                  'origin_id': this.saleForm.value._id,
+                  'date': new Date(),
+                  'accountFrom_id': 'account.other.stock',
+                  'accountFrom_name': docDict['account.other.stock'].doc.name,
+                  'accountTo_id': 'account.expense.soldGoodCost',
+                  'accountTo_name': docDict['account.expense.soldGoodCost'].doc.name,
+                  'docType': "cash-move",
+                })
+              }
               if (item.quantity < 0){
                 // let product = await this.productService.getProduct(product_id);
                 let old_stock = item.product.stock || 0;
@@ -993,10 +1055,8 @@ export class SalePage implements OnInit {
                   old_cost);
               }
             });
-            this.saleForm.value.paymentCondition.items.forEach(item => {
-              let dateDue = this.formatService.addDays(this.today, item.days);
-              // console.log("dentro", this.saleForm.value);
-              let amount = (item.percent/100)*this.saleForm.value.total;
+            if (this.saleForm.value.paymentCondition.date_due){
+              let amount = this.saleForm.value.total;
               let cashMoveTemplate = {
                 '_return': true,
                 'date': new Date(),
@@ -1010,7 +1070,7 @@ export class SalePage implements OnInit {
                 'payments': [],
                 'invoices': [],
                 'origin_id': this.saleForm.value._id,
-                'dateDue': dateDue.toISOString(),
+                'dateDue': this.saleForm.value.paymentCondition.date_due,
                 'accountFrom_id': 'account.income.sale',
                 'accountFrom_name': docDict['account.income.sale'].doc.name,
                 'accountTo_id': this.saleForm.value.paymentCondition.accountTo_id,
@@ -1024,7 +1084,39 @@ export class SalePage implements OnInit {
                 cashMoveTemplate['residual'] = amount*this.saleForm.value.currency.exchange_rate;
               }
               createList.push(cashMoveTemplate);
-            });
+            } else {
+              this.saleForm.value.paymentCondition.items.forEach(item => {
+                let dateDue = this.formatService.addDays(this.today, item.days);
+                let amount = (item.percent/100)*this.saleForm.value.total;
+                let cashMoveTemplate = {
+                  '_return': true,
+                  'date': item.date || new Date(),
+                  'name': "Venta "+this.saleForm.value.code,
+                  'contact_id': this.saleForm.value.contact._id,
+                  'contact_name': this.saleForm.value.contact.name,
+                  'amount': amount,
+                  'amount_residual': amount,
+                  'amount_unInvoiced': amount,
+                  'docType': "cash-move",
+                  'payments': [],
+                  'invoices': [],
+                  'origin_id': this.saleForm.value._id,
+                  'dateDue': dateDue.toISOString(),
+                  'accountFrom_id': 'account.income.sale',
+                  'accountFrom_name': docDict['account.income.sale'].doc.name,
+                  'accountTo_id': this.saleForm.value.paymentCondition.accountTo_id,
+                  'accountTo_name': docDict[this.saleForm.value.paymentCondition.accountTo_id].doc.name,
+                }
+                if (this.saleForm.value.currency._id){
+                  cashMoveTemplate['currency'] = this.saleForm.value.currency;
+                  cashMoveTemplate['currency_amount'] = amount;
+                  cashMoveTemplate['currency_residual'] = amount;
+                  cashMoveTemplate['amount'] = amount*this.saleForm.value.currency.exchange_rate;
+                  cashMoveTemplate['residual'] = amount*this.saleForm.value.currency.exchange_rate;
+                }
+                createList.push(cashMoveTemplate);
+              });
+            }
             //console.log("createList", createList);
             this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.saleForm.patchValue({
@@ -1043,17 +1135,18 @@ export class SalePage implements OnInit {
 
     async saleCancel(){
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas Cancelar la venta?',
-        message: 'Al cancelar la venta todos los registros asociados serán borrados',
+        header: this.translate.instant('SURE_CANCEL_SALE'),
+        // message: 'Al cancelar la Compra todos los registros asociados serán borrados',
+        message: this.translate.instant('WARNING_CANCEL_SALE'),
         buttons: [
           {
-            text: 'No',
+            text: this.translate.instant('NO'),
             handler: data => {
               //console.log("Cancelar");
             }
           },
           {
-            text: 'Si',
+            text: this.translate.instant('YES'),
             handler: data => {
               //console.log("Confirmar");
               this.saleForm.value.items.forEach((item) => {
@@ -1314,6 +1407,71 @@ export class SalePage implements OnInit {
       }
     }
 
+    // async selectCrop() {
+    //   if (this.saleForm.value.state=='QUOTATION'){
+    //     this.loading = await this.loadingCtrl.create({});
+    //     await this.loading.present();
+    //     this.listenBarcode = false;
+    //     return new Promise(async resolve => {
+    //       this.avoidAlertMessage = true;
+    //       this.events.unsubscribe('select-crop');
+    //       this.events.subscribe('select-crop', (data) => {
+    //         this.saleForm.patchValue({
+    //           crop: data,
+    //           date_delivery: data.date_end,
+    //         });
+    //         this.saleForm.markAsDirty();
+    //         this.avoidAlertMessage = false;
+    //         this.events.unsubscribe('select-crop');
+    //         profileModal.dismiss();
+    //         resolve(true);
+    //       })
+    //       let profileModal = await this.modalCtrl.create({
+    //         component: CropsPage,
+    //         componentProps: {
+    //           "select": true,
+    //         }
+    //       });
+    //       await profileModal.present();
+    //       await this.loading.dismiss();
+    //       await profileModal.onDidDismiss();
+    //       this.listenBarcode = true;
+    //     });
+    //   }
+    // }
+
+    async selectWarehouse() {
+      if (this.saleForm.value.state=='QUOTATION'){
+        this.loading = await this.loadingCtrl.create({});
+        await this.loading.present();
+        this.listenBarcode = false;
+        return new Promise(async resolve => {
+          this.avoidAlertMessage = true;
+          this.events.unsubscribe('select-warehouse');
+          this.events.subscribe('select-warehouse', (data) => {
+            this.saleForm.patchValue({
+              warehouse: data,
+            });
+            this.saleForm.markAsDirty();
+            this.avoidAlertMessage = false;
+            this.events.unsubscribe('select-warehouse');
+            profileModal.dismiss();
+            resolve(true);
+          })
+          let profileModal = await this.modalCtrl.create({
+            component: WarehouseListPage,
+            componentProps: {
+              "select": true,
+            }
+          });
+          await profileModal.present();
+          await this.loading.dismiss();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
+        });
+      }
+    }
+
     // selectProject() {
     //   console.log("selectProject");
     //   if (this.saleForm.value.state=='QUOTATION'){
@@ -1486,7 +1644,7 @@ export class SalePage implements OnInit {
           // console.log("ticket", ticket);
           // Print to bluetooth printer
           let toast = await this.toastCtrl.create({
-          message: "Imprimiendo...",
+          message: this.translate.instant('PRINTING...'),
           duration: 3000
         });
         //console.log("ticket", ticket);
@@ -1687,7 +1845,7 @@ export class SalePage implements OnInit {
         }
       }
       let toast = await this.toastCtrl.create({
-        message: "Imprimiendo...",
+        message: this.translate.instant('PRINTING...'),
         duration: 3000
       });
       await toast.present();
@@ -1862,10 +2020,11 @@ export class SalePage implements OnInit {
     async canDeactivate() {
         if(this.saleForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+              header: this.translate.instant('DISCARD'),
+              // message: this.translate.instant('SURE_DONT_SAVE'),
+              message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -1873,7 +2032,7 @@ export class SalePage implements OnInit {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

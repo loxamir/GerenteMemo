@@ -5,7 +5,7 @@
       <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/cash-list')"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Contas"
+      placeholder="{{ 'SEARCH_ACCOUNT' | translate }}"
       [(ngModel)]="searchTerm"
       (ionChange)="setFilteredItems()">
     </ion-searchbar>
@@ -24,7 +24,7 @@
   <ion-list no-lines>
     <ion-item-sliding class="list-item"  *ngFor="let item of accounts">
       <ion-item no-padding style="margin-bottom: 0px; margin-top:0px;">
-      <ion-card class="list-card" style="border-radius: 5px;">
+      <ion-card class="list-card" style="">
         <ion-row>
           <ion-col (click)="selectAccount(item)">
             <ion-row>
@@ -62,7 +62,7 @@
     <ion-item-options>
       <ion-item-option (click)="deleteAccount(item)"
       *ngIf="!item.fixed">
-        Borrar
+        {{ 'DELETE'| translate }}
       </ion-item-option>
     </ion-item-options>
   </ion-item-sliding>

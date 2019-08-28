@@ -5,7 +5,7 @@
       <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/cash-list')"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Movimiento"
+      placeholder="{{ 'SEARCH_CASH_MOVE' | translate }}"
       [(ngModel)]="searchTerm"
       (ionChange)="setFilteredItems()">
     </ion-searchbar>
@@ -26,7 +26,7 @@
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of cashMoveList">
     <ion-item no-padding (click)="selectCashMove(item)" style="margin-bottom: 0px; margin-top:0px;">
-      <ion-card class="list-card" style="border-radius: 5px;">
+      <ion-card class="list-card" style="">
         <ion-row no-padding>
           <ion-col no-padding>
             <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
@@ -71,7 +71,7 @@
       <ion-item-options>
         <ion-item-option (click)="deleteCashMove(item)"
         *ngIf="!item.fixed && !item.close_id">
-          Borrar
+          {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>

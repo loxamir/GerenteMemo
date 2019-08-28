@@ -1,0 +1,7 @@
+{
+  "appId": "com.sistemamemo.agro",
+  "appName": "AgroMemo",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}

@@ -2,7 +2,7 @@
   "index": "/index.html",
   "assetGroups": [
     {
-      "name": "Sistema Memo",
+      "name": "AgroMemo",
       "installMode": "prefetch",
       "resources": {
         "files": [

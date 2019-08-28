@@ -21,7 +21,7 @@
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of stockMoveList">
     <ion-item no-padding (click)="selectStockMove(item)" style="margin-bottom: 0px; margin-top:0px;">
-      <ion-card class="list-card" style="border-radius: 5px;">
+      <ion-card class="list-card" style="">
         <ion-row>
           <!-- <ion-col width-25 no-padding>
             <h2 class="list-big-number">{{item.code}}</h2>
@@ -60,7 +60,7 @@
       <ion-item-options>
         <ion-item-option (click)="deleteStockMove(item)"
         *ngIf="!item.fixed">
-          Borrar
+          {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>

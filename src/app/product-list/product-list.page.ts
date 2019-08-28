@@ -1,12 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, LoadingController, ModalController, Events, PopoverController } from '@ionic/angular';
+import { NavController, LoadingController, ModalController, Events,
+  PopoverController, ToastController } from '@ionic/angular';
 import { ProductPage } from '../product/product.page';
 import 'rxjs/Rx';
 import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductListPopover } from './product-list.popover';
+import { ProductListPopover} from './product-list.popover';
+import { LanguageModel } from "../services/language/language.model";
 import { FormatService } from '../services/format.service';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-product-list',
@@ -14,7 +18,7 @@ import { FormatService } from '../services/format.service';
   styleUrls: ['./product-list.page.scss'],
 })
 export class ProductListPage implements OnInit {
-  @ViewChild('searchBar') searchBar;
+  @ViewChild('searchBar', { static: true }) searchBar;
 
   products: any = [];
   loading: any;
@@ -28,19 +32,22 @@ export class ProductListPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public router: Router,
-    // public productsService: ProductsService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public formatService: FormatService,
-    // public modal: ModalController,
+    public toastCtrl: ToastController,
     public events: Events,
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
     public file: File,
+    public translate: TranslateService,
+    public languageService: LanguageService,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
     this.operation = this.route.snapshot.paramMap.get('operation') || this.operation;
+    this.translate.setDefaultLang('es');
+    this.translate.use('es');
     this.type = this.route.snapshot.paramMap.get('type') || 'all';
     this.events.subscribe('changed-product', (change) => {
       this.handleChange(this.products, change);
@@ -56,6 +63,9 @@ export class ProductListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
@@ -87,13 +97,14 @@ export class ProductListPage implements OnInit {
   }
 
   searchItems() {
-    this.searchItemsS(
-      this.searchTerm, 0
-    ).then((items) => {
-      this.products = items;
-      this.page = 1;
-      this.loading.dismiss();
-    });
+    this.setFilteredItems();
+    // this.searchItemsS(
+    //   this.searchTerm, 0
+    // ).then((items) => {
+    //   this.products = items;
+    //   this.page = 1;
+    //   this.loading.dismiss();
+    // });
   }
 
   doInfinite(infiniteScroll) {
@@ -123,7 +134,6 @@ export class ProductListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ProductListPopover,
       event: myEvent,
@@ -189,7 +199,7 @@ export class ProductListPage implements OnInit {
       if (type == 'all') {
         products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase');
       } else {
-        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'type', type, 'name', 'increase')
+        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_name', type, 'name', 'increase')
       }
       await this.formatService.asyncForEach(products, async (product: any)=>{
         let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
@@ -217,8 +227,23 @@ export class ProductListPage implements OnInit {
     })
   }
 
-  deleteProduct(product) {
-    return this.pouchdbService.deleteDoc(product);
+  async deleteProduct(product) {
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
+    let viewList: any = await this.pouchdbService.getView('Informes/productUse', 1,
+    [product._id],
+    [product._id+"z"]);
+    if (viewList.length){
+      this.loading.dismiss();
+      let toast = await this.toastCtrl.create({
+      message: "No se puede borrar, producto en uso",
+      duration: 1000
+      });
+      toast.present();
+    } else {
+      await this.pouchdbService.deleteDoc(product);
+      this.loading.dismiss();
+    }
   }
 
   handleChange(list, change) {
@@ -236,5 +261,15 @@ export class ProductListPage implements OnInit {
       }
     })
   }
+
+  private discard() {
+    if (this.select){
+      this.modalCtrl.dismiss();
+    } else {
+      // this.receiptForm.markAsPristine();
+      this.navCtrl.navigateBack('/agro-tabs/area-list');
+    }
+  }
+
 
 }

@@ -8,7 +8,7 @@
         </ion-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Producto"
+      placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
       [(ngModel)]="searchTerm"
       #searchBar
       (ionChange)="searchItems()">
@@ -43,10 +43,10 @@
              <ion-row no-padding class="content-row one-line">
                 <ion-col no-padding class="schedule-date" (click)="selectProduct(item)">
                   <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
-                      Codigo: <b style="  margin-left: 5px">{{item.code}}</b>
+                      {{'CODE'| translate}}: <b style="  margin-left: 5px">{{item.code}}</b>
                   </h3>
                   <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
-                      Stock: <b style="color: green;margin-left: 5px">{{item.stock}}</b>
+                      {{'STOCK'| translate}}: <b style="color: green;margin-left: 5px">{{item.stock+' '}}{{item.unity|translate}}</b>
                   </h3>
                 </ion-col>
                 <ion-col no-padding size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
@@ -56,12 +56,12 @@
               </ion-row>
               <ion-row no-padding *ngIf="item.stock>=0&&item.stock<item.stock_min&&item.type=='product'">
                 <ion-col no-padding style="text-align: center;" class="confirmed">
-                    {{ 'Stock Abajo del Minimo' | translate }}
+                    {{ 'STOCK_LOW' | translate }}
                 </ion-col>
               </ion-row>
               <ion-row no-padding *ngIf="item.stock<0&&item.type=='product'"  class="due">
                 <ion-col no-padding style="text-align: center;color: white;">
-                    {{ 'Stock Negativo' | translate }}
+                    {{ 'NEGATIVE_STOCK' | translate }}
                 </ion-col>
               </ion-row>
           </ion-col>
@@ -75,7 +75,7 @@
       <ion-item-options *ngIf="!select">
         <ion-item-option (click)="deleteProduct(item)"
         *ngIf="!item.fixed">
-          Borrar
+          {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -88,12 +88,12 @@
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
       <ion-row>
         <ion-col>
-          <h1>Aún no has catastrado tus productos</h1>
+          <h1>{{'NO_PRODUCT' | translate }}</h1>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
-          <h4>Para catastrar tus productos, pulsa el botón más</h4>
+          <h4>{{'FIRST_PRODUCT'| translate}}</h4>
         </ion-col>
       </ion-row>
     </ion-col>

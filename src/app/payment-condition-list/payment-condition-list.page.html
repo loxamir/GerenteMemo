@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <!-- <ion-title *ngIf="!has_search">{{ 'PAYMENT_CONDITIONS' | translate}}</ion-title> -->
     <ion-searchbar
-      placeholder="Buscar Condicion de Pago"
+      placeholder="{{ 'SEARCH_PAYMENT_CONDITION' | translate }}"
       [(ngModel)]="searchTerm"
       (ionChange)="setFilteredItems()">
     </ion-searchbar>
@@ -37,7 +37,7 @@
       <ion-item-options>
         <ion-item-option (click)="deleteStockMove(item)"
         *ngIf="!item.fixed">
-          Borrar
+          {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>

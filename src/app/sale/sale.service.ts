@@ -56,6 +56,7 @@ export class SaleService {
       sale.lines.push({
         product_id: item.product_id || item.product._id,
         product_name: item.product.name || item.product_name,
+        contract_id: item.contract_id,
         quantity: item.quantity,
         price: item.price,
         cost: item.cost,
@@ -67,6 +68,12 @@ export class SaleService {
     //   sale.moves.push(item._id)
     // });
     delete sale.planned;
+    delete sale.deliveries;
+
+    // sale.crop_id = sale.crop._id;
+    // delete sale.crop;
+    sale.warehouse_id = sale.warehouse._id;
+    delete sale.warehouse;
     return sale;
   }
 
@@ -88,7 +95,9 @@ export class SaleService {
       this.pouchdbService.getDoc(doc_id).then(((pouchData: any) => {
         let getList = [
           pouchData['contact_id'],
-          pouchData['pay_cond_id']
+          pouchData['pay_cond_id'],
+          // pouchData['crop_id'],
+          pouchData['warehouse_id'],
         ];
         pouchData['lines'].forEach((item) => {
           if (getList.indexOf(item['product_id'])==-1){
@@ -102,13 +111,15 @@ export class SaleService {
         //     }
         //   });
         // }
-        this.pouchdbService.getList(getList).then((docs: any[])=>{
+        this.pouchdbService.getList(getList).then(async (docs: any[])=>{
           var doc_dict = {};
           docs.forEach(row=>{
             doc_dict[row.id] = row.doc;
           })
           pouchData.contact = doc_dict[pouchData.contact_id] || {};
           pouchData.paymentCondition = doc_dict[pouchData.pay_cond_id] || {};
+          // pouchData.crop = doc_dict[pouchData.crop_id] || {};
+          pouchData.warehouse = doc_dict[pouchData.warehouse_id] || {};
           pouchData['items'] = [];
           pouchData.lines.forEach((line: any)=>{
             pouchData['items'].push({
@@ -116,6 +127,7 @@ export class SaleService {
               'description': doc_dict[line.product_id].name,
               'quantity': line.quantity,
               'price': line.price,
+              'contract_id': line.contract_id,
               'cost': line.cost || 0,
             })
           })
@@ -128,12 +140,26 @@ export class SaleService {
           //   console.log("doc_dict", doc_dict);
           //   resolve(pouchData);
           // } else {
-            this.pouchdbService.getRelated(
-            "cash-move", "origin_id", doc_id).then((planned) => {
-              pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
-              resolve(pouchData);
-            });
+          let planned:any = await this.pouchdbService.getRelated(
+            "cash-move", "origin_id", doc_id);//.then((planned) => {
+          pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
+            // });
           // }
+
+          this.pouchdbService.getView("Informes/Entregas", )
+          let deliveries:any = await this.pouchdbService.getView(
+            'Informes/Entregas', 2,
+            [doc_id, '0'],
+            [doc_id, 'z'],
+            true,
+            true,
+            undefined,
+            undefined,
+            true,
+            undefined
+          );//.then((view: any[]) => {})
+          pouchData['deliveries'] = deliveries;
+          resolve(pouchData);
         })
       }));
     });

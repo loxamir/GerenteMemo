@@ -38,9 +38,9 @@ export class ContractListPage implements OnInit {
     public languageService: LanguageService,
     public translate: TranslateService,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this.events.subscribe('changed-contract', (change)=>{
       this.handleChange(this.contracts, change);
     })
@@ -72,7 +72,6 @@ export class ContractListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ContractsPopover,
       event: myEvent,
@@ -82,6 +81,9 @@ export class ContractListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     //this.loading.present();
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, LoadingController, PopoverController, NavParams } from '@ionic/angular';
-import { ReportPage } from '../report/report.page';
+// import { ReportPage } from '../report/report.page';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ResultReportPage } from '../result-report/result-report.page';
 import { ViewReportPage } from '../view-report/view-report.page';
@@ -14,7 +14,6 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { SaleReportPage } from '../sale-report/sale-report.page';
 import { PurchaseReportPage } from '../purchase-report/purchase-report.page';
 import { ProductService } from '../product/product.service';
-import { ReportService } from '../report/report.service';
 import { CashFlowPage } from '../cash-flow/cash-flow.page';
 import * as d3 from 'd3';
 import { TranslateService } from '@ngx-translate/core';
@@ -83,6 +82,12 @@ export class ReportListPage implements OnInit {
   languages: Array<LanguageModel>;
   currency_precision = 2;
 
+  ag_produced=0;
+  ag_produced_area=0;
+  ag_production_labour=0;
+  ag_production_cost=0;
+  ag_production_cost_percent=0;
+
   constructor(
     public navCtrl: NavController,
     public reportsService: ReportListService,
@@ -94,12 +99,8 @@ export class ReportListPage implements OnInit {
     public languageService: LanguageService,
     public pouchdbService: PouchdbService,
     public productService: ProductService,
-    public reportService: ReportService,
     public formatService: FormatService,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select');
     this.today = new Date();
   }
@@ -120,6 +121,9 @@ export class ReportListPage implements OnInit {
       // sales: new FormControl(0),
       // purchases: new FormControl(0),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -203,10 +207,8 @@ export class ReportListPage implements OnInit {
   computeSaleValues() {
     let self = this;
     return new Promise((resolve, reject)=>{
-      //console.log("dateStart", this.reportsForm.value.dateStart);
-      //console.log("dateEnd", this.reportsForm.value.dateEnd);
-      let startkey=(new Date(this.reportsForm.value.dateStart.split("T")[0]+"T00:00:00")).toJSON();
-      let endkey=(new Date(this.reportsForm.value.dateEnd.split("T")[0]+"T23:59:59")).toJSON();
+      let startkey=this.reportsForm.value.dateStart.split("T")[0];
+      let endkey=this.reportsForm.value.dateEnd.split("T")[0];
       this.pouchdbService.getView(
         'Informes/VentaDiaria',
         4,
@@ -314,6 +316,126 @@ export class ReportListPage implements OnInit {
     })
   }
 
+  computeAgroValues() {
+    return new Promise((resolve, reject)=>{
+      let self = this;
+      this.pouchdbService.getView(
+        'Informes/Agro',
+        10,
+      ).then(async (sales: any[]) => {
+        let ag_produced = 0;
+        let ag_produced_area = 0;
+        let ag_production_labour = 0;
+        let ag_production_cost = 0;
+        let ag_production_cost_percent = 0;
+        sales.forEach(sale => {
+          ag_produced += parseFloat(sale.key[4]); // Costo
+          ag_produced_area += parseFloat(sale.key[5]);
+          ag_production_labour += parseFloat(sale.key[6]);
+          ag_production_cost += parseFloat(sale.value);
+        });
+        this.ag_produced = ag_produced;
+        this.ag_produced_area = ag_produced_area;
+        this.ag_production_labour = ag_production_labour;
+        this.ag_production_cost = ag_production_cost;
+        this.ag_production_cost_percent = (ag_produced / ag_production_cost) * 100;
+
+
+        let items = [];
+        let getList = [];
+        let crops = {};
+        let result = {};
+        sales.forEach(activityLine => {
+          if (getList.indexOf(activityLine.key[10]) == -1){
+            getList.push(activityLine.key[10]);
+          }
+          if (result.hasOwnProperty(activityLine.key[0])) {
+            items[result[activityLine.key[0]]] = {
+              'name': items[result[activityLine.key[0]]].name,
+              'quantity': items[result[activityLine.key[0]]].quantity + parseFloat(activityLine.key[4]),
+              'margin': items[result[activityLine.key[0]]].margin + parseFloat(activityLine.key[5]),
+              'total': items[result[activityLine.key[0]]].total + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+            };
+            crops
+          } else {
+            items.push({
+              'name': activityLine.key[0],
+              'quantity': parseFloat(activityLine.key[4]),
+              'margin': parseFloat(activityLine.key[5]),
+              'total': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
+            });
+            result[activityLine.key[0]] = items.length-1;
+          }
+
+          if (crops.hasOwnProperty(activityLine.key[0])){
+            if (crops[activityLine.key[0]].hasOwnProperty(activityLine.key[1])) {
+              // crops[activityLine.key[0]][activityLine.key[10]] = 0;
+            } else {
+              crops[activityLine.key[0]][activityLine.key[10]] = 0;
+            }
+          } else {
+            crops[activityLine.key[0]] = [];
+            crops[activityLine.key[0]][activityLine.key[10]] = 0;
+          }
+        });
+        let products: any = await this.pouchdbService.getList(getList);
+        var doc_dict = {};
+        products.forEach((row, index)=>{
+          if (row.doc){
+            doc_dict[row.doc._id] = row.doc;
+          }
+          else {
+            products = products.slice(index, 1);
+          }
+        })
+        let categories = {};
+        let litems = [];
+        let cropList = {};
+        Object.keys(crops).forEach(item=>{
+          Object.keys(crops[item]).forEach(are=>{
+            if (doc_dict[are]){
+              if (categories.hasOwnProperty(doc_dict[are].name)) {
+                litems[categories[doc_dict[are].name]] = {
+                  // 'name': doc_dict[are].name,
+                  // 'quantity': litems[categories[doc_dict[item.name].name]].quantity + parseFloat(item.quantity),
+                  'quantity': doc_dict[are].surface,
+                  // 'total': litems[categories[doc_dict[are].name]].total,
+                };
+                cropList[item] += doc_dict[are].surface;
+              } else {
+                litems.push({
+                  'name': doc_dict[are].name,
+                  'quantity': doc_dict[are].surface,
+                  // 'area': doc_dict[item.name].surface,
+                  // 'total': 0,
+                });
+                categories[doc_dict[are].name] = litems.length-1;
+                cropList[item] = doc_dict[are].surface;
+              }
+            }
+          })
+        })
+        items.forEach(item=>{
+          item.quantity = cropList[item.name];
+        })
+        let self = this;
+        // let output = items.sort(function(a, b) {
+        //   return self.compare(a, b, self.reportActivityForm.value.orderBy);
+        // })
+        let marker = false;
+        let total = 0;
+        items.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+          total += parseFloat(item['total']);
+        });
+        this.ag_production_cost = items[0] && items[0]['total'] || 0;
+        this.ag_produced_area = items[0] && items[0]['quantity'] || 0;
+        resolve(true);
+      });
+    })
+  }
+
   computeStockValues() {
     return new Promise((resolve, reject)=>{
       let self = this;
@@ -328,7 +450,7 @@ export class ReportListPage implements OnInit {
         undefined,
         false
       ).then(async (products: any[]) => {
-        // console.log("Stock", products);
+        console.log("Stock", products);
         let stocked_cost = 0;
         let stocked_price = 0;
         let stocked_quantity = 0;
@@ -345,7 +467,7 @@ export class ReportListPage implements OnInit {
         productList.forEach(row=>{
           doc_dict[row.id] = row.doc;
         })
-        products.forEach(product => {
+        productList.forEach(product => {
           // if (doc_dict[product.key[1]] && product.value > 0){
             stocked_quantity += parseFloat(product.value);
             if (!doc_dict[product.key[1]]){
@@ -363,6 +485,7 @@ export class ReportListPage implements OnInit {
       });
     })
   }
+
 
   computeToReceiveValues() {
     return new Promise((resolve, reject)=>{
@@ -434,6 +557,7 @@ export class ReportListPage implements OnInit {
     await this.computeSaleValues();
     await this.computeServiceValues();
     await this.computeProductionValues();
+    await this.computeAgroValues();
     await this.computeStockValues();
     await this.computeToReceiveValues();
     await this.computePurchaseValues();
@@ -479,6 +603,14 @@ export class ReportListPage implements OnInit {
   showReportSale() {
     this.navCtrl.navigateForward(['/sale-report', {
       'reportType': "sale",
+      'dateStart': this.reportsForm.value.dateStart,
+      'dateEnd': this.reportsForm.value.dateEnd,
+    }]);
+  }
+
+  showReportAgriculture() {
+    this.navCtrl.navigateForward(['/activity-report', {
+      'reportType': "activity",
       'dateStart': this.reportsForm.value.dateStart,
       'dateEnd': this.reportsForm.value.dateEnd,
     }]);

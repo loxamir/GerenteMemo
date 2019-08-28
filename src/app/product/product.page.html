@@ -4,11 +4,6 @@
       <ion-back-button (click)="this.navCtrl.navigateBack('/product-list')"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'PRODUCT' | translate }}-{{productForm.value.code}}</ion-title>
-    <!-- <ion-buttons slot="end" [hidden]="!productForm.dirty">
-      <ion-button (click)="buttonSave()" class="button-save">
-        {{ 'SAVE' | translate }}
-      </ion-button>
-    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 <ion-content class="product-content">
@@ -31,6 +26,9 @@
         <ion-select #type (ionChange)="getDefaultCategory()" formControlName="type" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
           <ion-select-option value="product">Producto</ion-select-option>
           <ion-select-option value="service">Servicio</ion-select-option>
+          <!-- <ion-select-option value="seed">Semente</ion-select-option>
+          <ion-select-option value="fertilizer">Adubo</ion-select-option>
+          <ion-select-option value="defensive">Defensivo</ion-select-option> -->
           <!-- <ion-select-option value="urban_area">Area Urbana</ion-select-option>
           <ion-select-option value="rural_area">Area Rural</ion-select-option>
           <ion-select-option value="machine">Maquinario</ion-select-option>
@@ -42,11 +40,14 @@
         <ion-label position="floating">{{'Unidad' | translate}}</ion-label>
         <ion-select formControlName="unity" interface="popover" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}">
           <ion-select-option value="un">Unidad</ion-select-option>
-          <ion-select-option value="h">Hora</ion-select-option>
           <ion-select-option value="L">Litro</ion-select-option>
+          <ion-select-option value="kg">Kilogramo</ion-select-option>
+          <ion-select-option value="bag60kg">Saca 60Kg</ion-select-option>
+          <ion-select-option value="bag50kg">Saca 50Kg</ion-select-option>
+          <ion-select-option value="ton">Tonelada</ion-select-option>
+          <ion-select-option value="h">Hora</ion-select-option>
           <ion-select-option value="ml">miliLitro</ion-select-option>
           <ion-select-option value="g">Gramo</ion-select-option>
-          <ion-select-option value="kg">KiloGramo</ion-select-option>
           <ion-select-option value="m">Metro</ion-select-option>
           <ion-select-option value="m3">Metro Cubico</ion-select-option>
           <ion-select-option value="km">KiloMetro</ion-select-option>
@@ -78,13 +79,13 @@
       <ion-item no-padding #category (click)="selectCategory()" class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">{{'CATEGORY' | translate}}</h4>
-          <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'Selecionar'}}</h4>
+          <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'SELECT'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item no-padding #brand (click)="selectBrand()" class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">{{'BRAND' | translate}}</h4>
-          <h4 class="field-value">{{productForm.value.brand && productForm.value.brand.name || 'Selecionar'}}</h4>
+          <h4 class="field-value">{{productForm.value.brand && productForm.value.brand.name || 'SELECT'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item no-padding class="field-100">
@@ -100,7 +101,7 @@
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+      {{'NEXT'|translate}}
     </ion-button>
   </ion-fab>
 
@@ -108,15 +109,15 @@
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="productForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!productForm.dirty"> </ion-icon>
-      <span *ngIf="productForm.dirty">Descartar</span>
-      <span *ngIf="!productForm.dirty">Volver</span>
+      <span *ngIf="productForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!productForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="productForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
   <div style="height: 100px;">

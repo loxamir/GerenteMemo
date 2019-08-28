@@ -3,7 +3,8 @@ import { NavController, LoadingController,  Events, PopoverController, ModalCont
 import { WarehousePage } from '../warehouse/warehouse.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-
+import { LanguageService } from "../services/language/language.service";
+import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/Rx';
 
 @Component({
@@ -26,8 +27,10 @@ export class WarehouseListPage implements OnInit {
     public route: ActivatedRoute,
     public pouchdbService: PouchdbService,
     public events: Events,
+    public translate: TranslateService,
     public popoverCtrl: PopoverController,
     public modalCtrl: ModalController,
+    public languageService: LanguageService,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
   }
@@ -41,7 +44,12 @@ export class WarehouseListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     //this.loading.present();
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
     this.setFilteredItems();
@@ -79,7 +87,7 @@ export class WarehouseListPage implements OnInit {
       // //console.log("warehouses", warehouses);
       this.warehouses = warehouses;
       this.page = 1;
-      //this.loading.dismiss();
+      this.loading.dismiss();
     });
   }
 
@@ -151,27 +159,26 @@ export class WarehouseListPage implements OnInit {
       ////console.log("getPlanned");
       // let payableList = [];
       this.pouchdbService.getView(
-        'stock/Depositos', 1,
+        'stock/Depositos', 2,
         ['0'],
         ['z']
       ).then((planneds: any[]) => {
-        //console.log("Caixas", planneds);
         let warehouses = [];
         this.pouchdbService.searchDocTypeData('warehouse', keyword).then((warehouseList: any[]) => {
           //console.log("warehouseList", warehouseList);
           warehouseList.forEach(warehouse=>{
-            warehouse.balance = 0;
+            warehouse.count = 0;
             // if (warehouse._id == 'warehouse.my'){
             if (warehouse._id.split('.')[1] == 'physical'){
               // planneds.filter(x => x._id=='account.cash.USD')
               // console.log("index", planneds.filter(x => x.key[0]==warehouse._id)[0]);
-              let warehouseReport = planneds.filter(x => x.key[0]==warehouse._id)[0]
-              warehouse.balance = warehouseReport && warehouseReport.value || 0;
+              let warehouseReport = planneds.filter(x => x.key[0]==warehouse._id);
+              warehouse.count = warehouseReport.length;
               //console.log("identificado", warehouse);
               warehouses.push(warehouse);
             } else if (select){
-              let warehouseReport = planneds.filter(x => x.key[0]==warehouse._id)[0]
-              warehouse.balance = warehouseReport && warehouseReport.value || 0;
+              let warehouseReport = planneds.filter(x => x.key[0]==warehouse._id)
+              warehouse.count = warehouseReport.length;
               //console.log("identificado", warehouse);
               warehouses.push(warehouse);
             }

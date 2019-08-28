@@ -25,16 +25,16 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 })
 export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
-  @ViewChild('name') name;
-  @ViewChild('price') price;
-  @ViewChild('cost') cost;
-  @ViewChild('type') type;
-  @ViewChild('stock') stock;
+  @ViewChild('name', { static: true }) name;
+  @ViewChild('price', { static: true }) price;
+  @ViewChild('cost', { static: true }) cost;
+  @ViewChild('type', { static: true }) type;
+  @ViewChild('stock', { static: false }) stock;
   // @ViewChild('barcode') barcodeField;
 
-  @ViewChild('category') category;
-  @ViewChild('brand') brand;
-  @ViewChild('tax')tax;
+  @ViewChild('category', { static: true }) category;
+  @ViewChild('brand', { static: true }) brand;
+  @ViewChild('tax', { static: false })tax;
     productForm: FormGroup;
     loading: any;
     _id: string;
@@ -46,7 +46,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
     constructor(
       public navCtrl: NavController,
-      // public modal: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
@@ -66,9 +65,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public stockMoveService: StockMoveService,
       public cashMoveService: CashMoveService,
     ) {
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       if (this.route.snapshot.paramMap.get('_id')){
@@ -113,7 +112,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         brand: new FormControl({}),
         cost: new FormControl(this.cost||null),
         code: new FormControl(''),
-        barcode: new FormControl(this.barcode),
+        barcode: new FormControl(this.barcode||undefined),
         tax: new FormControl(this.route.snapshot.paramMap.get('iva')||'iva10'),
         type: new FormControl(this.route.snapshot.paramMap.get('type')||'product'),
         stock: new FormControl(this.stock||null),
@@ -128,6 +127,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       if (this._id){
@@ -203,12 +205,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         //     message: 'Estas seguro que deseas confirmar el movimiento?',
         //     buttons: [
         //       {
-        //         text: 'No',
+        //         text: this.translate.instant('NO'),
         //         handler: data => {
         //         }
         //       },
         //       {
-        //         text: 'Si',
+        //         text: this.translate.instant('YES'),
         //         handler: data => {
         //           // this.addTravel();
         //           this.confirmCashMove();
@@ -473,10 +475,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     async canDeactivate() {
         if(this.productForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+                header: this.translate.instant('DISCARD'),
+                message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -484,7 +486,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

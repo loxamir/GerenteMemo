@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, LoadingController,   Events, ModalController } from '@ionic/angular';
-// import { ViewPage } from './view';
 import 'rxjs/Rx';
-//import { ViewModel } from './view.model';
 import { ViewService } from './view.service';
-
+import { TranslateService } from '@ngx-translate/core';
 import { AccountPage } from '../account/account.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { ProductPage } from '../product/product.page';
@@ -13,6 +11,7 @@ import { ContactPage } from '../contact/contact.page';
 import { WarehousePage } from '../warehouse/warehouse.page';
 import { StockMovePage } from '../stock-move/stock-move.page';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-view-report',
@@ -35,10 +34,11 @@ export class ViewReportPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public pouchdbService: PouchdbService,
+    public languageService: LanguageService,
     public viewService: ViewService,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
-
+    public translate: TranslateService,
     public route: ActivatedRoute,
     public events: Events,
   ) {
@@ -54,6 +54,9 @@ export class ViewReportPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

@@ -1,0 +1,127 @@
+<ion-header>
+  <ion-toolbar *ngIf="showForm" color="primary" style="font-size: 20px;">
+    <ion-buttons slot="start" (click)="backEdit()">
+      <ion-icon name="arrow-back" style="font-size: 25px;padding-right: 10px;padding-left: 10px;"></ion-icon>
+    </ion-buttons>
+    <ion-title style="padding-left: 5px;" *ngIf="_id">
+      {{ 'EDIT_PLACE' | translate }} - {{inputForm.value.code}}
+    </ion-title>
+    <ion-title style="padding-left: 5px;" *ngIf="!_id">
+      {{ 'NEW_PLACE' | translate }}
+    </ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="!showForm" color="primary" (click)="editProduct(_id)">
+    <!-- <ion-buttons slot="start" (click)="goBack()">
+      <ion-icon name="arrow-back" style="font-size: 25px;"></ion-icon>
+      <ion-thumbnail style="--border-radius:10px;">
+        <img [src]="inputForm.value.image" id="avatarImage" #avatarImage *ngIf="inputForm.value.image">
+      </ion-thumbnail>
+    </ion-buttons> -->
+    <ion-title style="padding-left: 5px;">{{inputForm.value.name}}
+      <!-- <h1 class="subtitle" *ngIf="inputForm.value.lastRain && diffDays  > 1">
+        Ultima chuva {{inputForm.value.lastRain}}mm a {{ diffDays }} dias
+      </h1>
+      <h1 class="subtitle" *ngIf="inputForm.value.lastRain && diffDays == 1">
+        Ultima chuva {{inputForm.value.lastRain}}mm a {{ diffDays }} dia
+      </h1>
+      <h1 class="subtitle" *ngIf="inputForm.value.lastRain && !diffDays">
+        Ultima chuva {{inputForm.value.lastRain}}mm hoje
+      </h1>
+      <h1 class="subtitle" *ngIf="!inputForm.value.lastRain">
+        Sem dados de Chuva
+      </h1> -->
+    </ion-title>
+    <!-- <ion-buttons slot="end">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons> -->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content  class="list-mini-content rotate180" *ngIf="!showForm">
+  <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
+  <img id="imgtmp" #imgtmp class="rotate180" style="display:none">
+  <div id="pwa">
+    <input type="file" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
+    <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
+  </div>
+  <div style="height:100px;">
+  </div>
+  <div style="height:200px;" *ngIf="showBotom">
+  </div>
+  <form class="sample-form validations-form" [formGroup]="inputForm">
+    <ion-list no-lines class="rotate180" style="overflow: auto;display: flex;flex-direction: column-reverse;">
+      <ion-item-sliding class="list-item" *ngFor="let item of inputForm.value.moves">
+        <ion-item no-padding (click)="openItem(item)" *ngIf="!(item._attachments && item._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card class="area-card">
+            <ion-row no-padding>
+              <ion-thumbnail style="--border-radius:10px;">
+                <ion-img [src]="'./assets/icons/'+item._id.split('.')[0]+'.png'"></ion-img>
+              </ion-thumbnail>
+              <ion-col>
+                <ion-row>
+                  <ion-col size="8.5" no-padding>
+                    <h3 class="activity-name">
+                      {{ item.name || item.code || 'No Informado'}}
+                    </h3>
+                    <div [innerHTML]="item.summary"></div>
+                    <h1 class="activity-note" style="color:red;" *ngIf="item.warehouseFrom_id == warehouse_id">
+                      <b>{{'QUANTITY'|translate}}:</b> {{-item.quantity||-item.total|number:'1.0'}}
+                    </h1>
+                    <h1 class="activity-note" style="color: green;" *ngIf="item.warehouseTo_id == warehouse_id">
+                      <b>{{'QUANTITY'|translate}}:</b> {{item.quantity||item.total|number:'1.0'}}
+                    </h1>
+                    <h1 class="activity-note">
+                      {{item.note}}
+                    </h1>
+                  </ion-col>
+                  <ion-col>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.date|date: 'HH:mm'}}
+                    </h3>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
+
+        <ion-item no-padding (click)="openPreview(item)" *ngIf="item._attachments && item._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+          <ion-card [class.input-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
+            <ion-row no-padding>
+              <ion-col no-padding>
+                <ion-img *ngIf="item._attachments['image.png'].data" style="max-height: 200px;width: 100%;" [src]="'data:image/png;base64,'+item._attachments['image.png'].data"></ion-img>
+              </ion-col>
+            </ion-row>
+            <ion-row style="background: white">
+              <ion-col size="8.5" style="background: white" *ngIf="item.note">
+                {{item.note}}
+              </ion-col>
+              <ion-col style="background: white">
+                <h3 class="item-title-second">
+                  {{item.date|date: 'dd/MM/yyyy'}}
+                  {{item.date|date: 'HH:mm'}}
+                </h3>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
+        <ion-item-options>
+          <ion-item-option (click)="deleteWork(item)" *ngIf="!item.fixed">
+            {{'DELETE'|translate}}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+    <ion-infinite-scroll threshold="100px" position="bottom" (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content class="rotate180" loadingSpinner="bubbles" loadingText="Cargando mas atividades...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <ion-row style="height:15px;">
+    </ion-row>
+  </form>
+</ion-content>

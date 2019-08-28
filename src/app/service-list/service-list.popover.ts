@@ -4,9 +4,9 @@ import {  NavController, PopoverController, NavParams } from '@ionic/angular';
 @Component({
   template: `
   <ion-list>
-    <ion-item style="background-color: white;" ion-item (click)="receivable()">Cuentas A Cobrar</ion-item>
-    <ion-item style="background-color: white;" ion-item (click)="invoice()">Facturas</ion-item>
-    <ion-item style="background-color: white;" ion-item (click)="receipts()">Recibos</ion-item>
+    <ion-item style="background-color: white;" ion-item (click)="receivable()">{{ 'RECEIVABLE_ACCOUNTS'| translate}}</ion-item>
+    <ion-item style="background-color: white;" ion-item (click)="invoice()">{{'INVOICES'| translate}}</ion-item>
+    <ion-item style="background-color: white;" ion-item (click)="receipts()">{{ 'RECEIPTS'| translate}}</ion-item>
   </ion-list>
   `
 })

@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'Ventas' | translate }}: {{reportSaleForm.value.code}}
+        {{ 'SALES' | translate }}: {{reportSaleForm.value.code}}
       </ion-row>
     </ion-title>
     <ion-buttons slot="end">
@@ -19,7 +19,7 @@
           </ion-icon>
         </ion-button>
       </ion-buttons>
-      <h4 class="field-label">{{'Desde' | translate }}</h4>
+      <h4 class="field-label">{{'FROM' | translate }}</h4>
       <ion-datetime class="field-50-datetime"
       (ngModelChange)="changeDateStart()"
       displayFormat="DD/MM/YYYY"
@@ -29,7 +29,7 @@
       </ion-datetime>
     </ion-item>
     <ion-item no-padding class="field-50">
-      <h4 class="field-label">{{'Hasta' | translate }}</h4>
+      <h4 class="field-label">{{'TO' | translate }}</h4>
       <ion-datetime class="field-50-datetime"
       (ngModelChange)="changeDateEnd()"
       displayFormat="DD/MM/YYYY"
@@ -58,7 +58,7 @@
             </ion-icon>
           </ion-button>
         </ion-buttons>
-        <h4 class="field-label">{{'Desde' | translate }}</h4>
+        <h4 class="field-label">{{'FROM' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="changeDateStart()"
         displayFormat="DD/MM/YYYY HH:mm:ss"
@@ -68,7 +68,7 @@
         </ion-datetime>
       </ion-item>
       <ion-item no-padding class="field-50">
-        <h4 class="field-label">{{'Hasta' | translate }}</h4>
+        <h4 class="field-label">{{'TO' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="changeDateEnd()"
         displayFormat="DD/MM/YYYY HH:mm:ss"
@@ -87,35 +87,35 @@
       *ngIf="reportSaleForm.value.reportType == 'sale'"
       no-padding
       class="field-100">
-        <ion-label  position="floating">{{'Agrupado Por' | translate}}</ion-label>
+        <ion-label  position="floating">{{'GROUP_BY' | translate}}</ion-label>
         <ion-select #groupBy formControlName="groupBy"
           style="text-align: center;"
           interface="popover"
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
-          <ion-select-option value="product">Producto</ion-select-option>
-          <ion-select-option value="category">Categoria</ion-select-option>
-          <ion-select-option value="brand">Marca</ion-select-option>
-          <ion-select-option value="contact">Contato</ion-select-option>
-          <ion-select-option value="seller">Vendedor</ion-select-option>
-          <ion-select-option value="payment">Condición de Pago</ion-select-option>
-          <ion-select-option value="date">Dia</ion-select-option>
-          <ion-select-option value="week">Semana</ion-select-option>
-          <ion-select-option value="month">Mês</ion-select-option>
-          <ion-select-option value="year">Año</ion-select-option>
+          <ion-select-option value="product">{{'PRODUCT'|translate}}</ion-select-option>
+          <ion-select-option value="category">{{'CATEGORY'|translate}}</ion-select-option>
+          <ion-select-option value="brand">{{'BRAND'|translate}}</ion-select-option>
+          <ion-select-option value="contact">{{'CONTACT'|translate}}</ion-select-option>
+          <ion-select-option value="seller">{{'SELLER'|translate}}</ion-select-option>
+          <ion-select-option value="payment">{{'PAYMENT_CONDITION'|translate}}</ion-select-option>
+          <ion-select-option value="date">{{'DAY'|translate}}</ion-select-option>
+          <ion-select-option value="week">{{'WEEK'|translate}}</ion-select-option>
+          <ion-select-option value="month">{{'MONTH'|translate}}</ion-select-option>
+          <ion-select-option value="year">{{'YEAR'|translate}}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item
         no-padding
         class="field-100">
-        <ion-label>{{'Filtros' | translate}}</ion-label>
+        <ion-label>{{'FILTERS' | translate}}</ion-label>
         <ion-toggle formControlName="showFilter"></ion-toggle>
       </ion-item>
       <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
         <div class="field-many2one" (click)="selectContact()">
-          <h4 class="field-label">{{'Cliente' | translate}}</h4>
-          <h4 class="field-value">{{reportSaleForm.value.contact && reportSaleForm.value.contact.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'CLIENT' | translate}}</h4>
+          <h4 class="field-value">{{reportSaleForm.value.contact && reportSaleForm.value.contact.name || 'ALL'|translate}}</h4>
         </div>
         <ion-button (click)="clearContact()">
           <ion-icon name="close"></ion-icon>
@@ -123,8 +123,8 @@
       </ion-item>
       <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
         <div class="field-many2one" (click)="selectProduct()">
-          <h4 class="field-label">{{'Producto' | translate}}</h4>
-          <h4 class="field-value">{{reportSaleForm.value.product && reportSaleForm.value.product.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'PRODUCT' | translate}}</h4>
+          <h4 class="field-value">{{reportSaleForm.value.product && reportSaleForm.value.product.name || 'ALL'|translate}}</h4>
         </div>
         <ion-button (click)="clearProduct()">
           <ion-icon name="close"></ion-icon>
@@ -132,8 +132,8 @@
       </ion-item>
       <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
         <div class="field-many2one" (click)="selectCategory()">
-          <h4 class="field-label">{{'Categoria' | translate}}</h4>
-          <h4 class="field-value">{{reportSaleForm.value.category && reportSaleForm.value.category.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'CATEGORY' | translate}}</h4>
+          <h4 class="field-value">{{reportSaleForm.value.category && reportSaleForm.value.category.name || 'ALL'|translate}}</h4>
         </div>
         <ion-button (click)="clearCategory()">
           <ion-icon name="close"></ion-icon>
@@ -141,8 +141,8 @@
       </ion-item>
       <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
         <div class="field-many2one" (click)="selectPaymentCondition()">
-          <h4 class="field-label">{{'Condición de Pago' | translate}}</h4>
-          <h4 class="field-value">{{reportSaleForm.value.paymentCondition && reportSaleForm.value.paymentCondition.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'PAYMENT_CONDITION' | translate}}</h4>
+          <h4 class="field-value">{{reportSaleForm.value.paymentCondition && reportSaleForm.value.paymentCondition.name || 'ALL'|translate}}</h4>
         </div>
         <ion-button (click)="clearPaymentCondition()">
           <ion-icon name="close"></ion-icon>
@@ -150,8 +150,8 @@
       </ion-item>
       <ion-item *ngIf="reportSaleForm.value.showFilter" no-padding class="field-100">
         <div class="field-many2one" (click)="selectSeller()">
-          <h4 class="field-label">{{'Vendedor' | translate}}</h4>
-          <h4 class="field-value">{{reportSaleForm.value.seller && reportSaleForm.value.seller.name || 'Todos'}}</h4>
+          <h4 class="field-label">{{'SELLER' | translate}}</h4>
+          <h4 class="field-value">{{reportSaleForm.value.seller && reportSaleForm.value.seller.name || 'ALL'|translate}}</h4>
         </div>
         <ion-button (click)="clearSeller()">
           <ion-icon name="close"></ion-icon>
@@ -165,16 +165,16 @@
               <ion-list no-lines>
                 <ion-row class="report-title">
                   <ion-col width-40 (click)="orderByName()">
-                    Producto
+                    {{'PRODUCT'|translate}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                    Margen
+                    {{'PRICE'|translate}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                    Cant.
+                    {{'QUANT'|translate}}
                   </ion-col>
                   <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
-                    Total
+                  {{'TOTAL'|translate}}
                   </ion-col>
                 </ion-row>
                 <ion-row *ngFor="let item of reportSaleForm.value.items">
@@ -193,7 +193,7 @@
                 </ion-row>
                 <ion-row class="report-title">
                   <ion-col  width-40>
-                    TOTAL
+                  {{'TOTAL_UPPER'|translate}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right">
                     {{items_margin|number:'1.'+currency_precision}}
@@ -213,16 +213,16 @@
               <ion-list no-lines>
                 <ion-row class="report-title">
                   <ion-col width-40 (click)="orderByName()">
-                    Categoria
+                    {{'CATEGORY'|translate}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                    Margen
+                    {{'PRICE'|translate}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                    Cant.
+                    {{'QUANT'|translate}}
                   </ion-col>
                   <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
-                    Total
+                  {{'TOTAL'|translate}}
                   </ion-col>
                 </ion-row>
                 <ion-row *ngFor="let item of reportSaleForm.value.items">
@@ -241,7 +241,7 @@
                 </ion-row>
                 <ion-row class="report-title">
                   <ion-col  width-40>
-                    TOTAL
+                  {{'TOTAL_UPPER'|translate}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right">
                     {{items_margin|number:'1.'+currency_precision}}
@@ -261,16 +261,16 @@
               <ion-list no-lines>
                 <ion-row class="report-title">
                   <ion-col width-40 (click)="orderByName()">
-                    Categoria
+                    {{'BRAND'|translate}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                    Margen
+                    {{'PRICE'|translate}}
                   </ion-col>
                   <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                    Cant.
+                    {{'QUANT'|translate}}
                   </ion-col>
                   <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
-                    Total
+                  {{'TOTAL'|translate}}
                   </ion-col>
                 </ion-row>
                 <ion-row *ngFor="let item of reportSaleForm.value.items">
@@ -289,7 +289,7 @@
                 </ion-row>
                 <ion-row class="report-title">
                   <ion-col  width-40>
-                    TOTAL
+                  {{'TOTAL_UPPER'|translate}}
                   </ion-col>
                   <ion-col width-20 style="text-align: right">
                     {{items_margin|number:'1.'+currency_precision}}
@@ -308,16 +308,16 @@
             <ion-list no-lines *ngIf="reportSaleForm.value.groupBy == 'contact'">
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Cliente
+                  {{'CLIENT'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                  Margen
+                  {{'PRICE'|translate}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                  Cant.
+                  {{'QUANT'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
-                  Total
+                {{'TOTAL'|translate}}
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of reportSaleForm.value.items">
@@ -336,7 +336,7 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col  width-40>
-                  TOTAL
+                {{'TOTAL_UPPER'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.'+currency_precision}}
@@ -352,16 +352,16 @@
             <ion-list no-lines *ngIf="reportSaleForm.value.groupBy == 'seller'">
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Vendedor
+                  {{'SELLER'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                  Margen
+                  {{'PRICE'|translate}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                  Cant.
+                  {{'QUANT'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
-                  Total
+                {{'TOTAL'|translate}}
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of reportSaleForm.value.items">
@@ -380,7 +380,7 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col  width-40>
-                  TOTAL
+                {{'TOTAL_UPPER'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.'+currency_precision}}
@@ -399,16 +399,16 @@
             <ion-list no-lines *ngIf="reportSaleForm.value.groupBy == 'payment'">
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Condicion de Pago
+                  {{'PAYMENT_CONDITION'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                  Margen
+                  {{'PRICE'|translate}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                  Cant.
+                  {{'QUANT'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
-                  Total
+                {{'TOTAL'|translate}}
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of reportSaleForm.value.items">
@@ -427,7 +427,7 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col  width-40>
-                  TOTAL
+                {{'TOTAL_UPPER'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.'+currency_precision}}
@@ -447,16 +447,16 @@
 
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Fecha
+                  {{'DATE'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                  Margen
+                  {{'PRICE'|translate}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                  Cant.
+                  {{'QUANT'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
-                  Total
+                {{'TOTAL'|translate}}
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of reportSaleForm.value.items">
@@ -475,7 +475,7 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col  width-40>
-                  TOTAL
+                {{'TOTAL_UPPER'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.'+currency_precision}}
@@ -492,16 +492,16 @@
 
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Semana
+                  {{'WEEK'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                  Margen
+                  {{'PRICE'|translate}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                  Cant.
+                  {{'QUANT'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
-                  Total
+                {{'TOTAL'|translate}}
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of reportSaleForm.value.items">
@@ -520,7 +520,7 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col  width-40>
-                  TOTAL
+                {{'TOTAL_UPPER'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.'+currency_precision}}
@@ -540,16 +540,16 @@
 
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Mês
+                  {{'MONTH'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                  Margen
+                  {{'PRICE'|translate}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                  Cant.
+                  {{'QUANT'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
-                  Total
+                {{'TOTAL'|translate}}
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of reportSaleForm.value.items">
@@ -568,7 +568,7 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col  width-40>
-                  TOTAL
+                {{'TOTAL_UPPER'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.'+currency_precision}}
@@ -586,16 +586,16 @@
 
               <ion-row class="report-title">
                 <ion-col width-60 (click)="orderByName()">
-                  Año
+                  {{'YEAR'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                  Margen
+                  {{'PRICE'|translate}}
                 </ion-col>
                 <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                  Cant.
+                  {{'QUANT'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right" (click)="orderByTotal()">
-                  Total
+                {{'TOTAL'|translate}}
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of reportSaleForm.value.items">
@@ -614,7 +614,7 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col  width-40>
-                  TOTAL
+                {{'TOTAL_UPPER'|translate}}
                 </ion-col>
                 <ion-col width-20 style="text-align: right">
                   {{items_margin|number:'1.'+currency_precision}}

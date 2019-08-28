@@ -12,7 +12,7 @@
           <ion-item *ngIf="(p.restrict && user.admin) || !p.restrict" [class.active-menu]="p.active" [routerDirection]="'root'" [routerLink]="[p.url]">
             <ion-icon slot="start" [name]="p.icon" [class.active-icon]="p.active"></ion-icon>
             <ion-label>
-              {{p.title}}
+              {{p.title| translate}}
             </ion-label>
           </ion-item>
         </ion-menu-toggle>

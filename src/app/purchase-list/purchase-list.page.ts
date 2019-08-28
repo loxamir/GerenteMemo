@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, PopoverController , Events,  ModalController  } from '@ionic/angular';
+import { NavController, LoadingController, PopoverController , Events } from '@ionic/angular';
 // import { PurchasePage } from '../purchase';
 //import { DecimalPipe } from '@angular/common';
 import 'rxjs/Rx';
@@ -41,11 +41,10 @@ export class PurchaseListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public events:Events,
     public route: ActivatedRoute,
-    public modal: ModalController,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this.select = this.route.snapshot.paramMap.get('select');
     this.events.subscribe('changed-purchase', (change)=>{
       this.handleChange(this.purchases, change);
@@ -101,6 +100,9 @@ export class PurchaseListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

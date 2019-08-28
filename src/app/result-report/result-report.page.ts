@@ -21,7 +21,7 @@ import { AccountCategoryPage } from '../account-category/account-category.page';
   styleUrls: ['./result-report.page.scss'],
 })
 export class ResultReportPage implements OnInit {
-  @ViewChild('select') select;
+  @ViewChild('select', { static: false }) select;
 
   resultForm: FormGroup;
   loading: any;
@@ -45,9 +45,9 @@ export class ResultReportPage implements OnInit {
     public modalCtrl: ModalController,
   ) {
     this.today = new Date();
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this._id = this.route.snapshot.paramMap.get('_id');
   }
 
@@ -145,6 +145,9 @@ export class ResultReportPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));

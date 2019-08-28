@@ -9,7 +9,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { File } from '@ionic-native/file/ngx';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
@@ -54,7 +53,12 @@ import { WarehouseListPageModule } from './warehouse-list/warehouse-list.module'
 import { AccountListPageModule } from './account-list/account-list.module';
 import { CashListPageModule } from './cash-list/cash-list.module';
 import { CashMovePageModule } from './cash-move/cash-move.module';
+import { StockMovePageModule } from './stock-move/stock-move.module';
 import { LoginPageModule } from './login/login.module';
+import { SalePageModule } from './sale/sale.module';
+import { SaleListPageModule } from './sale-list/sale-list.module';
+
+import { ServicePageModule } from './service/service.module';
 
 import { ProductCategoryPageModule } from './product-category/product-category.module';
 import { BrandPageModule } from './brand/brand.module';
@@ -68,18 +72,53 @@ import { PaymentConditionPageModule } from './payment-condition/payment-conditio
 import { ServiceWorkPageModule } from './service/work/work.module';
 import { ProductionWorkPageModule } from './production/work/work.module';
 import { ServiceTravelPageModule } from './service/travel/travel.module';
+
+import { WorkPageModule } from './work/work.module';
+import { PurchasePageModule } from './purchase/purchase.module';
+import { WorksPageModule } from './works/works.module';
+
 import { ContractPageModule } from './contract/contract.module';
 import { ContractListPageModule } from './contract-list/contract-list.module';
+
+import { FutureContractPageModule } from './future-contract/future-contract.module';
+import { FutureContractListPageModule } from './future-contract-list/future-contract-list.module';
 
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
 import { TicketConfigPageModule } from './ticket-config/ticket-config.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { ActivitysPageModule } from './activitys/activitys.module';
+import { ActivityPageModule } from './activity/activity.module';
+import { FieldPageModule } from './field/field.module';
+
+import { AnimalPageModule } from './animal/animal.module';
+import { AreaPageModule } from './area/area.module';
+import { MachinePageModule } from './machine/machine.module';
+import { CropPageModule } from './crop/crop.module';
+import { AnimalsPageModule } from './animals/animals.module';
+import { AreasPageModule } from './areas/areas.module';
+import { PersonsPageModule } from './persons/persons.module';
+import { PersonPageModule } from './person/person.module';
+import { MachinesPageModule } from './machines/machines.module';
+import { CropsPageModule } from './crops/crops.module';
+import { InputPageModule } from './input/input.module';
+import { InputsPageModule } from './inputs/inputs.module';
+import { FilterPageModule } from './filter/filter.module';
+import { PlannedListPageModule } from './planned-list/planned-list.module';
+import { AgroTabsPageModule } from './agro-tabs/agro-tabs.module';
 import { environment } from '../environments/environment';
+// import { AuthGuardService } from './services/auth-guard.service';
+
+import { Camera } from '@ionic-native/camera/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { ImageModalPageModule } from './image-modal/image-modal.module';
 
 @NgModule({
   declarations: [
     AppComponent,
+    // SaleListPage,
     // CurrencyListPage,
     // PaymentConditionListPage,
     // ProductListPage,
@@ -89,27 +128,49 @@ import { environment } from '../environments/environment';
     // AccountListPage,
     // CashListPage,
   ],
-  entryComponents: [
-    ContactListPage,
-    CurrencyListPage,
-    PaymentConditionListPage,
-    ProductListPage,
-    ReceiptPage,
-    InvoicePage,
-    WarehouseListPage,
-    AccountListPage,
-    CashListPage,
-  ],
+  // entryComponents: [
+  //   ContactListPage,
+  //   CurrencyListPage,
+  //   PaymentConditionListPage,
+  //   ProductListPage,
+  //   ReceiptPage,
+  //   InvoicePage,
+  //   WarehouseListPage,
+  //   AccountListPage,
+  //   CashListPage,
+  // ],
   imports: [
     LoginPageModule,
+    SaleListPageModule,
+    AgroTabsPageModule,
     ContactPageModule,
     ContractPageModule,
     ContractListPageModule,
+    FutureContractPageModule,
+    FutureContractListPageModule,
     DiscountPageModule,
     CashMovePageModule,
+    StockMovePageModule,
+    SalePageModule,
+    ServicePageModule,
+    PlannedListPageModule,
     BrandListPageModule,
+    ImageModalPageModule,
     ProductCategoryListPageModule,
     AccountCategoryListPageModule,
+    FilterPageModule,
+    InputPageModule,
+    InputsPageModule,
+    AnimalPageModule,
+    AreaPageModule,
+    MachinePageModule,
+    CropPageModule,
+    AnimalsPageModule,
+    AreasPageModule,
+    PersonsPageModule,
+    PersonPageModule,
+    MachinesPageModule,
+    CropsPageModule,
     ProductListPageModule,
     PaymentConditionListPageModule,
     CurrencyListPageModule,
@@ -122,8 +183,13 @@ import { environment } from '../environments/environment';
     InvoicePageModule,
     WarehouseListPageModule,
     AccountListPageModule,
+    ActivitysPageModule,
+    ActivityPageModule,
     CurrencyPageModule,
     CashListPageModule,
+    WorkPageModule,
+    WorksPageModule,
+    PurchasePageModule,
     UserPageModule,
     CheckPageModule,
     InvoiceConfigPageModule,
@@ -133,6 +199,7 @@ import { environment } from '../environments/environment';
     ContactListPageModule,
     ReactiveFormsModule,
     ProductPageModule,
+    FieldPageModule,
     ProductCategoryPageModule,
     BrandPageModule,
     PaymentConditionPageModule,
@@ -158,6 +225,10 @@ import { environment } from '../environments/environment';
     File,
     StatusBar,
     SplashScreen,
+    Camera,
+    WebView,
+    FilePath,
+    // AuthGuardService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -24,7 +24,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   styleUrls: ['./stock-move.page.scss'],
 })
 export class StockMovePage implements OnInit {
-  @ViewChild('input') myInput;
+  @ViewChild('input', { static: true }) myInput;
 
   stockMoveForm: FormGroup;
   loading: any;
@@ -37,7 +37,7 @@ export class StockMovePage implements OnInit {
   constructor(
 
     public navCtrl: NavController,
-    public modal: ModalController,
+    public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
@@ -52,10 +52,10 @@ export class StockMovePage implements OnInit {
     // public configService: ConfigService,
     public pouchdbService: PouchdbService,
   ) {
-    this.languages = this.languageService.getLanguages();
+
     this._id = this.route.snapshot.paramMap.get('_id');
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
     // this.cash_id = this.route.snapshot.paramMap.get('cash_id;
     // this.default_quantity = parseFloat(this.route.snapshot.paramMap.get('default_quantity'))||1;
     // this.default_name = this.route.snapshot.paramMap.get('default_name');
@@ -98,6 +98,9 @@ export class StockMovePage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     if (this._id){
@@ -235,7 +238,7 @@ export class StockMovePage implements OnInit {
         profileModal.dismiss();
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: WarehouseListPage,
         componentProps: {
           "select": true
@@ -256,7 +259,7 @@ export class StockMovePage implements OnInit {
         profileModal.dismiss();
         resolve(true);
       })
-      let profileModal = await this.modal.create({
+      let profileModal = await this.modalCtrl.create({
         component: WarehouseListPage,
         componentProps: {
           "select": true
@@ -278,7 +281,7 @@ export class StockMovePage implements OnInit {
          profileModal.dismiss();
          resolve(true);
        })
-       let profileModal = await this.modal.create({
+       let profileModal = await this.modalCtrl.create({
          component: ProductListPage,
          componentProps: {
            "select": true,
@@ -299,7 +302,7 @@ export class StockMovePage implements OnInit {
           profileModal.dismiss();
           resolve(true);
         })
-        let profileModal = await this.modal.create({
+        let profileModal = await this.modalCtrl.create({
           component: ContactListPage,
           componentProps: {
             "select": true

@@ -15,8 +15,8 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./discount.page.scss'],
 })
 export class DiscountPage implements OnInit {
-  @ViewChild('discount_percent') discount_percent;
-  @ViewChild('discount_amount') discount_amount;
+  @ViewChild('discount_percent', { static: true }) discount_percent;
+  @ViewChild('discount_amount', { static: true }) discount_amount;
   // @ViewChild('new_amount') new_amountField;
 
   discountForm: FormGroup;
@@ -40,9 +40,9 @@ export class DiscountPage implements OnInit {
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this.showProduct = this.route.snapshot.paramMap.get('showProduct');
     this.discountProduct = this.route.snapshot.paramMap.get('discountProduct');
     this.amount_original = parseFloat(this.route.snapshot.paramMap.get('amount_original'));
@@ -71,6 +71,9 @@ export class DiscountPage implements OnInit {
       new_amount: new FormControl(this.new_amount || 0),
       discountProduct: new FormControl(this.discountProduct || false),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
   }
 
   changedPercent() {
@@ -153,10 +156,10 @@ export class DiscountPage implements OnInit {
   async canDeactivate() {
       if(this.discountForm.dirty) {
           let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
+              header: this.translate.instant('DISCARD'),
+              message: this.translate.instant('SURE_DONT_SAVE'),
               buttons: [{
-                      text: 'Si',
+                      text: this.translate.instant('YES'),
                       handler: () => {
                           // alertPopup.dismiss().then(() => {
                               this.exitPage();
@@ -164,7 +167,7 @@ export class DiscountPage implements OnInit {
                       }
                   },
                   {
-                      text: 'No',
+                      text: this.translate.instant('NO'),
                       handler: () => {
                           // need to do something if the user stays?
                       }

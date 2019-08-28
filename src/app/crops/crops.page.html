@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar *ngIf="showSearch" color="light">
+    <ion-buttons slot="start">
+      <ion-button (click)="changeSearch()" color="primary">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  <ion-searchbar
+  [placeholder]="'SEARCH_CROP'|translate"
+  [(ngModel)]="searchTerm"
+  #searchBar
+  (ionChange)="setFilteredItems()">
+  </ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="!showSearch" color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{'CROPS'|translate}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="changeSearch()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <!-- <ion-button  (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button> -->
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="list-mini-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list no-lines>
+    <ion-item-sliding class="list-item" *ngFor="let item of crops">
+      <ion-item no-padding (click)="selectCrop(item)" style="margin-bottom: 0px; margin-top:0px;">
+        <ion-card class="list-card">
+<ion-row>
+        <ion-col>
+          <h3 class="item-name"><b>{{ item.name || 'NOT_INFORMED'|translate}}</b></h3>
+        </ion-col>
+      </ion-row>
+ <ion-row no-padding class="content-row one-line">
+    <!-- <ion-col no-padding size="6">
+      <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateStart|date: 'dd/MM/yyyy'}}</h3>
+      <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateEnd|date: 'dd/MM/yyyy'}}</h3>
+    </ion-col> -->
+    <ion-col no-padding size="6" align-self-center>
+    </ion-col>
+  </ion-row>
+      </ion-card>
+
+    </ion-item>
+      <ion-item-options>
+        <ion-item-option (click)="deleteCrop(item)"
+        *ngIf="!item.fixed">
+          {{'DELETE'|translate}}
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-row style="height:15px;">
+  </ion-row>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      <ion-fab-button (click)="createCrop()">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
+  </ion-fab>
+</ion-content>

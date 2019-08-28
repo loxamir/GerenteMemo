@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Factura"
+      placeholder="{{ 'SEARCH_INVOICE' | translate }}"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionChange)="searchItems()">
@@ -21,7 +21,7 @@
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of invoices">
       <ion-item no-padding (click)="openInvoice(item)" style="margin-bottom: 0px; margin-top:0px;">
-        <ion-card class="list-card" style="border-radius: 5px;">
+        <ion-card class="list-card" style="">
           <ion-row>
             <ion-col>
               <h3 class="item-title"><b>{{ item.code }}</b></h3>
@@ -65,7 +65,7 @@
       <ion-item-options>
         <ion-item-option (click)="deleteInvoice(item)"
         *ngIf="item.state=='QUOTATION'">
-          Borrar
+          {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -87,7 +87,7 @@
     <ion-fab-button><ion-icon name="add"></ion-icon></ion-fab-button>
     <ion-fab-list side="top">
       <div style="background: #FF5722;color: white;margin-top: -5px;">
-        Cliente
+        {{'CLIENT'| translate}}
       </div>
       <ion-button style="background: #FF5722;color: white;margin-bottom: 5px;"
       ion-fab
@@ -95,7 +95,7 @@
         <ion-icon name="arrow-round-up"></ion-icon>
       </ion-button>
     <div style="background: #4CAF50;color: white;margin-top: -5px;">
-      Proveedor
+      {{'SUPPLIER'| translate}}
     </div><ion-button style="background: #4CAF50;color: white;margin-bottom: 5px;"
     ion-fab
     (click)="createInvoiceIn(fab)">

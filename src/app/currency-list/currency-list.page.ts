@@ -4,6 +4,8 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController,   ModalController, Events} from '@ionic/angular';
 import 'rxjs/Rx';
 import { CurrencyPage } from '../currency/currency.page';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-currency-list',
@@ -21,13 +23,18 @@ export class CurrencyListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public modalCtrl: ModalController,
+    public translate: TranslateService,
     public route: ActivatedRoute,
+    public languageService: LanguageService,
     public events: Events,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     //this.loading.present();
     this.setFilteredItems();
   }

@@ -4,7 +4,7 @@ import {  NavController, PopoverController, NavParams } from '@ionic/angular';
 @Component({
   template: `
   <ion-list>
-    <ion-item style="background-color: white;" ion-item (click)="importer()">Importar Contas</ion-item>
+    <ion-item class="popover-item" (click)="importer()">Importar Contas</ion-item>
   </ion-list>
   `
 })

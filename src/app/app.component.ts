@@ -9,6 +9,7 @@ import { PouchdbService } from './services/pouchdb/pouchdb-service';
 import { firebase } from '@firebase/app';
 import { environment } from '../environments/environment';
 import { NotificationsService } from './notifications.service';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-root',
@@ -19,34 +20,39 @@ export class AppComponent implements OnInit {
   loading: any;
   public appPages = [
     {
-      title: 'Operativo',
+      title: 'AGRICULTURE',
+      url: '/agro-tabs',
+      icon: 'ios-leaf'
+    },
+    {
+      title: 'ADMINISTRATION',
       url: '/tabs',
       icon: 'infinite'
     },
     {
-      title: 'Informes',
+      title: 'REPORTS',
       url: '/report-list',
       icon: 'stats',
       restrict: true
     },
     {
-      title: 'Productos',
+      title: 'PRODUCTS',
       url: '/product-list',
       icon: 'cube'
     },
     {
-      title: 'Personas',
+      title: 'PEOPLE',
       url: '/contact-list',
       icon: 'contacts'
     },
     {
-      title: 'Ajustes',
+      title: 'SETTINGS',
       url: '/config',
       icon: 'settings',
       restrict: true
     },
     {
-      title: 'Salir',
+      title: 'EXIT',
       url: '/login',
       icon: 'exit'
     },
@@ -63,6 +69,7 @@ export class AppComponent implements OnInit {
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public notificationsService: NotificationsService,
+    public storage: Storage,
   ) {
     // this.initializeApp();
     this.backButtonListener();
@@ -71,8 +78,8 @@ export class AppComponent implements OnInit {
   initializeApp() {
     // this.platform.ready().then(() => {
       if (this.platform.is('cordova')){
-        // this.translate.setDefaultLang('es');
-        // this.translate.use('es');
+        //
+        //
         // this.statusBar.styleDefault();
         this.statusBar.show()
         // this.statusBar.overlaysWebView(true);
@@ -100,28 +107,34 @@ export class AppComponent implements OnInit {
       await this.notificationsService.requestPermission();
       this.initializeApp();
     })
-    // this.loading = await this.loadingCtrl.create({});
-    // await this.loading.present();
+    let lenguage = await this.storage.get("language");
+    if (!lenguage){
+      lenguage = navigator.language.split('-')[0];
+    }
+    this.translate.setDefaultLang(lenguage);
+    this.translate.use(lenguage);
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
     if (this.user && !this.user['admin']){
       this.appPages = [
         {
-          title: 'Operativo',
+          title: 'OPERATIVE',
           url: '/tabs',
           icon: 'infinite'
         },
         {
-          title: 'Productos',
+          title: 'PRODUCTS',
           url: '/product-list',
           icon: 'cube'
         },
         {
-          title: 'Personas',
+          title: 'PEOPLE',
           url: '/contact-list',
           icon: 'contacts'
         },
         {
-          title: 'Salir',
+          title: 'EXIT',
           url: '/login',
           icon: 'exit'
         },

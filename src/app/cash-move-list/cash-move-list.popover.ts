@@ -12,7 +12,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 @Component({
   template: `
     <ion-list>
-      <ion-item (click)="importer()">Importar</ion-item>
+      <ion-item class="popover-item" (click)="importer()">Importar</ion-item>
     </ion-list>
   `
 })

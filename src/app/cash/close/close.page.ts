@@ -17,7 +17,7 @@ import { ConfigService } from '../../config/config.service';
   styleUrls: ['./close.page.scss'],
 })
 export class ClosePage implements OnInit {
-  @ViewChild('input') input;
+  @ViewChild('input', { static: true }) input;
   @Input() amount_theoretical;
   @Input() accountMoves;
   @Input() cash_id;
@@ -44,6 +44,7 @@ export class ClosePage implements OnInit {
     public closeService: CloseService,
     public events: Events,
     public configService: ConfigService,
+    public languageService: LanguageService,
     public pouchdbService: PouchdbService,
   ) {
     this.amount_theoretical = this.route.snapshot.paramMap.get('amount_theoretical');
@@ -73,6 +74,9 @@ export class ClosePage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -140,6 +144,8 @@ export class ClosePage implements OnInit {
   }
 
   async closeConfirm(){
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
     this.accountMoves = [];
     // this.closeForm.value.accountMoves.forEach(async accountMove => {
     let accountMoves2 = [];
@@ -156,6 +162,7 @@ export class ClosePage implements OnInit {
     })
     await this.buttonSave();
     await this.changeAccountMovesState();
+    this.loading.dismiss();
 
   }
 
@@ -330,7 +337,7 @@ export class ClosePage implements OnInit {
     let filename = "Cierre_"+date+".prt";
     this.formatService.printMatrix(content, filename);
     let toast = await this.toastCtrl.create({
-      message: "Imprimiendo...",
+      message: this.translate.instant('PRINTING...'),
       duration: 3000
     });
     toast.present();
@@ -346,10 +353,11 @@ export class ClosePage implements OnInit {
   async canDeactivate() {
       if(this.closeForm.dirty) {
           let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
+            header: this.translate.instant('DISCARD'),
+            // message: this.translate.instant('SURE_DONT_SAVE'),
+            message: this.translate.instant('SURE_DONT_SAVE'),
               buttons: [{
-                      text: 'Si',
+                      text: this.translate.instant('YES'),
                       handler: () => {
                           // alertPopup.dismiss().then(() => {
                               this.exitPage();
@@ -357,7 +365,7 @@ export class ClosePage implements OnInit {
                       }
                   },
                   {
-                      text: 'No',
+                      text: this.translate.instant('NO'),
                       handler: () => {
                           // need to do something if the user stays?
                       }

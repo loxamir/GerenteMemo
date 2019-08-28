@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Contrato"
+      placeholder="{{ 'SEARCH_CONTRACT' | translate }}"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionChange)="searchItems()">
@@ -64,7 +64,7 @@
     </ion-item>
       <ion-item-options  side="end">
         <ion-item-option (click)="deleteContract(slidingItem, item)" *ngIf="item.state=='QUOTATION'">
-          Borrar
+          {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -82,12 +82,12 @@
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
       <ion-row>
         <ion-col>
-          <h1>Aún no tienes ventas registradas</h1>
+          <h1>{{'NO_CONTRACTS'|translate}}</h1>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
-          <h4>Para crear tu primera venta, pulsa el botón más</h4>
+          <h4>{{'FIRST_CONTRACT'|translate}}</h4>
         </ion-col>
       </ion-row>
     </ion-col>

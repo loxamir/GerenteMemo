@@ -26,7 +26,7 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
   styleUrls: ['./purchase.page.scss'],
 })
 export class PurchasePage implements OnInit {
-@ViewChild('select') select;
+@ViewChild('select', { static: false }) select;
 @HostListener('document:keypress', ['$event'])
     async handleKeyboardEvent(event: KeyboardEvent) {
       //this.key = event.key;
@@ -65,10 +65,12 @@ export class PurchasePage implements OnInit {
                 } else {
                   // console.log("barco", this.barcode);
                   let alertPopup = await this.alertCtrl.create({
-                      header: 'Producto no Encontrado',
-                      message: '¿Deseas catastrarlo?',
+                      // header: 'Producto no Encontrado',
+                      header: this.translate.instant('PRODUCT_NOT_FOUND'),
+                      // message: '¿Deseas catastrarlo?',
+                      message: this.translate.instant('WANT_REGISTER'),
                       buttons: [{
-                              text: 'Si',
+                              text: this.translate.instant('YES'),
                               handler: () => {
                                   // alertPopup.dismiss().then(() => {
                                       this.createBarcodeProduct(bacode);
@@ -77,7 +79,7 @@ export class PurchasePage implements OnInit {
                               }
                           },
                           {
-                              text: 'No',
+                              text: this.translate.instant('NO'),
                               handler: () => {
                                   // need to do something if the user stays?
                               }
@@ -124,6 +126,7 @@ export class PurchasePage implements OnInit {
     purchase_currency_precision = 2;
     currencies:any = {};
     languages: Array<LanguageModel>;
+    contact;
     purchase_exchange_rate:number = 1;
 
     constructor(
@@ -152,11 +155,12 @@ export class PurchasePage implements OnInit {
       public popoverCtrl: PopoverController,
     ) {
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.avoidAlertMessage = false;
+      this.contact = this.route.snapshot.paramMap.get('contact');
     }
 
     async createBarcodeProduct(barcode){
@@ -205,7 +209,7 @@ export class PurchasePage implements OnInit {
     async ngOnInit() {
       //var today = new Date().toISOString();
       this.purchaseForm = this.formBuilder.group({
-        contact: new FormControl(this.route.snapshot.paramMap.get('contact')||{}, Validators.required),
+        contact: new FormControl(this.contact||{}, Validators.required),
         contact_name: new FormControl(this.route.snapshot.paramMap.get('contact_name')||''),
 
         // project: new FormControl(this.route.snapshot.paramMap.get('project')||{}),
@@ -238,6 +242,9 @@ export class PurchasePage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -314,18 +321,15 @@ export class PurchasePage implements OnInit {
           this.selectContact().then( teste => {
             if (Object.keys(this.purchaseForm.value.paymentCondition).length === 0){
               this.selectPaymentCondition().then(()=>{
-                // this.purchaseConfimation();
                 this.afterConfirm();
               });
             }
           });
         } else if (Object.keys(this.purchaseForm.value.paymentCondition).length === 0){
           this.selectPaymentCondition().then(()=>{
-            // this.purchaseConfimation();
             this.afterConfirm();
           });
         } else {
-          // this.purchaseConfimation();
           this.afterConfirm();
         }
       }
@@ -562,8 +566,10 @@ export class PurchasePage implements OnInit {
     async editItemPrice(item){
       if (this.purchaseForm.value.state=='QUOTATION'){
         let prompt = await this.alertCtrl.create({
-          header: 'Precio del Producto',
-          message: 'Cual es el precio de este producto?',
+          // header: 'Precio del Producto',
+          header: this.translate.instant('PRODUCT_PRICE'),
+          // message: 'Cual es el precio de este producto?',
+          message: this.translate.instant('WHAT_PRODUCT_PRICE'),
           inputs: [
             {
               type: 'number',
@@ -574,10 +580,10 @@ export class PurchasePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -594,8 +600,8 @@ export class PurchasePage implements OnInit {
     async editItemQuantity(item){
       if (this.purchaseForm.value.state=='QUOTATION'){
         let prompt = await this.alertCtrl.create({
-          header: 'Cantidad del Producto',
-          message: 'Cual es el Cantidad de este producto?',
+          header: this.translate.instant('PRODUCT_QUANTITY'),
+          message: this.translate.instant('WHAT_PRODUCT_QUANTITY'),
           inputs: [
             {
               type: 'number',
@@ -606,10 +612,10 @@ export class PurchasePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.quantity = data.quantity;
                 this.recomputeValues();
@@ -692,27 +698,6 @@ export class PurchasePage implements OnInit {
       }
     }
 
-    async purchaseConfimation(){
-      let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas confirmar la venta?',
-        message: 'Si la confirmas no podras cambiar los productos ni el cliente',
-        buttons: [
-          {
-            text: 'Cancelar',
-            handler: data => {
-            }
-          },
-          {
-            text: 'Confirmar',
-            handler: data => {
-              this.afterConfirm();
-            }
-          }
-        ]
-      });
-      prompt.present();
-    }
-
     afterConfirm(){
       return new Promise(async resolve => {
         this.purchaseForm.patchValue({
@@ -778,10 +763,8 @@ export class PurchasePage implements OnInit {
                 'accountTo_name': docDict['account.other.stock'].doc.name,
               })
             });
-            this.purchaseForm.value.paymentCondition.items.forEach(item => {
-              let dateDue = this.addDays(this.today, item.days);
-              // console.log("dentro", this.purchaseForm.value);
-              let amount = (item.percent/100)*this.purchaseForm.value.total;
+            if (this.purchaseForm.value.paymentCondition.date_due){
+              let amount = this.purchaseForm.value.total;
               let receivableCashMove = {
                 '_return': true,
                 'docType': "cash-move",
@@ -795,7 +778,7 @@ export class PurchasePage implements OnInit {
                 'payments': [],
                 'invoices': [],
                 'origin_id': this.purchaseForm.value._id,
-                'dateDue': dateDue,
+                'dateDue': this.purchaseForm.value.paymentCondition.date_due,
                 'accountFrom_id': this.purchaseForm.value.paymentCondition.accountFrom_id,
                 'accountFrom_name': docDict[this.purchaseForm.value.paymentCondition.accountFrom_id].doc.name,
                 'accountTo_id': 'account.other.transitStock',
@@ -811,7 +794,40 @@ export class PurchasePage implements OnInit {
 
               }
               createList.push(receivableCashMove);
-            });
+            } else {
+              this.purchaseForm.value.paymentCondition.items.forEach(item => {
+                let dateDue = this.addDays(this.today, item.days);
+                let amount = (item.percent/100)*this.purchaseForm.value.total;
+                let receivableCashMove = {
+                  '_return': true,
+                  'docType': "cash-move",
+                  'date': new Date(),
+                  'name': "Compra "+this.purchaseForm.value.code,
+                  'contact_id': this.purchaseForm.value.contact._id,
+                  'contact_name': this.purchaseForm.value.contact.name,
+                  'amount': amount,
+                  'amount_residual': amount,
+                  'amount_unInvoiced': amount,
+                  'payments': [],
+                  'invoices': [],
+                  'origin_id': this.purchaseForm.value._id,
+                  'dateDue': dateDue,
+                  'accountFrom_id': this.purchaseForm.value.paymentCondition.accountFrom_id,
+                  'accountFrom_name': docDict[this.purchaseForm.value.paymentCondition.accountFrom_id].doc.name,
+                  'accountTo_id': 'account.other.transitStock',
+                  'accountTo_name': docDict['account.other.transitStock'].doc.name,
+                }
+                if (JSON.stringify(this.purchaseForm.value.currency) != '{}' && this.purchaseForm.value.currency._id != this.company_currency_id) {
+                  receivableCashMove['currency_amount'] = amount;
+                  receivableCashMove['currency_id'] = this.purchaseForm.value.currency._id;
+                  receivableCashMove['exchange_rate'] = this.purchase_exchange_rate;
+                  receivableCashMove['currency_residual'] = amount;
+                  receivableCashMove['amount'] = amount*this.purchase_exchange_rate;
+                  receivableCashMove['amount_residual'] = amount*this.purchase_exchange_rate;
+                }
+                createList.push(receivableCashMove);
+              });
+            }
 
             this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.purchaseForm.patchValue({
@@ -830,17 +846,19 @@ export class PurchasePage implements OnInit {
 
     async purchaseCancel(){
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas Cancelar la Compra?',
-        message: 'Al cancelar la Compra todos los registros asociados serán borrados',
+        // header: 'Estas seguro que deseas Cancelar la Compra?',
+        header: this.translate.instant('SURE_CANCEL_PURCHASE'),
+        // message: 'Al cancelar la Compra todos los registros asociados serán borrados',
+        message: this.translate.instant('WARNING_CANCEL_PURCHASE'),
         buttons: [
           {
-            text: 'No',
+            text: this.translate.instant('NO'),
             handler: data => {
               //console.log("Cancelar");
             }
           },
           {
-            text: 'Si',
+            text: this.translate.instant('YES'),
             handler: data => {
               //console.log("Confirmar");
               this.purchaseForm.value.items.forEach((item) => {
@@ -1284,10 +1302,11 @@ export class PurchasePage implements OnInit {
       async canDeactivate() {
           if(this.purchaseForm.dirty) {
               let alertPopup = await this.alertCtrl.create({
-                  header: 'Descartar',
-                  message: '¿Deseas salir sin guardar?',
+                  header: this.translate.instant('DISCARD'),
+                  // message: this.translate.instant('SURE_DONT_SAVE'),
+                  message: this.translate.instant('SURE_DONT_SAVE'),
                   buttons: [{
-                          text: 'Si',
+                          text: this.translate.instant('YES'),
                           handler: () => {
                               // alertPopup.dismiss().then(() => {
                                   this.exitPage();
@@ -1295,7 +1314,7 @@ export class PurchasePage implements OnInit {
                           }
                       },
                       {
-                          text: 'No',
+                          text: this.translate.instant('NO'),
                           handler: () => {
                               // need to do something if the user stays?
                           }

@@ -53,14 +53,14 @@
 
       <ion-item
        no-padding
-       class="field-50">
+       class="field-100">
         <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
         <ion-input type="text"
         #address
         formControlName="address"></ion-input>
       </ion-item>
 
-      <ion-item
+      <!-- <ion-item
        no-padding
        class="field-50">
         <ion-label position="floating">{{'EMAIL' | translate}}</ion-label>
@@ -87,9 +87,9 @@
        class="field-50">
          <ion-label>{{'Vendedor' | translate}}</ion-label>
          <ion-toggle formControlName="seller"></ion-toggle>
-      </ion-item>
+      </ion-item> -->
 
-      <ion-item
+      <!-- <ion-item
        no-padding
        class="field-50">
          <ion-label>{{'Funcionario' | translate}}</ion-label>
@@ -105,32 +105,31 @@
       </ion-item>
       <ion-col size="12" class="item-content" *ngIf="contactForm.value.user">
         <ion-button (click)="editUser(contactForm.value.user_details)" class="button-100">Configurar Usuario</ion-button>
-      </ion-col>
+      </ion-col> -->
     </ion-row>
       <ion-row>
       <ion-item
        no-padding
-       *ngIf="contactForm.value.employee"
        class="field-50">
-        <ion-label position="floating">{{'SALARY' | translate }}</ion-label>
+        <ion-label position="floating">{{'Costo' | translate }}</ion-label>
         <ion-input #salary type="number"
         formControlName="salary"></ion-input>
       </ion-item>
-      <ion-item *ngIf="contactForm.value.employee" no-padding (click)="selectCurrency()"
+      <ion-item no-padding (click)="selectCurrency()"
       class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-          <h4 class="field-value">{{contactForm.value.currency && contactForm.value.currency.name || 'Selecionar'}}</h4>
+          <h4 class="field-value">{{contactForm.value.currency && contactForm.value.currency.name || 'SELECT'|translate}}</h4>
         </div>
       </ion-item>
-      <ion-item
+      <!-- <ion-item
       *ngIf="contactForm.value.employee"
       no-padding
       class="field-100">
         <ion-label position="floating" class="field-label">{{'HIRE_DATE' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="hire_date">
         </ion-datetime>
-      </ion-item>
+      </ion-item> -->
       <ion-item class="field-100">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-input type="text" formControlName="note"></ion-input>
@@ -164,14 +163,14 @@
                   <h4 class="user-name">{{item.amount}}</h4>
                 </ion-col>
                 <ion-col no-padding>
-                  <h4 class="field-label">Fecha</h4>
+                  <h4 class="field-label">{{'DATE'|translate}}</h4>
                   <h4 class="user-name">{{item.date|date: 'dd/MM/yyyy'}}</h4>
                 </ion-col>
               </ion-row>
             </ion-item>
             <ion-item-options>
               <ion-item-option (click)="removeSalary(item)">
-                Borrar
+                {{ 'DELETE'| translate }}
               </ion-item-option>
 
             </ion-item-options>
@@ -180,7 +179,7 @@
 
       </div>
       <div *ngSwitchCase="'advance'" class="post-example-view">
-        <ion-row style="margin-top: 5px;background: #1c61f3;border-radius: 5px;border: 1px solid #1c61f3;"
+        <ion-row style="margin-top: 5px;background: #1c61f3;border: 1px solid #1c61f3;"
         (click)="addAdvance()">
           <a style="color:white;cursor: default;font-size:16px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
             + Agregar Anticipo
@@ -195,14 +194,14 @@
                   <h4 class="user-name">{{item.amount}}</h4>
                 </ion-col>
                 <ion-col no-padding>
-                  <h4 class="field-label">Fecha</h4>
+                  <h4 class="field-label">{{'DATE'|translate}}</h4>
                   <h4 class="user-name">{{item.date|date: 'dd/MM/yyyy'}}</h4>
                 </ion-col>
               </ion-row>
             </ion-item>
             <ion-item-options>
               <ion-item-option (click)="removeAdvance(item)">
-                Borrar
+                {{ 'DELETE'| translate }}
               </ion-item-option>
             </ion-item-options>
           </ion-item-sliding>
@@ -211,26 +210,26 @@
     </div> -->
   </form>
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+      {{'NEXT'|translate}}
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="contactForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!contactForm.dirty"> </ion-icon>
-      <span *ngIf="contactForm.dirty">Descartar</span>
-      <span *ngIf="!contactForm.dirty">Volver</span>
+      <span *ngIf="contactForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!contactForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="contactForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
   <div style="height: 100px;">

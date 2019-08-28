@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button>
+    </ion-buttons>
+    <ion-searchbar
+      [placeholder]="'SEARCH_ACTIVITY'|translate"
+      [(ngModel)]="searchTerm"
+      (ionChange)="searchItems()">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="list-mini-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list no-lines>
+    <ion-item-sliding class="list-item" *ngFor="let item of activitys">
+      <ion-item no-padding >
+    <ion-card  class="list-card" style="">
+      <ion-row>
+        <ion-col (click)="selectActivity(item)">
+          <ion-row>
+            <ion-col>
+              <h3 class="item-title"><b>{{ item.name|translate }}</b></h3>
+            </ion-col>
+          </ion-row>
+          <ion-row no-padding class="content-row one-line">
+            <ion-col class="item-content" style="white-space: normal;">
+              {{item.note}}
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openActivity(item)">
+          <ion-icon name="open" class="open-item-arrow"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+    </ion-item>
+      <ion-item-options>
+        <ion-item-option (click)="deleteActivity(item)"
+        *ngIf="!item.fixed">
+          {{'DELETE'|translate}}
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="createActivity()">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
+  </ion-fab> -->
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      <ion-fab-button (click)="createActivity()" color="primary">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
+  </ion-fab>
+</ion-content>

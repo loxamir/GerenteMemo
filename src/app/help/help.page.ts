@@ -1,17 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events } from '@ionic/angular';
+import { NavController,  LoadingController,  Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-
 import 'rxjs/Rx';
-
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
-// import { HelpService } from './help.service';
 import { ActivatedRoute, Router } from '@angular/router';
-// import marked from 'marked';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 
 @Component({
@@ -20,7 +14,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
   styleUrls: ['./help.page.scss'],
 })
 export class HelpPage implements OnInit {
-  @ViewChild('content') content;
+  @ViewChild('content', { static: false }) content;
   helpForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -28,34 +22,26 @@ export class HelpPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    public modal: ModalController,
     public pouchdbService: PouchdbService,
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    // public imagePicker: ImagePicker,
-    // public cropService: Crop,
-    // public platform: Platform,
-    // public helpService: HelpService,
     public route: ActivatedRoute,
-
     public formBuilder: FormBuilder,
     public events: Events,
   ) {
-    this.languages = this.languageService.getLanguages();
     this._id = this.route.snapshot.paramMap.get('_id');
   }
 
   convert() {
     if(this.helpForm.value.editContent==false){
       if(this.helpForm.value.content && this.helpForm.value.content!=''){
-        // this.content =  marked(this.helpForm.value.content.toString());
         this.content =  this.helpForm.value.content.toString();
       }
     }
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.helpForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       content: new FormControl(''),
@@ -66,6 +52,9 @@ export class HelpPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     //this.loading.present();
     if (this._id){
       this.getHelp(this._id).then((data) => {

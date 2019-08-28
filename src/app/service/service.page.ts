@@ -32,7 +32,7 @@ import html2canvas from 'html2canvas';
   styleUrls: ['./service.page.scss'],
 })
 export class ServicePage implements OnInit {
-  @ViewChild('clrequest') clientRequest;
+  @ViewChild('clrequest', { static: true }) clientRequest;
   // @ViewChild(Select) select: Select;
   // @HostListener('document:keypress', ['$event'])
   //   handleKeyboardEvent(event: KeyboardEvent) {
@@ -106,6 +106,7 @@ export class ServicePage implements OnInit {
     // ignore_travels: boolean = false;
     serviceNote;
     currency_precision = 2;
+    contact;
 
     constructor(
       public socialSharing: SocialSharing,
@@ -125,24 +126,24 @@ export class ServicePage implements OnInit {
       public configService: ConfigService,
       public formatService: FormatService,
       public events:Events,
-      public modal: ModalController,
       // public speechRecognition: SpeechRecognition,
       // public tts: TextToSpeech,
       public pouchdbService: PouchdbService,
       public popoverCtrl: PopoverController,
     ) {
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.avoidAlertMessage = false;
+      this.contact = this.route.snapshot.paramMap.get('contact');
     }
 
     async ngOnInit() {
       //var today = new Date().toISOString();
       this.serviceForm = this.formBuilder.group({
-        contact: new FormControl('', Validators.required),
+        contact: new FormControl(this.contact||{}, Validators.required),
         name: new FormControl(''),
         contact_name: new FormControl(''),
         code: new FormControl(''),
@@ -193,6 +194,9 @@ export class ServicePage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.configService.getConfig().then((data) => {
@@ -226,7 +230,6 @@ export class ServicePage implements OnInit {
     }
 
     async presentPopover(myEvent) {
-      //console.log("teste my event");
       let popover = await this.popoverCtrl.create({
         component: ServicePopover,
         event: myEvent,
@@ -433,10 +436,10 @@ export class ServicePage implements OnInit {
     // async ionViewCanLeave() {
     //     if(this.serviceForm.dirty && ! this.avoidAlertMessage) {
     //         let alertPopup = await this.alertCtrl.create({
-    //             header: 'Descartar',
-    //             message: '¿Deseas salir sin guardar?',
+    //             header: this.translate.instant('DISCARD'),
+    //             message: this.translate.instant('SURE_DONT_SAVE'),
     //             buttons: [{
-    //                     text: 'Si',
+    //                     text: this.translate.instant('YES'),
     //                     handler: () => {
     //                         // alertPopup.dismiss().then(() => {
     //                             this.exitPage();
@@ -444,7 +447,7 @@ export class ServicePage implements OnInit {
     //                     }
     //                 },
     //                 {
-    //                     text: 'No',
+    //                     text: this.translate.instant('NO'),
     //                     handler: () => {
     //                         // need to do something if the user stays?
     //                     }
@@ -500,7 +503,7 @@ export class ServicePage implements OnInit {
     //         message: 'Has consumido algun producto durante el trabajo?',
     //         buttons: [
     //           {
-    //             text: 'No',
+    //             text: this.translate.instant('NO'),
     //             handler: async data => {
     //               console.log("ignore_inputs");
     //
@@ -511,14 +514,14 @@ export class ServicePage implements OnInit {
     //                   message: 'Has hecho algun viaje para realizar el trabajo?',
     //                   buttons: [
     //                     {
-    //                       text: 'No',
+    //                       text: this.translate.instant('NO'),
     //                       handler: data => {
     //                         // this.addTravel();
     //                         this.ignore_travels = true;
     //                       }
     //                     },
     //                     {
-    //                       text: 'Si',
+    //                       text: this.translate.instant('YES'),
     //                       handler: data => {
     //                         this.addTravel();
     //                       }
@@ -530,7 +533,7 @@ export class ServicePage implements OnInit {
     //             }
     //           },
     //           {
-    //             text: 'Si',
+    //             text: this.translate.instant('YES'),
     //             handler: data => {
     //               this.addInput();
     //               // item.description = data.description;
@@ -548,14 +551,14 @@ export class ServicePage implements OnInit {
     //         message: 'Has hecho algun viaje para realizar el trabajo?',
     //         buttons: [
     //           {
-    //             text: 'No',
+    //             text: this.translate.instant('NO'),
     //             handler: data => {
     //               // this.addTravel();
     //               this.ignore_travels = true;
     //             }
     //           },
     //           {
-    //             text: 'Si',
+    //             text: this.translate.instant('YES'),
     //             handler: data => {
     //               this.addTravel();
     //             }
@@ -641,36 +644,6 @@ export class ServicePage implements OnInit {
       this.show_inputs = !this.show_inputs;
       if (!this.serviceForm.value.inputs.length){
         this.addInput();
-      }
-    }
-
-    async editDescription(item){
-      if (this.serviceForm.value.state=='DRAFT'){
-        let prompt = await this.alertCtrl.create({
-          header: 'Description de la linea',
-          message: 'Cual es la mejor description para esta linea?',
-          inputs: [
-            {
-              type: 'text',
-              name: 'description',
-              value: item.description
-          },
-
-          ],
-          buttons: [
-            {
-              text: 'Cancelar'
-            },
-            {
-              text: 'Confirmar',
-              handler: data => {
-                item.description = data.description;
-              }
-            }
-          ]
-        });
-
-        prompt.present();
       }
     }
 
@@ -1013,8 +986,8 @@ export class ServicePage implements OnInit {
     async editWorkPrice(item){
       if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
-          header: 'Precio del servicio',
-          message: 'Cual es el precio de este servicio?',
+          header: this.translate.instant('SERVICE_PRICE'),
+          // message: 'Cual es el precio de este servicio?',
           inputs: [
             {
               type: 'number',
@@ -1025,10 +998,10 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancelar'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -1089,10 +1062,10 @@ export class ServicePage implements OnInit {
     //       ],
     //       buttons: [
     //         {
-    //           text: 'Cancelar'
+    //           text: this.translate.instant('CANCEL'),
     //         },
     //         {
-    //           text: 'Confirmar',
+    //           text: this.translate.instant('CONFIRM'),
     //           handler: data => {
     //             item.price = data.price;
     //             this.recomputeValues();
@@ -1248,8 +1221,8 @@ export class ServicePage implements OnInit {
     async editItemPrice(item){
       if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
-          header: 'Precio del Producto',
-          message: 'Cual es el precio de este producto?',
+          header: this.translate.instant('PRODUCT_PRICE'),
+          // message: 'Cual es el precio de este producto?',
           inputs: [
             {
               type: 'number',
@@ -1260,10 +1233,10 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancelar'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -1280,8 +1253,8 @@ export class ServicePage implements OnInit {
     async editItemQuantity(item){
       if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
-          header: 'Cantidad del Producto',
-          message: 'Cual es el Cantidad de este producto?',
+          header: this.translate.instant('PRODUCT_QUANTITY'),
+          // message: 'Cual es el Cantidad de este producto?',
           inputs: [
             {
               type: 'number',
@@ -1292,10 +1265,10 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancelar'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.quantity = data.quantity;
                 this.recomputeValues();
@@ -1309,74 +1282,74 @@ export class ServicePage implements OnInit {
       }
     }
 
-    async editQuantity(){
-      if (this.serviceForm.value.state=='DRAFT'){
-        let prompt = await this.alertCtrl.create({
-          header: 'Cantidad del Producto',
-          message: 'Cual es el Cantidad de este producto?',
-          inputs: [
-            {
-              type: 'number',
-              name: 'quantity',
-              value: this.serviceForm.value.quantity,
-          },
+    // async editQuantity(){
+    //   if (this.serviceForm.value.state=='DRAFT'){
+    //     let prompt = await this.alertCtrl.create({
+    //       header: this.translate.instant('PRODUCT_QUANTITY'),
+    //       // message: 'Cual es el Cantidad de este producto?',
+    //       inputs: [
+    //         {
+    //           type: 'number',
+    //           name: 'quantity',
+    //           value: this.serviceForm.value.quantity,
+    //       },
+    //
+    //       ],
+    //       buttons: [
+    //         {
+    //           text: this.translate.instant('CANCEL'),
+    //         },
+    //         {
+    //           text: this.translate.instant('CONFIRM'),
+    //           handler: data => {
+    //             this.serviceForm.patchValue({
+    //               'quantity': data.quantity,
+    //             })
+    //             this.recomputeValues();
+    //             this.serviceForm.markAsDirty();
+    //           }
+    //         }
+    //       ]
+    //     });
+    //
+    //     prompt.present();
+    //   }
+    // }
 
-          ],
-          buttons: [
-            {
-              text: 'Cancelar'
-            },
-            {
-              text: 'Confirmar',
-              handler: data => {
-                this.serviceForm.patchValue({
-                  'quantity': data.quantity,
-                })
-                this.recomputeValues();
-                this.serviceForm.markAsDirty();
-              }
-            }
-          ]
-        });
-
-        prompt.present();
-      }
-    }
-
-    async editPrice(){
-      if (this.serviceForm.value.state=='DRAFT'){
-        let prompt = await this.alertCtrl.create({
-          header: 'Valor total esperado',
-          message: 'Cual es el Cantidad de este producto?',
-          inputs: [
-            {
-              type: 'number',
-              name: 'price',
-              value: this.serviceForm.value.price,
-          },
-
-          ],
-          buttons: [
-            {
-              text: 'Cancelar'
-            },
-            {
-              text: 'Confirmar',
-              handler: data => {
-                //console.log("service number", data.number);
-                this.serviceForm.patchValue({
-                  'price': data.price,
-                });
-                this.recomputeValues();
-                this.serviceForm.markAsDirty();
-              }
-            }
-          ]
-        });
-
-        prompt.present();
-      }
-    }
+    // async editPrice(){
+    //   if (this.serviceForm.value.state=='DRAFT'){
+    //     let prompt = await this.alertCtrl.create({
+    //       header: 'Valor total esperado',
+    //       message: 'Cual es el Cantidad de este producto?',
+    //       inputs: [
+    //         {
+    //           type: 'number',
+    //           name: 'price',
+    //           value: this.serviceForm.value.price,
+    //       },
+    //
+    //       ],
+    //       buttons: [
+    //         {
+    //           text: this.translate.instant('CANCEL'),
+    //         },
+    //         {
+    //           text: this.translate.instant('CONFIRM'),
+    //           handler: data => {
+    //             //console.log("service number", data.number);
+    //             this.serviceForm.patchValue({
+    //               'price': data.price,
+    //             });
+    //             this.recomputeValues();
+    //             this.serviceForm.markAsDirty();
+    //           }
+    //         }
+    //       ]
+    //     });
+    //
+    //     prompt.present();
+    //   }
+    // }
 
     recomputeValues() {
       // this.recomputeTravels();
@@ -1401,17 +1374,17 @@ export class ServicePage implements OnInit {
     async serviceConfirm(){
       let totalCost = this.serviceForm.value.total;
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas confirmar el servicio?',
-        message: 'Si la confirmas no podras cambiar los productos ni el cliente',
+        header: this.translate.instant('SURE_CONFIRM_SERVICE'),
+        // message: 'Si la confirmas no podras cambiar los productos ni el cliente',
         buttons: [
           {
-            text: 'Cancelar',
+            text: this.translate.instant('CANCEL'),
             handler: data => {
               //console.log("Cancelar");
             }
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: data => {
               this.afterConfirm();
             }
@@ -1483,39 +1456,30 @@ export class ServicePage implements OnInit {
                 })
               }
             });
-
-
-            if (this.serviceForm.value.production){
-              let product_id = this.serviceForm.value.product_id || this.serviceForm.value.product._id;
-              let product_name = this.serviceForm.value.product.name || this.serviceForm.value.product_name;
-              let unit_cost = this.serviceForm.value.input_amount/this.serviceForm.value.quantity;
+            if (this.serviceForm.value.paymentCondition.date_due){
+              let amount = this.serviceForm.value.total;
               createList.push({
-                'docType': "stock-move",
+                '_return': true,
+                'docType': "cash-move",
+                'date': new Date(),
                 'name': "Servicio "+this.serviceForm.value.code,
-                'quantity': parseFloat(this.serviceForm.value.quantity),
-                'origin_id': this.serviceForm.value._id,
                 'contact_id': this.serviceForm.value.contact._id,
                 'contact_name': this.serviceForm.value.contact.name,
-                'product_id': product_id,
-                'product_name': product_name,
-                'date': new Date(),
-                'cost': this.serviceForm.value.input_amount,
-                'warehouseFrom_id': 'warehouse.production',
-                'warehouseFrom_name': docDict['warehouse.production'].doc.name,
-                'warehouseTo_id': config.warehouse_id,
-                'warehouseTo_name': docDict[config.warehouse_id].doc.name,
+                'amount': amount,
+                'amount_residual': amount,
+                'amount_unInvoiced': amount,
+                'payments': [],
+                'invoices': [],
+                'origin_id': this.serviceForm.value._id,
+                'dateDue': this.serviceForm.value.paymentCondition.date_due,
+                'accountFrom_id': 'account.income.service',
+                'accountFrom_name': docDict['account.income.service'].doc.name,
+                'accountTo_id': this.serviceForm.value.paymentCondition.accountTo_id,
+                'accountTo_name': docDict[this.serviceForm.value.paymentCondition.accountTo_id].doc.name,
               });
-              this.productService.updateStockAndCost(
-                product_id,
-                this.serviceForm.value.quantity,
-                this.serviceForm.value.input_amount/this.serviceForm.value.quantity,
-                this.serviceForm.value.product.stock,
-                this.serviceForm.value.product.cost);
-
             } else {
               this.serviceForm.value.paymentCondition.items.forEach(item => {
                 let dateDue = this.addDays(this.today, item.days);
-                //console.log("dentro", this.serviceForm.value);
                 let amount = (item.percent/100)*this.serviceForm.value.total;
                 createList.push({
                   '_return': true,
@@ -1550,7 +1514,6 @@ export class ServicePage implements OnInit {
                 amount_unInvoiced: this.serviceForm.value.total,
                 planned: created,
               });
-              //console.log("Purchase created", created);
               this.buttonSave();
               resolve(true);
             })
@@ -1560,22 +1523,22 @@ export class ServicePage implements OnInit {
     }
 
     async serviceCancel(){
-      let name = "Desconfirmar";
+      let name = this.translate.instant('UNCONFIRM');
       if (this.serviceForm.value.state != 'CONFIRMED'){
-        name = "Volver a Borrador";
+        name = this.translate.instant('BACK_TO_DRAFT');
       }
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas '+name+' el Servicio?',
-        message: 'Al '+name+' el Servicio todos los registros asociados serán borrados',
+        header: this.translate.instant('YOU_WANT')+name+this.translate.instant('THE_SERVICE')+'?',
+        message: this.translate.instant('AT')+name+this.translate.instant('WARNING_CANCEL_SERVICE'),
         buttons: [
           {
-            text: 'No',
+            text: this.translate.instant('NO'),
             handler: data => {
               //console.log("Cancelar");
             }
           },
           {
-            text: 'Si',
+            text: this.translate.instant('YES'),
             handler: data => {
               this.serviceForm.patchValue({
                  state: 'DRAFT',
@@ -2397,30 +2360,31 @@ export class ServicePage implements OnInit {
     }
     async canDeactivate() {
         if(this.serviceForm.dirty) {
-            let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
-                buttons: [{
-                        text: 'Si',
-                        handler: () => {
-                            // alertPopup.dismiss().then(() => {
-                                this.exitPage();
-                            // });
-                        }
-                    },
-                    {
-                        text: 'No',
-                        handler: () => {
-                            // need to do something if the user stays?
-                        }
-                    }]
-            });
+          let alertPopup = await this.alertCtrl.create({
+            header: this.translate.instant('DISCARD'),
+            // message: this.translate.instant('SURE_DONT_SAVE'),
+            message: this.translate.instant('SURE_DONT_SAVE'),
+              buttons: [{
+                      text: this.translate.instant('YES'),
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: this.translate.instant('NO'),
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
 
-            // Show the alert
-            alertPopup.present();
+          // Show the alert
+          alertPopup.present();
 
-            // Return false to avoid the page to be popped up
-            return false;
+          // Return false to avoid the page to be popped up
+          return false;
         } else {
           this.exitPage();
         }
