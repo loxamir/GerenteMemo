@@ -854,11 +854,12 @@ export class WorkPage implements OnInit {
       }
       if (this.workForm.controls[list_field].dirty){
         let data:any = await this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
-          let contract_id:any = undefined;
+          let contract_id:any;
           if (item['contract'] && JSON.stringify(item['contract']) != '{}'){
             contract_id = item['contract']._id
           }
           if(item.doc_id){
+            //If the line already exists
             let warehouse:any = item['warehouse'];
             if (!item['warehouse'] || JSON.stringify(item['warehouse']) == '{}'){
               warehouse = {
@@ -873,11 +874,21 @@ export class WorkPage implements OnInit {
               'contract_id': contract_id
             }]);
           } else {
-            let move:any = await this.stockMoveInCreate(name, item[qty_field], product, item['warehouse'], contract_id)
+            // It's a new line
+            let warehouse:any = item['warehouse'];
+            if (!item['warehouse'] || JSON.stringify(item['warehouse']) == '{}'){
+              warehouse = {
+                _id: this.config.warehouse_id,
+                name: this.config.warehouse_name,
+              }
+            }
+            let move:any = await this.stockMoveInCreate(name, item[qty_field], product, warehouse, contract_id)
             item.doc_id = move.id;
-            let contract = await this.pouchdbService.getDoc(contract_id);
-            contract['delivered'] += parseFloat(item[qty_field]);
-            await this.pouchdbService.updateDoc(contract)
+            if (contract_id){
+              let contract = await this.pouchdbService.getDoc(contract_id);
+              contract['delivered'] += parseFloat(item[qty_field]);
+              await this.pouchdbService.updateDoc(contract)
+            }
           }
         })
         resolve(true);

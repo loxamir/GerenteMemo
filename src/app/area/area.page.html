@@ -41,7 +41,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content  class="list-mini-content">
+<ion-content  class="list-mini-content"  *ngIf="!showForm">
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
   <img id="imgtmp" #imgtmp style="display:none">
   <div id="pwa">
