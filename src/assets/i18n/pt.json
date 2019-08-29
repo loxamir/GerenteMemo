@@ -555,5 +555,10 @@
   "RAIN": "Chuva",
   "SEARCH_ACTIVITY": "Buscar Atividade",
   "BAGS": "sacas",
+  "CONFIGURE_INVOICE": "Configurar Nota Fiscal",
+  "CONFIGURE_TICKET": "Configurar Ticket",
+  "HECTATE":"Hectare",
+  "ALQUEIRE":"Alqueire",
+  "CHOOSE_LANGUAGE": "Escolher Idioma",
   "RESULT": "Resultado"
 }

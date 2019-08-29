@@ -178,7 +178,7 @@
                   {{'CROP'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByMargin()">
-                  {{'COST_HA'|translate}}
+                  {{'COST'|translate}}/{{areaMeasure}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByQuantity()">
                   {{'AREA'|translate}}
@@ -207,7 +207,7 @@
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
                   [class.sumatory]="item.sumatory">
-                  {{item.quantity|number:'1.0-2'}} ha
+                  {{item.quantity|number:'1.0-2'}} {{areaMeasure}}
                 </ion-col>
                 <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
@@ -231,7 +231,7 @@
                   $ {{total/items_quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col style="text-align: right">
-                  {{items_quantity|number:'1.0-2'}} ha
+                  {{items_quantity|number:'1.0-2'}} {{areaMeasure}}
                 </ion-col>
                 <ion-col style="text-align: right">
                   $ {{total|number:'1.2-2'}}
@@ -629,7 +629,7 @@
                   {{'ACTIVITY'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByMargin()">
-                  {{'COST_HA'|translate}}
+                  {{'COST'|translate}}/{{areaMeasure}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByQuantity()">
                   {{'PLACE'|translate}}
@@ -658,7 +658,7 @@
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
                   [class.sumatory]="item.sumatory">
-                  {{item.quantity|number:'1.0-2'}} ha
+                  {{item.quantity|number:'1.0-2'}} {{areaMeasure}}
                 </ion-col>
                 <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
@@ -682,7 +682,7 @@
                   <!-- $ {{total/items_quantity|number:'1.2-2'}} -->
                 </ion-col>
                 <ion-col style="text-align: right">
-                  <!-- {{items_quantity|number:'1.0-2'}} ha -->
+                  <!-- {{items_quantity|number:'1.0-2'}} {{areaMeasure}} -->
                 </ion-col>
                 <ion-col style="text-align: right">
                   $ {{total|number:'1.2-2'}}
@@ -698,7 +698,7 @@
                   {{'PLACE'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByMargin()">
-                  {{'COST_HA'|translate}}
+                  {{'COST'|translate}}/{{areaMeasure}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByQuantity()">
                   {{'AREA'|translate}}
@@ -727,7 +727,7 @@
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
                   [class.sumatory]="item.sumatory">
-                  {{item.quantity|number:'1.0-2'}} ha
+                  {{item.quantity|number:'1.0-2'}} {{areaMeasure}}
                 </ion-col>
                 <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
@@ -751,7 +751,7 @@
                   $ {{total/items_quantity|number:'1.2-2'}}
                 </ion-col>
                 <ion-col style="text-align: right">
-                  {{items_quantity|number:'1.0-2'}} ha
+                  {{items_quantity|number:'1.0-2'}} {{areaMeasure}}
                 </ion-col>
                 <ion-col style="text-align: right">
                   $ {{total|number:'1.2-2'}}

@@ -4,11 +4,6 @@
       <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'CONFIG' | translate }}</ion-title>
-    <!-- <ion-buttons slot="end" [hidden]="!configForm.dirty">
-      <ion-button (click)="buttonSave()">
-        {{ 'SAVE' | translate }}
-      </ion-button>
-    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -17,12 +12,7 @@
   [formGroup]="configForm"
   (ngSubmit)="onSubmit(configForm.value)">
 
-
   <ion-row justify-content-center>
-    <!-- <ion-item no-padding (click)="selectAccount()" class="field-50">
-      <h4 class="field-label">{{'ACCOUNT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.account && configForm.value.account.name || 'SELECT'|translate}}</h4>
-    </ion-item> -->
 
     <ion-item no-padding (click)="selectDefaultContact()" class="field-50">
       <h4 class="field-label">{{'DEFAULT_CONTACT' | translate }}</h4>
@@ -44,31 +34,6 @@
       <h4 class="field-value">{{configForm.value.currency && configForm.value.currency.name || 'SELECT'|translate}}</h4>
     </ion-item>
 
-    <!-- <ion-item no-padding (click)="selectContact()" class="field-50">
-      <h4 class="field-label">{{'CONTACT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.contact && configForm.value.contact.name || 'SELECT'|translate}}</h4>
-    </ion-item> -->
-
-    <!-- <ion-item no-padding (click)="selectLaborProduct()" class="field-50">
-      <h4 class="field-label">{{'LABOR_PRODUCT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.labor_product && configForm.value.labor_product.name || 'SELECT'|translate}}</h4>
-    </ion-item>
-
-
-    <ion-item no-padding (click)="selectTravelProduct()" class="field-50">
-      <h4 class="field-label">{{'TRAVEL_PRODUCT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.travel_product && configForm.value.travel_product.name || 'SELECT'|translate}}</h4>
-    </ion-item> -->
-
-    <!-- <ion-item no-padding (click)="selectInputProduct()" class="field-50">
-      <h4 class="field-label">{{'INPUT_PRODUCT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.input_product && configForm.value.input_product.name || 'SELECT'|translate}}</h4>
-    </ion-item> -->
-
-    <!-- <ion-item no-padding class="field-50">
-      <ion-label position="floating">{{'invoice_sequence' | translate}}</ion-label>
-      <ion-input type="text" formControlName="invoice_sequence"></ion-input>
-    </ion-item> -->
     <ion-item no-padding (click)="selectCash()" class="field-50">
       <div class="field-many2one">
         <h4 class="field-label">{{'CASH' | translate }}</h4>
@@ -80,25 +45,32 @@
       <ion-input type="text" formControlName="product_sequence"></ion-input>
     </ion-item>
 
+    <ion-item no-padding class="field-100">
+      <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
+      <ion-select
+      formControlName="areaMeasure"
+      cancelText="{{ 'CANCEL' | translate }}"
+      okText="{{ 'OK' | translate }}"
+      interface="popover">
+        <ion-select-option value="ha">{{'HECTATE'|translate}}</ion-select-option>
+        <ion-select-option value="alq">{{'ALQUEIRE'|translate}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
 
 
     <ion-col class="item-content">
-      <ion-button class="print-invoice" (click)="configInvoicePrint()" style="width: 99%">Configurar Factura</ion-button>
+      <ion-button class="print-invoice" (click)="configInvoicePrint()" style="width: 99%">
+        {{'CONFIGURE_INVOICE'|translate}}
+      </ion-button>
     </ion-col>
 
     <ion-col class="item-content">
-      <ion-button class="print-invoice" (click)="configTicketPrint()" style="width: 99%">Configurar Ticket</ion-button>
+      <ion-button class="print-invoice" (click)="configTicketPrint()" style="width: 99%">
+        {{'CONFIGURE_TICKET'|translate}}
+      </ion-button>
     </ion-col>
 
-    <!-- <ion-item  class="field-100">
-      <ion-label position="stacked">{{ 'SERVICE_NOTE' | translate }}</ion-label>
-      <ion-textarea #clrequest formControlName="serviceNote"
-        rows="3">
-      </ion-textarea>
-    </ion-item> -->
-    <!--ion-col class="item-content">
-      <ion-button class="print-invoice" (click)="setLegalName()" style="width: 99%">Definir Razon Social</ion-button>
-    </ion-col-->
   </ion-row>
   <!-- <ion-card class="list-card" style="border-radius: 7px;width: 98%;margin-left: 3px;">
   <h2 class="section-title">{{'Usuarios' | translate}}</h2>

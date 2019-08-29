@@ -555,5 +555,10 @@
   "RAIN": "Rain",
   "SEARCH_ACTIVITY": "Search Activity",
   "BAGS": "bags",
+  "CONFIGURE_INVOICE": "Configure Invoice",
+  "CONFIGURE_TICKET": "Configure Ticket",
+  "HECTATE":"Hectare",
+  "ALQUEIRE":"Alqueire",
+  "CHOOSE_LANGUAGE": "Chose Language",
   "RESULT": "Result"
 }

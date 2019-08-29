@@ -88,6 +88,7 @@ export class ConfigPage implements OnInit {
       country: [''],
       state: [''],
       // tab: ['profile'],
+      areaMeasure: 'ha',
       invoice_sequence: [''],
       sale_sequence: [1],
       service_sequence: [1],

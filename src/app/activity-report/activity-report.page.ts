@@ -61,6 +61,7 @@ export class ActivityReportPage implements OnInit {
   x: any;
   y: any;
   g: any;
+  areaMeasure = "ha";
 
   line: d3Shape.Line<[number, number]>;
   constructor(
@@ -1269,6 +1270,8 @@ export class ActivityReportPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
+    let config: any = (await this.pouchdbService.getDoc('config.profile'));
+    this.areaMeasure = config.areaMeasure
     await this.goNextStep();
     this.loading.dismiss();
   }

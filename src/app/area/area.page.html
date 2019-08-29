@@ -317,7 +317,7 @@
         <ion-input #name type="text" formControlName="name"></ion-input>
       </ion-item>
       <ion-item no-padding class="field-50">
-        <ion-label position="floating">{{'AREA' | translate}}(ha)</ion-label>
+        <ion-label position="floating">{{'AREA' | translate}}({{areaMeasure}})</ion-label>
         <ion-input type="number" formControlName="surface"></ion-input>
       </ion-item>
       <ion-item no-padding (click)="selectCrop()" class="field-50">
