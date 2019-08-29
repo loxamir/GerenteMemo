@@ -827,8 +827,7 @@ export class WorkPage implements OnInit {
     Create a list of stock moves based on a list
     */
     return new Promise(async (resolve, reject)=>{
-      // console.log("fieldsd ddd", this.workForm.controls[list_field].dirty);
-      if (this.workForm.controls[list_field].dirty){
+      // if (this.workForm.controls[list_field].dirty){
         this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
           if(item.doc_id){
             let update = await this.updateDoc(item.doc_id, [{
@@ -842,9 +841,9 @@ export class WorkPage implements OnInit {
           // console.log("data", data);
           resolve(true);
         })
-      } else {
-        resolve(false)
-      }
+      // } else {
+      //   resolve(false)
+      // }
     })
   }
 
@@ -856,7 +855,7 @@ export class WorkPage implements OnInit {
       if (typeof product === 'string'){
         product = await this.pouchdbService.getDoc(product);
       }
-      if (this.workForm.controls[list_field].dirty){
+      // if (this.workForm.controls[list_field].dirty){
         let data:any = await this.formatService.asyncForEach(this.workForm.value[list_field], async (item)=>{
           let contract_id:any;
           if (item['contract'] && JSON.stringify(item['contract']) != '{}'){
@@ -896,9 +895,9 @@ export class WorkPage implements OnInit {
           }
         })
         resolve(true);
-      } else {
-        resolve(false)
-      }
+      // } else {
+      //   resolve(false)
+      // }
     })
   }
 
