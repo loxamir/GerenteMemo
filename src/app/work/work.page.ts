@@ -232,9 +232,11 @@ export class WorkPage implements OnInit {
     if (this.select && this.list) {
       this.dismissData();
     } else {
-      await this.preSave();
+      if (this.workForm.value.state == 'DONE'){
+        await this.preSave();
+        this.deleteRemoved();
+      }
       this.setSummary();
-      this.deleteRemoved();
       if (this._id) {
         this.workService.updateWork(this.workForm.value);
         this.events.publish('open-work', this.workForm.value);
@@ -270,9 +272,11 @@ export class WorkPage implements OnInit {
     // if (this.select && this.list) {
     //   this.dismissData();
     // } else {
-      await this.preSave();
+      if (this.workForm.value.state == 'DONE'){
+        await this.preSave();
+        this.deleteRemoved();
+      }
       this.setSummary();
-      this.deleteRemoved();
       if (this._id) {
         this.workService.updateWork(this.workForm.value);
         this.events.publish('open-work', this.workForm.value);
