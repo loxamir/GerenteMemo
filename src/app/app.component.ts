@@ -73,23 +73,16 @@ export class AppComponent implements OnInit {
     public restProvider: RestProvider,
     public storage: Storage,
   ) {
-    // this.initializeApp();
     this.backButtonListener();
   }
 
   initializeApp() {
-    // this.platform.ready().then(() => {
       if (this.platform.is('cordova')){
-        //
-        //
-        // this.statusBar.styleDefault();
         this.statusBar.show()
-        // this.statusBar.overlaysWebView(true);
         this.statusBar.styleLightContent()
         this.statusBar.backgroundColorByHexString('#1652a0');
         this.splashScreen.hide();
       }
-    // });
   }
 
   backButtonListener(): void {
@@ -107,7 +100,6 @@ export class AppComponent implements OnInit {
     await this.notificationsService.init();
     this.platform.ready().then(async () => {
       let token = await this.notificationsService.requestPermission();
-      console.log("tokk1", token);
       if (typeof token === 'string'){
         let username = await this.storage.get('username');
         let password = await this.storage.get('password');
@@ -115,7 +107,6 @@ export class AppComponent implements OnInit {
           this.restProvider.setUserToken(username, password, token);
         }
       }
-      console.log("initialized");
       this.initializeApp();
     })
     let lenguage = await this.storage.get("language");
