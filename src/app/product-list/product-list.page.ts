@@ -73,7 +73,7 @@ export class ProductListPage implements OnInit {
     await this.setFilteredItems();
     if (this.select) {
       setTimeout(() => {
-          this.searchBar.setFocus();
+        this.searchBar.setFocus();
       }, 200);
     }
   }
@@ -201,12 +201,14 @@ export class ProductListPage implements OnInit {
       } else {
         products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_name', type, 'name', 'increase')
       }
-      await this.formatService.asyncForEach(products, async (product: any)=>{
-        let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
-        ["warehouse.physical.my", product._id],
-        ["warehouse.physical.my", product._id+"z"])
-        product.stock = viewList && viewList[0] && viewList[0].value || 0;
-      })
+      if (!this.select){
+        await this.formatService.asyncForEach(products, async (product: any)=>{
+          let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
+          ["warehouse.physical.my", product._id],
+          ["warehouse.physical.my", product._id+"z"])
+          product.stock = viewList && viewList[0] && viewList[0].value || 0;
+        })
+      }
       resolve(products);
     })
   }

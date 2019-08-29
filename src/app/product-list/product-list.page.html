@@ -45,7 +45,7 @@
                   <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
                       {{'CODE'| translate}}: <b style="  margin-left: 5px">{{item.code}}</b>
                   </h3>
-                  <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
+                  <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service' && !this.select">
                       {{'STOCK'| translate}}: <b style="color: green;margin-left: 5px">{{item.stock+' '}}{{item.unity|translate}}</b>
                   </h3>
                 </ion-col>
@@ -54,12 +54,12 @@
                   <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.'+currency_precision}}</h2>
                 </ion-col>
               </ion-row>
-              <ion-row no-padding *ngIf="item.stock>=0&&item.stock<item.stock_min&&item.type=='product'">
+              <ion-row no-padding *ngIf="item.stock>=0&&item.stock<item.stock_min&&item.type=='product' && !this.select">
                 <ion-col no-padding style="text-align: center;" class="confirmed">
                     {{ 'STOCK_LOW' | translate }}
                 </ion-col>
               </ion-row>
-              <ion-row no-padding *ngIf="item.stock<0&&item.type=='product'"  class="due">
+              <ion-row no-padding *ngIf="item.stock<0&&item.type=='product' && !this.select"  class="due">
                 <ion-col no-padding style="text-align: center;color: white;">
                     {{ 'NEGATIVE_STOCK' | translate }}
                 </ion-col>
