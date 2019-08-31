@@ -141,11 +141,17 @@ export class WorkPage implements OnInit {
   }
 
   async ngOnInit() {
+    var date_start = new Date();
+    date_start.setHours(7);
+    date_start.setMinutes(30);
+    var date_end = new Date();
+    date_end.setHours(18);
+    date_end.setMinutes(0);
     this.workForm = this.formBuilder.group({
       name: new FormControl(''),
       activity: new FormControl(this.activity||{}),
-      date: new FormControl(this.today.toISOString()),
-      dateEnd: new FormControl(this.today.toISOString()),
+      date: new FormControl(date_start.toISOString()),
+      dateEnd: new FormControl(date_end.toISOString()),
       note: new FormControl(),
       state: new FormControl(this.state),
       fields: new FormControl([]),
