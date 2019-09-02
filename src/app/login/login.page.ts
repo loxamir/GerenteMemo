@@ -71,6 +71,7 @@ export class LoginPage implements OnInit {
         Validators.pattern('^[a-zA-Z0-9_.+-]+$')
       ])),
       password: new FormControl('', Validators.required),
+      address: new FormControl('', Validators.required),
     });
     this.loading = await this.loadingCtrl.create({});
     this.language = await this.storage.get("language");
@@ -122,10 +123,33 @@ export class LoginPage implements OnInit {
 
   showCreate(){
     this.show_create = true;
+    this.loginForm.patchValue({
+      "user": "agromemo",
+      "password": "123",
+    })
   }
 
   showLogin(){
+    this.loginForm.patchValue({
+      "user": "",
+      "password": "",
+    })
     this.show_create = false;
+  }
+
+  seeDemo(){
+    this.login();
+    this.registerLead()
+  }
+
+  registerLead(){
+    let leadData = {
+      "name": this.loginForm.value.name,
+      "address": this.loginForm.value.address,
+      "phone": this.loginForm.value.mobile,
+      "date": this.today,
+    }
+    this.restProvider.sendLead(leadData);
   }
 
   login (){

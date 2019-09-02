@@ -264,6 +264,30 @@ export class RestProvider {
     });
   }
 
+  sendLead(data){
+    return new Promise(resolve => {
+      let uuid= this.getUUID();
+      this.http.put(
+        this.databaseUrl+'/leads/lead.'+uuid,
+        data,
+        {
+          headers: new HttpHeaders().set('Authorization', "Basic " + btoa('agromemo' + ":" + '123'))
+        }
+      ).subscribe(returno => {
+        console.log("returno", returno);
+        resolve(returno);
+      }, err => {
+        resolve(err);
+        console.log("change language error", err);
+      });
+    });
+  }
+
+  getUUID(){
+    const uuidv4 = require('uuid/v4');
+    return uuidv4();
+  }
+
   setUserToken(username, password, token){
     return new Promise(resolve => {
       this.http.get(

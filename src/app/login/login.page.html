@@ -21,22 +21,22 @@
     <ion-row *ngIf="!selected_user">
       <ion-col></ion-col>
       <ion-col no-padding width-80>
-        <ion-item style="--background:white;border-radius:10px;margin-bottom:10px;">
+        <ion-item style="--background:white;border-radius:10px;margin-bottom:10px;" *ngIf="!show_create">
           <ion-label position="floating">{{'USER' | translate}}</ion-label>
           <ion-input type="text" formControlName="user" autocomplete='name'></ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;">
+        <div class="validation-errors" style="color: red;" *ngIf="!show_create">
           <ng-container *ngFor="let validation of validation_messages.user">
             <div class="error-message" *ngIf="loginForm.get('user').hasError(validation.type) && (loginForm.get('user').dirty || loginForm.get('user').touched)">
               {{ validation.message }}
             </div>
           </ng-container>
         </div>
-        <ion-item style="--background:white;border-radius:10px;margin-bottom:10px;">
+        <ion-item style="--background:white;border-radius:10px;margin-bottom:10px;" *ngIf="!show_create">
           <ion-label position="floating">{{'PASSWORD' | translate}}</ion-label>
           <ion-input type="password" formControlName="password" autocomplete='name'></ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;">
+        <div class="validation-errors" style="color: red;" *ngIf="!show_create">
           <ng-container *ngFor="let validation of validation_messages.password">
             <div class="error-message" *ngIf="loginForm.get('password').hasError(validation.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
               {{ validation.message }}
@@ -56,7 +56,7 @@
         </div>
         <ion-item *ngIf="show_create" style="--background:white;border-radius:10px;margin-bottom:10px;">
           <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
-          <ion-input type="number" formControlName="mobile">
+          <ion-input type="text" formControlName="mobile">
           </ion-input>
         </ion-item>
         <div class="validation-errors" style="color: red;">
@@ -67,19 +67,52 @@
           </ng-container>
         </div>
 
-        <ion-button class="print-invoice" (click)="login()" *ngIf="!show_create" style="border-radius:10px;width:100%">
+        <ion-item *ngIf="show_create" style="--background:white;border-radius:10px;margin-bottom:10px;">
+          <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
+          <ion-input type="text" formControlName="address">
+          </ion-input>
+        </ion-item>
+        <div class="validation-errors" style="color: red;">
+          <ng-container *ngFor="let validation of validation_messages.address">
+            <div class="error-message" *ngIf="loginForm.get('address').hasError(validation.type) && (loginForm.get('address').dirty || loginForm.get('address').touched)">
+              {{ validation.message }}
+            </div>
+          </ng-container>
+        </div>
+
+        <ion-button
+        class="print-invoice"
+        (click)="login()"
+        *ngIf="!show_create"
+        style="border-radius:10px;width:100%">
           {{ 'LOG_IN' | translate }}
         </ion-button>
-        <ion-button class="print-invoice" (click)="register()" [disabled]="!loginForm.valid" *ngIf="show_create" style="border-radius:10px;width:100%">
-          {{ 'SIGN_UP' | translate }}
+        <ion-button
+        class="print-invoice"
+        (click)="seeDemo()"
+        [disabled]="!loginForm.valid"
+        color="success"
+        *ngIf="show_create"
+        style="border-radius:10px;width:100%">
+          {{ 'SEE_DEMO' | translate }}
         </ion-button>
+
+        <ion-button
+        class="print-invoice"
+        (click)="showCreate()"
+        *ngIf="!show_create"
+        color="success"
+        style="border-radius:10px;width:100%">
+          {{ 'SEE_DEMO' | translate }}
+        </ion-button>
+
         <ion-row>
           <ion-col>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col style="text-align: center;">
-            <a style="font-size:15px;" (click)="showCreate()" *ngIf="!show_create">{{ 'CREATE_ACCOUNT' | translate }}</a>
+            <!-- <a style="font-size:15px;" (click)="showCreate()" *ngIf="!show_create">{{ 'CREATE_ACCOUNT' | translate }}</a> -->
             <a style="font-size:15px;" (click)="showLogin()" *ngIf="show_create">{{ 'BACK_TO_LOGIN' | translate }}</a>
           </ion-col>
         </ion-row>
