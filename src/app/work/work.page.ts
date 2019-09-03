@@ -54,6 +54,7 @@ export class WorkPage implements OnInit {
   showPlan = false;
   tmpData = {};
   state = 'DRAFT';
+  ready = false;
 
   constructor(
     public navCtrl: NavController,
@@ -194,6 +195,7 @@ export class WorkPage implements OnInit {
           }
           this.recomputeFields();
           this.loading.dismiss();
+          this.ready = true;
         });
       }
       else if (this.data){
@@ -210,6 +212,7 @@ export class WorkPage implements OnInit {
         }
         this.recomputeFields();
         this.loading.dismiss();
+        this.ready = true;
       }
       else {
         this.loading.dismiss();
@@ -219,6 +222,7 @@ export class WorkPage implements OnInit {
         } else {
           this.setActivity(this.activity);
         }
+        this.ready = true;
       }
   }
 
@@ -957,7 +961,7 @@ export class WorkPage implements OnInit {
   }
 
   async dateEndChanged(){
-    if (this.workForm.value.dateEnd < this.workForm.value.date){
+    if (this.ready && this.workForm.value.dateEnd < this.workForm.value.date){
       let alertPopup = await this.alertCtrl.create({
         header: this.translate.instant('DATE_ERROR'),
         message: this.translate.instant('DATE_END_LOWER_THAN_START'),
@@ -965,9 +969,11 @@ export class WorkPage implements OnInit {
         {
           text: this.translate.instant('OK'),
           handler: () => {
-            // this.workForm.patchValue({
-            //   dateEnd: this.workForm.value.date,
-            // })
+            this.ready = false;
+            this.workForm.patchValue({
+              dateEnd: this.workForm.value.date,
+            })
+            this.ready = true;
           }
         }]
       });
