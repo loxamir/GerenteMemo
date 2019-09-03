@@ -51,7 +51,7 @@ export class SalePage implements OnInit {
   @ViewChild('corpo', { static: true }) corpo;
   @HostListener('document:keypress', ['$event'])
     async handleKeyboardEvent(event: KeyboardEvent) {
-      if (this.listenBarcode && this.saleForm.value.state == 'QUOTATION'){
+      if (this.listenBarcode && this.saleForm.value.state == 'QUOTATION' && document.activeElement.tagName != "TEXTAREA"){
         this.corpo.setFocus();
         this.corpo.value = "";
         let timeStamp = event.timeStamp - this.timeStamp;
