@@ -1,6 +1,6 @@
 
 <ion-header *ngIf="selected_user">
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-title>
       {{ 'WELCOME' | translate }} {{ username }}
     </ion-title>
@@ -12,18 +12,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--ion-background-color: #bbe0ff;">
-    <img src="./assets/images/logo.png"
-    alt="Sistema Memo"
-    class="center"/>
+<ion-content style="--ion-background-color: linear-gradient(to left,#52a93c,#337d54);">
+
+
 
   <form [formGroup]="loginForm">
-    <ion-row *ngIf="!selected_user">
-      <ion-col></ion-col>
-      <ion-col no-padding width-80>
-        <ion-item style="--background:white;border-radius:10px;margin-bottom:10px;" *ngIf="!show_create">
-          <ion-label position="floating">{{'USER' | translate}}</ion-label>
-          <ion-input type="text" formControlName="user" autocomplete='name'></ion-input>
+
+    <div *ngIf="!selected_user">
+      <div no-padding style="width: 300px;margin: auto;padding: 30px;background: white;margin-top: 30px;border-radius:10px;">
+        <img src="./assets/images/logo.png"
+        alt="Sistema Memo"
+        style="margin-bottom: 20px;"/>
+        <ion-item style="--background: white;--color: #489d44;border: 1px solid green;border-radius:10px;margin-bottom:10px;" *ngIf="!show_create">
+          <ion-label position="floating"  style="padding-left: 15px;color: #3773e8;">{{'USER' | translate}}</ion-label>
+          <ion-input type="text" formControlName="user" autocomplete='name' style="--color: black;"></ion-input>
         </ion-item>
         <div class="validation-errors" style="color: red;" *ngIf="!show_create">
           <ng-container *ngFor="let validation of validation_messages.user">
@@ -32,9 +34,9 @@
             </div>
           </ng-container>
         </div>
-        <ion-item style="--background:white;border-radius:10px;margin-bottom:10px;" *ngIf="!show_create">
-          <ion-label position="floating">{{'PASSWORD' | translate}}</ion-label>
-          <ion-input type="password" formControlName="password" autocomplete='name'></ion-input>
+        <ion-item style="--background: white;--color: #489d44;border: 1px solid green;border-radius:10px;margin-bottom:10px;" *ngIf="!show_create">
+          <ion-label position="floating" style="padding-left: 15px;color: #3773e8;">{{'PASSWORD' | translate}}</ion-label>
+          <ion-input type="password" formControlName="password" autocomplete='name' style="--color: black;"></ion-input>
         </ion-item>
         <div class="validation-errors" style="color: red;" *ngIf="!show_create">
           <ng-container *ngFor="let validation of validation_messages.password">
@@ -43,9 +45,9 @@
             </div>
           </ng-container>
         </div>
-        <ion-item *ngIf="show_create" style="--background:white;border-radius:10px;margin-bottom:10px;">
-          <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-          <ion-input type="text" formControlName="name"></ion-input>
+        <ion-item *ngIf="show_create" style="--background: white;--color: #489d44;border: 1px solid green;border-radius:10px;margin-bottom:10px;">
+          <ion-label position="floating" style="padding-left: 15px;color: #3773e8;">{{'NAME' | translate}}</ion-label>
+          <ion-input type="text" formControlName="name" style="--color: black;"></ion-input>
         </ion-item>
         <div class="validation-errors" style="color: red;">
           <ng-container *ngFor="let validation of validation_messages.name">
@@ -54,9 +56,9 @@
             </div>
           </ng-container>
         </div>
-        <ion-item *ngIf="show_create" style="--background:white;border-radius:10px;margin-bottom:10px;">
-          <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
-          <ion-input type="text" formControlName="mobile">
+        <ion-item *ngIf="show_create" style="--background: white;--color: #489d44;border: 1px solid green;border-radius:10px;margin-bottom:10px;">
+          <ion-label position="floating" style="padding-left: 15px;color: #3773e8;">{{'PHONE' | translate}}</ion-label>
+          <ion-input type="text" formControlName="mobile" style="--color: black;">
           </ion-input>
         </ion-item>
         <div class="validation-errors" style="color: red;">
@@ -67,9 +69,9 @@
           </ng-container>
         </div>
 
-        <ion-item *ngIf="show_create" style="--background:white;border-radius:10px;margin-bottom:10px;">
-          <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
-          <ion-input type="text" formControlName="address">
+        <ion-item *ngIf="show_create" style="--background: white;--color: #489d44;border: 1px solid green;border-radius:10px;margin-bottom:10px;">
+          <ion-label position="floating" style="padding-left: 15px;color: #3773e8;">{{'ADDRESS' | translate}}</ion-label>
+          <ion-input type="text" formControlName="address" style="--color: black;">
           </ion-input>
         </ion-item>
         <div class="validation-errors" style="color: red;">
@@ -116,9 +118,8 @@
             <a style="font-size:15px;" (click)="showLogin()" *ngIf="show_create">{{ 'BACK_TO_LOGIN' | translate }}</a>
           </ion-col>
         </ion-row>
-      </ion-col>
-      <ion-col></ion-col>
-    </ion-row>
+      </div>
+    </div>
   </form>
 
 
@@ -144,7 +145,7 @@
         </ion-col>
       </ion-item>
     </div>
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <a target="_blank" href="https://www.youtube.com/channel/UCfjFZyo8jvrx0ILRBTk2XRQ" rel="noopener">
     <ion-button style="--color: white; --background: white;">
       <ion-icon name="logo-youtube" style="margin-right: 5px;color: red;"> </ion-icon>
@@ -160,7 +161,7 @@
       <span style="color: black;font-weight: bold;">{{ 'CONTACT' | translate }}</span>
     </ion-button>
   </a>
-  </ion-fab>
+  </ion-fab> -->
   <div style="height: 100px;">
   </div>
 </ion-content>

@@ -701,3 +701,27 @@ ion-title.ios.title-ios.hydrated {
 .planned {
     color: #4545e8;
 }
+
+ion-toolbar {
+  --ion-background-color: linear-gradient(to left,#52a93c,#337d54);
+  color: white;
+}
+
+ion-searchbar {
+  --ion-background-color: white;
+}
+
+// ion-tabs {
+//   --ion-background-color: linear-gradient(to left,#52a93c,#337d54);
+//   color: white;
+// }
+
+// ion-tab-button {
+//   background: #52a93c;
+//   color: white;
+// }
+
+ion-tab-bar {
+  background: linear-gradient(to left,#52a93c,#52a93c);
+  color: white;
+}

@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
     </ion-buttons>
@@ -71,7 +71,7 @@
   <!-- </ion-scroll> -->
 </ion-content>
 <ion-footer *ngIf="errorMessage.length > 0" >
-  <ion-toolbar color="primary" style="border: 1px solid red;">
+  <ion-toolbar style="border: 1px solid red;">
     <h3 style="color: red;">Aviso</h3>
     <ion-row *ngFor="let message of errorMessage; let counter = index">
       <ion-col>{{counter+1+' - '+message}}</ion-col>
