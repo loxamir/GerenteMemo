@@ -123,11 +123,10 @@
 
 
     <div *ngIf="selected_user">
-      <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 20px;">{{ 'COMPANIES' | translate}}</h2>
+      <h2 class="section-title" style="color:white;font-size: 1.5rem;padding: 0.6rem;">{{ 'FARMS' | translate}}</h2>
       <ion-item *ngFor="let database of databaseList"
       class="bg-white"
-      [class.bg-yellow]="database.admin && database.date_due && database.date_due.split('T')[0] < today.split('T')[0]"
-      >
+      [class.bg-yellow]="database.admin && database.date_due && database.date_due.split('T')[0] < today.split('T')[0]">
         <ion-col (click)="selectDatabase(database)">
           {{database.name}}
         </ion-col>
