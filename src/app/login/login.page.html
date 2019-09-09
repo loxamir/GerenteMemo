@@ -12,56 +12,52 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--ion-background-color: linear-gradient(to left,#52a93c,#337d54);">
-
-
-
+<ion-content [class.bg-gradient]="!selected_user">
   <form [formGroup]="loginForm">
-
     <div *ngIf="!selected_user">
-      <div no-padding style="width: 300px;margin: auto;padding: 30px;background: white;margin-top: 30px;border-radius:10px;">
+      <div no-padding class="login-box">
         <img src="./assets/images/logo.png"
         alt="Sistema Memo"
         style="margin-bottom: 20px;"/>
-        <ion-item style="--background: white;--color: #489d44;border: 1px solid green;border-radius:10px;margin-bottom:10px;" *ngIf="!show_create">
-          <ion-label position="floating"  style="padding-left: 15px;color: #3773e8;">{{'USER' | translate}}</ion-label>
-          <ion-input type="text" formControlName="user" autocomplete='name' style="--color: black;"></ion-input>
+        <ion-item class="login-input" *ngIf="!show_create">
+          <ion-label position="floating" class="login-input-label">{{'USER' | translate}}</ion-label>
+          <ion-input type="text" formControlName="user" autocomplete='name' class="login-input-field"></ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;" *ngIf="!show_create">
+        <div class="validation-errors" *ngIf="!show_create">
           <ng-container *ngFor="let validation of validation_messages.user">
             <div class="error-message" *ngIf="loginForm.get('user').hasError(validation.type) && (loginForm.get('user').dirty || loginForm.get('user').touched)">
               {{ validation.message }}
             </div>
           </ng-container>
         </div>
-        <ion-item style="--background: white;--color: #489d44;border: 1px solid green;border-radius:10px;margin-bottom:10px;" *ngIf="!show_create">
-          <ion-label position="floating" style="padding-left: 15px;color: #3773e8;">{{'PASSWORD' | translate}}</ion-label>
-          <ion-input type="password" formControlName="password" autocomplete='name' style="--color: black;"></ion-input>
+        <ion-item class="login-input" *ngIf="!show_create">
+          <ion-label position="floating" class="login-input-label">{{'PASSWORD' | translate}}</ion-label>
+          <ion-input type="password" formControlName="password" autocomplete='name' class="login-input-field"></ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;" *ngIf="!show_create">
+        <div class="validation-errors" *ngIf="!show_create">
           <ng-container *ngFor="let validation of validation_messages.password">
             <div class="error-message" *ngIf="loginForm.get('password').hasError(validation.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
               {{ validation.message }}
             </div>
           </ng-container>
         </div>
-        <ion-item *ngIf="show_create" style="--background: white;--color: #489d44;border: 1px solid green;border-radius:10px;margin-bottom:10px;">
-          <ion-label position="floating" style="padding-left: 15px;color: #3773e8;">{{'NAME' | translate}}</ion-label>
-          <ion-input type="text" formControlName="name" style="--color: black;"></ion-input>
+        <ion-item *ngIf="show_create" class="login-input">
+          <ion-label position="floating" class="login-input-label">{{'NAME' | translate}}</ion-label>
+          <ion-input type="text" formControlName="name" class="login-input-field"></ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;">
+        <div class="validation-errors">
           <ng-container *ngFor="let validation of validation_messages.name">
             <div class="error-message" *ngIf="loginForm.get('name').hasError(validation.type) && (loginForm.get('name').dirty || loginForm.get('name').touched)">
               {{ validation.message }}
             </div>
           </ng-container>
         </div>
-        <ion-item *ngIf="show_create" style="--background: white;--color: #489d44;border: 1px solid green;border-radius:10px;margin-bottom:10px;">
-          <ion-label position="floating" style="padding-left: 15px;color: #3773e8;">{{'PHONE' | translate}}</ion-label>
-          <ion-input type="text" formControlName="mobile" style="--color: black;">
+        <ion-item *ngIf="show_create" class="login-input">
+          <ion-label position="floating" class="login-input-label">{{'PHONE' | translate}}</ion-label>
+          <ion-input type="text" formControlName="mobile" class="login-input-field">
           </ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;">
+        <div class="validation-errors">
           <ng-container *ngFor="let validation of validation_messages.mobile">
             <div class="error-message" *ngIf="loginForm.get('mobile').hasError(validation.type) && (loginForm.get('mobile').dirty || loginForm.get('mobile').touched)">
               {{ validation.message }}
@@ -69,12 +65,12 @@
           </ng-container>
         </div>
 
-        <ion-item *ngIf="show_create" style="--background: white;--color: #489d44;border: 1px solid green;border-radius:10px;margin-bottom:10px;">
-          <ion-label position="floating" style="padding-left: 15px;color: #3773e8;">{{'ADDRESS' | translate}}</ion-label>
-          <ion-input type="text" formControlName="address" style="--color: black;">
+        <ion-item *ngIf="show_create" class="login-input">
+          <ion-label position="floating" class="login-input-label">{{'ADDRESS' | translate}}</ion-label>
+          <ion-input type="text" formControlName="address" class="login-input-field">
           </ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;">
+        <div class="validation-errors">
           <ng-container *ngFor="let validation of validation_messages.address">
             <div class="error-message" *ngIf="loginForm.get('address').hasError(validation.type) && (loginForm.get('address').dirty || loginForm.get('address').touched)">
               {{ validation.message }}
