@@ -23,7 +23,12 @@ export class HomePage implements OnInit {
 
   positionSubscription: Subscription;
 
-  constructor(public navCtrl: NavController, private plt: Platform, private geolocation: Geolocation, private storage: Storage) { }
+  constructor(
+    public navCtrl: NavController,
+    private plt: Platform,
+    private geolocation: Geolocation,
+    private storage: Storage
+  ) { }
 
   ngOnInit() {
     this.plt.ready().then(() => {
@@ -37,11 +42,21 @@ export class HomePage implements OnInit {
         fullscreenControl: false
       }
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+      // let options = {
+      //   timeout:10000,
+      //   enableHighAccuracy:true
+      // };
 
-      this.geolocation.getCurrentPosition().then(pos => {
+
+      let options = {
+        maximumAge: 3000,
+        timeout: 5000,
+        enableHighAccuracy: true
+      }
+      this.geolocation.getCurrentPosition(options).then(pos => {
         let latLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
         this.map.setCenter(latLng);
-        this.map.setZoom(16);
+        this.map.setZoom(20);
       }).catch((error) => {
         console.log('Error getting location', error);
       });
@@ -59,8 +74,12 @@ export class HomePage implements OnInit {
   startTracking() {
     this.isTracking = true;
     this.trackedRoute = [];
-
-    this.positionSubscription = this.geolocation.watchPosition()
+    let options = {
+      maximumAge: 3000,
+      timeout: 5000,
+      enableHighAccuracy: true
+    }
+    this.positionSubscription = this.geolocation.watchPosition(options)
       .pipe(
         filter((p) => p.coords !== undefined) //Filter Out Errors
       )
