@@ -258,7 +258,7 @@ ion-content {
   line-height: 1.0;
   letter-spacing: 1.1px;
   text-align: center;
-  color: green;
+  color: white;
   font-weight: 400;
   margin: 0px;
 }
@@ -544,7 +544,7 @@ ion-segment-button {
     height: 100%;
     .img-thumb{
       display: inline-flex;
-      border: 1px solid #ddd;
+      border: 1px solid #5fadcd;
       border-radius: 4px;
       padding: 3px;
       width: 200px;
@@ -565,7 +565,7 @@ ion-segment-button {
       white-space: nowrap;
       .img-thumb{
         display: inline-flex;
-        border: 1px solid #ddd;
+        border: 1px solid #5fadcd;
         border-radius: 4px;
         padding: 3px;
         width: 200px;

@@ -55,7 +55,7 @@
     </ion-infinite-scroll>
     <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;">
       <ion-item-sliding class="list-item" *ngFor="let item of areaForm.value.moves">
-        <ion-item no-padding (click)="openItem(item.doc)" *ngIf="item && item.doc && !(item.doc._attachments && item.doc._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        <ion-item no-padding (click)="openItem(item.doc)" *ngIf="item && item.doc && !(item.doc._attachments && item.doc._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
           <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.date>=today">
             <ion-row no-padding>
               <ion-thumbnail style="--border-radius:10px;">
@@ -108,7 +108,7 @@
           </ion-card>
         </ion-item>
 
-        <ion-item no-padding (click)="openPreview(item.doc)" *ngIf="item?.doc?._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        <ion-item no-padding (click)="openPreview(item.doc)" *ngIf="item?.doc?._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
           <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.activity_name=='Memo'">
             <ion-row no-padding>
               <ion-col no-padding>
@@ -147,7 +147,7 @@
         <ion-item no-padding
         (click)="openItem(item.doc)"
         *ngIf="!(item?.doc?._attachments && item.doc._attachments['image.png'])"
-        style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
           <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.date>today">
             <ion-row no-padding>
               <ion-thumbnail style="--border-radius:10px;">
@@ -200,7 +200,7 @@
           </ion-card>
         </ion-item>
 
-        <ion-item no-padding (click)="openPreview(item.doc)" *ngIf="item && item.doc && item.doc._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        <ion-item no-padding (click)="openPreview(item.doc)" *ngIf="item && item.doc && item.doc._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
           <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.activity_name=='Memo'">
             <ion-row no-padding>
               <ion-col no-padding>
@@ -239,7 +239,7 @@
   </form>
 
 
-  <ion-fab vertical="bottom" style="left: 0px;right:0px;bottom: 0px;background: #dddddd;" horizontal="start" slot="fixed">
+  <ion-fab vertical="bottom" style="left: 0px;right:0px;bottom: 0px;background: #5fadcd;" horizontal="start" slot="fixed">
     <ion-row style="padding-bottom:5px;padding-top: 5px;">
       <ion-col [class.left-round]="true" [class.all-round]="false">
         <ion-textarea #note [(ngModel)]="areaForm.value.note" [placeholder]="'WRITE_NOTE'|translate" style="margin-top: 2px;" rows="1">

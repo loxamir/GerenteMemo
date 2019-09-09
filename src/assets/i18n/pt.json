@@ -561,6 +561,7 @@
   "ALQUEIRE":"Alqueire",
   "CHOOSE_LANGUAGE": "Escolher Idioma",
   "SEE_DEMO": "Ver Demonstração",
-  "FARMS": "Fazendas",
+  "HELLO": "Ola",
+  "SELECT_A_FARM": "Selecione uma Fazenda para começar",
   "RESULT": "Resultado"
 }

@@ -53,7 +53,7 @@
   <form class="sample-form validations-form" [formGroup]="inputForm">
     <ion-list no-lines class="rotate180" style="overflow: auto;display: flex;flex-direction: column-reverse;">
       <ion-item-sliding class="list-item" *ngFor="let item of inputForm.value.moves">
-        <ion-item no-padding (click)="openItem(item)" *ngIf="!(item._attachments && item._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        <ion-item no-padding (click)="openItem(item)" *ngIf="!(item._attachments && item._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
           <ion-card class="area-card">
             <ion-row no-padding>
               <ion-thumbnail style="--border-radius:10px;">
@@ -90,7 +90,7 @@
           </ion-card>
         </ion-item>
 
-        <ion-item no-padding (click)="openPreview(item)" *ngIf="item._attachments && item._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #dddddd;">
+        <ion-item no-padding (click)="openPreview(item)" *ngIf="item._attachments && item._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
           <ion-card [class.input-card]="item.activity_name!='Memo'" [class.memo-card]="item.activity_name=='Memo'">
             <ion-row no-padding>
               <ion-col no-padding>
