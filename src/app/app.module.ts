@@ -16,6 +16,7 @@ import { IonicStorageModule } from '@ionic/storage';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LOCALE_ID } from '@angular/core';
 import es from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
@@ -55,6 +56,7 @@ import { CashListPageModule } from './cash-list/cash-list.module';
 import { CashMovePageModule } from './cash-move/cash-move.module';
 import { StockMovePageModule } from './stock-move/stock-move.module';
 import { LoginPageModule } from './login/login.module';
+import { HomePageModule } from './home/home.module';
 import { SalePageModule } from './sale/sale.module';
 import { SaleListPageModule } from './sale-list/sale-list.module';
 
@@ -140,6 +142,7 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
   //   CashListPage,
   // ],
   imports: [
+    HomePageModule,
     LoginPageModule,
     SaleListPageModule,
     AgroTabsPageModule,
@@ -228,6 +231,7 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
     Camera,
     WebView,
     FilePath,
+    Geolocation,
     // AuthGuardService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
