@@ -600,8 +600,14 @@ export class WorkPage implements OnInit {
     });
     profileModal.onDidDismiss().then(data => {
       if (data.data) {
+        data.data.fields.forEach((field)=>{
+          if (field.type == 'many2one'){
+            data.data[field.name+'_id'] = data.data[field.name]._id,
+            data.data[field.name+'_name'] = data.data[field.name].name,
+            delete data.data[field.name];
+          }
+        })
         field.push(data.data);
-        // this.workForm.markAsDirty();
         this.workForm.controls[field_name].markAsDirty();
         this.recomputeFields();
       }
@@ -614,37 +620,52 @@ export class WorkPage implements OnInit {
 
   async editFieldItem(field_name, item){
     let field =  this.workForm.value[field_name];
-    let activity = {};
-    this.workForm.value.fields.forEach(variable => {
+    let activity:any = {};
+    this.workForm.value.fields.forEach(async variable => {
       if (variable.name == field_name){
-        activity = variable.activity;
-      }
-    });
-    let context = {
-      data: this.workForm.value[field_name][item],
-      list: true,
-      go: true,
-      activity: activity,
-      state: this.workForm.value.state,
-      select: true,
-    }
+        activity = await this.pouchdbService.getDoc(variable.activity_id);
+        let data = this.workForm.value[field_name][item];
+        data.fields = activity.fields;
+        data.fields.forEach(async (field)=>{
+          if (field.type == 'many2one'){
+            data[field.name] = await this.pouchdbService.getDoc(data[field.name+'_id']);
+          }
+        })
+        let context = {
+          data: data,
+          list: true,
+          go: true,
+          activity: activity,
+          state: this.workForm.value.state,
+          select: true,
+        }
 
-    let profileModal = await this.modalCtrl.create({
-      component:WorkPage,
-      componentProps: context
-    });
-    profileModal.onDidDismiss().then(data => {
-      if (data.data) {
-        field[item] = data.data;
-        // this.workForm.markAsDirty();
-        this.workForm.controls[field_name].markAsDirty();
+        let profileModal = await this.modalCtrl.create({
+          component:WorkPage,
+          componentProps: context
+        });
+        profileModal.onDidDismiss().then(data => {
+          if (data.data) {
+            data.data.fields.forEach((field)=>{
+              if (field.type == 'many2one'){
+                data.data[field.name+'_id'] = data.data[field.name]._id,
+                data.data[field.name+'_name'] = data.data[field.name].name,
+                delete data.data[field.name];
+              }
+            })
+            field[item] = data.data;
+            this.workForm.controls[field_name].markAsDirty();
+          }
+          this.recomputeFields();
+          this.workForm.patchValue({
+            'section': field_name,
+          });
+        });
+        profileModal.present();
+        return
       }
-      this.recomputeFields();
-      this.workForm.patchValue({
-        'section': field_name,
-      });
     });
-    profileModal.present();
+
   }
 
   async removeFieldItem(field_name, item){
@@ -921,9 +942,22 @@ export class WorkPage implements OnInit {
   }
 
   setScheduled(){
+    let plan = {
+      date: this.workForm.value.date,
+      dateEnd: this.workForm.value.dateEnd,
+      note: this.workForm.value.note,
+    }
+    this.workForm.value.fields.forEach((field)=>{
+      if (field.type == 'many2one'){
+        plan[field.name+'_id'] = this.workForm.value[field.name]._id;
+        plan[field.name+'_name'] = this.workForm.value[field.name].name;
+      } else {
+        plan[field.name] = this.workForm.value[field.name];
+      }
+    })
     this.workForm.patchValue({
       state: "SCHEDULED",
-      plan: this.workForm.value,
+      plan: plan,
       scheduled: true,
     })
     this.buttonSave();
