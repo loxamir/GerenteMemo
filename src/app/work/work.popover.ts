@@ -5,7 +5,7 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
   template: `
   <ion-list>
     <ion-item (click)="duplicate()">{{'DUPLICATE'|translate}}</ion-item>
-    <ion-item (click)="gotoStarted()" *ngIf="navParams.data.doc.workForm.value.state=='CONFIRMED'&& !navParams.data.doc.workForm.value.payments.length">{{'UNCONFIRM'|translate}}</ion-item>
+    <ion-item (click)="gotoStarted()" *ngIf="navParams.data.doc.workForm.value.state=='DONE'">{{'UNCONFIRM'|translate}}</ion-item>
     <ion-item (click)="gotoDraft()" *ngIf="navParams.data.doc.workForm.value.state=='SCHEDULED' || navParams.data.doc.workForm.value.state=='STARTED'">{{'BACK_TO_DRAFT'|translate}}</ion-item>
   </ion-list>
   `
