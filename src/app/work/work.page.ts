@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit, Input, ViewChildren } from '@angular/core';
 import { NavController,  LoadingController, AlertController,
-  Events, ToastController, ModalController,
+  Events, ToastController, ModalController, PopoverController
 } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -25,6 +25,7 @@ import { StockMoveService } from '../stock-move/stock-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 import { FutureContractListPage } from '../future-contract-list/future-contract-list.page';
+import { WorkPopover, } from './work.popover';
 
 @Component({
   selector: 'app-work',
@@ -66,6 +67,7 @@ export class WorkPage implements OnInit {
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
     public ProductService: ProductService,
+    public popoverCtrl: PopoverController,
     public ReceiptService: ReceiptService,
     public bluetoothSerial: BluetoothSerial,
     public toastCtrl: ToastController,
@@ -941,6 +943,22 @@ export class WorkPage implements OnInit {
     this.justSave();
   }
 
+  gotoDraft() {
+    this.workForm.patchValue({
+      state: "DRAFT",
+      plan: {},
+      scheduled: false,
+    })
+    this.justSave();
+  }
+
+  gotoStarted() {
+    this.workForm.patchValue({
+      state: "STARTED"
+    })
+    this.justSave();
+  }
+
   setScheduled(){
     let plan = {
       date: this.workForm.value.date,
@@ -1013,6 +1031,18 @@ export class WorkPage implements OnInit {
       });
       alertPopup.present();
     }
+  }
+
+  async presentPopover(myEvent) {
+    let popover = await this.popoverCtrl.create({
+      component: WorkPopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
   }
 
 }

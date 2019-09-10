@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { WorkPage } from './work.page';
-
+import { WorkPopover, } from './work.popover';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -37,7 +37,10 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [WorkPage],
+  declarations: [WorkPage, WorkPopover],
+  entryComponents: [
+    WorkPopover,
+  ],
   providers: [WorkService]
 })
 export class WorkPageModule {}
