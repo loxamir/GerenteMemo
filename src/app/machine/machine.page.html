@@ -73,7 +73,7 @@
                     </h1>
                     <ul class="activity-note" *ngIf="item.doc.activity_id == 'activity.maintenance' || item.doc.activity_id == 'activity.workMachine'">
                       <li *ngFor="let input of item.doc.inputs">
-                        {{ input.product.name }}
+                        {{ input.product_name }}
                       </li>
                     </ul>
                     <h1 class="activity-note" *ngIf="item.doc.cost">
@@ -160,7 +160,7 @@
                     </h1>
                     <ul class="activity-note" *ngIf="item.doc.activity_id == 'activity.maintenance' || item.doc.activity_id == 'activity.workMachine'">
                       <li *ngFor="let input of item.doc.inputs">
-                        {{ input.product.name }}
+                        {{ input.product_name }}
                       </li>
                     </ul>
                     <h1 class="activity-note" *ngIf="item.doc.cost">

@@ -418,7 +418,7 @@ export class WorkPage implements OnInit {
       if (field.type == "boolean") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||false));
       } else if (field.type == "float") {
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||0));
+        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||parseFloat(field.default)||0));
       }
       else if (field.type == "string") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||""));

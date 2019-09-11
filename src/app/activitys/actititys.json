@@ -296,7 +296,7 @@
           },
           "activity_id": "",
           "context": "{}",
-          "default": null,
+          "default": 1,
           "onchange": null
         },
         {
@@ -376,7 +376,7 @@
           },
           "activity_id": "",
           "onchange": null,
-          "default": null,
+          "default": 1,
           "context": "{}"
         },
         {
@@ -423,7 +423,7 @@
           "activity_id": "",
           "default": null,
           "context": "{}",
-          "onchange": "quantity=1;cost=salary;"
+          "onchange": "cost=salary;"
         }
       ],
       "note": "",
@@ -854,7 +854,7 @@
 
           },
           "activity_id": "",
-          "default": null,
+          "default": 1,
           "context": "{}",
           "onchange": null
         },
@@ -883,7 +883,7 @@
           },
           "default": null,
           "context": "{\"operation\": \"purchase\"}",
-          "onchange": "quantity=1;cost=cost;"
+          "onchange": "cost=cost;"
         }
       ],
       "note": "",
@@ -1309,7 +1309,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "contact",
+              "name": "contact_name",
               "label": "NAME"
             },
             {
@@ -1368,7 +1368,7 @@
                 },
                 "activity_id": "",
                 "onchange": null,
-                "default": null,
+                "default": 1,
                 "context": "{}"
               },
               {
@@ -1415,7 +1415,7 @@
                 "activity_id": "",
                 "default": null,
                 "context": "{}",
-                "onchange": "quantity=1;cost=salary;"
+                "onchange": "cost=salary;"
               }
             ],
             "note": "",
@@ -1465,7 +1465,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "machine",
+              "name": "machine_name",
               "label": "MACHINE"
             },
             {
@@ -1547,7 +1547,7 @@
                 },
                 "activity_id": "",
                 "context": "{}",
-                "default": null,
+                "default": 1,
                 "onchange": null
               },
               {
@@ -1661,7 +1661,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "contact",
+              "name": "contact_name",
               "label": "NAME"
             },
             {
@@ -1720,7 +1720,7 @@
                 },
                 "activity_id": "",
                 "onchange": null,
-                "default": null,
+                "default": 1,
                 "context": "{}"
               },
               {
@@ -1767,7 +1767,7 @@
                 "activity_id": "",
                 "default": null,
                 "context": "{}",
-                "onchange": "quantity=1;cost=salary;"
+                "onchange": "cost=salary;"
               }
             ],
             "note": "",
@@ -1794,7 +1794,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "product",
+              "name": "product_name",
               "label": "INPUT"
             },
             {
@@ -1875,7 +1875,7 @@
 
                 },
                 "activity_id": "",
-                "default": null,
+                "default": 1,
                 "context": "{}",
                 "onchange": null
               },
@@ -1904,7 +1904,7 @@
                 },
                 "default": null,
                 "context": "{\"operation\": \"purchase\"}",
-                "onchange": "quantity=1;cost=cost;"
+                "onchange": "cost=cost;"
               }
             ],
             "note": "",
@@ -2049,7 +2049,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "contact",
+              "name": "contact_name",
               "label": "NAME"
             },
             {
@@ -2108,7 +2108,7 @@
                 },
                 "activity_id": "",
                 "onchange": null,
-                "default": null,
+                "default": 1,
                 "context": "{}"
               },
               {
@@ -2155,7 +2155,7 @@
                 "activity_id": "",
                 "default": null,
                 "context": "{}",
-                "onchange": "quantity=1;cost=salary;"
+                "onchange": "cost=salary;"
               }
             ],
             "note": "",
@@ -2205,7 +2205,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "machine",
+              "name": "machine_name",
               "label": "MACHINE"
             },
             {
@@ -2287,7 +2287,7 @@
                 },
                 "activity_id": "",
                 "context": "{}",
-                "default": null,
+                "default": 1,
                 "onchange": null
               },
               {
@@ -2338,7 +2338,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "product",
+              "name": "product_name",
               "label": "INPUT"
             },
             {
@@ -2419,7 +2419,7 @@
 
                 },
                 "activity_id": "",
-                "default": null,
+                "default": 1,
                 "context": "{}",
                 "onchange": null
               },
@@ -2448,7 +2448,7 @@
                 },
                 "default": null,
                 "context": "{\"operation\": \"purchase\"}",
-                "onchange": "quantity=1;cost=cost;"
+                "onchange": "cost=cost;"
               }
             ],
             "note": "",
@@ -2625,7 +2625,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "contact",
+              "name": "contact_name",
               "label": "NAME"
             },
             {
@@ -2684,7 +2684,7 @@
                 },
                 "activity_id": "",
                 "onchange": null,
-                "default": null,
+                "default": 1,
                 "context": "{}"
               },
               {
@@ -2731,7 +2731,7 @@
                 "activity_id": "",
                 "default": null,
                 "context": "{}",
-                "onchange": "quantity=1;cost=salary;"
+                "onchange": "cost=salary;"
               }
             ],
             "note": "",
@@ -2781,7 +2781,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "machine",
+              "name": "machine_name",
               "label": "MACHINE"
             },
             {
@@ -2863,7 +2863,7 @@
                 },
                 "activity_id": "",
                 "context": "{}",
-                "default": null,
+                "default": 1,
                 "onchange": null
               },
               {
@@ -2914,7 +2914,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "product",
+              "name": "product_name",
               "label": "INPUT"
             },
             {
@@ -2995,7 +2995,7 @@
 
                 },
                 "activity_id": "",
-                "default": null,
+                "default": 1,
                 "context": "{}",
                 "onchange": null
               },
@@ -3024,7 +3024,7 @@
                 },
                 "default": null,
                 "context": "{\"operation\": \"purchase\"}",
-                "onchange": "quantity=1;cost=cost;"
+                "onchange": "cost=cost;"
               }
             ],
             "note": "",
@@ -3133,7 +3133,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "contact",
+              "name": "contact_name",
               "label": "NAME"
             },
             {
@@ -3192,7 +3192,7 @@
                 },
                 "activity_id": "",
                 "onchange": null,
-                "default": null,
+                "default": 1,
                 "context": "{}"
               },
               {
@@ -3239,7 +3239,7 @@
                 "activity_id": "",
                 "default": null,
                 "context": "{}",
-                "onchange": "quantity=1;cost=salary;"
+                "onchange": "cost=salary;"
               }
             ],
             "note": "",
@@ -3289,7 +3289,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "machine",
+              "name": "machine_name",
               "label": "MACHINE"
             },
             {
@@ -3371,7 +3371,7 @@
                 },
                 "activity_id": "",
                 "context": "{}",
-                "default": null,
+                "default": 1,
                 "onchange": null
               },
               {
@@ -3422,7 +3422,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "product",
+              "name": "product_name",
               "label": "INPUT"
             },
             {
@@ -3503,7 +3503,7 @@
 
                 },
                 "activity_id": "",
-                "default": null,
+                "default": 1,
                 "context": "{}",
                 "onchange": null
               },
@@ -3532,7 +3532,7 @@
                 },
                 "default": null,
                 "context": "{\"operation\": \"purchase\"}",
-                "onchange": "quantity=1;cost=cost;"
+                "onchange": "cost=cost;"
               }
             ],
             "note": "",
@@ -3641,7 +3641,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "contact",
+              "name": "contact_name",
               "label": "NAME"
             },
             {
@@ -3700,7 +3700,7 @@
                 },
                 "activity_id": "",
                 "onchange": null,
-                "default": null,
+                "default": 1,
                 "context": "{}"
               },
               {
@@ -3747,7 +3747,7 @@
                 "activity_id": "",
                 "default": null,
                 "context": "{}",
-                "onchange": "quantity=1;cost=salary;"
+                "onchange": "cost=salary;"
               }
             ],
             "note": "",
@@ -3774,7 +3774,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "product",
+              "name": "product_name",
               "label": "INPUT"
             },
             {
@@ -3855,7 +3855,7 @@
 
                 },
                 "activity_id": "",
-                "default": null,
+                "default": 1,
                 "context": "{}",
                 "onchange": null
               },
@@ -3884,7 +3884,7 @@
                 },
                 "default": null,
                 "context": "{\"operation\": \"purchase\"}",
-                "onchange": "quantity=1;cost=cost;"
+                "onchange": "cost=cost;"
               }
             ],
             "note": "",
@@ -4040,7 +4040,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "contact",
+              "name": "contact_name",
               "label": "NAME"
             },
             {
@@ -4091,7 +4091,7 @@
                 "activity": {},
                 "activity_id": "",
                 "onchange": null,
-                "default": null,
+                "default": 1,
                 "context": "{}"
               },
               {
@@ -4130,7 +4130,7 @@
                 "activity_id": "",
                 "default": null,
                 "context": "{}",
-                "onchange": "quantity=1;cost=salary;"
+                "onchange": "cost=salary;"
               }
             ],
             "note": "",
@@ -4157,7 +4157,7 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "product",
+              "name": "product_name",
               "label": "INPUT"
             },
             {
@@ -4226,7 +4226,7 @@
                 "sequence": 20,
                 "activity": {},
                 "activity_id": "",
-                "default": null,
+                "default": 1,
                 "context": "{}",
                 "onchange": null
               },
@@ -4251,7 +4251,7 @@
                 },
                 "default": null,
                 "context": "{\"operation\": \"purchase\"}",
-                "onchange": "quantity=1;cost=cost;"
+                "onchange": "cost=cost;"
               }
             ],
             "note": "",
