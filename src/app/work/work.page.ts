@@ -588,7 +588,7 @@ export class WorkPage implements OnInit {
   async addFieldItem(field_name){
     let field =  this.workForm.value[field_name];
     let activity = {};
-    this.workForm.value.fields.forEach(variable => {
+    this.workForm.value.fields.forEach(async variable => {
       if (variable.name == field_name){
         activity = variable.activity;
       }
@@ -627,13 +627,14 @@ export class WorkPage implements OnInit {
     let activity:any = {};
     this.workForm.value.fields.forEach(async variable => {
       if (variable.name == field_name){
-        activity = await this.pouchdbService.getDoc(variable.activity_id);
+        activity = variable.activity;
         let data = this.workForm.value[field_name][item];
-        data.fields = activity.fields;
-        data.fields.forEach(async (field)=>{
+        data.fields = [];
+        activity.fields.forEach(async (field)=>{
           if (field.type == 'many2one'){
             data[field.name] = await this.pouchdbService.getDoc(data[field.name+'_id']);
           }
+          data.fields.unshift(field);
         })
         let context = {
           data: data,
