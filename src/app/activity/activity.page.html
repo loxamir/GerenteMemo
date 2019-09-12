@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/activitys"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ 'ACTIVITY' | translate }}</ion-title>
+    <ion-title>{{ 'ACTIVITY' | translate }}: {{ activityForm.value.name | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -43,7 +43,7 @@
         </ion-item-sliding>
       </ion-list>
     </section>
-    <ion-item
+    <!-- <ion-item
      no-padding
      class="field-100">
        <ion-label>{{'Mostrar Sempre' | translate}}</ion-label>
@@ -58,7 +58,7 @@
         <ion-select-option value="area">Agricola</ion-select-option>
         <ion-select-option value="machine">Maquina</ion-select-option>
       </ion-select>
-    </ion-item>
+    </ion-item> -->
     <ion-item  class="field-100" style="margin-top: 10px;">
       <ion-label position="stacked">{{ 'NOTE' | translate }}</ion-label>
       <ion-textarea #note formControlName="note"
@@ -73,12 +73,12 @@
       <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
       <ion-input type="text" formControlName="note"></ion-input>
     </ion-item> -->
-    <ion-item  class="field-100" style="margin-top: 10px;">
+    <!-- <ion-item  class="field-100" style="margin-top: 10px;">
       <ion-label position="stacked">{{ 'Resumo no Cartão' | translate }}</ion-label>
       <ion-textarea #summary formControlName="summary"
         rows="3">
       </ion-textarea>
-    </ion-item>
+    </ion-item> -->
 
     <ion-item  class="field-100" style="margin-top: 10px;">
       <ion-label position="stacked">{{ 'Script de Salvamento' | translate }}</ion-label>

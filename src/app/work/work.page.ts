@@ -414,7 +414,7 @@ export class WorkPage implements OnInit {
     }) || [];
 
     let defaultTab = null;
-    data_fields.forEach(field => {
+    data_fields.forEach(async field => {
       if (field.type == "boolean") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||false));
       } else if (field.type == "float") {
@@ -438,8 +438,10 @@ export class WorkPage implements OnInit {
           field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||{})
         );
       } else if (field.type == "list") {
+        field.activity = await this.pouchdbService.getDoc(field.activity_id);
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
       } else if (field.type == 'tab'){
+        field.activity = await this.pouchdbService.getDoc(field.activity_id);
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
         if(! defaultTab) {
           defaultTab = field.name;

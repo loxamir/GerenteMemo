@@ -76,7 +76,7 @@
         </ion-item>
         <ion-item class="field-100" style="background-color: white" (click)="selectActivity()"  *ngIf="fieldForm.value.type == 'list' || fieldForm.value.type == 'tab'">
           <h4 class="field-label">{{'ACTIVITY' | translate }}</h4>
-          <h4 class="field-value">{{fieldForm.value.activity.name || 'SELECT'|translate}}</h4>
+          <h4 class="field-value">{{fieldForm.value.activity_name || 'SELECT'|translate}}</h4>
         </ion-item>
         <ion-item class="field-100" style="background-color: white" *ngIf="fieldForm.value.type == 'button'">
           <ion-label position="floating">{{'SCRIPT' | translate}}</ion-label>
@@ -88,7 +88,7 @@
               <ion-item class="field-100"  (click)="editFieldItem(attribute, i)" class="field-100">
                 <ion-col no-padding>
                   <h4 class="field-label" style="margin-top: 0px;">Etiqueta</h4>
-                  <h4 class="user-name" style="margin-bottom: 0px;">{{attribute.label}}</h4>
+                  <h4 class="user-name" style="margin-bottom: 0px;">{{attribute.label|translate}}</h4>
                 </ion-col>
                 <ion-col no-padding>
                   <h4 class="field-label" style="margin-top: 0px;">Nombre</h4>
