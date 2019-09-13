@@ -11,24 +11,24 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-row justify-content-center>
-    <ion-item no-padding class="field-100">
+  <ion-row class="ion-justify-content-center">
+    <ion-item class="ion-no-padding field-100">
       <h4 class="field-label">{{'CONTACT' | translate}}</h4>
       <h4 class="field-value">{{receiptForm.value.contact && receiptForm.value.contact.name || ''}}</h4>
     </ion-item>
   </ion-row>
   <ion-row style="height: 43px;margin-top: 15px;">
-    <ion-col size="4" no-padding>
+    <ion-col size="4" class="ion-no-padding">
       <h4 class="field-label" style="text-align: center;">{{'TOTAL' | translate }}</h4>
       <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.total*receipt_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
       <h4 class="field-value" style="color:blue;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">{{ receipt_currency_symbol }} {{receiptForm.value.total+(receiptForm.value.total && smallDiff)|number:'1.'+receipt_currency_precision+"-"+receipt_currency_precision}}</h4>
     </ion-col>
-    <ion-col size="4" no-padding>
+    <ion-col size="4" class="ion-no-padding">
       <h4 class="field-label" style="text-align: center;">{{'A Cobrar' | translate }}</h4>
       <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.residual*receipt_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
       <h4 class="field-value" style="color:red;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">{{ receipt_currency_symbol }} {{receiptForm.value.residual+(receiptForm.value.residual && smallDiff)|number:'1.'+receipt_currency_precision+"-"+receipt_currency_precision}}</h4>
     </ion-col>
-    <ion-col size="4" no-padding>
+    <ion-col size="4" class="ion-no-padding">
       <h4 class="field-label" style="text-align: center;">{{'Troco' | translate }}</h4>
       <h4 class="field-value" style="color:black;font-size: 13px;text-align: center;margin-top: 0.2rem;margin-bottom: 1rem;" *ngIf="receipt_currency_id != company_currency_id">{{company_currency_symbol }} {{receiptForm.value.change*receipt_exchange_rate|number:'1.'+company_currency_precision+'-'+company_currency_precision}}</h4>
       <h4 class="field-value" style="color:green;text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">{{ receipt_currency_symbol }} {{receiptForm.value.change-(receiptForm.value.change && smallDiff)|number:'1.'+receipt_currency_precision+"-"+receipt_currency_precision}}</h4>
@@ -116,34 +116,34 @@
 
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of receiptForm.value.items_details">
-        <ion-item no-padding (click)="selectCashMove(item)" style="margin-bottom: 0px; margin-top:0px;">
+        <ion-item class="ion-no-padding" (click)="selectCashMove(item)" style="margin-bottom: 0px; margin-top:0px;">
           <ion-card class="list-card" style="border-radius: 5px;">
-            <ion-row no-padding>
-              <ion-col no-padding>
+            <ion-row class="ion-no-padding">
+              <ion-col class="ion-no-padding">
                 <h3 class="item-title"><b>{{ item.name }}</b></h3>
               </ion-col>
             </ion-row>
-            <ion-row no-padding class="content-row one-line">
-              <ion-col no-padding>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding">
                 Fecha: {{item.date|date: 'dd/MM/yyyy'}}
               </ion-col>
-              <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+              <ion-col class="ion-no-padding item-icon" class="ion-align-self-center" style="text-align: right;margin-right: 1em;">
                 <h3 class="list-big-number amount" style="color: red;">$ {{item.amount_dued| number:'1.'+company_currency_precision}}</h3>
               </ion-col>
-              <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+              <ion-col class="ion-no-padding item-icon" class="ion-align-self-center" style="text-align: right;margin-right: 1em;">
                 <h3 class="list-big-number amount" style="color: green;">$ {{item.amount_paid| number:'1.'+company_currency_precision}}</h3>
               </ion-col>
             </ion-row>
 
-            <!-- <ion-row no-padding [class.paid]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] == 'cash'" [class.due]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] != 'cash'"
+            <!-- <ion-row class="ion-no-padding" [class.paid]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] == 'cash'" [class.due]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] != 'cash'"
               [class.quotation]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] == 'cash'" [class.confirmed]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] != 'cash'">
-              <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+              <ion-col class="ion-no-padding" style="text-align: center;border-radius: 4px;">
                 {{ item.accountFrom_name | translate}}
               </ion-col>
-              <ion-col no-padding width-10 class="item-icon" (click)="openAsset(item)">
+              <ion-col class="ion-no-padding" class="item-icon" (click)="openAsset(item)">
                 <ion-icon name="arrow-forward"></ion-icon>
               </ion-col>
-              <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+              <ion-col class="ion-no-padding" style="text-align: center;border-radius: 4px;">
                 {{ item.accountTo_name | translate}}
               </ion-col>
             </ion-row> -->
@@ -155,7 +155,7 @@
 
 
     <!-- <ion-row *ngIf="receiptForm.value.state == 'CONFIRMED' && receiptForm.value.amount_unInvoiced > 0">
-      <ion-col width-33 class="field-label" no-padding>
+      <ion-col class="field-label ion-no-padding">
         <h4 class="field-label" style="text-align: center;">{{'A Facturar' | translate }}</h4>
         <h4 class="sumary-value positive" style="text-align: center;margin-top: 1.0rem;margin-bottom: 1rem;">$ {{receiptForm.value.amount_unInvoiced|number:'1.'+currency_precision}}</h4>
       </ion-col>

@@ -15,8 +15,8 @@
 
 <ion-content class="report-content" style="background-color: #ddd">
   <form class="sample-form validations-form" [formGroup]="receivableReportForm" (ngSubmit)="onSubmit(receivableReportForm.value)">
-    <ion-row justify-content-center>
-      <ion-item no-padding class="field-50">
+    <ion-row class="ion-justify-content-center">
+      <ion-item class="ion-no-padding field-50">
         <h4 class="field-label">{{'FROM' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="goNextStep()"
@@ -26,7 +26,7 @@
         [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-item>
-      <ion-item no-padding class="field-50">
+      <ion-item class="ion-no-padding field-50">
         <h4 class="field-label">{{'TO' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="goNextStep()"
@@ -37,7 +37,7 @@
         </ion-datetime>
       </ion-item>
       <ion-item
-      no-padding
+      class="ion-no-padding"
       class="field-50">
         <ion-label  position="floating">{{'GROUP_BY' | translate}}</ion-label>
         <ion-select #groupBy formControlName="groupBy"
@@ -53,7 +53,7 @@
       </ion-item>
 
 
-      <ion-item no-padding (click)="selectContact()" class="field-50">
+      <ion-item class="ion-no-padding" (click)="selectContact()" class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">{{'CONTACT' | translate}}</h4>
           <h4 class="field-value">{{receivableReportForm.value.contact && receivableReportForm.value.contact.name || 'SELECT'|translate}}</h4>

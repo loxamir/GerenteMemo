@@ -10,17 +10,17 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of currencyList">
-      <ion-item no-padding>
+      <ion-item class="ion-no-padding">
         <ion-card class="list-card">
-          <ion-row no-padding style="height: 70px;">
-            <ion-col no-padding class="currency" (click)="selectCurrency(item)">
+          <ion-row class="ion-no-padding" style="height: 70px;">
+            <ion-col class="ion-no-padding currency" (click)="selectCurrency(item)">
               <ion-row>
-                <ion-col no-padding>
+                <ion-col class="ion-no-padding">
                   <h3 class="item-title" style="white-space:normal"><b>{{ item.name }}</b></h3>
                 </ion-col>
               </ion-row>

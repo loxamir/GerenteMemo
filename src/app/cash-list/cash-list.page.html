@@ -20,26 +20,26 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of cashList">
-      <ion-item no-padding (click)="selectCash(item)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-item class="ion-no-padding" (click)="selectCash(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
-          <ion-row no-padding class="content-row one-line" style="margin-left:0.3em">
+          <ion-row class="ion-no-padding content-row one-line" style="margin-left:0.3em">
             <h3 class="item-title"><b>{{ item.name }}</b></h3>
           </ion-row>
-     <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-35  >
-          <ion-row no-padding>
+     <ion-row class="ion-no-padding content-row one-line">
+        <ion-col class="ion-no-padding"  >
+          <ion-row class="ion-no-padding">
           </ion-row>
         </ion-col>
-        <ion-col no-padding width-60 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;" *ngIf="item.currency_id">
+        <ion-col class="ion-no-padding" class="item-icon" class="ion-align-self-center" style="text-align: right;margin-right: 1em;" *ngIf="item.currency_id">
           <h2 class="list-big-number" style="color: green;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol || currencies[company_currency_id].symbol}} {{item.currency_balance| number:'1.'+(currencies[item.currency_id] && currencies[item.currency_id].precision.toString() || currencies[company_currency_id].precision)+'-'+(currencies[item.currency_id] && currencies[item.currency_id].precision.toString() || currencies[company_currency_id].precision)}}</h2>
           <h2 class="list-big-number" style="color: black;font-size:14px;" >{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{item.balance| number:'1.'+currency_precision+'-'+currency_precision}}</h2>
         </ion-col>
-        <ion-col no-padding width-60 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;" *ngIf="!item.currency_id">
+        <ion-col class="ion-no-padding" class="item-icon" class="ion-align-self-center" style="text-align: right;margin-right: 1em;" *ngIf="!item.currency_id">
           <h2 class="list-big-number" style="color: green;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol || currencies[company_currency_id].symbol}} {{item.balance| number:'1.'+(currencies[item.currency_id] && currencies[item.currency_id].precision || currencies[company_currency_id].precision)+'-'+(currencies[item.currency_id] && currencies[item.currency_id].precision || currencies[company_currency_id].precision)}}</h2>
         </ion-col>
       </ion-row>

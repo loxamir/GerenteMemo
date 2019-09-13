@@ -23,7 +23,7 @@
         </ng-container>
       </div>
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-50">
         <ion-label position="floating">{{'DOCUMENT' | translate}}</ion-label>
         <ion-input type="text"
@@ -32,7 +32,7 @@
         formControlName="document"></ion-input>
       </ion-item>
       <ion-item
-      no-padding
+      class="ion-no-padding"
       class="field-50">
       <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
       <ion-input type="text"
@@ -46,13 +46,13 @@
         </div>
       </ng-container>
     </div>
-      <ion-item class="field-100" no-padding>
+      <ion-item class="field-100 ion-no-padding">
         <ion-label position="floating">{{'Razon Social' | translate}}</ion-label>
         <ion-input #name_legal type="text" formControlName="name_legal"></ion-input>
       </ion-item>
 
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-50">
         <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
         <ion-input type="text"
@@ -61,7 +61,7 @@
       </ion-item>
 
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-50">
         <ion-label position="floating">{{'EMAIL' | translate}}</ion-label>
         <ion-input type="text"
@@ -69,28 +69,28 @@
       </ion-item>
 
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-50">
          <ion-label>{{'Cliente' | translate}}</ion-label>
          <ion-toggle formControlName="customer"></ion-toggle>
       </ion-item>
 
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-50">
          <ion-label>{{'Proveedor' | translate}}</ion-label>
          <ion-toggle formControlName="supplier"></ion-toggle>
       </ion-item>
 
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-50">
          <ion-label>{{'Vendedor' | translate}}</ion-label>
          <ion-toggle formControlName="seller"></ion-toggle>
       </ion-item>
 
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-50">
          <ion-label>{{'Funcionario' | translate}}</ion-label>
          <ion-toggle formControlName="employee"></ion-toggle>
@@ -98,7 +98,7 @@
     </ion-row>
     <ion-row>
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-100">
          <ion-label>{{'Usuario' | translate}}</ion-label>
          <ion-toggle formControlName="user"></ion-toggle>
@@ -109,14 +109,14 @@
     </ion-row>
       <ion-row>
       <ion-item
-       no-padding
+       class="ion-no-padding"
        *ngIf="contactForm.value.employee"
        class="field-50">
         <ion-label position="floating">{{'SALARY' | translate }}</ion-label>
         <ion-input #salary type="number"
         formControlName="salary"></ion-input>
       </ion-item>
-      <ion-item *ngIf="contactForm.value.employee" no-padding (click)="selectCurrency()"
+      <ion-item *ngIf="contactForm.value.employee" class="ion-no-padding" (click)="selectCurrency()"
       class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
@@ -125,7 +125,7 @@
       </ion-item>
       <ion-item
       *ngIf="contactForm.value.employee"
-      no-padding
+      class="ion-no-padding"
       class="field-100">
         <ion-label position="floating" class="field-label">{{'HIRE_DATE' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="hire_date">
@@ -159,11 +159,11 @@
           <ion-item-sliding class="list-item" *ngFor="let item of contactForm.value.salaries; let i = index;">
             <ion-item (click)="openSalary(item)" style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
               <ion-row>
-                <ion-col no-padding>
+                <ion-col class="ion-no-padding">
                   <h4 class="field-label">AMOUNT</h4>
                   <h4 class="user-name">{{item.amount}}</h4>
                 </ion-col>
-                <ion-col no-padding>
+                <ion-col class="ion-no-padding">
                   <h4 class="field-label">{{'DATE'|translate}}</h4>
                   <h4 class="user-name">{{item.date|date: 'dd/MM/yyyy'}}</h4>
                 </ion-col>
@@ -190,11 +190,11 @@
           <ion-item-sliding class="list-item" *ngFor="let item of contactForm.value.advances; let i = index;">
             <ion-item (click)="openAdvance(item)" style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
               <ion-row>
-                <ion-col no-padding>
+                <ion-col class="ion-no-padding">
                   <h4 class="field-label">AMOUNT</h4>
                   <h4 class="user-name">{{item.amount}}</h4>
                 </ion-col>
-                <ion-col no-padding>
+                <ion-col class="ion-no-padding">
                   <h4 class="field-label">{{'DATE'|translate}}</h4>
                   <h4 class="user-name">{{item.date|date: 'dd/MM/yyyy'}}</h4>
                 </ion-col>

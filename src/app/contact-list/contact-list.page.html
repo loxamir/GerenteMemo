@@ -21,29 +21,29 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)" slot="fixed">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" slot="fixed">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of contacts">
-      <ion-item no-padding>
+      <ion-item class="ion-no-padding">
         <ion-card class="list-card">
 
-        <ion-row no-padding>
-          <ion-col no-padding (click)="selectContact(item)">
+        <ion-row class="ion-no-padding">
+          <ion-col class="ion-no-padding" (click)="selectContact(item)">
             <ion-row>
-              <ion-col no-padding>
+              <ion-col class="ion-no-padding">
                 <h3 class="item-title" style="white-space:normal"><b>{{ item.name }}</b></h3>
               </ion-col>
             </ion-row>
-            <ion-row no-padding>
-               <ion-col no-padding size="12">
+            <ion-row class="ion-no-padding">
+               <ion-col class="ion-no-padding" size="12">
                  <h3 class="item-title"  style="font-size:15px;">Documento: <b style="color: green;margin-left: 5px">{{item.document}}</b></h3>
                  <h3 class="item-title"  style="font-size:15px;">Direccion: <b style="color: green;margin-left: 5px">{{item.address}}</b></h3>
                </ion-col>
              </ion-row>
           </ion-col>
-          <!-- <ion-col no-padding size="1" align-self-center text-center>
+          <!-- <ion-col class="ion-no-padding" size="1" class="ion-align-self-center" text-center>
             <ion-icon (click)="openContact(item)" name="arrow-forward"></ion-icon>
           </ion-col> -->
           <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openContact(item)">

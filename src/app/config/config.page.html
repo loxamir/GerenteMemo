@@ -18,64 +18,64 @@
   (ngSubmit)="onSubmit(configForm.value)">
 
 
-  <ion-row justify-content-center>
-    <!-- <ion-item no-padding (click)="selectAccount()" class="field-50">
+  <ion-row class="ion-justify-content-center">
+    <!-- <ion-item class="ion-no-padding" (click)="selectAccount()" class="field-50">
       <h4 class="field-label">{{'ACCOUNT' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.account && configForm.value.account.name || 'SELECT'|translate}}</h4>
     </ion-item> -->
 
-    <ion-item no-padding (click)="selectDefaultContact()" class="field-50">
+    <ion-item class="ion-no-padding" (click)="selectDefaultContact()" class="field-50">
       <h4 class="field-label">{{'DEFAULT_CONTACT' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.default_contact && configForm.value.default_contact.name || 'SELECT'|translate}}</h4>
     </ion-item>
 
-    <ion-item no-padding (click)="selectDefaultPayment()" class="field-50">
+    <ion-item class="ion-no-padding" (click)="selectDefaultPayment()" class="field-50">
       <h4 class="field-label">{{'DEFAULT_PAYMENT' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.default_payment && configForm.value.default_payment.name || 'SELECT'|translate}}</h4>
     </ion-item>
 
-    <ion-item no-padding (click)="selectWarehouse()" class="field-50">
+    <ion-item class="ion-no-padding" (click)="selectWarehouse()" class="field-50">
       <h4 class="field-label">{{'WAREHOUSE' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.warehouse && configForm.value.warehouse.name || 'SELECT'|translate}}</h4>
     </ion-item>
 
-    <ion-item no-padding (click)="selectCurrency()" class="field-50">
+    <ion-item class="ion-no-padding" (click)="selectCurrency()" class="field-50">
       <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.currency && configForm.value.currency.name || 'SELECT'|translate}}</h4>
     </ion-item>
 
-    <!-- <ion-item no-padding (click)="selectContact()" class="field-50">
+    <!-- <ion-item class="ion-no-padding" (click)="selectContact()" class="field-50">
       <h4 class="field-label">{{'CONTACT' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.contact && configForm.value.contact.name || 'SELECT'|translate}}</h4>
     </ion-item> -->
 
-    <!-- <ion-item no-padding (click)="selectLaborProduct()" class="field-50">
+    <!-- <ion-item class="ion-no-padding" (click)="selectLaborProduct()" class="field-50">
       <h4 class="field-label">{{'LABOR_PRODUCT' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.labor_product && configForm.value.labor_product.name || 'SELECT'|translate}}</h4>
     </ion-item>
 
 
-    <ion-item no-padding (click)="selectTravelProduct()" class="field-50">
+    <ion-item class="ion-no-padding" (click)="selectTravelProduct()" class="field-50">
       <h4 class="field-label">{{'TRAVEL_PRODUCT' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.travel_product && configForm.value.travel_product.name || 'SELECT'|translate}}</h4>
     </ion-item> -->
 
-    <!-- <ion-item no-padding (click)="selectInputProduct()" class="field-50">
+    <!-- <ion-item class="ion-no-padding" (click)="selectInputProduct()" class="field-50">
       <h4 class="field-label">{{'INPUT_PRODUCT' | translate }}</h4>
       <h4 class="field-value">{{configForm.value.input_product && configForm.value.input_product.name || 'SELECT'|translate}}</h4>
     </ion-item> -->
 
-    <!-- <ion-item no-padding class="field-50">
+    <!-- <ion-item class="ion-no-padding field-50">
       <ion-label position="floating">{{'invoice_sequence' | translate}}</ion-label>
       <ion-input type="text" formControlName="invoice_sequence"></ion-input>
     </ion-item> -->
-    <ion-item no-padding (click)="selectCash()" class="field-50">
+    <ion-item class="ion-no-padding" (click)="selectCash()" class="field-50">
       <div class="field-many2one">
         <h4 class="field-label">{{'CASH' | translate }}</h4>
         <h4 class="field-value">{{configForm.value.cash && configForm.value.cash.name || 'SELECT'|translate}}</h4>
       </div>
     </ion-item>
-    <ion-item no-padding class="field-50">
+    <ion-item class="ion-no-padding field-50">
       <ion-label position="floating">{{'PRODUCT_SEQUENCE' | translate}}</ion-label>
       <ion-input type="text" formControlName="product_sequence"></ion-input>
     </ion-item>

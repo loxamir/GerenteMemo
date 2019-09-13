@@ -29,7 +29,7 @@
       </ion-button>
     </ion-col>
     <!-- <ion-item
-     no-padding
+     class="ion-no-padding"
      class="field-50"> -->
     <!-- </ion-item> -->
     <!-- <ion-item class="field-50">
@@ -38,7 +38,7 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <form class="sample-form validations-form" [formGroup]="cashForm" (ngSubmit)="onSubmit(cashForm.value)">
@@ -71,36 +71,36 @@
   <div *ngSwitchCase="'checks'" class="post-example-view">
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of cashForm.value.checks && cashForm.value.checks.sort(this.formatService.compare) || []">
-      <ion-item no-padding (click)="openCheck(item)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-item class="ion-no-padding" (click)="openCheck(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
-          <ion-row no-padding class="content-row one-line">
-             <ion-col no-padding>
+          <ion-row class="ion-no-padding content-row one-line">
+             <ion-col class="ion-no-padding">
                <h3 class="item-title"><b>{{ item.doc.name }}</b></h3>
              </ion-col>
            </ion-row>
-     <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-25 class="schedule-date">
+     <ion-row class="ion-no-padding content-row one-line">
+        <ion-col class="ion-no-padding" class="schedule-date">
           <!-- <h3 class="schedule-month">{{item.doc.maturity_date|date: 'dd/MM/yyyy'}}</h3> -->
           <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.doc.maturity_date|date: 'dd/MM/yyyy'}}</h3>
           <h3 class="item-title" style="font-size:15px;">{{item.doc.contact_name}}</h3>
           <!-- <h3 class="item-title" style="font-size:15px;">{{item.doc.maturity_date|date: 'HH:mm:ss'}}</h3> -->
         </ion-col>
-        <ion-col no-padding width-35>
-          <ion-row no-padding>
+        <ion-col class="ion-no-padding">
+          <ion-row class="ion-no-padding">
             <ion-col class="item-content" style="white-space: normal;">
               {{item.doc.bank_name}}
             </ion-col>
           </ion-row>
         </ion-col>
-        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        <ion-col class="ion-no-padding" class="item-icon" class="ion-align-self-center" style="text-align: right;margin-right: 1em;">
           <h2 class="list-big-number" style="color: green;">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{item.doc.amount| number:'1.'+currency_precision}}</h2>
           <div class="residual-value" *ngIf="item.doc.currency_id && item.doc.currency_amount && item.doc.currency_id.length && item.doc.currency_id != company_currency_id"  style="color: black;">
             {{currencies[company_currency_id] && currencies[item.doc.currency_id].symbol}} {{ item.doc.currency_amount | number:'1.'+(currencies[company_currency_id] && currencies[item.doc.currency_id].precision) }}
           </div>
         </ion-col>
       </ion-row>
-      <ion-row no-padding [class.paid]="item.doc.state != 'REJECTED'" [class.due]="item.doc.state == 'REJECTED'">
-        <ion-col no-padding style="text-align: center;border-radius: 4px;">
+      <ion-row class="ion-no-padding" [class.paid]="item.doc.state != 'REJECTED'" [class.due]="item.doc.state == 'REJECTED'">
+        <ion-col class="ion-no-padding" style="text-align: center;border-radius: 4px;">
           {{ item.doc.state | translate}}
         </ion-col>
       </ion-row>
@@ -118,30 +118,30 @@
       {{'REGISTER_UNTIL_CLOSE'|translate}}
     </h2>
       <ion-item-sliding class="list-item" *ngFor="let item of cashForm.value.moves && cashForm.value.moves.sort(this.formatService.compare) || []">
-      <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-item class="ion-no-padding" (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
-          <ion-row no-padding class="content-row one-line">
-             <ion-col no-padding>
+          <ion-row class="ion-no-padding content-row one-line">
+             <ion-col class="ion-no-padding">
                <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
              </ion-col>
            </ion-row>
-     <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-25 class="schedule-date">
+     <ion-row class="ion-no-padding content-row one-line">
+        <ion-col class="ion-no-padding" class="schedule-date">
           <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.date|date: 'dd/MM/yyyy'}}</h3>
           <h3 class="item-title" style="font-size:15px;">{{item.date|date: 'HH:mm:ss'}}</h3>
         </ion-col>
-        <ion-col no-padding width-35>
-          <ion-row no-padding>
+        <ion-col class="ion-no-padding">
+          <ion-row class="ion-no-padding">
             <ion-col class="item-content" style="white-space: normal;">
               {{item.name}}
             </ion-col>
           </ion-row>
         </ion-col>
-        <!-- <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        <!-- <ion-col class="ion-no-padding" class="item-icon" class="ion-align-self-center" style="text-align: right;margin-right: 1em;">
           <h2 *ngIf="item.accountFrom_id != _id" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
           <h2 *ngIf="item.accountTo_id != _id" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
         </ion-col> -->
-        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        <ion-col class="ion-no-padding" class="item-icon" class="ion-align-self-center" style="text-align: right;margin-right: 1em;">
 
 
 
@@ -158,17 +158,17 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
-        <ion-col *ngIf="item.accountFrom_id != _id" no-padding style="text-align: center;border-radius: 4px;">
+      <ion-row class="ion-no-padding" [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
+        <ion-col *ngIf="item.accountFrom_id != _id" class="ion-no-padding" style="text-align: center;border-radius: 4px;">
           {{ item.accountFrom_name | translate}}
         </ion-col>
-        <ion-col *ngIf="item.accountFrom_id != _id" no-padding size="2" class="item-icon">
+        <ion-col *ngIf="item.accountFrom_id != _id" class="ion-no-padding" size="2" class="item-icon">
           <ion-icon name="arrow-round-up" color="success"></ion-icon>
         </ion-col>
-        <ion-col *ngIf="item.accountTo_id != _id" no-padding style="text-align: center;border-radius: 4px;">
+        <ion-col *ngIf="item.accountTo_id != _id" class="ion-no-padding" style="text-align: center;border-radius: 4px;">
           {{ item.accountTo_name | translate}}
         </ion-col>
-        <ion-col *ngIf="item.accountTo_id != _id" no-padding size="2" class="item-icon">
+        <ion-col *ngIf="item.accountTo_id != _id" class="ion-no-padding" size="2" class="item-icon">
           <ion-icon name="arrow-round-down"></ion-icon>
         </ion-col>
       </ion-row>
@@ -184,13 +184,13 @@
         {{'PREVIOUS_CLOSES'|translate}}
       </h2>
       <ion-item-sliding class="list-item" *ngFor="let ite of cashForm.value.closes || []">
-      <ion-item no-padding (click)="openClose(ite)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-item class="ion-no-padding" (click)="openClose(ite)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
-          <ion-row no-padding class="content-row one-line">
-             <ion-col size="7" no-padding>
+          <ion-row class="ion-no-padding content-row one-line">
+             <ion-col size="7" class="ion-no-padding">
                {{'CLOSE'|translate}} <h3 class="item-title"><b>{{ ite.date|date: 'dd/MM/yyyy HH:mm' }}</b></h3>
              </ion-col>
-             <ion-col no-padding size="5" style="text-align: right;">
+             <ion-col class="ion-no-padding" size="5" style="text-align: right;">
                {{'AMOUNT'|translate}}<h3 class="item-title"><b style="color: green">{{ ite.amount_physical| number:'1.'+currency_precision }}</b></h3>
              </ion-col>
            </ion-row>
@@ -206,27 +206,27 @@
   <div *ngSwitchCase="'waiting'" class="post-example-view">
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of cashForm.value.waiting && cashForm.value.waiting.sort(this.formatService.compare) || []">
-      <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-item class="ion-no-padding" (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
-          <ion-row no-padding class="content-row one-line">
-             <ion-col no-padding>
+          <ion-row class="ion-no-padding content-row one-line">
+             <ion-col class="ion-no-padding">
                <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
              </ion-col>
            </ion-row>
 
-     <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-25 class="schedule-date">
+     <ion-row class="ion-no-padding content-row one-line">
+        <ion-col class="ion-no-padding" class="schedule-date">
           <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.date|date: 'dd/MM/yyyy'}}</h3>
           <h3 class="item-title" style="font-size:15px;">{{item.date|date: 'HH:mm:ss'}}</h3>
         </ion-col>
-        <ion-col no-padding width-35>
-          <ion-row no-padding>
+        <ion-col class="ion-no-padding">
+          <ion-row class="ion-no-padding">
             <ion-col class="item-content" style="white-space: normal;">
               {{item.name}}
             </ion-col>
           </ion-row>
         </ion-col>
-        <ion-col no-padding width-40 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+        <ion-col class="ion-no-padding" class="item-icon" class="ion-align-self-center" style="text-align: right;margin-right: 1em;">
           <!-- <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
           <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2> -->
           <h2 *ngIf="item.accountFrom_id != _id && isOtherCurrency()" class="list-big-number" style="color: green;">{{currencies[item.currency_id] && currencies[item.currency_id].symbol|| currencies[company_currency_id].symbol}} {{showAmount(item)| number:'1.'++(currencies[item.currency_id] && currencies[item.currency_id].precision.toString()||currency_precision)+"-"+(currencies[item.currency_id] && currencies[item.currency_id].precision.toString()||currency_precision)}}</h2>
@@ -242,35 +242,35 @@
           </div>
         </ion-col>
       </ion-row>
-      <!-- <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
-        <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+      <!-- <ion-row class="ion-no-padding" [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
+        <ion-col class="ion-no-padding" style="text-align: center;border-radius: 4px;">
           {{ item.accountFrom_name | translate}}
         </ion-col>
-        <ion-col no-padding width-10 class="item-icon">
+        <ion-col class="ion-no-padding" class="item-icon">
           <ion-icon name="arrow-forward"></ion-icon>
         </ion-col>
-        <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+        <ion-col class="ion-no-padding" style="text-align: center;border-radius: 4px;">
           {{ item.accountTo_name | translate}}
         </ion-col>
       </ion-row> -->
 
-      <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
-        <ion-col *ngIf="item.accountFrom_id != _id" no-padding style="text-align: center;border-radius: 4px;">
+      <ion-row class="ion-no-padding" [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
+        <ion-col *ngIf="item.accountFrom_id != _id" class="ion-no-padding" style="text-align: center;border-radius: 4px;">
           {{ item.accountFrom_name | translate}}
         </ion-col>
-        <ion-col *ngIf="item.accountFrom_id != _id" no-padding size="2" class="item-icon">
+        <ion-col *ngIf="item.accountFrom_id != _id" class="ion-no-padding" size="2" class="item-icon">
           <ion-icon name="arrow-round-up" color="success"></ion-icon>
         </ion-col>
-        <ion-col *ngIf="item.accountTo_id != _id" no-padding style="text-align: center;border-radius: 4px;">
+        <ion-col *ngIf="item.accountTo_id != _id" class="ion-no-padding" style="text-align: center;border-radius: 4px;">
           {{ item.accountTo_name | translate}}
         </ion-col>
-        <ion-col *ngIf="item.accountTo_id != _id" no-padding size="2" class="item-icon">
+        <ion-col *ngIf="item.accountTo_id != _id" class="ion-no-padding" size="2" class="item-icon">
           <ion-icon name="arrow-round-down"></ion-icon>
         </ion-col>
       </ion-row>
 
-      <!-- <ion-row no-padding [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
-        <ion-col no-padding style="text-align: center;border-radius: 4px;">
+      <!-- <ion-row class="ion-no-padding" [class.paid]="item.accountFrom_id != _id" [class.due]="item.accountFrom_id == _id">
+        <ion-col class="ion-no-padding" style="text-align: center;border-radius: 4px;">
           {{ item.state | translate}}
         </ion-col>
       </ion-row> -->

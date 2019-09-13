@@ -34,7 +34,7 @@
     </ion-col>
     <!-- <ion-item
     *ngIf="productionForm.value.production"
-    no-padding
+    class="ion-no-padding"
      class="summary-50">
       <h4 class="field-label">{{'Insumos' | translate}}</h4>
       <h4 class="field-value" style="color:red">$ {{productionForm.value.residual|number:'1.'+currency_precision}}</h4>
@@ -75,9 +75,9 @@
 <ion-content class="production-content"  style="background-color: #ddd">
 
   <form class="sample-form validations-form" [formGroup]="productionForm" (ngSubmit)="onSubmit(productionForm.value)">
-    <ion-row justify-content-center>
+    <ion-row class="ion-justify-content-center">
           <ion-item
-          no-padding
+          class="ion-no-padding"
           (click)="selectProduct()"
           *ngIf="productionForm.value.production"
            class="field-100">
@@ -85,7 +85,7 @@
             <h4 class="field-value">{{(productionForm.value.product && productionForm.value.product.code) || ''}} - {{productionForm.value.product && productionForm.value.product.name || 'SELECT'|translate}}</h4>
           </ion-item>
           <ion-item
-           no-padding
+           class="ion-no-padding"
            *ngIf="productionForm.value.production"
            class="field-100">
             <ion-label position="floating" style="font-size:14px">{{'PRODUCED_QUANTITY' | translate }}</ion-label>
@@ -96,7 +96,7 @@
         </ion-row>
 
           <ion-row>
-        <ion-item no-padding class="item-content"
+        <ion-item class="ion-no-padding item-content"
         *ngIf="!(!productionForm.value.production && (productionForm.value.state == 'CONFIRMED' || productionForm.value.state == 'PAID' || productionForm.value.state == 'STARTED'))"
         class="field-100">
 

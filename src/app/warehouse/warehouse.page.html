@@ -19,14 +19,14 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
   <form class="sample-form validations-form" [formGroup]="warehouseForm" (ngSubmit)="onSubmit(warehouseForm.value)">
-    <ion-row justify-content-center>
+    <ion-row class="ion-justify-content-center">
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'NAME' | translate}}</ion-label>
         <ion-input #input type="text"
@@ -38,10 +38,10 @@
     </ion-row>
     <ion-list no-lines>
       <ion-item-sliding class="list-item" *ngFor="let item of warehouseForm.value.moves">
-      <ion-item no-padding (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-item class="ion-no-padding" (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
-      <ion-row no-padding class="content-row one-line" style="height: 50px;">
-         <ion-col no-padding width-75>
+      <ion-row class="ion-no-padding content-row one-line" style="height: 50px;">
+         <ion-col class="ion-no-padding">
            <ion-row>
              <h2 class="item-title">{{item.name}}</h2>
            </ion-row>
@@ -49,7 +49,7 @@
               <h3 class="list-title">Codigo: {{item.code}}</h3>
            </ion-row>
          </ion-col>
-         <ion-col no-padding class="item-icon" align-self-center style="text-align: right">
+         <ion-col class="ion-no-padding item-icon" class="ion-align-self-center" style="text-align: right">
            <h2 *ngIf="item.stock > 0" class="list-big-number" style="margin-right:10px;"><div style="color: green;">{{item.stock| number:'1.'+currency_precision}}</div><div style="font-size:12px;color: #000">Un.</div></h2>
            <h2 *ngIf="item.stock <= 0" class="list-big-number" style="margin-right:10px;"><div style="color: red;">{{item.stock| number:'1.'+currency_precision}}</div><div style="font-size:12px;color: #000">Un.</div></h2>
          </ion-col>

@@ -33,7 +33,6 @@
   border-radius: 5px;
   margin-top:5px;
   margin-bottom:5px;
-  margin-right:0px;
 }
 .field-many2one-edit {
   background: white;
@@ -199,7 +198,7 @@ ion-content {
   line-height: 1.0;
   letter-spacing: 1.1px;
   text-align: center;
-  color: green;
+  color: #1530a2;
   font-weight: 400;
   margin: 0px;
 }
@@ -254,7 +253,7 @@ ion-item-sliding, ion-item-sliding .item {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    margin-right: -9px;
+    margin-right: -16px;
 }
 .product-name-row {
   font-size: 17px;
@@ -540,4 +539,17 @@ ion-searchbar {
 
 .validation-errors {
   color: red;
+}
+
+.sc-ion-card-md-h {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+section.ion-item-sliding, ion-item-sliding .item {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin-right: -18px;
 }

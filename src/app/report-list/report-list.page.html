@@ -7,8 +7,8 @@
         </ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-row justify-content-center class="headerstyle">
-      <ion-col no-padding size="6">
+    <ion-row class="ion-justify-content-center" class="headerstyle">
+      <ion-col class="ion-no-padding" size="6">
         <ion-label>{{'FROM' | translate }}</ion-label>
         <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY"
         pickerFormat="DD/MM/YYYY HH:mm:ss"
@@ -17,7 +17,7 @@
         [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-col>
-      <ion-col no-padding size="6">
+      <ion-col class="ion-no-padding" size="6">
         <ion-label>{{'TO' | translate }}</ion-label>
         <ion-datetime class="sale-date"
         displayFormat="DD/MM/YYYY"
@@ -37,14 +37,14 @@
   </ion-toolbar>
 </ion-header>
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <form class="sample-form validations-form" [formGroup]="reportsForm">
     <ion-list no-lines>
 
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportCashFlow()">
         <ion-row>
           <ion-col
@@ -53,13 +53,13 @@
           </ion-col>
         </ion-row>
         <ion-row style="margin-top: 15px;">
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'TOTAL_RECEIVED' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{cashflowIncome|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'TOTAL_PAID' | translate}}</h4>
             <h4 class="field-value" style="color:red">
               $ {{cashflowExpense|number:'1.'+currency_precision}}
@@ -67,13 +67,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'RESULT_LIQUID' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{cashflowIncome-cashflowExpense|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'RENTABILITY' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               {{100*cashflowIncome/cashflowExpense||0|number:'1.0-1'}}%
@@ -82,7 +82,7 @@
         </ion-row>
       </ion-card>
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportSale()">
         <ion-row>
           <ion-col
@@ -91,7 +91,7 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-100" style="margin-top: 15px;">
+          <ion-col class="ion-no-padding report-100" style="margin-top: 15px;">
             <h4 class="field-label">{{'TOTAL' | translate}}</h4>
             <h4 class="field-value" style="color:green; font-size:30px;">
               $ {{sold|number:'1.'+currency_precision}}
@@ -99,13 +99,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'CASH_PAYMENT' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{sale_cash|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'CREDIT_PAYMENT' | translate}}</h4>
             <h4 class="field-value" style="color:red">
               $ {{sale_credit|number:'1.'+currency_precision}}
@@ -113,13 +113,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'EARNINGS' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{sale_margin|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'MARGIN' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               {{sale_margin_percent||0|number:'1.0-1'}}%
@@ -129,7 +129,7 @@
       </ion-card>
 
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportService()">
         <ion-row>
           <ion-col
@@ -138,7 +138,7 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-100" style="margin-top: 15px;">
+          <ion-col class="ion-no-padding report-100" style="margin-top: 15px;">
             <h4 class="field-label">{{'TOTAL' | translate}}</h4>
             <h4 class="field-value" style="color:green; font-size:30px;">
               $ {{service_sold|number:'1.'+currency_precision}}
@@ -146,13 +146,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'CASH_PAYMENT' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{service_cash|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'CREDIT_PAYMENT' | translate}}</h4>
             <h4 class="field-value" style="color:red">
               $ {{service_credit|number:'1.'+currency_precision}}
@@ -160,13 +160,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'EARNINGS' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{service_margin|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'MARGIN' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               {{service_margin_percent||0|number:'1.0-1'}}%
@@ -176,7 +176,7 @@
       </ion-card>
 
       <!-- <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportService()">
         <ion-row>
           <ion-col
@@ -191,7 +191,7 @@
 
 
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportPurchase()">
         <ion-row>
           <ion-col
@@ -200,7 +200,7 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-100" style="margin-top: 15px;">
+          <ion-col class="ion-no-padding report-100" style="margin-top: 15px;">
             <h4 class="field-label">{{'TOTAL' | translate}}</h4>
             <h4 class="field-value" style="color:green; font-size:30px;">
               $ {{purchased|number:'1.'+currency_precision}}
@@ -208,13 +208,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'CASH_PAYMENT' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{purchase_cash|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'CREDIT_PAYMENT' | translate}}</h4>
             <h4 class="field-value" style="color:red">
               $ {{purchase_credit|number:'1.'+currency_precision}}
@@ -224,7 +224,7 @@
       </ion-card>
 
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportProduction()">
         <ion-row>
           <ion-col
@@ -233,7 +233,7 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-100" style="margin-top: 15px;">
+          <ion-col class="ion-no-padding report-100" style="margin-top: 15px;">
             <h4 class="field-label">{{'AMOUNT_ESTIMATED' | translate}}</h4>
             <h4 class="field-value" style="color:green; font-size:30px;">
               $ {{produced|number:'1.'+currency_precision}}
@@ -241,13 +241,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'CONSUMED_MATERIALS' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{production_material|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'USED_LABOUR' | translate}}</h4>
             <h4 class="field-value" style="color:red">
               $ {{production_labour|number:'1.'+currency_precision}}
@@ -255,13 +255,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'PRODUCTION_COST' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{production_cost|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'VALUE_ADDED' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               {{production_cost_percent||0|number:'1.0-1'}}%
@@ -271,7 +271,7 @@
       </ion-card>
 
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportStock()">
         <ion-row>
           <ion-col
@@ -280,7 +280,7 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-100" style="margin-top: 15px;">
+          <ion-col class="ion-no-padding report-100" style="margin-top: 15px;">
             <h4 class="field-label">{{'VALUATION' | translate}}</h4>
             <h4 class="field-value" style="color:green; font-size:30px;">
               $ {{stocked_cost|number:'1.'+currency_precision}}
@@ -288,13 +288,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'AMOUNT_POTENTIAL' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{stocked_price|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'ITEMS_QUANTITY' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               {{stocked_quantity|number:'1.'+currency_precision}}
@@ -302,13 +302,13 @@
           </ion-col>
         </ion-row>
         <!-- <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'Costo de Producción' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               $ {{production_cost|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'Valor Agregado' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               {{production_cost_percent|number:'1.0-1'}}%
@@ -318,7 +318,7 @@
       </ion-card>
 
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportToReceive()">
         <ion-row>
           <ion-col
@@ -327,7 +327,7 @@
           </ion-col>
         </ion-row>
         <ion-row style="margin-top: 15px;">
-          <ion-col no-padding class="report-100">
+          <ion-col class="ion-no-padding report-100">
             <h4 class="field-label">{{'TOTAL_TO_RECEIVE' | translate}}</h4>
             <h4 class="field-value" style="color:green; font-size:30px;">
               $ {{toReceive|number:'1.'+currency_precision}}
@@ -337,7 +337,7 @@
       </ion-card>
 
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportToPay()">
         <ion-row>
           <ion-col
@@ -346,7 +346,7 @@
           </ion-col>
         </ion-row>
         <ion-row style="margin-top: 15px;">
-          <ion-col no-padding class="report-100">
+          <ion-col class="ion-no-padding report-100">
             <h4 class="field-label">{{'TOTAL_TO_PAY' | translate}}</h4>
             <h4 class="field-value" style="color:red; font-size:30px;">
               $ {{ToPay|number:'1.'+currency_precision}}
@@ -355,7 +355,7 @@
         </ion-row>
       </ion-card>
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportResult()">
         <ion-row>
           <ion-col
@@ -364,12 +364,12 @@
           </ion-col>
         </ion-row>
         <ion-row style="margin-top: 15px;">
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'TOTAL_INCOME' | translate}}</h4>
             <h4 class="field-value"
             style="color:green">$ {{resultIncome|number:'1.'+currency_precision}}</h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'TOTAL_EXPENSE' | translate}}</h4>
             <h4 class="field-value"
             style="color:red">
@@ -378,14 +378,14 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'RESULT_LIQUID' | translate}}</h4>
             <h4 class="field-value"
             style="color:green">
               $ {{resultIncome-resultExpense|number:'1.'+currency_precision}}
             </h4>
           </ion-col>
-          <ion-col no-padding class="report-50">
+          <ion-col class="ion-no-padding report-50">
             <h4 class="field-label">{{'PROFIT_MARGIN' | translate}}</h4>
             <h4 class="field-value" style="color:green">
               {{100*(1 - resultExpense/resultIncome)||0|number:'1.0-1'}}%
@@ -394,7 +394,7 @@
         </ion-row>
       </ion-card>
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportAccounts()">
         <ion-row>
           <ion-col
@@ -404,7 +404,7 @@
         </ion-row>
       </ion-card>
       <!-- <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportBalancete()">
         <ion-row>
           <ion-col
@@ -414,7 +414,7 @@
         </ion-row>
       </ion-card> -->
       <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportBalance()">
         <ion-row>
           <ion-col
@@ -425,7 +425,7 @@
       </ion-card>
 
       <!-- <ion-card class="list-card"
-      style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;"
+      style="width: calc(100% - 10px);margin-bottom: 2%;margin-top: 1%;"
       (click)="showReportProduction()">
         <ion-row>
           <ion-col

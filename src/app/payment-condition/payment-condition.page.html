@@ -20,11 +20,11 @@
           </div>
         </ng-container>
       </div>
-      <ion-item class="field-100" no-padding (click)="selectAccountTo()">
+      <ion-item class="field-100" class="ion-no-padding" (click)="selectAccountTo()">
         <h4 class="field-label">{{'Cuenta para Venta' | translate}}</h4>
         <h4 class="field-value">{{paymentConditionForm.value.accountTo && paymentConditionForm.value.accountTo.name || 'SELECT'|translate}}</h4>
       </ion-item>
-      <ion-item class="field-100" no-padding (click)="selectAccountFrom()">
+      <ion-item class="field-100" class="ion-no-padding" (click)="selectAccountFrom()">
         <h4 class="field-label">{{'Cuenta para Compra' | translate}}</h4>
         <h4 class="field-value">{{paymentConditionForm.value.accountFrom && paymentConditionForm.value.accountFrom.name || 'SELECT'|translate}}</h4>
       </ion-item>
@@ -35,13 +35,13 @@
 
     <h2 class="section-title" *ngIf="paymentConditionForm.value.items.length">{{'Quotas' | translate}}</h2>
     <ion-list>
-      <ion-item-sliding no-padding *ngFor="let item of paymentConditionForm.value.items">
+      <ion-item-sliding class="ion-no-padding" *ngFor="let item of paymentConditionForm.value.items">
         <ion-row>
-          <ion-item no-padding (click)="editItem(item)" class="field-50">
+          <ion-item class="ion-no-padding" (click)="editItem(item)" class="field-50">
             <h4 class="field-label">{{'Dias' | translate}}</h4>
             <h4 class="field-value">{{item.days}}</h4>
           </ion-item>
-          <ion-item no-padding (click)="editItem(item)" class="field-50">
+          <ion-item class="ion-no-padding" (click)="editItem(item)" class="field-50">
             <h4 class="field-label">{{'Porcentage' | translate}}</h4>
             <h4 class="field-value">{{item.percent}}</h4>
           </ion-item>

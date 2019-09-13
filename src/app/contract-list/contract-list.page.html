@@ -19,30 +19,30 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding *ngFor="let item of contracts" #slidingItem>
-      <ion-item no-padding (click)="openContract(item)">
-        <ion-card class="list-card" no-padding>
+      <ion-item class="ion-no-padding" (click)="openContract(item)">
+        <ion-card class="list-card ion-no-padding">
           <ion-row>
-            <!-- <ion-col no-padding width-20 class="schedule-date">
+            <!-- <ion-col class="ion-no-padding" class="schedule-date">
               <h2 class="list-big-number">{{item.code}}</h2>
             </ion-col> -->
             <ion-col>
               <h3 class="item-name"><b>{{ item.contact_name || 'No Informado'}}</b></h3>
             </ion-col>
           </ion-row>
-     <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding size="6">
+     <ion-row class="ion-no-padding content-row one-line">
+        <ion-col class="ion-no-padding" size="6">
           <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.date|date: 'dd/MM/yyyy'}}</h3>
           <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;">
             <span style="margin-left: 5px">{{item.code}}</span>
           </h3>
           <h3 class="item-title" style="font-size:15px;">{{item.payment_name | translate}}</h3>
         </ion-col>
-        <ion-col no-padding size="6" align-self-center>
+        <ion-col class="ion-no-padding" size="6" class="ion-align-self-center">
           <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.total| number:'1.0'}}</h2>
           <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.0'}}</h2>
           <div *ngIf="item.residual != 0 && item.state!='CANCELED'" class="residual-value">
@@ -50,8 +50,8 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row no-padding>
-        <ion-col no-padding class="list-tag"
+      <ion-row class="ion-no-padding">
+        <ion-col class="ion-no-padding list-tag"
         [class.quotation]="item.state=='QUOTATION'"
         [class.confirmed]="item.state=='CONFIRMED'"
         [class.paid]="item.state=='PAID'"

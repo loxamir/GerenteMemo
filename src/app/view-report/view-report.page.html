@@ -10,17 +10,17 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-card style="margin-left: 4px;width: 98%;" class="list-card" *ngFor="let item of view" (click)="selectView(item)">
-    <ion-row no-padding class="content-row one-line" style="margin-left:0.3em">
+    <ion-row class="ion-no-padding content-row one-line" style="margin-left:0.3em">
       <h3 class="item-title"><b>{{item.doc && item.doc.name || item.key && item.key[3]}}</b></h3>
     </ion-row>
-   <ion-row no-padding class="content-row one-line">
-      <ion-col no-padding width-30 >
+   <ion-row class="ion-no-padding content-row one-line">
+      <ion-col class="ion-no-padding" >
       </ion-col>
-      <ion-col no-padding width-70 class="item-icon" align-self-center style="text-align: right;">
+      <ion-col class="ion-no-padding" class="item-icon" class="ion-align-self-center" style="text-align: right;">
         <h2 class="list-big-number" style="color: green;margin-right:0.5em">$ {{item.value| number:'1.'+currency_precision}}</h2>
       </ion-col>
     </ion-row>

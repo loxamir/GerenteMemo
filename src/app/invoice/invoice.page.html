@@ -9,7 +9,7 @@
   </ion-toolbar>
   <ion-row style="height: 50px;">
     <!-- <ion-item
-    no-padding
+    class="ion-no-padding"
      class="summary-50"> -->
      <ion-col>
        <h4 class="field-label-col">{{'TOTAL' | translate}}</h4>
@@ -52,25 +52,25 @@
 
 <ion-content background="#ddd">
   <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
-    <ion-row justify-content-center>
-      <ion-item no-padding (click)="selectContact()" class="field-100">
+    <ion-row class="ion-justify-content-center">
+      <ion-item class="ion-no-padding" (click)="selectContact()" class="field-100">
         <h4 class="field-label" *ngIf="invoiceForm.value.type == 'out'">{{'CLIENT' | translate}}</h4>
         <h4 class="field-label" *ngIf="invoiceForm.value.type == 'in'">{{'SUPPLIER' | translate}}</h4>
         <h4 class="field-value">{{invoiceForm.value.contact && invoiceForm.value.contact.name || 'SELECT'|translate}}</h4>
       </ion-item>
-      <!-- <ion-item no-padding (click)="selectPaymentCondition()" class="field-100">
+      <!-- <ion-item class="ion-no-padding" (click)="selectPaymentCondition()" class="field-100">
         <h4 class="field-label">{{'Condición de Pago' | translate }}</h4>
         <h4 class="field-value">{{invoiceForm.value.paymentCondition && invoiceForm.value.paymentCondition.name || 'SELECT'|translate}}</h4>
       </ion-item> -->
       <ion-item
-      no-padding
+      class="ion-no-padding"
       (click)="editContact()"
        class="field-100">
         <h4 class="field-label">{{'RUC' | translate}}</h4>
         <h4 class="field-value">{{invoiceForm.value.contact && invoiceForm.value.contact.document || 'Informar'}}</h4>
       </ion-item>
 <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-100">
         <ion-label position="floating">{{'Condición de Pago' | translate}}</ion-label>
         <ion-select formControlName="paymentCondition"
@@ -83,7 +83,7 @@
         </ion-select>
       </ion-item>
 
-      <ion-item no-padding class="field-50">
+      <ion-item class="ion-no-padding field-50">
         <h4 class="field-label">{{'DATE' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         displayFormat="DD/MM/YYYY"
@@ -91,7 +91,7 @@
         formControlName="date">
         </ion-datetime>
       </ion-item>
-      <ion-item no-padding (click)="selectCurrency()" class="field-50">
+      <ion-item class="ion-no-padding" (click)="selectCurrency()" class="field-50">
         <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
         <h4 class="field-value">{{invoiceForm.value.currency && invoiceForm.value.currency.name || 'SELECT'|translate}}</h4>
       </ion-item>

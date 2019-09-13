@@ -14,20 +14,20 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of helps">
-      <ion-item no-padding >
+      <ion-item class="ion-no-padding">
         <ion-card class="list-card">
-      <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding width-90 class="item-content" (click)="selectHelp(item)">
+      <ion-row class="ion-no-padding content-row one-line">
+        <ion-col class="ion-no-padding" class="item-content" (click)="selectHelp(item)">
           <ion-row>
             <h3 class="item-title"><b>{{item.name}}</b></h3>
           </ion-row>
         </ion-col>
-        <ion-col no-padding width-10 class="item-icon"  align-self-center style="text-align: center;">
+        <ion-col class="ion-no-padding" class="item-icon"  class="ion-align-self-center" style="text-align: center;">
           <ion-icon (click)="openHelp(item)" name="arrow-forward"></ion-icon>
         </ion-col>
       </ion-row>

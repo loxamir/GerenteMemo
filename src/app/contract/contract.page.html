@@ -14,13 +14,13 @@
   </ion-toolbar>
   <!-- <ion-row>
     <ion-item
-    no-padding
+    class="ion-no-padding"
      class="summary-50">
       <h4 class="field-label">{{'TOTAL' | translate}}</h4>
       <h4 class="field-value" style="color:blue">$ {{contractForm.value.total|number:'1.0'}}</h4>
     </ion-item>
     <ion-item
-    no-padding
+    class="ion-no-padding"
      class="summary-50">
       <h4 class="field-label">{{'Cobrar' | translate}}</h4>
       <h4 class="field-value" style="color:red">$ {{contractForm.value.residual|number:'1.0'}}</h4>
@@ -52,24 +52,24 @@
 
 <ion-content background="#ddd">
   <form [formGroup]="contractForm" (ngSubmit)="onSubmit(contractForm.value)">
-    <ion-row justify-content-center>
-      <ion-item no-padding (click)="selectContact()" class="field-100">
+    <ion-row class="ion-justify-content-center">
+      <ion-item class="ion-no-padding" (click)="selectContact()" class="field-100">
         <h4 class="field-label">{{'CLIENT' | translate}}</h4>
         <h4 class="field-value">{{contractForm.value.contact && contractForm.value.contact.name || 'SELECT'|translate}}</h4>
       </ion-item>
-      <ion-item no-padding (click)="selectPaymentCondition()" class="field-50">
+      <ion-item class="ion-no-padding" (click)="selectPaymentCondition()" class="field-50">
         <h4 class="field-label">{{'PAYMENT_CONDITION' | translate }}</h4>
         <h4 class="field-value">{{contractForm.value.paymentCondition && contractForm.value.paymentCondition.name || 'SELECT'|translate}}</h4>
       </ion-item>
-      <ion-item no-padding (click)="selectSeller()" class="field-50">
+      <ion-item class="ion-no-padding" (click)="selectSeller()" class="field-50">
         <h4 class="field-label">{{'SELLER' | translate }}</h4>
         <h4 class="field-value">{{contractForm.value.seller_name || 'SELECT'|translate}}</h4>
       </ion-item>
-      <!-- <ion-item no-padding (click)="selectCurrency()" class="field-50">
+      <!-- <ion-item class="ion-no-padding" (click)="selectCurrency()" class="field-50">
         <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
         <h4 class="field-value">{{contractForm.value.currency && contractForm.value.currency.name || 'SELECT'|translate}}</h4>
       </ion-item> -->
-      <ion-item no-padding class="field-50">
+      <ion-item class="ion-no-padding field-50">
         <!-- <ion-row>
         <ion-col>
           <ion-item> -->
@@ -83,7 +83,7 @@
         </ion-col>
         <ion-col> -->
       </ion-item>
-      <ion-item no-padding class="field-50">
+      <ion-item class="ion-no-padding field-50">
           <ion-label position="floating">{{'FREQUENCY' | translate}}</ion-label>
           <ion-select formControlName="frequency"
             cancelText="{{ 'CANCEL' | translate }}"
@@ -97,7 +97,7 @@
       <!-- <ion-card> -->
 
           <!-- </ion-card> -->
-          <ion-item no-padding class="field-50">
+          <ion-item class="ion-no-padding field-50">
             <h4 class="field-label">
               {{'NEXT_RUN' | translate }}
             </h4>
@@ -110,7 +110,7 @@
           <!-- </ion-col> -->
           </ion-item>
 
-<ion-item no-padding class="field-50">
+<ion-item class="ion-no-padding field-50">
     <ion-label position="floating" style="font-size:14px">
       {{'LIMIT' | translate}}
     </ion-label>

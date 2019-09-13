@@ -25,7 +25,7 @@
       </div>
     </ion-row>
     <ion-row>
-      <ion-col no-padding class="field-many2one-edit" (click)="selectCategory()">
+      <ion-col class="ion-no-padding field-many2one-edit" (click)="selectCategory()">
         <h4 class="field-label-col">{{'CATEGORY' | translate }}</h4>
         <h4 class="field-value-col">{{accountForm.value.category && accountForm.value.category.name || 'SELECT'|translate}}</h4>
       </ion-col>
@@ -40,7 +40,7 @@
       </ion-item>
 
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-50" *ngIf="accountForm.value.category && accountForm.value.category.type == 'liquidity'">
         <ion-label position="floating">{{'Tipo' | translate}}</ion-label>
         <ion-select #type formControlName="type"
@@ -59,7 +59,7 @@
       </ion-item>
 
       <ion-item
-       no-padding
+       class="ion-no-padding"
        *ngIf="accountForm.value.category && accountForm.value.category.type == 'liquidity'"
        (click)="selectCurrency()"
        class="field-50">
@@ -71,7 +71,7 @@
 
       <ion-item
        *ngIf="accountForm.value.type=='bank'"
-       no-padding
+       class="ion-no-padding"
        class="field-100">
         <ion-label position="floating">{{'Banco' | translate}}</ion-label>
         <ion-select #bank_name formControlName="bank_name"

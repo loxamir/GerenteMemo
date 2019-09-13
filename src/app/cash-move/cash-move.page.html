@@ -19,10 +19,10 @@
 
 <ion-content class="cash-move-content"  style="background-color: #ddd">
   <form class="sample-form validations-form" [formGroup]="cashMoveForm"  (ngSubmit)="onSubmit(cashMoveForm.value)">
-    <ion-row justify-content-center>
+    <ion-row class="ion-justify-content-center">
 
       <ion-item
-       no-padding
+       class="ion-no-padding"
        class="field-50"
        *ngIf="cash_move_currency_id != company_currency_id">
         <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
@@ -31,7 +31,7 @@
         formControlName="currency_amount"></ion-input>
       </ion-item>
       <ion-item
-       no-padding
+       class="ion-no-padding"
        *ngIf="cash_move_currency_id == company_currency_id"
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
@@ -39,7 +39,7 @@
         formControlName="amount"></ion-input>
       </ion-item>
       <ion-item
-       no-padding
+       class="ion-no-padding"
        (click)="selectCurrency()"
        class="field-50">
        <div class="field-many2one">
@@ -48,7 +48,7 @@
        </div>
       </ion-item>
       <ion-item
-       no-padding
+       class="ion-no-padding"
        *ngIf="cash_move_currency_id != company_currency_id"
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'AMOUNT_COMPANY_CURRENCY' | translate}}</ion-label>
@@ -57,14 +57,14 @@
         formControlName="amount"></ion-input>
       </ion-item>
       <ion-item
-       no-padding
+       class="ion-no-padding"
        *ngIf="cash_move_currency_id != company_currency_id"
        class="field-50">
         <ion-label position="floating" style="font-size:14px">{{'CURRENCY_EXCHANGE' | translate}}</ion-label>
         <ion-input #exchange_rate type="number" formControlName="exchange_rate" (ngModelChange)="changedExchange()"></ion-input>
       </ion-item>
       <ion-item
-       no-padding
+       class="ion-no-padding"
        (click)="selectAccountFrom()"
        *ngIf="!from_cash"
        class="field-100">
@@ -72,7 +72,7 @@
         <h4 class="field-value">{{cashMoveForm.value.accountFrom && cashMoveForm.value.accountFrom.name || 'SELECT'|translate}}</h4>
       </ion-item>
       <ion-item
-       no-padding
+       class="ion-no-padding"
        (click)="selectAccountTo()"
        *ngIf="!to_cash"
        class="field-100">
@@ -81,7 +81,7 @@
       </ion-item>
     </ion-row>
     <ion-row *ngIf="!transfer">
-      <ion-col no-padding class="field-many2one-edit"
+      <ion-col class="ion-no-padding field-many2one-edit"
       (click)="selectContact()">
         <h4 class="field-label-col">{{'CONTACT' | translate }}</h4>
         <h4 class="field-value-col">{{cashMoveForm.value.contact && cashMoveForm.value.contact.name || 'SELECT'|translate}}</h4>
@@ -96,7 +96,7 @@
         <ion-input #description type="text" formControlName="name"></ion-input>
       </ion-item>
       <!-- *ngIf="cashMoveForm.value.accountFrom.type=='payable' || cashMoveForm.value.accountTo.type=='payable' || cashMoveForm.value.accountFrom.type=='receivable' || cashMoveForm.value.accountTo.type=='receivable'" -->
-      <ion-item no-padding class="item-content"
+      <ion-item class="ion-no-padding item-content"
       *ngIf="!(cashMoveForm.value.accountFrom.type=='payable' || cashMoveForm.value.accountTo.type=='payable' || cashMoveForm.value.accountFrom.type=='receivable' || cashMoveForm.value.accountTo.type=='receivable')"
       class="field-100">
         <ion-label position="floating" class="field-label">{{'DATE' | translate }}</ion-label>
@@ -107,7 +107,7 @@
           formControlName="date">
         </ion-datetime>
     </ion-item>
-    <ion-item no-padding class="item-content"
+    <ion-item class="ion-no-padding item-content"
     *ngIf="cashMoveForm.value.accountFrom.type=='payable' || cashMoveForm.value.accountTo.type=='payable' || cashMoveForm.value.accountFrom.type=='receivable' || cashMoveForm.value.accountTo.type=='receivable'"
     class="field-50">
       <ion-label position="floating" class="field-label">{{'DATE' | translate }}</ion-label>
@@ -119,7 +119,7 @@
         formControlName="date">
       </ion-datetime>
   </ion-item>
-    <ion-item no-padding class="item-content"
+    <ion-item class="ion-no-padding item-content"
     *ngIf="cashMoveForm.value.accountFrom.type=='payable' || cashMoveForm.value.accountTo.type=='payable' || cashMoveForm.value.accountFrom.type=='receivable' || cashMoveForm.value.accountTo.type=='receivable'"
     class="field-50">
       <ion-label position="floating" class="field-label">{{'DATE_DUE' | translate }}</ion-label>
@@ -133,14 +133,14 @@
   </ion-item>
 
   <!-- <ion-item
-  no-padding
+  class="ion-no-padding"
   class="field-50">
   <ion-label>{{'Es Cheque' | translate}}</ion-label>
   <ion-toggle formControlName="is_check"></ion-toggle>
 </ion-item> -->
 
 <!-- <ion-item
-no-padding
+class="ion-no-padding"
 class="field-50">
 <ion-label >{{'Es Otra Moneda' | translate}}</ion-label>
 <ion-toggle formControlName="is_other_currency"
@@ -149,7 +149,7 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
 
 
   <!-- <ion-item
-   no-padding
+   class="ion-no-padding"
    (click)="selectCheck()"
    class="field-100">
     <h4 class="field-label">{{'Cheque' | translate }}</h4>
@@ -159,7 +159,7 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
     </ion-row>
     <ion-row>
 
-      <ion-col no-padding class="field-many2one-edit"
+      <ion-col class="ion-no-padding field-many2one-edit"
       (click)="selectCheck()">
         <h4 class="field-label-col">{{'Cheque' | translate }}</h4>
         <h4 class="field-value-col">{{cashMoveForm.value.check && cashMoveForm.value.check.name || 'SELECT'|translate}}</h4>
@@ -204,7 +204,7 @@ style="margin-left: -12px;margin-right: -12px;"></ion-toggle>
   </ion-fab> -->
   <ion-item
    *ngIf="cashMoveForm.value.origin_id"
-   no-padding
+   class="ion-no-padding"
    class="field-100">
    <h4 class="field-label">{{'Documento' | translate}}</h4>
    <h4 class="field-value">  {{cashMoveForm.value.origin_id || 'Manual'}}</h4>
