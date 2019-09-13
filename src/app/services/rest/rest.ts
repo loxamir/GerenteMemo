@@ -272,7 +272,7 @@ export class RestProvider {
         this.databaseUrl+'/leads/lead.'+uuid,
         data,
         {
-          headers: new HttpHeaders().set('Authorization', "Basic " + btoa('agromemo' + ":" + '123'))
+          headers: new HttpHeaders().set('Authorization', "Basic " + btoa('memo' + ":" + '123'))
         }
       ).subscribe(returno => {
         console.log("returno", returno);

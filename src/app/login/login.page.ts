@@ -123,7 +123,7 @@ export class LoginPage implements OnInit {
   showCreate(){
     this.show_create = true;
     this.loginForm.patchValue({
-      "user": "agromemo",
+      "user": "memo",
       "password": "123",
     })
   }
@@ -278,7 +278,7 @@ export class LoginPage implements OnInit {
             this.translate.setDefaultLang(this.language);
             this.translate.use(this.language);
             let password = await this.storage.get("password");
-            if (this.username!='agromemo'){
+            if (this.username!='memo'){
               this.restProvider.setUserLanguage(this.username, password, this.language);
             }
           }
