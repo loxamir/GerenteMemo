@@ -5,6 +5,7 @@ const httpOptions = {
     'Content-Type':  'application/json',
   })
 };
+declare var require: any;
 // declare var Buffer: any;
 /*
   Generated class for the RestProvider provider.
@@ -257,6 +258,64 @@ export class RestProvider {
           resolve(err);
           console.log("change language error", err);
         });
+      }, err => {
+        console.log("change language get user error", err);
+        resolve(err);
+      });
+    });
+  }
+
+  sendLead(data){
+    return new Promise(resolve => {
+      let uuid= this.getUUID();
+      this.http.put(
+        this.databaseUrl+'/leads/lead.'+uuid,
+        data,
+        {
+          headers: new HttpHeaders().set('Authorization', "Basic " + btoa('agromemo' + ":" + '123'))
+        }
+      ).subscribe(returno => {
+        console.log("returno", returno);
+        resolve(returno);
+      }, err => {
+        resolve(err);
+        console.log("change language error", err);
+      });
+    });
+  }
+
+  getUUID(){
+    const uuidv4 = require('uuid/v4');
+    return uuidv4();
+  }
+
+  setUserToken(username, password, token){
+    return new Promise(resolve => {
+      this.http.get(
+        this.databaseUrl+'/_users/org.couchdb.user:' + username,
+        {
+          headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + password))
+        }
+      ).subscribe((userData: any) => {
+        if (!userData.devices){
+          userData['devices'] = [];
+        }
+        let tokenIndex = userData.devices.indexOf(token);
+        if (tokenIndex == -1){
+          userData.devices.push(token);
+          this.http.put(
+            this.databaseUrl+'/_users/org.couchdb.user:'+ username,
+            userData,
+            {
+              headers: new HttpHeaders().set('Authorization', "Basic " + btoa(username + ":" + password))
+            }
+          ).subscribe(data => {
+            resolve(data);
+          }, err => {
+            resolve(err);
+            console.log("change language error", err);
+          });
+        }
       }, err => {
         console.log("change language get user error", err);
         resolve(err);

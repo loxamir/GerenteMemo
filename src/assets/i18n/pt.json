@@ -424,5 +424,8 @@
   "COST_BY_CATEGORY":"Custo por Categoria",
   "COST_BY_BRAND":"Custo por Marca",
   "AVERAGE": "Médio",
+  "HELLO": "Ola",
+  "SELECT_A_COMPANY": "Selecione uma empresa para começar",
+  "SEE_DEMO": "Ver Demonstração",
   "RESULT": "Resultado"
 }

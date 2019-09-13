@@ -186,7 +186,7 @@ h4.field-value-col {
     width: 100%;
 }
 ion-content {
-    --ion-background-color: #ddd;
+    --ion-background-color: #78bfdc;
 }
 
 .field-50-datetime {
@@ -515,4 +515,29 @@ ion-segment-button {
 .discount-modal {
   --max-height: 350px;
   --max-width: 350px;
+}
+
+.planned {
+    color: #4545e8;
+}
+
+ion-toolbar {
+  --ion-background-color: linear-gradient(to left,#007bff,#2d3a98);
+  color: white;
+}
+
+ion-searchbar {
+  --ion-background-color: white;
+}
+
+.bg-gradient {
+  --ion-background-color: linear-gradient(to left,#007bff,#2d3a98);
+}
+
+.search-box {
+  --background: #74e45d;
+}
+
+.validation-errors {
+  color: red;
 }

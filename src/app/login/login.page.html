@@ -1,8 +1,17 @@
 
 <ion-header *ngIf="selected_user">
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-title>
-      {{ 'WELCOME' | translate }} {{ username }}
+      <!-- Agro Memo -->
+      <div class="login-header">
+        <div class="login-header">
+          <img src="./assets/icon/favicon.png"
+          alt="AgroMemo" style="width: 50px;"/>
+        </div>
+        <div class="login-header" style="margin-top: 20px;">
+          Sistema Memo
+        </div>
+      </div>
     </ion-title>
     <ion-buttons slot="end">
       <ion-button icon-only (click)="presentPopover($event)">
@@ -12,54 +21,52 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--ion-background-color: #bbe0ff;">
-    <img src="./assets/images/logo.png"
-    alt="Sistema Memo"
-    class="center"/>
-
+<ion-content [class.bg-gradient]="!selected_user">
   <form [formGroup]="loginForm">
-    <ion-row *ngIf="!selected_user">
-      <ion-col></ion-col>
-      <ion-col no-padding width-80>
-        <ion-item style="--background:white;border-radius:10px;margin-bottom:10px;">
-          <ion-label position="floating">{{'USER' | translate}}</ion-label>
-          <ion-input type="text" formControlName="user" autocomplete='name'></ion-input>
+    <div *ngIf="!selected_user">
+      <div no-padding class="login-box">
+        <img src="./assets/images/logo.png"
+        alt="Sistema Memo"
+        style="margin-bottom: 20px;"/>
+        <ion-item class="login-input" *ngIf="!show_create">
+          <ion-label position="floating" class="login-input-label">{{'USER' | translate}}</ion-label>
+          <ion-input type="text" formControlName="user" autocomplete='name' class="login-input-field"></ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;">
+        <div class="validation-errors" *ngIf="!show_create">
           <ng-container *ngFor="let validation of validation_messages.user">
             <div class="error-message" *ngIf="loginForm.get('user').hasError(validation.type) && (loginForm.get('user').dirty || loginForm.get('user').touched)">
               {{ validation.message }}
             </div>
           </ng-container>
         </div>
-        <ion-item style="--background:white;border-radius:10px;margin-bottom:10px;">
-          <ion-label position="floating">{{'PASSWORD' | translate}}</ion-label>
-          <ion-input type="password" formControlName="password" autocomplete='name'></ion-input>
+        <ion-item class="login-input" *ngIf="!show_create">
+          <ion-label position="floating" class="login-input-label">{{'PASSWORD' | translate}}</ion-label>
+          <ion-input type="password" formControlName="password" autocomplete='name' class="login-input-field"></ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;">
+        <div class="validation-errors" *ngIf="!show_create">
           <ng-container *ngFor="let validation of validation_messages.password">
             <div class="error-message" *ngIf="loginForm.get('password').hasError(validation.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
               {{ validation.message }}
             </div>
           </ng-container>
         </div>
-        <ion-item *ngIf="show_create" style="--background:white;border-radius:10px;margin-bottom:10px;">
-          <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-          <ion-input type="text" formControlName="name"></ion-input>
+        <ion-item *ngIf="show_create" class="login-input">
+          <ion-label position="floating" class="login-input-label">{{'NAME' | translate}}</ion-label>
+          <ion-input type="text" formControlName="name" class="login-input-field"></ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;">
+        <div class="validation-errors">
           <ng-container *ngFor="let validation of validation_messages.name">
             <div class="error-message" *ngIf="loginForm.get('name').hasError(validation.type) && (loginForm.get('name').dirty || loginForm.get('name').touched)">
               {{ validation.message }}
             </div>
           </ng-container>
         </div>
-        <ion-item *ngIf="show_create" style="--background:white;border-radius:10px;margin-bottom:10px;">
-          <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
-          <ion-input type="number" formControlName="mobile">
+        <ion-item *ngIf="show_create" class="login-input">
+          <ion-label position="floating" class="login-input-label">{{'PHONE' | translate}}</ion-label>
+          <ion-input type="text" formControlName="mobile" class="login-input-field">
           </ion-input>
         </ion-item>
-        <div class="validation-errors" style="color: red;">
+        <div class="validation-errors">
           <ng-container *ngFor="let validation of validation_messages.mobile">
             <div class="error-message" *ngIf="loginForm.get('mobile').hasError(validation.type) && (loginForm.get('mobile').dirty || loginForm.get('mobile').touched)">
               {{ validation.message }}
@@ -67,37 +74,68 @@
           </ng-container>
         </div>
 
-        <ion-button class="print-invoice" (click)="login()" *ngIf="!show_create" style="border-radius:10px;width:100%">
+        <ion-item *ngIf="show_create" class="login-input">
+          <ion-label position="floating" class="login-input-label">{{'ADDRESS' | translate}}</ion-label>
+          <ion-input type="text" formControlName="address" class="login-input-field">
+          </ion-input>
+        </ion-item>
+        <div class="validation-errors">
+          <ng-container *ngFor="let validation of validation_messages.address">
+            <div class="error-message" *ngIf="loginForm.get('address').hasError(validation.type) && (loginForm.get('address').dirty || loginForm.get('address').touched)">
+              {{ validation.message }}
+            </div>
+          </ng-container>
+        </div>
+
+        <ion-button
+        class="print-invoice"
+        (click)="login()"
+        *ngIf="!show_create"
+        style="border-radius:10px;width:100%">
           {{ 'LOG_IN' | translate }}
         </ion-button>
-        <ion-button class="print-invoice" (click)="register()" [disabled]="!loginForm.valid" *ngIf="show_create" style="border-radius:10px;width:100%">
-          {{ 'SIGN_UP' | translate }}
+        <ion-button
+        class="print-invoice"
+        (click)="seeDemo()"
+        [disabled]="!loginForm.valid"
+        color="success"
+        *ngIf="show_create"
+        style="border-radius:10px;width:100%">
+          {{ 'SEE_DEMO' | translate }}
         </ion-button>
+
+        <ion-button
+        class="print-invoice"
+        (click)="showCreate()"
+        *ngIf="!show_create"
+        color="success"
+        style="border-radius:10px;width:100%">
+          {{ 'SEE_DEMO' | translate }}
+        </ion-button>
+
         <ion-row>
           <ion-col>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col style="text-align: center;">
-            <a style="font-size:15px;" (click)="showCreate()" *ngIf="!show_create">{{ 'CREATE_ACCOUNT' | translate }}</a>
+            <!-- <a style="font-size:15px;" (click)="showCreate()" *ngIf="!show_create">{{ 'CREATE_ACCOUNT' | translate }}</a> -->
             <a style="font-size:15px;" (click)="showLogin()" *ngIf="show_create">{{ 'BACK_TO_LOGIN' | translate }}</a>
           </ion-col>
         </ion-row>
-      </ion-col>
-      <ion-col></ion-col>
-    </ion-row>
+      </div>
+    </div>
   </form>
 
 
 
 
-
-    <div *ngIf="selected_user">
-      <h2 class="section-title" style="width: 100%; text-align: left;margin-top: 20px;">{{ 'COMPANIES' | translate}}</h2>
+    <div *ngIf="selected_user" style="background: #2d3a98;">
+      <h2 class="section-title" style="color:white;font-size: 1.5rem;padding: 0.6rem;">{{ 'HELLO' | translate}}  {{ username }}!</h2>
+      <h2 class="section-title" style="color:white;font-size: 1rem;padding-bottom: 0.6rem;">{{ 'SELECT_A_COMPANY' | translate}}</h2>
       <ion-item *ngFor="let database of databaseList"
       class="bg-white"
-      [class.bg-yellow]="database.admin && database.date_due && database.date_due.split('T')[0] < today.split('T')[0]"
-      >
+      [class.bg-yellow]="database.admin && database.date_due && database.date_due.split('T')[0] < today.split('T')[0]">
         <ion-col (click)="selectDatabase(database)">
           {{database.name}}
         </ion-col>
@@ -111,7 +149,7 @@
         </ion-col>
       </ion-item>
     </div>
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <a target="_blank" href="https://www.youtube.com/channel/UCfjFZyo8jvrx0ILRBTk2XRQ" rel="noopener">
     <ion-button style="--color: white; --background: white;">
       <ion-icon name="logo-youtube" style="margin-right: 5px;color: red;"> </ion-icon>
@@ -127,7 +165,7 @@
       <span style="color: black;font-weight: bold;">{{ 'CONTACT' | translate }}</span>
     </ion-button>
   </a>
-  </ion-fab>
+  </ion-fab> -->
   <div style="height: 100px;">
   </div>
 </ion-content>
