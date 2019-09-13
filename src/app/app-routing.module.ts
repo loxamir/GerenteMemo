@@ -5,6 +5,7 @@ import { AuthGuardService } from './services/auth-guard.service';
 const routes: Routes = [
   { path: '', redirectTo: 'agro-tabs', pathMatch: 'full' },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule'},
+  { path: 'login/:demo', loadChildren: './login/login.module#LoginPageModule'},
   { path: 'contact', loadChildren: './contact/contact.module#ContactPageModule' },
   { path: 'contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule' },
   { path: 'product', loadChildren: './product/product.module#ProductPageModule' },
