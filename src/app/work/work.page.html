@@ -293,6 +293,27 @@
       {{'START'|translate}}
     </ion-button> -->
     <!-- <ion-button class="button-100" color="primary" (click)="concludeWork()" *ngIf="workForm.value.state=='STARTED' && !this.list">{{'CONCLUDE'|translate}}</ion-button> -->
+
+    <ion-button full icon-left (click)="startTracking()" *ngIf="!isTracking">
+        <ion-icon name="locate"></ion-icon>
+        Start Tracking
+      </ion-button>
+    <ion-button full color="danger" icon-left (click)="stopTracking()" *ngIf="isTracking">
+        <ion-icon name="hand"></ion-icon>
+        Stop Tracking
+    </ion-button>
+
+    <div #map id="map"></div>
+
+    <ion-list>
+      <ion-list-header>Previous Tracks</ion-list-header>
+      <ion-item *ngFor="let route of previousTracks">
+        {{ route.finished | date }}, {{ route.path.length }} Waypoints
+        <ion-button ion-button clear item-end (click)="showHistoryRoute(route.path)">View Route</ion-button>
+      </ion-item>
+    </ion-list>
+
+
   </form>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="workForm.value.state=='DRAFT' && workForm.value.date>today.toISOString() && !this.list">
     <ion-button (click)="setScheduled()"  class="next-button">

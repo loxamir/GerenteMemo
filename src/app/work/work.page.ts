@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit, Input, ViewChildren } from '@angular/core';
 import { NavController,  LoadingController, AlertController,
-  Events, ToastController, ModalController,
+  Events, ToastController, ModalController,  Platform
 } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -25,6 +25,11 @@ import { StockMoveService } from '../stock-move/stock-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 import { FutureContractListPage } from '../future-contract-list/future-contract-list.page';
+import { Subscription } from 'rxjs/Subscription';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+declare var google;
+import { filter } from 'rxjs/operators';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-work',
@@ -33,6 +38,16 @@ import { FutureContractListPage } from '../future-contract-list/future-contract-
 })
 export class WorkPage implements OnInit {
   @ViewChild('teste', { static: false }) pageFields: any[];
+  @ViewChild('map', { static: false }) mapElement: ElementRef;
+  map: any;
+  currentMapTrack = null;
+
+  isTracking = false;
+  trackedRoute = [];
+  previousTracks = [];
+
+  positionSubscription: Subscription;
+
   workForm: FormGroup;
   loading: any;
   today: any;
@@ -76,7 +91,11 @@ export class WorkPage implements OnInit {
     public events: Events,
     public modalCtrl: ModalController,
     public stockMoveService: StockMoveService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+
+    private plt: Platform,
+    private geolocation: Geolocation,
+    private storage: Storage
   ) {
     this.today = new Date();
     this._id = this.route.snapshot.paramMap.get('_id');
@@ -141,7 +160,103 @@ export class WorkPage implements OnInit {
     })
   }
 
+  loadHistoricRoutes() {
+    this.storage.get('routes').then(data => {
+      if (data) {
+        this.previousTracks = data;
+      }
+    });
+  }
+
+  startTracking() {
+    this.isTracking = true;
+    this.trackedRoute = [];
+    let options = {
+      maximumAge: 3000,
+      timeout: 5000,
+      enableHighAccuracy: true
+    }
+    this.positionSubscription = this.geolocation.watchPosition(options)
+      .pipe(
+        filter((p) => p.coords !== undefined) //Filter Out Errors
+      )
+      .subscribe(data => {
+        setTimeout(() => {
+          this.trackedRoute.push({ lat: data.coords.latitude, lng: data.coords.longitude });
+          this.redrawPath(this.trackedRoute);
+        }, 0);
+      });
+
+  }
+
+  redrawPath(path) {
+    if (this.currentMapTrack) {
+      this.currentMapTrack.setMap(null);
+    }
+
+    if (path.length > 1) {
+      this.currentMapTrack = new google.maps.Polyline({
+        path: path,
+        geodesic: true,
+        strokeColor: '#ff00ff',
+        strokeOpacity: 1.0,
+        strokeWeight: 3
+      });
+      this.currentMapTrack.setMap(this.map);
+    }
+  }
+
+  stopTracking() {
+    let newRoute = { finished: new Date().getTime(), path: this.trackedRoute };
+    this.previousTracks.push(newRoute);
+    this.storage.set('routes', this.previousTracks);
+    this.workForm.patchValue({
+      "gps": this.previousTracks
+    })
+    this.justSave();
+    this.isTracking = false;
+    this.positionSubscription.unsubscribe();
+    this.currentMapTrack.setMap(null);
+  }
+
+  showHistoryRoute(route) {
+    this.redrawPath(route);
+  }
+
   async ngOnInit() {
+
+    this.plt.ready().then(() => {
+      this.loadHistoricRoutes();
+
+      let mapOptions = {
+        zoom: 20,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false
+      }
+      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+      // let options = {
+      //   timeout:10000,
+      //   enableHighAccuracy:true
+      // };
+
+
+      let options = {
+        maximumAge: 3000,
+        timeout: 5000,
+        enableHighAccuracy: true
+      }
+      this.geolocation.getCurrentPosition(options).then(pos => {
+        let latLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        this.map.setCenter(latLng);
+        this.map.setZoom(20);
+      }).catch((error) => {
+        console.log('Error getting location', error);
+      });
+    });
+
+
     var date_start = new Date();
     date_start.setHours(7);
     date_start.setMinutes(30);
@@ -158,6 +273,7 @@ export class WorkPage implements OnInit {
       fields: new FormControl([]),
       summary: new FormControl(""),
       section: new FormControl(null),
+      gps: new FormControl([]),
       doc_id: new FormControl(''),
       plan: new FormControl({}),
       scheduled: new FormControl(false),

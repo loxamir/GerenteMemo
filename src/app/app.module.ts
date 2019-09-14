@@ -142,8 +142,8 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
   //   CashListPage,
   // ],
   imports: [
-    HomePageModule,
     LoginPageModule,
+    HomePageModule,
     SaleListPageModule,
     AgroTabsPageModule,
     ContactPageModule,
