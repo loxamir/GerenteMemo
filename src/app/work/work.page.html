@@ -300,20 +300,20 @@
 
     <ion-button full icon-left (click)="startTracking()" *ngIf="!isTracking">
         <ion-icon name="locate"></ion-icon>
-        Start Tracking
+        Iniciar Rastreio
       </ion-button>
     <ion-button full color="danger" icon-left (click)="stopTracking()" *ngIf="isTracking">
         <ion-icon name="hand"></ion-icon>
-        Stop Tracking
+        Parar Rastreio
     </ion-button>
 
     <div #map id="map"></div>
 
-    <ion-list>
-      <ion-list-header>Previous Tracks</ion-list-header>
-      <ion-item *ngFor="let route of previousTracks">
-        {{ route.finished | date }}, {{ route.path.length }} Waypoints
-        <ion-button ion-button clear item-end (click)="showHistoryRoute(route.path)">View Route</ion-button>
+    <ion-list *ngIf="listedRoutes.length">
+      <ion-list-header>Rastreios Anteriores</ion-list-header>
+      <ion-item *ngFor="let route of listedRoutes.reverse()">
+        {{ route[route.length - 1].date | date:'medium' }}
+        <ion-button ion-button clear item-end (click)="showHistoryRoute(route)">Ver Rastreio</ion-button>
       </ion-item>
     </ion-list>
 

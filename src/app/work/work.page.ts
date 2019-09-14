@@ -29,7 +29,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 declare var google;
 import { filter } from 'rxjs/operators';
-import { Storage } from '@ionic/storage';
 import { WorkPopover, } from './work.popover';
 
 @Component({
@@ -44,8 +43,6 @@ export class WorkPage implements OnInit {
   currentMapTrack = null;
 
   isTracking = false;
-  trackedRoute = [];
-  previousTracks = [];
 
   positionSubscription: Subscription;
 
@@ -71,6 +68,7 @@ export class WorkPage implements OnInit {
   tmpData = {};
   state = 'DRAFT';
   ready = false;
+  listedRoutes = [];
 
   constructor(
     public navCtrl: NavController,
@@ -97,7 +95,6 @@ export class WorkPage implements OnInit {
 
     private plt: Platform,
     private geolocation: Geolocation,
-    private storage: Storage
   ) {
     this.today = new Date();
     this._id = this.route.snapshot.paramMap.get('_id');
@@ -162,17 +159,10 @@ export class WorkPage implements OnInit {
     })
   }
 
-  loadHistoricRoutes() {
-    this.storage.get('routes').then(data => {
-      if (data) {
-        this.previousTracks = data;
-      }
-    });
-  }
-
   startTracking() {
     this.isTracking = true;
-    this.trackedRoute = [];
+    this.workForm.value.gps.push([]);
+
     let options = {
       maximumAge: 3000,
       timeout: 5000,
@@ -184,8 +174,9 @@ export class WorkPage implements OnInit {
       )
       .subscribe(data => {
         setTimeout(() => {
-          this.trackedRoute.push({ lat: data.coords.latitude, lng: data.coords.longitude });
-          this.redrawPath(this.trackedRoute);
+          this.workForm.value.gps[this.workForm.value.gps.length - 1].push({ lat: data.coords.latitude, lng: data.coords.longitude, date: new Date().toISOString() });
+          this.redrawPath(this.workForm.value.gps[this.workForm.value.gps.length - 1]);
+          this.cleanSave();
         }, 0);
       });
 
@@ -209,13 +200,7 @@ export class WorkPage implements OnInit {
   }
 
   stopTracking() {
-    let newRoute = { finished: new Date().getTime(), path: this.trackedRoute };
-    this.previousTracks.push(newRoute);
-    this.storage.set('routes', this.previousTracks);
-    this.workForm.patchValue({
-      "gps": this.previousTracks
-    })
-    this.justSave();
+    this.listedRoutes = Object.assign([], this.workForm.value.gps);
     this.isTracking = false;
     this.positionSubscription.unsubscribe();
     this.currentMapTrack.setMap(null);
@@ -228,7 +213,6 @@ export class WorkPage implements OnInit {
   async ngOnInit() {
 
     this.plt.ready().then(() => {
-      this.loadHistoricRoutes();
 
       let mapOptions = {
         zoom: 20,
@@ -312,6 +296,7 @@ export class WorkPage implements OnInit {
             this.setActivity(data['activity'])
           }
           this.recomputeFields();
+          this.listedRoutes = Object.assign([], this.workForm.value.gps);
           this.loading.dismiss();
           this.ready = true;
         });
@@ -427,6 +412,23 @@ export class WorkPage implements OnInit {
         });
       }
     // }
+  }
+
+  cleanSave(){
+    if (this._id) {
+      this.workService.updateWork(this.workForm.value);
+      this.workForm.markAsPristine();
+    } else {
+      this.workService.createWork(this.workForm.value).then(doc => {
+        this.workForm.patchValue({
+          _id: doc['doc'].id,
+          code: doc['work'].code,
+        });
+        this._id = doc['doc'].id;
+        this.events.publish('create-work', this.workForm.value);
+        this.workForm.markAsPristine();
+      });
+    }
   }
 
   setSummary(){
