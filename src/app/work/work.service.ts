@@ -41,6 +41,7 @@ export class WorkService {
           work[field.name][index]['activity_id'] = field.activity._id || work[field.name][index]['activity_id'];
           // work[field.name+'_name'] = work[field.name].name;
           delete work[field.name][index]['activity'];
+          delete work[field.name][index]['fields'];
           console.log("activity", work[field.name][index]);
         })
       }

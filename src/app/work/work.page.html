@@ -13,6 +13,10 @@
       </h1>
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button icon-only
+              (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
   <ion-row  class="state-header" *ngIf="!this.list">

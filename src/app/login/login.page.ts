@@ -30,6 +30,7 @@ export class LoginPage implements OnInit {
   username = '';
   today = new Date().toISOString();
   language;
+  demo;
 
   constructor(
     public loadingCtrl: LoadingController,
@@ -47,6 +48,10 @@ export class LoginPage implements OnInit {
     public route: ActivatedRoute,
     public router: Router,
   ) {
+    this.demo = this.route.snapshot.paramMap.get('demo');
+    if (this.demo){
+      this.show_create = true;
+    }
     this.storage.get("username").then((username)=>{
       this.username = username;
       if (username){

@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit, Input, ViewChildren } from '@angular/core';
 import { NavController,  LoadingController, AlertController,
-  Events, ToastController, ModalController,  Platform
+  Events, ToastController, ModalController,  Platform, PopoverController
 } from '@ionic/angular';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -30,6 +30,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 declare var google;
 import { filter } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
+import { WorkPopover, } from './work.popover';
 
 @Component({
   selector: 'app-work',
@@ -81,6 +82,7 @@ export class WorkPage implements OnInit {
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
     public ProductService: ProductService,
+    public popoverCtrl: PopoverController,
     public ReceiptService: ReceiptService,
     public bluetoothSerial: BluetoothSerial,
     public toastCtrl: ToastController,
@@ -528,11 +530,11 @@ export class WorkPage implements OnInit {
     }) || [];
 
     let defaultTab = null;
-    data_fields.forEach(field => {
+    data_fields.forEach(async field => {
       if (field.type == "boolean") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||false));
       } else if (field.type == "float") {
-        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||0));
+        this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||parseFloat(field.default)||0));
       }
       else if (field.type == "string") {
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||""));
@@ -552,8 +554,10 @@ export class WorkPage implements OnInit {
           field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||{})
         );
       } else if (field.type == "list") {
+        field.activity = await this.pouchdbService.getDoc(field.activity_id);
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
       } else if (field.type == 'tab'){
+        field.activity = await this.pouchdbService.getDoc(field.activity_id);
         this.workForm.addControl(field.name, new FormControl(this.route.snapshot.paramMap.get(field.name)||[]));
         if(! defaultTab) {
           defaultTab = field.name;
@@ -700,7 +704,7 @@ export class WorkPage implements OnInit {
   async addFieldItem(field_name){
     let field =  this.workForm.value[field_name];
     let activity = {};
-    this.workForm.value.fields.forEach(variable => {
+    this.workForm.value.fields.forEach(async variable => {
       if (variable.name == field_name){
         activity = variable.activity;
       }
@@ -716,8 +720,14 @@ export class WorkPage implements OnInit {
     });
     profileModal.onDidDismiss().then(data => {
       if (data.data) {
+        data.data.fields.forEach((field)=>{
+          if (field.type == 'many2one'){
+            data.data[field.name+'_id'] = data.data[field.name]._id,
+            data.data[field.name+'_name'] = data.data[field.name].name,
+            delete data.data[field.name];
+          }
+        })
         field.push(data.data);
-        // this.workForm.markAsDirty();
         this.workForm.controls[field_name].markAsDirty();
         this.recomputeFields();
       }
@@ -730,37 +740,53 @@ export class WorkPage implements OnInit {
 
   async editFieldItem(field_name, item){
     let field =  this.workForm.value[field_name];
-    let activity = {};
-    this.workForm.value.fields.forEach(variable => {
+    let activity:any = {};
+    this.workForm.value.fields.forEach(async variable => {
       if (variable.name == field_name){
         activity = variable.activity;
-      }
-    });
-    let context = {
-      data: this.workForm.value[field_name][item],
-      list: true,
-      go: true,
-      activity: activity,
-      state: this.workForm.value.state,
-      select: true,
-    }
+        let data = this.workForm.value[field_name][item];
+        data.fields = [];
+        activity.fields.forEach(async (field)=>{
+          if (field.type == 'many2one'){
+            data[field.name] = await this.pouchdbService.getDoc(data[field.name+'_id']);
+          }
+          data.fields.unshift(field);
+        })
+        let context = {
+          data: data,
+          list: true,
+          go: true,
+          activity: activity,
+          state: this.workForm.value.state,
+          select: true,
+        }
 
-    let profileModal = await this.modalCtrl.create({
-      component:WorkPage,
-      componentProps: context
-    });
-    profileModal.onDidDismiss().then(data => {
-      if (data.data) {
-        field[item] = data.data;
-        // this.workForm.markAsDirty();
-        this.workForm.controls[field_name].markAsDirty();
+        let profileModal = await this.modalCtrl.create({
+          component:WorkPage,
+          componentProps: context
+        });
+        profileModal.onDidDismiss().then(data => {
+          if (data.data) {
+            data.data.fields.forEach((field)=>{
+              if (field.type == 'many2one'){
+                data.data[field.name+'_id'] = data.data[field.name]._id,
+                data.data[field.name+'_name'] = data.data[field.name].name,
+                delete data.data[field.name];
+              }
+            })
+            field[item] = data.data;
+            this.workForm.controls[field_name].markAsDirty();
+          }
+          this.recomputeFields();
+          this.workForm.patchValue({
+            'section': field_name,
+          });
+        });
+        profileModal.present();
+        return
       }
-      this.recomputeFields();
-      this.workForm.patchValue({
-        'section': field_name,
-      });
     });
-    profileModal.present();
+
   }
 
   async removeFieldItem(field_name, item){
@@ -1036,10 +1062,39 @@ export class WorkPage implements OnInit {
     this.justSave();
   }
 
+  gotoDraft() {
+    this.workForm.patchValue({
+      state: "DRAFT",
+      plan: {},
+      scheduled: false,
+    })
+    this.justSave();
+  }
+
+  gotoStarted() {
+    this.workForm.patchValue({
+      state: "STARTED"
+    })
+    this.justSave();
+  }
+
   setScheduled(){
+    let plan = {
+      date: this.workForm.value.date,
+      dateEnd: this.workForm.value.dateEnd,
+      note: this.workForm.value.note,
+    }
+    this.workForm.value.fields.forEach((field)=>{
+      if (field.type == 'many2one'){
+        plan[field.name+'_id'] = this.workForm.value[field.name]._id;
+        plan[field.name+'_name'] = this.workForm.value[field.name].name;
+      } else {
+        plan[field.name] = this.workForm.value[field.name];
+      }
+    })
     this.workForm.patchValue({
       state: "SCHEDULED",
-      plan: this.workForm.value,
+      plan: plan,
       scheduled: true,
     })
     this.buttonSave();
@@ -1095,6 +1150,18 @@ export class WorkPage implements OnInit {
       });
       alertPopup.present();
     }
+  }
+
+  async presentPopover(myEvent) {
+    let popover = await this.popoverCtrl.create({
+      component: WorkPopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
   }
 
 }

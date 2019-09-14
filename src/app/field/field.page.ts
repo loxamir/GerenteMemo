@@ -31,7 +31,7 @@ export class FieldPage implements OnInit {
   attributes;
   class;
   sequence;
-  activity;
+  activity_name;
   activity_id;
   context;
   select;
@@ -51,10 +51,6 @@ export class FieldPage implements OnInit {
     public events: Events,
     public alertCtrl: AlertController,
   ) {
-    //this.loading = //this.loadingCtrl.create({});
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.name = this.route.snapshot.paramMap.get('name');
     this.type = this.route.snapshot.paramMap.get('type');
@@ -70,13 +66,13 @@ export class FieldPage implements OnInit {
     this.onchange = this.route.snapshot.paramMap.get('onchange');
     this.class = this.route.snapshot.paramMap.get('class');
     this.sequence = this.route.snapshot.paramMap.get('sequence');
-    this.activity = this.route.snapshot.paramMap.get('activity');
+    this.activity_name = this.route.snapshot.paramMap.get('activity_name');
     this.activity_id = this.route.snapshot.paramMap.get('activity_id');
     this.context = this.route.snapshot.paramMap.get('context');
     this.select = this.route.snapshot.paramMap.get('select');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.fieldForm = this.formBuilder.group({
       name: new FormControl(this.name||''),
       type: new FormControl(this.type||'float'),
@@ -91,12 +87,18 @@ export class FieldPage implements OnInit {
       attributes: new FormControl(this.attributes||[]),
       class: new FormControl(this.class||'half-width'),
       sequence: new FormControl(this.sequence||0),
-      activity: new FormControl(this.activity||{}),
+      activity_name: new FormControl(this.activity_name||''),
       activity_id: new FormControl(this.activity_id||''),
       onchange: new FormControl(this.onchange||null),
       default: new FormControl(this.default||null),
       context: new FormControl(this.context||'{}'),
     });
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
+    await this.loading.dismiss();
   }
 
   buttonSave(){
@@ -109,7 +111,7 @@ export class FieldPage implements OnInit {
       this.events.unsubscribe('select-activity');
       this.events.subscribe('select-activity', (data) => {
         this.fieldForm.patchValue({
-          activity: data,
+          activity_name: data.name,
           activity_id: data._id,
           // fields: data.fields,
         });
