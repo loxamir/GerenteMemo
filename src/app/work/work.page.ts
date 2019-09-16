@@ -43,6 +43,7 @@ export class WorkPage implements OnInit {
   currentMapTrack = null;
 
   isTracking = false;
+  trackGPS = false;
 
   positionSubscription: Subscription;
 
@@ -564,6 +565,8 @@ export class WorkPage implements OnInit {
         if(! defaultTab) {
           defaultTab = field.name;
         }
+      } else if (field.type == 'trackGPS'){
+        this.trackGPS = true;
       }
     });
     if (this.area){

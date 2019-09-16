@@ -298,26 +298,29 @@
     </ion-button> -->
     <!-- <ion-button class="button-100" color="primary" (click)="concludeWork()" *ngIf="workForm.value.state=='STARTED' && !this.list">{{'CONCLUDE'|translate}}</ion-button> -->
 
-    <ion-button full icon-left (click)="startTracking()" *ngIf="!isTracking">
-        <ion-icon name="locate"></ion-icon>
-        Iniciar Rastreio
+
+    <div [class.invisible]="!trackGPS">
+      <ion-button full icon-left (click)="startTracking()" *ngIf="!isTracking">
+          <ion-icon name="locate"></ion-icon>
+          Iniciar Rastreio
+        </ion-button>
+      <ion-button full color="danger" icon-left (click)="stopTracking()" *ngIf="isTracking">
+          <ion-icon name="hand"></ion-icon>
+          Parar Rastreio
       </ion-button>
-    <ion-button full color="danger" icon-left (click)="stopTracking()" *ngIf="isTracking">
-        <ion-icon name="hand"></ion-icon>
-        Parar Rastreio
-    </ion-button>
 
 
 
-    <ion-list *ngIf="listedRoutes.length">
-      <ion-list-header>Rastreios Anteriores</ion-list-header>
-      <ion-item *ngFor="let route of listedRoutes">
-        {{ route[route.length - 1].date | date:'medium' }}
-        <ion-button ion-button clear item-end (click)="showHistoryRoute(route)">Ver Rastreio</ion-button>
-      </ion-item>
-    </ion-list>
+      <ion-list *ngIf="listedRoutes.length">
+        <ion-list-header>Rastreios Anteriores</ion-list-header>
+        <ion-item *ngFor="let route of listedRoutes">
+          {{ route[route.length - 1].date | date:'medium' }}
+          <ion-button ion-button clear item-end (click)="showHistoryRoute(route)">Ver Rastreio</ion-button>
+        </ion-item>
+      </ion-list>
 
-    <div #map id="map"></div>
+      <div #map id="map"></div>
+    </div>
 
 
   </form>
