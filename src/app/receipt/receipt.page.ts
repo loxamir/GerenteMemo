@@ -23,6 +23,7 @@ import { CheckListPage } from '../check-list/check-list.page';
 import { CheckPage } from '../check/check.page';
 import { ReceiptPopover } from './receipt.popover';
 import { AccountListPage } from '../account-list/account-list.page';
+import { CheckService } from '../check/check.service';
 
 @Component({
   selector: 'app-receipt',
@@ -83,6 +84,7 @@ export class ReceiptPage implements OnInit {
     public pouchdbService: PouchdbService,
     public popoverCtrl: PopoverController,
     public events: Events,
+    public checkService: CheckService,
   ) {
     this.today = new Date().toISOString();
 
@@ -1287,7 +1289,7 @@ export class ReceiptPage implements OnInit {
               check.state = 'DELIVERED';
               check.account_id = 'account.payable.credit';
             }
-            promise_ids2.push(this.pouchdbService.updateDoc(check));
+            promise_ids2.push(this.checkService.updateCheck(check));
           }
 
           promise_ids2.push(this.pouchdbService.updateDoc(item1));
