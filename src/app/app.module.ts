@@ -20,6 +20,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LOCALE_ID } from '@angular/core';
 import es from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
+import { LocationTrackerService } from './services/location-tracker.service';
 registerLocaleData(es);
 // Custom Imports
 import { ProductListPage } from './product-list/product-list.page';
@@ -116,6 +117,7 @@ import { File } from '@ionic-native/file/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { ImageModalPageModule } from './image-modal/image-modal.module';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
 
 @NgModule({
   declarations: [
@@ -226,12 +228,14 @@ import { ImageModalPageModule } from './image-modal/image-modal.module';
         { provide: LOCALE_ID, useValue: 'es-PY' },
     NativeStorage,
     File,
+    LocationTrackerService,
     StatusBar,
     SplashScreen,
     Camera,
     WebView,
     FilePath,
     Geolocation,
+    BackgroundGeolocation,
     // AuthGuardService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

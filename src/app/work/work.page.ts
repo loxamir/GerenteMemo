@@ -25,11 +25,11 @@ import { StockMoveService } from '../stock-move/stock-move.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 import { FutureContractListPage } from '../future-contract-list/future-contract-list.page';
-import { Subscription } from 'rxjs/Subscription';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 declare var google;
 import { filter } from 'rxjs/operators';
 import { WorkPopover, } from './work.popover';
+import { LocationTrackerService } from '../services/location-tracker.service'
 
 @Component({
   selector: 'app-work',
@@ -41,12 +41,8 @@ export class WorkPage implements OnInit {
   @ViewChild('map', { static: false }) mapElement: ElementRef;
   map: any;
   currentMapTrack = null;
-
   isTracking = false;
   trackGPS = false;
-
-  positionSubscription: Subscription;
-
   workForm: FormGroup;
   loading: any;
   today: any;
@@ -93,7 +89,7 @@ export class WorkPage implements OnInit {
     public modalCtrl: ModalController,
     public stockMoveService: StockMoveService,
     private elementRef: ElementRef,
-
+    public locationTrackerService: LocationTrackerService,
     private plt: Platform,
     private geolocation: Geolocation,
   ) {
@@ -160,27 +156,10 @@ export class WorkPage implements OnInit {
     })
   }
 
+
   startTracking() {
     this.isTracking = true;
-    this.workForm.value.gps.push([]);
-
-    let options = {
-      maximumAge: 3000,
-      timeout: 5000,
-      enableHighAccuracy: true
-    }
-    this.positionSubscription = this.geolocation.watchPosition(options)
-      .pipe(
-        filter((p) => p.coords !== undefined) //Filter Out Errors
-      )
-      .subscribe(data => {
-        setTimeout(() => {
-          this.workForm.value.gps[this.workForm.value.gps.length - 1].push({ lat: data.coords.latitude, lng: data.coords.longitude, date: new Date().toISOString() });
-          this.redrawPath(this.workForm.value.gps[this.workForm.value.gps.length - 1]);
-          this.cleanSave();
-        }, 0);
-      });
-
+    this.locationTrackerService.startTracking(this, this.workForm.value.gps, this.currentMapTrack, this.map);
   }
 
   redrawPath(path) {
@@ -201,10 +180,11 @@ export class WorkPage implements OnInit {
   }
 
   stopTracking() {
-    this.listedRoutes = Object.assign([], this.workForm.value.gps);
     this.isTracking = false;
-    this.positionSubscription.unsubscribe();
-    this.currentMapTrack.setMap(null);
+    this.listedRoutes = Object.assign([], this.workForm.value.gps);
+    this.locationTrackerService.stopTracking();
+    // this.positionSubscription.unsubscribe();
+    // this.currentMapTrack.setMap(null);
   }
 
   showHistoryRoute(route) {
