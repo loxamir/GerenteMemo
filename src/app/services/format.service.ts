@@ -470,6 +470,30 @@ export class FormatService {
         page_printed[marginTop][x + b] = dataModel.toString()[x];
       }
     }
+
+    //put IRACIS
+    if (order.contact.iracis == true) {
+      marginTop = layout.contactIRACIS_top / 4.4;
+      marginLeft = layout.contactIRACIS_left / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      dataModel = "XX";
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        let b = marginLeft;
+        page_printed[marginTop][x + b] = dataModel.toString()[x];
+      }
+    } else {
+      marginTop = layout.contactNoIRACIS_top / 4.4;
+      marginLeft = layout.contactNoIRACIS_left / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      dataModel = "XX";
+      for (var x = 0; x < dataModel.toString().length; x++) {
+        let b = marginLeft;
+        page_printed[marginTop][x + b] = dataModel.toString()[x];
+      }
+    }
+
     //put client
     marginTop = layout.contactName_top / 4.4;
     marginLeft = layout.contactName_left / 1.35;
@@ -696,6 +720,25 @@ export class FormatService {
       marginLeft = parseInt(marginLeft);
       if (width){
         dataModel = this.string_pad(width, parseFloat(order.discount).toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        for (var x = 0; x < dataModel.toString().length; x++) {
+          let b = marginLeft;
+          page_printed[marginTop][x + b] = dataModel.toString()[x];
+        }
+      }
+    }
+
+    //put discount
+    width = 0;
+    if (order.discount){
+      marginTop = layout.invoiceAmount_top / 4.4;
+      marginLeft = layout.invoiceAmount_left / 1.35;
+      width = layout.invoiceAmount_width / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      if (width){
+        dataModel = this.string_pad(width, (
+          subtotal_00 + subtotal_05 + subtotal_10
+        ).toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
         for (var x = 0; x < dataModel.toString().length; x++) {
           let b = marginLeft;
           page_printed[marginTop][x + b] = dataModel.toString()[x];

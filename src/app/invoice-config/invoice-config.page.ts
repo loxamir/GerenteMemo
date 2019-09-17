@@ -53,6 +53,10 @@ export class InvoiceConfigPage implements OnInit {
       invoicePayment_width: new FormControl(this.navParams.data.invoicePayment_width),
       invoicePaymentCredit_top: new FormControl(this.navParams.data.invoicePaymentCredit_top),
       invoicePaymentCredit_left: new FormControl(this.navParams.data.invoicePaymentCredit_left),
+      contactIRACIS_top: new FormControl(this.navParams.data.contactIRACIS_top),
+      contactIRACIS_left: new FormControl(this.navParams.data.contactIRACIS_left),
+      contactNoIRACIS_top: new FormControl(this.navParams.data.contactNoIRACIS_top),
+      contactNoIRACIS_left: new FormControl(this.navParams.data.contactNoIRACIS_left),
       contactDocument_top: new FormControl(this.navParams.data.contactDocument_top),
       contactDocument_left: new FormControl(this.navParams.data.contactDocument_left),
       contactDocument_width: new FormControl(this.navParams.data.contactDocument_width),
@@ -102,6 +106,9 @@ export class InvoiceConfigPage implements OnInit {
       invoiceDiscount_left: new FormControl(this.navParams.data.invoiceDiscount_left),
       invoiceDiscount_width: new FormControl(this.navParams.data.invoiceDiscount_width),
 
+      invoiceAmount_top: new FormControl(this.navParams.data.invoiceAmount_top),
+      invoiceAmount_left: new FormControl(this.navParams.data.invoiceAmount_left),
+      invoiceAmount_width: new FormControl(this.navParams.data.invoiceAmount_width),
       totalFees_top: new FormControl(this.navParams.data.totalFees_top),//
       totalFees_left: new FormControl(this.navParams.data.totalFees_left),//
       totalFees_width: new FormControl(this.navParams.data.totalFees_width),//

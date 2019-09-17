@@ -78,6 +78,7 @@ export class ContactPage implements OnInit {
       salaries: new FormControl([]),
       advances: new FormControl([]),
       fixed: new FormControl(false),
+      iracis: new FormControl(false),
       _id: new FormControl(''),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
