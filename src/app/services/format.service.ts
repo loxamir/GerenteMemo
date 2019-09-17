@@ -471,29 +471,6 @@ export class FormatService {
       }
     }
 
-    //put IRACIS
-    if (order.contact.iracis == true) {
-      marginTop = layout.contactIRACIS_top / 4.4;
-      marginLeft = layout.contactIRACIS_left / 1.35;
-      marginTop = parseInt(marginTop);
-      marginLeft = parseInt(marginLeft);
-      dataModel = "XX";
-      for (var x = 0; x < dataModel.toString().length; x++) {
-        let b = marginLeft;
-        page_printed[marginTop][x + b] = dataModel.toString()[x];
-      }
-    } else {
-      marginTop = layout.contactNoIRACIS_top / 4.4;
-      marginLeft = layout.contactNoIRACIS_left / 1.35;
-      marginTop = parseInt(marginTop);
-      marginLeft = parseInt(marginLeft);
-      dataModel = "XX";
-      for (var x = 0; x < dataModel.toString().length; x++) {
-        let b = marginLeft;
-        page_printed[marginTop][x + b] = dataModel.toString()[x];
-      }
-    }
-
     //put client
     marginTop = layout.contactName_top / 4.4;
     marginLeft = layout.contactName_left / 1.35;
@@ -727,9 +704,9 @@ export class FormatService {
       }
     }
 
-    //put discount
+    //put invoice amount
     width = 0;
-    if (order.discount){
+    if (layout.invoiceAmount_top && layout.invoiceAmount_left){
       marginTop = layout.invoiceAmount_top / 4.4;
       marginLeft = layout.invoiceAmount_left / 1.35;
       width = layout.invoiceAmount_width / 1.35;
