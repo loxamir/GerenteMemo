@@ -219,10 +219,10 @@
 
     <ion-segment formControlName="section" class="cash-segment">
       <ion-segment-button value="works">
-        {{'SERVICES'|translate}}
+        {{'ITEMS'|translate}}
       </ion-segment-button>
       <ion-segment-button value="inputs">
-        {{'PARTS'|translate}}
+        {{'COSTS'|translate}}
       </ion-segment-button>
     </ion-segment>
 
@@ -231,7 +231,7 @@
         <ion-button class="button-100" color="success" (click)="addWork()"
         *ngIf="serviceForm.value.state!='CONFIRMED' && serviceForm.value.state!='PAID'">
         <ion-icon name="add" style="margin-right:10px;"></ion-icon>
-          {{'ADD_SERVICE'|translate}}
+          {{'ADD_ITEM'|translate}}
         </ion-button>
 
         <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;"
@@ -310,7 +310,7 @@
       <div *ngSwitchCase="'inputs'" class="post-example-view">
         <ion-button class="button-100" color="success"
         *ngIf="serviceForm.value.state!='CONFIRMED' && serviceForm.value.state!='PAID'"
-        (click)="addInput()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>{{'ADD_PART'| translate}}</ion-button>
+        (click)="addInput()"><ion-icon name="add" style="margin-right:10px;"></ion-icon>{{'ADD_COST'| translate}}</ion-button>
 
         <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="serviceForm.value.inputs.length">
           {{'TOTAL'| translate}} $ {{serviceForm.value.input_amount|number:'1.'+currency_precision}}

@@ -93,7 +93,7 @@ export class ServiceWorkPage implements OnInit {
           component: ProductListPage,
           componentProps: {
             "select": true,
-            "type": "service",
+            // "type": "service",
           }
         });
         await profileModal.present();

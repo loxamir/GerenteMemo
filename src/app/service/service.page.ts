@@ -499,7 +499,7 @@ export class ServicePage implements OnInit {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('create-invoice');
       let items = [];
-      this.serviceForm.value.inputs.forEach(input=>{
+      this.serviceForm.value.works.forEach(input=>{
         items.push({
           'product': input.product,
           'description': input.description,
@@ -522,21 +522,21 @@ export class ServicePage implements OnInit {
       //   travel_sum.price = travel_total/travel_sum['quantity'];
       //   items.unshift(travel_sum);
       // }
-      let work_sum = {
-        'product': this.labor_product,
-        'description': this.labor_product['name'],
-        'price': 0,
-        'quantity': 0,
-      }
-      let labor_total = 0;
-      this.serviceForm.value.works.forEach(work=>{
-        labor_total += parseFloat(work['quantity']) * parseFloat(work['price'])
-        work_sum['quantity'] += parseFloat(work['quantity']);
-      })
-      if (work_sum['quantity'] > 0){
-        work_sum.price = labor_total/work_sum['quantity'];
-        items.unshift(work_sum);
-      }
+      // let work_sum = {
+      //   'product': this.labor_product,
+      //   'description': this.labor_product['name'],
+      //   'price': 0,
+      //   'quantity': 0,
+      // }
+      // let labor_total = 0;
+      // this.serviceForm.value.works.forEach(work=>{
+      //   labor_total += parseFloat(work['quantity']) * parseFloat(work['price'])
+      //   work_sum['quantity'] += parseFloat(work['quantity']);
+      // })
+      // if (work_sum['quantity'] > 0){
+      //   work_sum.price = labor_total/work_sum['quantity'];
+      //   items.unshift(work_sum);
+      // }
       let paymentType = 'Credito';
       if (this.serviceForm.value.paymentCondition._id == 'payment-condition.cash'){
         paymentType = 'Contado';
@@ -856,7 +856,7 @@ export class ServicePage implements OnInit {
           component: ProductListPage,
           componentProps: {
             "select": true,
-            "type": "product",
+            // "type": "product",
           }
         });
         await profileModal.present();
@@ -1093,40 +1093,81 @@ export class ServicePage implements OnInit {
               docDict[item.id] = item;
             })
             this.serviceForm.value.inputs.forEach((item) => {
-              let product_id = item.product._id;
-              let product_name = item.product && item.product.name;
-              // item.cost = item.product.cost; //Active this line to get product cost at confirmation
-              createList.push({
-                'docType': "stock-move",
-                'name': "Servicio "+this.serviceForm.value.code,
-                'quantity': parseFloat(item.quantity),
-                'origin_id': this.serviceForm.value._id,
-                'contact_id': this.serviceForm.value.contact._id,
-                'contact_name': this.serviceForm.value.contact.name,
-                'product_id': product_id,
-                'product_name': product_name,
-                'date': new Date(),
-                'cost': item.cost*item.quantity,
-                'warehouseFrom_id': config.warehouse_id,
-                'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
-                'warehouseTo_id': warehouseTo_id,
-                'warehouseTo_name': docDict[warehouseTo_id].doc.name,
-              })
-              createList.push({
-                'docType': "cash-move",
-                'name': "Servicio "+this.serviceForm.value.code,
-                'contact_id': this.serviceForm.value.contact._id,
-                'contact_name': this.serviceForm.value.contact.name,
-                'amount': item.quantity*(item.product.cost || 0),
-                'origin_id': this.serviceForm.value._id,
-                // "project_id": this.serviceForm.value.project_id,
-                'date': new Date(),
-                'accountFrom_id': 'account.other.stock',
-                'accountFrom_name': docDict['account.other.stock'].doc.name,
-                'accountTo_id': 'account.expense.serviceCost',
-                'accountTo_name': docDict['account.expense.serviceCost'].doc.name,
-              })
+              if (item.product.type == 'product'){
+                let product_id = item.product._id;
+                let product_name = item.product && item.product.name;
+                // item.cost = item.product.cost; //Active this line to get product cost at confirmation
+                createList.push({
+                  'docType': "stock-move",
+                  'name': "Servicio "+this.serviceForm.value.code,
+                  'quantity': parseFloat(item.quantity),
+                  'origin_id': this.serviceForm.value._id,
+                  'contact_id': this.serviceForm.value.contact._id,
+                  'contact_name': this.serviceForm.value.contact.name,
+                  'product_id': product_id,
+                  'product_name': product_name,
+                  'date': new Date(),
+                  'cost': item.cost*item.quantity,
+                  'warehouseFrom_id': config.warehouse_id,
+                  'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
+                  'warehouseTo_id': warehouseTo_id,
+                  'warehouseTo_name': docDict[warehouseTo_id].doc.name,
+                })
+                createList.push({
+                  'docType': "cash-move",
+                  'name': "Servicio "+this.serviceForm.value.code,
+                  'contact_id': this.serviceForm.value.contact._id,
+                  'contact_name': this.serviceForm.value.contact.name,
+                  'amount': item.quantity*(item.product.cost || 0),
+                  'origin_id': this.serviceForm.value._id,
+                  // "project_id": this.serviceForm.value.project_id,
+                  'date': new Date(),
+                  'accountFrom_id': 'account.other.stock',
+                  'accountFrom_name': docDict['account.other.stock'].doc.name,
+                  'accountTo_id': 'account.expense.serviceCost',
+                  'accountTo_name': docDict['account.expense.serviceCost'].doc.name,
+                })
+              }
             });
+
+            this.serviceForm.value.works.forEach((item) => {
+              if (item.product.type == 'product'){
+                let product_id = item.product._id;
+                let product_name = item.product && item.product.name;
+                // item.cost = item.product.cost; //Active this line to get product cost at confirmation
+                createList.push({
+                  'docType': "stock-move",
+                  'name': "Servicio "+this.serviceForm.value.code,
+                  'quantity': parseFloat(item.quantity),
+                  'origin_id': this.serviceForm.value._id,
+                  'contact_id': this.serviceForm.value.contact._id,
+                  'contact_name': this.serviceForm.value.contact.name,
+                  'product_id': product_id,
+                  'product_name': product_name,
+                  'date': new Date(),
+                  'cost': item.cost*item.quantity,
+                  'warehouseFrom_id': config.warehouse_id,
+                  'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
+                  'warehouseTo_id': warehouseTo_id,
+                  'warehouseTo_name': docDict[warehouseTo_id].doc.name,
+                })
+                createList.push({
+                  'docType': "cash-move",
+                  'name': "Servicio "+this.serviceForm.value.code,
+                  'contact_id': this.serviceForm.value.contact._id,
+                  'contact_name': this.serviceForm.value.contact.name,
+                  'amount': item.quantity*(item.product.cost || 0),
+                  'origin_id': this.serviceForm.value._id,
+                  // "project_id": this.serviceForm.value.project_id,
+                  'date': new Date(),
+                  'accountFrom_id': 'account.other.stock',
+                  'accountFrom_name': docDict['account.other.stock'].doc.name,
+                  'accountTo_id': 'account.expense.serviceCost',
+                  'accountTo_name': docDict['account.expense.serviceCost'].doc.name,
+                })
+              }
+            });
+
             this.serviceForm.value.paymentCondition.items.forEach(item => {
               let dateDue = this.addDays(this.today, item.days);
               let amount = (item.percent/100)*this.serviceForm.value.total;
