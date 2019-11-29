@@ -57,6 +57,7 @@ export class WorkPage implements OnInit {
   state = 'DRAFT';
   ready = false;
   input = {};
+  changing = false;
 
   constructor(
     public navCtrl: NavController,
@@ -136,15 +137,21 @@ export class WorkPage implements OnInit {
   }
 
   recomputeFields(field=null){
-    if (field){
-      this.changeNumber(field)
+    if (!this.changing){
+      this.changing = true;
+      if (field){
+        this.changeNumber(field)
+      }
+      this.workForm.value.fields.forEach(field=>{
+        this.fields[field.name] = this.calculate(field.formula);
+      })
+      this.workForm.value.fields.forEach(field=>{
+        this.fields[field.name] = this.calculate(field.formula);
+      })
+      setTimeout(()=> {
+        this.changing = false;
+      }, 100);
     }
-    this.workForm.value.fields.forEach(field=>{
-      this.fields[field.name] = this.calculate(field.formula);
-    })
-    this.workForm.value.fields.forEach(field=>{
-      this.fields[field.name] = this.calculate(field.formula);
-    })
   }
 
   async ngOnInit() {
@@ -456,7 +463,7 @@ export class WorkPage implements OnInit {
       this.workForm.patchValue({
         area: this.area,
         crop: this.area.crop,
-        // surface: this.area.surface, //Enabled to complete the surface field
+        surface: this.area.surface, //Enabled to complete the surface field
       });
     }
     if (this.machine){
@@ -648,6 +655,7 @@ export class WorkPage implements OnInit {
           activity: activity,
           state: this.workForm.value.state,
           select: true,
+          input: this.workForm.value
         }
 
         let profileModal = await this.modalCtrl.create({
@@ -1057,7 +1065,12 @@ export class WorkPage implements OnInit {
               d[fieldName] = fieldDoc;
             } else if (fieldData[0] == '&'){
               let split = fieldData.split('&');
+              let operation = 'multiplication';
               let fieldValues = split[1].split('*');
+              if (!fieldValues[1]){
+                fieldValues = split[1].split('/');
+                operation = 'division';
+              }
               let multiplication = 0;
               for(let x=0;x<fieldValues.length;x++){
                 let fieldValue = null;
@@ -1072,7 +1085,11 @@ export class WorkPage implements OnInit {
                   fieldValue = this.workForm.value[fieldValues[x]];
                 }
                 if (multiplication){
+                  if (operation == 'multiplication'){
                     multiplication*=parseFloat(fieldValue);
+                  } else if (operation == 'division'){
+                    multiplication/=parseFloat(fieldValue);
+                  }
                 } else {
                     multiplication=parseFloat(fieldValue);
                 }
