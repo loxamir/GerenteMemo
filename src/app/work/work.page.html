@@ -113,7 +113,7 @@
             <ion-item
             class="field-100"
             *ngIf="field.type == 'integer'"
-            (ionChange)="recomputeFields()">
+            (ionChange)="recomputeFields(field)">
               <ion-label position="floating">{{field.label|translate}}</ion-label>
               <ion-input type="number"
               [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
@@ -133,7 +133,7 @@
               [id]="field.name"
               [disabled]="calculate(field.readonly)"
               text-center
-              (ionChange)="recomputeFields()">
+              (ionChange)="recomputeFields(field)">
             </ion-input>
             </ion-item>
             <ion-item class="field-100" *ngIf="field.type == 'string'">

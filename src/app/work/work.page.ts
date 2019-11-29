@@ -56,6 +56,7 @@ export class WorkPage implements OnInit {
   tmpData = {};
   state = 'DRAFT';
   ready = false;
+  input = {};
 
   constructor(
     public navCtrl: NavController,
@@ -134,7 +135,10 @@ export class WorkPage implements OnInit {
     }
   }
 
-  recomputeFields(){
+  recomputeFields(field=null){
+    if (field){
+      this.changeNumber(field)
+    }
     this.workForm.value.fields.forEach(field=>{
       this.fields[field.name] = this.calculate(field.formula);
     })
@@ -597,6 +601,7 @@ export class WorkPage implements OnInit {
     context["list"] = true;
     context["activity"] = activity;
     // context["open"] = true;
+    context["input"] = this.workForm.value
     context["select"] = true;
     let profileModal = await this.modalCtrl.create({
       component: WorkPage,
@@ -1033,6 +1038,55 @@ export class WorkPage implements OnInit {
         }]
       });
       alertPopup.present();
+    }
+  }
+
+  async changeNumber(fielD) {
+    let data = this.workForm.value;
+    let d = {}
+    if(fielD.onchange){
+      await this.formatService.asyncForEach(fielD.onchange.split(';'), async item=>{
+        let fieldName = item.split('=')[0];
+        let fieldData = item.split('=')[1];
+        if (fieldData){
+          if (isNaN(fieldData)){
+            if (fieldData[0] == '#'){
+              let split = fieldData.split('#');
+              let ddoc = data[split[1]];
+              let fieldDoc:any = await this.pouchdbService.getDoc(ddoc);
+              d[fieldName] = fieldDoc;
+            } else if (fieldData[0] == '&'){
+              let split = fieldData.split('&');
+              let fieldValues = split[1].split('*');
+              let multiplication = 0;
+              for(let x=0;x<fieldValues.length;x++){
+                let fieldValue = null;
+                let fieldParts = fieldValues[x].split('input.');
+                if (fieldParts[1]){
+                  let fieldSplits = fieldValues[x].split('.');
+                  fieldValue = this.input[fieldSplits[1]];
+                  for(let x=2;x<fieldSplits.length;x++){
+                    fieldValue = fieldValue[fieldSplits[x]];
+                  }
+                } else {
+                  fieldValue = this.workForm.value[fieldValues[x]];
+                }
+                if (multiplication){
+                    multiplication*=parseFloat(fieldValue);
+                } else {
+                    multiplication=parseFloat(fieldValue);
+                }
+              }
+              d[fieldName] = multiplication;
+            } else {
+              d[fieldName] = data[fieldData];
+            }
+          } else {
+            d[fieldName] = fieldData;
+          }
+        }
+      })
+      this.workForm.patchValue(d);
     }
   }
 
