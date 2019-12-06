@@ -58,6 +58,7 @@ export class WorkPage implements OnInit {
   ready = false;
   input = {};
   changing = false;
+  totalList = {};
 
   constructor(
     public navCtrl: NavController,
@@ -130,7 +131,7 @@ export class WorkPage implements OnInit {
       let form = this.workForm.value;
       // console.log("eval", formula);
       let result = eval(formula);
-      return result;
+      return Math.round(result * 100) / 100
     } else {
       return false;
     }
@@ -144,9 +145,13 @@ export class WorkPage implements OnInit {
       }
       this.workForm.value.fields.forEach(field=>{
         this.fields[field.name] = this.calculate(field.formula);
-      })
-      this.workForm.value.fields.forEach(field=>{
-        this.fields[field.name] = this.calculate(field.formula);
+        if (field.type == 'tab'){
+          let total = 0;
+          this.workForm.value[field.name].forEach((listItem)=>{
+            total += listItem['subtotal'];
+          })
+          this.totalList[field.name] = Math.round(total * 100) / 100;
+        }
       })
       setTimeout(()=> {
         this.changing = false;
@@ -191,6 +196,7 @@ export class WorkPage implements OnInit {
         this.workService.getWork(this._id).then((data) => {
           data.fields.forEach(field => {
             if (field.type == 'tab'){
+              this.totalList[field.name] = 0;
               if(! defaultTab) {
                 defaultTab = field.name;
               }
@@ -1061,8 +1067,6 @@ export class WorkPage implements OnInit {
             if (fieldData[0] == '#'){
               let split = fieldData.split('#');
               let ddoc = data[split[1]];
-              let fieldDoc:any = await this.pouchdbService.getDoc(ddoc);
-              d[fieldName] = fieldDoc;
             } else if (fieldData[0] == '&'){
               let split = fieldData.split('&');
               let operation = 'multiplication';
@@ -1094,12 +1098,12 @@ export class WorkPage implements OnInit {
                     multiplication=parseFloat(fieldValue);
                 }
               }
-              d[fieldName] = multiplication;
+              d[fieldName] = Math.round(multiplication * 100) / 100;
             } else {
-              d[fieldName] = data[fieldData];
+              d[fieldName] = Math.round(data[fieldData] * 100) / 100;
             }
           } else {
-            d[fieldName] = fieldData;
+            d[fieldName] = Math.round(fieldData * 100) / 100;
           }
         }
       })
@@ -1117,6 +1121,21 @@ export class WorkPage implements OnInit {
       }
     });
     popover.present();
+  }
+
+  roundFieldItem(item, atribute){
+    if (atribute){
+      let it = item[atribute.name] && item[atribute.name].name || item[atribute.name];
+      if (isNaN(it)) {
+        return it;
+      } else {
+        if (atribute.name == 'subtotal'){
+          return it.toFixed(2);
+        } else {
+          return Math.round(it * 100) / 100
+        }
+      }
+    }
   }
 
 }

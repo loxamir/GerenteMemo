@@ -238,13 +238,14 @@
     <div class="forms-wrapper" *ngFor="let field of filterTabs(workForm.value.fields)">
         <div *ngIf="workForm.value.section == field.name" class="post-example-view">
           <ion-list style="background-color: #ddd;padding-top:3px;padding-bottom: 0px;" *ngIf="field.type == 'tab' && workForm.value[field.name] && workForm.value[field.name].length > 0">
+            <h2 class="section-title" style="color:#1c61f3;background: white;border: 1px solid;border-top-left-radius: 5px;border-top-right-radius: 5px;">Total {{ field.label|translate }}: {{totalList[field.name]| number:'1.'+currency_precision}}</h2>
             <ion-item-sliding class="list-item" *ngFor="let item of workForm.value[field.name]; let i = index;">
               <ion-item style="--background: white;">
                 <div style="width: 100%">
                   <ion-row (click)="editFieldItem(field.name, i)">
                     <ion-col *ngFor="let atribute of field.attributes;">
                       <h4 class="field-label" style="margin-top: 0px;">{{atribute.label|translate}}</h4>
-                      <h4 class="user-name"  style="margin-bottom: 0px;text-align: center;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
+                      <h4 class="user-name"  style="margin-bottom: 0px;text-align: center;">{{ roundFieldItem(item, atribute) }}</h4>
                     </ion-col>
                   </ion-row>
                   <ion-row no-padding>
