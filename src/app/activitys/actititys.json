@@ -231,6 +231,24 @@
       "_id": "activity.machines",
       "name": "ADD_MACHINE",
       "fields": [{
+          "name": "unit_cost",
+          "type": "formula",
+          "label": "Costo/ha",
+          "model": "",
+          "formula": "form.cost*form.quantity/this.input.area.surface",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 98,
+          "activity_name": "",
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },{
           "name": "subtotal",
           "type": "formula",
           "label": "SUBTOTAL",
@@ -243,7 +261,7 @@
           "attributes": [
 
           ],
-          "class": "full-width",
+          "class": "half-width",
           "sequence": 99,
           "activity": {
 
@@ -790,6 +808,24 @@
       "_id": "activity.inputs",
       "name": "ADD_INPUT",
       "fields": [{
+          "name": "unit_cost",
+          "type": "formula",
+          "label": "Costo/ha",
+          "model": "",
+          "formula": "form.quantity*form.cost/this.input.area.surface",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 98,
+          "activity_name": "",
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },{
           "name": "dosage",
           "type": "float",
           "label": "Dosagem/ha",
@@ -822,7 +858,7 @@
           "attributes": [
 
           ],
-          "class": "full-width",
+          "class": "half-width",
           "sequence": 99,
           "activity": {
 
@@ -1623,10 +1659,29 @@
     {
       "_id": "activity.plant",
       "name": "PLANT_ACTIVITY",
-      "fields": [{
+      "fields": [
+        {
+          "name": "unit_cost",
+          "type": "formula",
+          "label": "Costo/ha",
+          "model": "",
+          "formula": "(this.sumListFieldMulti('inputs', 'quantity', 'cost')+this.sumListFieldMulti('machines', 'quantity', 'cost')+this.sumListFieldMulti('contacts', 'quantity', 'cost'))/this.workForm.value.area.surface",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 98,
+          "activity_name": "",
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },{
           "name": "surface",
           "type": "float",
-          "label": "Superficie",
+          "label": "Superficie(ha)",
           "model": "",
           "formula": "",
           "script": "",
@@ -1655,8 +1710,8 @@
           "attributes": [
 
           ],
-          "class": "full-width",
-          "sequence": 25,
+          "class": "half-width",
+          "sequence": 99,
           "activity": {
 
           },
@@ -1909,9 +1964,27 @@
       "_id": "activity.spray",
       "name": "SPRAY_ACTIVITY",
       "fields": [{
+          "name": "unit_cost",
+          "type": "formula",
+          "label": "Costo/ha",
+          "model": "",
+          "formula": "(this.sumListFieldMulti('inputs', 'quantity', 'cost')+this.sumListFieldMulti('machines', 'quantity', 'cost')+this.sumListFieldMulti('contacts', 'quantity', 'cost'))/this.workForm.value.area.surface",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 98,
+          "activity_name": "",
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },{
           "name": "surface",
           "type": "float",
-          "label": "Superficie",
+          "label": "Superficie(ha)",
           "model": "",
           "formula": "",
           "script": "",
@@ -1940,8 +2013,8 @@
           "attributes": [
 
           ],
-          "class": "full-width",
-          "sequence": 25,
+          "class": "half-width",
+          "sequence": 99,
           "activity": {
 
           },
@@ -2103,9 +2176,28 @@
       "_id": "activity.work",
       "name": "OTHER_SERVICE_ACTIVITY",
       "fields": [{
+          "name": "unit_cost",
+          "type": "formula",
+          "label": "Costo/ha",
+          "model": "",
+          "formula": "(this.sumListFieldMulti('inputs', 'quantity', 'cost')+this.sumListFieldMulti('machines', 'quantity', 'cost')+this.sumListFieldMulti('contacts', 'quantity', 'cost'))/this.workForm.value.area.surface",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 98,
+          "activity_name": "",
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },
+        {
           "name": "surface",
           "type": "float",
-          "label": "Superficie",
+          "label": "Superficie(ha)",
           "model": "",
           "formula": "",
           "script": "",
@@ -2157,8 +2249,8 @@
           "attributes": [
 
           ],
-          "class": "full-width",
-          "sequence": 25,
+          "class": "half-width",
+          "sequence": 99,
           "activity": {
 
           },
