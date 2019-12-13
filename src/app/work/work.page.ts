@@ -210,7 +210,7 @@ export class WorkPage implements OnInit {
           && !this.activity) {
             this.selectActivity();
           } else if (data['activity']) {
-            this.setActivity(data['activity'])
+            this.setActivity(data['activity']);
           }
           this.recomputeFields();
           this.loading.dismiss();
@@ -228,6 +228,8 @@ export class WorkPage implements OnInit {
         if (Object.keys(this.workForm.value.activity).length === 0
         && !this.activity) {
           this.selectActivity();
+        } else {
+          this.setActivity(this.workForm.value.activity, false);
         }
         this.recomputeFields();
         this.loading.dismiss();
@@ -424,7 +426,7 @@ export class WorkPage implements OnInit {
     });
   }
 
-  setActivity(data){
+  setActivity(data, goNext=true){
     let self = this;
     let data_fields = data.fields && data.fields.sort(function(a, b) {
       return self.formatService.compareField(a, b, 'sequence');
@@ -502,9 +504,11 @@ export class WorkPage implements OnInit {
       this.workForm.value.note = this.note;
       this.buttonSave();
     } else {
-      setTimeout(function(){
-        self.goNextStep();
-      }, 200);
+      if (goNext){
+        setTimeout(function(){
+          self.goNextStep();
+        }, 200);
+      }
     }
   }
 
