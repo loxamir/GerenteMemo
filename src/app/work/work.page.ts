@@ -893,8 +893,14 @@ export class WorkPage implements OnInit {
               'quantity': parseFloat(item[qty_field]),
             }]);
           } else {
-            let move:any = await this.stockMoveCreate(name, item[qty_field], item[product_field])
-            item.doc_id = move.id;
+            if (item[product_field]){
+              let move:any = await this.stockMoveCreate(name, item[qty_field], item[product_field])
+              item.doc_id = move.id;
+            } else {
+              let product = await this.pouchdbService.getDoc(item['product_id']);
+              let move:any = await this.stockMoveCreate(name, item[qty_field], product)
+              item.doc_id = move.id;
+            }
           }
         }).then((data)=>{
           // console.log("data", data);
