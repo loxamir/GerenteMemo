@@ -939,7 +939,7 @@
           },
           "default": null,
           "context": "{\"operation\": \"purchase\"}",
-          "onchange": "cost=cost;"
+          "onchange": "cost=cost;dosage=1;"
         }
       ],
       "note": "",
