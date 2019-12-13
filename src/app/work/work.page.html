@@ -120,6 +120,7 @@
               [disabled]="calculate(field.readonly)"
               [formControlName]="field.name"
               [id]="field.name"
+              (ionChange)="recomputeFields(field)"
               text-center>
               </ion-input>
             </ion-item>
