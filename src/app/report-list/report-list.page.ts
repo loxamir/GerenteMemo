@@ -315,7 +315,7 @@ export class ReportListPage implements OnInit {
       let self = this;
       this.pouchdbService.getView(
         'stock/Depositos',
-        3,
+        2,
         ["warehouse.physical.my" ,"0", "0"],
         ["warehouse.physical.my", "z", "z"],
         true,
@@ -329,7 +329,7 @@ export class ReportListPage implements OnInit {
         let stocked_price = 0;
         let stocked_quantity = 0;
         let getList = [];
-        products = products.slice(0, 999);
+        products = products;
         products.forEach(sale => {
           if (getList.indexOf(sale.key[1]) < 0){
             getList.push(sale.key[1])
@@ -342,7 +342,7 @@ export class ReportListPage implements OnInit {
           doc_dict[row.id] = row.doc;
         })
         products.forEach(product => {
-          // if (doc_dict[product.key[1]] && product.value > 0){
+          if (doc_dict[product.key[1]] && product.value > 0){
             stocked_quantity += parseFloat(product.value);
             if (!doc_dict[product.key[1]]){
               //console.log("product.key[1]", product.key[1]);
@@ -350,7 +350,7 @@ export class ReportListPage implements OnInit {
               stocked_cost += product.value * doc_dict[product.key[1]].cost;
               stocked_price += product.value * doc_dict[product.key[1]].price;;
             }
-          // }
+          }
         })
         this.stocked_quantity = stocked_quantity;
         this.stocked_cost = stocked_cost;

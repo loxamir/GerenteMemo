@@ -37,7 +37,7 @@ export class StockReportPage implements OnInit {
   total;
   languages: Array<LanguageModel>;
   currency_precision = 2;
-
+  stockLines = [];
   title: string = 'D3.js with Ionic 2!';
   margin = { top: 20, right: 20, bottom: 30, left: 50 };
   width: number;
@@ -49,6 +49,7 @@ export class StockReportPage implements OnInit {
   color: any;
   _current: any;
   svg: any;
+  products;
 
   svg2: any;
 
@@ -154,292 +155,238 @@ export class StockReportPage implements OnInit {
     }, {})
   }
 
-  async getData() {
-    return new Promise(resolve => {
-      if (this.reportStockForm.value.reportType == 'stock') {
-        this.pouchdbService.getView(
-          'stock/Depositos',
-          10,
-          ["warehouse.physical.my", "0", "0"],
-          ["warehouse.physical.my", "z", "z"],
-          true,
-          true,
-          undefined,
-          undefined,
-          false
-        ).then(async (stocks: any[]) => {
-          //console.log("stock lines", stocks);
-          let items = [];
-          let promise_ids = [];
-          let result = {};
-          if (this.reportStockForm.value.groupBy == 'product') {
-            items = [];
-            let getList = [];
-            stocks.forEach(stockLine => {
-              // if (stockLine.value > 0){
-                if (result.hasOwnProperty(stockLine.key[1])) {
-                  // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
-                  items[result[stockLine.key[1]]] = {
-                    'name': items[result[stockLine.key[1]]].name,
-                    'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
-                    '_id': stockLine.key[1],
-                    // 'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
-                  };
-                } else {
-                  items.push({
-                    'name': stockLine.key[3],
-                    'quantity': parseFloat(stockLine.value),
-                    '_id': stockLine.key[1],
-                    // 'total': parseFloat(stockLine.key[4])*stockLine.key[6],
-                  });
-                  getList.push(stockLine.key[1]);
-                  result[stockLine.key[1]] = items.length-1;
-                }
-              // }
-            });
-            //console.log("getList", getList);
-            let products: any = await this.pouchdbService.getList(getList.slice(0, 999));
-            var doc_dict = {};
-            products.forEach(row=>{
-              doc_dict[row.id] = row.doc;
-            })
-            let brands = {};
-            let litems = [];
-            items.forEach(item=>{
-              if (doc_dict[item._id]){
-                if (brands.hasOwnProperty(item._id)) {
-                  litems[brands[item._id]] = {
-                    'name': doc_dict[item._id].name,
-                    'quantity': litems[brands[item._id]].quantity,
-                    'margin': litems[brands[item._id]].margin + item.margin,
-                    'total': litems[brands[item._id]].total + item.total,
-                  };
-                } else {
-                  litems.push({
-                    'name': doc_dict[item._id].name,
-                    'quantity': item.quantity,
-                    'margin': item.quantity*doc_dict[item._id].price,
-                    'total': item.quantity*doc_dict[item._id].cost,
-                  });
-                  brands[item._id] = litems.length-1;
-                }
-              } else {
-                //console.log("item", item);
-              }
-            })
-            //console.log("litems", litems);
-            let self = this;
-            let output = litems.sort(function(a, b) {
-              return self.compare(a, b, self.reportStockForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            resolve(output);
-          }
-          else if (this.reportStockForm.value.groupBy == 'category') {
-            items = [];
-            let getList = [];
-            stocks.forEach(stockLine => {
-              if (stockLine.value > 0){
-                if (result.hasOwnProperty(stockLine.key[1])) {
-                  // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
-                  items[result[stockLine.key[1]]] = {
-                    'name': items[result[stockLine.key[1]]].name,
-                    'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
-                    '_id': stockLine.key[1],
-                    // 'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
-                  };
-                } else {
-                  items.push({
-                    'name': stockLine.key[3],
-                    'quantity': parseFloat(stockLine.value),
-                    '_id': stockLine.key[1],
-                    // 'total': parseFloat(stockLine.key[4])*stockLine.key[6],
-                  });
-                  getList.push(stockLine.key[1]);
-                  result[stockLine.key[1]] = items.length-1;
-                }
-              }
-            });
-
-            let products: any = await this.pouchdbService.getList(getList);
-            var doc_dict = {};
-            products.forEach(row=>{
-              doc_dict[row.id] = row.doc;
-            })
-            let brands = {};
-            let litems = [];
-            items.forEach(item=>{
-              if (doc_dict[item._id]){
-                if (brands.hasOwnProperty(doc_dict[item._id].category_name)) {
-                  litems[brands[doc_dict[item._id].category_name]] = {
-                    'name': doc_dict[item._id].category_name,
-                    'quantity': litems[brands[doc_dict[item._id].category_name]].quantity + item.quantity,
-                    'margin': litems[brands[doc_dict[item._id].category_name]].margin + item.quantity*doc_dict[item._id].price,
-                    'total': litems[brands[doc_dict[item._id].category_name]].total + item.quantity*doc_dict[item._id].cost,
-                  };
-                } else {
-                  litems.push({
-                    'name': doc_dict[item._id].category_name,
-                    'quantity': item.quantity,
-                    'margin': item.quantity*doc_dict[item._id].price,
-                    'total': item.quantity*doc_dict[item._id].cost,
-                  });
-                  brands[doc_dict[item._id].category_name] = litems.length-1;
-                }
-              } else {
-                // console.log("item", item);
-              }
-            })
-            // console.log("litems", litems);
-            let self = this;
-            let output = litems.sort(function(a, b) {
-              return self.compare(a, b, self.reportStockForm.value.orderBy);
-            })
-            let marker = false;
-            let total = 0;
-            output.forEach(item => {
-              item['marker'] = marker,
-                marker = !marker;
-              total += parseFloat(item['total']);
-            });
-            resolve(output);
-            // items = [];
-            // let getList = [];
-            // stocks.forEach(stockLine => {
-            //   if (result.hasOwnProperty(stockLine.key[9])) {
-            //     // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
-            //     items[result[stockLine.key[9]]] = {
-            //       'name': items[result[stockLine.key[9]]].name,
-            //       'quantity': items[result[stockLine.key[9]]].quantity + parseFloat(stockLine.key[4]),
-            //       'margin': items[result[stockLine.key[9]]].margin + parseFloat(stockLine.key[3]),
-            //       'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
-            //     };
-            //   } else {
-            //     items.push({
-            //       'name': stockLine.key[9],
-            //       'quantity': parseFloat(stockLine.key[4]),
-            //       'margin': parseFloat(stockLine.key[3]),
-            //       'total': parseFloat(stockLine.key[4])*stockLine.key[6],
-            //     });
-            //     getList.push(stockLine.key[9]);
-            //     result[stockLine.key[9]] = items.length-1;
-            //   }
-            // });
-            //
-            // let products: any = await this.pouchdbService.getList(getList);
-            // var doc_dict = {};
-            // products.forEach(row=>{
-            //   doc_dict[row.id] = row.doc;
-            // })
-            // let categories = {};
-            // let litems = [];
-            // items.forEach(item=>{
-            //   if (categories.hasOwnProperty(doc_dict[item.name].category_name)) {
-            //     litems[categories[doc_dict[item.name].category_name]] = {
-            //       'name': doc_dict[item.name].category_name,
-            //       'quantity': litems[categories[doc_dict[item.name].category_name]].quantity + parseFloat(item.quantity),
-            //       'margin': litems[categories[doc_dict[item.name].category_name]].margin + item.margin,
-            //       'total': litems[categories[doc_dict[item.name].category_name]].total + item.total,
-            //     };
-            //   } else {
-            //     litems.push({
-            //       'name': doc_dict[item.name].category_name,
-            //       'quantity': item.quantity,
-            //       'margin': item.margin,
-            //       'total': item.total,
-            //     });
-            //     categories[doc_dict[item.name].category_name] = litems.length-1;
-            //   }
-            // })
-            // let self = this;
-            // let output = litems.sort(function(a, b) {
-            //   return self.compare(a, b, self.reportStockForm.value.orderBy);
-            // })
-            // let marker = false;
-            // let total = 0;
-            // output.forEach(item => {
-            //   item['marker'] = marker,
-            //     marker = !marker;
-            //   total += parseFloat(item['total']);
-            // });
-            // resolve(output);
-          }
-          else if (this.reportStockForm.value.groupBy == 'brand') {
-              items = [];
-              let getList = [];
-              stocks.forEach(stockLine => {
-                if (stockLine.value > 0){
-                  if (result.hasOwnProperty(stockLine.key[1])) {
-                    // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
-                    items[result[stockLine.key[1]]] = {
-                    'name': items[result[stockLine.key[1]]].name,
-                    'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
-                    '_id': stockLine.key[1],
-                    // 'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
-                  };
-                } else {
-                  items.push({
-                    'name': stockLine.key[3],
-                    'quantity': parseFloat(stockLine.value),
-                    '_id': stockLine.key[1],
-                    // 'total': parseFloat(stockLine.key[4])*stockLine.key[6],
-                  });
-                  getList.push(stockLine.key[1]);
-                  result[stockLine.key[1]] = items.length-1;
-                }
-                }
+  compileList(){
+    return new Promise(async resolve => {
+      let items = [];
+      let result = {};
+      if (this.reportStockForm.value.groupBy == 'product') {
+        items = [];
+        let getList = [];
+        this.stockLines.forEach(stockLine => {
+          // if (stockLine.value > 0){
+            if (result.hasOwnProperty(stockLine.key[1])) {
+              items[result[stockLine.key[1]]] = {
+                'name': items[result[stockLine.key[1]]].name,
+                'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
+                '_id': stockLine.key[1],
+                // 'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
+              };
+            } else {
+              items.push({
+                'name': stockLine.key[3],
+                'quantity': parseFloat(stockLine.value),
+                '_id': stockLine.key[1],
+                // 'total': parseFloat(stockLine.key[4])*stockLine.key[6],
               });
-
-              let products: any = await this.pouchdbService.getList(getList);
-              var doc_dict = {};
-              products.forEach(row=>{
-                doc_dict[row.id] = row.doc;
-              })
-              let brands = {};
-              let litems = [];
-              items.forEach(item=>{
-                if (doc_dict[item._id]){
-                  if (brands.hasOwnProperty(doc_dict[item._id].brand_name)) {
-                    litems[brands[doc_dict[item._id].brand_name]] = {
-                      'name': doc_dict[item._id].brand_name,
-                      'quantity': litems[brands[doc_dict[item._id].brand_name]].quantity + item.quantity,
-                      'margin': litems[brands[doc_dict[item._id].brand_name]].margin + item.quantity*doc_dict[item._id].price,
-                      'total': litems[brands[doc_dict[item._id].brand_name]].total + item.quantity*doc_dict[item._id].cost,
-                    };
-                  } else {
-                    litems.push({
-                      'name': doc_dict[item._id].brand_name,
-                      'quantity': item.quantity,
-                      'margin': item.quantity*doc_dict[item._id].price,
-                      'total': item.quantity*doc_dict[item._id].cost,
-                    });
-                    brands[doc_dict[item._id].brand_name] = litems.length-1;
-                  }
-                } else {
-                  // console.log("item", item);
-                }
-              })
-              // console.log("litems", litems);
-              let self = this;
-              let output = litems.sort(function(a, b) {
-                return self.compare(a, b, self.reportStockForm.value.orderBy);
-              })
-              let marker = false;
-              let total = 0;
-              output.forEach(item => {
-                item['marker'] = marker,
-                  marker = !marker;
-                total += parseFloat(item['total']);
+              getList.push(stockLine.key[1]);
+              result[stockLine.key[1]] = items.length-1;
+            }
+          // }
+        });
+        if (!this.products){
+          this.products = await this.pouchdbService.getList(getList);
+        }
+        var doc_dict = {};
+        this.products.forEach(row=>{
+          doc_dict[row.id] = row.doc;
+        })
+        let brands = {};
+        let litems = [];
+        items.forEach(item=>{
+          if (doc_dict[item._id]){
+            if (item.quantity > 0){
+              if (brands.hasOwnProperty(item._id)) {
+                litems[brands[item._id]] = {
+                  'name': doc_dict[item._id].name,
+                  'quantity': litems[brands[item._id]].quantity,
+                  'margin': litems[brands[item._id]].margin + item.margin,
+                  'total': litems[brands[item._id]].total + item.total,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item._id].name,
+                  'quantity': item.quantity,
+                  'margin': item.quantity*doc_dict[item._id].price,
+                  'total': item.quantity*doc_dict[item._id].cost,
+                });
+                brands[item._id] = litems.length-1;
+              }
+            }
+          } else {
+            //console.log("item", item);
+          }
+        })
+        let self = this;
+        let output = litems.sort(function(a, b) {
+          return self.compare(a, b, self.reportStockForm.value.orderBy);
+        })
+        let marker = false;
+        output.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+        });
+        resolve(output);
+      }
+      else if (this.reportStockForm.value.groupBy == 'category') {
+        items = [];
+        let getList = [];
+        this.stockLines.forEach(stockLine => {
+          if (stockLine.value > 0){
+            if (result.hasOwnProperty(stockLine.key[1])) {
+              // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
+              items[result[stockLine.key[1]]] = {
+                'name': items[result[stockLine.key[1]]].name,
+                'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
+                '_id': stockLine.key[1],
+                // 'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
+              };
+            } else {
+              items.push({
+                'name': stockLine.key[3],
+                'quantity': parseFloat(stockLine.value),
+                '_id': stockLine.key[1],
+                // 'total': parseFloat(stockLine.key[4])*stockLine.key[6],
               });
-              resolve(output);
+              getList.push(stockLine.key[1]);
+              result[stockLine.key[1]] = items.length-1;
+            }
           }
         });
+        if (!this.products.length){
+          this.products = await this.pouchdbService.getList(getList);
+        }
+        var doc_dict = {};
+        this.products.forEach(row=>{
+          doc_dict[row.id] = row.doc;
+        })
+        let brands = {};
+        let litems = [];
+        items.forEach(item=>{
+          if (doc_dict[item._id]){
+            if (brands.hasOwnProperty(doc_dict[item._id].category_name)) {
+              litems[brands[doc_dict[item._id].category_name]] = {
+                'name': doc_dict[item._id].category_name,
+                'quantity': litems[brands[doc_dict[item._id].category_name]].quantity + item.quantity,
+                'margin': litems[brands[doc_dict[item._id].category_name]].margin + item.quantity*doc_dict[item._id].price,
+                'total': litems[brands[doc_dict[item._id].category_name]].total + item.quantity*doc_dict[item._id].cost,
+              };
+            } else {
+              litems.push({
+                'name': doc_dict[item._id].category_name,
+                'quantity': item.quantity,
+                'margin': item.quantity*doc_dict[item._id].price,
+                'total': item.quantity*doc_dict[item._id].cost,
+              });
+              brands[doc_dict[item._id].category_name] = litems.length-1;
+            }
+          } else {
+            // console.log("item", item);
+          }
+        })
+        let self = this;
+        let output = litems.sort(function(a, b) {
+          return self.compare(a, b, self.reportStockForm.value.orderBy);
+        })
+        let marker = false;
+        output.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+        });
+        resolve(output);
+      }
+      else if (this.reportStockForm.value.groupBy == 'brand') {
+        items = [];
+        let getList = [];
+        this.stockLines.forEach(stockLine => {
+          if (stockLine.value > 0){
+            if (result.hasOwnProperty(stockLine.key[1])) {
+              // console.log("items[result[stockLine.key[1]]]", items[result[stockLine.key[1]]]);
+              items[result[stockLine.key[1]]] = {
+              'name': items[result[stockLine.key[1]]].name,
+              'quantity': items[result[stockLine.key[1]]].quantity + parseFloat(stockLine.value),
+              '_id': stockLine.key[1],
+              // 'total': items[result[stockLine.key[9]]].total + parseFloat(stockLine.key[4])*stockLine.key[6],
+            };
+          } else {
+            items.push({
+              'name': stockLine.key[3],
+              'quantity': parseFloat(stockLine.value),
+              '_id': stockLine.key[1],
+              // 'total': parseFloat(stockLine.key[4])*stockLine.key[6],
+            });
+            getList.push(stockLine.key[1]);
+            result[stockLine.key[1]] = items.length-1;
+          }
+          }
+        });
+        if (!this.products.length){
+          this.products = await this.pouchdbService.getList(getList);
+        }
+        var doc_dict = {};
+        this.products.forEach(row=>{
+          doc_dict[row.id] = row.doc;
+        })
+        let brands = {};
+        let litems = [];
+        items.forEach(item=>{
+          if (item.quantity > 0){
+            if (doc_dict[item._id]){
+              if (brands.hasOwnProperty(doc_dict[item._id].brand_name)) {
+                litems[brands[doc_dict[item._id].brand_name]] = {
+                  'name': doc_dict[item._id].brand_name,
+                  'quantity': litems[brands[doc_dict[item._id].brand_name]].quantity + item.quantity,
+                  'margin': litems[brands[doc_dict[item._id].brand_name]].margin + item.quantity*doc_dict[item._id].price,
+                  'total': litems[brands[doc_dict[item._id].brand_name]].total + item.quantity*doc_dict[item._id].cost,
+                };
+              } else {
+                litems.push({
+                  'name': doc_dict[item._id].brand_name,
+                  'quantity': item.quantity,
+                  'margin': item.quantity*doc_dict[item._id].price,
+                  'total': item.quantity*doc_dict[item._id].cost,
+                });
+                brands[doc_dict[item._id].brand_name] = litems.length-1;
+              }
+            } else {
+              // console.log("item", item);
+            }
+          }
+        })
+        let self = this;
+        let output = litems.sort(function(a, b) {
+          return self.compare(a, b, self.reportStockForm.value.orderBy);
+        })
+        let marker = false;
+        output.forEach(item => {
+          item['marker'] = marker,
+            marker = !marker;
+        });
+        resolve(output);
+      }
+    })
+  }
+
+  async getData() {
+    return new Promise(async resolve => {
+      if (this.stockLines.length){
+        resolve(await this.compileList());
+      } else {
+        if (this.reportStockForm.value.reportType == 'stock') {
+          this.pouchdbService.getView(
+            'stock/Depositos',
+            2,
+            ["warehouse.physical.my", "0", "0"],
+            ["warehouse.physical.my", "z", "z"],
+            true,
+            true,
+            undefined,
+            undefined,
+            false
+          ).then(async (stocks: any[]) => {
+            this.stockLines = stocks;
+            resolve(await this.compileList());
+          });
+        }
       }
     });
   }
