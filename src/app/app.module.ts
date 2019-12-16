@@ -28,6 +28,8 @@ import { ContactListPage } from './contact-list/contact-list.page';
 import { CurrencyListPage } from './currency-list/currency-list.page';
 import { ReceiptPage } from './receipt/receipt.page';
 import { InvoicePage } from './invoice/invoice.page';
+import { SalePage } from './sale/sale.page';
+import { SalePageModule } from './sale/sale.module';
 import { WarehouseListPage } from './warehouse-list/warehouse-list.page';
 import { AccountListPage } from './account-list/account-list.page';
 
@@ -99,10 +101,12 @@ import { environment } from '../environments/environment';
     WarehouseListPage,
     AccountListPage,
     CashListPage,
+    SalePage,
   ],
   imports: [
     LoginPageModule,
     ContactPageModule,
+    SalePageModule,
     ContractPageModule,
     ContractListPageModule,
     DiscountPageModule,

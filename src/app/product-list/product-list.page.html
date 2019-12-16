@@ -98,11 +98,16 @@
       </ion-row>
     </ion-col>
   </ion-row>
-
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createProduct()">
-          <ion-icon name="add">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab>
 </ion-content>
+<ion-footer *ngIf="true" (click)="openOrder()">
+  <ion-toolbar>
+    <ion-title>
+      Ver pedido
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button style="font-size: 25px;">
+        50.000g$
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

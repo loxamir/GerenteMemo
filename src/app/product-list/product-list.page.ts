@@ -10,6 +10,7 @@ import { ProductListPopover } from './product-list.popover';
 import { FormatService } from '../services/format.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
+import { SalePage } from '../sale/sale.page';
 
 @Component({
   selector: 'app-product-list',
@@ -258,5 +259,17 @@ export class ProductListPage implements OnInit {
       }
     })
   }
+
+    async openOrder() {
+      let profileModal = await this.modalCtrl.create({
+        component: SalePage,
+        componentProps: {
+          "select": true,
+          "_id": 'sale.5f60137b-2ca5-4291-a1a2-30a68d7e7082',
+        }
+      })
+      profileModal.present();
+    }
+
 
 }
