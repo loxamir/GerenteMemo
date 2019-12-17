@@ -192,6 +192,7 @@ export class SalePage implements OnInit {
         create_time: new FormControl(''),
         write_user: new FormControl(''),
         write_time: new FormControl(''),
+        status: new FormControl("WAITING"),
       });
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
@@ -226,6 +227,20 @@ export class SalePage implements OnInit {
       if (this.return){
         this.recomputeValues();
       }
+    }
+
+    setProduction(){
+      this.saleForm.patchValue({
+        status: 'PRODUCTION'
+      })
+      this.buttonSave();
+    }
+
+    setDelivery(){
+      this.saleForm.patchValue({
+        status: 'DELIVERY'
+      })
+      this.buttonSave();
     }
 
     editContact() {

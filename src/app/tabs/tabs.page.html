@@ -4,8 +4,14 @@
       <ion-title *ngIf="this.order.state == 'QUOTATION'">
         Ver pedido
       </ion-title>
-      <ion-title  *ngIf="this.order.state == 'CONFIRMED'">
-        Rastrear pedido
+      <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'WAITING'">
+        En Espera
+      </ion-title>
+      <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'PRODUCTION'">
+        En Producción
+      </ion-title>
+      <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'DELIVERY'">
+        En Entrega
       </ion-title>
       <ion-buttons slot="end">
         <ion-button style="font-size: 25px;">

@@ -200,6 +200,19 @@
         <ion-button class="button-100" (click)="addItem()" color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> {{ 'ADD_ITEM' | translate }}</ion-button>
       </ion-col>
     </ion-row>
+
+    <ion-row>
+      <ion-col size="12" *ngIf="saleForm.value.state == 'CONFIRMED' && saleForm.value.status == 'WAITING'">
+        <ion-button class="button-100" (click)="setProduction()" color="success">{{ 'En Producción' | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" *ngIf="saleForm.value.status == 'PRODUCTION'">
+        <ion-button class="button-100" (click)="setDelivery()" color="success">{{ 'En Entrega' | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
+
+
   </form>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'QUOTATION' && saleForm.value.items.length">

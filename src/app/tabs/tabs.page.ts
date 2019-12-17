@@ -36,23 +36,21 @@ export class TabsPage implements OnInit {
     this.user = (await this.pouchdbService.getUser())
 
     this.loading.dismiss();
-    // this.events.unsubscribe('add-product');
-
-    // let order: any = await this.pouchdbService.getDoc('sale.6b184a7c-d332-4826-9150-47189b789383');
-    let order: any = await this.pouchdbService.searchDocTypeDataField('sale', '', 0, 'state', 'QUOTATION', 'name', 'increase')
+    let order: any = await this.pouchdbService.searchDocTypeData('sale','',0,"state");
     console.log("order", order);
     if (order[0]){
-      this.order = order[0];
-      // this.amount = order[0].total;
+      if (order[0].state == 'QUOTATION'
+      || order[0].state == 'CONFIRMED'
+    ){
+        this.order = order[0];
+      }
     }
     this.events.subscribe('changed-sale', (data) => {
       if (data.deleted){
         this.order = undefined;
       } else {
         console.log("data", data);
-        if (data.doc.state == 'QUOTATION'){
-          this.order = data.doc;
-        } else if (data.doc.state == 'CONFIRMED'){
+        if (data.doc.state == 'QUOTATION' || data.doc.state == 'CONFIRMED'){
           this.order = data.doc;
         } else if (data.doc.state == 'PAID'){
           this.order = undefined;
@@ -86,7 +84,7 @@ export class TabsPage implements OnInit {
           "date": now,
           "origin_id": null,
           "total": total,
-          "residual": 0,
+          "residual": total,
           "note": null,
           "state": "QUOTATION",
           "discount": {
