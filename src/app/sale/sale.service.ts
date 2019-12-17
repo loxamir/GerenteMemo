@@ -59,6 +59,7 @@ export class SaleService {
         quantity: item.quantity,
         price: item.price,
         cost: item.cost,
+        note: item.note,
       })
     });
     delete sale.items;
@@ -117,6 +118,7 @@ export class SaleService {
               'quantity': line.quantity,
               'price': line.price,
               'cost': line.cost || 0,
+              'note': line.note,
             })
           })
           // if (pouchData.moves){

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { LoadingController, Events, ModalController } from '@ionic/angular';
+import { LoadingController, Events, ModalController, MenuController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { SalePage } from '../sale/sale.page';
@@ -23,6 +23,7 @@ export class TabsPage implements OnInit {
     public languageService: LanguageService,
     public events:Events,
     public modalCtrl: ModalController,
+    public menuCtrl: MenuController,
   ){
   }
 
@@ -49,7 +50,13 @@ export class TabsPage implements OnInit {
         this.order = undefined;
       } else {
         console.log("data", data);
-        this.order = data.doc;
+        if (data.doc.state == 'QUOTATION'){
+          this.order = data.doc;
+        } else if (data.doc.state == 'CONFIRMED'){
+          this.order = data.doc;
+        } else if (data.doc.state == 'PAID'){
+          this.order = undefined;
+        }
       }
     })
 
@@ -65,6 +72,11 @@ export class TabsPage implements OnInit {
       if (this.order){
         this.order.lines.push(line);
         this.order.total += total;
+        this.order.amount_unInvoiced += total;
+        let updatedOrder:any = await this.pouchdbService.updateDoc(this.order);
+        console.log("updatedOrder", updatedOrder);
+        this.order._rev = updatedOrder.rev;
+
       } else {
         let now = new Date().toISOString();
         let order = {
@@ -106,6 +118,7 @@ export class TabsPage implements OnInit {
       }
       // this.events.unsubscribe('open-contact');
     })
+    this.menuCtrl.enable(false);
   }
 
 

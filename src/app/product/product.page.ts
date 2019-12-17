@@ -102,7 +102,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
     async ngOnInit() {
       setTimeout(() => {
-        this.name.setFocus();
+        // this.name.setFocus();
         this.productForm.markAsPristine();
       }, 400);
       this.productForm = this.formBuilder.group({
@@ -128,6 +128,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
         quantity: new FormControl(1),
+        description: new FormControl(''),
       });
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
@@ -516,6 +517,26 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       } else {
         this.productForm.markAsPristine();
         this.navCtrl.navigateBack('/tabs/product-list');
+      }
+    }
+
+    sumItem() {
+      let quantity = this.productForm.value.quantity;
+      quantity += 1;
+      this.productForm.patchValue({
+        quantity: quantity
+      })
+        // this.recomputeValues();
+        // this.saleForm.markAsDirty();
+    }
+
+    remItem() {
+      let quantity = this.productForm.value.quantity;
+      if (quantity>1){
+        quantity -= 1;
+        this.productForm.patchValue({
+          quantity: quantity
+        })
       }
     }
 

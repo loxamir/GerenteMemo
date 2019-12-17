@@ -13,12 +13,12 @@
       #searchBar
       (ionChange)="searchItems()">
     </ion-searchbar>
-    <ion-buttons slot="end">
+    <!-- <ion-buttons slot="end">
       <ion-button *ngIf="!select" ion-button icon-only class="more-button"
               (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -40,21 +40,16 @@
                 <h3 class="item-title"><b>{{ item.name }}</b></h3>
               </ion-col>
             </ion-row>
-             <ion-row class="ion-no-padding content-row one-line">
-                <ion-col class="ion-no-padding schedule-date" (click)="selectProduct(item)">
-                  <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
-                      {{'CODE'| translate}}: <b style="  margin-left: 5px">{{item.code}}</b>
-                  </h3>
-                  <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
-                      {{'STOCK'| translate}}: <b style="color: green;margin-left: 5px">{{item.stock}}</b>
-                  </h3>
-                </ion-col>
-                <ion-col class="ion-no-padding" size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
-                  <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">$ {{item.price| number:'1.'+currency_precision}}</h2>
-                  <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.'+currency_precision}}</h2>
-                </ion-col>
-              </ion-row>
-              <ion-row class="ion-no-padding" *ngIf="item.stock>=0&&item.stock<item.stock_min&&item.type=='product'">
+            <ion-row class="ion-no-padding content-row one-line" (click)="selectProduct(item)">
+              <ion-col class="item-content" style="white-space: normal;">
+                {{item.description}}
+              </ion-col>
+              <ion-col class="ion-no-padding" size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
+                <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">$ {{item.price| number:'1.'+currency_precision}}</h2>
+                <!-- <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.'+currency_precision}}</h2> -->
+              </ion-col>
+            </ion-row>
+              <!-- <ion-row class="ion-no-padding" *ngIf="item.stock>=0&&item.stock<item.stock_min&&item.type=='product'">
                 <ion-col class="ion-no-padding" style="text-align: center;" class="confirmed">
                     {{ 'STOCK_LOW' | translate }}
                 </ion-col>
@@ -63,7 +58,7 @@
                 <ion-col class="ion-no-padding" style="text-align: center;color: white;">
                     {{ 'NEGATIVE_STOCK' | translate }}
                 </ion-col>
-              </ion-row>
+              </ion-row> -->
           </ion-col>
           <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openProduct(item)">
             <ion-icon name="open" class="open-item-arrow"></ion-icon>
