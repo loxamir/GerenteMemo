@@ -1,35 +1,30 @@
 <ion-tabs>
-
-  <ion-tab-bar slot="bottom"
-  *ngIf="user.useSale">
-    <ion-tab-button tab="sale-list">
+  <ion-row *ngIf="order" (click)="openOrder()">
+    <ion-toolbar style="--ion-background-color: linear-gradient(to left,#c50303,#a92c2c);color: white;">
+      <ion-title>
+        Ver pedido
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button style="font-size: 25px;">
+           {{order.total}} g$
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-row>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="product-list">
       <ion-icon name="pricetag"></ion-icon>
-      <ion-label>{{'SALES'|translate}}</ion-label>
+      <ion-label>{{'Cardapio'|translate}}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="purchase-list"
-    *ngIf="user.usePurchase">
+    <ion-tab-button tab="sale-list">
       <ion-icon name="cart"></ion-icon>
-      <ion-label>{{'PURCHASES'|translate}}</ion-label>
+      <ion-label>{{'Pedidos'|translate}}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="cash-list"
-    *ngIf="user.useFinance">
-      <ion-icon name="cash"></ion-icon>
-      <ion-label>{{'FINANCES'|translate}}</ion-label>
-    </ion-tab-button>
-
-    <ion-tab-button
-    *ngIf="user.useProduction"
-     tab="production-list" style="--padding-start: 0px; --padding-end: 0px;">
-      <ion-icon name="construct"></ion-icon>
-      <ion-label>{{'PRODUCTION'|translate}}</ion-label>
-    </ion-tab-button>
-
-    <ion-tab-button tab="service-list"
-    *ngIf="user.useService">
-      <ion-icon name="construct"></ion-icon>
-      <ion-label>{{'SERVICES'|translate}}</ion-label>
+    <ion-tab-button tab="profile">
+      <ion-icon name="contact"></ion-icon>
+      <ion-label>{{'Perfil'|translate}}</ion-label>
     </ion-tab-button>
 
   </ion-tab-bar>

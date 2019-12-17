@@ -22,9 +22,13 @@
         <ion-label position="floating">{{'SALE_PRICE' | translate}}</ion-label>
         <ion-input #price type="number" formControlName="price"></ion-input>
       </ion-item>
-      <ion-item class="ion-no-padding field-50">
+      <!-- <ion-item class="ion-no-padding field-50">
         <ion-label position="floating">{{'PURCHASE_COST' | translate}}</ion-label>
         <ion-input #cost type="number" formControlName="cost"></ion-input>
+      </ion-item> -->
+      <ion-item class="ion-no-padding field-50">
+        <ion-label position="floating">{{'Quantidade' | translate}}</ion-label>
+        <ion-input #cost type="number" formControlName="quantity"></ion-input>
       </ion-item>
       <ion-item class="ion-no-padding field-50">
         <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
@@ -96,6 +100,10 @@
         <ion-input type="text" formControlName="note"></ion-input>
       </ion-item>
     </ion-row>
+    <ion-button (click)="askProduct()"  class="next-button">
+      <!-- <ion-icon name="fastforward"> </ion-icon> -->
+      {{'Pedir'|translate}}
+    </ion-button>
   </form>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">

@@ -127,6 +127,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         create_time: new FormControl(''),
         write_user: new FormControl(''),
         write_time: new FormControl(''),
+        quantity: new FormControl(1),
       });
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
@@ -144,6 +145,11 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.getDefaultCategory();
         this.loading.dismiss();
       }
+    }
+
+    askProduct(){
+      this.events.publish('add-product', this.productForm.value);
+      this.exitPage();
     }
 
     getDefaultCategory(){
@@ -509,7 +515,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.modalCtrl.dismiss();
       } else {
         this.productForm.markAsPristine();
-        this.navCtrl.navigateBack('/product-list');
+        this.navCtrl.navigateBack('/tabs/product-list');
       }
     }
 

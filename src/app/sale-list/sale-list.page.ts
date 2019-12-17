@@ -39,9 +39,6 @@ export class SaleListPage implements OnInit {
     public languageService: LanguageService,
     public translate: TranslateService,
   ) {
-
-
-
     this.events.subscribe('changed-sale', (change)=>{
       this.handleChange(this.sales, change);
     })

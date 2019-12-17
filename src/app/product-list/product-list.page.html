@@ -84,30 +84,18 @@
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <ion-row *ngIf="products.length==2">
+  <ion-row *ngIf="products.length==0">
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
       <ion-row>
         <ion-col>
-          <h1>{{'NO_PRODUCT' | translate }}</h1>
+          <h1>{{'Ningun producto encontrado' | translate }}</h1>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <!-- <ion-row>
         <ion-col>
           <h4>{{'FIRST_PRODUCT'| translate}}</h4>
         </ion-col>
-      </ion-row>
+      </ion-row> -->
     </ion-col>
   </ion-row>
 </ion-content>
-<ion-footer *ngIf="true" (click)="openOrder()">
-  <ion-toolbar>
-    <ion-title>
-      Ver pedido
-    </ion-title>
-    <ion-buttons slot="end">
-      <ion-button style="font-size: 25px;">
-        50.000g$
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-footer>

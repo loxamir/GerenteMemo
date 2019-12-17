@@ -9,6 +9,15 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: 'product-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../product-list/product-list.module#ProductListPageModule'
+          }
+        ]
+      },
+      {
         path: 'sale-list',
         children: [
           {
@@ -36,11 +45,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'production-list',
+        path: 'profile',
         children: [
           {
             path: '',
-            loadChildren: '../production-list/production-list.module#ProductionListPageModule'
+            loadChildren: '../contact/contact.module#ContactPageModule'
           }
         ]
       },
@@ -55,14 +64,14 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/tabs/sale-list',
+        redirectTo: '/tabs/product-list',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/sale-list',
+    redirectTo: '/tabs/product-list',
     pathMatch: 'full'
   }
 ];

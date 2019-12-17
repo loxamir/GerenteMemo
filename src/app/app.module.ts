@@ -72,6 +72,7 @@ import { ProductionWorkPageModule } from './production/work/work.module';
 import { ServiceTravelPageModule } from './service/travel/travel.module';
 import { ContractPageModule } from './contract/contract.module';
 import { ContractListPageModule } from './contract-list/contract-list.module';
+import { TabsPageModule } from './tabs/tabs.module';
 
 import { UserPageModule } from './user/user.module';
 import { InvoiceConfigPageModule } from './invoice-config/invoice-config.module';
@@ -104,6 +105,8 @@ import { environment } from '../environments/environment';
     SalePage,
   ],
   imports: [
+    TabsPageModule,
+    ProductListPageModule,
     LoginPageModule,
     ContactPageModule,
     SalePageModule,
@@ -114,7 +117,6 @@ import { environment } from '../environments/environment';
     BrandListPageModule,
     ProductCategoryListPageModule,
     AccountCategoryListPageModule,
-    ProductListPageModule,
     PaymentConditionListPageModule,
     CurrencyListPageModule,
     TitleListPageModule,
