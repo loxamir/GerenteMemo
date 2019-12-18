@@ -17,6 +17,7 @@ import * as d3Scale from "d3-scale";
 import * as d3Shape from "d3-shape";
 import * as d3Array from "d3-array";
 import * as d3Axis from "d3-axis";
+import * as jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-stock-report',
@@ -50,6 +51,7 @@ export class StockReportPage implements OnInit {
   _current: any;
   svg: any;
   products;
+  config;
 
   svg2: any;
 
@@ -459,6 +461,7 @@ export class StockReportPage implements OnInit {
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
+    this.config = config;
     // if (this.route.snapshot.paramMap.get('compute){
     await this.goNextStep();
     // console.log("foie");
@@ -983,5 +986,83 @@ export class StockReportPage implements OnInit {
         if (tooltipLine) tooltipLine.attr('stroke', 'none');
       });
     // console.log("fim");
+  }
+
+  getHeader(docPdf, topo, col1, col2, col3, col4){
+    if (this.reportStockForm.value.groupBy == 'product'){
+      docPdf.text("Producto", col1, topo);
+      docPdf.text("Cantidad", col2, topo, 'right');
+      docPdf.text("Costo Unitario", col3, topo, 'right');
+      docPdf.text("SubTotal", col4, topo, 'right');
+    } if (this.reportStockForm.value.groupBy == 'category'){
+      docPdf.text("Categoria", col1, topo);
+      docPdf.text("Cantidad", col2, topo, 'right');
+      docPdf.text("Costo Total", col4, topo, 'right');
+    } else if (this.reportStockForm.value.groupBy == 'brand'){
+      docPdf.text("Marca", col1, topo);
+      docPdf.text("Cantidad", col2, topo, 'right');
+      docPdf.text("Costo Total", col4, topo, 'right');
+    }
+  }
+
+  printPDF(){
+    var docPdf = new jsPDF('portrait', 'mm', 'a4');
+    let pageHeight= docPdf.internal.pageSize.height;
+    docPdf.setFontSize(7);
+    let topo = 10;
+    let col1 = 10;
+    let col2 = 150;
+    let col3 = 170;
+    let col4 = 190;
+    let now = new Date().toISOString();
+    docPdf.setFontSize(20);
+    docPdf.text("Informe de Sock", 80, topo);
+    docPdf.setFontSize(7);
+    topo += 5;
+    docPdf.text("Empresa: "+this.config.name, 10, topo);
+    topo += 5;
+    let day = now.split('-')[2].split('T')[0];
+    let month = now.split('-')[1];
+    let year = now.split('-')[0];
+    let hour = now.split(':')[0].split('T')[1];
+    let minute = now.split(':')[1];
+    let rightNow = day+"/"+month+"/"+year;//+" "+hour+":"+minute;
+    docPdf.text("Fecha: "+rightNow, 10, topo);
+    topo += 5;
+    docPdf.setFontType("bold");
+    docPdf.text("Cantidad total de Productos: "+this.items_quantity.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), 10, topo);
+    topo += 5;
+    docPdf.text("Valor total del Stock: "+this.total.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " G$", 10, topo);
+    docPdf.setFontType("normal");
+    topo+=10;
+    this.getHeader(docPdf, topo, col1, col2, col3, col4);
+    topo+=5;
+    this.reportStockForm.value.items.forEach((line)=>{
+      if (line.quantity > 0){
+        if (topo >= pageHeight){
+          docPdf.addPage();
+          topo=10;
+          this.getHeader(docPdf, topo, col1, col2, col3, col4);
+          topo+=5;
+        }
+        docPdf.text(line.name || "", col1, topo);
+        docPdf.text(line.quantity.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col2, topo, 'right');
+        if (this.reportStockForm.value.groupBy == "product"){
+          docPdf.text((line.total/line.quantity).toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col3, topo, 'right');
+          docPdf.text(line.total.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col4, topo, 'right');
+        } else if (this.reportStockForm.value.groupBy == "category"){
+          docPdf.text(line.total.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col4, topo, 'right');
+        } else if (this.reportStockForm.value.groupBy == "brand"){
+          docPdf.text(line.total.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col4, topo, 'right');
+        }
+        topo+=5;
+      }
+    })
+    docPdf.setFontType("bold");
+    docPdf.text("Total:", col1, topo);
+    docPdf.text((this.items_quantity).toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col2, topo, 'right');
+    docPdf.text(this.total.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col4, topo, 'right');
+    topo+=5;
+    docPdf.save('Stock-'+day+"-"+month+"-"+year+'.pdf')
   }
 }
