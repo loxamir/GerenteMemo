@@ -9,6 +9,9 @@
       </ion-row>
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="printPDF()">
+        pdf
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -62,17 +65,10 @@
       <ion-card class="list-card">
         <ion-list>
           <div *ngIf="receivableReportForm.value.groupBy == 'account'">
-            <!-- <div *ngIf="receivableReportForm.value.reportType == 'cashFlow'"> -->
               <ion-list no-lines>
                 <ion-row class="report-title">
                   <ion-col size="4" (click)="orderByName()">
                     {{'ACCOUNT'|translate}}
-                  </ion-col>
-                  <ion-col style="text-align: right" (click)="orderByIncome()">
-                    {{'INCOME'|translate}}
-                  </ion-col>
-                  <ion-col style="text-align: right" (click)="orderByExpense()">
-                    {{'EXPENSE'|translate}}
                   </ion-col>
                   <ion-col style="text-align: right" (click)="orderByTotal()">
                   {{'TOTAL'|translate}}
@@ -83,12 +79,6 @@
                     {{item.name}}
                   </ion-col>
                   <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                    {{item.income|number:'1.'+currency_precision}}
-                  </ion-col>
-                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                    {{item.expense|number:'1.'+currency_precision}}
-                  </ion-col>
-                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
@@ -96,18 +86,11 @@
                   <ion-col size="4">
                   {{'TOTAL_UPPER'|translate}}
                   </ion-col>
-                  <ion-col style="text-align: right">
-                    {{items_income|number:'1.'+currency_precision}}
-                  </ion-col>
-                  <ion-col  style="text-align: right">
-                    {{items_expense|number:'1.'+currency_precision}}
-                  </ion-col>
                   <ion-col  style="text-align: right">
                     {{total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
               </ion-list>
-            <!-- </div> -->
           </div>
           <div>
             <ion-list no-lines *ngIf="receivableReportForm.value.groupBy == 'contact'">
@@ -115,25 +98,13 @@
                 <ion-col size="4" (click)="orderByName()">
                   {{'CONTACT'|translate}}
                 </ion-col>
-                <ion-col style="text-align: right" (click)="orderByIncome()">
-                  {{'INCOME'|translate}}
-                </ion-col>
-                <ion-col style="text-align: right" (click)="orderByExpense()">
-                  {{'EXPENSE'|translate}}
-                </ion-col>
                 <ion-col style="text-align: right" (click)="orderByTotal()">
                 {{'TOTAL'|translate}}
                 </ion-col>
               </ion-row>
               <ion-row *ngFor="let item of receivableReportForm.value.items">
                 <ion-col size="4" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.name}}
-                </ion-col>
-                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.income|number:'1.'+currency_precision}}
-                </ion-col>
-                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.expense|number:'1.'+currency_precision}}
+                  {{item.name||'No Informado'}}
                 </ion-col>
                 <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.total|number:'1.'+currency_precision}}
@@ -143,32 +114,17 @@
                 <ion-col size="4">
                 {{'TOTAL_UPPER'|translate}}
                 </ion-col>
-                <ion-col style="text-align: right">
-                  {{items_income|number:'1.'+currency_precision}}
-                </ion-col>
-                <ion-col  style="text-align: right">
-                  {{items_expense|number:'1.'+currency_precision}}
-                </ion-col>
                 <ion-col  style="text-align: right">
                   {{total|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
             </ion-list>
           </div>
-
-
           <div>
             <ion-list no-lines *ngIf="receivableReportForm.value.groupBy == 'date'">
-
               <ion-row class="report-title">
                 <ion-col size="4" (click)="orderByName()">
                   {{'DATE_DUE'|translate}}
-                </ion-col>
-                <ion-col style="text-align: right" (click)="orderByIncome()">
-                  {{'INCOME'|translate}}
-                </ion-col>
-                <ion-col style="text-align: right" (click)="orderByExpense()">
-                  {{'EXPENSE'|translate}}
                 </ion-col>
                 <ion-col style="text-align: right" (click)="orderByTotal()">
                   {{'TOTAL'|translate}}
@@ -179,24 +135,12 @@
                   {{item.name}}
                 </ion-col>
                 <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.income|number:'1.'+currency_precision}}
-                </ion-col>
-                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
-                  {{item.expense|number:'1.'+currency_precision}}
-                </ion-col>
-                <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                   {{item.total|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
               <ion-row class="report-title">
                 <ion-col size="4">
                 {{'TOTAL_UPPER'|translate}}
-                </ion-col>
-                <ion-col style="text-align: right">
-                  {{items_income|number:'1.'+currency_precision}}
-                </ion-col>
-                <ion-col  style="text-align: right">
-                  {{items_expense|number:'1.'+currency_precision}}
                 </ion-col>
                 <ion-col  style="text-align: right">
                   {{total|number:'1.'+currency_precision}}
