@@ -26,7 +26,7 @@ export class LoginPage implements OnInit {
   show_create: boolean = false;
   selected_user: boolean = false;
   databaseList: [];
-  username = '';
+  username = 'larica';
   today = new Date().toISOString();
   language;
   demo;
@@ -51,15 +51,18 @@ export class LoginPage implements OnInit {
     if (this.demo){
       this.show_create = true;
     }
-    this.storage.get("username").then((username)=>{
-      this.username = username;
-      if (username){
-        this.storage.get("password").then((password)=>{
-          this.showDatabaseList(username, password);
-          this.selected_user = true;
-        })
-      }
-    })
+    let username = "larica";
+    let password = "123";
+    // this.username = "larica";
+    // this.selectDatabase("larica");
+    // this.storage.get("username").then((username)=>{
+    //   if (username){
+    //     this.storage.get("password").then((password)=>{
+          // this.showDatabaseList(username, password);
+          // this.selected_user = true;
+      //   })
+      // }
+    // })
   }
 
   async ngOnInit() {
@@ -70,11 +73,11 @@ export class LoginPage implements OnInit {
         Validators.required,
         Validators.pattern('^[0-9]+$')
       ])),
-      user: new FormControl('', Validators.compose([
+      user: new FormControl('larica', Validators.compose([
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_.+-]+$')
       ])),
-      password: new FormControl('', Validators.required),
+      password: new FormControl('123', Validators.required),
       address: new FormControl('', Validators.required),
     });
     this.loading = await this.loadingCtrl.create({});
@@ -84,7 +87,8 @@ export class LoginPage implements OnInit {
     }
     this.translate.setDefaultLang(this.language);
     this.translate.use(this.language);
-    this.username = await this.storage.get('username');
+    this.username = 'larica';
+    this.doLogin();
     setTimeout(() => {
       this.menuCtrl.enable(false);
     }, 500);
@@ -333,14 +337,14 @@ export class LoginPage implements OnInit {
       await this.loading.present();
       await this.storage.set('database', database.database);
       let toast = await this.toastCtrl.create({
-        message: "Sincronizando...",
+        message: "Cargando el Cardapio...",
       });
       await toast.present();
       this.pouchdbService.getConnect();
       this.events.subscribe('end-sync', async () => {
         this.events.unsubscribe('end-sync');
-        await this.router.navigate(['/tabs/sale-list']);
-        this.menuCtrl.enable(true);
+        await this.router.navigate(['/tabs/product-list']);
+        // this.menuCtrl.enable(true);
         await toast.dismiss();
         await this.loading.dismiss();
       })
