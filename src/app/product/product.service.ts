@@ -21,7 +21,7 @@ export class ProductService {
 
   getProduct(doc_id): Promise<any> {
     return new Promise(async (resolve, reject)=>{
-      let product:any = await this.pouchdbService.getDoc(doc_id);
+      let product:any = await this.pouchdbService.getDoc(doc_id, true);
       product.category = (await  this.pouchdbService.getDoc(product['category_id'])||{});
       product.brand = (await  this.pouchdbService.getDoc(product['brand_id'])||{});
 
@@ -29,6 +29,14 @@ export class ProductService {
       ["warehouse.physical.my", product._id],
       ["warehouse.physical.my", product._id+"z"])
       product.stock = viewList && viewList[0] && viewList[0].value || 0;
+
+      if (product._attachments && product._attachments['avatar.png']) {
+        let avatar = product._attachments['avatar.png'].data;
+        product.image = "data:image/png;base64," + avatar;
+      } else {
+        product.image = "./assets/images/sem_foto.jpg";
+      }
+
       resolve(product);
     });
   }
@@ -51,7 +59,7 @@ export class ProductService {
     });
   }
 
-  createProduct(viewData){
+  createProduct(viewData, blob = undefined){
     return new Promise((resolve, reject)=>{
       let product = Object.assign({}, viewData);
       product.docType = 'product';
@@ -69,8 +77,17 @@ export class ProductService {
         resolve(this.pouchdbService.createDoc(product));
       } else {
         this.configService.getSequence('product').then((code) => {
+
           product['code'] = code;
-          resolve(this.pouchdbService.createDoc(product));
+          this.pouchdbService.createDoc(product).then(async doc => {
+            if (blob) {
+              let avai = await this.pouchdbService.attachFile(doc['id'], 'avatar.png', blob);
+            }
+            resolve({ doc: doc, product: product });
+            // resolve(this.pouchdbService.createDoc(product));
+          });
+
+
         });
       }
       // if (product.stock > 0){
@@ -79,7 +96,7 @@ export class ProductService {
     });
   }
 
-  updateProduct(viewData){
+  async updateProduct(viewData, blob = undefined){
     let product = Object.assign({}, viewData);
     product.docType = 'product';
     product.price = product.price && parseFloat(product.price) || 0;
@@ -96,6 +113,12 @@ export class ProductService {
     }
     product.brand_name = product.brand && product.brand.name || product.brand_name;
     delete product.brand;
+    if (blob) {
+      await this.pouchdbService.attachFile(product._id, 'avatar.png', blob);
+      let data: any = await this.pouchdbService.getDoc(product._id);
+      let attachments = data._attachments;
+      product._attachments = attachments;
+    }
     return this.pouchdbService.updateDoc(product);
   }
 

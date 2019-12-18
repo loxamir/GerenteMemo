@@ -34,6 +34,11 @@
       <ion-card class="list-card">
 
         <ion-row>
+          <ion-thumbnail style="--border-radius:10px;">
+              <img [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
+              *ngIf="item._attachments && item._attachments['avatar.png']">
+              <img src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
+            </ion-thumbnail>
           <ion-col>
             <ion-row (click)="selectProduct(item)" class="producto">
               <ion-col class="ion-no-padding">
