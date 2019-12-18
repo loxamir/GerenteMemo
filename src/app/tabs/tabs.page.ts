@@ -71,6 +71,7 @@ export class TabsPage implements OnInit {
         this.order.lines.push(line);
         this.order.total += total;
         this.order.amount_unInvoiced += total;
+        this.order.residual += total;
         let updatedOrder:any = await this.pouchdbService.updateDoc(this.order);
         console.log("updatedOrder", updatedOrder);
         this.order._rev = updatedOrder.rev;

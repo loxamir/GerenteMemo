@@ -73,6 +73,7 @@ export class ProductService {
       product.brand_id = product.brand && product.brand._id || product.brand_id;
       product.brand_name = product.brand && product.brand.name || product.brand_name;
       delete product.brand;
+      delete product.image;
       if (product.code != ''){
         resolve(this.pouchdbService.createDoc(product));
       } else {
@@ -113,6 +114,7 @@ export class ProductService {
     }
     product.brand_name = product.brand && product.brand.name || product.brand_name;
     delete product.brand;
+    delete product.image;
     if (blob) {
       await this.pouchdbService.attachFile(product._id, 'avatar.png', blob);
       let data: any = await this.pouchdbService.getDoc(product._id);
