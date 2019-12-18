@@ -4,15 +4,30 @@
       <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/product-list')"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'PRODUCT' | translate }}-{{productForm.value.code}}</ion-title>
-    <!-- <ion-buttons slot="end" [hidden]="!productForm.dirty">
-      <ion-button (click)="buttonSave()" class="button-save">
-        {{ 'SAVE' | translate }}
+    <ion-buttons slot="end">
+      <ion-button ion-button icon-only class="more-button"
+              (click)="enableEditMode()">
+        <ion-icon name="create"></ion-icon>
       </ion-button>
-    </ion-buttons> -->
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content class="product-content">
   <form class="sample-form validations-form" [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
+    <div *ngIf="editMode">
+      <ion-item class="field-100">
+        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+        <ion-input type="text" formControlName="name"></ion-input>
+      </ion-item>
+      <ion-item class="field-100">
+        <ion-label position="floating">{{'Ingredientes' | translate}}</ion-label>
+        <ion-input type="text" formControlName="description"></ion-input>
+      </ion-item>
+      <ion-item class="field-100">
+        <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
+        <ion-input type="number" formControlName="price"></ion-input>
+      </ion-item>
+    </div>
 
     <!-- <ion-row>
       <ion-col style="text-align: center;">
@@ -39,10 +54,6 @@
         {{this.productForm.value.description}}
     </h1>
     </ion-row>
-    <!-- <ion-item class="field-100">
-      <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
-      <ion-input type="text" formControlName="description"></ion-input>
-    </ion-item> -->
 
     <ion-row style="background-color: white;">
       <ion-col size="3">
@@ -101,7 +112,7 @@
     </ion-button>
   </ion-fab>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="productForm.dirty">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="productForm.dirty && editMode">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
       {{ 'SAVE'| translate }}

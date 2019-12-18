@@ -13,12 +13,12 @@
       #searchBar
       (ionChange)="searchItems()">
     </ion-searchbar>
-    <!-- <ion-buttons slot="end">
+    <ion-buttons slot="end">
       <ion-button *ngIf="!select" ion-button icon-only class="more-button"
-              (click)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
+              (click)="enableEditMode()">
+        <ion-icon name="create"></ion-icon>
       </ion-button>
-    </ion-buttons> -->
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -45,7 +45,7 @@
                 {{item.description}}
               </ion-col>
               <ion-col class="ion-no-padding" size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
-                <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">$ {{item.price| number:'1.'+currency_precision}}</h2>
+                <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">{{item.price| number:'1.'+currency_precision}} G$</h2>
                 <!-- <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.'+currency_precision}}</h2> -->
               </ion-col>
             </ion-row>
@@ -93,4 +93,10 @@
       </ion-row> -->
     </ion-col>
   </ion-row>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="editMode">
+      <ion-fab-button (click)="createProduct()" color="primary">
+          <ion-icon name="add">
+          </ion-icon>
+      </ion-fab-button>
+  </ion-fab>
 </ion-content>

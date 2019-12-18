@@ -43,6 +43,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     opened: boolean = false;
     select;
     barcode = '';
+    editMode = false;
 
     constructor(
       public navCtrl: NavController,
@@ -100,6 +101,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       // }
     }
 
+    enableEditMode(){
+      this.editMode = !this.editMode;
+    }
+
     async ngOnInit() {
       setTimeout(() => {
         // this.name.setFocus();
@@ -143,6 +148,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.loading.dismiss();
         });
       } else {
+        this.editMode = true;
         this.getDefaultCategory();
         this.loading.dismiss();
       }
@@ -489,6 +495,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
                         text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
+
                                 this.exitPage();
                             // });
                         }

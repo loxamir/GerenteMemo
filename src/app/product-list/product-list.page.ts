@@ -28,6 +28,7 @@ export class ProductListPage implements OnInit {
   operation = "sale";
   searchTerm: string = '';
   currency_precision = 2;
+  editMode = false;
 
   constructor(
     public navCtrl: NavController,
@@ -269,6 +270,10 @@ export class ProductListPage implements OnInit {
         }
       })
       profileModal.present();
+    }
+
+    enableEditMode(){
+      this.editMode = !this.editMode;
     }
 
 
