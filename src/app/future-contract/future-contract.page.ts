@@ -104,7 +104,7 @@ export class FutureContractPage implements OnInit {
     public socialSharing: SocialSharing,
     // public file: File,
   ) {
-    this.today = new Date().toISOString();
+    this.today = new Date();
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     this.avoidAlertMessage = false;
@@ -124,7 +124,7 @@ export class FutureContractPage implements OnInit {
       contact_name: new FormControl(this.contact_name || ''),
       name: new FormControl(''),
       code: new FormControl(''),
-      date: new FormControl(this.route.snapshot.paramMap.get('date') || this.today),
+      date: new FormControl(this.route.snapshot.paramMap.get('date') || this.today.toISOString()),
       // origin_id: new FormControl(this.origin_id),
       quantity: new FormControl(0),
       price: new FormControl(0),
@@ -151,7 +151,7 @@ export class FutureContractPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
       crop: new FormControl(this.crop || {}),
-      date_delivery: new FormControl(this.crop && this.crop.date_end || this.today),
+      date_delivery: new FormControl(this.crop && this.crop.date_end || this.today.toISOString()),
       delivered: new FormControl(0),
       warehouse: new FormControl(this.warehouse || {}),
       sales: new FormControl([]),
@@ -987,7 +987,7 @@ export class FutureContractPage implements OnInit {
             }
           });
           this.futureContractForm.value.paymentCondition.items.forEach(item => {
-            let dateDue = this.formatService.addDays(this.today, item.days);
+            let dateDue = this.formatService.addDays(this.today.toISOString(), item.days);
             // console.log("dentro", this.futureContractForm.value);
             let amount = (item.percent / 100) * this.futureContractForm.value.total;
             let cashMoveTemplate = {
