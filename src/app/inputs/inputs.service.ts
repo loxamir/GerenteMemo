@@ -25,8 +25,7 @@ export class InputsService {
               true,
               1
             ).then((planneds: any[]) => {
-              input.lastActivity =  planneds[0] && planneds[0].value.replace('<br/>', ' ') || '';
-              input.lastDate = planneds[0] && planneds[0].key[1] || null;
+              input.lastDate = planneds[0] && planneds[0].key[2] || null;
               inputList.push(input);
           })
         });
