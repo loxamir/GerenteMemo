@@ -2,154 +2,154 @@
   "docs": [{
   "_id": "_design/Informes",
   "views": {
-     "VentaDiaria": {
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'sale' && doc.state != 'QUOTATION'){\n    var margin = 0;\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      margin += (doc.lines[x].price - doc.lines[x].cost)*doc.lines[x].quantity;\n    }\n    emit([doc.date.split(\"T\")[0], doc.pay_cond_id, doc.contact_id, margin], doc.total);\n  }\n}",
-       "reduce": "_sum"
-     },
-     "CompraDiaria": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'purchase' && doc.state != 'QUOTATION'){\n    emit([doc.date.split(\"T\")[0], doc.pay_cond_id, doc.contact_id], doc.total);\n  }\n}"
-     },
-     "ProductoDiario": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'sale' && doc.state != 'QUOTATION'){\n    var margin = 0;\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      margin = (doc.lines[x].price - doc.lines[x].cost)*doc.lines[x].quantity;\n      emit([doc.date.split(\"T\")[0], doc.lines[x].product_name, doc.contact_name, margin, doc.lines[x].quantity, doc.lines[x].price, doc.lines[x].cost, doc.payment_name, doc.seller_name, doc.lines[x].product_id], doc.total);\n    }\n  }\n}"
-     },
-     "CompraProductoDiario": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'purchase' && doc.state != 'QUOTATION'){\n    var margin = 0;\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      //margin += (doc.lines[x].price - doc.lines[x].cost)*doc.lines[x].quantity;\n      emit([doc.date.split(\"T\")[0], doc.lines[x].product_name, doc.contact_name, margin, doc.lines[x].quantity, doc.lines[x].price, doc.lines[x].cost, doc.payment_name, doc.seller_name, doc.lines[x].product_id], doc.total);\n    }\n  }\n}"
-     },
-     "A Cobrar": {
-       "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move' && doc.amount_residual != 0){\n    if (doc.accountTo_id.split(\".\")[1] == 'receivable'){\n      emit([doc.dateDue.split(\"T\")[0], doc.contact_name, doc.accountFrom_name, doc.origin_id, doc.contact_id, doc._id], doc.amount_residual);\n    }\n  }\n}"
-     },
-     "A Pagar": {
-       "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move' && doc.amount_residual != 0){\n    if (doc.accountFrom_id.split(\".\")[1] == 'payable'){\n      emit([doc.dateDue.split(\"T\")[0], doc.contact_name, doc.accountFrom_name, doc.origin_id, doc.contact_id, doc._id], doc.amount_residual);\n    }\n  }\n}"
-     },
-     "ServicioProductoDiario": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'service'){\n    var margin = 0;\n    for (var x = 0, len = doc.works.length; x < len; x++) {\n      margin = (doc.works[x].price - doc.works[x].cost)*doc.works[x].quantity;\n      emit([doc.date.split(\"T\")[0], doc.works[x].product.name, doc.contact_name, margin, doc.works[x].quantity, doc.works[x].price, doc.works[x].cost, doc.payment_name, doc.seller_name, doc.works[x].product._id], doc.total);\n    }\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      margin = (doc.lines[x].price - doc.lines[x].cost)*doc.lines[x].quantity;\n      emit([doc.date.split(\"T\")[0], doc.lines[x].product_name, doc.contact_name, margin, doc.lines[x].quantity, doc.lines[x].price, doc.lines[x].cost, doc.payment_name, doc.seller_name, doc.lines[x].product_id], doc.total);\n    }\n  }\n}"
-     },
-     "ServicioDiario": {
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'service'){\n    var margin = 0;\n    for (var x = 0, len = doc.works.length; x < len; x++) {\n      margin = (doc.works[x].price - doc.works[x].cost)*doc.works[x].quantity;\n      emit([doc.works[x].date.split(\"T\")[0], doc.pay_cond_id, doc.contact_id, margin, 1, doc.works[x].product.name, doc.works[x].product._id], doc.works[x].price*doc.works[x].quantity);\n    }\n  }\n}",
-       "reduce": "_sum"
-     },
-     "ProduccionProductoDiario": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'production'){\n    var margin = 0;\n    for (var x = 0, len = doc.works.length; x < len; x++) {\n      margin = (doc.works[x].price - doc.works[x].cost)*doc.works[x].time;\n      emit([doc.date.split(\"T\")[0], 'Mano de Obra', doc.contact_name, margin, doc.works[x].time, doc.works[x].price, doc.works[x].cost, doc.payment_name, doc.seller_name, 'product.labour', doc.product_name], doc.total);\n    }\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      margin = (doc.lines[x].price - doc.lines[x].cost)*doc.lines[x].quantity;\n      emit([doc.date.split(\"T\")[0], doc.lines[x].description, doc.contact_name, margin, doc.lines[x].quantity, doc.lines[x].price, doc.lines[x].cost, doc.payment_name, doc.seller_name, doc.lines[x].product_id, doc.product_name], doc.total);\n    }\n  }\n}"
-     },
-     "ProduccionDiaria": {
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'production'){\n    var valueAdded = doc.product.price*doc.quantity - doc.total;\n    emit([doc.date.split(\"T\")[0], doc.product_name, doc.product._id, doc.quantity, valueAdded, doc.input_amount, doc.work_amount], doc.total);\n  }\n}",
-       "reduce": "_sum"
-     },
-     "Actividades": {
-       "map": "function (doc) {\n  if (doc.date){\n    emit(doc.date, doc._id, 1);\n  }\n}"
-     },
-     "Agro": {
-       "map": "function (doc) {\n  if (doc._id.split(\".\")[0] == \"work\" && doc.area_id){\n    if(doc.state == 'SCHEDULED'){\n      if (doc.machines){\n        for (var x = 0, len = doc.machines.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.machines[x].machine_name, doc.machines[x].quantity, doc.machines[x].cost, doc.machines[x].machine_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.machines[x].cost*doc.machines[x].quantity || 0);\n        }\n      }\n      if (doc.inputs){\n        for (var x = 0, len = doc.inputs.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.inputs[x].product_name, parseFloat(doc.inputs[x].quantity), doc.inputs[x].cost, doc.inputs[x].product_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.inputs[x].cost*doc.inputs[x].quantity || 0);\n        }\n      }\n      if (doc.contacts){\n        for (var x = 0, len = doc.contacts.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.contacts[x].contact_name, doc.contacts[x].quantity, doc.contacts[x].cost, doc.contacts[x].contact_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.contacts[x].quantity*doc.contacts[x].cost || 0);\n        }\n      }\n      if (doc.loads){\n        for (var x = 0, len = doc.loads.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.loads[x].driver_name, doc.loads[x].quantity/1000, doc.loads[x].cost, doc.loads[x].driver_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.loads[x].quantity*doc.loads[x].distance*doc.loads[x].cost/1000 || 0);\n        }\n      }\n    }\n    else if(doc.state == 'DONE') {\n      if (doc.machines){\n        for (var x = 0, len = doc.machines.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.machines[x].machine_name, doc.machines[x].quantity, doc.machines[x].cost, doc.machines[x].machine_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 1], doc.machines[x].cost*doc.machines[x].quantity || 0);\n        }\n      }\n      if (doc.inputs){\n        for (var x = 0, len = doc.inputs.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.inputs[x].product_name, parseFloat(doc.inputs[x].quantity), doc.inputs[x].cost, doc.inputs[x].product_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 1], doc.inputs[x].cost*doc.inputs[x].quantity || 0);\n        }\n      }\n      if (doc.contacts){\n        for (var x = 0, len = doc.contacts.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.contacts[x].contact_name, doc.contacts[x].quantity, doc.contacts[x].cost, doc.contacts[x].contact_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 1], doc.contacts[x].quantity*doc.contacts[x].cost || 0);\n        }\n      }\n      if (doc.loads){\n        for (var x = 0, len = doc.loads.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.loads[x].driver_name, doc.loads[x].quantity/1000, doc.loads[x].cost, doc.loads[x].driver_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 1], doc.loads[x].quantity*doc.loads[x].distance*doc.loads[x].cost/1000 || 0);\n        }\n      }\n      if (doc.plan){\n        if (doc.plan.machines){\n          for (var x = 0, len = doc.plan.machines.length; x < len; x++) {\n            emit([doc.crop_name, doc.area_name, doc.activity_name, doc.plan.machines[x].machine_name, doc.plan.machines[x].quantity, doc.plan.machines[x].cost, doc.plan.machines[x].machine_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.plan.machines[x].cost*doc.plan.machines[x].quantity || 0);\n          }\n        }\n        if (doc.plan.inputs){\n          for (var x = 0, len = doc.plan.inputs.length; x < len; x++) {\n            emit([doc.crop_name, doc.area_name, doc.activity_name, doc.plan.inputs[x].product_name, parseFloat(doc.plan.inputs[x].quantity), doc.plan.inputs[x].cost, doc.plan.inputs[x].product_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.plan.inputs[x].cost*doc.plan.inputs[x].quantity || 0);\n          }\n        }\n        if (doc.plan.contacts){\n          for (var x = 0, len = doc.plan.contacts.length; x < len; x++) {\n            emit([doc.crop_name, doc.area_name, doc.activity_name, doc.plan.contacts[x].contact_name, doc.plan.contacts[x].quantity, doc.plan.contacts[x].cost, doc.plan.contacts[x].contact_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.plan.contacts[x].quantity*doc.plan.contacts[x].cost || 0);\n          }\n        }\n        if (doc.plan.loads){\n          for (var x = 0, len = doc.plan.loads.length; x < len; x++) {\n            emit([doc.crop_name, doc.area_name, doc.activity_name, doc.plan.loads[x].driver_name, doc.plan.loads[x].quantity/1000, doc.plan.loads[x].cost, doc.plan.loads[x].driver_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.plan.loads[x].quantity*doc.plan.loads[x].distance*doc.plan.loads[x].cost/1000 || 0);\n          }\n        }\n      }\n    }\n  }\n}"
-     },
-     "AgroRend": {
-       "map": "function (doc) {\n  if (doc._id.split('.')[0] == 'work' && doc.loads){\n    if(doc.state == 'SCHEDULED'){\n      for (var x = 0, len = doc.loads.length; x < len; x++) {\n        emit([doc.crop_name, doc.area_name, doc.activity_name, doc.loads[x].quantity, doc.loads[x].impurity, doc.loads[x].humidity, doc.date.split(\"T\")[0], doc._id, 0], doc.loads[x].quantity);\n      }\n    } else if(doc.state == 'DONE') {\n      for (var x = 0, len = doc.loads.length; x < len; x++) {\n        emit([doc.crop_name, doc.area_name, doc.activity_name, doc.loads[x].quantity, doc.loads[x].impurity, doc.loads[x].humidity, doc.date.split(\"T\")[0], doc._id, 1], doc.loads[x].quantity);\n      }\n      if (doc.plan){\n        for (var x = 0, len = doc.plan.loads.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.plan.loads[x].quantity, doc.plan.loads[x].impurity, doc.plan.loads[x].humidity, doc.date.split(\"T\")[0], doc._id, 0], doc.plan.loads[x].quantity);\n        }\n      }\n    }\n  }\n}"
-     },
-     "MachineDiario": {
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'work' && doc.machine_id){\n    emit([doc.machine_id, doc.date, doc.activity, doc._id], doc.activity_name);\n  }\n}"
-     },
-     "Revisao": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'work' && doc.machine_id && doc.activity_id=='activity.maintenance'){\n    emit([doc.machine_id, doc.date], 1);\n  }\n}"
-     },
-     "Machine": {
-       "map": "function (doc) {\n  if (doc._id.split('.')[0] == 'work' && doc.machine_id && doc.cost){\n    emit([doc.machine_id, doc.activity_id, doc.date.split(\"T\")[0], doc.machine_name, doc.activity_name, doc._id, doc.product_name, doc.quantity], doc.cost);\n  }\n}"
-     },
-     "MachineDiarioAll": {
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'work' || doc._id.split(\".\")[0] == 'picture'){\n    if (doc.machines){\n      for (var x = 0, len = doc.machines.length; x < len; x++) {\n        emit([doc.machines[x].machine._id, doc.date, doc.activity, doc._id], doc.summary);\n      }\n    }\n    if (doc.machine_id){\n      if (doc.activity_id == 'activity.picture'){\n        if (doc.note){\n          emit([doc.machine_id, doc.date, doc.activity, doc._id], \"Foto: \"+doc.note);\n        } else {\n          emit([doc.machine_id, doc.date, doc.activity, doc._id], \"Foto\");\n        }\n        \n      } else if (doc.activity_id == 'activity.anotation'){\n        emit([doc.machine_id, doc.date, doc.activity, doc._id], \"Anotación: \"+doc.note);\n      } else {\n        emit([doc.machine_id, doc.date, doc.activity, doc._id], doc.summary);\n      }\n    }\n  }\n}"
-     },
-     "MachineItems": {
-       "map": "function (doc) {\n  if (doc._id.split('.')[0] == 'work' && doc.machine_id && doc.cost){\n    if (doc.inputs){\n      for (var x = 0, len = doc.inputs.length; x < len; x++) {\n        emit([doc.machine_id, doc.activity_id, doc.date.split(\"T\")[0], doc.machine_name, doc.activity_name,  doc._id, doc.inputs[x].product.name, doc.inputs[x].quantity], doc.inputs[x].subtotal);\n      }\n    }\n    if (doc.contacts){\n      for (var x = 0, len = doc.contacts.length; x < len; x++) {\n    //     emit([doc.crop_name, doc.area_name, doc.activity_name, doc.contacts[x].contact.name, 1, doc.contacts[x].cost, doc.contacts[x].contact._id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id], doc.contacts[x].cost);\n        emit([doc.machine_id, doc.activity_id, doc.date.split(\"T\")[0], doc.machine_name, doc.activity_name,  doc._id, doc.contacts[x].contact.name, doc.contacts[x].quantity], doc.contacts[x].subtotal);\n      }\n    }\n    if (doc.product_id){\n      emit([doc.machine_id, doc.activity_id, doc.date.split(\"T\")[0], doc.machine_name, doc.activity_name, doc._id, doc.product_name, doc.quantity], doc.cost);\n    }\n  }\n}"
-     },
-     "Cheques": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'check'){\n      emit([doc.account_id, doc.name, doc.state, doc._id], parseFloat(doc.amount));\n  }\n}"
-     },
-     "EntregasLista": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if (\n    doc._id.split('.')[0] == 'stock-move'\n    && doc.contract_id\n  ){\n    emit([doc.contract_id, doc._id], doc.quantity);\n  }\n}"
-     },
-     "Entregas": {
-       "map": "function (doc) {\n  // if (\n  //   doc._id.split('.')[0] == 'stock-move'\n  //   && doc.contract_id\n  // ){\n  //   emit([doc.contract_id, doc._id], doc.quantity);\n  // }\n    if (\n    doc._id.split('.')[0] == 'work'\n    && doc.loads\n  ){\n    for (var x = 0, len = doc.loads.length; x < len; x++) {\n      emit([doc.loads[x].contract._id, doc._id], [doc.loads[x].quantity, doc.loads[x]]);\n    }\n  }\n}"
-     },
-     "VentasContrato": {
-       "map": "function (doc) {\n  if (\n    doc._id.split('.')[0] == 'sale'\n    && doc.lines\n  ){\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      if (doc.lines[x].contract_id){\n        emit([doc.lines[x].contract_id, doc._id], [parseFloat(doc.lines[x].quantity), doc]);\n      }\n    }\n  }\n}"
-     },
-     "VentasContratoLista": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if (\n    doc._id.split('.')[0] == 'sale'\n    && doc.lines\n  ){\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      if (doc.lines[x].contract_id){\n        emit([doc.lines[x].contract_id, doc._id], parseFloat(doc.lines[x].quantity));\n      }\n    }\n  }\n}"
-     },
-     "productUse": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if(doc.product_id){\n    emit([doc.product_id, doc._id], 1);\n  }\n  if (doc.lines){\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      if(doc.lines[x].product_id){\n        emit([doc.lines[x].product_id, doc._id], 1);\n      }\n    }\n  }\n  if (doc.inputs){\n    for (var x = 0, len = doc.inputs.length; x < len; x++) {\n      if(doc.inputs[x].product_id){\n        emit([doc.inputs[x].product_id, doc._id], 1);\n      }\n    }\n  }\n}"
-     },
-     "contactUse": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if(doc.contact_id){\n    emit([doc.contact_id, doc._id], 1);\n  }\n  if (doc.contacts){\n    for (var x = 0, len = doc.contacts.length; x < len; x++) {\n      if(doc.contacts[x].contact_id){\n        emit([doc.contacts[x].contact_id, doc._id], 1);\n      }\n    }\n  }\n}"
-     },
-     "MachineIncome": {
-       "map": "function (doc) {\n  if (doc._id.split('.')[0] == 'work' && doc.machine_id){\n    emit([doc.machine_id, doc.activity_id, doc.date.split(\"T\")[0], doc.machine_name, doc.activity_name, doc._id, doc.activity_name, doc.cost], doc.price);\n  }\n}"
-     },
-     "Chuva": {
-       "reduce": "_sum",
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'work' && doc.area_id && doc.activity_id=='activity.rain'){\n    emit([doc.area_id, doc.date], doc.quantity);\n  }\n}"
-     },
-     "AreaDiario": {
-       "map": "function (doc) {\n  if(\n    doc.area_id\n    && (\n      doc._id.split(\".\")[0] == 'work'\n      || doc._id.split(\".\")[0] == 'picture'\n    )\n  ){\n    emit([doc.area_id, doc.date, doc.activity, doc._id], doc.activity_name);\n  }\n}"
-     },
-     "Crops": {
-       "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'work' && doc.crop_id){\n    emit([doc.crop_id, doc._id], 1);\n  }\n}"
-     },
-     "InputDiario": {
-       "map": "// function (doc) {\n//   if(doc.product_id && doc._id.split(\".\")[0] == 'stock-move'){\n//     emit([doc.product_id, doc.date, doc.activity, doc._id], 1);\n//   }\n// }\nfunction (doc) {\n  if(doc.product_id && doc._id.split(\".\")[0] == 'stock-move'){\n    emit([doc.product_id, doc.warehouseTo_id, doc.date, doc.activity, doc._id], doc.quantity);\n    emit([doc.product_id, doc.warehouseFrom_id, doc.date, doc.activity, doc._id], -doc.quantity);\n  }\n}"
-     },
-     "AnimalDiario": {
-       "map": "function (doc) {\n  if(\n    doc.area_id\n    && (\n      doc._id.split(\".\")[0] == 'work'\n      || doc._id.split(\".\")[0] == 'picture'\n    )\n  ){\n    emit([doc.area_id, doc.date, doc.activity, doc._id], doc.activity_name);\n  }\n}"
-     }
-   },
-   "language": "javascript"
- },
-{
-  "_id": "_design/stock",
-  "views": {
-    "Depositos": {
-      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'stock-move'){\n    emit([doc.warehouseTo_id, doc.product_id, doc._id, doc.product_name], doc.quantity);\n    emit([doc.warehouseFrom_id, doc.product_id, doc._id, doc.product_name], -doc.quantity);\n  }\n}",
+    "VentaDiaria": {
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'sale' && doc.state != 'QUOTATION'){\n    var margin = 0;\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      margin += (doc.lines[x].price - doc.lines[x].cost)*doc.lines[x].quantity;\n    }\n    emit([doc.date.split(\"T\")[0], doc.pay_cond_id, doc.contact_id, margin], doc.total);\n  }\n}",
       "reduce": "_sum"
+    },
+    "CompraDiaria": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'purchase' && doc.state != 'QUOTATION'){\n    emit([doc.date.split(\"T\")[0], doc.pay_cond_id, doc.contact_id], doc.total);\n  }\n}"
+    },
+    "ProductoDiario": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'sale' && doc.state != 'QUOTATION'){\n    var margin = 0;\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      margin = (doc.lines[x].price - doc.lines[x].cost)*doc.lines[x].quantity;\n      emit([doc.date.split(\"T\")[0], doc.lines[x].product_name, doc.contact_name, margin, doc.lines[x].quantity, doc.lines[x].price, doc.lines[x].cost, doc.payment_name, doc.seller_name, doc.lines[x].product_id], doc.total);\n    }\n  }\n}"
+    },
+    "CompraProductoDiario": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'purchase' && doc.state != 'QUOTATION'){\n    var margin = 0;\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      //margin += (doc.lines[x].price - doc.lines[x].cost)*doc.lines[x].quantity;\n      emit([doc.date.split(\"T\")[0], doc.lines[x].product_name, doc.contact_name, margin, doc.lines[x].quantity, doc.lines[x].price, doc.lines[x].cost, doc.payment_name, doc.seller_name, doc.lines[x].product_id], doc.total);\n    }\n  }\n}"
     },
     "A Cobrar": {
-      "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move' && doc.amount_residual != 0){\n    if (doc.accountTo_id.split(\".\")[1] == 'receivable'){\n      emit([doc.contact_id, doc.origin_id, doc._id], doc.amount_residual);\n    }\n  }\n}",
-      "reduce": "_sum"
+      "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move' && doc.amount_residual != 0){\n    if (doc.accountTo_id.split(\".\")[1] == 'receivable'){\n      emit([doc.dateDue.split(\"T\")[0], doc.contact_name, doc.accountFrom_name, doc.origin_id, doc.contact_id, doc._id], doc.amount_residual);\n    }\n  }\n}"
     },
     "A Pagar": {
-      "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move' && doc.amount_residual != 0){\n    if (doc.accountFrom_id.split(\".\")[1] == 'payable'){\n      emit([doc.contact_id, doc.origin_id, doc._id], doc.amount_residual);\n    }\n  }\n}",
+      "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move' && doc.amount_residual != 0){\n    if (doc.accountFrom_id.split(\".\")[1] == 'payable'){\n      emit([doc.dateDue.split(\"T\")[0], doc.contact_name, doc.accountFrom_name, doc.origin_id, doc.contact_id, doc._id], doc.amount_residual);\n    }\n  }\n}"
+    },
+    "ServicioProductoDiario": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'service'){\n    var margin = 0;\n    for (var x = 0, len = doc.works.length; x < len; x++) {\n      margin = (doc.works[x].price - doc.works[x].cost)*doc.works[x].quantity;\n      emit([doc.date.split(\"T\")[0], doc.works[x].product.name, doc.contact_name, margin, doc.works[x].quantity, doc.works[x].price, doc.works[x].cost, doc.payment_name, doc.seller_name, doc.works[x].product._id], doc.total);\n    }\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      margin = (doc.lines[x].price - doc.lines[x].cost)*doc.lines[x].quantity;\n      emit([doc.date.split(\"T\")[0], doc.lines[x].product_name, doc.contact_name, margin, doc.lines[x].quantity, doc.lines[x].price, doc.lines[x].cost, doc.payment_name, doc.seller_name, doc.lines[x].product_id], doc.total);\n    }\n  }\n}"
+    },
+    "ServicioDiario": {
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'service'){\n    var margin = 0;\n    for (var x = 0, len = doc.works.length; x < len; x++) {\n      margin = (doc.works[x].price - doc.works[x].cost)*doc.works[x].quantity;\n      emit([doc.works[x].date.split(\"T\")[0], doc.pay_cond_id, doc.contact_id, margin, 1, doc.works[x].product.name, doc.works[x].product._id], doc.works[x].price*doc.works[x].quantity);\n    }\n  }\n}",
       "reduce": "_sum"
     },
-    "Fluxo": {
-      "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move'){\n    if (!\n      ((\n        doc.accountFrom_id.split('.')[1] == 'cash'\n        || doc.accountFrom_id.split('.')[1] == 'bank'\n        || doc.accountFrom_id.split('.')[1] == 'check'\n      ) && (\n        doc.accountTo_id.split('.')[1] == 'cash'\n        || doc.accountTo_id.split('.')[1] == 'bank'\n        || doc.accountTo_id.split('.')[1] == 'check'\n      ))\n    ){\n      if (doc.accountFrom_id.split('.')[1] == 'cash' || doc.accountFrom_id.split('.')[1] == 'bank' || doc.accountFrom_id.split('.')[1] == 'check'){\n        emit([doc.date.split(\"T\")[0], doc.accountTo_name, doc.contact_name, doc.name, doc._id], -doc.amount);\n      } else if (doc.accountTo_id.split('.')[1] == 'cash' || doc.accountTo_id.split('.')[1] == 'bank' || doc.accountTo_id.split('.')[1] == 'check'){\n        emit([doc.date.split(\"T\")[0], doc.accountFrom_name, doc.contact_name, doc.name, doc._id], doc.amount);\n      }\n    }\n  }\n}",
+    "ProduccionProductoDiario": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'production'){\n    var margin = 0;\n    for (var x = 0, len = doc.works.length; x < len; x++) {\n      margin = (doc.works[x].price - doc.works[x].cost)*doc.works[x].time;\n      emit([doc.date.split(\"T\")[0], 'Mano de Obra', doc.contact_name, margin, doc.works[x].time, doc.works[x].price, doc.works[x].cost, doc.payment_name, doc.seller_name, 'product.labour', doc.product_name], doc.total);\n    }\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      margin = (doc.lines[x].price - doc.lines[x].cost)*doc.lines[x].quantity;\n      emit([doc.date.split(\"T\")[0], doc.lines[x].description, doc.contact_name, margin, doc.lines[x].quantity, doc.lines[x].price, doc.lines[x].cost, doc.payment_name, doc.seller_name, doc.lines[x].product_id, doc.product_name], doc.total);\n    }\n  }\n}"
+    },
+    "ProduccionDiaria": {
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'production'){\n    var valueAdded = doc.product.price*doc.quantity - doc.total;\n    emit([doc.date.split(\"T\")[0], doc.product_name, doc.product._id, doc.quantity, valueAdded, doc.input_amount, doc.work_amount], doc.total);\n  }\n}",
       "reduce": "_sum"
     },
-    "Contas": {
-      "reduce": "_sum",
-      "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move'){\n    emit([doc.accountTo_id, doc.contact_id, doc._id], doc.amount);\n    emit([doc.accountFrom_id, doc.contact_id, doc._id], -doc.amount);\n  }\n}"
+    "Actividades": {
+      "map": "function (doc) {\n  if (doc.date){\n    emit(doc.date, doc._id, 1);\n  }\n}"
     },
-    "ResultadoDiario": {
-      "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move'){\n    emit([doc.date.split(\"T\")[0], doc.accountTo_id, doc._id, doc.accountFrom_id], doc.amount);\n    emit([doc.date.split(\"T\")[0], doc.accountFrom_id, doc._id, doc.accountTo_id], -doc.amount);\n  }\n}",
-      "reduce": "_sum"
+    "Agro": {
+      "map": "function (doc) {\n  if (doc._id.split(\".\")[0] == \"work\" && doc.area_id){\n    if(doc.state == 'SCHEDULED'){\n      if (doc.machines){\n        for (var x = 0, len = doc.machines.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.machines[x].machine_name, doc.machines[x].quantity, doc.machines[x].cost, doc.machines[x].machine_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.machines[x].cost*doc.machines[x].quantity || 0);\n        }\n      }\n      if (doc.inputs){\n        for (var x = 0, len = doc.inputs.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.inputs[x].product_name, parseFloat(doc.inputs[x].quantity), doc.inputs[x].cost, doc.inputs[x].product_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.inputs[x].cost*doc.inputs[x].quantity || 0);\n        }\n      }\n      if (doc.contacts){\n        for (var x = 0, len = doc.contacts.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.contacts[x].contact_name, doc.contacts[x].quantity, doc.contacts[x].cost, doc.contacts[x].contact_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.contacts[x].quantity*doc.contacts[x].cost || 0);\n        }\n      }\n      if (doc.loads){\n        for (var x = 0, len = doc.loads.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.loads[x].driver_name, doc.loads[x].quantity/1000, doc.loads[x].cost, doc.loads[x].driver_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.loads[x].quantity*doc.loads[x].distance*doc.loads[x].cost/1000 || 0);\n        }\n      }\n    }\n    else if(doc.state == 'DONE') {\n      if (doc.machines){\n        for (var x = 0, len = doc.machines.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.machines[x].machine_name, doc.machines[x].quantity, doc.machines[x].cost, doc.machines[x].machine_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 1], doc.machines[x].cost*doc.machines[x].quantity || 0);\n        }\n      }\n      if (doc.inputs){\n        for (var x = 0, len = doc.inputs.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.inputs[x].product_name, parseFloat(doc.inputs[x].quantity), doc.inputs[x].cost, doc.inputs[x].product_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 1], doc.inputs[x].cost*doc.inputs[x].quantity || 0);\n        }\n      }\n      if (doc.contacts){\n        for (var x = 0, len = doc.contacts.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.contacts[x].contact_name, doc.contacts[x].quantity, doc.contacts[x].cost, doc.contacts[x].contact_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 1], doc.contacts[x].quantity*doc.contacts[x].cost || 0);\n        }\n      }\n      if (doc.loads){\n        for (var x = 0, len = doc.loads.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.loads[x].driver_name, doc.loads[x].quantity/1000, doc.loads[x].cost, doc.loads[x].driver_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 1], doc.loads[x].quantity*doc.loads[x].distance*doc.loads[x].cost/1000 || 0);\n        }\n      }\n      if (doc.plan){\n        if (doc.plan.machines){\n          for (var x = 0, len = doc.plan.machines.length; x < len; x++) {\n            emit([doc.crop_name, doc.area_name, doc.activity_name, doc.plan.machines[x].machine_name, doc.plan.machines[x].quantity, doc.plan.machines[x].cost, doc.plan.machines[x].machine_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.plan.machines[x].cost*doc.plan.machines[x].quantity || 0);\n          }\n        }\n        if (doc.plan.inputs){\n          for (var x = 0, len = doc.plan.inputs.length; x < len; x++) {\n            emit([doc.crop_name, doc.area_name, doc.activity_name, doc.plan.inputs[x].product_name, parseFloat(doc.plan.inputs[x].quantity), doc.plan.inputs[x].cost, doc.plan.inputs[x].product_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.plan.inputs[x].cost*doc.plan.inputs[x].quantity || 0);\n          }\n        }\n        if (doc.plan.contacts){\n          for (var x = 0, len = doc.plan.contacts.length; x < len; x++) {\n            emit([doc.crop_name, doc.area_name, doc.activity_name, doc.plan.contacts[x].contact_name, doc.plan.contacts[x].quantity, doc.plan.contacts[x].cost, doc.plan.contacts[x].contact_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.plan.contacts[x].quantity*doc.plan.contacts[x].cost || 0);\n          }\n        }\n        if (doc.plan.loads){\n          for (var x = 0, len = doc.plan.loads.length; x < len; x++) {\n            emit([doc.crop_name, doc.area_name, doc.activity_name, doc.plan.loads[x].driver_name, doc.plan.loads[x].quantity/1000, doc.plan.loads[x].cost, doc.plan.loads[x].driver_id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id, 0], doc.plan.loads[x].quantity*doc.plan.loads[x].distance*doc.plan.loads[x].cost/1000 || 0);\n          }\n        }\n      }\n    }\n  }\n}"
     },
-    "Caixas": {
-      "reduce": "_sum",
-      "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move'){\n    if (doc.accountTo_id.split('.')[1] == 'cash' || doc.accountTo_id.split('.')[1] == 'bank' || doc.accountTo_id.split('.')[1] == 'check') {\n      if (doc.state == 'WAITING'){\n        emit([doc.accountTo_id, doc.closed, doc.close_id, doc.both, doc._id], 0);  \n      } else {\n        emit([doc.accountTo_id, doc.closed, doc.close_id, doc.both, doc._id], doc.amount);    \n      }\n    }\n    if (doc.accountFrom_id.split('.')[1] == 'cash' || doc.accountFrom_id.split('.')[1] == 'bank' || doc.accountFrom_id.split('.')[1] == 'check') {\n      if (doc.state == 'WAITING'){\n        emit([doc.accountFrom_id, doc.closed, doc.close_id, doc.both, doc._id], 0);\n      } else {\n        emit([doc.accountFrom_id, doc.closed, doc.close_id, doc.both, doc._id], -(doc.amount));\n      }\n    }\n  }\n}"
+    "AgroRend": {
+      "map": "function (doc) {\n  if (doc._id.split('.')[0] == 'work' && doc.loads){\n    if(doc.state == 'SCHEDULED'){\n      for (var x = 0, len = doc.loads.length; x < len; x++) {\n        emit([doc.crop_name, doc.area_name, doc.activity_name, doc.loads[x].quantity, doc.loads[x].impurity, doc.loads[x].humidity, doc.date.split(\"T\")[0], doc._id, 0], doc.loads[x].quantity);\n      }\n    } else if(doc.state == 'DONE') {\n      for (var x = 0, len = doc.loads.length; x < len; x++) {\n        emit([doc.crop_name, doc.area_name, doc.activity_name, doc.loads[x].quantity, doc.loads[x].impurity, doc.loads[x].humidity, doc.date.split(\"T\")[0], doc._id, 1], doc.loads[x].quantity);\n      }\n      if (doc.plan){\n        for (var x = 0, len = doc.plan.loads.length; x < len; x++) {\n          emit([doc.crop_name, doc.area_name, doc.activity_name, doc.plan.loads[x].quantity, doc.plan.loads[x].impurity, doc.plan.loads[x].humidity, doc.date.split(\"T\")[0], doc._id, 0], doc.plan.loads[x].quantity);\n        }\n      }\n    }\n  }\n}"
     },
-    "CaixasForeing": {
+    "MachineDiario": {
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'work' && doc.machine_id){\n    emit([doc.machine_id, doc.date, doc.activity, doc._id], doc.activity_name);\n  }\n}"
+    },
+    "Revisao": {
       "reduce": "_sum",
-      "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move'){\n    if (doc.accountTo_id.split('.')[1] == 'cash' || doc.accountTo_id.split('.')[1] == 'bank' || doc.accountTo_id.split('.')[1] == 'check') {\n      if (doc.state == 'WAITING'){\n        emit([doc.accountTo_id, doc.closed, doc.close_id, doc.both, doc._id], 0);  \n      } else {\n        emit([doc.accountTo_id, doc.closed, doc.close_id, doc.both, doc._id], parseFloat(doc.currency_amount) || 0);    \n      }\n    }\n    if (doc.accountFrom_id.split('.')[1] == 'cash' || doc.accountFrom_id.split('.')[1] == 'bank' || doc.accountFrom_id.split('.')[1] == 'check') {\n      if (doc.state == 'WAITING'){\n        emit([doc.accountFrom_id, doc.closed, doc.close_id, doc.both, doc._id], 0);\n      } else {\n        emit([doc.accountFrom_id, doc.closed, doc.close_id, doc.both, doc._id], -(parseFloat(doc.currency_amount) || 0));\n      }\n    }\n  }\n}"
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'work' && doc.machine_id && doc.activity_id=='activity.maintenance'){\n    emit([doc.machine_id, doc.date], 1);\n  }\n}"
+    },
+    "Machine": {
+      "map": "function (doc) {\n  if (doc._id.split('.')[0] == 'work' && doc.machine_id && doc.cost){\n    emit([doc.machine_id, doc.activity_id, doc.date.split(\"T\")[0], doc.machine_name, doc.activity_name, doc._id, doc.product_name, doc.quantity], doc.cost);\n  }\n}"
+    },
+    "MachineDiarioAll": {
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'work' || doc._id.split(\".\")[0] == 'picture'){\n    if (doc.machines){\n      for (var x = 0, len = doc.machines.length; x < len; x++) {\n        emit([doc.machines[x].machine._id, doc.date, doc.activity, doc._id], doc.summary);\n      }\n    }\n    if (doc.machine_id){\n      if (doc.activity_id == 'activity.picture'){\n        if (doc.note){\n          emit([doc.machine_id, doc.date, doc.activity, doc._id], \"Foto: \"+doc.note);\n        } else {\n          emit([doc.machine_id, doc.date, doc.activity, doc._id], \"Foto\");\n        }\n        \n      } else if (doc.activity_id == 'activity.anotation'){\n        emit([doc.machine_id, doc.date, doc.activity, doc._id], \"Anotación: \"+doc.note);\n      } else {\n        emit([doc.machine_id, doc.date, doc.activity, doc._id], doc.summary);\n      }\n    }\n  }\n}"
+    },
+    "MachineItems": {
+      "map": "function (doc) {\n  if (doc._id.split('.')[0] == 'work' && doc.machine_id && doc.cost){\n    if (doc.inputs){\n      for (var x = 0, len = doc.inputs.length; x < len; x++) {\n        emit([doc.machine_id, doc.activity_id, doc.date.split(\"T\")[0], doc.machine_name, doc.activity_name,  doc._id, doc.inputs[x].product.name, doc.inputs[x].quantity], doc.inputs[x].subtotal);\n      }\n    }\n    if (doc.contacts){\n      for (var x = 0, len = doc.contacts.length; x < len; x++) {\n    //     emit([doc.crop_name, doc.area_name, doc.activity_name, doc.contacts[x].contact.name, 1, doc.contacts[x].cost, doc.contacts[x].contact._id, doc.date.split(\"T\")[0], doc._id, doc.crop_id, doc.area_id], doc.contacts[x].cost);\n        emit([doc.machine_id, doc.activity_id, doc.date.split(\"T\")[0], doc.machine_name, doc.activity_name,  doc._id, doc.contacts[x].contact.name, doc.contacts[x].quantity], doc.contacts[x].subtotal);\n      }\n    }\n    if (doc.product_id){\n      emit([doc.machine_id, doc.activity_id, doc.date.split(\"T\")[0], doc.machine_name, doc.activity_name, doc._id, doc.product_name, doc.quantity], doc.cost);\n    }\n  }\n}"
+    },
+    "Cheques": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'check'){\n      emit([doc.account_id, doc.name, doc.state, doc._id], parseFloat(doc.amount));\n  }\n}"
+    },
+    "EntregasLista": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if (\n    doc._id.split('.')[0] == 'stock-move'\n    && doc.contract_id\n  ){\n    emit([doc.contract_id, doc._id], doc.quantity);\n  }\n}"
+    },
+    "Entregas": {
+      "map": "function (doc) {\n  // if (\n  //   doc._id.split('.')[0] == 'stock-move'\n  //   && doc.contract_id\n  // ){\n  //   emit([doc.contract_id, doc._id], doc.quantity);\n  // }\n    if (\n    doc._id.split('.')[0] == 'work'\n    && doc.loads\n  ){\n    for (var x = 0, len = doc.loads.length; x < len; x++) {\n      emit([doc.loads[x].contract._id, doc._id], [doc.loads[x].quantity, doc.loads[x]]);\n    }\n  }\n}"
+    },
+    "VentasContrato": {
+      "map": "function (doc) {\n  if (\n    doc._id.split('.')[0] == 'sale'\n    && doc.lines\n  ){\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      if (doc.lines[x].contract_id){\n        emit([doc.lines[x].contract_id, doc._id], [parseFloat(doc.lines[x].quantity), doc]);\n      }\n    }\n  }\n}"
+    },
+    "VentasContratoLista": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if (\n    doc._id.split('.')[0] == 'sale'\n    && doc.lines\n  ){\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      if (doc.lines[x].contract_id){\n        emit([doc.lines[x].contract_id, doc._id], parseFloat(doc.lines[x].quantity));\n      }\n    }\n  }\n}"
+    },
+    "productUse": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if(doc.product_id){\n    emit([doc.product_id, doc._id], 1);\n  }\n  if (doc.lines){\n    for (var x = 0, len = doc.lines.length; x < len; x++) {\n      if(doc.lines[x].product_id){\n        emit([doc.lines[x].product_id, doc._id], 1);\n      }\n    }\n  }\n  if (doc.inputs){\n    for (var x = 0, len = doc.inputs.length; x < len; x++) {\n      if(doc.inputs[x].product_id){\n        emit([doc.inputs[x].product_id, doc._id], 1);\n      }\n    }\n  }\n}"
+    },
+    "contactUse": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if(doc.contact_id){\n    emit([doc.contact_id, doc._id], 1);\n  }\n  if (doc.contacts){\n    for (var x = 0, len = doc.contacts.length; x < len; x++) {\n      if(doc.contacts[x].contact_id){\n        emit([doc.contacts[x].contact_id, doc._id], 1);\n      }\n    }\n  }\n}"
+    },
+    "MachineIncome": {
+      "map": "function (doc) {\n  if (doc._id.split('.')[0] == 'work' && doc.machine_id){\n    emit([doc.machine_id, doc.activity_id, doc.date.split(\"T\")[0], doc.machine_name, doc.activity_name, doc._id, doc.activity_name, doc.cost], doc.price);\n  }\n}"
+    },
+    "Chuva": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'work' && doc.area_id && doc.activity_id=='activity.rain'){\n    emit([doc.area_id, doc.date], doc.quantity);\n  }\n}"
+    },
+    "AreaDiario": {
+      "map": "function (doc) {\n  if(\n    doc.area_id\n    && (\n      doc._id.split(\".\")[0] == 'work'\n      || doc._id.split(\".\")[0] == 'picture'\n    )\n  ){\n    emit([doc.area_id, doc.date, doc.activity, doc._id], doc.activity_name);\n  }\n}"
+    },
+    "Crops": {
+      "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'work' && doc.crop_id){\n    emit([doc.crop_id, doc._id], 1);\n  }\n}"
+    },
+    "InputDiario": {
+      "map": "// function (doc) {\n//   if(doc.product_id && doc._id.split(\".\")[0] == 'stock-move'){\n//     emit([doc.product_id, doc.date, doc.activity, doc._id], 1);\n//   }\n// }\nfunction (doc) {\n  if(doc.product_id && doc._id.split(\".\")[0] == 'stock-move'){\n    emit([doc.product_id, doc.warehouseTo_id, doc.date, doc.activity, doc._id], doc.quantity);\n    emit([doc.product_id, doc.warehouseFrom_id, doc.date, doc.activity, doc._id], -doc.quantity);\n  }\n}"
+    },
+    "AnimalDiario": {
+      "map": "function (doc) {\n  if(\n    doc.area_id\n    && (\n      doc._id.split(\".\")[0] == 'work'\n      || doc._id.split(\".\")[0] == 'picture'\n    )\n  ){\n    emit([doc.area_id, doc.date, doc.activity, doc._id], doc.activity_name);\n  }\n}"
     }
   },
   "language": "javascript"
-}
+},
+{
+  "_id": "_design/stock",
+  "views": {
+      "Depositos": {
+        "map": "function (doc) {\n  if(doc._id.split(\".\")[0] == 'stock-move'){\n    emit([doc.warehouseTo_id, doc.product_id, doc._id, doc.product_name], doc.quantity);\n    emit([doc.warehouseFrom_id, doc.product_id, doc._id, doc.product_name], -doc.quantity);\n  }\n}",
+        "reduce": "_sum"
+      },
+      "A Cobrar": {
+        "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move' && doc.amount_residual != 0){\n    if (doc.accountTo_id.split(\".\")[1] == 'receivable'){\n      emit([doc.contact_id, doc.origin_id, doc._id], doc.amount_residual);\n    }\n  }\n}",
+        "reduce": "_sum"
+      },
+      "A Pagar": {
+        "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move' && doc.amount_residual != 0){\n    if (doc.accountFrom_id.split(\".\")[1] == 'payable'){\n      emit([doc.contact_id, doc.origin_id, doc._id], doc.amount_residual);\n    }\n  }\n}",
+        "reduce": "_sum"
+      },
+      "Fluxo": {
+        "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move'){\n    if (!\n      ((\n        doc.accountFrom_id.split('.')[1] == 'cash'\n        || doc.accountFrom_id.split('.')[1] == 'bank'\n        || doc.accountFrom_id.split('.')[1] == 'check'\n      ) && (\n        doc.accountTo_id.split('.')[1] == 'cash'\n        || doc.accountTo_id.split('.')[1] == 'bank'\n        || doc.accountTo_id.split('.')[1] == 'check'\n      ))\n    ){\n      if (doc.accountFrom_id.split('.')[1] == 'cash' || doc.accountFrom_id.split('.')[1] == 'bank' || doc.accountFrom_id.split('.')[1] == 'check'){\n        emit([doc.date.split(\"T\")[0], doc.accountTo_name, doc.contact_name, doc.name, doc._id], -doc.amount);\n      } else if (doc.accountTo_id.split('.')[1] == 'cash' || doc.accountTo_id.split('.')[1] == 'bank' || doc.accountTo_id.split('.')[1] == 'check'){\n        emit([doc.date.split(\"T\")[0], doc.accountFrom_name, doc.contact_name, doc.name, doc._id], doc.amount);\n      }\n    }\n  }\n}",
+        "reduce": "_sum"
+      },
+      "Contas": {
+        "reduce": "_sum",
+        "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move'){\n    emit([doc.accountTo_id, doc.contact_id, doc._id], doc.amount);\n    emit([doc.accountFrom_id, doc.contact_id, doc._id], -doc.amount);\n  }\n}"
+      },
+      "ResultadoDiario": {
+        "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move'){\n    emit([doc.date.split(\"T\")[0], doc.accountTo_id, doc._id, doc.accountFrom_id], doc.amount);\n    emit([doc.date.split(\"T\")[0], doc.accountFrom_id, doc._id, doc.accountTo_id], -doc.amount);\n  }\n}",
+        "reduce": "_sum"
+      },
+      "Caixas": {
+        "reduce": "_sum",
+        "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move'){\n    if (doc.accountTo_id.split('.')[1] == 'cash' || doc.accountTo_id.split('.')[1] == 'bank' || doc.accountTo_id.split('.')[1] == 'check') {\n      if (doc.state == 'WAITING'){\n        emit([doc.accountTo_id, doc.closed, doc.close_id, doc.both, doc._id], 0);  \n      } else {\n        emit([doc.accountTo_id, doc.closed, doc.close_id, doc.both, doc._id], doc.amount);    \n      }\n    }\n    if (doc.accountFrom_id.split('.')[1] == 'cash' || doc.accountFrom_id.split('.')[1] == 'bank' || doc.accountFrom_id.split('.')[1] == 'check') {\n      if (doc.state == 'WAITING'){\n        emit([doc.accountFrom_id, doc.closed, doc.close_id, doc.both, doc._id], 0);\n      } else {\n        emit([doc.accountFrom_id, doc.closed, doc.close_id, doc.both, doc._id], -(doc.amount));\n      }\n    }\n  }\n}"
+      },
+      "CaixasForeing": {
+        "reduce": "_sum",
+        "map": "function (doc) {\n  if(doc.accountTo_id && doc.accountFrom_id && doc._id.split(\".\")[0] == 'cash-move'){\n    if (doc.accountTo_id.split('.')[1] == 'cash' || doc.accountTo_id.split('.')[1] == 'bank' || doc.accountTo_id.split('.')[1] == 'check') {\n      if (doc.state == 'WAITING'){\n        emit([doc.accountTo_id, doc.closed, doc.close_id, doc.both, doc._id], 0);  \n      } else {\n        emit([doc.accountTo_id, doc.closed, doc.close_id, doc.both, doc._id], parseFloat(doc.currency_amount) || 0);    \n      }\n    }\n    if (doc.accountFrom_id.split('.')[1] == 'cash' || doc.accountFrom_id.split('.')[1] == 'bank' || doc.accountFrom_id.split('.')[1] == 'check') {\n      if (doc.state == 'WAITING'){\n        emit([doc.accountFrom_id, doc.closed, doc.close_id, doc.both, doc._id], 0);\n      } else {\n        emit([doc.accountFrom_id, doc.closed, doc.close_id, doc.both, doc._id], -(parseFloat(doc.currency_amount) || 0));\n      }\n    }\n  }\n}"
+      }
+    },
+    "language": "javascript"
+  }
 ]
 }
