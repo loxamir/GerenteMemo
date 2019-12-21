@@ -27,9 +27,6 @@ export class WorkPopover {
     this.navParams.data.doc.workForm.value.inputs.forEach((input)=>{
       input.doc_id = "";
     });
-    this.navParams.data.doc.workForm.value.machines.forEach((input)=>{
-      input.doc_id = "";
-    });
     this.navParams.data.doc.workForm.patchValue({
       state: 'DRAFT',
       _id: ''

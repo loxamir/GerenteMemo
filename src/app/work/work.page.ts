@@ -251,6 +251,17 @@ export class WorkPage implements OnInit {
     this.workForm.controls.section.markAsPristine();
   }
 
+  recomputeInputs(){
+    if (typeof this.workForm.value.surface !== 'undefined') {
+      if (this.workForm.value.inputs){
+        this.workForm.value.inputs.forEach(field=>{
+          field.quantity = field.dosage*this.workForm.value.surface;
+          field.subtotal = field.quantity*field.cost;
+        });
+      }
+    }
+  }
+
   async buttonSave() {
     let dict = {}
     // }
@@ -566,6 +577,7 @@ export class WorkPage implements OnInit {
             }
           })
           await this.workForm.patchValue(d);
+          this.recomputeInputs();
         }
         this.recomputeFields();
       })
@@ -1068,54 +1080,58 @@ export class WorkPage implements OnInit {
       let data = this.workForm.value;
       let d = {}
       if(fielD.onchange){
-        await this.formatService.asyncForEach(fielD.onchange.split(';'), async item=>{
-          let fieldName = item.split('=')[0];
-          let fieldData = item.split('=')[1];
-          if (fieldData){
-            if (isNaN(fieldData)){
-              if (fieldData[0] == '#'){
-                let split = fieldData.split('#');
-                let ddoc = data[split[1]];
-              } else if (fieldData[0] == '&'){
-                let split = fieldData.split('&');
-                let operation = 'multiplication';
-                let fieldValues = split[1].split('*');
-                if (!fieldValues[1]){
-                  fieldValues = split[1].split('/');
-                  operation = 'division';
-                }
-                let multiplication = null;
-                for(let x=0;x<fieldValues.length;x++){
-                  let fieldValue = null;
-                  let fieldParts = fieldValues[x].split('input.');
-                  if (fieldParts[1]){
-                    let fieldSplits = fieldValues[x].split('.');
-                    fieldValue = this.input[fieldSplits[1]];
-                    for(let x=2;x<fieldSplits.length;x++){
-                      fieldValue = fieldValue[fieldSplits[x]];
-                    }
-                  } else {
-                    fieldValue = this.workForm.value[fieldValues[x]];
+        if (fielD.onchange.split('this.')[1]){
+          let evalido = eval(fielD.onchange);
+        } else {
+          await this.formatService.asyncForEach(fielD.onchange.split(';'), async item=>{
+            let fieldName = item.split('=')[0];
+            let fieldData = item.split('=')[1];
+            if (fieldData){
+              if (isNaN(fieldData)){
+                if (fieldData[0] == '#'){
+                  let split = fieldData.split('#');
+                  let ddoc = data[split[1]];
+                } else if (fieldData[0] == '&'){
+                  let split = fieldData.split('&');
+                  let operation = 'multiplication';
+                  let fieldValues = split[1].split('*');
+                  if (!fieldValues[1]){
+                    fieldValues = split[1].split('/');
+                    operation = 'division';
                   }
-                  if (multiplication!=null){
-                    if (operation == 'multiplication'){
-                      multiplication*=parseFloat(fieldValue);
-                    } else if (operation == 'division'){
-                      multiplication/=parseFloat(fieldValue);
+                  let multiplication = null;
+                  for(let x=0;x<fieldValues.length;x++){
+                    let fieldValue = null;
+                    let fieldParts = fieldValues[x].split('input.');
+                    if (fieldParts[1]){
+                      let fieldSplits = fieldValues[x].split('.');
+                      fieldValue = this.input[fieldSplits[1]];
+                      for(let x=2;x<fieldSplits.length;x++){
+                        fieldValue = fieldValue[fieldSplits[x]];
+                      }
+                    } else {
+                      fieldValue = this.workForm.value[fieldValues[x]];
                     }
-                  } else {
+                    if (multiplication!=null){
+                      if (operation == 'multiplication'){
+                        multiplication*=parseFloat(fieldValue);
+                      } else if (operation == 'division'){
+                        multiplication/=parseFloat(fieldValue);
+                      }
+                    } else {
                       multiplication=parseFloat(fieldValue||0);
+                    }
                   }
+                  d[fieldName] = Math.round(multiplication * 100) / 100;
+                } else {
+                  d[fieldName] = Math.round(data[fieldData] * 100) / 100;
                 }
-                d[fieldName] = Math.round(multiplication * 100) / 100;
               } else {
-                d[fieldName] = Math.round(data[fieldData] * 100) / 100;
+                d[fieldName] = Math.round(fieldData * 100) / 100;
               }
-            } else {
-              d[fieldName] = Math.round(fieldData * 100) / 100;
             }
-          }
-        })
+          })
+        }
         await this.workForm.patchValue(d);
         resolve(true);
       } else {
