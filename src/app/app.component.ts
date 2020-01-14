@@ -7,6 +7,7 @@ import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { PouchdbService } from './services/pouchdb/pouchdb-service';
 import { Storage } from '@ionic/storage';
+import { AuthService } from "./services/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -61,12 +62,14 @@ export class AppComponent implements OnInit {
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public storage: Storage,
+    private authService: AuthService
   ) {
     this.initializeApp();
     this.backButtonListener();
   }
 
   initializeApp() {
+    this.authService.init();
     this.platform.ready().then(() => {
       if (this.platform.is('cordova')){
         //

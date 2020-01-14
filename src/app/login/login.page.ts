@@ -12,6 +12,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from '../services/rest/rest';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoginPopover } from './login.popover';
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -46,6 +47,7 @@ export class LoginPage implements OnInit {
     public restProvider: RestProvider,
     public route: ActivatedRoute,
     public router: Router,
+    public authService: AuthService,
   ) {
     this.demo = this.route.snapshot.paramMap.get('demo');
     if (this.demo){
@@ -66,6 +68,15 @@ export class LoginPage implements OnInit {
   }
 
   async ngOnInit() {
+    await this.showLoading();
+    this.authService.loggedIn.subscribe(status => {
+      this.loading.dismiss();
+      console.log("status", status);
+      // if (status) {
+      //   // this.navCtrl.navigateForward("/home");
+      //   this.router.navigate(['/tabs/product-list']);
+      // }
+    });
     this.loginForm = new FormGroup({
       name: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.compose([
@@ -80,15 +91,15 @@ export class LoginPage implements OnInit {
       password: new FormControl('123', Validators.required),
       address: new FormControl('', Validators.required),
     });
-    this.loading = await this.loadingCtrl.create({});
+    // this.loading = await this.loadingCtrl.create({});
     this.language = await this.storage.get("language");
     if (!this.language){
       this.language = navigator.language.split('-')[0];
     }
     this.translate.setDefaultLang(this.language);
     this.translate.use(this.language);
-    this.username = 'larica';
-    this.doLogin();
+    // this.username = 'larica';
+    // this.doLogin();
     setTimeout(() => {
       this.menuCtrl.enable(false);
     }, 500);
@@ -96,6 +107,19 @@ export class LoginPage implements OnInit {
 
   payDatabase(database){
     window.open("https://www.pagopar.com/pagos/"+database.paylink);
+  }
+
+  async authLogin() {
+    await this.showLoading();
+    this.authService.login();
+  }
+
+  async showLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: "Authenticating..."
+    });
+
+    this.loading.present();
   }
 
   async presentPopover(myEvent) {
@@ -161,6 +185,7 @@ export class LoginPage implements OnInit {
   }
 
   login (){
+    this.authService.login();
     this.checkLogin(
       this.loginForm.value.user.toLowerCase(),
       this.loginForm.value.password

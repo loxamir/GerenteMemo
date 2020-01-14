@@ -22,6 +22,9 @@ import es from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
 registerLocaleData(es);
 // Custom Imports
+
+import { Facebook } from "@ionic-native/facebook/ngx";
+
 import { ProductListPage } from './product-list/product-list.page';
 import { PaymentConditionListPage } from './payment-condition-list/payment-condition-list.page';
 import { ContactListPage } from './contact-list/contact-list.page';
@@ -164,6 +167,7 @@ import { environment } from '../environments/environment';
     File,
     StatusBar,
     SplashScreen,
+    Facebook,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
