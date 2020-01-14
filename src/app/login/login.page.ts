@@ -68,15 +68,15 @@ export class LoginPage implements OnInit {
   }
 
   async ngOnInit() {
-    await this.showLoading();
-    this.authService.loggedIn.subscribe(status => {
-      this.loading.dismiss();
-      console.log("status", status);
+    // await this.showLoading();
+    // this.authService.loggedIn.subscribe(status => {
+      // this.loading.dismiss();
+      // console.log("status", status);
       // if (status) {
       //   // this.navCtrl.navigateForward("/home");
       //   this.router.navigate(['/tabs/product-list']);
       // }
-    });
+    // });
     this.loginForm = new FormGroup({
       name: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.compose([
@@ -91,7 +91,7 @@ export class LoginPage implements OnInit {
       password: new FormControl('123', Validators.required),
       address: new FormControl('', Validators.required),
     });
-    // this.loading = await this.loadingCtrl.create({});
+    this.loading = await this.loadingCtrl.create({});
     this.language = await this.storage.get("language");
     if (!this.language){
       this.language = navigator.language.split('-')[0];
@@ -99,7 +99,7 @@ export class LoginPage implements OnInit {
     this.translate.setDefaultLang(this.language);
     this.translate.use(this.language);
     // this.username = 'larica';
-    // this.doLogin();
+    this.doLogin();
     setTimeout(() => {
       this.menuCtrl.enable(false);
     }, 500);

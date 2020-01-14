@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/product-list')"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/product-list"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'PRODUCT' | translate }}-{{productForm.value.code}}</ion-title>
     <ion-buttons slot="end">
@@ -104,21 +104,21 @@
       </ion-row> -->
     </ion-row>
   </form>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
       {{'NEXT'|translate}}
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="productForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!productForm.dirty"> </ion-icon>
       <span *ngIf="productForm.dirty">{{ 'DISCARD'| translate }}</span>
       <span *ngIf="!productForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="productForm.dirty && editMode">
     <ion-button (click)="buttonSave()"  color="success">

@@ -129,4 +129,9 @@ export class AuthService {
 
     return false;
   }
+
+  async getData(){
+    let data = await firebase.auth();
+    return data;
+  }
 }

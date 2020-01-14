@@ -4,6 +4,7 @@ import { LoadingController, Events, ModalController, MenuController } from '@ion
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { SalePage } from '../sale/sale.page';
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: 'app-tabs',
@@ -15,6 +16,7 @@ export class TabsPage implements OnInit {
   loading: any;
   amount: number = 0;
   order: any;
+  logged: boolean = false;
 
   constructor(
     public pouchdbService: PouchdbService,
@@ -24,6 +26,7 @@ export class TabsPage implements OnInit {
     public events:Events,
     public modalCtrl: ModalController,
     public menuCtrl: MenuController,
+    public authService: AuthService,
   ){
   }
 
@@ -34,6 +37,18 @@ export class TabsPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser())
+
+
+    this.authService.loggedIn.subscribe(status => {
+      this.loading.dismiss();
+      console.log("status", status);
+      if (status) {
+        this.logged = true;
+      } else {
+        this.logged = false;
+      }
+    });
+
 
     this.loading.dismiss();
     let order: any = await this.pouchdbService.searchDocTypeData('sale','',0,"state");

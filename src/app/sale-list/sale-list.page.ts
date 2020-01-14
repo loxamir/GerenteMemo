@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: 'app-sale-list',
@@ -26,10 +27,13 @@ export class SaleListPage implements OnInit {
   page = 0;
   languages: Array<LanguageModel>;
   currency_precision = 2;
+  logged: boolean = false;
+  contact_id;
 
   constructor(
     public navCtrl: NavController,
     // public salesService: SalesService,
+    public authService: AuthService,
     public loadingCtrl: LoadingController,
     public popoverCtrl: PopoverController,
     public events:Events,
@@ -88,7 +92,18 @@ export class SaleListPage implements OnInit {
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    this.setFilteredItems();
+    this.authService.loggedIn.subscribe(async status => {
+      this.loading.dismiss();
+      if (status) {
+        this.logged = true;
+        let data = await this.authService.getData();
+        console.log("got email", data.currentUser.email)
+        this.contact_id = "contact."+data.currentUser.email;
+        this.setFilteredItems();
+      } else {
+        this.logged = false;
+      }
+    });
   }
 
   setFilteredItems() {
@@ -132,9 +147,9 @@ export class SaleListPage implements OnInit {
     return new Promise(resolve => {
       this.pouchdbService.searchDocTypeData(
         'sale',
-        keyword,
+        this.contact_id,
         page,
-        "contact_name"
+        "contact_id"
       ).then((sales: any[]) => {
         resolve(sales);
       });

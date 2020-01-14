@@ -135,6 +135,9 @@
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-input type="text" formControlName="note"></ion-input>
       </ion-item>
+      <ion-button class="button-100" (click)="logout()">
+        {{'LOGOUT'|translate}}
+      </ion-button>
     </ion-row>
     <!-- <ion-segment formControlName="section" class="cash-segment" *ngIf="contactForm.value.employee">
       <ion-segment-button value="advance">
@@ -211,13 +214,13 @@
     </div> -->
   </form>
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
       {{'NEXT'|translate}}
     </ion-button>
-  </ion-fab>
-
+  </ion-fab> -->
+<!-- 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="contactForm.dirty"> </ion-icon>
@@ -225,7 +228,7 @@
       <span *ngIf="contactForm.dirty">{{ 'DISCARD'| translate }}</span>
       <span *ngIf="!contactForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="contactForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">

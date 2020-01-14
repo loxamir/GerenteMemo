@@ -1,6 +1,6 @@
 <ion-tabs>
   <ion-row *ngIf="order" (click)="openOrder()">
-    <ion-toolbar style="--ion-background-color: linear-gradient(to left,#c50303,#a92c2c);color: white;">
+    <ion-toolbar style="--ion-background-color: linear-gradient(to left,#c50303,#a92c2c);color: white;" *ngIf="this.logged">
       <ion-title *ngIf="this.order.state == 'QUOTATION'">
         Ver pedido
       </ion-title>
@@ -26,12 +26,12 @@
       <ion-label>{{'Cardapio'|translate}}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="sale-list">
+    <ion-tab-button tab="sale-list" *ngIf="this.logged">
       <ion-icon name="cart"></ion-icon>
       <ion-label>{{'Pedidos'|translate}}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="profile">
+    <ion-tab-button tab="profile" *ngIf="this.logged">
       <ion-icon name="contact"></ion-icon>
       <ion-label>{{'Perfil'|translate}}</ion-label>
     </ion-tab-button>

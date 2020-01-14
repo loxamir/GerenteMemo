@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: 'app-contact',
@@ -44,6 +45,7 @@ export class ContactPage implements OnInit {
     public events: Events,
     public pouchdbService: PouchdbService,
     public restProvider: RestProvider,
+    public authService: AuthService,
   ) {
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
@@ -89,15 +91,31 @@ export class ContactPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-    if (this._id) {
-      this.getContact(this._id).then((data) => {
-        this.contactForm.patchValue(data);
-        this.loading.dismiss();
-      });
-    } else {
-      this.loading.dismiss();
-    }
+
+    this.authService.loggedIn.subscribe(async status => {
+      console.log("estado", status);
+      if (status) {
+        let data = await this.authService.getData();
+        this._id = "contact."+data.currentUser.email;
+        if (this._id) {
+          this.getContact(this._id).then((data) => {
+            this.contactForm.patchValue(data);
+            this.loading.dismiss();
+          });
+        } else {
+          this.loading.dismiss();
+        }
+      } else {
+        // this.logged = false;
+      }
+    });
   }
+
+  logout(){
+    this.authService.logout();
+    this.navCtrl.navigateBack(['/tabs/product-list', {}]);
+  }
+
 
   changedDocument() {
     let dv = this.contactForm.value.document.split('-')[1] || '';

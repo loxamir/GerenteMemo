@@ -17,6 +17,7 @@ import { CashMoveService } from '../cash-move/cash-move.service';
 import { ConfigService } from '../config/config.service';
 import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: 'app-product',
@@ -48,6 +49,8 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     barcode = '';
     editMode = false;
     avatar = undefined;
+    logged: boolean = false;
+    asking: boolean = false;
 
     constructor(
       public navCtrl: NavController,
@@ -70,6 +73,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public pouchdbService: PouchdbService,
       public stockMoveService: StockMoveService,
       public cashMoveService: CashMoveService,
+      public authService: AuthService,
     ) {
 
 
@@ -139,6 +143,56 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         quantity: new FormControl(1),
         description: new FormControl(''),
       });
+
+      this.authService.loggedIn.subscribe(async status => {
+        // this.loading.dismiss();
+        console.log("estado", status);
+        if (status) {
+          //check if contact_id exists
+          let data = await this.authService.getData();
+          let contact = await this.pouchdbService.getDoc("contact."+data.currentUser.email);
+          if (JSON.stringify(contact) == "{}"){
+            this.pouchdbService.createDoc({
+              "_id": "contact."+data.currentUser.email,
+              "name": data.currentUser.displayName,
+              "name_legal": null,
+              "address": "",
+              "phone": "",
+              "document": "",
+              "code": "#3",
+              "section": "salary",
+              "email": data.currentUser.email,
+              "note": "",
+              "customer": true,
+              "supplier": true,
+              "seller": false,
+              "employee": false,
+              "user": false,
+              "user_details": {},
+              "salary": null,
+              "currency": {},
+              "hire_date": null,
+              "salaries": [],
+              "advances": [],
+              "fixed": true,
+              "create_user": "",
+              "create_time": "",
+              "write_user": "larica",
+              "write_time": "2020-01-14T20:48:52.405Z",
+              "docType": "contact"
+            })
+          }
+
+          this.logged = true;
+          if(this.asking){
+            this.events.publish('add-product', this.productForm.value);
+            this.exitPage();
+          }
+        } else {
+          this.logged = false;
+        }
+        this.asking = false;
+      });
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
       this.translate.use(language);
@@ -159,8 +213,13 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     askProduct(){
-      this.events.publish('add-product', this.productForm.value);
-      this.exitPage();
+      if (this.logged){
+        this.events.publish('add-product', this.productForm.value);
+        this.exitPage();
+      } else {
+        this.asking = true;
+        this.authLogin();
+      }
     }
 
     getDefaultCategory(){
@@ -173,6 +232,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           })
         })
       }
+    }
+
+    async authLogin() {
+      this.authService.login();
     }
 
     goNextStep() {
