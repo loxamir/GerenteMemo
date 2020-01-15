@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { NavController, ModalController, LoadingController, AlertController, Events } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, AlertController, Events, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -9,6 +9,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
+declare var google;
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @Component({
@@ -22,6 +23,8 @@ export class AddressPage implements OnInit {
   @ViewChild('phone', { static: true }) phone;
   @ViewChild('address', { static: true }) address;
   @ViewChild('salary', { static: false }) salary;
+  @ViewChild('map', { static: false }) mapElement: ElementRef;
+  map: any;
 
   addressForm: FormGroup;
   loading: any;
@@ -48,6 +51,7 @@ export class AddressPage implements OnInit {
     public restProvider: RestProvider,
     public authService: AuthService,
     private geolocation: Geolocation,
+    private plt: Platform,
   ) {
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
@@ -93,7 +97,43 @@ export class AddressPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-    this.getGPSCordinates();
+
+    this.plt.ready().then(() => {
+
+  let mapOptions = {
+    zoom: 20,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false
+  }
+  this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+  let options = {
+    maximumAge: 3000,
+    timeout: 5000,
+    enableHighAccuracy: true
+  }
+  this.geolocation.getCurrentPosition(options).then(pos => {
+    let latLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+    this.map.setCenter(latLng);
+    const icon = {
+        url: 'assets/icon/favicon.png', // image url
+        scaledSize: new google.maps.Size(50, 50), // scaled size
+      };
+      const marker = new google.maps.Marker({
+        position: latLng,
+        map: this.map,
+        title: 'Hello World!',
+        icon: icon
+      });
+    this.map.setZoom(20);
+  }).catch((error) => {
+    console.log('Error getting location', error);
+  });
+});
+
+    // this.getGPSCordinates();
 
   //   this.authService.loggedIn.subscribe(async status => {
   //     console.log("estado", status);
