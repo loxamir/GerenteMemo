@@ -71,6 +71,7 @@ export class TabsPage implements OnInit {
         })
       } else {
         this.logged = false;
+        this.loading.dismiss();
       }
     });
 
