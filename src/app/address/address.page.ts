@@ -63,28 +63,26 @@ export class AddressPage implements OnInit {
 
   async ngOnInit() {
     this.addressForm = this.formBuilder.group({
-      name: new FormControl(this.route.snapshot.paramMap.get('name') || null),
-      name_legal: new FormControl(null),
-      address: new FormControl(null),
-      phone: new FormControl(null),
-      document: new FormControl(null, Validators.compose([
-        Validators.pattern('^[0-9+-]+$')
-      ])),
-      code: new FormControl(''),
-      section: new FormControl('salary'),
-      email: new FormControl(''),
+      name: new FormControl('Casa'),
+      // name_legal: new FormControl(null),
+      // address: new FormControl(null),
+      latitude: new FormControl(''),
+      longitude: new FormControl(''),
+      contact_id: new FormControl(''),
+      // section: new FormControl('salary'),
+      // phone: new FormControl(''),
       note: new FormControl(''),
-      customer: new FormControl(this.customer || false),
-      supplier: new FormControl(this.supplier || false),
-      seller: new FormControl(this.seller || false),
-      employee: new FormControl(this.employee || false),
-      user: new FormControl(false),
-      user_details: new FormControl({}),
-      salary: new FormControl(null),
-      currency: new FormControl({}),
-      hire_date: new FormControl(undefined),
-      salaries: new FormControl([]),
-      advances: new FormControl([]),
+      // customer: new FormControl(this.customer || false),
+      // supplier: new FormControl(this.supplier || false),
+      // seller: new FormControl(this.seller || false),
+      // employee: new FormControl(this.employee || false),
+      // user: new FormControl(false),
+      // user_details: new FormControl({}),
+      // salary: new FormControl(null),
+      // currency: new FormControl({}),
+      // hire_date: new FormControl(undefined),
+      // salaries: new FormControl([]),
+      // advances: new FormControl([]),
       fixed: new FormControl(false),
       _id: new FormControl(''),
       create_user: new FormControl(''),
@@ -97,12 +95,11 @@ export class AddressPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-
     this.plt.ready().then(() => {
 
   let mapOptions = {
     zoom: 20,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    mapTypeId: google.maps.MapTypeId.HYBRID,
     mapTypeControl: false,
     streetViewControl: false,
     fullscreenControl: false
@@ -114,25 +111,82 @@ export class AddressPage implements OnInit {
     timeout: 5000,
     enableHighAccuracy: true
   }
-  this.geolocation.getCurrentPosition(options).then(pos => {
-    let latLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-    this.map.setCenter(latLng);
-    const icon = {
-        url: 'assets/icon/favicon.png', // image url
-        scaledSize: new google.maps.Size(50, 50), // scaled size
-      };
-      const marker = new google.maps.Marker({
-        position: latLng,
-        map: this.map,
-        title: 'Hello World!',
-        icon: icon
-      });
-    this.map.setZoom(20);
-  }).catch((error) => {
-    console.log('Error getting location', error);
-  });
+  if (this._id) {
+    this.getAddress(this._id).then((data) => {
+      this.addressForm.patchValue(data);
+      if (!this.addressForm.value.latitude){
+        this.geolocation.getCurrentPosition(options).then(pos => {
+          this.showMap(pos.coords.latitude, pos.coords.longitude);
+          this.addressForm.patchValue({
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude
+          })
+        }).catch((error) => {
+          console.log('Error getting location', error);
+        });
+      } else {
+        this.showMap(this.addressForm.value.latitude, this.addressForm.value.longitude);
+      }
+      this.loading.dismiss();
+    });
+  } else {
+    this.geolocation.getCurrentPosition(options).then(pos => {
+      this.showMap(pos.coords.latitude, pos.coords.longitude);
+      this.addressForm.patchValue({
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude
+      })
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });
+    this.loading.dismiss();
+  }
+  if (!this.addressForm.value.latitude){
+    this.geolocation.getCurrentPosition(options).then(pos => {
+      this.showMap(pos.coords.latitude, pos.coords.longitude);
+      this.addressForm.patchValue({
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude
+      })
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });
+  } else {
+    this.showMap(this.addressForm.value.latitude, this.addressForm.value.longitude);
+  }
 });
 
+
+}
+
+showMap(latitude, longitude){
+  let latLng = new google.maps.LatLng(latitude, longitude);
+  this.map.setCenter(latLng);
+  const icon = {
+    url: 'assets/icon/favicon.png', // image url
+    scaledSize: new google.maps.Size(50, 50), // scaled size
+  };
+  const marker = new google.maps.Marker({
+    position: latLng,
+    map: this.map,
+    title: 'Hello World!',
+    icon: icon
+  });
+  const contentString = '<div id="content">' +
+  '<div id="siteNotice">' +
+  '</div>' +
+  '<h1 id="firstHeading" class="firstHeading">Local de Entrega</h1>' +
+  '<div id="bodyContent">' +
+  // '<img src="assets/icon/user.png" width="200">' +
+  '<p>Este es el local donde se entregara el pedido</p><br/><br/>';
+  const infowindow = new google.maps.InfoWindow({
+    content: contentString,
+    maxWidth: 400
+  });
+  marker.addListener('click', function() {
+    infowindow.open(this.map, marker);
+  });
+  this.map.setZoom(20);
     // this.getGPSCordinates();
 
   //   this.authService.loggedIn.subscribe(async status => {
