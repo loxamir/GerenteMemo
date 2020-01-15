@@ -17,6 +17,8 @@ export class TabsPage implements OnInit {
   amount: number = 0;
   order: any;
   logged: boolean = false;
+  contact_id;
+  contact_name;
 
   constructor(
     public pouchdbService: PouchdbService,
@@ -39,39 +41,40 @@ export class TabsPage implements OnInit {
     this.user = (await this.pouchdbService.getUser())
 
 
-    this.authService.loggedIn.subscribe(status => {
-      this.loading.dismiss();
+    this.authService.loggedIn.subscribe(async status => {
+
       console.log("status", status);
       if (status) {
         this.logged = true;
+        let data = await this.authService.getData();
+        this.contact_id = "contact."+data.currentUser.email;
+        this.contact_name = data.currentUser.displayName;
+        this.loading.dismiss();
+        let order: any = await this.pouchdbService.searchDocTypeData('sale',this.contact_id,0,"contact_id");
+        if (order[0]){
+          if (order[0].state == 'QUOTATION'
+          || order[0].state == 'CONFIRMED'
+        ){
+            this.order = order[0];
+          }
+        }
+        this.events.subscribe('changed-sale', (data) => {
+          if (data.deleted){
+            this.order = undefined;
+          } else {
+            if (data.doc.state == 'QUOTATION' || data.doc.state == 'CONFIRMED'){
+              this.order = data.doc;
+            } else if (data.doc.state == 'PAID'){
+              this.order = undefined;
+            }
+          }
+        })
       } else {
         this.logged = false;
       }
     });
 
 
-    this.loading.dismiss();
-    let order: any = await this.pouchdbService.searchDocTypeData('sale','',0,"state");
-    console.log("order", order);
-    if (order[0]){
-      if (order[0].state == 'QUOTATION'
-      || order[0].state == 'CONFIRMED'
-    ){
-        this.order = order[0];
-      }
-    }
-    this.events.subscribe('changed-sale', (data) => {
-      if (data.deleted){
-        this.order = undefined;
-      } else {
-        console.log("data", data);
-        if (data.doc.state == 'QUOTATION' || data.doc.state == 'CONFIRMED'){
-          this.order = data.doc;
-        } else if (data.doc.state == 'PAID'){
-          this.order = undefined;
-        }
-      }
-    })
 
     this.events.subscribe('add-product', async (data) => {
       let total = data.price*data.quantity;
@@ -94,7 +97,7 @@ export class TabsPage implements OnInit {
       } else {
         let now = new Date().toISOString();
         let order = {
-          "contact_name": "meu Nome",
+          "contact_name": this.contact_name,
           "name": "",
           "code": "123",
           "date": now,
@@ -122,7 +125,7 @@ export class TabsPage implements OnInit {
           "write_time": now,
           "lines": [line],
           "docType": "sale",
-          "contact_id": "contact.unknown",
+          "contact_id": this.contact_id,
           "project_id": "",
           "pay_cond_id": "payment-condition.credit"
           }

@@ -20,6 +20,7 @@ import { ProductService } from '../product/product.service';
 import { ProductListPage } from '../product-list/product-list.page';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
+import { AddressListPage } from '../address-list/address-list.page';
 // import { PlannedService } from '../planned/planned.service';
 import { ConfigService } from '../config/config.service';
 import { HostListener } from '@angular/core';
@@ -181,6 +182,8 @@ export class SalePage implements OnInit {
         planned: new FormControl([]),
         paymentCondition: new FormControl({}),
         payment_name: new FormControl(''),
+        address: new FormControl({}),
+        address_name: new FormControl(''),
         invoice: new FormControl(''),
         invoices: new FormControl([]),
         amount_unInvoiced: new FormControl(0),
@@ -567,9 +570,9 @@ export class SalePage implements OnInit {
           this.addItem();
           resolve(true);
         } else {
-          if (Object.keys(this.saleForm.value.contact).length === 0){
+          if (Object.keys(this.saleForm.value.address).length === 0){
             // await this.loading.dismiss();
-            this.selectContact().then(async teste => {
+            this.selectAddress().then(async teste => {
               await this.loading.dismiss();
               if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
                 this.selectPaymentCondition().then(async ()=>{
@@ -1415,6 +1418,39 @@ export class SalePage implements OnInit {
         this.listenBarcode = true;
       }
     });
+    }
+
+    selectAddress() {
+      return new Promise(async resolve => {
+        if (this.saleForm.value.state=='QUOTATION'){
+          this.loading = await this.loadingCtrl.create({});
+          await this.loading.present();
+          this.avoidAlertMessage = true;
+          this.listenBarcode = false;
+          this.events.unsubscribe('select-address');
+          this.events.subscribe('select-address', (data) => {
+            this.saleForm.patchValue({
+              address: data,
+              address_name: data.name,
+            });
+            this.saleForm.markAsDirty();
+            this.avoidAlertMessage = false;
+            this.events.unsubscribe('select-address');
+            profileModal.dismiss();
+            resolve(data);
+          })
+          let profileModal = await this.modalCtrl.create({
+            component: AddressListPage,
+            componentProps: {
+              "select": true
+            }
+          });
+          await profileModal.present();
+          await this.loading.dismiss();
+          await profileModal.onDidDismiss();
+          this.listenBarcode = true;
+        }
+      });
     }
 
     print() {

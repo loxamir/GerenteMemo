@@ -9,21 +9,20 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
-import { AddressListPage } from '../address-list/address-list.page';
 
 @Component({
-  selector: 'app-contact',
-  templateUrl: './contact.page.html',
-  styleUrls: ['./contact.page.scss'],
+  selector: 'app-address',
+  templateUrl: './address.page.html',
+  styleUrls: ['./address.page.scss'],
 })
-export class ContactPage implements OnInit {
+export class AddressPage implements OnInit {
   @ViewChild('name', { static: true }) name;
   @ViewChild('document', { static: true }) document;
   @ViewChild('phone', { static: true }) phone;
   @ViewChild('address', { static: true }) address;
   @ViewChild('salary', { static: false }) salary;
 
-  contactForm: FormGroup;
+  addressForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
@@ -57,10 +56,10 @@ export class ContactPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.contactForm = this.formBuilder.group({
+    this.addressForm = this.formBuilder.group({
       name: new FormControl(this.route.snapshot.paramMap.get('name') || null),
       name_legal: new FormControl(null),
-      address: new FormControl({}),
+      address: new FormControl(null),
       phone: new FormControl(null),
       document: new FormControl(null, Validators.compose([
         Validators.pattern('^[0-9+-]+$')
@@ -93,56 +92,23 @@ export class ContactPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
 
-    this.authService.loggedIn.subscribe(async status => {
-      console.log("estado", status);
-      if (status) {
-        let data = await this.authService.getData();
-        this._id = "contact."+data.currentUser.email;
-        if (this._id) {
-          this.getContact(this._id).then((data) => {
-            this.contactForm.patchValue(data);
-            this.loading.dismiss();
-          });
-        } else {
+  //   this.authService.loggedIn.subscribe(async status => {
+  //     console.log("estado", status);
+  //     if (status) {
+  //       let data = await this.authService.getData();
+  //       // this._id = "address."+data.currentUser.email;
+  //       if (this._id) {
+  //         this.getAddress(this._id).then((data) => {
+  //           this.addressForm.patchValue(data);
+  //           this.loading.dismiss();
+  //         });
+  //       } else {
           this.loading.dismiss();
-        }
-      } else {
-        // this.logged = false;
-      }
-    });
-  }
-
-  selectAddress() {
-    return new Promise(async resolve => {
-      // if (this.contactForm.value.state=='QUOTATION'){
-        this.loading = await this.loadingCtrl.create({});
-        await this.loading.present();
-        // this.avoidAlertMessage = true;
-        // this.listenBarcode = false;
-        this.events.unsubscribe('select-address');
-        this.events.subscribe('select-address', (data) => {
-          this.contactForm.patchValue({
-            address: data,
-            // address_name: data.name,
-          });
-          this.contactForm.markAsDirty();
-          // this.avoidAlertMessage = false;
-          this.events.unsubscribe('select-address');
-          profileModal.dismiss();
-          resolve(data);
-        })
-        let profileModal = await this.modalCtrl.create({
-          component: AddressListPage,
-          componentProps: {
-            "select": true
-          }
-        });
-        await profileModal.present();
-        await this.loading.dismiss();
-        await profileModal.onDidDismiss();
-        // this.listenBarcode = true;
-      // }
-    });
+  //       }
+  //     } else {
+  //       // this.logged = false;
+  //     }
+  //   });
   }
 
   logout(){
@@ -152,7 +118,7 @@ export class ContactPage implements OnInit {
 
 
   changedDocument() {
-    let dv = this.contactForm.value.document.split('-')[1] || '';
+    let dv = this.addressForm.value.document.split('-')[1] || '';
     if (dv && dv.length == 1) {
       this.getLegalName();
     }
@@ -161,7 +127,7 @@ export class ContactPage implements OnInit {
   async editUser(user) {
     let profileModal = await this.modalCtrl.create({
       component: UserPage,
-      componentProps: this.contactForm.value.user_details
+      componentProps: this.addressForm.value.user_details
     });
     await profileModal.present();
     const { data } = await profileModal.onDidDismiss();
@@ -175,7 +141,7 @@ export class ContactPage implements OnInit {
       user["report"] = data.report;
       user["config"] = data.config;
       user["registered"] = data.registered;
-      this.contactForm.patchValue({
+      this.addressForm.patchValue({
         user_details: user,
       });
       this.justSave();
@@ -184,41 +150,40 @@ export class ContactPage implements OnInit {
 
   justSave() {
     if (this._id) {
-      this.updateContact(this.contactForm.value);
-      this.contactForm.markAsPristine();
+      this.updateAddress(this.addressForm.value);
+      this.addressForm.markAsPristine();
     } else {
-      this.createContact(this.contactForm.value).then((doc: any) => {
+      this.createAddress(this.addressForm.value).then((doc: any) => {
         this._id = doc.doc.id;
-        this.contactForm.markAsPristine();
+        this.addressForm.markAsPristine();
       });
     }
   }
 
   buttonSave() {
+    console.log("buttonSave");
     if (this._id) {
-      this.updateContact(this.contactForm.value);
+      console.log("udate");
+      this.updateAddress(this.addressForm.value);
       if (this.select) {
         this.modalCtrl.dismiss();
       } else {
-        this.navCtrl.navigateBack('/contact-list');
-        this.events.publish('open-contact', this.contactForm.value);
+        this.navCtrl.navigateBack('/address-list');
+        this.events.publish('open-address', this.addressForm.value);
       }
     } else {
-      this.createContact(this.contactForm.value).then((doc: any) => {
+      console.log("create");
+      this.createAddress(this.addressForm.value).then((doc: any) => {
         this._id = doc.doc.id;
         if (this.select) {
-          this.events.publish('create-contact', this.contactForm.value);
+          this.events.publish('create-address', this.addressForm.value);
           this.modalCtrl.dismiss();
         } else {
-          this.navCtrl.navigateBack('/contact-list');
-          this.events.publish('create-contact', this.contactForm.value);
+          this.navCtrl.navigateBack('/address-list');
+          this.events.publish('create-address', this.addressForm.value);
         }
       });
     }
-  }
-
-  addressList(){
-    this.navCtrl.navigateForward('/address-list');
   }
 
   setLanguage(lang: LanguageModel) {
@@ -245,7 +210,7 @@ export class ContactPage implements OnInit {
   }
 
 
-  getContact(doc_id): Promise<any> {
+  getAddress(doc_id): Promise<any> {
     return this.pouchdbService.getDoc(doc_id);
   }
 
@@ -254,51 +219,51 @@ export class ContactPage implements OnInit {
       this.name.setFocus();
     }, 200);
   }
-  createContact(contact) {
+  createAddress(address) {
     return new Promise((resolve, reject) => {
-      contact.docType = 'contact';
-      if (contact.code != '') {
-        this.pouchdbService.createDoc(contact).then(doc => {
-          resolve({ doc: doc, contact: contact });
+      address.docType = 'address';
+      // if (address.code != '') {
+      //   this.pouchdbService.createDoc(address).then(doc => {
+      //     resolve({ doc: doc, address: address });
+      //   });
+      // } else {
+        this.pouchdbService.createDoc(address).then(doc => {
+          resolve({ doc: doc, address: address });
         });
-      } else {
-        this.pouchdbService.createDoc(contact).then(doc => {
-          resolve({ doc: doc, contact: contact });
-        });
-      }
+      // }
     });
   }
 
-  updateContact(contact) {
-    contact.docType = 'contact';
-    return this.pouchdbService.updateDoc(contact);
+  updateAddress(address) {
+    address.docType = 'address';
+    return this.pouchdbService.updateDoc(address);
   }
 
   goNextStep() {
-    if (this.contactForm.value.name == null) {
+    if (this.addressForm.value.name == null) {
       this.name.setFocus();
     }
-    else if (this.contactForm.value.document == null) {
+    else if (this.addressForm.value.document == null) {
       this.document.setFocus();
     }
-    else if (this.contactForm.value.phone == null) {
+    else if (this.addressForm.value.phone == null) {
       this.phone.setFocus();
     }
-    else if (this.contactForm.value.address == null) {
+    else if (this.addressForm.value.address == null) {
       this.address.setFocus();
     }
-    else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
+    else if (this.addressForm.value.employee == true && this.addressForm.value.salary == null) {
       this.salary.setFocus();
     }
   }
 
   getLegalName() {
-    this.restProvider.getRucName(this.contactForm.value.document).then((data: any) => {
+    this.restProvider.getRucName(this.addressForm.value.document).then((data: any) => {
       if (data.name != 'HttpErrorResponse') {
         let dict = {
           'name_legal': data.name,
         }
-        if (!this.contactForm.value.name || this.contactForm.value.name == '') {
+        if (!this.addressForm.value.name || this.addressForm.value.name == '') {
           let firstname = data.name.split(', ')[1] || '';
           let lastname = data.name.split(', ')[0];
           if (firstname) {
@@ -307,25 +272,25 @@ export class ContactPage implements OnInit {
             dict['name'] = lastname;
           }
         }
-        this.contactForm.patchValue(dict)
+        this.addressForm.patchValue(dict)
       }
     })
   }
 
   showNextButton() {
-    if (this.contactForm.value.name == null) {
+    if (this.addressForm.value.name == null) {
       return true;
     }
-    else if (this.contactForm.value.document == null) {
+    else if (this.addressForm.value.document == null) {
       return true;
     }
-    else if (this.contactForm.value.phone == null) {
+    else if (this.addressForm.value.phone == null) {
       return true;
     }
-    else if (this.contactForm.value.address == null) {
+    else if (this.addressForm.value.address == null) {
       return true;
     }
-    else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
+    else if (this.addressForm.value.employee == true && this.addressForm.value.salary == null) {
       return true;
     }
     else {
@@ -337,7 +302,7 @@ export class ContactPage implements OnInit {
     this.canDeactivate();
   }
   async canDeactivate() {
-    if (this.contactForm.dirty) {
+    if (this.addressForm.dirty) {
       let alertPopup = await this.alertCtrl.create({
         header: this.translate.instant('DISCARD'),
         message: this.translate.instant('SURE_DONT_SAVE'),
@@ -364,7 +329,7 @@ export class ContactPage implements OnInit {
     if (this.select) {
       this.modalCtrl.dismiss();
     } else {
-      this.navCtrl.navigateBack('/contact-list');
+      this.navCtrl.navigateBack('/address-list');
     }
   }
 }

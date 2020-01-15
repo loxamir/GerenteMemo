@@ -3,13 +3,13 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/product-list"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ 'CONTACT'| translate }}</ion-title>
+    <ion-title>{{ 'ADDRESS'| translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-  <form [formGroup]="contactForm"  (ngSubmit)="onSubmit(contactForm.value)">
+  <form [formGroup]="addressForm"  (ngSubmit)="onSubmit(addressForm.value)">
     <ion-item  class="field-100">
       <ion-label position="floating">{{'NAME' | translate}}</ion-label>
       <ion-input #name type="text" formControlName="name"></ion-input>
@@ -17,12 +17,12 @@
     <ion-row>
       <div class="validation-errors" style="width: 100%">
         <ng-container *ngFor="let validation of validation_messages.name">
-          <div class="error-message" *ngIf="contactForm.get('name').hasError(validation.type) && (contactForm.get('name').dirty || contactForm.get('name').touched)">
+          <div class="error-message" *ngIf="addressForm.get('name').hasError(validation.type) && (addressForm.get('name').dirty || addressForm.get('name').touched)">
             {{ validation.message }}
           </div>
         </ng-container>
       </div>
-      <ion-item
+      <!-- <ion-item
        class="ion-no-padding"
        class="field-50">
         <ion-label position="floating">{{'DOCUMENT' | translate}}</ion-label>
@@ -30,7 +30,7 @@
         (ionChange)="changedDocument()"
         #document
         formControlName="document"></ion-input>
-      </ion-item>
+      </ion-item> -->
       <ion-item
       class="ion-no-padding"
       class="field-50">
@@ -41,32 +41,32 @@
     </ion-item>
     <div class="validation-errors" style="width: 50%;">
       <ng-container *ngFor="let validation of validation_messages.document">
-        <div class="error-message" *ngIf="contactForm.get('document').hasError(validation.type) && (contactForm.get('document').dirty || contactForm.get('document').touched)">
+        <div class="error-message" *ngIf="addressForm.get('document').hasError(validation.type) && (addressForm.get('document').dirty || addressForm.get('document').touched)">
           {{ validation.message }}
         </div>
       </ng-container>
     </div>
-      <ion-item class="field-100 ion-no-padding">
+      <!-- <ion-item class="field-100 ion-no-padding">
         <ion-label position="floating">{{'Razon Social' | translate}}</ion-label>
         <ion-input #name_legal type="text" formControlName="name_legal"></ion-input>
-      </ion-item>
+      </ion-item> -->
 
-      <ion-item
+      <!-- <ion-item
        class="ion-no-padding"
        class="field-50">
         <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
         <ion-input type="text"
         #address
         formControlName="address"></ion-input>
-      </ion-item>
+      </ion-item> -->
 
-      <ion-item
+      <!-- <ion-item
        class="ion-no-padding"
        class="field-50">
         <ion-label position="floating">{{'EMAIL' | translate}}</ion-label>
         <ion-input type="text"
         formControlName="email"></ion-input>
-      </ion-item>
+      </ion-item> -->
 
       <!-- <ion-item
        class="ion-no-padding"
@@ -103,28 +103,28 @@
          <ion-label>{{'Usuario' | translate}}</ion-label>
          <ion-toggle formControlName="user"></ion-toggle>
       </ion-item>
-      <ion-col size="12" class="item-content" *ngIf="contactForm.value.user">
-        <ion-button (click)="editUser(contactForm.value.user_details)" class="button-100">Configurar Usuario</ion-button>
+      <ion-col size="12" class="item-content" *ngIf="addressForm.value.user">
+        <ion-button (click)="editUser(addressForm.value.user_details)" class="button-100">Configurar Usuario</ion-button>
       </ion-col>
     </ion-row> -->
       <ion-row>
       <!-- <ion-item
        class="ion-no-padding"
-       *ngIf="contactForm.value.employee"
+       *ngIf="addressForm.value.employee"
        class="field-50">
         <ion-label position="floating">{{'SALARY' | translate }}</ion-label>
         <ion-input #salary type="number"
         formControlName="salary"></ion-input>
       </ion-item>
-      <ion-item *ngIf="contactForm.value.employee" class="ion-no-padding" (click)="selectCurrency()"
+      <ion-item *ngIf="addressForm.value.employee" class="ion-no-padding" (click)="selectCurrency()"
       class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-          <h4 class="field-value">{{contactForm.value.currency && contactForm.value.currency.name || 'SELECT'|translate}}</h4>
+          <h4 class="field-value">{{addressForm.value.currency && addressForm.value.currency.name || 'SELECT'|translate}}</h4>
         </div>
       </ion-item>
       <ion-item
-      *ngIf="contactForm.value.employee"
+      *ngIf="addressForm.value.employee"
       class="ion-no-padding"
       class="field-100">
         <ion-label position="floating" class="field-label">{{'HIRE_DATE' | translate }}</ion-label>
@@ -135,14 +135,8 @@
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-input type="text" formControlName="note"></ion-input>
       </ion-item>
-      <ion-button class="button-100" (click)="addressList()">
-        {{'Address List'|translate}}
-      </ion-button>
-      <ion-button class="button-100" (click)="logout()">
-        {{'LOGOUT'|translate}}
-      </ion-button>
     </ion-row>
-    <!-- <ion-segment formControlName="section" class="cash-segment" *ngIf="contactForm.value.employee">
+    <!-- <ion-segment formControlName="section" class="cash-segment" *ngIf="addressForm.value.employee">
       <ion-segment-button value="advance">
         Anticipos
       </ion-segment-button>
@@ -153,7 +147,7 @@
 
 
 
-    <div [ngSwitch]="contactForm.value.section" class="forms-wrapper" *ngIf="contactForm.value.employee">
+    <div [ngSwitch]="addressForm.value.section" class="forms-wrapper" *ngIf="addressForm.value.employee">
       <div *ngSwitchCase="'salary'" class="post-example-view">
         <ion-row style="margin-top: 5px;background: #1c61f3;border-radius: 7px;border: 1px solid #1c61f3;"
         (click)="addSalary()">
@@ -161,8 +155,8 @@
             + Agregar Salario
           </a>
         </ion-row>
-        <ion-item style="background-color: #ddd" *ngIf="contactForm.value.employee">
-          <ion-item-sliding class="list-item" *ngFor="let item of contactForm.value.salaries; let i = index;">
+        <ion-item style="background-color: #ddd" *ngIf="addressForm.value.employee">
+          <ion-item-sliding class="list-item" *ngFor="let item of addressForm.value.salaries; let i = index;">
             <ion-item (click)="openSalary(item)" style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
               <ion-row>
                 <ion-col class="ion-no-padding">
@@ -192,8 +186,8 @@
             + Agregar Anticipo
           </a>
         </ion-row>
-        <ion-item style="background-color: #ddd" *ngIf="contactForm.value.employee">
-          <ion-item-sliding class="list-item" *ngFor="let item of contactForm.value.advances; let i = index;">
+        <ion-item style="background-color: #ddd" *ngIf="addressForm.value.employee">
+          <ion-item-sliding class="list-item" *ngFor="let item of addressForm.value.advances; let i = index;">
             <ion-item (click)="openAdvance(item)" style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
               <ion-row>
                 <ion-col class="ion-no-padding">
@@ -226,14 +220,14 @@
 <!--
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger">
-      <ion-icon name="backspace" *ngIf="contactForm.dirty"> </ion-icon>
-      <ion-icon name="arrow-back" *ngIf="!contactForm.dirty"> </ion-icon>
-      <span *ngIf="contactForm.dirty">{{ 'DISCARD'| translate }}</span>
-      <span *ngIf="!contactForm.dirty">{{ 'GO_BACK'| translate }}</span>
+      <ion-icon name="backspace" *ngIf="addressForm.dirty"> </ion-icon>
+      <ion-icon name="arrow-back" *ngIf="!addressForm.dirty"> </ion-icon>
+      <span *ngIf="addressForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!addressForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab> -->
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="contactForm.dirty">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="addressForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
       {{ 'SAVE'| translate }}

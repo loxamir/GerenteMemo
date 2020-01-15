@@ -28,6 +28,7 @@ import { Facebook } from "@ionic-native/facebook/ngx";
 import { ProductListPage } from './product-list/product-list.page';
 import { PaymentConditionListPage } from './payment-condition-list/payment-condition-list.page';
 import { ContactListPage } from './contact-list/contact-list.page';
+import { AddressListPage } from './address-list/address-list.page';
 import { CurrencyListPage } from './currency-list/currency-list.page';
 import { ReceiptPage } from './receipt/receipt.page';
 import { InvoicePage } from './invoice/invoice.page';
@@ -51,6 +52,7 @@ import { BrandListPageModule } from './brand-list/brand-list.module';
 import { ProductListPageModule } from './product-list/product-list.module';
 import { PaymentConditionListPageModule } from './payment-condition-list/payment-condition-list.module';
 import { ContactListPageModule } from './contact-list/contact-list.module';
+import { AddressListPageModule } from './address-list/address-list.module';
 import { CurrencyListPageModule } from './currency-list/currency-list.module';
 import { CurrencyPageModule } from './currency/currency.module';
 import { ReceiptPageModule } from './receipt/receipt.module';
@@ -64,6 +66,7 @@ import { LoginPageModule } from './login/login.module';
 import { ProductCategoryPageModule } from './product-category/product-category.module';
 import { BrandPageModule } from './brand/brand.module';
 import { ContactPageModule } from './contact/contact.module';
+import { AddressPageModule } from './address/address.module';
 import { ProductPageModule } from './product/product.module';
 import { DiscountPageModule } from './discount/discount.module';
 
@@ -97,6 +100,7 @@ import { environment } from '../environments/environment';
   ],
   entryComponents: [
     ContactListPage,
+    AddressListPage,
     CurrencyListPage,
     PaymentConditionListPage,
     ProductListPage,
@@ -112,6 +116,7 @@ import { environment } from '../environments/environment';
     TabsPageModule,
     ProductListPageModule,
     ContactPageModule,
+    AddressPageModule,
     SalePageModule,
     ContractPageModule,
     ContractListPageModule,
@@ -140,6 +145,7 @@ import { environment } from '../environments/environment';
     BrowserModule,
     FormsModule,
     ContactListPageModule,
+    AddressListPageModule,
     ReactiveFormsModule,
     ProductPageModule,
     ProductCategoryPageModule,
