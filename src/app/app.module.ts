@@ -24,6 +24,7 @@ registerLocaleData(es);
 // Custom Imports
 
 import { Facebook } from "@ionic-native/facebook/ngx";
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 import { ProductListPage } from './product-list/product-list.page';
 import { PaymentConditionListPage } from './payment-condition-list/payment-condition-list.page';
@@ -174,6 +175,7 @@ import { environment } from '../environments/environment';
     StatusBar,
     SplashScreen,
     Facebook,
+    Geolocation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

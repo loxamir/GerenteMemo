@@ -9,6 +9,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: 'app-address',
@@ -46,6 +47,7 @@ export class AddressPage implements OnInit {
     public pouchdbService: PouchdbService,
     public restProvider: RestProvider,
     public authService: AuthService,
+    private geolocation: Geolocation,
   ) {
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
@@ -91,6 +93,7 @@ export class AddressPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
+    this.getGPSCordinates();
 
   //   this.authService.loggedIn.subscribe(async status => {
   //     console.log("estado", status);
@@ -109,6 +112,16 @@ export class AddressPage implements OnInit {
   //       // this.logged = false;
   //     }
   //   });
+  }
+
+  getGPSCordinates(){
+    this.geolocation.getCurrentPosition().then((resp) => {
+     // resp.coords.latitude
+     // resp.coords.longitude
+     console.log("resp", resp);
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });
   }
 
   logout(){
