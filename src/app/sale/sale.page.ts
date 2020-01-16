@@ -41,6 +41,7 @@ import html2canvas from 'html2canvas';
 import { DiscountPage } from '../discount/discount.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { ContactPage } from '../contact/contact.page';
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: 'app-sale',
@@ -117,6 +118,7 @@ export class SalePage implements OnInit {
     return;
     currency_precision = 2;
     confirming = false;
+    contact_id;
 
     constructor(
       public navCtrl: NavController,
@@ -147,7 +149,7 @@ export class SalePage implements OnInit {
       // public modal: ModalController,
       public popoverCtrl: PopoverController,
       public socialSharing: SocialSharing,
-      // public file: File,
+      public authService: AuthService,
     ) {
       this.today = new Date().toISOString();
 
@@ -204,12 +206,28 @@ export class SalePage implements OnInit {
       this.translate.use(language);
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
-      if (config.default_contact_id){
-        let default_contact:any = await this.pouchdbService.getDoc(config.default_contact_id);
-        this.saleForm.patchValue({
-          'contact': default_contact
-        })
-      }
+
+
+      this.authService.loggedIn.subscribe(async status => {
+
+        console.log("status", status);
+        if (status) {
+          // this.logged = true;
+          let data = await this.authService.getData();
+          this.contact_id = "contact."+data.currentUser.email;
+          // if (config.default_contact_id){
+            let default_contact:any = await this.pouchdbService.getDoc(this.contact_id);
+            let default_address:any = await this.pouchdbService.getDoc(default_contact.address_id);
+            this.saleForm.patchValue({
+              'contact': default_contact,
+              'address': default_address,
+            })
+          // }
+        }
+      })
+
+
+
       if (config.default_payment_id){
         let default_payment:any = await this.pouchdbService.getDoc(config.default_payment_id);
         this.saleForm.patchValue({

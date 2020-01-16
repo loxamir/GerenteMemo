@@ -429,5 +429,7 @@
   "SEE_DEMO": "Teste Gratis",
   "CHOOSE_LANGUAGE": "Escolher Idioma",
   "ADD_COST": "Adicionar Custo",
+  "DELIVERY_ADDRESS": "Endereço de Entrega",
+  "PAYMENT_METHOD": "Forma de Pagamento",
   "RESULT": "Resultado"
 }

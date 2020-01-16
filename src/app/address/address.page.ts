@@ -136,6 +136,7 @@ export class AddressPage implements OnInit {
         latitude: pos.coords.latitude,
         longitude: pos.coords.longitude
       })
+      this.addressForm.markAsDirty();
     }).catch((error) => {
       console.log('Error getting location', error);
     });
@@ -148,6 +149,7 @@ export class AddressPage implements OnInit {
         latitude: pos.coords.latitude,
         longitude: pos.coords.longitude
       })
+      this.addressForm.markAsDirty();
     }).catch((error) => {
       console.log('Error getting location', error);
     });

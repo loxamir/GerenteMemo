@@ -48,6 +48,8 @@ export class SaleService {
     sale.docType = 'sale';
     sale.contact_id = sale.contact._id;
     delete sale.contact;
+    sale.address_id = sale.address._id;
+    delete sale.address;
     sale.project_id = sale.project && sale.project._id || "";
     delete sale.project;
     sale.pay_cond_id = sale.paymentCondition._id;
@@ -77,6 +79,8 @@ export class SaleService {
     delete sale.planned;
     sale.contact_id = sale.contact._id;
     delete sale.contact;
+    sale.address_id = sale.address._id;
+    delete sale.address;
     sale.project_id = sale.project && sale.project._id || "";
     delete sale.project;
     sale.pay_cond_id = sale.paymentCondition._id;
@@ -89,6 +93,7 @@ export class SaleService {
       this.pouchdbService.getDoc(doc_id).then(((pouchData: any) => {
         let getList = [
           pouchData['contact_id'],
+          pouchData['address_id'],
           pouchData['pay_cond_id']
         ];
         pouchData['lines'].forEach((item) => {
@@ -109,6 +114,7 @@ export class SaleService {
             doc_dict[row.id] = row.doc;
           })
           pouchData.contact = doc_dict[pouchData.contact_id] || {};
+          pouchData.address = doc_dict[pouchData.address_id] || {};
           pouchData.paymentCondition = doc_dict[pouchData.pay_cond_id] || {};
           pouchData['items'] = [];
           pouchData.lines.forEach((line: any)=>{

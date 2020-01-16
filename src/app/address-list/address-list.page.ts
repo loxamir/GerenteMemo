@@ -67,6 +67,9 @@ export class AddressListPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.setFilteredItems();
+    if (this.addresss.length == 0){
+      this.createAddress();
+    }
     setTimeout(() => {
       if(this.select){
         this.searchBar.setFocus();

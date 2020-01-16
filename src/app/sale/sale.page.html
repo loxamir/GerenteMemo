@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button icon-only (click)="discard()">
-        <ion-icon name="close"></ion-icon>
+        <ion-icon name="arrow-round-back"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title *ngIf="return">
@@ -80,11 +80,11 @@
         </ion-datetime>
       </ion-item> -->
       <ion-item class="ion-no-padding" (click)="selectAddress()" class="field-50">
-        <h4 class="field-label">{{'ADDRESS' | translate }}</h4>
+        <h4 class="field-label">{{'DELIVERY_ADDRESS' | translate }}</h4>
         <h4 class="field-value">{{saleForm.value.address && saleForm.value.address.name || 'SELECT' | translate}}</h4>
       </ion-item>
       <ion-item class="ion-no-padding" (click)="selectPaymentCondition()" class="field-50">
-        <h4 class="field-label">{{'PAYMENT_CONDITION' | translate }}</h4>
+        <h4 class="field-label">{{'PAYMENT_METHOD' | translate }}</h4>
         <h4 class="field-value">{{saleForm.value.paymentCondition && saleForm.value.paymentCondition.name || 'SELECT' | translate}}</h4>
       </ion-item>
       <!-- <ion-item class="ion-no-padding" (click)="selectSeller()" class="field-100">
@@ -233,14 +233,14 @@
     </ion-button>
   </ion-fab>
 
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">
       <ion-icon name="backspace" *ngIf="saleForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!saleForm.dirty"> </ion-icon>
       <span *ngIf="saleForm.dirty">{{ 'DISCARD' | translate }}</span>
       <span *ngIf="!saleForm.dirty">{{ 'GO_BACK' | translate }}</span>
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="saleForm.dirty">
     <ion-button (click)="buttonSave()"  color="success" class="save-button">

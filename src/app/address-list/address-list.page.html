@@ -1,10 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-        <!-- <ion-menu-button></ion-menu-button> -->
+    <!-- <ion-buttons slot="start">
         <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
-    </ion-buttons>
-    <ion-searchbar
+    </ion-buttons> -->
+    <!-- <ion-searchbar
       placeholder="{{ 'SEARCH_ADDRESS' | translate }}"
       [(ngModel)]="searchTerm"
       #searchBar
@@ -16,7 +15,10 @@
               (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
+    <ion-title>
+      Dirección de Entrega
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -38,8 +40,7 @@
             </ion-row>
             <ion-row class="ion-no-padding">
                <ion-col class="ion-no-padding" size="12">
-                 <h3 class="item-title"  style="font-size:15px;">Documento: <b style="color: green;margin-left: 5px">{{item.document}}</b></h3>
-                 <h3 class="item-title"  style="font-size:15px;">Direccion: <b style="color: green;margin-left: 5px">{{item.address}}</b></h3>
+                 <h3 class="item-title" style="font-size:15px;">{{item.note}}</h3>
                </ion-col>
              </ion-row>
           </ion-col>

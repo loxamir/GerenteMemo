@@ -429,5 +429,7 @@
   "SELECT_A_COMPANY": "Seleccione una empresa para empezar",
   "SEE_DEMO": "Prueba Gratis",
   "ADD_COST": "Agregar Costo",
+  "DELIVERY_ADDRESS": "Dirección de Entrega",
+  "PAYMENT_METHOD": "Forma de Pago",
   "RESULT": "Resultado"
 }

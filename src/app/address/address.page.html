@@ -60,7 +60,7 @@
         formControlName="address"></ion-input>
       </ion-item> -->
 
-      <ion-item
+      <!-- <ion-item
        class="ion-no-padding"
        class="field-50">
         <ion-label position="floating">{{'Latitude' | translate}}</ion-label>
@@ -73,7 +73,7 @@
         <ion-label position="floating">{{'Longitude' | translate}}</ion-label>
         <ion-input type="text"
         formControlName="longitude"></ion-input>
-      </ion-item>
+      </ion-item> -->
 
       <!-- <ion-item
        class="ion-no-padding"
@@ -142,6 +142,8 @@
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-input type="text" formControlName="note"></ion-input>
       </ion-item>
+
+      <div #map id="map"></div>
     </ion-row>
     <!-- <ion-segment formControlName="section" class="cash-segment" *ngIf="addressForm.value.employee">
       <ion-segment-button value="advance">
@@ -240,8 +242,8 @@
       {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
-  <div style="height: 100px;">
-  </div>
-  <div #map id="map"></div>
+  <!-- <div style="height: 100px;">
+  </div> -->
+
 
 </ion-content>

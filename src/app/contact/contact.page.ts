@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { NavController, ModalController, LoadingController, AlertController, Events } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, AlertController, Events, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -10,6 +10,7 @@ import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
 import { AddressListPage } from '../address-list/address-list.page';
+declare var google;
 
 @Component({
   selector: 'app-contact',
@@ -22,6 +23,8 @@ export class ContactPage implements OnInit {
   @ViewChild('phone', { static: true }) phone;
   @ViewChild('address', { static: true }) address;
   @ViewChild('salary', { static: false }) salary;
+  @ViewChild('map', { static: false }) mapElement: ElementRef;
+  map: any;
 
   contactForm: FormGroup;
   loading: any;
@@ -47,6 +50,7 @@ export class ContactPage implements OnInit {
     public pouchdbService: PouchdbService,
     public restProvider: RestProvider,
     public authService: AuthService,
+    private plt: Platform,
   ) {
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
@@ -93,6 +97,7 @@ export class ContactPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
 
+
     this.authService.loggedIn.subscribe(async status => {
       console.log("estado", status);
       if (status) {
@@ -101,6 +106,28 @@ export class ContactPage implements OnInit {
         if (this._id) {
           this.getContact(this._id).then((data) => {
             this.contactForm.patchValue(data);
+
+            this.plt.ready().then(() => {
+
+          let mapOptions = {
+            zoom: 20,
+            mapTypeId: google.maps.MapTypeId.HYBRID,
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: false
+          }
+          this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+          let options = {
+            maximumAge: 3000,
+            timeout: 5000,
+            enableHighAccuracy: true
+          }
+          console.log("data", data);
+          if (data.address.latitude && data.address.longitude){
+            this.showMap( data.address.latitude, data.address.longitude);
+          }
+        })
             this.loading.dismiss();
           });
         } else {
@@ -110,6 +137,36 @@ export class ContactPage implements OnInit {
         // this.logged = false;
       }
     });
+  }
+
+  showMap(latitude, longitude){
+    let latLng = new google.maps.LatLng(latitude, longitude);
+    this.map.setCenter(latLng);
+    const icon = {
+      url: 'assets/icon/favicon.png', // image url
+      scaledSize: new google.maps.Size(50, 50), // scaled size
+    };
+    const marker = new google.maps.Marker({
+      position: latLng,
+      map: this.map,
+      title: 'Hello World!',
+      icon: icon
+    });
+    const contentString = '<div id="content">' +
+    '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">Local de Entrega</h1>' +
+    '<div id="bodyContent">' +
+    // '<img src="assets/icon/user.png" width="200">' +
+    '<p>Este es el local donde se entregara el pedido</p><br/><br/>';
+    const infowindow = new google.maps.InfoWindow({
+      content: contentString,
+      maxWidth: 400
+    });
+    marker.addListener('click', function() {
+      infowindow.open(this.map, marker);
+    });
+    this.map.setZoom(20);
   }
 
   selectAddress() {
@@ -125,6 +182,7 @@ export class ContactPage implements OnInit {
             address: data,
             // address_name: data.name,
           });
+          this.showMap( data.latitude, data.longitude);
           this.contactForm.markAsDirty();
           // this.avoidAlertMessage = false;
           this.events.unsubscribe('select-address');
@@ -200,7 +258,7 @@ export class ContactPage implements OnInit {
       if (this.select) {
         this.modalCtrl.dismiss();
       } else {
-        this.navCtrl.navigateBack('/contact-list');
+        this.navCtrl.navigateBack('/tabs/product-list');
         this.events.publish('open-contact', this.contactForm.value);
       }
     } else {
@@ -210,7 +268,7 @@ export class ContactPage implements OnInit {
           this.events.publish('create-contact', this.contactForm.value);
           this.modalCtrl.dismiss();
         } else {
-          this.navCtrl.navigateBack('/contact-list');
+          this.navCtrl.navigateBack('/tabs/product-list');
           this.events.publish('create-contact', this.contactForm.value);
         }
       });
@@ -246,7 +304,22 @@ export class ContactPage implements OnInit {
 
 
   getContact(doc_id): Promise<any> {
-    return this.pouchdbService.getDoc(doc_id);
+    return new Promise((resolve, reject)=>{
+      this.pouchdbService.getDoc(doc_id).then(((pouchData: any) => {
+        let getList = [
+          pouchData['address_id'],
+        ];
+        this.pouchdbService.getList(getList).then((docs: any[])=>{
+          var doc_dict = {};
+          docs.forEach(row=>{
+            doc_dict[row.id] = row.doc;
+          })
+          pouchData.address = doc_dict[pouchData.address_id] || {};
+          resolve(pouchData);
+        })
+        // return this.pouchdbService.getDoc(doc_id);
+      }))
+    })
   }
 
   ionViewDidEnter() {
@@ -254,9 +327,12 @@ export class ContactPage implements OnInit {
       this.name.setFocus();
     }, 200);
   }
-  createContact(contact) {
+  createContact(viewData) {
     return new Promise((resolve, reject) => {
+      let contact = Object.assign({}, viewData);
       contact.docType = 'contact';
+      contact.address_id = contact.address._id;
+      delete contact.address;
       if (contact.code != '') {
         this.pouchdbService.createDoc(contact).then(doc => {
           resolve({ doc: doc, contact: contact });
@@ -269,8 +345,11 @@ export class ContactPage implements OnInit {
     });
   }
 
-  updateContact(contact) {
+  updateContact(viewData) {
+    let contact = Object.assign({}, viewData);
     contact.docType = 'contact';
+    contact.address_id = contact.address._id;
+    delete contact.address;
     return this.pouchdbService.updateDoc(contact);
   }
 
@@ -364,7 +443,7 @@ export class ContactPage implements OnInit {
     if (this.select) {
       this.modalCtrl.dismiss();
     } else {
-      this.navCtrl.navigateBack('/contact-list');
+      this.navCtrl.navigateBack('/tabs/product-list');
     }
   }
 }
