@@ -36,6 +36,7 @@ export class AddressPage implements OnInit {
   supplier;
   seller;
   employee;
+  contact_id
 
   constructor(
     public navCtrl: NavController,
@@ -54,11 +55,11 @@ export class AddressPage implements OnInit {
     private plt: Platform,
   ) {
     this._id = this.route.snapshot.paramMap.get('_id');
-    this.select = this.route.snapshot.paramMap.get('select');
-    this.customer = this.route.snapshot.paramMap.get('customer');
-    this.supplier = this.route.snapshot.paramMap.get('supplier');
-    this.seller = this.route.snapshot.paramMap.get('seller');
-    this.employee = this.route.snapshot.paramMap.get('employee');
+    // this.select = this.route.snapshot.paramMap.get('select');
+    // this.customer = this.route.snapshot.paramMap.get('customer');
+    // this.supplier = this.route.snapshot.paramMap.get('supplier');
+    // this.seller = this.route.snapshot.paramMap.get('seller');
+    // this.employee = this.route.snapshot.paramMap.get('employee');
   }
 
   async ngOnInit() {
@@ -95,6 +96,21 @@ export class AddressPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
+
+    this.authService.loggedIn.subscribe(async status => {
+
+      console.log("status", status);
+      if (status) {
+        // this.logged = true;
+        let data = await this.authService.getData();
+        this.contact_id = "contact."+data.currentUser.email;
+        this.addressForm.patchValue({
+          contact_id: this.contact_id
+        })
+      }
+    })
+
+
     this.plt.ready().then(() => {
 
   let mapOptions = {

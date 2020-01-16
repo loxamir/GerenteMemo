@@ -566,6 +566,9 @@ export class SalePage implements OnInit {
           && this.saleForm.value.paymentCondition._id == 'payment-condition.cash'){
             this.addPayment();
           }
+          if (this.select){
+            this.modalCtrl.dismiss();
+          }
         }
       } else if (this.saleForm.value.state == 'CONFIRMED'){
           // await this.loading.dismiss();

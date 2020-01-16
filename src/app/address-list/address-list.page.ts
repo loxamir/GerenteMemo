@@ -9,6 +9,7 @@ import { AddressListPopover } from './address-list.popover';
 import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: 'app-address-list',
@@ -28,6 +29,7 @@ export class AddressListPage implements OnInit {
   seller;
   employee;
   customer;
+  contact_id;
 
   constructor(
     public route: ActivatedRoute,
@@ -42,6 +44,7 @@ export class AddressListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public languageService: LanguageService,
     public translate: TranslateService,
+    public authService: AuthService,
   ) {
     // this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
@@ -70,11 +73,21 @@ export class AddressListPage implements OnInit {
     if (this.addresss.length == 0){
       this.createAddress();
     }
-    setTimeout(() => {
-      if(this.select){
-        this.searchBar.setFocus();
+
+    this.authService.loggedIn.subscribe(async status => {
+
+      console.log("status", status);
+      if (status) {
+        // this.logged = true;
+        let data = await this.authService.getData();
+        this.contact_id = "contact."+data.currentUser.email;
       }
-    }, 200);
+    })
+    // setTimeout(() => {
+    //   if(this.select){
+    //     this.searchBar.setFocus();
+    //   }
+    // }, 200);
   }
 
   setFilteredItems() {
@@ -112,9 +125,9 @@ export class AddressListPage implements OnInit {
     return new Promise(resolve => {
     this.pouchdbService.searchDocs(
       'address',
-      keyword,
+      this.contact_id,
       page,
-      "document",
+      "contact_id",
       undefined,
       'name',
       'increase'
@@ -125,22 +138,22 @@ export class AddressListPage implements OnInit {
   }
 
   async deleteAddress(address) {
-    this.loading = await this.loadingCtrl.create({});
-    await this.loading.present();
-    let viewList: any = await this.pouchdbService.getView('Informes/addressUse', 1,
-    [address._id],
-    [address._id+"z"]);
-    if (viewList.length){
-      this.loading.dismiss();
-      let toast = await this.toastCtrl.create({
-      message: "No se puede borrar, addresso en uso",
-      duration: 1000
-      });
-      toast.present();
-    } else {
+    // this.loading = await this.loadingCtrl.create({});
+    // await this.loading.present();
+    // let viewList: any = await this.pouchdbService.getView('Informes/addressUse', 1,
+    // [address._id],
+    // [address._id+"z"]);
+    // if (viewList.length){
+    //   this.loading.dismiss();
+    //   let toast = await this.toastCtrl.create({
+    //   message: "No se puede borrar, addresso en uso",
+    //   duration: 1000
+    //   });
+    //   toast.present();
+    // } else {
       await this.pouchdbService.deleteDoc(address);
-      this.loading.dismiss();
-    }
+    //   this.loading.dismiss();
+    // }
   }
 
   handleChange(list, change){
