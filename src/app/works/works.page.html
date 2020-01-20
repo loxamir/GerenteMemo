@@ -1,15 +1,35 @@
 <!-- <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+  <ion-toolbar *ngIf="!showForm">
+    <ion-buttons slot="start" (click)="goBack()">
+      <ion-icon name="arrow-back" style="font-size: 25px;"></ion-icon>
+      <ion-thumbnail style="--border-radius:10px;">
+        <img [src]="worksForm.value.image" id="avatarImage" #avatarImage *ngIf="worksForm.value.image">
+      </ion-thumbnail>
     </ion-buttons>
-    <ion-searchbar
-      placeholder="Buscar Tarea"
-      [(ngModel)]="searchTerm"
-      (ionChange)="searchItems()">
-    </ion-searchbar>
+    <ion-title
+    (click)="showEdit()"
+    style="padding-left: 5px;">{{worksForm.value.name}}
+      <h1 class="subtitle" *ngIf="worksForm.value.lastRain && diffDays  > 1">
+        {{'LAST_RAIN'|translate}} {{worksForm.value.lastRain}}mm {{'WAS_AT'|translate}} {{ diffDays }} {{'DAYS'|translate}}
+      </h1>
+      <h1 class="subtitle" *ngIf="worksForm.value.lastRain && diffDays == 1">
+        {{'LAST_RAIN'|translate}} {{worksForm.value.lastRain}}mm {{'WAS_AT'|translate}} {{ diffDays }} {{'DAY'|translate}}
+      </h1>
+      <h1 class="subtitle" *ngIf="worksForm.value.lastRain && !diffDays">
+        {{'LAST_RAIN'|translate}} {{worksForm.value.lastRain}}mm {{'TODAY'|translate}}
+      </h1>
+      <h1 class="subtitle" *ngIf="!worksForm.value.lastRain">
+        {{'NO_RAIN_DATA'|translate}}
+      </h1>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header> -->
+
 <ion-header>
   <ion-toolbar *ngIf="showSearch" color="light">
     <ion-buttons slot="start">
@@ -26,7 +46,7 @@
   </ion-toolbar>
   <ion-toolbar *ngIf="!showSearch">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/agro-tabs/area-list"></ion-back-button>
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>AgroMemo</ion-title>
     <ion-buttons slot="end">
@@ -40,53 +60,363 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-  <ion-list no-lines>
-    <ion-item-sliding *ngFor="let item of works" #slidingItem>
-      <ion-item no-padding (click)="openWork(item)">
-        <ion-card class="list-card" no-padding>
-          <ion-row>
-            <ion-col>
-              <h3 class="item-name"><b>{{ item.activity_name || 'No Informado'}}</b></h3>
-            </ion-col>
-          </ion-row>
-     <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding size="6">
-          <h3 class="item-title" style="font-size:15px;font-weight: bold">{{item.area_name | translate}}</h3>
-          <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateStart|date: 'dd/MM/yyyy'}}</h3>
-          <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateEnd|date: 'dd/MM/yyyy'}}</h3>
-        </ion-col>
-        <ion-col no-padding size="6" align-self-center>
-          <h2 *ngIf="item.progress < 100" class="list-big-number" style="color: red;">{{item.progress| number:'1.0'}}%</h2>
-          <h2 *ngIf="item.progress == 100" class="list-big-number" style="color: green;">{{item.progress| number:'1.0'}}%</h2>
-        </ion-col>
-      </ion-row>
-      <ion-row no-padding *ngIf="item.note">
-        <ion-col class="item-content" style="white-space: normal;">
-          {{item.note}}
-        </ion-col>
-      </ion-row>
-      </ion-card>
+<ion-content  class="list-mini-content"  *ngIf="!showForm">
+  <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
+  <img id="imgtmp" #imgtmp style="display:none">
+  <div id="pwa">
+    <input type="file" #pwacamera accept="image/*" capture="camera" (change)="takeCamera()" style="display: none;" />
+    <input type="file" #pwagalery accept="image/*" (change)="takeGalery()" style="display: none;">
+  </div>
+  <form class="sample-form validations-form" [formGroup]="worksForm">
+    <ion-infinite-scroll threshold="100px" position="top" (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" [loadingText]="'LOADING_MORE_ACTIVITIES'|translate">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;">
+      <ion-item-sliding class="list-item" *ngFor="let item of worksForm.value.moves">
+        <ion-item no-padding (click)="openItem(item.doc)" *ngIf="item && item.doc && !(item.doc._attachments && item.doc._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
+          <ion-card [class.works-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.date>=today" class="work-card">
+            <ion-row no-padding>
+              <ion-thumbnail style="--border-radius:10px;">
+                <ion-img [src]="'./assets/icons/'+item.doc.activity_id+'.png'"></ion-img>
+              </ion-thumbnail>
+              <ion-col>
+                <ion-row>
+                  <ion-col size="8.5" no-padding>
+                    <h3 class="activity-name">
+                      {{ item.doc.name || item.doc.activity_name || 'NOT_INFORMED'|translate}}
+                    </h3>
+                    <div [innerHTML]="item.doc.summary"></div>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.rain'">
+                      {{item.doc.quantity|number:'1.0'}} mm
+                    </h1>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
+                      {{item.doc.croped/60|number:'1.0'}} {{'BAGS'|translate}}
+                    </h1>
+                    <ul class="activity-note" *ngIf="item.doc.activity_id == 'activity.spray' || item.doc.activity_id == 'activity.work' || item.doc.activity_id == 'activity.plant'">
+                      <li *ngFor="let input of item.doc.inputs">
+                        {{ input.product_name }}
+                      </li>
+                    </ul>
+                    <h1 class="activity-note" *ngIf="item.doc.cost">
+                      {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}}
+                    </h1>
+                    <h1 class="activity-note">
+                      {{item.doc.note}}
+                    </h1>
+                  </ion-col>
+                  <ion-col>
+                    <h3 no-padding class="item-title-second"
+                      [class.quotation]="item.doc.state=='DRAFT'"
+                      [class.confirmed]="item.doc.state=='SCHEDULED'"
+                      [class.paid]="item.doc.state=='DONE'"
+                      [class.due]="item.doc.state=='STARTED'"
+                      style="border-radius:10px;text-align: center">
+                      {{ item.doc.state | translate }}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.doc.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.doc.date|date: 'HH:mm'}}
+                    </h3>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
 
-    </ion-item>
-      <ion-item-options side="end">
-        <ion-item-option (click)="deleteWork(item)">
-          {{'DELETE'|translate}}
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
-  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+        <ion-item no-padding (click)="openPreview(item)" *ngIf="item?.doc?._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
+          <ion-card [class.works-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.activity_name=='Memo'" class="work-card">
+            <ion-row no-padding>
+              <ion-col no-padding>
+                <ion-img *ngIf="item.doc._attachments['image.png'].data" style="max-height: 200px;width: 100%;" [src]="'data:image/png;base64,'+item.doc._attachments['image.png'].data"></ion-img>
+              </ion-col>
+            </ion-row>
+            <ion-row style="background: white">
+              <ion-col size="8.5" style="background: white" *ngIf="item.doc.note">
+                {{item.doc.note}}
+              </ion-col>
+              <ion-col style="background: white">
+                <h3 class="item-title-second">
+                  {{item.doc.date|date: 'dd/MM/yyyy'}}
+                  {{item.doc.date|date: 'HH:mm'}}
+                </h3>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
+        <ion-item-options>
+          <ion-item-option (click)="deleteWork(item)" *ngIf="item && item.doc && (item.doc.state == 'SCHEDULED' || item.doc.state == 'DRAFT')">
+            {{'DELETE'|translate}}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+    <!-- <div #gotome>
+      teste
+    </div> -->
+    <div style="margin-top:25px;margin-bottom:25px;margin-left: auto;margin-right: auto;text-align: center;"
+    *ngIf="worksForm.value.moves2.length">
+      {{ 'SCHEDULED_WORKS'| translate}}
+    </div>
+    <ion-list no-lines style="overflow: auto;display: flex;flex-direction: column-reverse;">
+      <ion-item-sliding class="list-item" *ngFor="let item of worksForm.value.moves2">
+        <ion-item no-padding
+        (click)="openItem(item.doc)"
+        *ngIf="!(item?.doc?._attachments && item.doc._attachments['image.png'])"
+        style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
+          <ion-card [class.works-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.date>today" class="work-card">
+            <ion-row no-padding>
+              <ion-thumbnail style="--border-radius:10px;">
+                <ion-img [src]="'./assets/icons/'+item.doc.activity_id+'.png'"></ion-img>
+              </ion-thumbnail>
+              <ion-col>
+                <ion-row>
+                  <ion-col size="8.5" no-padding>
+                    <h3 class="activity-name">
+                      {{ item.doc.name || item.doc.activity_name || 'NOT_INFORMED'|translate}}
+                    </h3>
+                    <div [innerHTML]="item.doc.summary"></div>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.rain'">
+                      {{item.doc.quantity|number:'1.0'}} mm
+                    </h1>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
+                      {{item.doc.croped/60|number:'1.0'}} {{'BAGS'|translate}}
+                    </h1>
+                    <ul class="activity-note" *ngIf="item.doc.activity_id == 'activity.spray' || item.doc.activity_id == 'activity.plant' || item.doc.activity_id == 'activity.plant'">
+                      <li *ngFor="let input of item.doc.inputs">
+                        {{ input.product_name }}
+                      </li>
+                    </ul>
+                    <h1 class="activity-note" *ngIf="item.doc.cost">
+                      {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}}
+                    </h1>
+                    <h1 class="activity-note">
+                      {{item.doc.note}}
+                    </h1>
+                  </ion-col>
+                  <ion-col>
+                    <h3 no-padding class="item-title-second"
+                      [class.quotation]="item.doc.state=='DRAFT'"
+                      [class.confirmed]="item.doc.state=='SCHEDULED'"
+                      [class.paid]="item.doc.state=='DONE'"
+                      [class.due]="item.doc.state=='STARTED'"
+                      style="border-radius:10px;text-align: center">
+                      {{ item.doc.state | translate }}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.doc.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.doc.date|date: 'HH:mm'}}
+                    </h3>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createWork()" color="primary">
+        <ion-item no-padding (click)="openPreview(item)" *ngIf="item && item.doc && item.doc._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
+          <ion-card [class.works-card]="item.doc.activity_name!='Memo'" [class.memo-card]="item.doc.activity_name=='Memo'" class="work-card">
+            <ion-row no-padding>
+              <ion-col no-padding>
+                <ion-img *ngIf="item.doc._attachments['image.png'].data" style="max-height: 200px;width: 100%;" [src]="'data:image/png;base64,'+item.doc._attachments['image.png'].data"></ion-img>
+              </ion-col>
+            </ion-row>
+            <ion-row style="background: white">
+              <ion-col size="8.5" style="background: white" *ngIf="item.doc.note">
+                {{item.doc.note}}
+              </ion-col>
+              <ion-col style="background: white">
+                <h3 class="item-title-second">
+                  {{item.doc.date|date: 'dd/MM/yyyy'}}
+                  {{item.doc.date|date: 'HH:mm'}}
+                </h3>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
+        <ion-item no-padding (click)="openItem(item.doc)" *ngIf="item && item.doc && !(item.doc._attachments && item.doc._attachments['image.png'])" style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
+          <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.sent-card]="item.doc.activity_name=='Abastecimento'" class="work-card">
+            <ion-row no-padding>
+              <ion-thumbnail style="--border-radius:10px;">
+                <ion-img [src]="'./assets/icons/'+item.doc.activity_id+'.png'"></ion-img>
+              </ion-thumbnail>
+              <ion-col>
+                <ion-row>
+                  <ion-col size="8.5" no-padding>
+                    <h3 class="activity-name">
+                      {{ item.doc.name || item.doc.activity_name || 'NOT_INFORMED'|translate}}
+                    </h3>
+                    <div [innerHTML]="item.doc.summary"></div>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.fuel'">
+                      {{item.doc.quantity|number:'1.0'}} L
+                    </h1>
+                    <ul class="activity-note" *ngIf="item.doc.activity_id == 'activity.maintenance' || item.doc.activity_id == 'activity.workMachine'">
+                      <li *ngFor="let input of item.doc.inputs">
+                        {{ input.product_name }}
+                      </li>
+                    </ul>
+                    <h1 class="activity-note" *ngIf="item.doc.cost">
+                      {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}}
+                    </h1>
+                    <h1 class="activity-note">
+                      {{item.doc.note}}
+                    </h1>
+                  </ion-col>
+                  <ion-col>
+                    <h3 no-padding class="item-title-second"
+                      [class.quotation]="item.doc.state=='DRAFT'"
+                      [class.confirmed]="item.doc.state=='SCHEDULED'"
+                      [class.paid]="item.doc.state=='DONE'"
+                      [class.due]="item.doc.state=='STARTED'"
+                      style="border-radius:10px;text-align: center">
+                      {{ item.doc.state | translate }}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.doc.date|date: 'dd/MM/yyyy'}}
+                    </h3>
+                    <h3 class="item-title-second">
+                      {{item.doc.date|date: 'HH:mm'}}
+                    </h3>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
+
+        <ion-item no-padding (click)="openPreview(item)" *ngIf="item && item.doc && item.doc._attachments && item.doc._attachments['image.png'].data" style="margin-bottom: 0px; margin-top:0px;--border-color: #5fadcd;">
+          <ion-card [class.area-card]="item.doc.activity_name!='Memo'" [class.sent-card]="item.doc.activity_name=='Abastecimento'" class="work-card">
+            <ion-row no-padding>
+              <ion-col no-padding>
+                <ion-img *ngIf="item.doc._attachments['image.png'].data" style="max-height: 200px;width: 100%;" [src]="'data:image/png;base64,'+item.doc._attachments['image.png'].data"></ion-img>
+              </ion-col>
+            </ion-row>
+            <ion-row style="background: white">
+              <ion-col size="8.5" style="background: white" *ngIf="item.doc.note">
+                {{item.doc.note}}
+              </ion-col>
+              <ion-col style="background: white">
+                <h3 class="item-title-second">
+                  {{item.doc.date|date: 'dd/MM/yyyy'}}
+                  {{item.doc.date|date: 'HH:mm'}}
+                </h3>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-item>
+        <ion-item-options>
+          <ion-item-option (click)="deleteWork(item)" *ngIf="item && item.doc && (item.doc.state == 'SCHEDULED' || item.doc.state == 'DRAFT')">
+            {{'DELETE'|translate}}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+    <ion-infinite-scroll threshold="100px" position="bottom" (ionInfinite)="doInfinite2($event)" *ngIf="ready">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" [loadingText]="'LOADING_SCHEDULED_ACTIVITY'|translate">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <div style="height:50px;">
+    </div>
+
+    <div style="height:200px;" *ngIf="showBotom">
+    </div>
+  </form>
+
+
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      <ion-fab-button (click)="createProduct()">
           <ion-icon name="add">
           </ion-icon>
       </ion-fab-button>
+  </ion-fab> -->
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed"  *ngIf="!showBotom">
+        <ion-fab-button  style="margin: auto;"  (click)="addButton()">
+          <ion-icon name="add">
+          </ion-icon>
+        </ion-fab-button>
+  </ion-fab>
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed"  style="left: 0px;right:0px;bottom: 0px;" *ngIf="showBotom">
+        <ion-fab-button  style="margin: auto;">
+          <ion-icon name="close" (click)="addButton()">
+          </ion-icon>
+        </ion-fab-button>
+  </ion-fab> -->
+  <ion-fab vertical="bottom" style="left: 0px;right:0px;bottom: 0px;" horizontal="center" slot="fixed" *ngIf="showBotom">
+    <ion-fab-button  style="margin: auto;margin-left: 47%;margin-bottom: 10px;"  (click)="addButton()">
+      <ion-icon name="close">
+      </ion-icon>
+    </ion-fab-button>
+    <!-- <ion-fab-button  style="margin: auto;">
+      <ion-icon name="close" (click)="addButton()">
+      </ion-icon>
+    </ion-fab-button> -->
+    <h1 class="activity-message">Seleccione un tipo de trabajo</h1>
+    <h1 class="activity-category">Agricultura</h1>
+    <ion-row *ngIf="showBotom" style="background: white;padding-left:10%;">
+      <ion-col size="4" (click)="addActivity('activity.plant')">
+        <ion-img [src]="'./assets/icons/activity.plant.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          {{'PLANT_ACTIVITY'|translate}}
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.spray')">
+        <ion-img [src]="'./assets/icons/activity.spray.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          {{'SPRAY_ACTIVITY'|translate}}
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.work')">
+        <ion-img [src]="'./assets/icons/activity.work.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          {{'OTHER_SERVICE_ACTIVITY'|translate}}
+        </h1>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="showBotom" style="background: white;margin-bottom:0px;padding-left:10%;">
+      <ion-col size="4" (click)="addActivity('activity.harvest')">
+        <ion-img [src]="'./assets/icons/activity.harvest.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          {{'HARVEST_ACTIVITY'|translate}}
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.rain')">
+        <ion-img [src]="'./assets/icons/activity.rain.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          {{'RAIN_ACTIVITY'|translate}}
+        </h1>
+      </ion-col>
+      <ion-col size="4" (click)="addActivity('activity.analisis')">
+        <ion-img [src]="'./assets/icons/activity.analisis.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          {{'ANALISIS_ACTIVITY'|translate}}
+        </h1>
+      </ion-col>
+    </ion-row>
+    <h1 class="activity-category">Maquinaria</h1>
+    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;padding-left:10%;">
+      <ion-col (click)="addActivity('activity.fuel')">
+        <ion-img [src]="'./assets/icons/activity.fuel.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          {{'FUEL_ACTIVITY'|translate}}
+        </h1>
+      </ion-col>
+      <ion-col (click)="addActivity('activity.maintenance')">
+        <ion-img [src]="'./assets/icons/activity.maintenance.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          {{'MAINTENANCE_ACTIVITY'|translate}}
+        </h1>
+      </ion-col>
+      <ion-col (click)="addActivity('activity.workMachine')">
+        <ion-img [src]="'./assets/icons/activity.workMachine.png'" class="activity-menu"></ion-img>
+        <h1 class="activity-title">
+          {{'OTHER_SERVICE_ACTIVITY'|translate}}
+        </h1>
+      </ion-col>
+    </ion-row>
   </ion-fab>
 </ion-content>

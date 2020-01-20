@@ -54,7 +54,7 @@ export class WorkPage implements OnInit {
   editDate = false;
   showPlan = false;
   tmpData = {};
-  state = 'DRAFT';
+  state = 'STARTED';
   ready = false;
   input = {};
   changing = false;
@@ -161,16 +161,16 @@ export class WorkPage implements OnInit {
 
   async ngOnInit() {
     var date_start = new Date();
-    date_start.setHours(7);
-    date_start.setMinutes(30);
-    var date_end = new Date();
-    date_end.setHours(18);
-    date_end.setMinutes(0);
+    // date_start.setHours(7);
+    // date_start.setMinutes(30);
+    // var date_end = new Date();
+    // date_end.setHours(18);
+    // date_end.setMinutes(0);
     this.workForm = this.formBuilder.group({
       name: new FormControl(''),
       activity: new FormControl(this.activity||{}),
       date: new FormControl(date_start.toISOString()),
-      dateEnd: new FormControl(date_end.toISOString()),
+      // dateEnd: new FormControl(date_end.toISOString()),
       note: new FormControl(),
       state: new FormControl(this.state),
       fields: new FormControl([]),
@@ -1004,7 +1004,7 @@ export class WorkPage implements OnInit {
   setScheduled(){
     let plan = {
       date: this.workForm.value.date,
-      dateEnd: this.workForm.value.dateEnd,
+      // dateEnd: this.workForm.value.dateEnd,
       note: this.workForm.value.note,
     }
     this.workForm.value.fields.forEach((field)=>{
@@ -1027,7 +1027,7 @@ export class WorkPage implements OnInit {
     // this.workForm.value.state="DONE";
     this.workForm.patchValue({
       state: "DONE",
-      dateEnd: this.today.toISOString(),
+      // dateEnd: this.today.toISOString(),
     })
     this.buttonSave();
   }
@@ -1046,34 +1046,34 @@ export class WorkPage implements OnInit {
     // }
   }
 
-  dateChanged(){
-    if (this.workForm.value.date < this.workForm.value.dateEnd){
-      this.workForm.patchValue({
-        dateEnd: this.workForm.value.date,
-      })
-    }
-  }
+  // dateChanged(){
+  //   if (this.workForm.value.date < this.workForm.value.dateEnd){
+  //     this.workForm.patchValue({
+  //       dateEnd: this.workForm.value.date,
+  //     })
+  //   }
+  // }
 
-  async dateEndChanged(){
-    if (this.ready && this.workForm.value.dateEnd < this.workForm.value.date){
-      let alertPopup = await this.alertCtrl.create({
-        header: this.translate.instant('DATE_ERROR'),
-        message: this.translate.instant('DATE_END_LOWER_THAN_START'),
-        buttons: [
-        {
-          text: this.translate.instant('OK'),
-          handler: () => {
-            this.ready = false;
-            this.workForm.patchValue({
-              dateEnd: this.workForm.value.date,
-            })
-            this.ready = true;
-          }
-        }]
-      });
-      alertPopup.present();
-    }
-  }
+  // async dateEndChanged(){
+  //   if (this.ready && this.workForm.value.dateEnd < this.workForm.value.date){
+  //     let alertPopup = await this.alertCtrl.create({
+  //       header: this.translate.instant('DATE_ERROR'),
+  //       message: this.translate.instant('DATE_END_LOWER_THAN_START'),
+  //       buttons: [
+  //       {
+  //         text: this.translate.instant('OK'),
+  //         handler: () => {
+  //           this.ready = false;
+  //           this.workForm.patchValue({
+  //             dateEnd: this.workForm.value.date,
+  //           })
+  //           this.ready = true;
+  //         }
+  //       }]
+  //     });
+  //     alertPopup.present();
+  //   }
+  // }
 
   async changeNumber(fielD) {
     return new Promise(async (resolve, reject)=>{

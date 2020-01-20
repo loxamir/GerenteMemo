@@ -40,7 +40,16 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../inputs/inputs.module#InputsPageModule'
+            loadChildren: '../product-list/product-list.module#ProductListPageModule'
+          }
+        ]
+      },
+      {
+        path: 'activity-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../works/works.module#WorksPageModule'
           }
         ]
       },

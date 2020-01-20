@@ -8,9 +8,9 @@
     </ion-buttons>
     <ion-title>
       {{ workForm.value.name || workForm.value.activity && workForm.value.activity.name || 'TASK' | translate }}
-      <h1 class="subtitle" (click)="showDate()">
-        {{'FROM'|translate}} {{ workForm.value.date|date: 'dd/MM/yyyy' }} {{'TO'|translate}} {{ workForm.value.dateEnd|date: 'dd/MM/yyyy' }}
-      </h1>
+      <!-- <h1 class="subtitle" (click)="showDate()">
+        {{'FROM'|translate}} {{ workForm.value.date|date: 'dd/MM/yyyy' }}
+      </h1> -->
     </ion-title>
     <ion-buttons slot="end">
       <ion-button icon-only
@@ -64,10 +64,10 @@
   [formGroup]="workForm"
   (ngSubmit)="onSubmit(workForm.value)" >
     <ion-row justify-content-center
-    *ngIf="editDate ||((workForm.value.state == 'DRAFT')  && !this.list)">
-        <ion-item no-padding class="field-50">
-          <h4 class="field-label">{{'DATE_START' | translate }}</h4>
-          <ion-datetime class="field-50-datetime"
+    *ngIf="!this.list">
+        <ion-item no-padding class="field-100">
+          <h4 class="field-label">{{'DATE' | translate }}</h4>
+          <ion-datetime class="field-100-datetime"
           displayFormat="DD/MM/YYYY HH:mm"
           pickerFormat="DD/MM/YYYY HH:mm"
           [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
@@ -76,7 +76,7 @@
           formControlName="date">
           </ion-datetime>
         </ion-item>
-        <ion-item no-padding class="field-50">
+        <!-- <ion-item no-padding class="field-50">
           <h4 class="field-label">{{'DATE_END' | translate }}</h4>
           <ion-datetime class="field-50-datetime"
           displayFormat="DD/MM/YYYY HH:mm"
@@ -86,7 +86,7 @@
           [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
           formControlName="dateEnd">
           </ion-datetime>
-        </ion-item>
+        </ion-item> -->
         <!-- <ion-item no-padding (click)="selectActivity()" class="field-50">
           <h4 class="field-label">{{'Atividade' | translate}}</h4>
           <h4 class="field-value">{{workForm.value.activity && workForm.value.activity.name || 'Ningun'}}</h4>

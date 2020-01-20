@@ -45,7 +45,7 @@ export class SalesPopover {
     this.pop.dismiss();
   }
   contracts() {
-    this.navCtrl.navigateForward(['/contract-list', {}]);
+    this.navCtrl.navigateForward(['/future-contract-list', {}]);
     this.pop.dismiss();
   }
   products() {
