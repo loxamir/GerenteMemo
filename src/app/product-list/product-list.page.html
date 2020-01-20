@@ -63,11 +63,11 @@
                     {{ 'STOCK_LOW' | translate }}
                 </ion-col>
               </ion-row>
-              <ion-row no-padding *ngIf="item.stock<0&&item.type=='product' && !this.select"  class="due">
+              <!-- <ion-row no-padding *ngIf="item.stock<0&&item.type=='product' && !this.select"  class="due">
                 <ion-col no-padding style="text-align: center;color: white;">
                     {{ 'NEGATIVE_STOCK' | translate }}
                 </ion-col>
-              </ion-row>
+              </ion-row> -->
           </ion-col>
           <ion-col size="2" class="open-item-col" *ngIf="select" (click)="openProduct(item)">
             <ion-icon name="open" class="open-item-arrow"></ion-icon>
