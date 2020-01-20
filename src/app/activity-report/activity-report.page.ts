@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, LoadingController, AlertController, Events,
-  ModalController, ToastController } from '@ionic/angular';
+  ModalController, ToastController, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,8 +15,9 @@ import { AreasPage } from '../areas/areas.page';
 import { InputsPage } from '../inputs/inputs.page';
 import { MachinesPage } from '../machines/machines.page';
 import { ActivitysPage } from '../activitys/activitys.page';
-import * as d3 from 'd3';
+import { ActivityReportPopover } from './activity-report.popover';
 
+import * as d3 from 'd3';
 // import * as d3 from 'd3-selection';
 import * as d3Scale from "d3-scale";
 import * as d3Shape from "d3-shape";
@@ -43,6 +44,7 @@ export class ActivityReportPage implements OnInit {
   planned;
   planned_yield;
   languages: Array<LanguageModel>;
+  filter = {};
 
   title: string = 'D3.js with Ionic 2!';
   margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -62,6 +64,7 @@ export class ActivityReportPage implements OnInit {
   y: any;
   g: any;
   areaMeasure = "ha";
+  filterClean = true;
 
   line: d3Shape.Line<[number, number]>;
   constructor(
@@ -70,6 +73,7 @@ export class ActivityReportPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
+    public popoverCtrl: PopoverController,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
@@ -1129,13 +1133,16 @@ export class ActivityReportPage implements OnInit {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('select-crop');
       this.events.subscribe('select-crop', async (data) => {
-        this.reportActivityForm.patchValue({
-          crop: data,
-        });
+        this.reportActivityForm.value.crop = data;
+        this.filter['crop'] = data;
+        // this.reportActivityForm.patchValue({
+        //   crop: data,
+        // });
         // this.reportActivityForm.markAsDirty();
-        this.avoidAlertMessage = false;
+        // this.avoidAlertMessage = false;
         this.events.unsubscribe('select-crop');
-        this.goNextStep();
+        // this.goNextStep();
+        this.filterClean = false;
         resolve(true);
       })
       let profileModal = await this.modalCtrl.create({
@@ -1153,15 +1160,18 @@ export class ActivityReportPage implements OnInit {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('select-area');
       this.events.subscribe('select-area', (data) => {
-        this.reportActivityForm.patchValue({
-          area: data,
-          // contact_name: data.name,
-        });
+        this.reportActivityForm.value.area = data;
+        this.filter['area'] = data;
+        // this.reportActivityForm.patchValue({
+        //   area: data,
+        //   // contact_name: data.name,
+        // });
         // this.reportActivityForm.markAsDirty();
-        this.avoidAlertMessage = false;
+        // this.avoidAlertMessage = false;
         this.events.unsubscribe('select-area');
+        this.filterClean = false;
         resolve(true);
-        this.goNextStep();
+        // this.goNextStep();
       })
       let profileModal = await this.modalCtrl.create({
         component: AreasPage,
@@ -1177,15 +1187,18 @@ export class ActivityReportPage implements OnInit {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('select-input');
       this.events.subscribe('select-input', (data) => {
-        this.reportActivityForm.patchValue({
-          input: data,
-          // contact_name: data.name,
-        });
-        this.reportActivityForm.markAsDirty();
-        this.avoidAlertMessage = false;
+        this.reportActivityForm.value.input = data;
+        this.filter['input'] = data;
+        // this.reportActivityForm.patchValue({
+        //   input: data,
+        //   // contact_name: data.name,
+        // });
+        // this.reportActivityForm.markAsDirty();
+        // this.avoidAlertMessage = false;
         this.events.unsubscribe('select-input');
+        this.filterClean = false;
         resolve(true);
-        this.goNextStep();
+        // this.goNextStep();
       })
       let profileModal = await this.modalCtrl.create({
         component: InputsPage,
@@ -1196,19 +1209,48 @@ export class ActivityReportPage implements OnInit {
       profileModal.present();
     });
   }
+
+  filterReport(){
+    this.reportActivityForm.patchValue(this.filter);
+    this.reportActivityForm.markAsDirty();
+    // this.avoidAlertMessage = false;
+    // this.events.unsubscribe('select-machine');
+    // resolve(true);
+    this.goNextStep();
+  }
+
+  cleanFilter(){
+    this.filter = {
+       machine: {},
+       area: {},
+       crop: {},
+       input: {},
+       activity: {},
+     }
+    this.reportActivityForm.value.machine = {};
+    this.reportActivityForm.value.area = {};
+    this.reportActivityForm.value.crop = {};
+    this.reportActivityForm.value.input = {};
+    this.reportActivityForm.value.activity = {};
+    this.filterClean = true;
+  }
+
   selectMachine(){
     return new Promise(async resolve => {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('select-machine');
       this.events.subscribe('select-machine', (data) => {
-        this.reportActivityForm.patchValue({
-          machine: data,
-        });
-        this.reportActivityForm.markAsDirty();
-        this.avoidAlertMessage = false;
+        this.filter['machine'] = data;
+        // this.reportActivityForm.patchValue({
+        //   machine: data,
+        // });
+        this.reportActivityForm.value.machine = data;
+        // this.reportActivityForm.markAsDirty();
+        // this.avoidAlertMessage = false;
         this.events.unsubscribe('select-machine');
+        this.filterClean = false;
         resolve(true);
-        this.goNextStep();
+        // this.goNextStep();
       })
       let profileModal = await this.modalCtrl.create({
         component: MachinesPage,
@@ -1225,14 +1267,17 @@ export class ActivityReportPage implements OnInit {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('select-activity');
       this.events.subscribe('select-activity', (data) => {
-        this.reportActivityForm.patchValue({
-          activity: data,
-          // contact_name: data.name,
-        });
-        // this.reportActivityForm.markAsDirty();
-        this.avoidAlertMessage = false;
+        this.reportActivityForm.value.activity = data;
+        this.filter['activity'] = data;
+        // this.reportActivityForm.patchValue({
+        //   activity: data,
+        //   // contact_name: data.name,
+        // });
+        // // this.reportActivityForm.markAsDirty();
+        // this.avoidAlertMessage = false;
         this.events.unsubscribe('select-activity');
-        this.goNextStep();
+        this.filterClean = false;
+        // this.goNextStep();
         resolve(true);
       })
       let profileModal = await this.modalCtrl.create({
@@ -1260,7 +1305,7 @@ export class ActivityReportPage implements OnInit {
       crop: new FormControl({}),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'area'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'activity'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
@@ -1363,8 +1408,8 @@ export class ActivityReportPage implements OnInit {
 
     //Init axis
     this.x = d3Scale.scaleBand().rangeRound([0, 220]).padding(0.1);
-    this.y = d3Scale.scaleLinear().rangeRound([200, 0]);
-    this.x.domain(dataset.map((d: any) => d.name));
+    this.y = d3Scale.scaleLinear().rangeRound([height, -80]);
+    this.x.domain(dataset.map((d: any) => this.translate.instant(d.name)));
     this.y.domain([0, d3Array.max(dataset, (d: any) => d.total)]);
 
     //Draw Axis
@@ -1417,18 +1462,18 @@ export class ActivityReportPage implements OnInit {
       .data(this.reportActivityForm.value.items)
       .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", (d: any) => this.x(d.name))
+      .attr("x", (d: any) => this.x(this.translate.instant(d.name)))
       .attr("y", (d: any) => this.y(d.total))
       .attr("width", this.x.bandwidth())
       .style("fill", (d: any) => color(d['name']))
       .attr("height", (d:any) => height - this.y(d.total))
       .each(function(d:any) { self._current - d; });
 
-    path.on('mouseover', function(d:any) {  // when mouse enters div
+    path.on('mouseover', (d:any) =>{  // when mouse enters div
       d3.sum(dataset.map(function(d:any) { // calculate the total number of tickets in the dataset
         return (d.enabled) ? d.total : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase
       }));
-      tooltip.select('.label').html(d.name); // set current label
+      tooltip.select('.label').html(this.translate.instant(d.name)); // set current label
       tooltip.select('.count').html('$' + d.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")); // set current count
       tooltip.style('display', 'block'); // set display
     });
@@ -1499,16 +1544,16 @@ export class ActivityReportPage implements OnInit {
       .enter() //creates placeholder nodes for each of the values
       .append('path') // replace placeholders with path elements
       .attr('d', arc) // define d attribute with arc function above
-      .attr('fill', function(d:any) { return color(d['data'].name); }) // use color scale to define fill of each label in dataset
+      .attr('fill', (d:any) => { return color(this.translate.instant(d['data'].name)); }) // use color scale to define fill of each label in dataset
       .each(function(d:any) { self._current - d; }); // creates a smooth animation for each track
 
     // mouse event handlers are attached to path so they need to come after its definition
-    path.on('mouseover', function(d:any) {  // when mouse enters div
+    path.on('mouseover', (d:any) => {  // when mouse enters div
       var total = d3.sum(dataset.map(function(d:any) { // calculate the total number of tickets in the dataset
         return (d.enabled) ? d.total : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase
       }));
       var percent = Math.round(1000 * d.data.total / total) / 10; // calculate percent
-      tooltip.select('.label').html(d.data.name); // set current label
+      tooltip.select('.label').html(this.translate.instant(d.data.name)); // set current label
       tooltip.select('.count').html('$' + d.data.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")); // set current count
       tooltip.select('.percent').html(percent + '%'); // set percent calculated above
       tooltip.style('display', 'block'); // set display
@@ -1800,5 +1845,17 @@ export class ActivityReportPage implements OnInit {
         if (tooltipLine) tooltipLine.attr('stroke', 'none');
       });
     console.log("fim");
+  }
+
+  async presentPopover(myEvent) {
+    let popover = await this.popoverCtrl.create({
+      component: ActivityReportPopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
   }
 }

@@ -50,12 +50,12 @@
     </ion-buttons>
     <ion-title>AgroMemo</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="changeSearch()">
+      <!-- <ion-button (click)="changeSearch()">
         <ion-icon name="search"></ion-icon>
-      </ion-button>
-      <ion-button  (click)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button>
+      </ion-button> -->
+      <!-- <ion-button  (click)="presentPopover($event)">
+        <ion-icon name="camera"></ion-icon>
+      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -86,6 +86,12 @@
                     <h3 class="activity-name">
                       {{ item.doc.name || item.doc.activity_name || 'NOT_INFORMED'|translate}}
                     </h3>
+                    <h1 class="activity-note" *ngIf="item.doc.area_name">
+                      <b>{{item.doc.area_name}}</b>
+                    </h1>
+                    <h1 class="activity-note" *ngIf="item.doc.machine_name">
+                      <b>{{item.doc.machine_name}}</b>
+                    </h1>
                     <div [innerHTML]="item.doc.summary"></div>
                     <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.rain'">
                       {{item.doc.quantity|number:'1.0'}} mm
@@ -99,7 +105,7 @@
                       </li>
                     </ul>
                     <h1 class="activity-note" *ngIf="item.doc.cost">
-                      {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}}
+                      {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}} - $ {{item.doc.cost/item.doc.surface}}/ha
                     </h1>
                     <h1 class="activity-note">
                       {{item.doc.note}}
@@ -178,6 +184,9 @@
                     <h3 class="activity-name">
                       {{ item.doc.name || item.doc.activity_name || 'NOT_INFORMED'|translate}}
                     </h3>
+                    <h1 class="activity-note" *ngIf="item.doc.machine_name">
+                      <b>{{item.doc.machine_name}}</b>
+                    </h1>
                     <div [innerHTML]="item.doc.summary"></div>
                     <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.rain'">
                       {{item.doc.quantity|number:'1.0'}} mm
@@ -191,7 +200,7 @@
                       </li>
                     </ul>
                     <h1 class="activity-note" *ngIf="item.doc.cost">
-                      {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}}
+                      {{'COST'|translate}}: $ {{item.doc.cost/item.doc.surface|number:'1.'+currency_precision}} - $ {{item.doc.cost/item.doc.surface}}
                     </h1>
                     <h1 class="activity-note">
                       {{item.doc.note}}
@@ -251,6 +260,9 @@
                     <h3 class="activity-name">
                       {{ item.doc.name || item.doc.activity_name || 'NOT_INFORMED'|translate}}
                     </h3>
+                    <h1 class="activity-note" *ngIf="item.doc.machine_name">
+                      <b>{{item.doc.machine_name}}</b>
+                    </h1>
                     <div [innerHTML]="item.doc.summary"></div>
                     <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.fuel'">
                       {{item.doc.quantity|number:'1.0'}} L
@@ -398,7 +410,7 @@
       </ion-col>
     </ion-row>
     <h1 class="activity-category">Maquinaria</h1>
-    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;padding-left:10%;">
+    <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;padding-left:10%;border-bottom: 1px solid #666666;">
       <ion-col (click)="addActivity('activity.fuel')">
         <ion-img [src]="'./assets/icons/activity.fuel.png'" class="activity-menu"></ion-img>
         <h1 class="activity-title">

@@ -12,6 +12,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { ActivityReportPage } from './activity-report.page';
+import { ActivityReportPopover } from './activity-report.popover';
 
 const routes: Routes = [
   {
@@ -36,9 +37,10 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ActivityReportPage],
+  declarations: [ActivityReportPage, ActivityReportPopover],
   providers: [
     SocialSharing,
-  ]
+  ],
+  entryComponents: [ActivityReportPopover]
 })
 export class ActivityReportPageModule {}

@@ -54,11 +54,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'animal-list',
+        path: 'report-list',
         children: [
           {
             path: '',
-            loadChildren: '../animals/animals.module#AnimalsPageModule'
+            loadChildren: '../activity-report/activity-report.module#ActivityReportPageModule'
           }
         ]
       },

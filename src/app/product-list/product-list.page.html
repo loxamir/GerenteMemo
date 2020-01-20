@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-        <ion-menu-button *ngIf="!select"></ion-menu-button>
+        <!-- <ion-menu-button *ngIf="!select"></ion-menu-button> -->
         <!-- <ion-buttons slot="start"> -->
           <ion-back-button defaultHref="/agro-tabs/activity-list"></ion-back-button>
         <!-- </ion-buttons> -->
@@ -49,12 +49,13 @@
                       {{'CODE'| translate}}: <b style="  margin-left: 5px">{{item.code}}</b>
                   </h3>
                   <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service' && !this.select">
-                      {{'STOCK'| translate}}: <b style="color: green;margin-left: 5px">{{item.stock+' '}}{{item.unity|translate}}</b>
+                      {{'COST'| translate}}: <b style="color: green;margin-left: 5px">$ {{item.cost| number:'1.'+currency_precision}}</b>
                   </h3>
                 </ion-col>
                 <ion-col no-padding size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
-                  <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">$ {{item.price| number:'1.'+currency_precision}}</h2>
-                  <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.'+currency_precision}}</h2>
+                  <h2 class="list-big-number" *ngIf="operation!='purchase'" style="color: green;">{{item.stock+' '}}{{item.unity|translate}}</h2>
+                  <!-- <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.'+currency_precision}}</h2> -->
+
                 </ion-col>
               </ion-row>
               <ion-row no-padding *ngIf="item.stock>=0&&item.stock<item.stock_min&&item.type=='product' && !this.select">
