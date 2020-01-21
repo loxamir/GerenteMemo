@@ -217,8 +217,8 @@ export class WorksPage implements OnInit {
         let work: any = await self.pouchdbService.createDoc({
           'docType': 'picture',
           'date': new Date().toISOString(),
-          'works_id': self.worksForm.value._id,
-          'works_name': self.worksForm.value.name,
+          // 'works_id': self.worksForm.value._id,
+          // 'works_name': self.worksForm.value.name,
           'activity_name': "Foto",
           'activity_id': "activity.picture",
           'note': self.worksForm.value.note,
@@ -272,8 +272,8 @@ export class WorksPage implements OnInit {
         let work: any = await self.pouchdbService.createDoc({
           'docType': 'picture',
           'date': new Date().toISOString(),
-          'works_id': self.worksForm.value._id,
-          'works_name': self.worksForm.value.name,
+          // 'works_id': self.worksForm.value._id,
+          // 'works_name': self.worksForm.value.name,
           'activity_name': "Foto",
           'activity_id': "activity.picture",
           'note': self.worksForm.value.note,
@@ -434,6 +434,9 @@ export class WorksPage implements OnInit {
     // } else {
       // this.showForm = true;
       this.doInfinite(false);
+      setTimeout(() => {
+        this.content.scrollToBottom(10);
+      }, 200);
       this.loading.dismiss();
     // }
   }
@@ -516,6 +519,7 @@ export class WorksPage implements OnInit {
   }
 
   async addActivity(activity_id) {
+    this.showBotom = false;
     let componentProps = {
       "works": this.worksForm.value,
       "select": true,
@@ -561,8 +565,8 @@ export class WorksPage implements OnInit {
     this.pouchdbService.createDoc({
       'docType': 'work',
       'date': new Date().toISOString(),
-      'works_id': this.worksForm.value._id,
-      'works_name': this.worksForm.value.name,
+      // 'works_id': this.worksForm.value._id,
+      // 'works_name': this.worksForm.value.name,
       // 'crop_id': this.worksForm.value.crop._id,
       // 'crop_name': this.worksForm.value.crop.name,
       'activity_name': "Anotación",

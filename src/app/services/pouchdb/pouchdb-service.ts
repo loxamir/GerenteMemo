@@ -437,6 +437,7 @@ export class PouchdbService {
         'limit': limit,
         'skip': skip,
         'include_docs': include_docs,
+        'attachments': include_docs,
         'keys': keys,
         'descending': true,
         'inclusive_end': true,
