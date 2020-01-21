@@ -91,14 +91,14 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/agro-tabs/area-list',
+        redirectTo: '/agro-tabs/activity-list',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/agro-tabs/area-list',
+    redirectTo: '/agro-tabs/activity-list',
     pathMatch: 'full'
   }
 ];

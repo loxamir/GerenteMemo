@@ -340,7 +340,7 @@ export class LoginPage implements OnInit {
       this.pouchdbService.getConnect();
       this.events.subscribe('end-sync', async () => {
         this.events.unsubscribe('end-sync');
-        await this.router.navigate(['/agro-tabs/area-list']);
+        await this.router.navigate(['/agro-tabs/activity-list']);
         this.menuCtrl.enable(true);
         await toast.dismiss();
         await this.loading.dismiss();

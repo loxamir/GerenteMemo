@@ -80,7 +80,7 @@
                       </li>
                     </ul>
                     <h1 class="activity-note" *ngIf="item.doc.cost">
-                      {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}} - $ {{item.doc.cost/item.doc.surface}}/ha
+                      {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}} - $ {{(item.doc.cost/item.doc.surface)|number:'1.'+currency_precision}}/ha
                     </h1>
                     <h1 class="activity-note">
                       {{item.doc.note}}

@@ -43,6 +43,7 @@ export class WorksPage implements OnInit {
   @ViewChild('pwacamera', { static: false }) pwacamera: ElementRef;
   @ViewChild('pwagalery', { static: false }) pwagalery: ElementRef;
   @ViewChild(IonContent, { static: false }) content: IonContent;
+  @ViewChild('searchBar', { static: false }) searchBar;
   worksForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
@@ -60,7 +61,9 @@ export class WorksPage implements OnInit {
   avatar = undefined;
   currency_precision = 2;
   worksMeasure = "ha";
+  showSearch =false;
   ready = false;
+  searchTerm: string = '';
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -126,6 +129,16 @@ export class WorksPage implements OnInit {
         moves.splice(index, 1);
       }
     })
+  }
+
+  changeSearch(){
+    this.showSearch = !this.showSearch;
+    this.searchTerm = '';
+    if (this.showSearch){
+      setTimeout(() => {
+        this.searchBar.setFocus();
+      }, 500);
+    }
   }
 
   removeItem(doc_id){
