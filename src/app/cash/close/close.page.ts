@@ -258,11 +258,11 @@ export class ClosePage implements OnInit {
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-30, " ");
       content += "Fecha: "+this.formatService.string_pad(25, (new Date(this.closeForm.value.date).toLocaleDateString('es-PY')).substring(0, data.ticketPrint.closePaperWidth-5), "right");
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-22, " ")+"\n";
-      content += "Monto Final:   "+this.formatService.string_pad(15, "$ "+this.closeForm.value.amount_physical.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      content += "Monto Final:   "+this.formatService.string_pad(15, "$ "+this.amount_physical.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-30, " ");
       content += "Valor Recebido: "+this.formatService.string_pad(16, "$ "+this.closeForm.value.amount_income.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-31, " ")+"\n";
-      content += "Variación:     "+this.formatService.string_pad(15, "$ "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open).toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      content += "Variación:     "+this.formatService.string_pad(15, "$ "+(this.amount_physical-this.closeForm.value.amount_open).toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-30, " ");
       content += "Monto Entregado: "+this.formatService.string_pad(15, "$ "+this.closeForm.value.amount_expense.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-32, " ")+"\n";
@@ -303,8 +303,8 @@ export class ClosePage implements OnInit {
       content += "Monto Inicial"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-13, "$ "+this.closeForm.value.amount_open.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
       content += "Valor Recebido"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-14, "$ "+this.closeForm.value.amount_income.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
       content += "Monto Entregado"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-15, "$ "+this.closeForm.value.amount_expense.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-      content += "Monto Final"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-11, "$ "+this.closeForm.value.amount_physical.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-      content += "Variación"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-9, "$ "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open).toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      content += "Monto Final"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-11, "$ "+this.amount_physical.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      content += "Variación"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-9, "$ "+(this.amount_physical-this.closeForm.value.amount_open).toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
 
       content += this.formatService.string_pad(data.ticketPrint.closePaperWidth, "| Movimentos |", 'center', '-')+"\n";
       content += this.formatService.string_pad(data.ticketPrint.closePaperWidth/3, "Contacto")+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-1, "Descripcion")+this.formatService.string_pad(data.ticketPrint.closePaperWidth/6,"Valor", 'right')+"\n";
