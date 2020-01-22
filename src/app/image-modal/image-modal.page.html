@@ -16,9 +16,9 @@
       <!-- <ion-button (click)="showEdit()">
         <ion-icon name="videocam"></ion-icon>
       </ion-button> -->
-      <!-- <ion-button  (click)="showEdit()">
+      <ion-button  (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
-      </ion-button> -->
+      </ion-button>
       <!-- <ion-button (click)="close()">
         <ion-icon name="close"></ion-icon>
       </ion-button> -->
@@ -39,6 +39,9 @@
       <ion-icon name="remove" slot="start"></ion-icon>
     </ion-button> -->
   <!-- </ion-item> -->
+  <ion-item style="display: none;">
+    <ion-datetime #dateTime displayFormat="DD/MM/YYYY hh:mm" [(ngModel)]="date" (ionChange)="updatePictureDate()" doneText="{{'SAVE'|translate}}" cancelText="{{'CANCEL'|translate}}"></ion-datetime>
+  </ion-item>
 
   <ion-slides [options]="sliderOpts" #slider style="background: black;">
     <ion-slide>

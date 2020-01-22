@@ -123,6 +123,15 @@ export class WorksPage implements OnInit {
     // })
   }
 
+  refreshList(){
+    this.skip = 0;
+    this.worksForm.value.moves = [];
+    this.doInfinite(false);
+    setTimeout(() => {
+      this.content.scrollToBottom(10);
+    }, 200);
+  }
+
   removeItemList(moves, doc_id){
     moves.forEach((work, index)=>{
       if (work.doc._id == doc_id){
@@ -616,7 +625,8 @@ export class WorksPage implements OnInit {
         img: 'data:image/png;base64,' + item._attachments['image.png'].data,
         name: this.worksForm.value.name,
         note: item.note,
-        date: item.date
+        date: item.date,
+        doc: item,
       }
     }).then(modal => {
       modal.present();

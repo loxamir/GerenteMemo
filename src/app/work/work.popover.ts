@@ -31,6 +31,7 @@ export class WorkPopover {
     }
     this.navParams.data.doc.workForm.patchValue({
        state: 'STARTED',
+       date: this.today,
       _id: ''
     });
     this.navParams.data.doc.workForm.markAsDirty();
