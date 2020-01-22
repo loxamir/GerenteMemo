@@ -120,7 +120,7 @@
             </h1>
             <ion-row no-padding>
               <ion-col no-padding>
-                <ion-img style="max-height: 200px;width: 100%;" [src]="'data:image/png;base64,'+item.doc._attachments['image.png'].data"></ion-img>
+                <ion-img style="object-fit: cover;with:100%;max-width: 400px;height: 100%;max-height: 350px;margin: auto;" [src]="'data:image/png;base64,'+item.doc._attachments['image.png'].data"></ion-img>
               </ion-col>
             </ion-row>
             <ion-row style="background: white">
