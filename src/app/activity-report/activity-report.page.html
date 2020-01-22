@@ -12,7 +12,7 @@
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="goNextStep()">
-        <ion-icon name="refresh()"></ion-icon>
+        <ion-icon name="refresh"></ion-icon>
       </ion-button>
       <ion-button (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
@@ -116,9 +116,27 @@
         <ion-label>{{'FILTERS' | translate}}</ion-label>
         <ion-toggle formControlName="showFilter"></ion-toggle>
       </ion-item> -->
-
+      <!-- <div *ngIf="!reportActivityForm.value.items.length">
+        <h1>
+          {{'NO_DATA_YET'|translate}}
+        </h1>
+      </div> -->
+      <ion-row *ngIf="!reportActivityForm.value.items.length">
+        <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 20%;background: white;border-radius:10px;background: ">
+          <ion-row>
+            <ion-col>
+              <h1>{{ 'NOT_DATA_AVAILABLE' | translate }}</h1>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <h4>{{ 'REGISTER_SOME_ACTIVITIES_BEFORE' | translate }}</h4>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
       <!-- <ion-button class="button-100" color="success" (click)="setFilter()">Filtrar</ion-button> -->
-      <ion-card class="list-card">
+      <ion-card class="list-card" *ngIf="reportActivityForm.value.items.length">
         <ion-list>
           <div *ngIf="reportActivityForm.value.groupBy == 'name'">
             <!-- <div *ngIf="reportActivityForm.value.reportType == 'activity'"> -->
@@ -860,7 +878,7 @@
         </ion-list>
       </ion-card>
 
-      <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;">
+      <ion-card *ngIf="reportActivityForm.value.items.length" class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;">
         <ion-row>
           <ion-col>
             <div id="barChart" style="width: calc(100% - 20px);margin-bottom: 0%;height: 390px;">
@@ -868,7 +886,7 @@
           </ion-col>
         </ion-row>
       </ion-card>
-      <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;">
+      <ion-card *ngIf="reportActivityForm.value.items.length" class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;">
         <ion-row>
           <ion-col>
             <div id="chart" style="width: calc(100% - 20px);margin-bottom: 2%;height:200px"></div>

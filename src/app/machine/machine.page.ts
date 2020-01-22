@@ -408,7 +408,7 @@ export class MachinePage implements OnInit {
       _id: new FormControl(''),
       hourCost: new FormControl(0),
       horimeter: new FormControl(0),
-      type: new FormControl('TRACTOR'),
+      type: new FormControl('MACHINE'),
     });
     let language: any = await this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang(language);

@@ -82,6 +82,20 @@
   </ion-list>
   <ion-row style="height:15px;">
   </ion-row>
+  <ion-row *ngIf="!areas.length">
+    <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
+      <ion-row>
+        <ion-col>
+          <h1>{{ 'NOT_FOUND_AREA' | translate }}</h1>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <h4>{{ 'CREATE_FIRST_AREA' | translate }}</h4>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
     <ion-fab-button (click)="createArea()">
       <ion-icon name="add">

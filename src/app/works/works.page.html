@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
   <ion-searchbar
-  placeholder="Buscar Tarea"
+  placeholder="{{'SEARCH_ACTIVITY'|translate}}"
   [(ngModel)]="searchTerm"
   #searchBar
   (ionChange)="setFilteredItems()">
@@ -16,7 +16,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>AgroMemo</ion-title>
+    <ion-title>{{'ACTIVITIES'|translate}}</ion-title>
     <ion-buttons slot="end">
       <!-- <ion-button (click)="changeSearch()">
         <ion-icon name="search"></ion-icon>
@@ -281,6 +281,20 @@
 
     <div style="height:200px;" *ngIf="showBotom">
     </div>
+    <ion-row *ngIf="!this.worksForm.value.moves.length">
+      <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
+        <ion-row>
+          <ion-col>
+            <h1>{{ 'NOT_FOUND_ACTIVITY' | translate }}</h1>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <h4>{{ 'CREATE_FIRST_ACTIVITY' | translate }}</h4>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
   </form>
 
 
@@ -311,8 +325,8 @@
       <ion-icon name="close" (click)="addButton()">
       </ion-icon>
     </ion-fab-button> -->
-    <h1 class="activity-message">Seleccione un tipo de trabajo</h1>
-    <h1 class="activity-category">Agricultura</h1>
+    <h1 class="activity-message">{{'SELECT_ACTIVITY_TYPE'|translate}}</h1>
+    <h1 class="activity-category">{{'AGRICULTURE'|translate}}</h1>
     <ion-row *ngIf="showBotom" style="background: white;padding-left:10%;">
       <ion-col size="4" (click)="addActivity('activity.plant')">
         <ion-img [src]="'./assets/icons/activity.plant.png'" class="activity-menu"></ion-img>
@@ -353,7 +367,7 @@
         </h1>
       </ion-col>
     </ion-row>
-    <h1 class="activity-category">Maquinaria</h1>
+    <h1 class="activity-category">{{'MACHINERY'|translate}}</h1>
     <ion-row *ngIf="showBotom" style="background: white;padding-bottom:5px;padding-left:10%;border-bottom: 1px solid #666666;">
       <ion-col (click)="addActivity('activity.fuel')">
         <ion-img [src]="'./assets/icons/activity.fuel.png'" class="activity-menu"></ion-img>

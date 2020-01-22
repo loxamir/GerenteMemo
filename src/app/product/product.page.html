@@ -13,28 +13,32 @@
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input #name type="text" formControlName="name"></ion-input>
       </ion-item>
-      <ion-item no-padding class="field-50">
+      <!-- <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'SALE_PRICE' | translate}}</ion-label>
         <ion-input #price type="number" formControlName="price"></ion-input>
-      </ion-item>
+      </ion-item> -->
       <ion-item no-padding class="field-50">
-        <ion-label position="floating">{{'PURCHASE_COST' | translate}}</ion-label>
+        <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
         <ion-input #cost type="number" formControlName="cost"></ion-input>
       </ion-item>
-      <ion-item no-padding class="field-50">
+      <ion-item *ngIf="productForm.value.type=='product'" no-padding class="field-50">
+        <ion-label position="floating">{{'CURRENT_STOCK' | translate}}</ion-label>
+        <ion-input type="number" #stock formControlName="stock"></ion-input>
+      </ion-item>
+      <ion-item no-padding class="field-100">
+        <ion-label position="floating">{{'DOSIS_HA' | translate}}</ion-label>
+        <ion-input type="number" formControlName="dosis"></ion-input>
+      </ion-item>
+      <!-- <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
         <ion-select #type (ionChange)="getDefaultCategory()" formControlName="type" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
           <ion-select-option value="product">Producto</ion-select-option>
           <ion-select-option value="service">Servicio</ion-select-option>
-          <!-- <ion-select-option value="seed">Semente</ion-select-option>
-          <ion-select-option value="fertilizer">Adubo</ion-select-option>
-          <ion-select-option value="defensive">Defensivo</ion-select-option> -->
-          <!-- <ion-select-option value="urban_area">Area Urbana</ion-select-option>
-          <ion-select-option value="rural_area">Area Rural</ion-select-option>
-          <ion-select-option value="machine">Maquinario</ion-select-option>
-          <ion-select-option value="vehicle">Vehiculo</ion-select-option>
-          <ion-select-option value="animal">Animal</ion-select-option> -->
         </ion-select>
+      </ion-item> -->
+      <ion-item no-padding class="field-50">
+        <ion-label position="floating">{{'CODE' | translate}}</ion-label>
+        <ion-input type="number" formControlName="code"></ion-input>
       </ion-item>
       <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'Unidad' | translate}}</ion-label>
@@ -55,19 +59,13 @@
           <ion-select-option value="ha">Hectare</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item *ngIf="productForm.value.type=='product'" no-padding class="field-50">
-        <ion-label position="floating">{{'STOCK' | translate}}</ion-label>
-        <ion-input type="number" #stock formControlName="stock"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="productForm.value.type=='product'" no-padding class="field-50">
+
+      <!-- <ion-item *ngIf="productForm.value.type=='product'" no-padding class="field-50">
         <ion-label position="floating">{{'STOCK_MIN' | translate}}</ion-label>
         <ion-input type="number" formControlName="stock_min"></ion-input>
-      </ion-item>
-      <ion-item no-padding class="field-50">
-        <ion-label position="floating">{{'CODE' | translate}}</ion-label>
-        <ion-input type="number" formControlName="code"></ion-input>
-      </ion-item>
-      <ion-item no-padding class="field-50">
+      </ion-item> -->
+
+      <!-- <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'IVA' | translate}}</ion-label>
         <ion-select formControlName="tax" cancelText="{{ 'CANCEL' | translate }}" okText="{{ 'OK' | translate }}" interface="popover">
           <ion-select-option value="iva10">10%</ion-select-option>
@@ -75,8 +73,8 @@
           <ion-select-option value="iva0">Exento</ion-select-option>
           <ion-select-option value="fee">Tasa</ion-select-option>
         </ion-select>
-      </ion-item>
-      <ion-item no-padding #category (click)="selectCategory()" class="field-50">
+      </ion-item> -->
+      <!-- <ion-item no-padding #category (click)="selectCategory()" class="field-50">
         <div class="field-many2one">
           <h4 class="field-label">{{'CATEGORY' | translate}}</h4>
           <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'SELECT'|translate}}</h4>
@@ -87,11 +85,11 @@
           <h4 class="field-label">{{'BRAND' | translate}}</h4>
           <h4 class="field-value">{{productForm.value.brand && productForm.value.brand.name || 'SELECT'|translate}}</h4>
         </div>
-      </ion-item>
-      <ion-item no-padding class="field-100">
+      </ion-item> -->
+      <!-- <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'BARCODE' | translate}}</ion-label>
         <ion-input type="number" #barcode formControlName="barcode"></ion-input>
-      </ion-item>
+      </ion-item> -->
       <ion-item class="field-100">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-input type="text" formControlName="note"></ion-input>

@@ -4,9 +4,9 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item class="popover-item" (click)="gotoReport()">{{'AGRO_REPORT'| translate}}</ion-item>
+    <!--ion-item class="popover-item" (click)="gotoReport()">{{'AGRO_REPORT'| translate}}</ion-item-->
     <ion-item class="popover-item" (click)="gotoCrops()">{{'CROPS'|translate}}</ion-item>
-    <ion-item class="popover-item" (click)="gotoActivities()">{{'ACTIVITIES'| translate}}</ion-item>
+    <!--ion-item class="popover-item" (click)="gotoActivities()">{{'ACTIVITIES'| translate}}</ion-item-->
   </ion-list>
   `
 })

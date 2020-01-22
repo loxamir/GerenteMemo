@@ -24,7 +24,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class AreasPage implements OnInit {
   @ViewChild('searchBar', { static: false }) searchBar;
   showSearch = false;
-  areas: any;
+  areas: any = [];
   loading: any;
   searchTerm: string = '';
   select;

@@ -1,10 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-        <!-- <ion-menu-button *ngIf="!select"></ion-menu-button> -->
-        <!-- <ion-buttons slot="start"> -->
-          <ion-back-button defaultHref="/agro-tabs/activity-list"></ion-back-button>
-        <!-- </ion-buttons> -->
+        <ion-back-button defaultHref="/agro-tabs/activity-list" *ngIf="!select"></ion-back-button>
         <ion-button *ngIf="select"
                 (click)="discard()">
           <ion-icon name="arrow-back"></ion-icon>
@@ -40,19 +37,19 @@
           <ion-col>
             <ion-row (click)="selectProduct(item)" class="producto">
               <ion-col no-padding>
-                <h3 class="item-title"><b>{{ item.name }}</b></h3>
+                <h3 class="item-title"><b>{{ item.name| translate }}</b></h3>
               </ion-col>
             </ion-row>
              <ion-row no-padding class="content-row one-line">
                 <ion-col no-padding class="schedule-date" (click)="selectProduct(item)">
                   <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
-                      {{'CODE'| translate}}: <b style="  margin-left: 5px">{{item.code}}</b>
+                      {{'CODE'|translate}}: <b style="  margin-left: 5px">{{item.code}}</b>
                   </h3>
                   <h3 class="item-title" style="font-size:15px;" *ngIf="item.type != 'service'">
-                      {{'COST'| translate}}: <b style="color: green;margin-left: 5px">$ {{item.cost| number:'1.'+currency_precision}}</b>
+                      {{'COST'|translate}}: <b style="color: green;margin-left: 5px">$ {{item.cost| number:'1.'+currency_precision}}</b>
                   </h3>
                 </ion-col>
-                <ion-col no-padding size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
+                <ion-col no-padding size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)" *ngIf="item.type=='product'">
                   <h2 class="list-big-number" style="color: green;">{{item.stock+' '}}{{item.unity|translate}}</h2>
                   <!-- <h2 class="list-big-number" *ngIf="operation=='purchase'"style="color: red;">$ {{item.cost| number:'1.'+currency_precision}}</h2> -->
 
@@ -88,7 +85,7 @@
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <ion-row *ngIf="products.length==2">
+  <ion-row *ngIf="products.length==1">
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
       <ion-row>
         <ion-col>

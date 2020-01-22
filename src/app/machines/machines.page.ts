@@ -22,7 +22,7 @@ import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 export class MachinesPage implements OnInit {
   @ViewChild('searchBar', { static: false }) searchBar;
   showSearch = false;
-  machines: any;
+  machines: any = [];
   loading: any;
   searchTerm: string = '';
   select;

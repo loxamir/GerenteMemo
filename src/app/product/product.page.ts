@@ -121,6 +121,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         date: new FormControl(new Date().toJSON()),
         unity: new FormControl(this.route.snapshot.paramMap.get('unity')||'un'),
         fixed: new FormControl(false),
+        dosis: new FormControl(1),
         _id: new FormControl(''),
         create_user: new FormControl(''),
         create_time: new FormControl(''),

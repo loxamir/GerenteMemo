@@ -305,7 +305,7 @@
           <ion-select-option value="CAR">{{ 'CAR' | translate }}</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item no-padding (click)="selectFuel()" class="field-100" *ngIf="machineForm.value.type != 'IMPLEMENT'">
+      <ion-item no-padding (click)="selectFuel()" class="field-100" *ngIf="machineForm.value.type && machineForm.value.type != 'IMPLEMENT'">
         <div class="field-many2one">
           <h4 class="field-label">{{'FUEL' | translate}}</h4>
           <h4 class="field-value">
@@ -313,15 +313,15 @@
           </h4>
         </div>
       </ion-item>
-      <ion-item no-padding class="field-50">
+      <ion-item no-padding class="field-100">
         <ion-label position="floating">{{'COST_BY_HOUR' | translate}}</ion-label>
         <ion-input #hourCost type="number" formControlName="hourCost"></ion-input>
       </ion-item>
-      <ion-item no-padding class="field-50">
+      <!-- <ion-item no-padding class="field-50">
         <ion-label position="floating" *ngIf="machineForm.value.type!='CAR' && machineForm.value.type!='TRUCK'">{{'HORIMETER' | translate}}</ion-label>
         <ion-label position="floating" *ngIf="machineForm.value.type=='CAR' || machineForm.value.type=='TRUCK'">{{'HODOMETER' | translate}}</ion-label>
         <ion-input #horimeter type="number" formControlName="horimeter"></ion-input>
-      </ion-item>
+      </ion-item> -->
       <ion-button class="button-100" color="success" (click)="buttonSave()">{{'SAVE'|translate}}</ion-button>
     </ion-row>
   </form>
