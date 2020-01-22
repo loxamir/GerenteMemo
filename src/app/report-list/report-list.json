@@ -109,6 +109,9 @@
     },
     "AnimalDiario": {
       "map": "function (doc) {\n  if(\n    doc.area_id\n    && (\n      doc._id.split(\".\")[0] == 'work'\n      || doc._id.split(\".\")[0] == 'picture'\n    )\n  ){\n    emit([doc.area_id, doc.date, doc.activity, doc._id], doc.activity_name);\n  }\n}"
+    },
+    "WorksDiario": {
+      "map": "function (doc) {\n  if(\n      doc._id.split(\".\")[0] == 'work'\n      || doc._id.split(\".\")[0] == 'picture'\n  ){\n    emit([doc.date, doc.activity, doc._id], doc.activity_name);\n  }\n}"
     }
   },
   "language": "javascript"

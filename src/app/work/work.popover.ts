@@ -24,11 +24,13 @@ export class WorkPopover {
 
   async duplicate(){
     this.navParams.data.doc._id = '';
-    this.navParams.data.doc.workForm.value.inputs.forEach((input)=>{
-      input.doc_id = "";
-    });
+    if (this.navParams.data.doc.workForm.value.inputs){
+      this.navParams.data.doc.workForm.value.inputs.forEach((input)=>{
+        input.doc_id = "";
+      });
+    }
     this.navParams.data.doc.workForm.patchValue({
-      state: 'DRAFT',
+       state: 'STARTED',
       _id: ''
     });
     this.navParams.data.doc.workForm.markAsDirty();

@@ -71,7 +71,6 @@
           displayFormat="DD/MM/YYYY HH:mm"
           pickerFormat="DD/MM/YYYY HH:mm"
           [disabled]="workForm.value.state=='SCHEDULED' || workForm.value.state=='DONE'"
-          (ionChange)="dateChanged()"
           [max]="today.getFullYear()+5"
           formControlName="date">
           </ion-datetime>
