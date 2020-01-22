@@ -121,7 +121,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         date: new FormControl(new Date().toJSON()),
         unity: new FormControl(this.route.snapshot.paramMap.get('unity')||'un'),
         fixed: new FormControl(false),
-        dosis: new FormControl(1),
         _id: new FormControl(''),
         create_user: new FormControl(''),
         create_time: new FormControl(''),
@@ -176,12 +175,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.buttonSave();
         } else {
           if (this.opened){
-            this.navCtrl.navigateBack('/product-list');
+            this.navCtrl.navigateBack('/agro-tabs/input-list');
             // .then(() => {
               this.events.publish('open-product', this.productForm.value);
             // });
           } else {
-            this.navCtrl.navigateBack('/product-list');
+            this.navCtrl.navigateBack('/agro-tabs/input-list');
             // .then(() => {
               this.events.publish('create-product', this.productForm.value);
             // });
@@ -270,7 +269,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.modalCtrl.dismiss();
           this.events.publish('open-product', this.productForm.value);
         } else {
-          this.navCtrl.navigateBack('/product-list');
+          this.navCtrl.navigateBack('/agro-tabs/input-list');
           // .then(() => {
             this.events.publish('open-product', this.productForm.value);
           // });
@@ -289,7 +288,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             this.modalCtrl.dismiss();
             this.events.publish('create-product', this.productForm.value);
           } else {
-            this.navCtrl.navigateBack('/product-list');
+            this.navCtrl.navigateBack('/agro-tabs/input-list');
             // .then(() => {
               this.events.publish('create-product', this.productForm.value);
             // });
@@ -509,7 +508,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.modalCtrl.dismiss();
       } else {
         this.productForm.markAsPristine();
-        this.navCtrl.navigateBack('/product-list');
+        this.navCtrl.navigateBack('/agro-tabs/input-list');
       }
     }
 

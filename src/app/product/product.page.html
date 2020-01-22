@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button (click)="this.navCtrl.navigateBack('/product-list')"></ion-back-button>
+      <ion-back-button (click)="this.navCtrl.navigateBack('/agro-tabs/input-list')"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'PRODUCT' | translate }}-{{productForm.value.code}}</ion-title>
   </ion-toolbar>
@@ -24,10 +24,6 @@
       <ion-item *ngIf="productForm.value.type=='product'" no-padding class="field-50">
         <ion-label position="floating">{{'CURRENT_STOCK' | translate}}</ion-label>
         <ion-input type="number" #stock formControlName="stock"></ion-input>
-      </ion-item>
-      <ion-item no-padding class="field-100">
-        <ion-label position="floating">{{'DOSIS_HA' | translate}}</ion-label>
-        <ion-input type="number" formControlName="dosis"></ion-input>
       </ion-item>
       <!-- <ion-item no-padding class="field-50">
         <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
