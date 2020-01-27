@@ -435,5 +435,7 @@
   "CARTE": "Carte",
   "MY_ORDERS": "My Orders",
   "MY_PROFILE": "My Profile",
+  "ADD_TO_ORDER": "Add to Order",
+  "LOADING_PRODUCTS": "Loading Products",
   "RESULT": "Result"
 }

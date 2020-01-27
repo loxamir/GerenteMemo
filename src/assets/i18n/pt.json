@@ -435,5 +435,7 @@
   "CARTE": "Cardapio",
   "MY_ORDERS": "Meus Pedidos",
   "MY_PROFILE": "Meu Perfil",
+  "ADD_TO_ORDER": "Adicionar ao Pedido",
+  "LOADING_PRODUCTS": "Carregando Produtos...",
   "RESULT": "Resultado"
 }

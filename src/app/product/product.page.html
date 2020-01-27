@@ -5,38 +5,21 @@
     </ion-buttons>
     <ion-title>{{ 'PRODUCT' | translate }}-{{productForm.value.code}}</ion-title>
     <ion-buttons slot="end">
-      <ion-button ion-button icon-only class="more-button"
+      <!-- <ion-button ion-button icon-only class="more-button"
               (click)="enableEditMode()">
         <ion-icon name="create"></ion-icon>
-      </ion-button>
+      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content class="product-content">
 
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
-  <div id="pwa" *ngIf="editMode">
-    <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
-  </div>
+
   <form class="sample-form validations-form" [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
       <ion-row style="background: white;">
         <img [src]="productForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
       </ion-row>
-    <div *ngIf="editMode">
-      <ion-item class="field-100">
-        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-        <ion-input type="text" formControlName="name"></ion-input>
-      </ion-item>
-      <ion-item class="field-100">
-        <ion-label position="floating">{{'Ingredientes' | translate}}</ion-label>
-        <ion-input type="text" formControlName="description"></ion-input>
-      </ion-item>
-      <ion-item class="field-100">
-        <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
-        <ion-input type="number" formControlName="price"></ion-input>
-      </ion-item>
-    </div>
-
     <!-- <ion-row>
       <ion-col style="text-align: center;">
         {{ 'QUANTITY' | translate }}
@@ -76,7 +59,7 @@
     </ion-row>
     <ion-item style="--background: white;">
       <!-- <ion-col (click)="setDiscount()"> -->
-        <h4 class="field-label-col">{{'SubTotal' | translate}}</h4>
+        <h4 class="field-label-col">{{'SUBTOTAL' | translate}}</h4>
         <h4 class="field-value-col-2" style="color:blue">{{this.productForm.value.quantity*this.productForm.value.price|number}} G$</h4>
       <!-- </ion-col> -->
     </ion-item>
@@ -98,7 +81,7 @@
       <!-- <ion-row><ion-col> -->
         <ion-button class="button-100" (click)="askProduct()">
           <!-- <ion-icon name="fastforward"> </ion-icon> -->
-          {{'Agregar al Pedido'|translate}}
+          {{'ADD_TO_ORDER'|translate}}
         </ion-button>
       <!-- </ion-col>
       </ion-row> -->
@@ -120,12 +103,12 @@
     </ion-button>
   </ion-fab> -->
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="productForm.dirty && editMode">
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="productForm.dirty && editMode">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
       {{ 'SAVE'| translate }}
     </ion-button>
-  </ion-fab>
+  </ion-fab> -->
   <div style="height: 100px;">
   </div>
 </ion-content>
