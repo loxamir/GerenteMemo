@@ -117,9 +117,9 @@ export class PouchdbService {
                 //   }
                 //    return false;
                 //  }
-                // filter: "syncFilter/by_agent",
-                filter: "_view",
-                view: 'syncFilter/Clientes',
+                filter: "syncFilter/by_agent",
+                // filter: "_view",
+                // view: 'syncFilter/Clientes',
                 query_params: { "contact": "contact.loxamir@gmail.com"}
               }
               let syncJob = this.db.sync(this.remote, options)

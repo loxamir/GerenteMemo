@@ -9,7 +9,7 @@
       {{ 'RETURN' | translate }}: {{saleForm.value.code}}
     </ion-title>
     <ion-title *ngIf="!return">
-      {{ 'SALE' | translate }}: {{saleForm.value.code}}
+      {{ 'ORDER' | translate }}: {{saleForm.value.code}}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button icon-only (click)="presentPopover($event)">

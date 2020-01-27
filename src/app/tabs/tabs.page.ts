@@ -50,7 +50,7 @@ export class TabsPage implements OnInit {
         this.contact_id = "contact."+data.currentUser.email;
         this.contact_name = data.currentUser.displayName;
         this.loading.dismiss();
-        let order: any = await this.pouchdbService.searchDocTypeData('sale',this.contact_id,0,"contact_id");
+        let order: any = await this.pouchdbService.searchDocTypeData('sale',"",0);
         if (order[0]){
           if (order[0].state == 'QUOTATION'
           || order[0].state == 'CONFIRMED'

@@ -23,17 +23,17 @@
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="product-list">
       <ion-icon name="pricetag"></ion-icon>
-      <ion-label>{{'Cardapio'|translate}}</ion-label>
+      <ion-label>{{'CARTE'|translate}}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="sale-list" *ngIf="this.logged">
       <ion-icon name="cart"></ion-icon>
-      <ion-label>{{'Pedidos'|translate}}</ion-label>
+      <ion-label>{{'MY_ORDERS'|translate}}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="profile" *ngIf="this.logged">
       <ion-icon name="contact"></ion-icon>
-      <ion-label>{{'Perfil'|translate}}</ion-label>
+      <ion-label>{{'MY_PROFILE'|translate}}</ion-label>
     </ion-tab-button>
 
   </ion-tab-bar>

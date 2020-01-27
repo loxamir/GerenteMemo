@@ -121,7 +121,7 @@
   "EQUIPMENT_NOTE": "Notas sobre el Equipo",
   "CLIENT_REQUEST": "Solicitud del Cliente",
   "SERVICE_OVERVIEW": "Servicio Prestado",
-  "ORDER": "Pedido de Servicio",
+  "ORDER": "Pedido",
   "EXPENSES": "Gastos",
   "RESPONSABLE": "Responsable",
   "DATE_START": "Fecha de Inicio",
@@ -431,5 +431,9 @@
   "ADD_COST": "Agregar Costo",
   "DELIVERY_ADDRESS": "Dirección de Entrega",
   "PAYMENT_METHOD": "Forma de Pago",
+  "PROFILE": "Perfil",
+  "CARTE": "Cardapio",
+  "MY_ORDERS": "Mis Pedidos",
+  "MY_PROFILE": "Mi Perfil",
   "RESULT": "Resultado"
 }

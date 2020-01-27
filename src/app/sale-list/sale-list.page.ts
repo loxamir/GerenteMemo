@@ -97,8 +97,8 @@ export class SaleListPage implements OnInit {
       if (status) {
         this.logged = true;
         let data = await this.authService.getData();
-        console.log("got email", data.currentUser.email)
-        this.contact_id = "contact."+data.currentUser.email;
+        // console.log("got email", data.currentUser.email)
+        // this.contact_id = "contact."+data.currentUser.email;
         this.setFilteredItems();
       } else {
         this.logged = false;
@@ -147,9 +147,9 @@ export class SaleListPage implements OnInit {
     return new Promise(resolve => {
       this.pouchdbService.searchDocTypeData(
         'sale',
-        this.contact_id,
+        keyword,
         page,
-        "contact_id"
+        "contact_name"
       ).then((sales: any[]) => {
         resolve(sales);
       });

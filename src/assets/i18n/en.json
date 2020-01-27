@@ -431,5 +431,9 @@
   "ADD_COST": "Add Cost",
   "DELIVERY_ADDRESS": "Delivery Address",
   "PAYMENT_METHOD": "Payment Method",
+  "PROFILE": "Profile",
+  "CARTE": "Carte",
+  "MY_ORDERS": "My Orders",
+  "MY_PROFILE": "My Profile",
   "RESULT": "Result"
 }
