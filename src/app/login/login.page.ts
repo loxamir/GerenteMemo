@@ -12,7 +12,6 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from '../services/rest/rest';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoginPopover } from './login.popover';
-import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -27,7 +26,7 @@ export class LoginPage implements OnInit {
   show_create: boolean = false;
   selected_user: boolean = false;
   databaseList: [];
-  username = 'larica';
+  username = '';
   today = new Date().toISOString();
   language;
   demo;
@@ -47,36 +46,23 @@ export class LoginPage implements OnInit {
     public restProvider: RestProvider,
     public route: ActivatedRoute,
     public router: Router,
-    public authService: AuthService,
   ) {
     this.demo = this.route.snapshot.paramMap.get('demo');
     if (this.demo){
       this.show_create = true;
     }
-    let username = "larica";
-    let password = "123";
-    // this.username = "larica";
-    // this.selectDatabase("larica");
-    // this.storage.get("username").then((username)=>{
-    //   if (username){
-    //     this.storage.get("password").then((password)=>{
-          // this.showDatabaseList(username, password);
-          // this.selected_user = true;
-      //   })
-      // }
-    // })
+    this.storage.get("username").then((username)=>{
+      this.username = username;
+      if (username){
+        this.storage.get("password").then((password)=>{
+          this.showDatabaseList(username, password);
+          this.selected_user = true;
+        })
+      }
+    })
   }
 
   async ngOnInit() {
-    // await this.showLoading();
-    // this.authService.loggedIn.subscribe(status => {
-      // this.loading.dismiss();
-      // console.log("status", status);
-      // if (status) {
-      //   // this.navCtrl.navigateForward("/home");
-      //   this.router.navigate(['/tabs/product-list']);
-      // }
-    // });
     this.loginForm = new FormGroup({
       name: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.compose([
@@ -84,11 +70,11 @@ export class LoginPage implements OnInit {
         Validators.required,
         Validators.pattern('^[0-9]+$')
       ])),
-      user: new FormControl('larica', Validators.compose([
+      user: new FormControl('', Validators.compose([
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_.+-]+$')
       ])),
-      password: new FormControl('123', Validators.required),
+      password: new FormControl('', Validators.required),
       address: new FormControl('', Validators.required),
     });
     this.loading = await this.loadingCtrl.create({});
@@ -98,8 +84,7 @@ export class LoginPage implements OnInit {
     }
     this.translate.setDefaultLang(this.language);
     this.translate.use(this.language);
-    // this.username = 'larica';
-    this.doLogin();
+    this.username = await this.storage.get('username');
     setTimeout(() => {
       this.menuCtrl.enable(false);
     }, 500);
@@ -107,19 +92,6 @@ export class LoginPage implements OnInit {
 
   payDatabase(database){
     window.open("https://www.pagopar.com/pagos/"+database.paylink);
-  }
-
-  async authLogin() {
-    await this.showLoading();
-    this.authService.login();
-  }
-
-  async showLoading() {
-    this.loading = await this.loadingCtrl.create({
-      message: "Authenticating..."
-    });
-
-    this.loading.present();
   }
 
   async presentPopover(myEvent) {
@@ -185,7 +157,6 @@ export class LoginPage implements OnInit {
   }
 
   login (){
-    this.authService.login();
     this.checkLogin(
       this.loginForm.value.user.toLowerCase(),
       this.loginForm.value.password
@@ -362,7 +333,7 @@ export class LoginPage implements OnInit {
       await this.loading.present();
       await this.storage.set('database', database.database);
       let toast = await this.toastCtrl.create({
-        message: "Cargando el Cardapio...",
+        message: "Sincronizando...",
       });
       await toast.present();
       this.pouchdbService.getConnect();
@@ -370,6 +341,7 @@ export class LoginPage implements OnInit {
         this.events.unsubscribe('end-sync');
         await this.router.navigate(['/tabs/product-list']);
         // this.menuCtrl.enable(true);
+        this.menuCtrl.enable(true);
         await toast.dismiss();
         await this.loading.dismiss();
       })

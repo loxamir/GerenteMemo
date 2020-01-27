@@ -1,4 +1,3 @@
-
 <ion-header *ngIf="selected_user">
   <ion-toolbar>
     <ion-title>
@@ -88,7 +87,7 @@
 
         <ion-button
         class="print-invoice"
-        (click)="authLogin()"
+        (click)="login()"
         *ngIf="!show_create"
         style="border-radius:10px;width:100%">
           {{ 'LOG_IN' | translate }}
@@ -152,7 +151,6 @@
     <a target="_blank" href="https://www.youtube.com/channel/UCfjFZyo8jvrx0ILRBTk2XRQ" rel="noopener">
     <ion-button style="--color: white; --background: white;">
       <ion-icon name="logo-youtube" style="margin-right: 5px;color: red;"> </ion-icon>
-
       <span style="color: black;font-weight: bold;">{{ 'VIDEOS'| translate }}</span>
     </ion-button>
   </a>
