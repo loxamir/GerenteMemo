@@ -1,41 +1,21 @@
 <ion-tabs>
-  <ion-row *ngIf="order" (click)="openOrder()">
-    <ion-toolbar style="--ion-background-color: linear-gradient(to left,#c50303,#a92c2c);color: white;" *ngIf="this.logged">
-      <ion-title *ngIf="this.order.state == 'QUOTATION'">
-        Ver pedido
-      </ion-title>
-      <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'WAITING'">
-        En Espera
-      </ion-title>
-      <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'PRODUCTION'">
-        En Producción
-      </ion-title>
-      <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'DELIVERY'">
-        En Entrega
-      </ion-title>
-      <ion-buttons slot="end">
-        <ion-button style="font-size: 25px;">
-           {{order.total|number}} G$
-        </ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-row>
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="product-list">
       <ion-icon name="pricetag"></ion-icon>
       <ion-label>{{'CARTE'|translate}}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="sale-list" *ngIf="this.logged">
+    <ion-tab-button tab="sale-list">
       <ion-icon name="cart"></ion-icon>
-      <ion-label>{{'MY_ORDERS'|translate}}</ion-label>
+      <ion-label>{{'ORDERS'|translate}}</ion-label>
     </ion-tab-button>
-
-    <ion-tab-button tab="profile" *ngIf="this.logged">
+    <ion-tab-button tab="contact-list">
       <ion-icon name="contact"></ion-icon>
-      <ion-label>{{'MY_PROFILE'|translate}}</ion-label>
+      <ion-label>{{'CLIENTS'|translate}}</ion-label>
     </ion-tab-button>
-
+    <ion-tab-button tab="config">
+      <ion-icon name="settings"></ion-icon>
+      <ion-label>{{'CONFIG'|translate}}</ion-label>
+    </ion-tab-button>
   </ion-tab-bar>
-
 </ion-tabs>

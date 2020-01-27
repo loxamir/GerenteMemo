@@ -27,7 +27,7 @@ export class ProductListPage implements OnInit {
   page = 0;
   operation = "sale";
   searchTerm: string = '';
-  currency_precision = 2;
+  currency_precision = 0;
   editMode = false;
 
   constructor(

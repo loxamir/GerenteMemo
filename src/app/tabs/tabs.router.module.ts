@@ -27,20 +27,20 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'purchase-list',
+        path: 'contact-list',
         children: [
           {
             path: '',
-            loadChildren: '../purchase-list/purchase-list.module#PurchaseListPageModule'
+            loadChildren: '../contact-list/contact-list.module#ContactListPageModule'
           }
         ]
       },
       {
-        path: 'cash-list',
+        path: 'config',
         children: [
           {
             path: '',
-            loadChildren: '../cash-list/cash-list.module#CashListPageModule'
+            loadChildren: '../config/config.module#ConfigPageModule'
           }
         ]
       },

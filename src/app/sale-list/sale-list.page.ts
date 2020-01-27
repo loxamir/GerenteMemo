@@ -92,18 +92,18 @@ export class SaleListPage implements OnInit {
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    this.authService.loggedIn.subscribe(async status => {
+    // this.authService.loggedIn.subscribe(async status => {
+    await this.setFilteredItems();
       this.loading.dismiss();
-      if (status) {
-        this.logged = true;
-        let data = await this.authService.getData();
+      // if (status) {
+      //   this.logged = true;
+      //   let data = await this.authService.getData();
         // console.log("got email", data.currentUser.email)
         // this.contact_id = "contact."+data.currentUser.email;
-        this.setFilteredItems();
-      } else {
-        this.logged = false;
-      }
-    });
+      // } else {
+      //   this.logged = false;
+      // }
+    // });
   }
 
   setFilteredItems() {

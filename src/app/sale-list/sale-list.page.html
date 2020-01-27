@@ -3,15 +3,15 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/product-list"></ion-back-button>
     </ion-buttons>
-    <ion-title>
+    <!-- <ion-title>
       {{ 'MY_ORDERS' | translate }}
-    </ion-title>
-    <!-- <ion-searchbar
-      placeholder="{{ 'Buscar Pedido' | translate}}"
+    </ion-title> -->
+    <ion-searchbar
+      placeholder="{{ 'SEARCH_ORDER' | translate}}"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionChange)="searchItems()">
-    </ion-searchbar> -->
+    </ion-searchbar>
     <!-- <ion-buttons slot="end">
       <ion-button icon-only
               (click)="presentPopover($event)">

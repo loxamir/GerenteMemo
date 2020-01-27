@@ -435,5 +435,8 @@
   "CARTE": "Cardapio",
   "MY_ORDERS": "Meus Pedidos",
   "MY_PROFILE": "Meu Perfil",
+  "ORDERS": "Pedidos",
+  "SEARCH_CLIENT": "Buscar Cliente",
+  "SEARCH_ORDER": "Buscar Pedido",
   "RESULT": "Resultado"
 }

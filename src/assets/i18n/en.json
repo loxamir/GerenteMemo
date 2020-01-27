@@ -435,5 +435,8 @@
   "CARTE": "Carte",
   "MY_ORDERS": "My Orders",
   "MY_PROFILE": "My Profile",
+  "ORDERS": "Orders",
+  "SEARCH_CLIENT": "Search Client",
+  "SEARCH_ORDER": "Search Order",
   "RESULT": "Result"
 }
