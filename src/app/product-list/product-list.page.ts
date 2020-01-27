@@ -70,11 +70,20 @@ export class ProductListPage implements OnInit {
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
     if (!config._id){
       let este = await this.pouchdbService.getConnect();
-    }
-    this.events.subscribe(('end-sync'), async (change) => {
-      if (!config._id){
-        config = (await this.pouchdbService.getDoc('config.profile'));
-      }
+      this.events.subscribe(('end-sync'), async (change) => {
+        if (!config._id){
+          config = (await this.pouchdbService.getDoc('config.profile'));
+        }
+        this.currency_precision = config.currency_precision || this.currency_precision;
+        await this.setFilteredItems();
+        if (this.select) {
+          setTimeout(() => {
+            this.searchBar.setFocus();
+          }, 200);
+        }
+        this.events.unsubscribe('end-sync')
+      })
+    } else {
       this.currency_precision = config.currency_precision || this.currency_precision;
       await this.setFilteredItems();
       if (this.select) {
@@ -82,8 +91,7 @@ export class ProductListPage implements OnInit {
           this.searchBar.setFocus();
         }, 200);
       }
-      this.events.unsubscribe('end-sync')
-    })
+    }
 
   }
 
