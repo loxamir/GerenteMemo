@@ -51,9 +51,9 @@ export class ProductListPage implements OnInit {
     this.events.subscribe('changed-product', (change) => {
       this.handleChange(this.products, change);
     })
-    this.events.subscribe('changed-stock-move', (change) => {
-      this.handleViewChange(this.products, change);
-    })
+    // this.events.subscribe('changed-stock-move', (change) => {
+    //   this.handleViewChange(this.products, change);
+    // })
     // this.events.subscribe('got-database', ()=>{
     //   this.setFilteredItems();
     // })
@@ -68,13 +68,23 @@ export class ProductListPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
-    this.currency_precision = config.currency_precision;
-    await this.setFilteredItems();
-    if (this.select) {
-      setTimeout(() => {
-          this.searchBar.setFocus();
-      }, 200);
+    if (!config._id){
+      let este = await this.pouchdbService.getConnect();
     }
+    this.events.subscribe(('end-sync'), async (change) => {
+      if (!config._id){
+        config = (await this.pouchdbService.getDoc('config.profile'));
+      }
+      this.currency_precision = config.currency_precision || this.currency_precision;
+      await this.setFilteredItems();
+      if (this.select) {
+        setTimeout(() => {
+          this.searchBar.setFocus();
+        }, 200);
+      }
+      this.events.unsubscribe('end-sync')
+    })
+
   }
 
   setFilteredItems() {
@@ -200,12 +210,12 @@ export class ProductListPage implements OnInit {
       } else {
         products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'type', type, 'name', 'increase')
       }
-      await this.formatService.asyncForEach(products, async (product: any)=>{
-        let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
-        ["warehouse.physical.my", product._id],
-        ["warehouse.physical.my", product._id+"z"])
-        product.stock = viewList && viewList[0] && viewList[0].value || 0;
-      })
+      // await this.formatService.asyncForEach(products, async (product: any)=>{
+      //   let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
+      //   ["warehouse.physical.my", product._id],
+      //   ["warehouse.physical.my", product._id+"z"])
+      //   product.stock = viewList && viewList[0] && viewList[0].value || 0;
+      // })
       resolve(products);
     })
   }
@@ -251,13 +261,13 @@ export class ProductListPage implements OnInit {
 
   async handleViewChange(list, change) {
     list.forEach(async (product:any)=>{
-      if (product._id == change.id){
-        let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
-        ["warehouse.physical.my", product._id],
-        ["warehouse.physical.my", product._id+"z"])
-        product.stock = viewList && viewList[0] && viewList[0].value || 0;
-        return;
-      }
+      // if (product._id == change.id){
+      //   let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
+      //   ["warehouse.physical.my", product._id],
+      //   ["warehouse.physical.my", product._id+"z"])
+      //   product.stock = viewList && viewList[0] && viewList[0].value || 0;
+      //   return;
+      // }
     })
   }
 

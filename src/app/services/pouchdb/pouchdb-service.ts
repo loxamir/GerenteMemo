@@ -73,15 +73,18 @@ export class PouchdbService {
 
   getConnect(){
     let self = this;
-    return new Promise((resolve, reject)=>{
-      this.storage.get("username").then(username => {
+    return new Promise(async (resolve, reject)=>{
+      // this.storage.get("username").then(username => {
+        let username="larica";
+        let database="larica";
+        let password="123";
         console.log("username", username);
         if (! username){
           resolve(false);
           return;
         }
         this.username = username;
-        this.storage.get("database").then(async database => {
+        // this.storage.get("database").then(async database => {
           if (! database){
             resolve(false);
             return;
@@ -102,26 +105,35 @@ export class PouchdbService {
           this.db.setMaxListeners(50);
           self.events.publish('got-database');
           let loadDemo = await this.storage.get('loadDemo');
-          this.storage.get('password').then(password => {
+          // this.storage.get('password').then(password => {
             this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
             if (database != 'memo' || !loadDemo){
               let options = {
                 live: true,
-                retry: true
-              };
-              let syncJob = this.db.sync(this.remote, options);
-
-              syncJob
+                retry: true,
+                // filter: (doc) => {
+                //   if(doc._id.split(".")[0] == 'product'){
+                //     return true;
+                //   }
+                //    return false;
+                //  }
+                // filter: "syncFilter/by_agent",
+                filter: "_view",
+                view: 'syncFilter/Clientes',
+                query_params: { "contact": "contact.loxamir@gmail.com"}
+              }
+              let syncJob = this.db.sync(this.remote, options)
               .on('change', function (info) {
                 // handle change
                 console.log("sync change", info);
-              }).on('paused', function (err) {
+              }).on('paused', async (err) => {
                 console.log("sync paused", err);
                 if (username == 'memo'){
                   self.storage.set('loadDemo', true);
                   syncJob.cancel();
                 }
                 self.events.publish('end-sync');
+                resolve(true)
                 // replication paused (e.g. replication up to date, user went offline)
               }).on('active', function () {
                 console.log("sync activated");
@@ -158,9 +170,9 @@ export class PouchdbService {
               // resolve(false)
             });
 
-          })
-        });
-      });
+          // })
+      //   });
+      // });
     });
   }
 

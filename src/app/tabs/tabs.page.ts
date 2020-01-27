@@ -12,7 +12,7 @@ import { AuthService } from "../services/auth.service";
   styleUrls: ['tabs.page.scss']
 })
 export class TabsPage implements OnInit {
-  user: any = {};
+  // user: any = {};
   loading: any;
   amount: number = 0;
   order: any;
@@ -38,7 +38,7 @@ export class TabsPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-    this.user = (await this.pouchdbService.getUser())
+    // this.user = (await this.pouchdbService.getUser())
 
 
     this.authService.loggedIn.subscribe(async status => {

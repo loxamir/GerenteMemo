@@ -113,9 +113,9 @@ import { environment } from '../environments/environment';
     SalePage,
   ],
   imports: [
-    LoginPageModule,
     TabsPageModule,
     ProductListPageModule,
+    LoginPageModule,
     ContactPageModule,
     AddressPageModule,
     SalePageModule,

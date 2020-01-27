@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'tabs', pathMatch: 'full' },
   // { path: 'home', loadChildren: './home/home.module#HomePageModule' },
   { path: 'contact', loadChildren: './contact/contact.module#ContactPageModule' },
   { path: 'contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule' },
