@@ -22,22 +22,22 @@ export class AppComponent implements OnInit {
       url: '/tabs',
       icon: 'infinite'
     },
-    {
-      title: 'REPORTS',
-      url: '/report-list',
-      icon: 'stats',
-      restrict: true
-    },
-    {
-      title: 'PRODUCTS',
-      url: '/product-list',
-      icon: 'cube'
-    },
-    {
-      title: 'PEOPLE',
-      url: '/contact-list',
-      icon: 'contacts'
-    },
+    // {
+    //   title: 'REPORTS',
+    //   url: '/report-list',
+    //   icon: 'stats',
+    //   restrict: true
+    // },
+    // {
+    //   title: 'PRODUCTS',
+    //   url: '/product-list',
+    //   icon: 'cube'
+    // },
+    // {
+    //   title: 'PEOPLE',
+    //   url: '/contact-list',
+    //   icon: 'contacts'
+    // },
     {
       title: 'SETTINGS',
       url: '/config',

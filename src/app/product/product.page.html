@@ -36,89 +36,8 @@
         <ion-input type="number" formControlName="price"></ion-input>
       </ion-item>
     </div>
-
-    <!-- <ion-row>
-      <ion-col style="text-align: center;">
-        {{ 'QUANTITY' | translate }}
-      </ion-col>
-    </ion-row> -->
-    <ion-row style="background-color: white;">
-      <ion-col>
-        <h1>
-          {{this.productForm.value.name}}
-      </h1>
-      </ion-col>
-    <!-- </ion-row>
-    <ion-row> -->
-      <!-- <ion-col>
-        {{this.productForm.value.price}}
-      </ion-col> -->
-      <h1 style="text-align:right;color:green;">
-        {{this.productForm.value.price|number}} G$
-    </h1>
-    </ion-row>
-    <ion-row style="background-color: white;">
-      <h1 style="color:green;font-size: 18px;">
-        {{this.productForm.value.description}}
-    </h1>
-    </ion-row>
-
-    <ion-row style="background-color: white;">
-      <ion-col size="3">
-        <ion-button class="quantity-button" (click)="remItem()">-</ion-button>
-      </ion-col>
-      <ion-col size="6" style="text-align: center;font-size: 20px;margin-top: 8px;">
-        {{this.productForm.value.quantity}}
-      </ion-col>
-      <ion-col size="3">
-        <ion-button class="quantity-button" (click)="sumItem()">+</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-item style="--background: white;">
-      <!-- <ion-col (click)="setDiscount()"> -->
-        <h4 class="field-label-col">{{'SubTotal' | translate}}</h4>
-        <h4 class="field-value-col-2" style="color:blue">{{this.productForm.value.quantity*this.productForm.value.price|number}} G$</h4>
-      <!-- </ion-col> -->
-    </ion-item>
-    <ion-row>
-
-
-      <!-- <ion-item class="ion-no-padding field-50">
-        <ion-label position="floating">{{'PURCHASE_COST' | translate}}</ion-label>
-        <ion-input #cost type="number" formControlName="cost"></ion-input>
-      </ion-item> -->
-      <!-- <ion-item class="ion-no-padding field-50">
-        <ion-label position="floating">{{'Quantidade' | translate}}</ion-label>
-        <ion-input #cost type="number" formControlName="quantity"></ion-input>
-      </ion-item> -->
-      <ion-item class="field-100">
-        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
-        <ion-input type="text" formControlName="note" placeholder="ejemplo: Sin cebolla"></ion-input>
-      </ion-item>
-      <!-- <ion-row><ion-col> -->
-        <ion-button class="button-100" (click)="askProduct()">
-          <!-- <ion-icon name="fastforward"> </ion-icon> -->
-          {{'Agregar al Pedido'|translate}}
-        </ion-button>
-      <!-- </ion-col>
-      </ion-row> -->
-    </ion-row>
   </form>
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
-    <ion-button (click)="goNextStep()"  class="next-button">
-      <ion-icon name="fastforward"> </ion-icon>
-      {{'NEXT'|translate}}
-    </ion-button>
-  </ion-fab> -->
 
-  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-    <ion-button (click)="discard()" color="danger">
-      <ion-icon name="backspace" *ngIf="productForm.dirty"> </ion-icon>
-      <ion-icon name="arrow-back" *ngIf="!productForm.dirty"> </ion-icon>
-      <span *ngIf="productForm.dirty">{{ 'DISCARD'| translate }}</span>
-      <span *ngIf="!productForm.dirty">{{ 'GO_BACK'| translate }}</span>
-    </ion-button>
-  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="productForm.dirty && editMode">
     <ion-button (click)="buttonSave()"  color="success">
