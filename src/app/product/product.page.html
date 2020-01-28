@@ -18,7 +18,7 @@
 
   <form class="sample-form validations-form" [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
       <ion-row style="background: white;">
-        <img [src]="productForm.value.image || './assets/icons/field.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+        <img [src]="productForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
       </ion-row>
     <!-- <ion-row>
       <ion-col style="text-align: center;">
