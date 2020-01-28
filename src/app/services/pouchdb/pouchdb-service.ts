@@ -478,8 +478,8 @@ export class PouchdbService {
     });
   }
 
-  deleteDoc(doc_id){
-    this.db.remove(doc_id).catch((err) => {
+  deleteDoc(doc){
+    this.db.remove(doc).catch((err) => {
       console.log("Delete error", err);
     });
   }
