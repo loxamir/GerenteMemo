@@ -43,6 +43,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     opened: boolean = false;
     select;
     barcode = '';
+    user: any = {};
 
     constructor(
       public navCtrl: NavController,
@@ -133,6 +134,22 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
+      this.user = (await this.pouchdbService.getUser());
+      if (this.user.editProduct == false){
+        let prompt = await this.alertCtrl.create({
+          header: 'Sin Permiso',
+          message: 'No tienes permiso para editar productos',
+          buttons: [
+            {
+              text: 'Ok'
+            }
+          ]
+        });
+        prompt.present();
+        await this.loading.dismiss();
+        this.exitPage();
+        return;
+      }
       if (this._id){
         this.productService.getProduct(this._id).then((data) => {
           this.productForm.patchValue(data);

@@ -140,6 +140,21 @@ export class ReceiptPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
+    if (this.user.createReceipt == false){
+      let prompt = await this.alertCtrl.create({
+        header: 'Sin Permiso',
+        message: 'No tienes permiso para crear recibos',
+        buttons: [
+          {
+            text: 'Ok'
+          }
+        ]
+      });
+      prompt.present();
+      await this.loading.dismiss();
+      this.exitPage();
+      return;
+    }
     let config: any = await this.configService.getConfig();
     this.config = config;
     this.company_currency_precision = config.currency_precision;
