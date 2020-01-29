@@ -116,6 +116,7 @@ export class SalePage implements OnInit {
     return;
     currency_precision = 2;
     confirming = false;
+    user: any = {};
 
     constructor(
       public navCtrl: NavController,
@@ -198,6 +199,7 @@ export class SalePage implements OnInit {
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
       this.translate.use(language);
+      this.user = (await this.pouchdbService.getUser());
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
       if (config.default_contact_id){
@@ -258,6 +260,9 @@ export class SalePage implements OnInit {
     }
 
     async selectCashMove(item) {
+      if (this.user.cancelSale == false){
+        return
+      }
       this.listenBarcode = false;
       this.events.unsubscribe('open-cash-move');
       this.events.subscribe('open-cash-move', (data) => {
