@@ -19,6 +19,7 @@ import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 import { FormatService } from "../services/format.service";
 // import { AccountsPage } from './move/account/list/accounts';
 import { ProductListPage } from '../product-list/product-list.page';
+import { AreasPage } from '../areas/areas.page';
 
 @Component({
   selector: 'app-crop',
@@ -34,6 +35,7 @@ export class CropPage implements OnInit {
   select;
   create;
   today = new Date();
+  currency_precision = 2;
 
   constructor(
     public navCtrl: NavController,
@@ -73,10 +75,12 @@ export class CropPage implements OnInit {
       product_name: new FormControl(),
       // currency_name: new FormControl(''),
       moves: new FormControl([]),
+      items: new FormControl([]),
       // checks: new FormControl([]),
       // type: new FormControl('liquidity'),
       // sequence: new FormControl(1),
-      // note: new FormControl(''),
+      state: new FormControl('QUOTATION'),
+      area: new FormControl(0),
       code: new FormControl(''),
       _id: new FormControl(''),
     });
@@ -161,7 +165,7 @@ export class CropPage implements OnInit {
   }
 
 
-  async openItem(item) {
+  async openWork(item) {
     this.events.subscribe('open-crop-move', (data) => {
       item.amount = data.amount;
       item.date = data.date;
@@ -239,6 +243,110 @@ export class CropPage implements OnInit {
       this.cropForm.markAsPristine();
       this.navCtrl.navigateBack('/crops');
     }
+  }
+
+  async addItem(){
+    let self = this;
+    if (this.cropForm.value.state=='QUOTATION'){
+      this.loading = await this.loadingCtrl.create({});
+      await this.loading.present();
+      this.events.unsubscribe('select-area');
+      this.events.subscribe('select-area', async (area) => {
+        self.cropForm.value.items.unshift({
+          'quantity': parseFloat(area.surface),
+          'area': area,
+        })
+        self.recomputeValues();
+        self.cropForm.markAsDirty();
+        self.events.unsubscribe('select-area');
+        profileModal.dismiss();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: AreasPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      await profileModal.present();
+      await this.loading.dismiss();
+      await profileModal.onDidDismiss();
+    }
+  }
+
+  async openItem(item) {
+    if (this.cropForm.value.state=='QUOTATION'){
+      this.events.unsubscribe('select-area');
+      this.events.subscribe('select-area', (data) => {
+        console.log("vars", data);
+        item.quantity = data.surface;
+        item.area = data;
+        this.recomputeValues();
+        this.cropForm.markAsDirty();
+        this.events.unsubscribe('select-area');
+        profileModal.dismiss();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: AreasPage,
+        componentProps: {
+          "select": true,
+        }});
+        await profileModal.present();
+        await profileModal.onDidDismiss();
+    }
+  }
+
+  async editItemQuantity(item){
+    if (this.cropForm.value.state=='QUOTATION'){
+      let prompt = await this.alertCtrl.create({
+        header: this.translate.instant('PRODUCT_QUANTITY'),
+        message: this.translate.instant('WHAT_PRODUCT_QUANTITY'),
+        inputs: [
+          {
+            type: 'number',
+            name: 'quantity',
+            value: item.quantity
+        },
+
+        ],
+        buttons: [
+          {
+            text: this.translate.instant('CANCEL'),
+          },
+          {
+            text: this.translate.instant('CONFIRM'),
+            handler: data => {
+              item.quantity = parseFloat(data.quantity);
+              this.recomputeValues();
+              this.cropForm.markAsDirty();
+            }
+          }
+        ]
+      });
+
+      await prompt.present();
+      await prompt.onDidDismiss();
+    }
+  }
+
+  async deleteItem(slidingItem, item){
+    if (this.cropForm.value.state=='QUOTATION'){
+      slidingItem.close();
+      let index = this.cropForm.value.items.indexOf(item)
+      this.cropForm.value.items.splice(index, 1);
+      this.cropForm.markAsDirty();
+      this.recomputeValues();
+    }
+  }
+
+  recomputeValues(){
+    let areaTotal = 0;
+    this.cropForm.value.items.forEach((field)=>{
+      areaTotal += parseFloat(field.quantity);
+    })
+    this.cropForm.patchValue({
+      'area': areaTotal,
+    })
+    console.log("recompute values");
   }
 
 }
