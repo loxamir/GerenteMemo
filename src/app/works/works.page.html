@@ -31,7 +31,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content  class="list-mini-content"  *ngIf="!showForm">
+<ion-content  class="list-mini-content">
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
   <img id="imgtmp" #imgtmp style="display:none">
   <div id="pwa">
@@ -297,34 +297,23 @@
     </ion-row>
   </form>
 
-
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createProduct()">
-          <ion-icon name="add">
-          </ion-icon>
-      </ion-fab-button>
-  </ion-fab> -->
   <ion-fab vertical="bottom" horizontal="center" slot="fixed"  *ngIf="!showBotom">
         <ion-fab-button  style="margin: auto;"  (click)="addButton()">
           <ion-icon name="add">
           </ion-icon>
         </ion-fab-button>
   </ion-fab>
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed"  style="left: 0px;right:0px;bottom: 0px;" *ngIf="showBotom">
-        <ion-fab-button  style="margin: auto;">
-          <ion-icon name="close" (click)="addButton()">
-          </ion-icon>
-        </ion-fab-button>
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button  (click)="content.scrollToBottom()">
+      <ion-icon name="arrow-down">
+      </ion-icon>
+    </ion-fab-button>
   </ion-fab> -->
   <ion-fab vertical="bottom" style="left: 0px;right:0px;bottom: 0px;" horizontal="center" slot="fixed" *ngIf="showBotom">
     <ion-fab-button  style="margin: auto;margin-left: 47%;margin-bottom: 10px;"  (click)="addButton()">
       <ion-icon name="close">
       </ion-icon>
     </ion-fab-button>
-    <!-- <ion-fab-button  style="margin: auto;">
-      <ion-icon name="close" (click)="addButton()">
-      </ion-icon>
-    </ion-fab-button> -->
     <h1 class="activity-message">{{'SELECT_ACTIVITY_TYPE'|translate}}</h1>
     <h1 class="activity-category">{{'AGRICULTURE'|translate}}</h1>
     <ion-row *ngIf="showBotom" style="background: white;padding-left:10%;">

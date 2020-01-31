@@ -123,10 +123,10 @@ export class WorksPage implements OnInit {
     // })
   }
 
-  refreshList(){
+async refreshList(){
     this.skip = 0;
     this.worksForm.value.moves = [];
-    this.doInfinite(false);
+    await this.doInfinite(false);
     setTimeout(() => {
       this.content.scrollToBottom(10);
     }, 200);
@@ -429,55 +429,33 @@ export class WorksPage implements OnInit {
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
     this.worksMeasure = config.worksMeasure
     this.currency_precision = config.currency_precision;
-    // if (this._id) {
-    //   this.worksService.getWorks(this._id).then(async (data) => {
-    //     this.doInfinite(false);
-    //     data.note = '';
-    //     this.worksForm.patchValue(data);
-    //
-    //     let rain = await this.worksService.getWorksRain(this._id);
-    //     if (rain) {
-    //       this.worksForm.value.lastRainDate = rain['date'];
-    //       this.worksForm.value.lastRain = rain['quantity'];
-    //       var date1 = new Date(this.worksForm.value.lastRainDate);
-    //       var date2 = new Date();
-    //       var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-    //       var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    //       this.diffDays = diffDays - 1;
-    //     }
-    //     setTimeout(() => {
-    //       // this.content.scrollToPoint(0, 50, 100);
-    //       this.content.scrollToBottom(100);
-    //       this.ready = true;
-    //       this.doInfinite2(false);
-    //       this.loading.dismiss();
-    //     }, 250);
-    //   });
-    // } else {
-      // this.showForm = true;
-      this.doInfinite(false);
-      setTimeout(() => {
-        this.content.scrollToBottom(10);
+    await this.doInfinite(false);
+    if (this.skip == 15){
+      setTimeout(async () => {
+        await this.content.scrollToBottom();
       }, 200);
-      this.loading.dismiss();
-    // }
+    }
+    this.loading.dismiss();
   }
 
   doInfinite(infiniteScroll) {
-    setTimeout(() => {
-      this.worksService.getWorksPage(this.skip).then((works: any[]) => {
-        works.forEach(wor => {
-          this.worksForm.value.moves.push(wor);
-        })
-        this.skip += 15;
-        if (infiniteScroll) {
-          infiniteScroll.target.complete();
-          if (works.length < 15) {
-            infiniteScroll.target.disabled = true;
+    return new Promise(async resolve => {
+      setTimeout(() => {
+        this.worksService.getWorksPage(this.skip).then((works: any[]) => {
+          works.forEach(wor => {
+            this.worksForm.value.moves.push(wor);
+          })
+          this.skip += 15;
+          if (infiniteScroll) {
+            infiniteScroll.target.complete();
+            if (works.length < 15) {
+              infiniteScroll.target.disabled = true;
+            }
           }
-        }
-      });
-    }, 50);
+          resolve(true);
+        });
+      }, 50);
+    })
   }
 
   doInfinite2(infiniteScroll) {
