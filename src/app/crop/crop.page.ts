@@ -36,6 +36,7 @@ export class CropPage implements OnInit {
   create;
   today = new Date();
   currency_precision = 2;
+  areaMeasure = "ha";
 
   constructor(
     public navCtrl: NavController,
@@ -89,6 +90,9 @@ export class CropPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
+    let config: any = (await this.pouchdbService.getDoc('config.profile'));
+    this.areaMeasure = config.areaMeasure
+    this.currency_precision = config.currency_precision;
     if (this._id){
       this.cropService.getCrop(this._id).then((data) => {
         this.cropForm.patchValue(data);
@@ -251,10 +255,10 @@ export class CropPage implements OnInit {
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.events.unsubscribe('select-area');
-      this.events.subscribe('select-area', async (area) => {
+      this.events.subscribe('select-area', async (field) => {
         self.cropForm.value.items.unshift({
-          'quantity': parseFloat(area.surface),
-          'area': area,
+          'area': parseFloat(field.surface),
+          'field': field,
         })
         self.recomputeValues();
         self.cropForm.markAsDirty();
@@ -278,7 +282,7 @@ export class CropPage implements OnInit {
       this.events.unsubscribe('select-area');
       this.events.subscribe('select-area', (data) => {
         console.log("vars", data);
-        item.quantity = data.surface;
+        item.area = data.surface;
         item.area = data;
         this.recomputeValues();
         this.cropForm.markAsDirty();
@@ -303,8 +307,8 @@ export class CropPage implements OnInit {
         inputs: [
           {
             type: 'number',
-            name: 'quantity',
-            value: item.quantity
+            name: 'area',
+            value: item.area
         },
 
         ],
@@ -315,7 +319,7 @@ export class CropPage implements OnInit {
           {
             text: this.translate.instant('CONFIRM'),
             handler: data => {
-              item.quantity = parseFloat(data.quantity);
+              item.area = parseFloat(data.area);
               this.recomputeValues();
               this.cropForm.markAsDirty();
             }
@@ -341,7 +345,7 @@ export class CropPage implements OnInit {
   recomputeValues(){
     let areaTotal = 0;
     this.cropForm.value.items.forEach((field)=>{
-      areaTotal += parseFloat(field.quantity);
+      areaTotal += parseFloat(field.area);
     })
     this.cropForm.patchValue({
       'area': areaTotal,

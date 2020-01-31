@@ -36,7 +36,7 @@ export class CropService {
       crop.fields.forEach((field: any)=>{
         crop['items'].push({
           'field': doc_dict[field.field_id],
-          'quantity': field.quantity,
+          'area': field.area,
         })
       })
       resolve(crop);
@@ -46,6 +46,7 @@ export class CropService {
   createCrop(viewData){
     let crop = Object.assign({}, viewData);
     crop.docType = 'crop';
+    crop.fields = [];
     delete crop.moves;
     crop.product_id = crop.product._id;
     delete crop.product;
@@ -53,7 +54,7 @@ export class CropService {
       crop.fields.push({
         field_id: item.field_id || item.field._id,
         field_name: item.field.name || item.field_name,
-        quantity: item.quantity,
+        area: item.area,
       })
     });
     delete crop.items;
@@ -85,6 +86,7 @@ export class CropService {
 
   updateCrop(viewData){
     let crop = Object.assign({}, viewData);
+    crop.fields = [];
     crop.docType = 'crop';
     delete crop.moves;
     delete crop.crop;
@@ -94,7 +96,7 @@ export class CropService {
       crop.fields.push({
         field_id: item.field_id || item.field._id,
         field_name: item.field.name || item.field_name,
-        quantity: item.quantity,
+        area: item.area,
       })
     });
     delete crop.items;

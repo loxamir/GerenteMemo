@@ -57,7 +57,7 @@
     <ion-row>
       <ion-col size="12">
         <ion-button class="button-100" (click)="addItem()" color="success">
-          <ion-icon name="add" style="margin-right:10px;"></ion-icon> {{ 'ADD_ITEM' | translate }}
+          <ion-icon name="add" style="margin-right:10px;"></ion-icon> {{ 'ADD_FIELD' | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
@@ -74,7 +74,7 @@
               </ion-row>
               <ion-row no-padding class="content-row one-line">
                 <ion-col no-padding size="12" style="text-align: right; margin-right: 0.5em;" (click)="editItemQuantity(item)">
-                  <h2 class="list-big-number" style="color: green;">{{item.quantity}}ha</h2>
+                  <h2 class="list-big-number" style="color: green;">{{item.area}}{{areaMeasure}}</h2>
                 </ion-col>
               </ion-row>
             </ion-card>
