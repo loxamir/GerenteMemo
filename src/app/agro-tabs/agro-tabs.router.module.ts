@@ -63,6 +63,15 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'crop-list',
+        children: [
+          {
+            path: '',
+            loadChildren: '../crops/crops.module#CropsPageModule'
+          }
+        ]
+      },
+      {
         path: 'warehouse-list',
         children: [
           {

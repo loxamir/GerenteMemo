@@ -80,7 +80,7 @@ export class CropPage implements OnInit {
       // checks: new FormControl([]),
       // type: new FormControl('liquidity'),
       // sequence: new FormControl(1),
-      state: new FormControl('QUOTATION'),
+      state: new FormControl('ACTIVE'),
       area: new FormControl(0),
       code: new FormControl(''),
       _id: new FormControl(''),
@@ -251,7 +251,7 @@ export class CropPage implements OnInit {
 
   async addItem(){
     let self = this;
-    if (this.cropForm.value.state=='QUOTATION'){
+    if (this.cropForm.value.state=='ACTIVE'){
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.events.unsubscribe('select-area');
@@ -278,7 +278,7 @@ export class CropPage implements OnInit {
   }
 
   async openItem(item) {
-    if (this.cropForm.value.state=='QUOTATION'){
+    if (this.cropForm.value.state=='ACTIVE'){
       this.events.unsubscribe('select-area');
       this.events.subscribe('select-area', (data) => {
         console.log("vars", data);
@@ -300,7 +300,7 @@ export class CropPage implements OnInit {
   }
 
   async editItemQuantity(item){
-    if (this.cropForm.value.state=='QUOTATION'){
+    if (this.cropForm.value.state=='ACTIVE'){
       let prompt = await this.alertCtrl.create({
         header: this.translate.instant('PRODUCT_QUANTITY'),
         message: this.translate.instant('WHAT_PRODUCT_QUANTITY'),
@@ -333,7 +333,7 @@ export class CropPage implements OnInit {
   }
 
   async deleteItem(slidingItem, item){
-    if (this.cropForm.value.state=='QUOTATION'){
+    if (this.cropForm.value.state=='ACTIVE'){
       slidingItem.close();
       let index = this.cropForm.value.items.indexOf(item)
       this.cropForm.value.items.splice(index, 1);

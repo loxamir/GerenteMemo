@@ -1305,7 +1305,7 @@ export class ActivityReportPage implements OnInit {
       crop: new FormControl({}),
       items: new FormControl(this.route.snapshot.paramMap.get('items') || [], Validators.required),
       reportType: new FormControl(this.route.snapshot.paramMap.get('reportType') || 'paid'),
-      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'activity'),
+      groupBy: new FormControl(this.route.snapshot.paramMap.get('groupBy') || 'area'),
       orderBy: new FormControl(this.route.snapshot.paramMap.get('orderBy') || 'total'),
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
@@ -1316,9 +1316,15 @@ export class ActivityReportPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
-    this.areaMeasure = config.areaMeasure
+    this.areaMeasure = config.areaMeasure;
+    if (this.route.snapshot.paramMap.get('crop_id')){
+      let crop = await this.pouchdbService.getDoc(this.route.snapshot.paramMap.get('crop_id'));
+      await this.reportActivityForm.patchValue({
+        crop: crop
+      })
+    }
     await this.goNextStep();
-    this.loading.dismiss();
+    await this.loading.dismiss();
   }
 
   getFirstDateOfMonth() {

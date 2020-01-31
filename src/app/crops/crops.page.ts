@@ -162,4 +162,12 @@ export class CropsPage implements OnInit {
     }
   }
 
+  showReport(item) {
+    console.log("item", item);
+    this.navCtrl.navigateForward(['/activity-report', {
+      'reportType': "activity",
+      'crop_id': item._id,
+    }]);
+  }
+
 }

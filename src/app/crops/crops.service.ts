@@ -15,6 +15,9 @@ export class CropsService {
         'crop', keyword
       ).then((crops: any[]) => {
         console.log("safras", crops);
+        crops.forEach((crop)=>{
+          crop.production_cost = 10000;
+        })
         resolve(crops);
       });
     });

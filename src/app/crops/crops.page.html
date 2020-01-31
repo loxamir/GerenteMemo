@@ -5,12 +5,12 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-  <ion-searchbar
-  [placeholder]="'SEARCH_CROP'|translate"
-  [(ngModel)]="searchTerm"
-  #searchBar
-  (ionChange)="setFilteredItems()">
-  </ion-searchbar>
+    <ion-searchbar
+    [placeholder]="'SEARCH_CROP'|translate"
+    [(ngModel)]="searchTerm"
+    #searchBar
+    (ionChange)="setFilteredItems()">
+    </ion-searchbar>
   </ion-toolbar>
   <ion-toolbar *ngIf="!showSearch">
     <ion-buttons slot="start">
@@ -35,27 +35,62 @@
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of crops">
-      <ion-item no-padding (click)="selectCrop(item)" style="margin-bottom: 0px; margin-top:0px;">
-        <ion-card class="list-card">
-<ion-row>
-        <ion-col>
-          <h3 class="item-name"><b>{{ item.name || 'NOT_INFORMED'|translate}}</b></h3>
-        </ion-col>
-      </ion-row>
- <ion-row no-padding class="content-row one-line">
-    <!-- <ion-col no-padding size="6">
-      <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateStart|date: 'dd/MM/yyyy'}}</h3>
-      <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateEnd|date: 'dd/MM/yyyy'}}</h3>
-    </ion-col> -->
-    <ion-col no-padding size="6" align-self-center>
-    </ion-col>
-  </ion-row>
-      </ion-card>
+      <ion-item no-padding style="margin-bottom: 0px; margin-top:0px;">
+        <ion-card class="list-card" *ngIf="select" (click)="selectCrop(item)">
+          <ion-row>
+            <ion-col>
+              <h3 class="item-name"><b>{{ item.name || 'NOT_INFORMED'|translate}}</b></h3>
+            </ion-col>
+          </ion-row>
+          <ion-row no-padding class="content-row one-line">
+            <ion-col no-padding size="6" align-self-center>
+            </ion-col>
+          </ion-row>
+        </ion-card>
 
-    </ion-item>
+        <ion-card class="area-card" no-padding button="true" *ngIf="!select"
+        (click)="showReport(item)">
+          <ion-row>
+            <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+              {{ item.name }}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col no-padding class="report-100" style="margin-top: 15px;">
+              <h4 class="field-label">{{'Costo Total' | translate}}</h4>
+              <h4 class="field-value" style="color:green; font-size:30px;">
+                $ {{item.production_cost|number:'1.0-1'}}
+              </h4>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col no-padding class="report-50">
+              <h4 class="field-label">{{'Costo por hectare' | translate}}</h4>
+              <h4 class="field-value" style="color:red">
+                $ {{item.production_cost/item.area|number:'1.0-1'}}/ha
+              </h4>
+            </ion-col>
+            <ion-col no-padding class="report-50">
+              <h4 class="field-label">{{'Area Cultivada' | translate}}</h4>
+              <h4 class="field-value" style="color:green">
+                {{item.area|number:'1.0-1'}} ha
+              </h4>
+            </ion-col>
+          </ion-row>
+          <ion-row no-padding>
+            <ion-col no-padding class="list-tag"
+            [class.quotation]="item.state=='DONE'"
+            [class.confirmed]="item.state=='DRAFT'"
+            [class.paid]="item.state=='ACTIVE'"
+            [class.cancel]="item.state=='CANCELED'">
+              {{ item.state | translate }}
+            </ion-col>
+          </ion-row>
+        </ion-card>
+
+      </ion-item>
       <ion-item-options>
-        <ion-item-option (click)="deleteCrop(item)"
-        *ngIf="!item.fixed">
+        <ion-item-option (click)="deleteCrop(item)" *ngIf="!item.fixed">
           {{'DELETE'|translate}}
         </ion-item-option>
       </ion-item-options>
@@ -64,9 +99,9 @@
   <ion-row style="height:15px;">
   </ion-row>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="createCrop()">
-          <ion-icon name="add">
-          </ion-icon>
-      </ion-fab-button>
+    <ion-fab-button (click)="createCrop()">
+      <ion-icon name="add">
+      </ion-icon>
+    </ion-fab-button>
   </ion-fab>
 </ion-content>
