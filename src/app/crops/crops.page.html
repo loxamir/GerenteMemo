@@ -48,26 +48,57 @@
           </ion-row>
         </ion-card>
 
-        <ion-card class="area-card" no-padding button="true" *ngIf="!select"
-        (click)="showReport(item)">
-          <ion-row>
-            <ion-col style="text-align: center; font-size:20px;border-bottom:1px solid #ddd">
+        <ion-card class="crop-card" no-padding button="true" *ngIf="!select">
+          <ion-row >
+            <ion-col style="font-size:20px;border-bottom:1px solid #ddd"
+            (click)="showReport(item)">
               {{ item.name }}
+              <h2 class="crop-subtitle">
+                {{ item.fields.length }} parcelas - {{item.area}} ha
+              </h2>
+            </ion-col>
+            <ion-col size="2" class="open-item-col"
+            (click)="openCrop(item)">
+              <ion-icon name="open" class="open-item-arrow"></ion-icon>
             </ion-col>
           </ion-row>
-          <ion-row>
-            <ion-col no-padding class="report-100" style="margin-top: 15px;">
-              <h4 class="field-label">{{'Costo Total' | translate}}</h4>
+          <ion-row style="padding-left: 2%;">
+            <ion-col no-padding class="report-50" style="margin-top: 15px;"
+            (click)="showReport(item)">
+              <h4 class="field-label">{{'Costo' | translate}}</h4>
               <h4 class="field-value" style="color:green; font-size:30px;">
-                $ {{item.production_cost|number:'1.0-1'}}
+                $ {{item.production_cost/item.area|number:'1.0-1'}}/ha
+              </h4>
+            </ion-col>
+            <ion-col no-padding class="report-50" style="margin-top: 15px;"
+            (click)="showReportYield(item)">
+              <h4 class="field-label">{{'Rendimento(Kg/ha)' | translate}}</h4>
+              <h4 class="field-value" style="color:green; font-size:30px;">
+                {{item.production_cost/1.2|number:'1.0-1'}}
               </h4>
             </ion-col>
           </ion-row>
-          <ion-row>
-            <ion-col no-padding class="report-50">
-              <h4 class="field-label">{{'Costo por hectare' | translate}}</h4>
+          <ion-row style="padding-left: 2%;height: 2rem;">
+            <ion-col no-padding class="report-50"
+            (click)="showReport(item)">
+              <h4 class="field-label">{{'Costo Total' | translate}}</h4>
               <h4 class="field-value" style="color:red">
-                $ {{item.production_cost/item.area|number:'1.0-1'}}/ha
+                $ {{item.production_cost|number:'1.0-1'}}
+              </h4>
+            </ion-col>
+            <ion-col no-padding class="report-50"
+            (click)="showReportYield(item)">
+              <h4 class="field-label">{{'Rendimento Total' | translate}}</h4>
+              <h4 class="field-value" style="color:green">
+                {{item.production_cost/1.2*item.area|number:'1.0-1'}} Kg
+              </h4>
+            </ion-col>
+          </ion-row>
+          <!-- <ion-row style="padding-left: 2%;">
+            <ion-col no-padding class="report-50">
+              <h4 class="field-label">{{'Rendimento Total' | translate}}</h4>
+              <h4 class="field-value" style="color:red">
+                $ {{item.production_cost|number:'1.0-1'}} Kg
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50">
@@ -76,7 +107,7 @@
                 {{item.area|number:'1.0-1'}} ha
               </h4>
             </ion-col>
-          </ion-row>
+          </ion-row> -->
           <ion-row no-padding>
             <ion-col no-padding class="list-tag"
             [class.quotation]="item.state=='DONE'"

@@ -170,4 +170,11 @@ export class CropsPage implements OnInit {
     }]);
   }
 
+  showReportYield(item) {
+    this.navCtrl.navigateForward(['/activity-report', {
+      'reportType': "activity",
+      groupBy: "yieldAreakg",
+      'crop_id': item._id,
+    }]);
+  }
 }
