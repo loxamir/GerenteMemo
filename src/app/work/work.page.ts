@@ -263,6 +263,27 @@ export class WorkPage implements OnInit {
   }
 
   async buttonSave() {
+    if (this.workForm.value.surface){
+      let field = this.workForm.value.area;
+      let crop_id = this.workForm.value.crop._id;
+      let areaCropReport:any = await this.pouchdbService.getViewInv(
+        'Informes/areaCrop', 4,
+        [field._id, crop_id, 'z'],
+        [field._id, crop_id, '0'],
+        true,
+        true,
+        5
+      );
+      if (areaCropReport.length==0){
+        let crop:any = await this.pouchdbService.getDoc(crop_id);
+        crop.fields.push({
+          'field_id': field._id,
+          'field_name': field.name,
+          'area': this.workForm.value.surface,
+        })
+        await this.pouchdbService.updateDoc(crop);
+      }
+    }
     let dict = {}
     // }
     this.workForm.value.fields.forEach(field=>{
