@@ -47,6 +47,7 @@ export class WorkPage implements OnInit {
   note;
   @Input() go = false;
   @Input() area: any;
+  @Input() crop: any;
   @Input() machine: any;
   config;
   deleteList = [];
@@ -87,6 +88,7 @@ export class WorkPage implements OnInit {
     this._id = this.route.snapshot.paramMap.get('_id');
     this.activity = this.route.snapshot.paramMap.get('activity');
     this.area = eval(this.route.snapshot.paramMap.get('area'));
+    this.crop = eval(this.route.snapshot.paramMap.get('crop'));
     this.machine = eval(this.route.snapshot.paramMap.get('machine'));
     this.select = this.route.snapshot.paramMap.get('select');
     this.note = this.route.snapshot.paramMap.get('note');
@@ -458,7 +460,7 @@ export class WorkPage implements OnInit {
     });
   }
 
-  setActivity(data, goNext=true){
+  async setActivity(data, goNext=true){
     let self = this;
     let data_fields = data.fields && data.fields.sort(function(a, b) {
       return self.formatService.compareField(a, b, 'sequence');
@@ -499,11 +501,26 @@ export class WorkPage implements OnInit {
       }
     });
     if (this.area){
-      this.workForm.patchValue({
+      let formData = {
         area: this.area,
-        crop: this.area.crop,
+        // crop: this.crop,
         surface: this.area.surface, //Enabled to complete the surface field
-      });
+      }
+      let areaCropReport:any = await this.pouchdbService.getViewInv(
+        'Informes/areaCrop', 4,
+        [this.area._id, 'z'],
+        [this.area._id, '0'],
+        true,
+        true,
+        5,
+        undefined,
+        true,
+      );
+      if (areaCropReport.length == 1){
+        formData['crop'] = areaCropReport[0].doc;
+        formData['surface'] = areaCropReport[0].value;
+      }
+      this.workForm.patchValue(formData);
     }
     if (this.machine){
       if (this.activity._id == 'activity.fuel'){
@@ -571,7 +588,9 @@ export class WorkPage implements OnInit {
     if (this.workForm.value.state=='DRAFT' || this.workForm.value.state=='STARTED'){
       context = JSON.parse(context || "{}");
       this.events.subscribe('select-' + model, async (data) => {
-        let field = {};
+        let field = {
+          crop: {}
+        };
         field[fielD.name] = data;
         this.workForm.patchValue(field);
         this.events.unsubscribe('select-' + model);
@@ -579,24 +598,28 @@ export class WorkPage implements OnInit {
         let self = this;
         let d = {}
         if(fielD.onchange){
-          await this.formatService.asyncForEach(fielD.onchange.split(';'), async item=>{
-            let fieldName = item.split('=')[0];
-            let fieldData = item.split('=')[1];
-            if (fieldData){
-              if (isNaN(fieldData)){
-                if (fieldData[0] == '#'){
-                  let split = fieldData.split('#')
-                  let ddoc = data[split[1]];
-                  let fieldDoc:any = await this.pouchdbService.getDoc(ddoc);
-                  d[fieldName] = fieldDoc;
+          if (fielD.onchange.split('this.')[1]){
+            let evalido = eval(fielD.onchange);
+          } else {
+            await this.formatService.asyncForEach(fielD.onchange.split(';'), async item=>{
+              let fieldName = item.split('=')[0];
+              let fieldData = item.split('=')[1];
+              if (fieldData){
+                if (isNaN(fieldData)){
+                  if (fieldData[0] == '#'){
+                    let split = fieldData.split('#')
+                    let ddoc = data[split[1]];
+                    let fieldDoc:any = await this.pouchdbService.getDoc(ddoc);
+                    d[fieldName] = fieldDoc;
+                  } else {
+                    d[fieldName] = data[fieldData];
+                  }
                 } else {
-                  d[fieldName] = data[fieldData];
+                  d[fieldName] = fieldData;
                 }
-              } else {
-                d[fieldName] = fieldData;
               }
-            }
-          })
+            })
+          }
           await this.workForm.patchValue(d);
           this.recomputeInputs();
         }
@@ -1185,6 +1208,85 @@ export class WorkPage implements OnInit {
           return Math.round(it * 100) / 100
         }
       }
+    }
+  }
+
+  async onChangeArea(data){
+    let formData = {
+      area: data.area,
+      surface: data.area.surface,
+    }
+    let areaCropReport:any = await this.pouchdbService.getViewInv(
+      'Informes/areaCrop', 4,
+      [data.area._id, 'z'],
+      [data.area._id, '0'],
+      true,
+      true,
+      5,
+      undefined,
+      true,
+    );
+    if (areaCropReport.length == 1){
+      formData['crop'] = areaCropReport[0].doc;
+      formData['surface'] = areaCropReport[0].value;
+    } else {
+      let fielt = this.workForm.value.fields.filter(fieln=>fieln.name == 'crop');
+      this.selectM2O(fielt[0], 'crop', '{}');
+      let surfaceField = this.workForm.value.fields.filter(fieln=>fieln.name == 'surface');
+      this.changeNumber(surfaceField[0]);
+    }
+    this.workForm.patchValue(formData);
+  }
+
+  onChangeCrop(){
+    let fielt = this.workForm.value.crop.fields.filter(fieln=>fieln.field_id == this.workForm.value.area._id);
+    if (fielt[0]){
+      this.workForm.patchValue({
+        'surface': fielt[0].area
+      })
+    }
+  }
+
+  onChangeProduct(data){
+    let dosage = this.workForm.value.dosage || 1;
+    this.workForm.patchValue({
+      'dosage': dosage,
+      'cost': data.cost,
+    });
+    let fielt = this.workForm.value.fields.filter(fieln=>fieln.name == 'dosage');
+    if (fielt[0]){
+      this.changeNumber(fielt[0]);
+    }
+  }
+
+  async changeField(field_name, data){
+    let d = {}
+    let fielD = this.workForm.value.fields.filter(fieln=>fieln.name == field_name);
+    if(fielD.onchange){
+      if (fielD.onchange.split('this.')[1]){
+        let evalido = eval(fielD.onchange);
+      } else {
+        await this.formatService.asyncForEach(fielD.onchange.split(';'), async item=>{
+          let fieldName = item.split('=')[0];
+          let fieldData = item.split('=')[1];
+          if (fieldData){
+            if (isNaN(fieldData)){
+              if (fieldData[0] == '#'){
+                let split = fieldData.split('#')
+                let ddoc = data[split[1]];
+                let fieldDoc:any = await this.pouchdbService.getDoc(ddoc);
+                d[fieldName] = fieldDoc;
+              } else {
+                d[fieldName] = data[fieldData];
+              }
+            } else {
+              d[fieldName] = fieldData;
+            }
+          }
+        })
+      }
+      await this.workForm.patchValue(d);
+      this.recomputeInputs();
     }
   }
 
