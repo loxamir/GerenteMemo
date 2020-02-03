@@ -1213,13 +1213,13 @@ export class WorkPage implements OnInit {
 
   async onChangeArea(data){
     let formData = {
-      area: data.area,
-      surface: data.area.surface,
+      area: data,
+      surface: data.surface,
     }
     let areaCropReport:any = await this.pouchdbService.getViewInv(
       'Informes/areaCrop', 4,
-      [data.area._id, 'z'],
-      [data.area._id, '0'],
+      [data._id, 'z'],
+      [data._id, '0'],
       true,
       true,
       5,
@@ -1238,7 +1238,7 @@ export class WorkPage implements OnInit {
     this.workForm.patchValue(formData);
   }
 
-  onChangeCrop(){
+  onChangeCrop(data){
     let fielt = this.workForm.value.crop.fields.filter(fieln=>fieln.field_id == this.workForm.value.area._id);
     if (fielt[0]){
       this.workForm.patchValue({

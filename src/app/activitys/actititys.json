@@ -731,7 +731,7 @@
           "activity_id": "",
           "context": "{}",
           "default": null,
-          "onchange": "crop=crop;surface=surface;"
+          "onchange": null
         }
       ],
       "note": "",
@@ -771,7 +771,7 @@
           "activity_id": "",
           "context": "{}",
           "default": null,
-          "onchange": "crop=crop;surface=surface;"
+          "onchange": null
         },
         {
           "name": "machine",
@@ -939,7 +939,7 @@
           },
           "default": null,
           "context": "{\"operation\": \"purchase\"}",
-          "onchange": "cost=cost;dosage=1;"
+          "onchange": "this.onChangeProduct(data)"
         }
       ],
       "note": "",
@@ -1406,7 +1406,7 @@
           "activity_id": "",
           "default": null,
           "context": "{}",
-          "onchange": null
+          "onchange": "this.onChangeCrop(data)"
         },
         {
           "name": "machines",
@@ -1464,7 +1464,7 @@
           "activity_id": "",
           "context": "{}",
           "default": null,
-          "onchange": "crop=crop;surface=surface;"
+          "onchange": "this.onChangeArea(data)"
         }
       ],
       "note": "",
@@ -1772,7 +1772,7 @@
           "activity_id": "",
           "default": null,
           "context": "{}",
-          "onchange": null
+          "onchange": "this.onChangeCrop(data)"
         },
         {
           "name": "machines",
@@ -1865,7 +1865,7 @@
           "activity_id": "",
           "context": "{}",
           "default": null,
-          "onchange": "crop=crop;surface=surface;"
+          "onchange": "this.onChangeArea(data)"
         }
       ],
       "note": "",
@@ -1904,28 +1904,6 @@
           "context": "{}"
         },
         {
-          "name": "crop",
-          "type": "many2one",
-          "label": "CROP",
-          "model": "crop",
-          "formula": "",
-          "script": "",
-          "invisible": "",
-          "readonly": "",
-          "note": "",
-          "attributes": [
-
-          ],
-          "class": "half-width",
-          "sequence": 15,
-          "activity": {
-
-          },
-          "activity_id": "",
-          "default": "",
-          "context": "{}"
-        },
-        {
           "name": "area",
           "type": "many2one",
           "label": "PLACE",
@@ -1950,7 +1928,7 @@
           "activity_id": "",
           "context": "{}",
           "default": null,
-          "onchange": "crop=crop;surface=surface;"
+          "onchange": null
         }
       ],
       "note": "",
@@ -2075,7 +2053,7 @@
           "activity_id": "",
           "default": null,
           "context": "{}",
-          "onchange": null
+          "onchange": "this.onChangeCrop(data)"
         },
         {
           "name": "machines",
@@ -2159,7 +2137,7 @@
           },
           "activity_id": "",
           "context": "{}",
-          "onchange": "crop=crop;surface=surface;",
+          "onchange": "this.onChangeArea(data)",
           "default": null
         }
       ],
@@ -2311,7 +2289,7 @@
           "activity_id": "",
           "default": null,
           "context": "{}",
-          "onchange": null
+          "onchange": "this.onChangeCrop(data)"
         },
         {
           "name": "machines",
@@ -2395,7 +2373,7 @@
           },
           "activity_id": "",
           "context": "{}",
-          "onchange": "crop=crop;surface=surface;",
+          "onchange": "this.onChangeArea(data)",
           "default": null
         }
       ],
