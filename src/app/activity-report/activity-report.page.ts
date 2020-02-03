@@ -925,15 +925,15 @@ export class ActivityReportPage implements OnInit {
       products.forEach(row=>{
         doc_dict[row.doc.name] = row.doc;
       })
-      Object.keys(activityArea).forEach((item)=>{
-        let counter = 0;
-        Object.keys(activityArea[item]).forEach((area)=>{
-          counter += activityArea[item][area]*doc_dict[area].surface;
-          activityArea[item][area] = activityArea[item][area]*doc_dict[area].surface;
-        })
-        activityArea[item] = counter;
-      })
-      console.log("activityArea2", activityArea);
+      // Object.keys(activityArea).forEach((item)=>{
+      //   let counter = 0;
+      //   Object.keys(activityArea[item]).forEach((area)=>{
+      //     counter += activityArea[item][area]*doc_dict[area].surface;
+      //     activityArea[item][area] = activityArea[item][area]*doc_dict[area].surface;
+      //   })
+      //   activityArea[item] = counter;
+      // })
+      // console.log("activityArea2", activityArea);
 
       let self = this;
       let output = items.sort(function(a, b) {

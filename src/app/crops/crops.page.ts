@@ -28,6 +28,8 @@ export class CropsPage implements OnInit {
   searchTerm: string = '';
   select;
   page = 0;
+  areaMeasure = "ha";
+  yieldMeasure = "Kg";
   constructor(
     public navCtrl: NavController,
     public cropsService: CropsService,

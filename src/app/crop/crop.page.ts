@@ -353,4 +353,18 @@ export class CropPage implements OnInit {
     console.log("recompute values");
   }
 
+  setDone(){
+    this.cropForm.patchValue({
+      'state': "FINISHED",
+    })
+    this.buttonSave();
+  }
+
+  setActive(){
+    this.cropForm.patchValue({
+      'state': "ACTIVE",
+    })
+    this.buttonSave();
+  }
+
 }

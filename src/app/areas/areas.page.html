@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
   <ion-searchbar
-  [placeholder]="'SEARCH_AREA'|translate"
+  [placeholder]="'SEARCH_PLACE'|translate"
   [(ngModel)]="searchTerm"
   #searchBar
   (ionChange)="setFilteredItems()">
@@ -16,7 +16,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/agro-tabs/activity-list"></ion-back-button>
     </ion-buttons>
-    <ion-title style="padding-inline-start: 10px;">{{'AREAS'|translate}}</ion-title>
+    <ion-title style="padding-inline-start: 10px;">{{'PLACES'|translate}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="changeSearch()">
         <ion-icon name="search"></ion-icon>
@@ -86,12 +86,12 @@
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
       <ion-row>
         <ion-col>
-          <h1>{{ 'NOT_FOUND_AREA' | translate }}</h1>
+          <h1>{{ 'NOT_FOUND_PLACE' | translate }}</h1>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
-          <h4>{{ 'CREATE_FIRST_AREA' | translate }}</h4>
+          <h4>{{ 'CREATE_FIRST_PLACE' | translate }}</h4>
         </ion-col>
       </ion-row>
     </ion-col>

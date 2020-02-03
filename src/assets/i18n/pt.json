@@ -174,7 +174,7 @@
   "SERVICES": "Serviços",
   "VALUE": "Valor",
   "VALUES": "Valores",
-  "YIELD": "Quantidade",
+  "YIELD": "Rendimento",
   "DATE": "Data",
   "DATES": "Datas",
   "SELLER": "Vendedor",
@@ -575,5 +575,14 @@
   "NOT_DATA_AVAILABLE": "Sem dados disponiveis",
   "REGISTER_SOME_ACTIVITIES_BEFORE": "Registre algumas Atividades para gerar os Relatorios",
   "DOSIS_HA": "Dose/ha",
+  "ACTIVE": "Ativo",
+  "SEARCH_PLACE": "Buscar Lugar",
+  "NOT_FOUND_PLACE": "Ainda não foi registrada nenhum Lugar",
+  "CREATE_FIRST_PLACE": "Para registrar seus Lugares, presione o botão mais",
+  "YIELD_TOTAL": "Rendimento Total",
+  "ACTIVATE": "Ativar",
+  "ADD_PLACE": "Adicionar Lugar",
+  "FINISH": "Finalizar",
+  "FINISHED": "Finalizada",
   "RESULT": "Resultado"
 }

@@ -174,7 +174,7 @@
   "SERVICES": "Services",
   "VALUE": "Value",
   "VALUES": "Values",
-  "YIELD": "Quantity",
+  "YIELD": "Yield",
   "DATE": "Date",
   "DATES": "Dates",
   "SELLER": "Seller",
@@ -575,5 +575,14 @@
   "NOT_DATA_AVAILABLE": "No data available",
   "REGISTER_SOME_ACTIVITIES_BEFORE": "Register some Activities to generate the Reports",
   "DOSIS_HA": "Dosis/ha",
+  "ACTIVE": "Active",
+  "SEARCH_PLACE": "Search Place",
+  "NOT_FOUND_PLACE": "No Place found",
+  "CREATE_FIRST_PLACE": "To register your Places, press the add button",
+  "YIELD_TOTAL": "Yield Total",
+  "ACTIVATE": "Activate",
+  "ADD_PLACE": "Add Place",
+  "FINISH": "Finish",
+  "FINISHED": "Finished",
   "RESULT": "Result"
 }

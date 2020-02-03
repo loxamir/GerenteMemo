@@ -51,10 +51,13 @@
         <ion-card class="crop-card" no-padding button="true" *ngIf="!select">
           <ion-row >
             <ion-col style="font-size:20px;border-bottom:1px solid #ddd"
-            (click)="showReport(item)">
+            (click)="openCrop(item)">
               {{ item.name }}
-              <h2 class="crop-subtitle">
-                {{ item.fields.length }} parcelas - {{item.area}} ha
+              <h2 class="crop-subtitle" *ngIf="item.fields && item.fields.length > 1">
+                {{ item.fields.length }} {{'PLACES'|translate}} - {{item.area}} {{areaMeasure}}
+              </h2>
+              <h2 class="crop-subtitle" *ngIf="item.fields && item.fields.length == 1">
+                1 {{'PLACE'|translate}} - {{item.area}} {{areaMeasure}}
               </h2>
             </ion-col>
             <ion-col size="2" class="open-item-col"
@@ -62,55 +65,47 @@
               <ion-icon name="open" class="open-item-arrow"></ion-icon>
             </ion-col>
           </ion-row>
-          <ion-row style="padding-left: 2%;">
+          <ion-row style="padding-left: 2%;"
+          *ngIf="item.production_cost|| item.yieldTotal">
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
+            *ngIf="item.production_cost"
             (click)="showReport(item)">
-              <h4 class="field-label">{{'Costo' | translate}}</h4>
+              <h4 class="field-label">{{'COST' | translate}}/{{areaMeasure}}</h4>
               <h4 class="field-value" style="color:green; font-size:30px;">
-                $ {{item.production_cost/item.area|number:'1.0-1'}}/ha
+                $ {{item.production_cost/item.area|number:'1.0-2'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
+            *ngIf="item.yieldTotal"
             (click)="showReportYield(item)">
-              <h4 class="field-label">{{'Rendimento(Kg/ha)' | translate}}</h4>
+              <h4 class="field-label">{{'YIELD' | translate}}({{yieldMeasure}}/{{areaMeasure}})</h4>
               <h4 class="field-value" style="color:green; font-size:30px;">
-                {{item.production_cost/1.2|number:'1.0-1'}}
+                {{item.yieldTotal/((item.area || 1))|number:'1.0-1'}}
               </h4>
             </ion-col>
           </ion-row>
-          <ion-row style="padding-left: 2%;height: 2rem;">
+          <ion-row style="padding-left: 2%;height: 2rem;"
+          *ngIf="item.production_cost|| item.yieldTotal">
             <ion-col no-padding class="report-50"
+            *ngIf="item.production_cost"
             (click)="showReport(item)">
-              <h4 class="field-label">{{'Costo Total' | translate}}</h4>
+              <h4 class="field-label">{{'TOTAL_COST' | translate}}</h4>
               <h4 class="field-value" style="color:red">
-                $ {{item.production_cost|number:'1.0-1'}}
+                $ {{item.production_cost|number:'1.0-2'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50"
+            *ngIf="item.yieldTotal"
             (click)="showReportYield(item)">
-              <h4 class="field-label">{{'Rendimento Total' | translate}}</h4>
+              <h4 class="field-label">{{'YIELD_TOTAL' | translate}}({{yieldMeasure}})</h4>
               <h4 class="field-value" style="color:green">
-                {{item.production_cost/1.2*item.area|number:'1.0-1'}} Kg
+                {{item.yieldTotal|number:'1.0-1'}}
               </h4>
             </ion-col>
           </ion-row>
-          <!-- <ion-row style="padding-left: 2%;">
-            <ion-col no-padding class="report-50">
-              <h4 class="field-label">{{'Rendimento Total' | translate}}</h4>
-              <h4 class="field-value" style="color:red">
-                $ {{item.production_cost|number:'1.0-1'}} Kg
-              </h4>
-            </ion-col>
-            <ion-col no-padding class="report-50">
-              <h4 class="field-label">{{'Area Cultivada' | translate}}</h4>
-              <h4 class="field-value" style="color:green">
-                {{item.area|number:'1.0-1'}} ha
-              </h4>
-            </ion-col>
-          </ion-row> -->
           <ion-row no-padding>
             <ion-col no-padding class="list-tag"
-            [class.quotation]="item.state=='DONE'"
+            [class.quotation]="item.state=='FINISHED'"
             [class.confirmed]="item.state=='DRAFT'"
             [class.paid]="item.state=='ACTIVE'"
             [class.cancel]="item.state=='CANCELED'">

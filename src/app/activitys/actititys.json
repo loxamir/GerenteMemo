@@ -1442,7 +1442,7 @@
         {
           "name": "area",
           "type": "many2one",
-          "label": "AREA",
+          "label": "PLACE",
           "model": "area",
           "formula": "",
           "script": "",
@@ -1681,7 +1681,7 @@
         },{
           "name": "surface",
           "type": "float",
-          "label": "Superficie(ha)",
+          "label": "Area(ha)",
           "model": "",
           "formula": "",
           "script": "",
@@ -1962,7 +1962,7 @@
         },{
           "name": "surface",
           "type": "float",
-          "label": "Superficie(ha)",
+          "label": "Area(ha)",
           "model": "",
           "formula": "",
           "script": "",
@@ -2175,7 +2175,7 @@
         {
           "name": "surface",
           "type": "float",
-          "label": "Superficie(ha)",
+          "label": "Area(ha)",
           "model": "",
           "formula": "",
           "script": "",

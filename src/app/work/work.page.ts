@@ -1233,7 +1233,9 @@ export class WorkPage implements OnInit {
       let fielt = this.workForm.value.fields.filter(fieln=>fieln.name == 'crop');
       this.selectM2O(fielt[0], 'crop', '{}');
       let surfaceField = this.workForm.value.fields.filter(fieln=>fieln.name == 'surface');
-      this.changeNumber(surfaceField[0]);
+      if (surfaceField[0]){
+        this.changeNumber(surfaceField[0]);
+      }
     }
     this.workForm.patchValue(formData);
   }

@@ -13,10 +13,26 @@ export class CropsService {
       let cropList = [];
       this.pouchdbService.searchDocTypeData(
         'crop', keyword
-      ).then((crops: any[]) => {
-        console.log("safras", crops);
+      ).then(async (crops: any[]) => {
+        let cropCost:any = await this.pouchdbService.getViewInv(
+          'Informes/cropReport', 1,
+          ['z'],
+          ['0'],
+          true,
+          true,
+        );
+        let cropYield:any = await this.pouchdbService.getViewInv(
+          'Informes/cropYield', 1,
+          ['z'],
+          ['0'],
+          true,
+          true,
+        );
         crops.forEach((crop)=>{
-          crop.production_cost = 10000;
+          let cost = cropCost.filter(it=>crop._id == it.key[0])
+          crop.production_cost = cost[0] && cost[0].value || 0;
+          let Yield = cropYield.filter(it=>crop._id == it.key[0])
+          crop.yieldTotal = Yield[0] && Yield[0].value || 0;
         })
         resolve(crops);
       });

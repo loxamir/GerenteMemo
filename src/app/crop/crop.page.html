@@ -56,8 +56,14 @@
     </ion-row>
     <ion-row>
       <ion-col size="12">
+        <ion-button class="button-100" (click)="setActive()" color="primary" *ngIf="cropForm.value.state != 'ACTIVE'">
+          <ion-icon name="check" style="margin-right:10px;"></ion-icon> {{ 'ACTIVATE' | translate }}
+        </ion-button>
+        <ion-button class="button-100" (click)="setDone()" color="primary" *ngIf="cropForm.value.state == 'ACTIVE'">
+          <ion-icon name="check" style="margin-right:10px;"></ion-icon> {{ 'FINISH' | translate }}
+        </ion-button>
         <ion-button class="button-100" (click)="addItem()" color="success">
-          <ion-icon name="add" style="margin-right:10px;"></ion-icon> {{ 'ADD_FIELD' | translate }}
+          <ion-icon name="add" style="margin-right:10px;"></ion-icon> {{ 'ADD_PLACE' | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
