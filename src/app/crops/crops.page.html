@@ -35,8 +35,9 @@
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of crops">
-      <ion-item no-padding style="margin-bottom: 0px; margin-top:0px;">
-        <ion-card class="list-card" *ngIf="select" (click)="selectCrop(item)">
+      <ion-item no-padding style="margin-bottom: 0px; margin-top:0px;"
+      *ngIf="select && item.state == 'ACTIVE'">
+        <ion-card class="list-card"  (click)="selectCrop(item)">
           <ion-row>
             <ion-col>
               <h3 class="item-name"><b>{{ item.name || 'NOT_INFORMED'|translate}}</b></h3>
@@ -47,8 +48,10 @@
             </ion-col>
           </ion-row>
         </ion-card>
-
-        <ion-card class="crop-card" no-padding button="true" *ngIf="!select">
+      </ion-item>
+    <ion-item no-padding style="margin-bottom: 0px; margin-top:0px;"
+    *ngIf="!select">
+        <ion-card class="crop-card" no-padding button="true" >
           <ion-row >
             <ion-col style="font-size:20px;border-bottom:1px solid #ddd"
             (click)="openCrop(item)">

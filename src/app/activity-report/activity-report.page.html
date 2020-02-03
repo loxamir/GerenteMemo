@@ -293,7 +293,7 @@
                   {{'PLANNED_COST_BAG'|translate}}
                 </ion-col> -->
                 <ion-col style="text-align: right" (click)="orderByTotal()">
-                  {{'TOTAL_COST'|translate}}
+                  {{'YIELD'|translate}}
                 </ion-col>
                 <!-- <ion-col style="text-align: right" (click)="orderByTotal()">
                   {{'PLANNED_COST'|translate}}
@@ -389,7 +389,7 @@
                   {{'PLANNED_COST_KG'|translate}}
                 </ion-col> -->
                 <ion-col style="text-align: right" (click)="orderByTotal()">
-                  {{'TOTAL_COST'|translate}}
+                  {{'YIELD'|translate}}
                 </ion-col>
                 <!-- <ion-col style="text-align: right" (click)="orderByTotal()">
                   {{'PLANNED_COST'|translate}}
@@ -412,7 +412,7 @@
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
                   [class.sumatory]="item.sumatory">
-                  $ {{item.total/item.margin|number:'1.2-2'}}
+                  $ {{item.area|number:'1.2-2'}}
                 </ion-col>
                 <!-- <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
@@ -425,7 +425,7 @@
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
                   [class.sumatory]="item.sumatory">
-                  $ {{item.total|number:'1.2-2'}}
+                  $ {{item.total/item.area|number:'1.2-2'}}
                 </ion-col>
                 <!-- <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
@@ -478,14 +478,14 @@
                 <ion-col (click)="orderByName()">
                   {{'PLACE'|translate}}
                 </ion-col>
-                <ion-col style="text-align: right" (click)="orderByQuantity()">
+                <!-- <ion-col style="text-align: right" (click)="orderByQuantity()">
                   {{'COST_BAG'|translate}}
-                </ion-col>
+                </ion-col> -->
                 <!-- <ion-col style="text-align: right" (click)="orderByTotal()">
                   {{'PLANNED_COST_BAG'|translate}}
                 </ion-col> -->
                 <ion-col style="text-align: right" (click)="orderByTotal()">
-                  {{'TOTAL_COST'|translate}}
+                  {{'YIELD'|translate}} (Saca/ha)
                 </ion-col>
                 <!-- <ion-col style="text-align: right" (click)="orderByTotal()">
                   {{'PLANNED_COST'|translate}}
@@ -504,12 +504,12 @@
                   [class.sumatory]="item.sumatory">
                   {{item.name}}
                 </ion-col>
-                <ion-col style="text-align: right"
+                <!-- <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
                   [class.sumatory]="item.sumatory">
                   $ {{item.total*60/item.margin|number:'1.2-2'}}
-                </ion-col>
+                </ion-col> -->
                 <!-- <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
@@ -521,7 +521,7 @@
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
                   [class.sumatory]="item.sumatory">
-                  $ {{item.total|number:'1.2-2'}}
+                  {{(item.margin/60)/item.area |number:'1.2-2'}}
                 </ion-col>
                 <!-- <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
@@ -546,16 +546,16 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col >
-                  {{'TOTAL_UPPER'|translate}}
-                </ion-col>
-                <ion-col style="text-align: right">
-                  $ {{total*60/items_margin|number:'1.2-2'}}
+                  <!-- {{'TOTAL_UPPER'|translate}} -->
                 </ion-col>
                 <!-- <ion-col style="text-align: right">
-                  $ {{planned/(planned_yield/60)|number:'1.2-2'}}
+                  $ {{total*60/items_margin|number:'1.2-2'}}
+                </ion-col> -->
+                <!-- <ion-col style="text-align: right">
+                  $ {{crop_area|number:'1.2-2'}}
                 </ion-col> -->
                 <ion-col style="text-align: right">
-                  $ {{total|number:'1.2-2'}}
+                  {{items_margin/60/crop_area|number:'1.2-2'}}
                 </ion-col>
                 <!-- <ion-col style="text-align: right">
                   $ {{planned|number:'1.2-2'}}
@@ -573,14 +573,14 @@
                 <ion-col (click)="orderByName()">
                   {{'PLACE'|translate}}
                 </ion-col>
-                <ion-col style="text-align: right" (click)="orderByQuantity()">
+                <!-- <ion-col style="text-align: right" (click)="orderByQuantity()">
                   {{'COST_KG'|translate}}
-                </ion-col>
+                </ion-col> -->
                 <!-- <ion-col style="text-align: right" (click)="orderByTotal()">
                   {{'PLANNED_COST_KG'|translate}}
                 </ion-col> -->
                 <ion-col style="text-align: right" (click)="orderByTotal()">
-                  {{'TOTAL_COST'|translate}}
+                  {{'YIELD'|translate}} (Kg/ha)
                 </ion-col>
                 <!-- <ion-col style="text-align: right" (click)="orderByTotal()">
                   {{'PLANNED_COST'|translate}}
@@ -599,12 +599,12 @@
                   [class.sumatory]="item.sumatory">
                   {{item.name}}
                 </ion-col>
-                <ion-col style="text-align: right"
+                <!-- <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
                   [class.sumatory]="item.sumatory">
                   $ {{item.total/item.margin|number:'1.2-2'}}
-                </ion-col>
+                </ion-col> -->
                 <!-- <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
@@ -616,7 +616,7 @@
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
                   [class.sumatory]="item.sumatory">
-                  $ {{item.total|number:'1.2-2'}}
+                  {{item.margin/item.area|number:'1.0-1'}}
                 </ion-col>
                 <!-- <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
@@ -641,17 +641,17 @@
               </ion-row>
               <ion-row class="report-title">
                 <ion-col >
-                  {{'TOTAL_UPPER'|translate}}
+                  <!-- {{'TOTAL_UPPER'|translate}} -->
                 </ion-col>
                 <ion-col style="text-align: right">
-                  $ {{total/items_margin|number:'1.2-2'}}
+                  {{items_margin/crop_area|number:'1.0-1'}}
                 </ion-col>
                 <!-- <ion-col style="text-align: right">
                   $ {{planned/planned_yield|number:'1.2-2'}}
                 </ion-col> -->
-                <ion-col style="text-align: right">
+                <!-- <ion-col style="text-align: right">
                   $ {{total|number:'1.2-2'}}
-                </ion-col>
+                </ion-col> -->
                 <!-- <ion-col style="text-align: right">
                   $ {{planned|number:'1.2-2'}}
                 </ion-col> -->

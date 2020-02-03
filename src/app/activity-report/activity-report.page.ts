@@ -39,6 +39,7 @@ export class ActivityReportPage implements OnInit {
   avoidAlertMessage: boolean;
   items_product_total;
   items_margin;
+  crop_area;
   items_quantity;
   total;
   planned;
@@ -545,6 +546,7 @@ export class ActivityReportPage implements OnInit {
             if (result.hasOwnProperty(activityLine.key[1])) {
               items[result[activityLine.key[1]]] = {
                 'name': items[result[activityLine.key[1]]].name,
+                'id': items[result[activityLine.key[1]]].id,
                 'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
                 'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
                 'planned': items[result[activityLine.key[1]]].planned,
@@ -553,6 +555,7 @@ export class ActivityReportPage implements OnInit {
             } else {
               items.push({
                 'name': activityLine.key[1],
+                'id': activityLine.key[10],
                 'quantity': parseFloat(activityLine.key[4]),
                 'margin': parseFloat(activityLine.key[5]),
                 'planned': 0,
@@ -564,6 +567,7 @@ export class ActivityReportPage implements OnInit {
             if (result.hasOwnProperty(activityLine.key[1])) {
               items[result[activityLine.key[1]]] = {
                 'name': items[result[activityLine.key[1]]].name,
+                'id': items[result[activityLine.key[1]]].id,
                 'quantity': items[result[activityLine.key[1]]].quantity + parseFloat(activityLine.key[4]),
                 'margin': items[result[activityLine.key[1]]].margin + parseFloat(activityLine.key[5]),
                 'planned': items[result[activityLine.key[1]]].planned + parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
@@ -572,6 +576,7 @@ export class ActivityReportPage implements OnInit {
             } else {
               items.push({
                 'name': activityLine.key[1],
+                'id': activityLine.key[10],
                 'quantity': parseFloat(activityLine.key[4]),
                 'margin': parseFloat(activityLine.key[5]),
                 'planned': parseFloat(activityLine.key[4])*parseFloat(activityLine.key[5]),
@@ -599,7 +604,11 @@ export class ActivityReportPage implements OnInit {
           planned_yield += parseFloat(item['planned']);
         });
         this.loading.dismiss();
-        console.log("output", output);
+        let areas:any = await this.pouchdbService.getView('Informes/areaCrop',2);
+        output.forEach(saida=>{
+          let areaSize = areas.filter(fil=>fil.key[0] == saida.id && fil.key[1] == this.reportActivityForm.value.crop._id)
+          saida.area = areaSize[0].value;
+        })
         let yields:any = await this.pouchdbService.getView('Informes/AgroRend',11);
         if (Object.keys(this.reportActivityForm.value.crop).length > 0) {
           yields = yields.filter(word => word['key'][0] == this.reportActivityForm.value.crop.name);
@@ -1364,6 +1373,7 @@ export class ActivityReportPage implements OnInit {
     let total = 0;
     let items_product_total = 0;
     let items_margin = 0;
+    let crop_area = 0;
     let items_quantity = 0;
     let planned = 0;
     let planned_yield = 0;
@@ -1371,12 +1381,14 @@ export class ActivityReportPage implements OnInit {
       total += parseFloat(item.total);
       items_product_total += 1;
       items_margin += parseFloat(item.margin);
+      crop_area += parseFloat(item.area);
       items_quantity += parseFloat(item.quantity);
       planned += parseFloat(item.planned);
       planned_yield += parseFloat(item.planned_yield);
     });
     this.items_product_total = items_product_total;
     this.items_margin = items_margin;
+    this.crop_area = crop_area;
     this.items_quantity = items_quantity;
     this.total = total;
     this.planned = planned;
