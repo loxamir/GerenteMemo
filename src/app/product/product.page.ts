@@ -18,6 +18,7 @@ import { ConfigService } from '../config/config.service';
 import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { AuthService } from "../services/auth.service";
+import { ProductListPage } from '../product-list/product-list.page';
 
 @Component({
   selector: 'app-product',
@@ -51,6 +52,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     avatar = undefined;
     logged: boolean = false;
     asking: boolean = false;
+    currency_precision = 0;
 
     constructor(
       public navCtrl: NavController,
@@ -141,6 +143,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
         quantity: new FormControl(1),
+        products: new FormControl([]),
+        options: new FormControl([]),
+        optionSelected: new FormControl(),
         description: new FormControl(''),
       });
 
@@ -212,13 +217,28 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       }
     }
 
-    askProduct(){
-      if (this.logged){
-        this.events.publish('add-product', this.productForm.value);
-        this.exitPage();
+    async askProduct(){
+      let orders:any = await this.pouchdbService.searchDocTypeData(
+        'sale', "O", 0, "state");
+      if (orders[0]){
+        let alertPopup = await this.alertCtrl.create({
+            header: this.translate.instant('Pedido Pendiente'),
+            message: this.translate.instant('No puedes hacer un nuevo pedido mientras hay otro pendiente'),
+            buttons: [{
+                    text: this.translate.instant('OK'),
+                    handler: () => {
+                    }
+                }]
+        });
+        alertPopup.present();
       } else {
-        this.asking = true;
-        this.authLogin();
+        if (this.logged){
+          this.events.publish('add-product', this.productForm.value);
+          this.exitPage();
+        } else {
+          this.asking = true;
+          this.authLogin();
+        }
       }
     }
 
@@ -434,7 +454,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           }).then((plan: any) => {
             //console.log("Plan", plan);
             // data['_id'] = plan.id;
-            // this.saleForm.value.planned.push(data);
           })
         });
       }
@@ -601,7 +620,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         quantity: quantity
       })
         // this.recomputeValues();
-        // this.saleForm.markAsDirty();
     }
 
     remItem() {
@@ -684,6 +702,113 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       }
     }
 
+    async addProduct(){
+      this.events.unsubscribe('select-product');
+      this.events.subscribe('select-product', async (product) => {
+        this.productForm.value.products.unshift(product)
+        this.productForm.markAsDirty();
+        this.events.unsubscribe('select-product');
+        profileModal.dismiss();
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: ProductListPage,
+        componentProps: {
+          "select": true
+        }
+      });
+      await profileModal.present();
+      await this.loading.dismiss();
+      await profileModal.onDidDismiss();
+    }
 
+    async addOption(){
+      let prompt = await this.alertCtrl.create({
+        header: this.translate.instant('PRODUCT_PRICE'),
+        message: this.translate.instant('WHAT_PRODUCT_PRICE'),
+        inputs: [
+          {
+            type: 'text',
+            name: 'name'
+        },
+        {
+          type: 'number',
+          name: 'price',
+        },
+        ],
+        buttons: [
+          {
+            text: this.translate.instant('CANCEL'),
+          },
+          {
+            text: this.translate.instant('CONFIRM'),
+            handler: data => {
+              this.productForm.value.options.push({
+                name: data.name,
+                price: data.price
+              })
+              this.productForm.markAsDirty();
+            }
+          }
+        ]
+      });
+
+      prompt.present();
+    }
+
+    async editOption(item){
+      let prompt = await this.alertCtrl.create({
+        header: this.translate.instant('PRODUCT_PRICE'),
+        message: this.translate.instant('WHAT_PRODUCT_PRICE'),
+        inputs: [
+          {
+            type: 'text',
+            name: 'name',
+            value: item.name
+        },
+        {
+          type: 'number',
+          name: 'price',
+          value: item.price
+        }
+        ],
+        buttons: [
+          {
+            text: this.translate.instant('CANCEL'),
+          },
+          {
+            text: this.translate.instant('CONFIRM'),
+            handler: data => {
+              item.name = data.name;
+              item.price = data.price;
+              this.productForm.markAsDirty();
+            }
+          }
+        ]
+      });
+
+      prompt.present();
+    }
+
+    async selectProduct(product){
+      let profileModal = await this.modalCtrl.create({
+        component: ProductPage,
+        componentProps: {
+          "select": true,
+          "_id": product._id,
+        }
+      });
+      await profileModal.present();
+      await this.loading.dismiss();
+      await profileModal.onDidDismiss();
+    }
+
+    changeOption(){
+      let opt = this.productForm.value.options.filter(option=>option.name == this.productForm.value.optionSelected);
+      console.log("this.productForm.value.optionSelected", this.productForm.value.optionSelected);
+      console.log("opt", opt);
+      this.productForm.patchValue({
+        price: opt[0].price
+      })
+    }
 
 }

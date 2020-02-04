@@ -22,22 +22,37 @@ export class ProductService {
   getProduct(doc_id): Promise<any> {
     return new Promise(async (resolve, reject)=>{
       let product:any = await this.pouchdbService.getDoc(doc_id, true);
-      product.category = (await  this.pouchdbService.getDoc(product['category_id'])||{});
-      product.brand = (await  this.pouchdbService.getDoc(product['brand_id'])||{});
+      let getList = [
+        product['category_id'],
+        product['brand_id'],
+      ];
+      product['related_products'] = product['related_products'] || [];
+      product['related_products'].forEach((item) => {
+        if (getList.indexOf(item['product_id'])==-1){
+          getList.push(item['product_id']);
+        }
+      });
 
-      let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
-      ["warehouse.physical.my", product._id],
-      ["warehouse.physical.my", product._id+"z"])
-      product.stock = viewList && viewList[0] && viewList[0].value || 0;
-
-      if (product._attachments && product._attachments['avatar.png']) {
-        let avatar = product._attachments['avatar.png'].data;
-        product.image = "data:image/png;base64," + avatar;
-      } else {
-        product.image = "./assets/images/sem_foto.jpg";
-      }
-
-      resolve(product);
+      this.pouchdbService.getList(getList).then((docs: any[])=>{
+        var doc_dict = {};
+        docs.forEach(row=>{
+          doc_dict[row.id] = row.doc;
+        })
+        product.category = doc_dict[product.category_id] || {};
+        product.brand = doc_dict[product.brand_id] || {};
+        product['products'] = [];
+        product.related_products.forEach((line: any)=>{
+          product['products'].push(doc_dict[line.product_id]);
+        })
+        product.stock = 0;
+        if (product._attachments && product._attachments['avatar.png']) {
+          let avatar = product._attachments['avatar.png'].data;
+          product.image = "data:image/png;base64," + avatar;
+        } else {
+          product.image = "./assets/images/sem_foto.jpg";
+        }
+        resolve(product);
+      });
     });
   }
   getProductByCode(code): Promise<any> {
@@ -74,6 +89,14 @@ export class ProductService {
       product.brand_name = product.brand && product.brand.name || product.brand_name;
       delete product.brand;
       delete product.image;
+      product.related_products = [];
+      product.products.forEach(item => {
+        product.related_products.push({
+          product_id: item.product_id || item.product._id,
+          product_name: item.product.name || item.product_name,
+        })
+      });
+      delete product.products;
       if (product.code != ''){
         resolve(this.pouchdbService.createDoc(product));
       } else {
@@ -121,6 +144,14 @@ export class ProductService {
       let attachments = data._attachments;
       product._attachments = attachments;
     }
+    product.related_products = [];
+    product.products.forEach(item => {
+      product.related_products.push({
+        product_id: item.product_id || item.product._id,
+        product_name: item.product.name || item.product_name,
+      })
+    });
+    delete product.products;
     return this.pouchdbService.updateDoc(product);
   }
 
