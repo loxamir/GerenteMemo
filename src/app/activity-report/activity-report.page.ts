@@ -40,6 +40,7 @@ export class ActivityReportPage implements OnInit {
   items_product_total;
   items_margin;
   crop_area;
+  full_area;
   items_quantity;
   total;
   planned;
@@ -927,13 +928,15 @@ export class ActivityReportPage implements OnInit {
           getList.push(activityLine.key[10]);
         }
       });
-      console.log("activityArea", activityArea);
-
+      if (this.reportActivityForm.value.crop._id){
+        getList.push(this.reportActivityForm.value.crop._id);
+      }
       let products: any = await this.pouchdbService.getList(getList);
       var doc_dict = {};
       products.forEach(row=>{
         doc_dict[row.doc.name] = row.doc;
       })
+      this.full_area = parseFloat(doc_dict[this.reportActivityForm.value.crop.name].area);
       // Object.keys(activityArea).forEach((item)=>{
       //   let counter = 0;
       //   Object.keys(activityArea[item]).forEach((area)=>{
@@ -955,7 +958,7 @@ export class ActivityReportPage implements OnInit {
         item['marker'] = marker,
           marker = !marker;
         total += parseFloat(item['total']);
-        item['quantity'] = activityArea[item['name']];
+        item['quantity'] = 0;
         planned += parseFloat(item['planned']);
       });
       this.loading.dismiss();

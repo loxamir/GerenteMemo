@@ -196,7 +196,7 @@
                     {{'TOTAL_UPPER'|translate}}
                   </ion-col>
                   <ion-col style="text-align: right">
-                    $ {{total/items_quantity|number:'1.2-2'}}
+                    <!-- $ {{total/items_quantity|number:'1.2-2'}} -->
                   </ion-col>
                   <ion-col style="text-align: right">
                     {{items_quantity|number:'1.2-2'}}
@@ -692,7 +692,7 @@
                   [class.quotation]="item.marker && !item.sumatory"
                   [class.unmarked]="!item.marker && !item.sumatory"
                   [class.sumatory]="item.sumatory">
-                  $ {{item.total/item.quantity|number:'1.2-2'}}
+                  $ {{item.total/full_area|number:'1.2-2'}}
                 </ion-col>
                 <!-- <ion-col style="text-align: right"
                   [class.quotation]="item.marker && !item.sumatory"
