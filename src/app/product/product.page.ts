@@ -144,8 +144,8 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         write_time: new FormControl(''),
         quantity: new FormControl(1),
         products: new FormControl([]),
-        options: new FormControl([]),
-        optionSelected: new FormControl(),
+        sizes: new FormControl([]),
+        size: new FormControl(),
         description: new FormControl(''),
       });
 
@@ -205,6 +205,14 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       await this.loading.present();
       if (this._id){
         this.productService.getProduct(this._id).then((data) => {
+          setTimeout(() => {
+            if (data.sizes && data.sizes[0]){
+              data.size = data.sizes[0].name;
+              this.productForm.patchValue({
+                size: data.sizes[0].name
+              });
+            }
+          }, 400);
           this.productForm.patchValue(data);
           this.theoreticalStock = data.stock;
           this.productForm.markAsPristine();
@@ -219,7 +227,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
     async askProduct(){
       let orders:any = await this.pouchdbService.searchDocTypeData(
-        'sale', "O", 0, "state");
+        'sale', "CONFIRMED", 0, "state");
       if (orders[0]){
         let alertPopup = await this.alertCtrl.create({
             header: this.translate.instant('Pedido Pendiente'),
@@ -742,7 +750,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           {
             text: this.translate.instant('CONFIRM'),
             handler: data => {
-              this.productForm.value.options.push({
+              this.productForm.value.sizes.push({
                 name: data.name,
                 price: data.price
               })
@@ -803,12 +811,14 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     changeOption(){
-      let opt = this.productForm.value.options.filter(option=>option.name == this.productForm.value.optionSelected);
-      console.log("this.productForm.value.optionSelected", this.productForm.value.optionSelected);
+      let opt = this.productForm.value.sizes.filter(option=>option.name == this.productForm.value.size);
+      console.log("this.productForm.value.size", this.productForm.value.size);
       console.log("opt", opt);
-      this.productForm.patchValue({
-        price: opt[0].price
-      })
+      if (opt[0]){
+        this.productForm.patchValue({
+          price: opt[0].price
+        })
+      }
     }
 
 }

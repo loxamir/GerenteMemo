@@ -137,6 +137,9 @@
             <ion-row (click)="openItem(item)" class="product-name-row">
               {{item.product && item.product.code}} - {{item.product && item.product.name}}
             </ion-row>
+            <ion-row (click)="openItem(item)" class="product-name-row" *ngIf="item.size">
+              {{'SIZE'| translate}}: {{item.size}}
+            </ion-row>
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="item-content" style="white-space: normal;">
                 {{item.note}}

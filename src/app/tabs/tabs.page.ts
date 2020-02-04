@@ -84,6 +84,7 @@ export class TabsPage implements OnInit {
         "product_name": data.name,
         "quantity": data.quantity,
         "price": data.price,
+        "size": data.size,
         "note": data.note
       }
       if (this.order){

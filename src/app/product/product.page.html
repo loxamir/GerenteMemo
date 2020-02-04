@@ -95,13 +95,13 @@
     class="ion-no-padding"
     class="field-50">
       <ion-label  position="floating">{{'SIZE' | translate}}</ion-label>
-      <ion-select #groupBy formControlName="optionSelected"
+      <ion-select #groupBy formControlName="size"
         style="text-align: center;"
         interface="popover"
         (ionChange)="changeOption()"
         cancelText="{{ 'CANCEL' | translate }}"
         okText="{{ 'OK' | translate }}">
-        <ion-select-option *ngFor="let item of productForm.value.options" [value]="item.name">
+        <ion-select-option *ngFor="let item of productForm.value.sizes" [value]="item.name">
           {{item.name +"-"+ item.price}}
         </ion-select-option>
         <!-- <ion-select-option value="contact">{{'CONTACT'|translate}}</ion-select-option>
@@ -109,7 +109,7 @@
       </ion-select>
     </ion-item>
       <ion-list no-lines>
-        <ion-item-sliding class="list-item" *ngFor="let item of productForm.value.options">
+        <ion-item-sliding class="list-item" *ngFor="let item of productForm.value.sizes">
           <ion-item class="ion-no-padding" style="background-color: #ddd">
           <ion-card class="list-card">
 
