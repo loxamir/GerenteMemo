@@ -13,10 +13,16 @@
 </ion-header>
 
 <ion-content class="config-content" style="background-color: #ddd">
+  <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
   <form class="sample-form validations-form"
   [formGroup]="configForm"
   (ngSubmit)="onSubmit(configForm.value)">
-
+  <div id="pwa">
+    <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
+  </div>
+  <ion-row style="background: white;">
+        <img [src]="configForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+      </ion-row>
 
   <ion-row class="ion-justify-content-center">
     <!-- <ion-item class="ion-no-padding" (click)="selectAccount()" class="field-50">
@@ -80,7 +86,10 @@
       <ion-input type="text" formControlName="product_sequence"></ion-input>
     </ion-item>
 
-
+    <ion-item class="ion-no-padding field-50">
+      <ion-label position="floating">{{'COLOR' | translate}}</ion-label>
+      <ion-input type="text" formControlName="color"></ion-input>
+    </ion-item>
 
     <ion-col class="item-content">
       <ion-button class="print-invoice" (click)="configInvoicePrint()" style="width: 99%">Configurar Factura</ion-button>

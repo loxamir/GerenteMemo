@@ -9,7 +9,6 @@ import { Storage } from '@ionic/storage';
 import { FormatService } from '../format.service';
 // var server = "database.sistemamemo.com";
 var server = "database.sistemamemo.com";
-import { AuthService } from "../../services/auth.service";
 
 @Injectable({ providedIn: 'root' })
 export class PouchdbService {
@@ -17,7 +16,6 @@ export class PouchdbService {
   remote: any;
   docTypes = {};
   username = undefined;
-  contact_id = "";
 
   constructor(
     public http: HttpClient,
@@ -26,7 +24,6 @@ export class PouchdbService {
     public platform: Platform,
     public events: Events,
     public formatService: FormatService,
-    public authService: AuthService,
   ) {
     this.platform.ready().then(() => {
       this.getConnect();
@@ -156,205 +153,27 @@ export class PouchdbService {
                 self.events.publish('end-sync');
               }, 500);
             }
-            this.username = username;
-            // this.storage.get("database").then(async database => {
-              if (! database){
-                resolve(false);
-                return;
-              }
-              let PouchDB: any = PouchDB1;
-              PouchDB.plugin(PouchdbUpsert);
-              if (this.platform.is('cordova')){
-                PouchDB.plugin(cordovaSqlitePlugin);
-                this.db = new PouchDB(database, {
-                  adapter: 'cordova-sqlite',
-                  location: 'default',
-                  androidDatabaseImplementation: 2
-                })
-              } else {
-                this.db = new PouchDB(database);
-              }
-              console.log("database", database);
-              this.db.setMaxListeners(50);
-              self.events.publish('got-database');
-              // let loadDemo = await this.storage.get('loadDemo');
-              // this.storage.get('password').then(password => {
-                this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
-                let contact_id = this.contact_id;
-                // if (database != 'memo' || !loadDemo){
-                  let options = {
-                    live: true,
-                    retry: true,
-                    // filter: (doc) => {
-                    //   if(doc._id.split(".")[0] == 'product'){
-                    //     return true;
-                    //   }
-                    //    return false;
-                    //  }
-                    filter: "syncFilter/by_agent",
-                    // filter: "_view",
-                    // view: 'syncFilter/Clientes',
-                    query_params: { "contact": contact_id}
-                  }
-                  let syncJob = this.db.sync(this.remote, options)
-                  .on('change', function (info) {
-                    // handle change
-                    console.log("sync change", info);
-                  }).on('paused', async (err) => {
-                    console.log("sync paused", err);
-                    if (username == 'memo'){
-                      self.storage.set('loadDemo', true);
-                      syncJob.cancel();
-                    }
-                    self.events.publish('end-sync');
-                    resolve(true)
-                    // replication paused (e.g. replication up to date, user went offline)
-                  }).on('active', function () {
-                    console.log("sync activated");
-                    // replicate resumed (e.g. new changes replicating, user went back online)
-                  }).on('denied', function (err) {
-                    console.log("sync no permissions", err);
-                    // a document failed to replicate (e.g. due to permissions)
-                  }).on('complete', function (info) {
-                    console.log("sync complete", info);
-                    // handle complete
-                  }).on('error', function (err) {
-                    console.log("sync other error", err);
-                    // handle error
-                  });
-                // } else {
-                //   setTimeout(function(){
-                //     self.events.publish('end-sync');
-                //   }, 500);
-                // }
 
-                this.db.changes({
-                  live: true,
-                  since: 'now',
-                  include_docs: true,
-                  attachments: true,
-                  // binary: true,
-                }).on('change', (change) => {
-                  // console.log("changed", change);
-                  this.handleChangeData(change);
-                }).on('complete', function(info) {
-                  //console.log("have info", info);
-                }).on('error', function (err) {
-                  console.log("errou", err);
-                  // resolve(false)
-                });
+            this.db.changes({
+              live: true,
+              since: 'now',
+              include_docs: true,
+              attachments: true,
+              // binary: true,
+            }).on('change', (change) => {
+              // console.log("changed", change);
+              this.handleChangeData(change);
+            }).on('complete', function(info) {
+              //console.log("have info", info);
+            }).on('error', function (err) {
+              console.log("errou", err);
+              // resolve(false)
+            });
 
-              // })
-          //   });
-          // });
-
-        } else {
-         console.log("not git");
-
-         // this.storage.get("username").then(username => {
-           let username="larica";
-           let database="larica";
-           let password="123";
-           console.log("username", username);
-           if (! username){
-             resolve(false);
-             return;
-           }
-           this.username = username;
-           // this.storage.get("database").then(async database => {
-             if (! database){
-               resolve(false);
-               return;
-             }
-             let PouchDB: any = PouchDB1;
-             PouchDB.plugin(PouchdbUpsert);
-             if (this.platform.is('cordova')){
-               PouchDB.plugin(cordovaSqlitePlugin);
-               this.db = new PouchDB(database, {
-                 adapter: 'cordova-sqlite',
-                 location: 'default',
-                 androidDatabaseImplementation: 2
-               })
-             } else {
-               this.db = new PouchDB(database);
-             }
-             console.log("database", database);
-             this.db.setMaxListeners(50);
-             self.events.publish('got-database');
-             // let loadDemo = await this.storage.get('loadDemo');
-             // this.storage.get('password').then(password => {
-               this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
-               let contact_id = this.contact_id;
-               // if (database != 'memo' || !loadDemo){
-                 let options = {
-                   live: true,
-                   retry: true,
-                   // filter: (doc) => {
-                   //   if(doc._id.split(".")[0] == 'product'){
-                   //     return true;
-                   //   }
-                   //    return false;
-                   //  }
-                   filter: "syncFilter/by_agent",
-                   // filter: "_view",
-                   // view: 'syncFilter/Clientes',
-                   query_params: { "contact": contact_id}
-                 }
-                 let syncJob = this.db.sync(this.remote, options)
-                 .on('change', function (info) {
-                   // handle change
-                   console.log("sync change", info);
-                 }).on('paused', async (err) => {
-                   console.log("sync paused", err);
-                   if (username == 'memo'){
-                     self.storage.set('loadDemo', true);
-                     syncJob.cancel();
-                   }
-                   self.events.publish('end-sync');
-                   resolve(true)
-                   // replication paused (e.g. replication up to date, user went offline)
-                 }).on('active', function () {
-                   console.log("sync activated");
-                   // replicate resumed (e.g. new changes replicating, user went back online)
-                 }).on('denied', function (err) {
-                   console.log("sync no permissions", err);
-                   // a document failed to replicate (e.g. due to permissions)
-                 }).on('complete', function (info) {
-                   console.log("sync complete", info);
-                   // handle complete
-                 }).on('error', function (err) {
-                   console.log("sync other error", err);
-                   // handle error
-                 });
-               // } else {
-               //   setTimeout(function(){
-               //     self.events.publish('end-sync');
-               //   }, 500);
-               // }
-
-               this.db.changes({
-                 live: true,
-                 since: 'now',
-                 include_docs: true,
-                 attachments: true,
-                 // binary: true,
-               }).on('change', (change) => {
-                 // console.log("changed", change);
-                 this.handleChangeData(change);
-               }).on('complete', function(info) {
-                 //console.log("have info", info);
-               }).on('error', function (err) {
-                 console.log("errou", err);
-                 // resolve(false)
-               });
-
-             // })
-         //   });
-         // });
-
-      }
-      });
-      });
+          // })
+      //   });
+      // });
+    });
   }
 
   async getUser(){

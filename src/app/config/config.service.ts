@@ -18,8 +18,15 @@ export class ConfigService {
   ) {}
 
   getConfig(): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      this.pouchdbService.getDoc('config.profile').then((configData: any) => {
+    return new Promise(async (resolve, reject)=>{
+      let configData:any = await this.pouchdbService.getDoc('config.profile', true);//.then((configData: any) => {
+        if (configData._attachments && configData._attachments['logo.png']) {
+          let logo = configData._attachments['logo.png'].data;
+          configData.image = "data:image/png;base64," + logo;
+        } else {
+          configData.image = "./assets/images/sem_foto.jpg";
+        }
+
         this.unserializeConfig(configData).then((data: any) => {
           this.pouchdbService.getDoc('contact.myCompany').then((contact: any) => {
             data.name = contact.name;
@@ -32,7 +39,6 @@ export class ConfigService {
             resolve(data);
           });
         });
-      });
     });
   }
 
@@ -324,8 +330,14 @@ export class ConfigService {
     // return this.pouchdbService.changeData();
   }
 
-  updateConfig(viewData){
-    let config = this.serializeConfig(viewData)
+  async updateConfig(viewData, blob){
+    let config = this.serializeConfig(viewData);
+    if (blob) {
+      await this.pouchdbService.attachFile(config._id, 'logo.png', blob);
+      let data: any = await this.pouchdbService.getDoc(config._id);
+      let attachments = data._attachments;
+      config._attachments = attachments;
+    }
     return this.pouchdbService.updateDoc(config);
   }
 
