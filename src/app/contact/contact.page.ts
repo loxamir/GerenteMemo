@@ -10,6 +10,7 @@ import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
 import { AddressListPage } from '../address-list/address-list.page';
+import { ContactService } from './contact.service';
 declare var google;
 
 @Component({
@@ -50,6 +51,7 @@ export class ContactPage implements OnInit {
     public pouchdbService: PouchdbService,
     public restProvider: RestProvider,
     public authService: AuthService,
+    public contactService: ContactService,
     private plt: Platform,
   ) {
     this._id = this.route.snapshot.paramMap.get('_id');
@@ -85,6 +87,7 @@ export class ContactPage implements OnInit {
       salaries: new FormControl([]),
       advances: new FormControl([]),
       fixed: new FormControl(false),
+      image: new FormControl(''),
       _id: new FormControl(''),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
@@ -104,7 +107,7 @@ export class ContactPage implements OnInit {
         let data = await this.authService.getData();
         this._id = "contact."+data.currentUser.email;
         if (this._id) {
-          this.getContact(this._id).then((data) => {
+          this.contactService.getContact(this._id).then((data) => {
             this.contactForm.patchValue(data);
 
             this.plt.ready().then(() => {
@@ -300,26 +303,6 @@ export class ContactPage implements OnInit {
 
   onSubmit(values) {
     //console.log("teste", values);
-  }
-
-
-  getContact(doc_id): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      this.pouchdbService.getDoc(doc_id).then(((pouchData: any) => {
-        let getList = [
-          pouchData['address_id'],
-        ];
-        this.pouchdbService.getList(getList).then((docs: any[])=>{
-          var doc_dict = {};
-          docs.forEach(row=>{
-            doc_dict[row.id] = row.doc;
-          })
-          pouchData.address = doc_dict[pouchData.address_id] || {};
-          resolve(pouchData);
-        })
-        // return this.pouchdbService.getDoc(doc_id);
-      }))
-    })
   }
 
   ionViewDidEnter() {

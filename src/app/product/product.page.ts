@@ -150,44 +150,49 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       });
 
       this.authService.loggedIn.subscribe(async status => {
-        // this.loading.dismiss();
-        console.log("estado", status);
-        if (status) {
-          //check if contact_id exists
-          let data = await this.authService.getData();
-          let contact = await this.pouchdbService.getDoc("contact."+data.currentUser.email);
-          if (JSON.stringify(contact) == "{}"){
-            this.pouchdbService.createDoc({
-              "_id": "contact."+data.currentUser.email,
-              "name": data.currentUser.displayName,
-              "name_legal": null,
-              "address": "",
-              "phone": "",
-              "document": "",
-              "code": "#3",
-              "section": "salary",
-              "email": data.currentUser.email,
-              "note": "",
-              "customer": true,
-              "supplier": true,
-              "seller": false,
-              "employee": false,
-              "user": false,
-              "user_details": {},
-              "salary": null,
-              "currency": {},
-              "hire_date": null,
-              "salaries": [],
-              "advances": [],
-              "fixed": true,
-              "create_user": "",
-              "create_time": "",
-              "write_user": "larica",
-              "write_time": "2020-01-14T20:48:52.405Z",
-              "docType": "contact"
-            })
+          if (status) {
+            let data = await this.authService.getData();
+            let contact = await this.pouchdbService.getDoc("contact."+data.currentUser.email);
+            //check if contact_id exists
+            if (JSON.stringify(contact) == "{}"){
+              this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
+                let createdDoc = await this.pouchdbService.createDoc({
+                  "_id": "contact."+data.currentUser.email,
+                  "name": data.currentUser.displayName,
+                  "name_legal": null,
+                  "address": "",
+                  "phone": "",
+                  "document": "",
+                  "code": "#3",
+                  "section": "salary",
+                  "email": data.currentUser.email,
+                  "note": "",
+                  "customer": true,
+                  "supplier": true,
+                  "seller": false,
+                  "employee": false,
+                  "user": false,
+                  "user_details": {},
+                  "salary": null,
+                  "currency": {},
+                  "hire_date": null,
+                  "salaries": [],
+                  "advances": [],
+                  "fixed": true,
+                  "create_user": "",
+                  "create_time": "",
+                  "write_user": "larica",
+                  "write_time": "2020-01-14T20:48:52.405Z",
+                  "docType": "contact",
+                  "_attachments": {
+                  "profile.png": {
+                    "content_type": "image/png",
+                    "data": base64image
+                  }
+                },
+              })
+            });
           }
-
           this.logged = true;
           if(this.asking){
             this.events.publish('add-product', this.productForm.value);
@@ -223,6 +228,24 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.getDefaultCategory();
         this.loading.dismiss();
       }
+    }
+
+    getBase64Image(imgUrl, callback) {
+      var img = new Image();
+      // onload fires when the image is fully loadded, and has width and height
+      img.onload = function(){
+        var canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        var dataURL = canvas.toDataURL("image/png"),
+            dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+        callback(dataURL); // the base64 string
+      };
+      // set attributes and src
+      img.setAttribute('crossOrigin', 'anonymous'); //
+      img.src = imgUrl;
     }
 
     async askProduct(){
