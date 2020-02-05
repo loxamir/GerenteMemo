@@ -29,6 +29,8 @@ export class ProductListPage implements OnInit {
   searchTerm: string = '';
   currency_precision = 0;
   editMode = false;
+  promoted_products = [];
+  promoted_categories = [];
 
   constructor(
     public navCtrl: NavController,
@@ -67,12 +69,14 @@ export class ProductListPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
+    let firstPage: any = await this.pouchdbService.getDoc('config.firstPage');
     let config: any = (await this.pouchdbService.getDoc('config.profile'));
     if (!config._id){
       let este = await this.pouchdbService.getConnect();
       this.events.subscribe(('end-sync'), async (change) => {
         if (!config._id){
           config = (await this.pouchdbService.getDoc('config.profile'));
+          this.setPromoted(config);
         }
         this.currency_precision = config.currency_precision || this.currency_precision;
         await this.setFilteredItems();
@@ -84,6 +88,7 @@ export class ProductListPage implements OnInit {
         this.events.unsubscribe('end-sync')
       })
     } else {
+      this.setPromoted(config);
       this.currency_precision = config.currency_precision || this.currency_precision;
       await this.setFilteredItems();
       if (this.select) {
@@ -93,6 +98,29 @@ export class ProductListPage implements OnInit {
       }
     }
 
+  }
+
+  async setPromoted(config){
+    let getList = [];
+    config.promoted_products.forEach(product=>{
+      getList.push(product.product_id);
+    })
+    config.promoted_categories.forEach(category=>{
+      getList.push(category.category_id);
+    })
+    let docList:any = await this.pouchdbService.getList(getList, true);
+    var doc_dict = {};
+    docList.forEach(row=>{
+      doc_dict[row.id] = row.doc;
+    })
+    config.promoted_products.forEach(product=>{
+      this.promoted_products.push(doc_dict[product.product_id] || {});
+    })
+    config.promoted_categories.forEach(category=>{
+      this.promoted_categories.push(doc_dict[category.category_id] || {});
+    })
+    // this.promoted_products = config.products;
+    // this.promoted_categories = config.categories;
   }
 
   setFilteredItems() {

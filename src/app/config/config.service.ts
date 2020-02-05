@@ -45,12 +45,7 @@ export class ConfigService {
   getMyContact(): Promise<any> {
     return new Promise((resolve, reject)=>{
       this.pouchdbService.getDoc('contact.myCompany').then((data: any) => {
-        //console.log("data config", data);
-        // if(data){
-          // this.unserializeConfig(data._id).then(data => {
-            resolve(data);
-          // });
-        // }
+        resolve(data);
       });
     });
   }
@@ -199,95 +194,54 @@ export class ConfigService {
   }
 
   async unserializeConfig(pouchData){
-    // console.log("pouchData18", pouchData);
     return new Promise(async (resolve, reject)=>{
-        // let promise_ids = []
-        // let index = 0;
-        // let get_contact = false;
-        // let pay_cond_id = false;
-        // let account_id = false;
-        // let warehouse_id = false;
-        // let contact_id = false;
-        // let labor_product_id = false;
-        // let travel_product_id = false;
-        // let input_product_id = false;
-        ////console.log("pouchData",pouchData);
-        // if (pouchData['currency_id']){
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['currency_id']));
-        //   get_contact = true;
-        //   index += 1;
-        // }
-        // if (pouchData['cash_id']){
-        //   pay_cond_id = true;
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['cash_id']));
-        //   index += 1;
-        // }
-        // if (pouchData['account_id']){
-        //   account_id = true;
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['account_id']));
-        //   index += 1;
-        // }
-        // if (pouchData['contact_id']){
-        //   contact_id = true;
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['contact_id']));
-        //   index += 1;
-        // }
-        // if (pouchData['labor_product_id']){
-        //   labor_product_id = true;
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['labor_product_id']));
-        //   index += 1;
-        // }
-        // if (pouchData['travel_product_id']){
-        //   travel_product_id = true;
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['travel_product_id']));
-        //   index += 1;
-        // }
-        // console.log("Passed", pouchData);
-        pouchData['travel_product'] = await this.pouchdbService.getDoc(pouchData['travel_product_id']);
-        pouchData['warehouse'] = await this.pouchdbService.getDoc(pouchData['warehouse_id']);
-        pouchData['currency'] = await this.pouchdbService.getDoc(pouchData['currency_id']);
-        pouchData['labor_product'] = await this.pouchdbService.getDoc(pouchData['labor_product_id']);
-        pouchData['contact'] = await this.pouchdbService.getDoc(pouchData['contact_id']);
-        pouchData['cash'] = await this.pouchdbService.getDoc(pouchData['cash_id']);
-        pouchData['default_contact'] = await this.pouchdbService.getDoc(pouchData['default_contact_id']);
-        pouchData['default_payment'] = await this.pouchdbService.getDoc(pouchData['default_payment_id']);
-        pouchData['product_sequence'] = (await this.pouchdbService.getDoc('sequence.product'))['value'];
+      let getList = [
+        pouchData['travel_product_id'],
+        pouchData['warehouse_id'],
+        pouchData['currency_id'],
+        pouchData['labor_product_id'],
+        pouchData['contact_id'],
+        pouchData['cash_id'],
+        pouchData['default_contact_id'],
+        pouchData['default_payment_id'],
+        'sequence.product',
+      ];
+      pouchData['promoted_products'].forEach((item) => {
+        if (getList.indexOf(item['product_id'])==-1){
+          getList.push(item['product_id']);
+        }
+      });
 
-        // if (pouchData['warehouse_id']){
-        //   warehouse_id = true;
-        //   console.log("warehouse_id", pouchData['warehouse_id']);
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['warehouse_id']));
-        //   index += 1;
-        // }
-        // index += 1;
-        // promise_ids.push(this.getAvatar({'_id': doc_id}));
-        // Promise.all(promise_ids).then((promise_data) => {
-        //   if (get_contact){
-        //     pouchData['currency'] = promise_data[0];
-        //   }
-        //   if (pay_cond_id){
-        //     pouchData['cash'] = promise_data[1];
-        //   }
-        //   if (account_id){
-        //     pouchData['account'] = promise_data[2];
-        //   }
-        //   if (contact_id){
-        //     pouchData['contact'] = promise_data[3];
-        //   }
-        //   if (labor_product_id){
-        //     pouchData['labor_product'] = promise_data[4];
-        //   }
-        //   if (travel_product_id){
-        //     pouchData['travel_product'] = promise_data[5];
-        //   }
-          // if (warehouse_id){
-          //   console.log("promise_data", promise_data)
-          //
-          // }
-          // pouchData['image'] = promise_data[8];
+      pouchData['promoted_categories'].forEach((item) => {
+        if (getList.indexOf(item['category_id'])==-1){
+          getList.push(item['category_id']);
+        }
+      });
 
-          resolve(pouchData);
-        // });
+      this.pouchdbService.getList(getList, true).then((docs: any[])=>{
+        var doc_dict = {};
+        docs.forEach(row=>{
+          doc_dict[row.id] = row.doc;
+        })
+        pouchData['travel_product'] = doc_dict[pouchData['travel_product_id']] || {};
+        pouchData['warehouse'] = doc_dict[pouchData['warehouse_id']] || {};
+        pouchData['currency'] = doc_dict[pouchData['currency_id']] || {};
+        pouchData['labor_product'] = doc_dict[pouchData['labor_product_id']] || {};
+        pouchData['contact'] = doc_dict[pouchData['contact_id']] || {};
+        pouchData['cash'] = doc_dict[pouchData['cash_id']];
+        pouchData['default_contact'] = doc_dict[pouchData['default_contact_id']] || {};
+        pouchData['default_payment'] = doc_dict[pouchData['default_payment_id']] || {};
+        pouchData['product_sequence'] = (doc_dict['sequence.product'])['value'];
+        pouchData['products'] = [];
+        pouchData.promoted_products.forEach((line: any)=>{
+          pouchData['products'].push(doc_dict[line.product_id]);
+        })
+        pouchData['categories'] = [];
+        pouchData.promoted_categories.forEach((line: any)=>{
+          pouchData['categories'].push(doc_dict[line.category_id]);
+        })
+        resolve(pouchData);
+      });
     });
   }
 
@@ -314,6 +268,23 @@ export class ConfigService {
     delete config.travel_product;
     config.input_product_id = config.input_product._id;
     delete config.input_product;
+    delete config.image;
+    config.promoted_products = [];
+    config.products.forEach(item => {
+      config.promoted_products.push({
+        product_id: item._id,
+        product_name: item.name,
+      })
+    });
+    delete config.products;
+    config.promoted_categories = [];
+    config.categories.forEach(item => {
+      config.promoted_categories.push({
+        category_id: item._id,
+        category_name: item.name,
+      })
+    });
+    delete config.categories;
     return config;
   }
 

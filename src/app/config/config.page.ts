@@ -25,6 +25,7 @@ import { UserPage } from '../user/user.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RestProvider } from "../services/rest/rest";
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
+import { ProductCategoryListPage } from '../product-category-list/product-category-list.page';
 
 @Component({
   selector: 'app-config',
@@ -85,6 +86,8 @@ export class ConfigPage implements OnInit {
       input_product: [{}],
       travel_product: [{}],
       contact: [{}],
+      products: [[]],
+      categories: [[]],
       default_payment: [{}],
       default_contact: [{}],
       phone: ['', Validators.required],
@@ -685,5 +688,57 @@ export class ConfigPage implements OnInit {
     if (file) {
       reader.readAsDataURL(file);
     }
+  }
+
+  async addProduct(){
+    this.events.unsubscribe('select-product');
+    this.events.subscribe('select-product', async (product) => {
+      this.configForm.value.products.unshift(product)
+      this.configForm.markAsDirty();
+      this.events.unsubscribe('select-product');
+      profileModal.dismiss();
+    })
+    let profileModal = await this.modalCtrl.create({
+      component: ProductListPage,
+      componentProps: {
+        "select": true
+      }
+    });
+    await profileModal.present();
+    await this.loading.dismiss();
+    await profileModal.onDidDismiss();
+  }
+
+  async addCategory(){
+    this.events.unsubscribe('select-category');
+    this.events.subscribe('select-category', async (category) => {
+      this.configForm.value.categories.unshift(category)
+      this.configForm.markAsDirty();
+      this.events.unsubscribe('select-category');
+      profileModal.dismiss();
+    })
+    let profileModal = await this.modalCtrl.create({
+      component: ProductCategoryListPage,
+      componentProps: {
+        "select": true
+      }
+    });
+    await profileModal.present();
+    await this.loading.dismiss();
+    await profileModal.onDidDismiss();
+  }
+
+  deleteProduct(item, slidingItem){
+    slidingItem.close();
+    let index = this.configForm.value.products.indexOf(item);
+    this.configForm.value.products.splice(index, 1);
+    this.configForm.markAsDirty();
+  }
+
+  deleteCategory(item, slidingItem){
+    slidingItem.close();
+    let index = this.configForm.value.categories.indexOf(item);
+    this.configForm.value.categories.splice(index, 1);
+    this.configForm.markAsDirty();
   }
 }

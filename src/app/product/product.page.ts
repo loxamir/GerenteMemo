@@ -844,4 +844,16 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       }
     }
 
+    deleteProduct(item, slidingItem){
+      slidingItem.close();
+      let index = this.productForm.value.products.indexOf(item);
+      this.productForm.value.products.splice(index, 1);
+    }
+
+    deleteSize(item, slidingItem){
+      slidingItem.close();
+      let index = this.productForm.value.sizes.indexOf(item);
+      this.productForm.value.sizes.splice(index, 1);
+    }
+
 }

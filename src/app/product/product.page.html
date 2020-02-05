@@ -83,7 +83,7 @@
       </ion-select>
     </ion-item>
       <ion-list no-lines>
-        <ion-item-sliding class="list-item" *ngFor="let item of productForm.value.sizes">
+        <ion-item-sliding class="list-item" *ngFor="let item of productForm.value.sizes" #slidingItem>
           <ion-item class="ion-no-padding" style="background-color: #ddd">
           <ion-card class="list-card">
 
@@ -108,8 +108,7 @@
           </ion-card>
         </ion-item>
           <ion-item-options>
-            <ion-item-option (click)="deleteProduct(item)"
-            *ngIf="!item.fixed">
+            <ion-item-option (click)="deleteSize(item, slidingItem)">
               {{ 'DELETE'| translate }}
             </ion-item-option>
           </ion-item-options>
@@ -123,7 +122,7 @@
         </ion-col>
       </ion-row>
         <ion-list no-lines>
-          <ion-item-sliding class="list-item" *ngFor="let item of productForm.value.products">
+          <ion-item-sliding class="list-item" *ngFor="let item of productForm.value.products" #slidingItem>
             <ion-item class="ion-no-padding" style="background-color: #ddd">
             <ion-card class="list-card">
 
@@ -153,8 +152,7 @@
             </ion-card>
           </ion-item>
             <ion-item-options>
-              <ion-item-option (click)="deleteProduct(item)"
-              *ngIf="!item.fixed">
+              <ion-item-option (click)="deleteProduct(item, slidingItem)">
                 {{ 'DELETE'| translate }}
               </ion-item-option>
             </ion-item-options>

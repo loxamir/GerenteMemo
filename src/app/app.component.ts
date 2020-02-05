@@ -38,12 +38,12 @@ export class AppComponent implements OnInit {
     //   url: '/contact-list',
     //   icon: 'contacts'
     // },
-    {
-      title: 'SETTINGS',
-      url: '/config',
-      icon: 'settings',
-      restrict: true
-    },
+    // {
+    //   title: 'SETTINGS',
+    //   url: '/config',
+    //   icon: 'settings',
+    //   restrict: true
+    // },
     {
       title: 'EXIT',
       url: '/login',
