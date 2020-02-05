@@ -438,5 +438,7 @@
   "ORDERS": "Orders",
   "SEARCH_CLIENT": "Search Client",
   "SEARCH_ORDER": "Search Order",
+  "ADD_TO_ORDER": "Add to Order",
+  "LOADING_PRODUCTS": "Loading Products",
   "RESULT": "Result"
 }

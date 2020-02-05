@@ -61,6 +61,7 @@ export class SaleService {
         quantity: item.quantity,
         price: item.price,
         cost: item.cost,
+        size: item.size,
         note: item.note,
       })
     });
@@ -124,6 +125,7 @@ export class SaleService {
               'quantity': line.quantity,
               'price': line.price,
               'cost': line.cost || 0,
+              'size': line.size,
               'note': line.note,
             })
           })

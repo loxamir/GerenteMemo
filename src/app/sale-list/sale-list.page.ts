@@ -29,6 +29,7 @@ export class SaleListPage implements OnInit {
   currency_precision = 2;
   logged: boolean = false;
   contact_id;
+  appliedChanges = [];
 
   constructor(
     public navCtrl: NavController,
@@ -44,7 +45,10 @@ export class SaleListPage implements OnInit {
     public translate: TranslateService,
   ) {
     this.events.subscribe('changed-sale', (change)=>{
-      this.handleChange(this.sales, change);
+      if (this.appliedChanges.indexOf(change.doc._id+change.doc._rev)==-1){
+        this.appliedChanges.push(change.doc._id+change.doc._rev);
+        this.handleChange(this.sales, change);
+      }
     })
     this.events.subscribe('got-database', (change)=>{
       this.setFilteredItems();
