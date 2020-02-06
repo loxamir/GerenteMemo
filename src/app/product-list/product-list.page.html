@@ -1,7 +1,39 @@
 <ion-header>
   <ion-toolbar>
+    <!-- <ion-title> -->
+      <!-- <ion-thumbnail style="--border-radius:10px;"> -->
+      <ion-row *ngIf="!select">
+        <ion-col class="ion-no-padding">
+          <img style="height: 88px;width: 234px;" [src]="'data:image/png;base64,'+config._attachments['logo.png'].data || './assets/images/sem_foto.jpg'"
+          *ngIf="config._attachments && config._attachments['logo.png']">
+        </ion-col>
+        <ion-col size="3">
+          <ion-row>
+            <ion-col style="text-align: center;" class="ion-no-padding" >
+              <img
+              style="height: 55px;width: 55px;border-radius: 30px;"
+              [src]="'data:image/png;base64,'+config._attachments['logo.png'].data || './assets/images/sem_foto.jpg'"
+              *ngIf="config._attachments && config._attachments['logo.png']">
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col style="text-align: center;font-size: 12px;" class="ion-no-padding" >
+                {{config.name}}
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+          <!-- <img src="./assets/images/sem_foto.jpg" *ngIf="!(config._attachments && config._attachments['logo.png'])"> -->
+        <!-- </ion-thumbnail> -->
+        <!-- Ted Bebidas -->
+        <!-- <ion-thumbnail style="--border-radius:10px;">
+            <img [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
+            *ngIf="item._attachments && item._attachments['avatar.png']">
+            <img src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
+          </ion-thumbnail> -->
+    <!-- </ion-title> -->
     <ion-buttons slot="start">
-        <ion-menu-button *ngIf="!select"></ion-menu-button>
+        <!-- <ion-menu-button *ngIf="!select"></ion-menu-button> -->
         <ion-button *ngIf="select"
                 (click)="discard()">
           <ion-icon name="arrow-back"></ion-icon>
@@ -28,48 +60,46 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-list no-lines *ngIf="!select">
-    <ion-item-sliding class="list-item" *ngFor="let item of promoted_products">
-      <ion-item class="ion-no-padding" style="background-color: #ddd">
-      <ion-card class="list-card">
-
-        <ion-row>
-          <ion-thumbnail style="--border-radius:10px;">
-              <img [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
-              *ngIf="item._attachments && item._attachments['avatar.png']">
-              <img src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
-            </ion-thumbnail>
-          <ion-col>
-            <ion-row (click)="selectProduct(item)" class="producto">
-              <ion-col class="ion-no-padding">
-                <h3 class="item-title"><b>{{ item.name }}</b></h3>
-              </ion-col>
-            </ion-row>
-            <ion-row class="ion-no-padding content-row one-line" (click)="selectProduct(item)">
-              <ion-col class="item-content" style="white-space: normal;">
-                {{item.description}}
-              </ion-col>
-              <ion-col class="ion-no-padding" size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
-                <h2 class="list-big-number" style="color: green;">{{item.price| number:'1.'+currency_precision}} G$</h2>
-              </ion-col>
-            </ion-row>
+  <h1
+  style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;"
+  *ngIf="!select && !searchTerm"
+  class="ion-no-padding">
+    Algunas recomendaciones para ti
+  </h1>
+  <div *ngIf="!select && !searchTerm">
+    <ion-card class="list-card" style="width: 170px;display: inline-block;"
+    *ngFor="let item of promoted_products">
+    <ion-row>
+      <!-- <ion-thumbnail style="--border-radius:10px;"> -->
+      <ion-col size="2">
+        <img [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
+        *ngIf="item._attachments && item._attachments['avatar.png']">
+        <img src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
+      </ion-col>
+      <!-- </ion-thumbnail> -->
+      <ion-col>
+        <ion-row (click)="selectProduct(item)" class="producto">
+          <ion-col class="ion-no-padding">
+            <h3 class="item-title" style="font-size: 13px;">{{ item.name }}</h3>
           </ion-col>
         </ion-row>
-
-      </ion-card>
-    </ion-item>
-      <ion-item-options>
-        <ion-item-option (click)="deleteProduct(item)"
-        *ngIf="!item.fixed">
-          {{ 'DELETE'| translate }}
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
-  <h1  *ngIf="!select">
+        <ion-row class="ion-no-padding content-row one-line" (click)="selectProduct(item)">
+          <ion-col class="item-content" style="white-space: normal;font-size: 10px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+            {{item.description}}
+          </ion-col>
+          <ion-col class="ion-no-padding" size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
+            <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+  </div>
+  <h1 *ngIf="!select && !searchTerm"
+  style="font-style: italic;font-weight: bold;font-size: 30px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;">
     {{'CATEGORIES'| translate}}
   </h1>
-  <ion-list no-lines  *ngIf="!select">
+  <ion-list no-lines *ngIf="!select && !searchTerm">
     <ion-item-sliding class="list-item" *ngFor="let item of promoted_categories">
       <ion-item class="ion-no-padding" style="background-color: #ddd">
       <ion-card class="list-card">
@@ -108,7 +138,12 @@
     </ion-item-sliding>
   </ion-list>
 
-
+  <h1
+  style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;"
+  *ngIf="!select && !searchTerm"
+  class="ion-no-padding">
+    Todos Productos
+  </h1>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of products">
       <ion-item class="ion-no-padding" style="background-color: #ddd">

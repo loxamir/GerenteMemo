@@ -31,6 +31,7 @@ export class ProductListPage implements OnInit {
   editMode = false;
   promoted_products = [];
   promoted_categories = [];
+  config = {};
 
   constructor(
     public navCtrl: NavController,
@@ -69,13 +70,14 @@ export class ProductListPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-    let firstPage: any = await this.pouchdbService.getDoc('config.firstPage');
-    let config: any = (await this.pouchdbService.getDoc('config.profile'));
+    let config: any = (await this.pouchdbService.getDoc('config.profile', true));
+    console.log("config",config);
     if (!config._id){
       let este = await this.pouchdbService.getConnect();
       this.events.subscribe(('end-sync'), async (change) => {
         if (!config._id){
-          config = (await this.pouchdbService.getDoc('config.profile'));
+          config = (await this.pouchdbService.getDoc('config.profile', true));
+          this.config = config;
           this.setPromoted(config);
         }
         this.currency_precision = config.currency_precision || this.currency_precision;
@@ -88,6 +90,7 @@ export class ProductListPage implements OnInit {
         this.events.unsubscribe('end-sync')
       })
     } else {
+      this.config = config;
       this.setPromoted(config);
       this.currency_precision = config.currency_precision || this.currency_precision;
       await this.setFilteredItems();

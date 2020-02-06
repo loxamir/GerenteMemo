@@ -194,7 +194,7 @@ h4.field-value-col {
     width: 100%;
 }
 ion-content {
-    --ion-background-color: #d8c89c;
+    --ion-background-color: linear-gradient(to left,#479afe,#4496f3);;
 }
 
 .field-50-datetime {
@@ -530,7 +530,8 @@ ion-segment-button {
 }
 
 ion-toolbar {
-  --ion-background-color: linear-gradient(to left,#136904,#157703);
+  // --ion-background-color: linear-gradient(to left,#136904,#157703);
+  --ion-background-color: linear-gradient(to left,#479afe,#4496f3);
   color: white;
 }
 
