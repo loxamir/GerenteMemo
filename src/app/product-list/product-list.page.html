@@ -69,7 +69,7 @@
   <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm">
     <div class="card" *ngFor="let item of promoted_products; let i = index;">
       <ion-row>
-        <ion-card class="list-card" style="width: 170px;display: inline-block;">
+        <ion-card class="list-card" style="width: 180px;display: inline-block;">
         <ion-row  (click)="selectProduct(item)">
           <ion-col size="4">
             <img style="height: 50px;width: auto;border-radius: 5px;"
@@ -78,7 +78,7 @@
             <img style="height: 50px;width: auto;border-radius: 5px;"
             src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
           </ion-col>
-          <ion-col>
+          <ion-col class="ion-no-padding">
             <ion-row class="producto">
               <ion-col class="ion-no-padding">
                 <h3 class="item-title" style="font-size: 13px;height: 30px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">{{ item.name }}</h3>
@@ -100,7 +100,7 @@
         </ion-row>
         <ion-row>
           <ion-col class="item-content">
-          <div style="font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+          <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
             {{item.description}}
 
           </div>
@@ -109,7 +109,7 @@
       </ion-card>
       </ion-row>
       <ion-row *ngIf="promoted_products2[i]">
-        <ion-card class="list-card" style="width: 170px;display: inline-block;">
+        <ion-card class="list-card" style="width: 180px;display: inline-block;">
         <ion-row  (click)="selectProduct(promoted_products2[i])">
           <ion-col size="4">
             <img style="height: 50px;width: auto;border-radius: 5px;"
@@ -118,7 +118,7 @@
             <img style="height: 50px;width: auto;border-radius: 5px;"
             src="./assets/images/sem_foto.jpg" *ngIf="!(promoted_products2[i]._attachments && promoted_products2[i]._attachments['avatar.png'])">
           </ion-col>
-          <ion-col>
+          <ion-col class="ion-no-padding">
             <ion-row class="producto">
               <ion-col class="ion-no-padding">
                 <h3 class="item-title" style="font-size: 13px;height: 30px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">{{ promoted_products2[i].name }}</h3>
@@ -140,7 +140,7 @@
         </ion-row>
         <ion-row>
           <ion-col class="item-content">
-          <div style="font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+          <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
             {{item.description}}
           </div>
           </ion-col>

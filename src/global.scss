@@ -99,7 +99,7 @@ h4.field-value-col {
 @media screen and (max-width: 770px){
   .sc-ion-modal-md-h {
     --width: 95%;
-    --height: 90%;
+    --height: 80%;
   }
 }
 .list-tag {
@@ -562,4 +562,7 @@ section.ion-item-sliding, ion-item-sliding .item {
     -ms-user-select: none;
     user-select: none;
     margin-right: -18px;
+}
+.selected {
+  background: #a3d4fe;
 }

@@ -211,7 +211,7 @@ export class ProductListPage implements OnInit {
     this.events.subscribe('open-product', (data) => {
       this.events.unsubscribe('open-product');
     })
-    if (this.select) {
+    // if (this.select) {
       let profileModal = await this.modalCtrl.create({
         component: ProductPage,
         componentProps: {
@@ -220,9 +220,9 @@ export class ProductListPage implements OnInit {
         }
       })
       profileModal.present();
-    } else {
-      this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
-    }
+    // } else {
+    //   this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
+    // }
   }
 
   closeModal() {

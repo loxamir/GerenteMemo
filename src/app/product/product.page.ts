@@ -48,7 +48,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     opened: boolean = false;
     select;
     barcode = '';
-    editMode = true;
+    editMode = false;
     avatar = undefined;
     logged: boolean = false;
     asking: boolean = false;

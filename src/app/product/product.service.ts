@@ -33,7 +33,7 @@ export class ProductService {
         }
       });
 
-      this.pouchdbService.getList(getList).then((docs: any[])=>{
+      this.pouchdbService.getList(getList, true).then((docs: any[])=>{
         var doc_dict = {};
         docs.forEach(row=>{
           doc_dict[row.id] = row.doc;
@@ -44,6 +44,7 @@ export class ProductService {
         product.related_products.forEach((line: any)=>{
           product['products'].push(doc_dict[line.product_id]);
         })
+        console.log("products", product['products']);
         product.stock = 0;
         if (product._attachments && product._attachments['avatar.png']) {
           let avatar = product._attachments['avatar.png'].data;
