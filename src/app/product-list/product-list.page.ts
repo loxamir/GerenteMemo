@@ -23,7 +23,7 @@ export class ProductListPage implements OnInit {
   products: any = [];
   loading: any;
   select;
-  type: string = 'all';
+  category_id: string = 'all';
   page = 0;
   operation = "sale";
   searchTerm: string = '';
@@ -51,7 +51,7 @@ export class ProductListPage implements OnInit {
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
     this.operation = this.route.snapshot.paramMap.get('operation') || this.operation;
-    this.type = this.route.snapshot.paramMap.get('type') || 'all';
+    this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
     this.events.subscribe('changed-product', (change) => {
       this.handleChange(this.products, change);
     })
@@ -137,13 +137,13 @@ export class ProductListPage implements OnInit {
   setFilteredItems() {
     return new Promise(async (resolve, reject) => {
       this.getProductsPage(
-        this.searchTerm, 0, this.type
+        this.searchTerm, 0, this.category_id
       ).then(async (products: any[]) => {
-        if (this.type == 'all') {
+        if (this.category_id == 'all') {
           this.products = products;
         }
         else {
-          this.products = products.filter(word => word.type == this.type);
+          this.products = products.filter(word => word.category_id == this.category_id);
         }
         this.page = 1;
         await this.loading.dismiss();
@@ -165,7 +165,7 @@ export class ProductListPage implements OnInit {
   doInfinite(infiniteScroll) {
     setTimeout(() => {
       this.getProductsPage(
-        this.searchTerm, this.page, this.type
+        this.searchTerm, this.page, this.category_id
       ).then((products: any[]) => {
         products.forEach(product => {
           this.products.push(product);
@@ -179,7 +179,7 @@ export class ProductListPage implements OnInit {
   doRefresh(refresher) {
     setTimeout(() => {
       this.getProductsPage(
-        this.searchTerm, 0, this.type
+        this.searchTerm, 0, this.category_id
       ).then((products: any[]) => {
         this.products = products;
         this.page = 1;
@@ -255,7 +255,7 @@ export class ProductListPage implements OnInit {
       if (type == 'all') {
         products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase');
       } else {
-        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'type', type, 'name', 'increase')
+        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', type, 'name', 'increase')
       }
       // await this.formatService.asyncForEach(products, async (product: any)=>{
       //   let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
@@ -333,5 +333,13 @@ export class ProductListPage implements OnInit {
       this.editMode = !this.editMode;
     }
 
+    async filterCategory(category) {
+      this.category_id = category._id;
+      this.setFilteredItems();
+    }
 
+    goBack(){
+      this.category_id = 'all';
+      this.setFilteredItems();
+    }
 }

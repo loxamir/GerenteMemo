@@ -34,17 +34,33 @@
     <!-- </ion-title> -->
     <ion-buttons slot="start">
         <!-- <ion-menu-button *ngIf="!select"></ion-menu-button> -->
+
         <ion-button *ngIf="select"
                 (click)="discard()">
           <ion-icon name="arrow-back"></ion-icon>
         </ion-button>
+        <!-- <ion-button *ngIf="select"
+                (click)="goBack()">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button> -->
     </ion-buttons>
-    <ion-searchbar
-      placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
-      [(ngModel)]="searchTerm"
-      #searchBar
-      (ionChange)="searchItems()">
-    </ion-searchbar>
+    <ion-row>
+      <ion-col *ngIf="category_id!='all'"
+      size="1.5"
+      class="ion-no-padding"
+      (click)="goBack()"
+      style="margin: auto;padding-left: 10px;font-size:25px;">
+        <ion-icon name="arrow-back"  (click)="goBack()"></ion-icon>
+      </ion-col>
+      <ion-col  class="ion-no-padding">
+        <ion-searchbar
+        placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
+        [(ngModel)]="searchTerm"
+        #searchBar
+        (ionChange)="searchItems()">
+      </ion-searchbar>
+      </ion-col>
+    </ion-row>
     <ion-buttons slot="end">
       <!-- <ion-button *ngIf="!select" ion-button icon-only class="more-button"
               (click)="enableEditMode()">
@@ -62,11 +78,11 @@
   </ion-refresher>
   <h1
   style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;"
-  *ngIf="!select && !searchTerm"
+  *ngIf="!select && !searchTerm && category_id=='all'"
   class="ion-no-padding">
     Algunas recomendaciones para ti
   </h1>
-  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm">
+  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all'">
     <div class="card" *ngFor="let item of promoted_products; let i = index;">
       <ion-row>
         <ion-card class="list-card" style="width: 180px;display: inline-block;">
@@ -149,16 +165,16 @@
       </ion-row>
     </div>
   </div>
-  <h1 *ngIf="!select && !searchTerm"
+  <h1 *ngIf="!select && !searchTerm && category_id=='all'"
   style="font-style: italic;font-weight: bold;font-size: 25px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;">
     {{'CATEGORIES'| translate}}
   </h1>
-  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm">
-    <div class="card" *ngFor="let item of promoted_categories" >
-      <ion-item class="ion-no-padding"
-      style="background-color: #ddd">
-        <ion-card class="list-card" style="height: 120px;">
-          <ion-row (click)="selectProduct(item)" class="producto">
+  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all'">
+    <div class="card" style="margin-left: 5px;margin-right:5px;" *ngFor="let item of promoted_categories">
+        <ion-card class="list-card"
+        style="height: 120px;margin:0px"
+        (click)="filterCategory(item)">
+          <ion-row  class="producto">
             <ion-col class="ion-no-padding">
               <h3 class="item-title">{{ item.name }}</h3>
             </ion-col>
@@ -174,13 +190,12 @@
             *ngIf="!(item._attachments && item._attachments['avatar.png'])">
           </ion-row>
         </ion-card>
-      </ion-item>
     </div>
   </div>
 
   <h1
   style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;"
-  *ngIf="!select && !searchTerm"
+  *ngIf="!select && !searchTerm && category_id=='all'"
   class="ion-no-padding">
     Todos Productos
   </h1>
