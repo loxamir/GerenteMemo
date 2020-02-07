@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NavController, AlertController, ModalController, LoadingController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -8,6 +8,7 @@ import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute } from '@angular/router';
+import { ProductCategoryService } from './product-category.service';
 
 @Component({
   selector: 'app-product-category',
@@ -15,11 +16,16 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./product-category.page.scss'],
 })
 export class ProductCategoryPage implements OnInit {
+  @ViewChild('pwaphoto', { static: false }) pwaphoto: ElementRef;
+  @ViewChild('pwacamera', { static: false }) pwacamera: ElementRef;
+  @ViewChild('pwagalery', { static: false }) pwagalery: ElementRef;
+
   categoryForm: FormGroup;
   loading: any;
   languages: Array<LanguageModel>;
   _id: string;
   select;
+  avatar = undefined;
 
   constructor(
     public navCtrl: NavController,
@@ -32,6 +38,7 @@ export class ProductCategoryPage implements OnInit {
     public pouchdbService: PouchdbService,
     public route: ActivatedRoute,
     public alertCtrl: AlertController,
+    public productCategoryService: ProductCategoryService,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
     this._id = this.route.snapshot.paramMap.get('_id');
@@ -41,6 +48,7 @@ export class ProductCategoryPage implements OnInit {
     this.categoryForm = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       // dre:  new FormControl('sale'),
+      image: new FormControl(''),
       note: new FormControl(''),
       _id: new FormControl(''),
       create_user: new FormControl(''),
@@ -52,7 +60,7 @@ export class ProductCategoryPage implements OnInit {
     this.translate.setDefaultLang(language);
     this.translate.use(language);
     if (this._id){
-      this.getCategory(this._id).then((data) => {
+      this.productCategoryService.getCategory(this._id).then((data) => {
         //let currentLang = this.translate.currentLang;
         this.categoryForm.patchValue(data);
         this.categoryForm.markAsPristine();
@@ -79,7 +87,7 @@ export class ProductCategoryPage implements OnInit {
 
   buttonSave() {
     if (this._id){
-      this.updateCategory(this.categoryForm.value);
+      this.productCategoryService.updateCategory(this.categoryForm.value, this.avatar);
       if (this.select){
         this.modalCtrl.dismiss();
       } else {
@@ -89,7 +97,7 @@ export class ProductCategoryPage implements OnInit {
         // });
       }
     } else {
-      this.createCategory(this.categoryForm.value);
+      this.productCategoryService.createCategory(this.categoryForm.value, this.avatar);
       if (this.select){
         this.modalCtrl.dismiss();
         this.events.publish('create-category', this.categoryForm.value);
@@ -166,18 +174,73 @@ export class ProductCategoryPage implements OnInit {
     //console.log(values);
   }
 
-  getCategory(doc_id): Promise<any> {
-    return this.pouchdbService.getDoc(doc_id);
+  openPWAPhotoPicker() {
+    if (this.pwaphoto == null) {
+      return;
+    }
+
+    this.pwaphoto.nativeElement.click();
   }
 
-  createCategory(category){
-    category.docType = 'category';
-    return this.pouchdbService.createDoc(category);
+  openPWACamera() {
+    if (this.pwacamera == null) {
+      return;
+    }
+
+    this.pwacamera.nativeElement.click();
   }
 
-  updateCategory(category){
-    category.docType = 'category';
-    return this.pouchdbService.updateDoc(category);
+  openPWAGalery() {
+    if (this.pwagalery == null) {
+      return;
+    }
+
+    this.pwagalery.nativeElement.click();
+  }
+
+  previewFile() {
+    let self = this;
+    var preview: any = document.querySelector('#imageSrc');
+    var file = this.pwaphoto.nativeElement.files[0];
+    var reader = new FileReader();
+    reader.onload = (event: Event) => {
+      preview.src = reader.result;
+      this.categoryForm.patchValue({
+        image: reader.result,
+      })
+      this.categoryForm.markAsDirty();
+      preview.onload = function() {
+
+        var percentage = 1;
+        let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
+        var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
+        if (image_diameter > max_diameter) {
+          percentage = max_diameter / image_diameter
+        }
+
+        var canvas: any = window.document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.height = canvas.width * (preview.height / preview.width);
+        var oc = window.document.createElement('canvas');
+        var octx = oc.getContext('2d');
+        oc.width = preview.width * percentage;
+        oc.height = preview.height * percentage;
+        canvas.width = oc.width;
+        canvas.height = oc.height;
+        octx.drawImage(preview, 0, 0, oc.width, oc.height);
+        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+        ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+
+        let jpg = ctx.canvas.toDataURL("image/jpeg");
+        fetch(jpg)
+          .then(res => res.blob())
+          .then(blob => self.avatar = blob)
+      }
+    }
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   }
 
 }

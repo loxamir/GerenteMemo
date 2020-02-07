@@ -13,23 +13,30 @@
 </ion-header>
 
 <ion-content class="category-content">
+  <canvas id="canvas2" height=200 width=200 style="display:none"></canvas>
+  <div id="pwa">
+    <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
+  </div>
   <form class="sample-form validations-form" [formGroup]="categoryForm"  (ngSubmit)="onSubmit(categoryForm.value)">
-      <ion-item  class="field-100">
-        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-        <ion-input type="text" formControlName="name"></ion-input>
-      </ion-item>
-      <div class="validation-errors">
-        <ng-container *ngFor="let validation of validation_messages.name">
-          <div class="error-message" *ngIf="categoryForm.get('name').hasError(validation.type) && (categoryForm.get('name').dirty || categoryForm.get('name').touched)">
-            {{ validation.message }}
-          </div>
-        </ng-container>
-      </div>
+    <ion-row style="background: white;">
+      <img [src]="categoryForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+    </ion-row>
+    <ion-item  class="field-100">
+      <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+      <ion-input type="text" formControlName="name"></ion-input>
+    </ion-item>
+    <div class="validation-errors">
+      <ng-container *ngFor="let validation of validation_messages.name">
+        <div class="error-message" *ngIf="categoryForm.get('name').hasError(validation.type) && (categoryForm.get('name').dirty || categoryForm.get('name').touched)">
+          {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
 
-      <ion-item class="field-100">
-        <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
-        <ion-textarea rows="2" formControlName="note"></ion-textarea>
-      </ion-item>
+    <ion-item class="field-100">
+      <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+      <ion-textarea rows="2" formControlName="note"></ion-textarea>
+    </ion-item>
   </form>
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
