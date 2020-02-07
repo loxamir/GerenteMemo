@@ -336,7 +336,7 @@ export class ImporterPage implements OnInit {
         if (data.docType == 'category') {
           promise_ids.push(this.categoryService.createCategory({
             "name": data.name,
-          }))
+          }, false))
         }
         else if (data.docType == 'brand') {
           promise_ids.push(this.pouchdbService.createDoc({

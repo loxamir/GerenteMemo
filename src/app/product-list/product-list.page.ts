@@ -30,6 +30,7 @@ export class ProductListPage implements OnInit {
   currency_precision = 0;
   editMode = false;
   promoted_products = [];
+  promoted_products2 = [];
   promoted_categories = [];
   config = {};
 
@@ -116,8 +117,15 @@ export class ProductListPage implements OnInit {
     docList.forEach(row=>{
       doc_dict[row.id] = row.doc;
     })
+    let first = true;
     config.promoted_products.forEach(product=>{
-      this.promoted_products.push(doc_dict[product.product_id] || {});
+      if (first){
+        this.promoted_products.push(doc_dict[product.product_id] || {});
+        first = false;
+      } else {
+        this.promoted_products2.push(doc_dict[product.product_id] || {});
+        first = true;
+      }
     })
     config.promoted_categories.forEach(category=>{
       this.promoted_categories.push(doc_dict[category.category_id] || {});
