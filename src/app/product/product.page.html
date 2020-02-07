@@ -42,7 +42,10 @@
         <div class="card" *ngFor="let item of productForm.value.sizes" >
           <div
           style="padding: 5px">
-            <ion-card class="list-card" [class.selected]="item.name == 'Pequeno'">
+            <ion-card class="list-card"
+            [class.selected]="item.name == productForm.value.size"
+            (click)="selectSize(item)"
+            >
               <ion-row>
                 <ion-col style="color: #ff1919;font-weight:bold;text-align:center;">
                   {{item.name}}
@@ -75,18 +78,18 @@
         <h4 class="field-value-col-2" style="color:blue">{{this.productForm.value.quantity*this.productForm.value.price|number}} G$</h4>
     </ion-item>
     <ion-item class="field-100">
-      <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
-      <ion-input type="text" formControlName="note" placeholder="ejemplo: Sin cebolla"></ion-input>
+      <ion-label position="floating">{{'OBSERVATION' | translate}}</ion-label>
+      <ion-input type="text" formControlName="note" placeholder="Ejemplo: Sin cebolla"></ion-input>
     </ion-item>
     <!-- <ion-button class="button-100" (click)="askProduct()">
       {{'ADD_TO_ORDER'|translate}}
     </ion-button> -->
 
     <h1
-    style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;"
+    style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: #3773e8;"
     *ngIf="productForm.value.products.length"
     class="ion-no-padding">
-      Quizas quieras pedir tambien
+      Quizas tambien quieras pedir
     </h1>
     <div class="scrolling-wrapper-flexbox" *ngIf="productForm.value.products.length">
       <div class="card" *ngFor="let item of productForm.value.products; let i = index;">
