@@ -470,4 +470,8 @@ export class ProductListPage implements OnInit {
       })
       profileModal.present();
     }
+
+    login(){
+      this.authService.login();
+    }
 }

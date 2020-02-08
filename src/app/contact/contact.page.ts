@@ -314,8 +314,8 @@ export class ContactPage implements OnInit {
     return new Promise((resolve, reject) => {
       let contact = Object.assign({}, viewData);
       contact.docType = 'contact';
-      contact.address_id = contact.address._id;
-      delete contact.address;
+      // contact.address_id = contact.address._id;
+      // delete contact.address;
       if (contact.code != '') {
         this.pouchdbService.createDoc(contact).then(doc => {
           resolve({ doc: doc, contact: contact });
@@ -331,8 +331,8 @@ export class ContactPage implements OnInit {
   updateContact(viewData) {
     let contact = Object.assign({}, viewData);
     contact.docType = 'contact';
-    contact.address_id = contact.address._id;
-    delete contact.address;
+    // contact.address_id = contact.address._id;
+    // delete contact.address;
     return this.pouchdbService.updateDoc(contact);
   }
 
@@ -346,9 +346,9 @@ export class ContactPage implements OnInit {
     else if (this.contactForm.value.phone == null) {
       this.phone.setFocus();
     }
-    else if (this.contactForm.value.address == null) {
-      this.address.setFocus();
-    }
+    // else if (this.contactForm.value.address == null) {
+    //   this.address.setFocus();
+    // }
     else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
       this.salary.setFocus();
     }

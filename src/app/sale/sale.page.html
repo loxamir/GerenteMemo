@@ -168,11 +168,11 @@
       </ion-item-sliding>
     </section>
     </ion-list>
-    <ion-row>
+    <!-- <ion-row>
       <ion-col size="12" *ngIf="saleForm.value.state == 'QUOTATION'">
         <ion-button class="button-100" (click)="addItem()" color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> {{ 'ADD_ITEM' | translate }}</ion-button>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
   </form>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'QUOTATION' && saleForm.value.items.length">
