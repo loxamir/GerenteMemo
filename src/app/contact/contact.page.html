@@ -11,7 +11,7 @@
 
   <form [formGroup]="contactForm"  (ngSubmit)="onSubmit(contactForm.value)">
     <ion-row style="background: white;">
-      <img [src]="contactForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+      <img [src]="contactForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;">
     </ion-row>
     <ion-item  class="field-100">
       <ion-label position="floating">{{'NAME' | translate}}</ion-label>
