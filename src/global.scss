@@ -57,7 +57,7 @@ h4.field-value-col-2 {
 }
 .field-100 {
    --ion-background-color: #fff;
-   border: 1px solid #a4c1f5;
+   // border: 1px solid #a4c1f5;
    width: 100%;
 }
 .field-33 {
@@ -99,7 +99,7 @@ h4.field-value-col {
 @media screen and (max-width: 770px){
   .sc-ion-modal-md-h {
     --width: 95%;
-    --height: 90%;
+    --height: 80%;
   }
 }
 .list-tag {
@@ -194,7 +194,7 @@ h4.field-value-col {
     width: 100%;
 }
 ion-content {
-    --ion-background-color: #d8c89c;
+    --ion-background-color: linear-gradient(to left,#479afe,#4496f3);;
 }
 
 .field-50-datetime {
@@ -530,7 +530,8 @@ ion-segment-button {
 }
 
 ion-toolbar {
-  --ion-background-color: linear-gradient(to left,#136904,#157703);
+  // --ion-background-color: linear-gradient(to left,#136904,#157703);
+  --ion-background-color: linear-gradient(to left,#479afe,#4496f3);
   color: white;
 }
 
@@ -561,4 +562,7 @@ section.ion-item-sliding, ion-item-sliding .item {
     -ms-user-select: none;
     user-select: none;
     margin-right: -18px;
+}
+.selected {
+  background: #a3d4fe;
 }

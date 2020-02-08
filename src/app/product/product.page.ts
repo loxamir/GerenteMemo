@@ -640,7 +640,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.modalCtrl.dismiss();
       } else {
         this.productForm.markAsPristine();
-        this.navCtrl.navigateBack('/tabs/product-list');
+        this.navCtrl.navigateBack('/product-list');
       }
     }
 
@@ -833,15 +833,23 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       await profileModal.onDidDismiss();
     }
 
-    changeOption(){
-      let opt = this.productForm.value.sizes.filter(option=>option.name == this.productForm.value.size);
-      console.log("this.productForm.value.size", this.productForm.value.size);
-      console.log("opt", opt);
-      if (opt[0]){
-        this.productForm.patchValue({
-          price: opt[0].price
-        })
-      }
+    deleteProduct(item, slidingItem){
+      slidingItem.close();
+      let index = this.productForm.value.products.indexOf(item);
+      this.productForm.value.products.splice(index, 1);
     }
+
+    deleteSize(item, slidingItem){
+      slidingItem.close();
+      let index = this.productForm.value.sizes.indexOf(item);
+      this.productForm.value.sizes.splice(index, 1);
+    }
+
+  selectSize(item){
+    this.productForm.patchValue({
+      size: item.name,
+      price: item.price
+    })
+  }
 
 }

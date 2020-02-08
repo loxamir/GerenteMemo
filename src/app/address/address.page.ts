@@ -238,7 +238,7 @@ showMap(latitude, longitude){
 
   logout(){
     this.authService.logout();
-    this.navCtrl.navigateBack(['/tabs/product-list', {}]);
+    this.navCtrl.navigateBack(['/product-list', {}]);
   }
 
 

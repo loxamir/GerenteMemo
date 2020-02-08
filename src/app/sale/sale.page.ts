@@ -12,7 +12,7 @@ import { LanguageModel } from "../services/language/language.model";
 // import { ImagePicker } from '@ionic-native/image-picker';
 // import { Crop } from '@ionic-native/crop';
 import { SaleService } from './sale.service';
-import { ContactListPage } from '../contact-list/contact-list.page';
+// import { ContactListPage } from '../contact-list/contact-list.page';
 //import { SaleItemPage } from '../sale-item/sale-item';
 //import { CashMovePage } from '../cash/move/cash-move';
 import { ProductService } from '../product/product.service';
@@ -40,7 +40,7 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 import html2canvas from 'html2canvas';
 import { DiscountPage } from '../discount/discount.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
-import { ContactPage } from '../contact/contact.page';
+// import { ContactPage } from '../contact/contact.page';
 import { AuthService } from "../services/auth.service";
 
 @Component({
@@ -264,34 +264,34 @@ export class SalePage implements OnInit {
       this.buttonSave();
     }
 
-    editContact() {
-      return new Promise(async resolve => {
-        this.events.unsubscribe('open-contact');
-        this.events.subscribe('open-contact', (data) => {
-          this.saleForm.patchValue({
-            contact: data,
-            // type: data.type,
-            // cash_out: data.cash_out,
-            // cash_in: data.cash_in,
-            // transfer: data.transfer,
-            // payable: data.payable,
-            // receivable: data.receivable,
-          });
-          this.saleForm.markAsDirty();
-          // this.avoidAlertMessage = false;
-          this.events.unsubscribe('open-contact');
-          resolve(true);
-        })
-        let profileModal = await this.modalCtrl.create({
-          component: ContactPage,
-          componentProps: {
-            "select": true,
-            "_id": this.saleForm.value.contact._id,
-          }
-        });
-        profileModal.present();
-      });
-    }
+    // editContact() {
+    //   return new Promise(async resolve => {
+    //     this.events.unsubscribe('open-contact');
+    //     this.events.subscribe('open-contact', (data) => {
+    //       this.saleForm.patchValue({
+    //         contact: data,
+    //         // type: data.type,
+    //         // cash_out: data.cash_out,
+    //         // cash_in: data.cash_in,
+    //         // transfer: data.transfer,
+    //         // payable: data.payable,
+    //         // receivable: data.receivable,
+    //       });
+    //       this.saleForm.markAsDirty();
+    //       // this.avoidAlertMessage = false;
+    //       this.events.unsubscribe('open-contact');
+    //       resolve(true);
+    //     })
+    //     let profileModal = await this.modalCtrl.create({
+    //       component: ContactPage,
+    //       componentProps: {
+    //         "select": true,
+    //         "_id": this.saleForm.value.contact._id,
+    //       }
+    //     });
+    //     profileModal.present();
+    //   });
+    // }
 
     async selectCashMove(item) {
       this.listenBarcode = false;
@@ -1316,40 +1316,40 @@ export class SalePage implements OnInit {
       //console.log(values);
     }
 
-    async selectContact() {
-      if (this.saleForm.value.state=='QUOTATION'){
-        this.loading = await this.loadingCtrl.create({});
-        await this.loading.present();
-        this.listenBarcode = false;
-        return new Promise(async resolve => {
-          this.avoidAlertMessage = true;
-          this.events.unsubscribe('select-contact');
-          this.events.subscribe('select-contact', (data) => {
-            this.saleForm.patchValue({
-              contact: data,
-              contact_name: data.name,
-            });
-            this.saleForm.markAsDirty();
-            this.avoidAlertMessage = false;
-            this.events.unsubscribe('select-contact');
-            profileModal.dismiss();
-            resolve(true);
-          })
-          let profileModal = await this.modalCtrl.create({
-            component: ContactListPage,
-            componentProps: {
-              "select": true,
-              "filter": "customer",
-              'customer': true,
-            }
-          });
-          await profileModal.present();
-          await this.loading.dismiss();
-          await profileModal.onDidDismiss();
-          this.listenBarcode = true;
-        });
-      }
-    }
+    // async selectContact() {
+    //   if (this.saleForm.value.state=='QUOTATION'){
+    //     this.loading = await this.loadingCtrl.create({});
+    //     await this.loading.present();
+    //     this.listenBarcode = false;
+    //     return new Promise(async resolve => {
+    //       this.avoidAlertMessage = true;
+    //       this.events.unsubscribe('select-contact');
+    //       this.events.subscribe('select-contact', (data) => {
+    //         this.saleForm.patchValue({
+    //           contact: data,
+    //           contact_name: data.name,
+    //         });
+    //         this.saleForm.markAsDirty();
+    //         this.avoidAlertMessage = false;
+    //         this.events.unsubscribe('select-contact');
+    //         profileModal.dismiss();
+    //         resolve(true);
+    //       })
+    //       let profileModal = await this.modalCtrl.create({
+    //         component: ContactListPage,
+    //         componentProps: {
+    //           "select": true,
+    //           "filter": "customer",
+    //           'customer': true,
+    //         }
+    //       });
+    //       await profileModal.present();
+    //       await this.loading.dismiss();
+    //       await profileModal.onDidDismiss();
+    //       this.listenBarcode = true;
+    //     });
+    //   }
+    // }
 
     // selectProject() {
     //   console.log("selectProject");
@@ -1373,40 +1373,40 @@ export class SalePage implements OnInit {
     //   }
     // }
 
-    selectSeller() {
-      // if (this.saleForm.value.state=='QUOTATION'){
-        return new Promise(async resolve => {
-          this.loading = await this.loadingCtrl.create({});
-          await this.loading.present();
-          this.avoidAlertMessage = true;
-          this.listenBarcode = false;
-          this.events.unsubscribe('select-contact');
-          this.events.subscribe('select-contact', (data) => {
-            this.saleForm.patchValue({
-              seller: data,
-              seller_name: data.name,
-            });
-            this.saleForm.markAsDirty();
-            this.avoidAlertMessage = false;
-            this.events.unsubscribe('select-contact');
-            profileModal.dismiss();
-            resolve(true);
-          })
-          let profileModal = await this.modalCtrl.create({
-            component: ContactListPage,
-            componentProps: {
-              "select": true,
-              "filter": "seller",
-              'seller': true,
-            }
-          });
-          await profileModal.present();
-          await this.loading.dismiss();
-          await profileModal.onDidDismiss();
-          this.listenBarcode = true;
-        });
-      // }
-    }
+    // selectSeller() {
+    //   // if (this.saleForm.value.state=='QUOTATION'){
+    //     return new Promise(async resolve => {
+    //       this.loading = await this.loadingCtrl.create({});
+    //       await this.loading.present();
+    //       this.avoidAlertMessage = true;
+    //       this.listenBarcode = false;
+    //       this.events.unsubscribe('select-contact');
+    //       this.events.subscribe('select-contact', (data) => {
+    //         this.saleForm.patchValue({
+    //           seller: data,
+    //           seller_name: data.name,
+    //         });
+    //         this.saleForm.markAsDirty();
+    //         this.avoidAlertMessage = false;
+    //         this.events.unsubscribe('select-contact');
+    //         profileModal.dismiss();
+    //         resolve(true);
+    //       })
+    //       let profileModal = await this.modalCtrl.create({
+    //         component: ContactListPage,
+    //         componentProps: {
+    //           "select": true,
+    //           "filter": "seller",
+    //           'seller': true,
+    //         }
+    //       });
+    //       await profileModal.present();
+    //       await this.loading.dismiss();
+    //       await profileModal.onDidDismiss();
+    //       this.listenBarcode = true;
+    //     });
+    //   // }
+    // }
 
     selectPaymentCondition() {
       return new Promise(async resolve => {
@@ -1966,7 +1966,7 @@ export class SalePage implements OnInit {
         this.modalCtrl.dismiss();
       } else {
         this.saleForm.markAsPristine();
-        this.navCtrl.navigateBack('/tabs/sale-list');
+        this.navCtrl.navigateBack('/sale-list');
       }
     }
 }

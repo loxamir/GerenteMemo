@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/product-list"></ion-back-button>
+      <ion-back-button defaultHref="/product-list"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'MY_PROFILE'| translate }}</ion-title>
   </ion-toolbar>
@@ -11,12 +11,17 @@
 
   <form [formGroup]="contactForm"  (ngSubmit)="onSubmit(contactForm.value)">
     <ion-row style="background: white;">
-      <img [src]="contactForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+      <ion-col size="2">
+        <img [src]="contactForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+      </ion-col>
+      <ion-col>
+        <ion-item  class="field-100">
+          <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+          <ion-input #name type="text" formControlName="name"></ion-input>
+        </ion-item>
+      </ion-col>
     </ion-row>
-    <ion-item  class="field-100">
-      <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-      <ion-input #name type="text" formControlName="name"></ion-input>
-    </ion-item>
+
     <ion-row>
       <div class="validation-errors" style="width: 100%">
         <ng-container *ngFor="let validation of validation_messages.name">
@@ -33,11 +38,11 @@
       #phone
       formControlName="phone"></ion-input>
     </ion-item>
-    <ion-item class="ion-no-padding" (click)="selectAddress()" class="field-100">
+    <!-- <ion-item class="ion-no-padding" (click)="selectAddress()" class="field-100">
       <h4 class="field-label">{{'DELIVERY_ADDRESS' | translate }}</h4>
       <h4 class="field-value">{{contactForm.value.address && contactForm.value.address.name || 'SELECT' | translate}}</h4>
     </ion-item>
-    <div #map id="map"></div>
+    <div #map id="map"></div> -->
   </ion-row>
 <!-- <h1>Facturación</h1>
 <ion-row>

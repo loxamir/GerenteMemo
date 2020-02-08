@@ -18,19 +18,10 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-row style="height: 50px;">
-    <ion-col (click)="setDiscount()">
+    <ion-col>
       <h4 class="field-label-col">{{'TOTAL' | translate}}</h4>
       <h4 class="field-value-col" style="color:blue">$ {{saleForm.value.total|number:'1.'+currency_precision}}</h4>
-  </ion-col>
-  <!-- <ion-col
-  (click)="setDiscount()"
-  *ngIf="saleForm.value.discount.value || saleForm.value.discount.lines">
-      <h4 class="field-label-col">{{'DISCOUNT' | translate}}</h4>
-      <h4 class="field-value-col" style="color:red">
-        $ {{computeDiscount()|number:'1.'+currency_precision}}
-        <ion-icon name="arrow-down">
-      </ion-icon>{{computePercent()}}%</h4>
-  </ion-col> -->
+    </ion-col>
   <ion-col
   *ngIf="saleForm.value.state=='CONFIRMED'">
       <h4 class="field-label-col">{{'TO_RECEIVE' | translate}}</h4>
@@ -112,24 +103,6 @@
 
     <ion-list no-lines *ngIf="saleForm.value.items.length">
       <section>
-        <!-- <ion-item-sliding  class="list-item" *ngFor="let item of saleForm.value.items" #slidingItem>
-          <ion-item *ngIf="item.product._id=='product.discount'" class="internal-item">
-            <ion-card class="list-card" style="--background: #ffe38a" (click)="setDiscount()">
-              <ion-row class="product-name-row">
-                <ion-col size="6" style="white-space: normal;">
-                  {{ 'DISCOUNT_OVER_TOTAL'| translate}}
-                </ion-col>
-                <ion-col size="6" style="white-space: normal;">
-                  <div style="font-size: 20px;color:red;">
-                    $ {{item.price*item.quantity|number:'1.'+currency_precision}}
-                    <ion-icon name="arrow-down">
-                    </ion-icon>{{computeDiscountPercent()}}%
-                  </div>
-                </ion-col>
-              </ion-row>
-            </ion-card>
-          </ion-item>
-        </ion-item-sliding> -->
       <h2 class="section-title">{{'SALE_ITEMS' | translate}}</h2>
       <ion-item-sliding  class="list-item" *ngFor="let item of saleForm.value.items" #slidingItem>
         <ion-item class="internal-item">
@@ -150,19 +123,12 @@
             <ion-row style="margin-top: -5px;">
               <ion-col size="12">
                 <span class="price-label">{{ 'PRICE' | translate }}:</span>
-                <!-- <div *ngIf="item.price_original" style="font-size: 12px;display: contents; color:red;    text-decoration: line-through;">
-                   ${{item.price_original |number:'1.'+currency_precision}}
-                </div> -->
-                <!-- <div *ngIf="item.price_original" style="font-size: 12px;display: contents; color:red;">
-                  <ion-icon name="arrow-down" style="padding-top:2px;">
-                  </ion-icon>{{lineDiscountPercent(item)}}%
-                </div> -->
                 <div style="font-size: 15px;display: contents; color:red">
                    ${{item.price|number:'1.'+currency_precision}}
                 </div>
               </ion-col>
             </ion-row>
-            <ion-row (click)="setLineDiscount(item)">
+            <ion-row>
               <ion-col  size="12" class="item-content price-tag">
                 <span class="price-label">{{ 'SUBTOTAL' | translate }}:</span>
                 <div style="font-size: 20px;color:green;">
@@ -207,19 +173,6 @@
         <ion-button class="button-100" (click)="addItem()" color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> {{ 'ADD_ITEM' | translate }}</ion-button>
       </ion-col>
     </ion-row>
-
-    <!-- <ion-row>
-      <ion-col size="12" *ngIf="saleForm.value.state == 'CONFIRMED' && saleForm.value.status == 'WAITING'">
-        <ion-button class="button-100" (click)="setProduction()" color="success">{{ 'En Producción' | translate }}</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="12" *ngIf="saleForm.value.status == 'PRODUCTION'">
-        <ion-button class="button-100" (click)="setDelivery()" color="success">{{ 'En Entrega' | translate }}</ion-button>
-      </ion-col>
-    </ion-row> -->
-
-
   </form>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'QUOTATION' && saleForm.value.items.length">
@@ -228,22 +181,6 @@
       {{ 'CONFIRM' | translate }}
     </ion-button>
   </ion-fab>
-
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'CONFIRMED'">
-    <ion-button (click)="addPayment()"  class="next-button" color="primary">
-      <ion-icon name="cash"> </ion-icon>
-      {{ 'TO_RECEIVE' | translate }}
-    </ion-button>
-  </ion-fab> -->
-
-  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-    <ion-button (click)="discard()" color="danger" class="discard-button">
-      <ion-icon name="backspace" *ngIf="saleForm.dirty"> </ion-icon>
-      <ion-icon name="arrow-back" *ngIf="!saleForm.dirty"> </ion-icon>
-      <span *ngIf="saleForm.dirty">{{ 'DISCARD' | translate }}</span>
-      <span *ngIf="!saleForm.dirty">{{ 'GO_BACK' | translate }}</span>
-    </ion-button>
-  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="saleForm.dirty">
     <ion-button (click)="buttonSave()"  color="success" class="save-button">

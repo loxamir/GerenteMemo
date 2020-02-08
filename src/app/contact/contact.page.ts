@@ -9,9 +9,9 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
-import { AddressListPage } from '../address-list/address-list.page';
+// import { AddressListPage } from '../address-list/address-list.page';
 import { ContactService } from './contact.service';
-declare var google;
+// declare var google;
 
 @Component({
   selector: 'app-contact',
@@ -22,10 +22,10 @@ export class ContactPage implements OnInit {
   @ViewChild('name', { static: true }) name;
   @ViewChild('document', { static: true }) document;
   @ViewChild('phone', { static: true }) phone;
-  @ViewChild('address', { static: true }) address;
+  // @ViewChild('address', { static: true }) address;
   @ViewChild('salary', { static: false }) salary;
-  @ViewChild('map', { static: false }) mapElement: ElementRef;
-  map: any;
+  // @ViewChild('map', { static: false }) mapElement: ElementRef;
+  // map: any;
 
   contactForm: FormGroup;
   loading: any;
@@ -66,7 +66,7 @@ export class ContactPage implements OnInit {
     this.contactForm = this.formBuilder.group({
       name: new FormControl(this.route.snapshot.paramMap.get('name') || null),
       name_legal: new FormControl(null),
-      address: new FormControl({}),
+      // address: new FormControl({}),
       phone: new FormControl(null),
       document: new FormControl(null, Validators.compose([
         Validators.pattern('^[0-9+-]+$')
@@ -112,24 +112,24 @@ export class ContactPage implements OnInit {
 
             this.plt.ready().then(() => {
 
-          let mapOptions = {
-            zoom: 20,
-            mapTypeId: google.maps.MapTypeId.HYBRID,
-            mapTypeControl: false,
-            streetViewControl: false,
-            fullscreenControl: false
-          }
-          this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-
-          let options = {
-            maximumAge: 3000,
-            timeout: 5000,
-            enableHighAccuracy: true
-          }
-          console.log("data", data);
-          if (data.address.latitude && data.address.longitude){
-            this.showMap( data.address.latitude, data.address.longitude);
-          }
+          // let mapOptions = {
+          //   zoom: 20,
+          //   mapTypeId: google.maps.MapTypeId.HYBRID,
+          //   mapTypeControl: false,
+          //   streetViewControl: false,
+          //   fullscreenControl: false
+          // }
+          // this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+          //
+          // let options = {
+          //   maximumAge: 3000,
+          //   timeout: 5000,
+          //   enableHighAccuracy: true
+          // }
+          // console.log("data", data);
+          // if (data.address.latitude && data.address.longitude){
+          //   this.showMap( data.address.latitude, data.address.longitude);
+          // }
         })
             this.loading.dismiss();
           });
@@ -142,73 +142,73 @@ export class ContactPage implements OnInit {
     });
   }
 
-  showMap(latitude, longitude){
-    let latLng = new google.maps.LatLng(latitude, longitude);
-    this.map.setCenter(latLng);
-    const icon = {
-      url: 'assets/icon/favicon.png', // image url
-      scaledSize: new google.maps.Size(50, 50), // scaled size
-    };
-    const marker = new google.maps.Marker({
-      position: latLng,
-      map: this.map,
-      title: 'Hello World!',
-      icon: icon
-    });
-    const contentString = '<div id="content">' +
-    '<div id="siteNotice">' +
-    '</div>' +
-    '<h1 id="firstHeading" class="firstHeading">Local de Entrega</h1>' +
-    '<div id="bodyContent">' +
-    // '<img src="assets/icon/user.png" width="200">' +
-    '<p>Este es el local donde se entregara el pedido</p><br/><br/>';
-    const infowindow = new google.maps.InfoWindow({
-      content: contentString,
-      maxWidth: 400
-    });
-    marker.addListener('click', function() {
-      infowindow.open(this.map, marker);
-    });
-    this.map.setZoom(20);
-  }
+  // showMap(latitude, longitude){
+  //   let latLng = new google.maps.LatLng(latitude, longitude);
+  //   this.map.setCenter(latLng);
+  //   const icon = {
+  //     url: 'assets/icon/favicon.png', // image url
+  //     scaledSize: new google.maps.Size(50, 50), // scaled size
+  //   };
+  //   const marker = new google.maps.Marker({
+  //     position: latLng,
+  //     map: this.map,
+  //     title: 'Hello World!',
+  //     icon: icon
+  //   });
+  //   const contentString = '<div id="content">' +
+  //   '<div id="siteNotice">' +
+  //   '</div>' +
+  //   '<h1 id="firstHeading" class="firstHeading">Local de Entrega</h1>' +
+  //   '<div id="bodyContent">' +
+  //   // '<img src="assets/icon/user.png" width="200">' +
+  //   '<p>Este es el local donde se entregara el pedido</p><br/><br/>';
+  //   const infowindow = new google.maps.InfoWindow({
+  //     content: contentString,
+  //     maxWidth: 400
+  //   });
+  //   marker.addListener('click', function() {
+  //     infowindow.open(this.map, marker);
+  //   });
+  //   this.map.setZoom(20);
+  // }
 
-  selectAddress() {
-    return new Promise(async resolve => {
-      // if (this.contactForm.value.state=='QUOTATION'){
-        this.loading = await this.loadingCtrl.create({});
-        await this.loading.present();
-        // this.avoidAlertMessage = true;
-        // this.listenBarcode = false;
-        this.events.unsubscribe('select-address');
-        this.events.subscribe('select-address', (data) => {
-          this.contactForm.patchValue({
-            address: data,
-            // address_name: data.name,
-          });
-          this.showMap( data.latitude, data.longitude);
-          this.contactForm.markAsDirty();
-          // this.avoidAlertMessage = false;
-          this.events.unsubscribe('select-address');
-          profileModal.dismiss();
-          resolve(data);
-        })
-        let profileModal = await this.modalCtrl.create({
-          component: AddressListPage,
-          componentProps: {
-            "select": true
-          }
-        });
-        await profileModal.present();
-        await this.loading.dismiss();
-        await profileModal.onDidDismiss();
-        // this.listenBarcode = true;
-      // }
-    });
-  }
+  // selectAddress() {
+  //   return new Promise(async resolve => {
+  //     // if (this.contactForm.value.state=='QUOTATION'){
+  //       this.loading = await this.loadingCtrl.create({});
+  //       await this.loading.present();
+  //       // this.avoidAlertMessage = true;
+  //       // this.listenBarcode = false;
+  //       this.events.unsubscribe('select-address');
+  //       this.events.subscribe('select-address', (data) => {
+  //         this.contactForm.patchValue({
+  //           address: data,
+  //           // address_name: data.name,
+  //         });
+  //         this.showMap( data.latitude, data.longitude);
+  //         this.contactForm.markAsDirty();
+  //         // this.avoidAlertMessage = false;
+  //         this.events.unsubscribe('select-address');
+  //         profileModal.dismiss();
+  //         resolve(data);
+  //       })
+  //       let profileModal = await this.modalCtrl.create({
+  //         component: AddressListPage,
+  //         componentProps: {
+  //           "select": true
+  //         }
+  //       });
+  //       await profileModal.present();
+  //       await this.loading.dismiss();
+  //       await profileModal.onDidDismiss();
+  //       // this.listenBarcode = true;
+  //     // }
+  //   });
+  // }
 
   logout(){
     this.authService.logout();
-    this.navCtrl.navigateBack(['/tabs/product-list', {}]);
+    this.navCtrl.navigateBack(['/product-list', {}]);
   }
 
 
@@ -261,7 +261,7 @@ export class ContactPage implements OnInit {
       if (this.select) {
         this.modalCtrl.dismiss();
       } else {
-        this.navCtrl.navigateBack('/tabs/product-list');
+        this.navCtrl.navigateBack('/product-list');
         this.events.publish('open-contact', this.contactForm.value);
       }
     } else {
@@ -271,7 +271,7 @@ export class ContactPage implements OnInit {
           this.events.publish('create-contact', this.contactForm.value);
           this.modalCtrl.dismiss();
         } else {
-          this.navCtrl.navigateBack('/tabs/product-list');
+          this.navCtrl.navigateBack('/product-list');
           this.events.publish('create-contact', this.contactForm.value);
         }
       });
@@ -426,7 +426,7 @@ export class ContactPage implements OnInit {
     if (this.select) {
       this.modalCtrl.dismiss();
     } else {
-      this.navCtrl.navigateBack('/tabs/product-list');
+      this.navCtrl.navigateBack('/product-list');
     }
   }
 }
