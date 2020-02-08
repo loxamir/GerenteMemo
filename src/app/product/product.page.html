@@ -15,13 +15,13 @@
 <ion-content class="product-content" style="--background: white;">
 
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
-  <div id="pwa" *ngIf="editMode">
+  <!-- <div id="pwa" *ngIf="editMode">
     <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
-  </div>
+  </div> -->
   <form class="sample-form validations-form" [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)" style="background: white;">
       <ion-row style="background: white;">
         <ion-col size="3">
-          <img [src]="productForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="height: 74px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+          <img [src]="productForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="height: 74px;display: block;margin-left: auto;margin-right: auto;">
         </ion-col>
         <ion-col>
           <ion-row>
