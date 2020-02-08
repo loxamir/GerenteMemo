@@ -7,3 +7,27 @@
     flex: 0 0 auto;
   }
 }
+
+.scrolling-wrapper-flexbox2 {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-x: auto;
+
+
+  .card {
+    width: 25%;
+    flex: 0 0 auto;
+  }
+  @media screen and (max-width: 900px){
+    .card {
+      width: 33%;
+      flex: 0 0 auto;
+    }
+  }
+  @media screen and (max-width: 600px){
+    .card {
+      width:50%;
+      flex: 0 0 auto;
+    }
+  }
+}
