@@ -25,8 +25,66 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-list no-lines>
-    <ion-item-sliding *ngFor="let item of sales" #slidingItem>
+
+
+  <div class="scrolling-wrapper-flexbox2">
+    <div class="card" *ngFor="let item of sales; let i = index;">
+      <ion-item-sliding #slidingItem>
+        <ion-item class="ion-no-padding" (click)="openSale(item)">
+          <ion-card class="list-card ion-no-padding" button="true">
+            <ion-row>
+              <ion-col>
+                <h3 class="item-name"><b>{{ item.contact_name || 'NOT_INFORMED' | translate }}</b></h3>
+              </ion-col>
+            </ion-row>
+       <ion-row class="content-row one-line ion-no-padding">
+          <ion-col class="ion-no-padding" size="6">
+            <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.date|date: 'dd/MM/yyyy HH:mm'}}</h3>
+            <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;">
+              <span style="margin-left: 5px">{{item.code}}</span>
+            </h3>
+            <h3 class="item-title" style="font-size:15px;">{{item.payment_name | translate}}</h3>
+          </ion-col>
+          <ion-col size="6" class="ion-align-self-center ion-no-padding">
+            <h2 *ngIf="item.total > 0" class="list-big-number" style="color: green;">$ {{item.total| number:'1.'+currency_precision}}</h2>
+            <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.'+currency_precision}}</h2>
+            <div *ngIf="item.residual != 0 && item.state!='CANCELED'" class="residual-value">
+              $ {{ item.residual | number:'1.'+currency_precision }}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-no-padding">
+          <ion-col class="list-tag ion-no-padding"
+          [class.quotation]="item.state=='QUOTATION'"
+          [class.confirmed]="item.state=='CONFIRMED'"
+          [class.paid]="item.state=='PAID'"
+          [class.cancel]="item.state=='CANCELED'">
+              {{ item.state | translate }}
+          </ion-col>
+        </ion-row>
+        <ion-row class="content-row one-line ion-no-padding" *ngIf="item.note">
+          <ion-col class="item-content" style="white-space: normal;">
+            {{item.note}}
+          </ion-col>
+        </ion-row>
+        </ion-card>
+
+      </ion-item>
+        <ion-item-options  side="end">
+          <ion-item-option (click)="deleteSale(slidingItem, item)"
+          *ngIf="item.state=='QUOTATION'">
+            {{ 'DELETAR' | translate }}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </div>
+  </div>
+
+
+
+
+  <!-- <ion-list no-lines>
+    <ion-item-sliding #slidingItem>
       <ion-item class="ion-no-padding" (click)="openSale(item)">
         <ion-card class="list-card ion-no-padding" button="true">
           <ion-row>
@@ -74,7 +132,7 @@
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-  </ion-list>
+  </ion-list> -->
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>

@@ -42,6 +42,8 @@ export class ConfigPage implements OnInit {
   languages: Array<LanguageModel>;
   select;
   logo = undefined;
+  showProducts = false;
+  showCategories = false;
 
   constructor(
     public navCtrl: NavController,
@@ -741,4 +743,13 @@ export class ConfigPage implements OnInit {
     this.configForm.value.categories.splice(index, 1);
     this.configForm.markAsDirty();
   }
+
+  flipProducts(){
+    this.showProducts = !this.showProducts;
+  }
+
+  flipCategories(){
+    this.showCategories = !this.showCategories;
+  }
+
 }

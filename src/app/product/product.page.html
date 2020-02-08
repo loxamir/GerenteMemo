@@ -1,4 +1,4 @@
-<!-- <ion-header>
+<ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/product-list"></ion-back-button>
@@ -11,7 +11,7 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-</ion-header> -->
+</ion-header>
 <ion-content class="product-content" style="--background: white;">
 
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
@@ -25,20 +25,30 @@
         </ion-col>
         <ion-col>
           <ion-row>
-            <ion-col>{{this.productForm.value.name}}</ion-col>
+            <ion-col>
+              <ion-item class="field-100">
+                <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+                <ion-input type="text" formControlName="name"></ion-input>
+              </ion-item>
+            </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col style="font-size: 12px;">{{this.productForm.value.description}}</ion-col>
+            <ion-col style="font-size: 12px;">
+              <ion-item class="field-100">
+                <ion-label position="floating">{{'description' | translate}}</ion-label>
+                <ion-input type="text" formControlName="description"></ion-input>
+              </ion-item>
+            </ion-col>
           </ion-row>
         </ion-col>
       </ion-row>
 
-      <h1
+      <!-- <h1
       *ngIf="productForm.value.sizes.length"
       style="background: white;font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: #3773e8;">
         {{'SELECT_SIZE'| translate}}
-      </h1>
-      <div class="scrolling-wrapper-flexbox" style="background: white;">
+      </h1> -->
+      <!-- <div class="scrolling-wrapper-flexbox" style="background: white;">
         <div class="card" *ngFor="let item of productForm.value.sizes" >
           <div
           style="padding: 5px">
@@ -59,10 +69,10 @@
             </ion-card>
           </div>
         </div>
-      </div>
+      </div> -->
 
 
-    <ion-row style="background-color: white;">
+    <!-- <ion-row style="background-color: white;">
       <ion-col size="3">
         <ion-button class="quantity-button" (click)="remItem()">-</ion-button>
       </ion-col>
@@ -80,7 +90,7 @@
     <ion-item class="field-100">
       <ion-label position="floating">{{'OBSERVATION' | translate}}</ion-label>
       <ion-input type="text" formControlName="note" placeholder="Ejemplo: Sin cebolla"></ion-input>
-    </ion-item>
+    </ion-item> -->
     <!-- <ion-button class="button-100" (click)="askProduct()">
       {{'ADD_TO_ORDER'|translate}}
     </ion-button> -->
@@ -114,20 +124,19 @@
                   <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
                 </ion-col>
               </ion-row>
-              <ion-row class="ion-no-padding content-row one-line">
+              <!-- <ion-row class="ion-no-padding content-row one-line">
                 <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
                   <ion-button style="height: 15px;">
                     Adicionar
                   </ion-button>
                 </ion-col>
-              </ion-row>
+              </ion-row> -->
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col class="item-content">
             <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
               {{item.description}}
-
             </div>
             </ion-col>
           </ion-row>
@@ -135,6 +144,10 @@
         </ion-row>
       </div>
     </div>
+    <ion-item class="field-100">
+      <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
+      <ion-input type="number" formControlName="price"></ion-input>
+    </ion-item>
 
 
 
@@ -142,10 +155,10 @@
 
     <ion-row>
     <div *ngIf="editMode">
-      <ion-item class="field-100">
+      <!-- <ion-item class="field-100">
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input type="text" formControlName="name"></ion-input>
-      </ion-item>
+      </ion-item> -->
     <ion-row>
       <ion-col>
         <ion-button class="button-100" (click)="addOption()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>{{ 'ADD_OPTION' | translate }}</ion-button>
@@ -227,14 +240,14 @@
             </ion-item-options>
           </ion-item-sliding>
         </ion-list> -->
-      <ion-item class="field-100">
+      <!-- <ion-item class="field-100">
         <ion-label position="floating">{{'Ingredientes' | translate}}</ion-label>
         <ion-input type="text" formControlName="description"></ion-input>
-      </ion-item>
-      <ion-item class="field-100">
+      </ion-item> -->
+      <!-- <ion-item class="field-100">
         <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
         <ion-input type="number" formControlName="price"></ion-input>
-      </ion-item>
+      </ion-item> -->
     </div>
   </ion-row>
   </form>

@@ -2,7 +2,7 @@
   <ion-toolbar>
     <!-- <ion-title> -->
       <!-- <ion-thumbnail style="--border-radius:10px;"> -->
-      <ion-row *ngIf="!select">
+      <!-- <ion-row *ngIf="!select">
         <ion-col class="ion-no-padding">
           <img style="height: 88px;width: 234px;" [src]="'data:image/png;base64,'+config._attachments['logo.png'].data || './assets/images/sem_foto.jpg'"
           *ngIf="config._attachments && config._attachments['logo.png']">
@@ -22,7 +22,7 @@
             </ion-col>
           </ion-row>
         </ion-col>
-      </ion-row>
+      </ion-row> -->
           <!-- <img src="./assets/images/sem_foto.jpg" *ngIf="!(config._attachments && config._attachments['logo.png'])"> -->
         <!-- </ion-thumbnail> -->
         <!-- Ted Bebidas -->
@@ -62,10 +62,6 @@
       </ion-col>
     </ion-row>
     <ion-buttons slot="end">
-      <!-- <ion-button *ngIf="!select" ion-button icon-only class="more-button"
-              (click)="enableEditMode()">
-        <ion-icon name="create"></ion-icon>
-      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -76,7 +72,7 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <h1
+  <!-- <h1
   style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;"
   *ngIf="!select && !searchTerm && category_id=='all'"
   class="ion-no-padding">
@@ -164,8 +160,8 @@
       </ion-card>
       </ion-row>
     </div>
-  </div>
-  <h1 *ngIf="!select && !searchTerm && category_id=='all'"
+  </div> -->
+  <!-- <h1 *ngIf="!select && !searchTerm && category_id=='all'"
   style="font-style: italic;font-weight: bold;font-size: 25px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;">
     {{'CATEGORIES'| translate}}
   </h1>
@@ -191,17 +187,19 @@
           </ion-row>
         </ion-card>
     </div>
-  </div>
+  </div> -->
 
-  <h1
+  <!-- <h1
   style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;"
   *ngIf="!select && !searchTerm && category_id=='all'"
   class="ion-no-padding">
     Todos Productos
-  </h1>
-  <div class="scrolling-wrapper-flexbox2" *ngIf="!select && !searchTerm && category_id=='all'">
+  </h1> -->
+  <div class="scrolling-wrapper-flexbox2">
     <div class="card" *ngFor="let item of products; let i = index;">
-      <ion-row>
+      <ion-item-sliding class="list-item">
+        <ion-item class="ion-no-padding">
+      <!-- <ion-row> -->
         <ion-card class="list-card" style="display: inline-block;">
         <ion-row  (click)="selectProduct(item)">
           <ion-col size="4">
@@ -222,13 +220,6 @@
                 <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
               </ion-col>
             </ion-row>
-            <ion-row class="ion-no-padding content-row one-line">
-              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
-                <ion-button style="height: 15px;">
-                  Adicionar
-                </ion-button>
-              </ion-col>
-            </ion-row>
           </ion-col>
         </ion-row>
         <ion-row>
@@ -240,7 +231,15 @@
           </ion-col>
         </ion-row>
       </ion-card>
-      </ion-row>
+      <!-- </ion-row> -->
+    </ion-item>
+      <ion-item-options>
+        <ion-item-option (click)="deleteProduct(item)"
+        *ngIf="!item.fixed">
+          {{ 'DELETE'| translate }}
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
     </div>
   </div>
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">

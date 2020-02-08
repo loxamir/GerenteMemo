@@ -137,7 +137,7 @@ export class TabsPage implements OnInit {
       }
       // this.events.unsubscribe('open-contact');
     })
-    // this.menuCtrl.enable(false);
+    this.menuCtrl.enable(false);
   }
 
 

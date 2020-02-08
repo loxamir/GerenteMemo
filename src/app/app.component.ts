@@ -131,7 +131,7 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
         // if (event.url === '/login') {
-        //   this.menuCtrl.enable(false);
+          this.menuCtrl.enable(false);
         // }
         this.appPages.map( p => {
           return p['active'] = (event.url === p.url);
