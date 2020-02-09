@@ -22,6 +22,16 @@
       <ion-item class="ion-no-padding" style="margin-bottom: 0px; margin-top:0px;">
       <ion-card  class="list-card" style="border-radius: 5px;">
         <ion-row>
+          <ion-col size="2">
+            <img
+            style="height: 95px;width: auto;"
+            [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
+            *ngIf="item._attachments && item._attachments['avatar.png']">
+            <img
+            style="height: 95px;width: auto;"
+            src="./assets/images/sem_foto.jpg"
+            *ngIf="!(item._attachments && item._attachments['avatar.png'])">
+          </ion-col>
           <ion-col (click)="selectCategory(item)">
             <ion-row>
               <!-- <ion-col class="ion-no-padding" class="schedule-date">
