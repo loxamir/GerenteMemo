@@ -9,7 +9,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
-import { AddressListPage } from '../address-list/address-list.page';
+// import { AddressListPage } from '../address-list/address-list.page';
 import { ContactService } from './contact.service';
 // declare var google;
 
@@ -172,39 +172,39 @@ export class ContactPage implements OnInit {
   //   this.map.setZoom(20);
   // }
 
-  selectAddress() {
-    return new Promise(async resolve => {
-      // if (this.contactForm.value.state=='QUOTATION'){
-        this.loading = await this.loadingCtrl.create({});
-        await this.loading.present();
-        // this.avoidAlertMessage = true;
-        // this.listenBarcode = false;
-        this.events.unsubscribe('select-address');
-        this.events.subscribe('select-address', (data) => {
-          this.contactForm.patchValue({
-            address: data,
-            // address_name: data.name,
-          });
-          // this.showMap( data.latitude, data.longitude);
-          this.contactForm.markAsDirty();
-          // this.avoidAlertMessage = false;
-          this.events.unsubscribe('select-address');
-          profileModal.dismiss();
-          resolve(data);
-        })
-        let profileModal = await this.modalCtrl.create({
-          component: AddressListPage,
-          componentProps: {
-            "select": true
-          }
-        });
-        await profileModal.present();
-        await this.loading.dismiss();
-        await profileModal.onDidDismiss();
-        // this.listenBarcode = true;
-      // }
-    });
-  }
+  // selectAddress() {
+  //   return new Promise(async resolve => {
+  //     // if (this.contactForm.value.state=='QUOTATION'){
+  //       this.loading = await this.loadingCtrl.create({});
+  //       await this.loading.present();
+  //       // this.avoidAlertMessage = true;
+  //       // this.listenBarcode = false;
+  //       this.events.unsubscribe('select-address');
+  //       this.events.subscribe('select-address', (data) => {
+  //         this.contactForm.patchValue({
+  //           address: data,
+  //           // address_name: data.name,
+  //         });
+  //         // this.showMap( data.latitude, data.longitude);
+  //         this.contactForm.markAsDirty();
+  //         // this.avoidAlertMessage = false;
+  //         this.events.unsubscribe('select-address');
+  //         profileModal.dismiss();
+  //         resolve(data);
+  //       })
+  //       let profileModal = await this.modalCtrl.create({
+  //         component: AddressListPage,
+  //         componentProps: {
+  //           "select": true
+  //         }
+  //       });
+  //       await profileModal.present();
+  //       await this.loading.dismiss();
+  //       await profileModal.onDidDismiss();
+  //       // this.listenBarcode = true;
+  //     // }
+  //   });
+  // }
 
   logout(){
     this.authService.logout();
@@ -278,9 +278,9 @@ export class ContactPage implements OnInit {
     }
   }
 
-  addressList(){
-    this.navCtrl.navigateForward('/address-list');
-  }
+  // addressList(){
+  //   this.navCtrl.navigateForward('/address-list');
+  // }
 
   setLanguage(lang: LanguageModel) {
     let language_to_set = this.translate.getDefaultLang();
@@ -314,8 +314,8 @@ export class ContactPage implements OnInit {
     return new Promise((resolve, reject) => {
       let contact = Object.assign({}, viewData);
       contact.docType = 'contact';
-      contact.address_id = contact.address._id;
-      delete contact.address;
+      // contact.address_id = contact.address._id;
+      // delete contact.address;
       if (contact.code != '') {
         this.pouchdbService.createDoc(contact).then(doc => {
           resolve({ doc: doc, contact: contact });
@@ -331,8 +331,8 @@ export class ContactPage implements OnInit {
   updateContact(viewData) {
     let contact = Object.assign({}, viewData);
     contact.docType = 'contact';
-    contact.address_id = contact.address._id;
-    delete contact.address;
+    // contact.address_id = contact.address._id;
+    // delete contact.address;
     return this.pouchdbService.updateDoc(contact);
   }
 
@@ -346,9 +346,9 @@ export class ContactPage implements OnInit {
     else if (this.contactForm.value.phone == null) {
       this.phone.setFocus();
     }
-    else if (this.contactForm.value.address == null) {
-      this.address.setFocus();
-    }
+    // else if (this.contactForm.value.address == null) {
+    //   this.address.setFocus();
+    // }
     else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
       this.salary.setFocus();
     }
@@ -384,9 +384,9 @@ export class ContactPage implements OnInit {
     else if (this.contactForm.value.phone == null) {
       return true;
     }
-    else if (this.contactForm.value.address == null) {
-      return true;
-    }
+    // else if (this.contactForm.value.address == null) {
+    //   return true;
+    // }
     else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
       return true;
     }

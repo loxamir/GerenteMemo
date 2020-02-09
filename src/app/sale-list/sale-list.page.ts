@@ -47,6 +47,9 @@ export class SaleListPage implements OnInit {
     this.events.subscribe('changed-sale', (change)=>{
       if (this.appliedChanges.indexOf(change.doc._id+change.doc._rev)==-1){
         this.appliedChanges.push(change.doc._id+change.doc._rev);
+        if(change.changes["0"].rev.split('-')[0] == '1'){
+          this.beep();
+        }
         this.handleChange(this.sales, change);
       }
     })
@@ -68,6 +71,12 @@ export class SaleListPage implements OnInit {
       });
       infiniteScroll.target.complete();
     }, 50);
+  }
+
+  beep() {
+    //play mp3
+    var audio = new Audio('./assets/sounds/button-14.mp3');
+    audio.play();
   }
 
   doRefresh(refresher) {
