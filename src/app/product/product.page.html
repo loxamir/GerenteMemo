@@ -5,10 +5,10 @@
     </ion-buttons>
     <ion-title>{{ 'PRODUCT' | translate }}-{{productForm.value.code}}</ion-title>
     <ion-buttons slot="end">
-      <ion-button ion-button icon-only class="more-button"
+      <!-- <ion-button ion-button icon-only class="more-button"
               (click)="enableEditMode()">
         <ion-icon name="create"></ion-icon>
-      </ion-button>
+      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -43,69 +43,64 @@
         </ion-col>
       </ion-row>
 
-      <!-- <h1
-      *ngIf="productForm.value.sizes.length"
-      style="background: white;font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: #3773e8;">
-        {{'SELECT_SIZE'| translate}}
-      </h1> -->
-      <!-- <div class="scrolling-wrapper-flexbox" style="background: white;">
+      <ion-item class="ion-no-padding" (click)="selectCategory()" class="field-100">
+        <h4 class="field-label">{{'CATEGORY' | translate }}</h4>
+        <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'SELECT'|translate}}</h4>
+      </ion-item>
+
+      <ion-item class="field-100">
+        <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
+        <ion-input type="number" formControlName="price"></ion-input>
+      </ion-item>
+
+
+      <ion-row>
+        <ion-col>
+          <ion-button class="button-100" (click)="addSize()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>{{ 'ADD_SIZE' | translate }}</ion-button>
+        </ion-col>
+      </ion-row>
+      <div class="scrolling-wrapper-flexbox2" style="background: white;">
         <div class="card" *ngFor="let item of productForm.value.sizes" >
-          <div
-          style="padding: 5px">
+          <ion-item-sliding class="list-item"  #slidingItem>
+            <ion-item class="ion-no-padding" style="--background: white;">
+          <!-- <div
+          style="padding: 5px"> -->
             <ion-card class="list-card"
-            [class.selected]="item.name == productForm.value.size"
-            (click)="selectSize(item)"
-            >
+            style="border: 1px solid #8ebbf3;"
+            (click)="editSize(item)">
               <ion-row>
                 <ion-col style="color: #ff1919;font-weight:bold;text-align:center;">
                   {{item.name}}
                 </ion-col>
               </ion-row>
               <ion-row>
-                <ion-col style="color: black;font-weight:bold">
+                <ion-col style="color: black;font-weight:bold;text-align:center;">
                   Gs {{item.price|number:'1.0-0'}}
                 </ion-col>
               </ion-row>
             </ion-card>
-          </div>
+          <!-- </div> -->
+        </ion-item>
+          <ion-item-options>
+            <ion-item-option (click)="deleteSize(item, slidingItem)">
+              {{ 'DELETE'| translate }}
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
         </div>
-      </div> -->
-
-
-    <!-- <ion-row style="background-color: white;">
-      <ion-col size="3">
-        <ion-button class="quantity-button" (click)="remItem()">-</ion-button>
-      </ion-col>
-      <ion-col size="6" style="text-align: center;font-size: 20px;margin-top: 8px;">
-        {{this.productForm.value.quantity}}
-      </ion-col>
-      <ion-col size="3">
-        <ion-button class="quantity-button" (click)="sumItem()">+</ion-button>
+      </div>
+    <ion-row>
+      <ion-col>
+        <ion-button class="button-100" (click)="addProduct()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>{{ 'ADD_RELATED_PRODUCT' | translate }}</ion-button>
       </ion-col>
     </ion-row>
-    <ion-item style="--background: white;">
-        <h4 class="field-label-col">{{'SUBTOTAL' | translate}}</h4>
-        <h4 class="field-value-col-2" style="color:blue">{{this.productForm.value.quantity*this.productForm.value.price|number}} G$</h4>
-    </ion-item>
-    <ion-item class="field-100">
-      <ion-label position="floating">{{'OBSERVATION' | translate}}</ion-label>
-      <ion-input type="text" formControlName="note" placeholder="Ejemplo: Sin cebolla"></ion-input>
-    </ion-item> -->
-    <!-- <ion-button class="button-100" (click)="askProduct()">
-      {{'ADD_TO_ORDER'|translate}}
-    </ion-button> -->
-
-    <h1
-    style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: #3773e8;"
-    *ngIf="productForm.value.products.length"
-    class="ion-no-padding">
-      Quizas tambien quieras pedir
-    </h1>
-    <div class="scrolling-wrapper-flexbox" *ngIf="productForm.value.products.length">
+    <div class="scrolling-wrapper-flexbox2" *ngIf="productForm.value.products.length">
       <div class="card" *ngFor="let item of productForm.value.products; let i = index;">
-        <ion-row>
+        <ion-item-sliding class="list-item"  #slidingItem>
+          <ion-item class="ion-no-padding" style="--background: white;">
+
           <ion-card class="list-card" style="width: 180px;display: inline-block;border: 1px solid #8ebbf3;">
-          <ion-row  (click)="selectProduct(item)">
+          <ion-row>
             <ion-col size="4">
               <img style="height: 50px;width: auto;border-radius: 5px;"
               [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
@@ -124,13 +119,6 @@
                   <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
                 </ion-col>
               </ion-row>
-              <!-- <ion-row class="ion-no-padding content-row one-line">
-                <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
-                  <ion-button style="height: 15px;">
-                    Adicionar
-                  </ion-button>
-                </ion-col>
-              </ion-row> -->
             </ion-col>
           </ion-row>
           <ion-row>
@@ -141,142 +129,24 @@
             </ion-col>
           </ion-row>
         </ion-card>
-        </ion-row>
+        <!-- </ion-row> -->
+      </ion-item>
+        <ion-item-options>
+          <ion-item-option (click)="deleteProduct(item, slidingItem)">
+            {{ 'DELETE'| translate }}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
       </div>
     </div>
-    <ion-item class="field-100">
-      <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
-      <ion-input type="number" formControlName="price"></ion-input>
-    </ion-item>
 
-
-
-
-
-    <ion-row>
-    <div *ngIf="editMode">
-      <!-- <ion-item class="field-100">
-        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
-        <ion-input type="text" formControlName="name"></ion-input>
-      </ion-item> -->
-    <ion-row>
-      <ion-col>
-        <ion-button class="button-100" (click)="addOption()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>{{ 'ADD_OPTION' | translate }}</ion-button>
-      </ion-col>
-    </ion-row>
-      <ion-list no-lines>
-        <ion-item-sliding class="list-item" *ngFor="let item of productForm.value.sizes" #slidingItem>
-          <ion-item class="ion-no-padding" style="background-color: #ddd">
-          <ion-card class="list-card">
-
-            <ion-row>
-              <ion-col (click)="editOption(item)">
-                <ion-row class="producto">
-                  <ion-col class="ion-no-padding">
-                    <h3 class="item-title"><b>{{ item.name }}</b></h3>
-                  </ion-col>
-                </ion-row>
-                <ion-row class="ion-no-padding content-row one-line">
-                  <ion-col class="item-content" style="white-space: normal;">
-                    <!-- {{item.description}} -->
-                  </ion-col>
-                  <ion-col class="ion-no-padding" size="6" style="text-align: right; margin-right: 0.5em;">
-                    <h2 class="list-big-number" style="color: green;">{{item.price| number:'1.'+currency_precision}} G$</h2>
-                  </ion-col>
-                </ion-row>
-              </ion-col>
-            </ion-row>
-
-          </ion-card>
-        </ion-item>
-          <ion-item-options>
-            <ion-item-option (click)="deleteSize(item, slidingItem)">
-              {{ 'DELETE'| translate }}
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ion-list>
-
-
-      <ion-row>
-        <ion-col>
-          <ion-button class="button-100" (click)="addProduct()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>{{ 'ADD_RELATED_PRODUCT' | translate }}</ion-button>
-        </ion-col>
-      </ion-row>
-        <!-- <ion-list no-lines>
-          <ion-item-sliding class="list-item" *ngFor="let item of productForm.value.products" #slidingItem>
-            <ion-item class="ion-no-padding" style="background-color: #ddd">
-            <ion-card class="list-card">
-
-              <ion-row>
-                <ion-thumbnail style="--border-radius:10px;">
-                    <img [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
-                    *ngIf="item._attachments && item._attachments['avatar.png']">
-                    <img src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
-                  </ion-thumbnail>
-                <ion-col>
-                  <ion-row (click)="selectProduct(item)" class="producto">
-                    <ion-col class="ion-no-padding">
-                      <h3 class="item-title"><b>{{ item.name }}</b></h3>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row class="ion-no-padding content-row one-line" (click)="selectProduct(item)">
-                    <ion-col class="item-content" style="white-space: normal;">
-                      {{item.description}}
-                    </ion-col>
-                    <ion-col class="ion-no-padding" size="6" style="text-align: right; margin-right: 0.5em;" (click)="selectProduct(item)">
-                      <h2 class="list-big-number" style="color: green;">{{item.price| number:'1.'+currency_precision}} G$</h2>
-                    </ion-col>
-                  </ion-row>
-                </ion-col>
-              </ion-row>
-
-            </ion-card>
-          </ion-item>
-            <ion-item-options>
-              <ion-item-option (click)="deleteProduct(item, slidingItem)">
-                {{ 'DELETE'| translate }}
-              </ion-item-option>
-            </ion-item-options>
-          </ion-item-sliding>
-        </ion-list> -->
-      <!-- <ion-item class="field-100">
-        <ion-label position="floating">{{'Ingredientes' | translate}}</ion-label>
-        <ion-input type="text" formControlName="description"></ion-input>
-      </ion-item> -->
-      <!-- <ion-item class="field-100">
-        <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
-        <ion-input type="number" formControlName="price"></ion-input>
-      </ion-item> -->
-    </div>
-  </ion-row>
   </form>
-  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="productForm.dirty && editMode">
-    <ion-button (click)="buttonSave()"  color="success">
-      <ion-icon name="save"> </ion-icon>
-      {{ 'SAVE'| translate }}
-    </ion-button>
-  </ion-fab>
-
-  <ion-button class="button-50" style="background: yellow" (click)="askProduct()">
-    {{'Seguir Comprando'|translate}}
-  </ion-button>
-  <ion-button class="button-50" (click)="askProduct()">
-    {{'ADD_TO_ORDER'|translate}}
-  </ion-button> -->
 
 
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed" *ngIf="!editMode">
-    <ion-button (click)="buttonSave()"  color="danger" style="font-size: 10px;--ion-color-base: #FFEB3B !important;--ion-color-contrast: black !important;">
-      <!-- <ion-icon name="close"> </ion-icon> -->
-      {{ 'Seguir Comprando'| translate }}
-    </ion-button>
-  </ion-fab>
-
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!editMode">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-button (click)="buttonSave()"  color="success" style="font-size: 10px;">
-      <!-- <ion-icon name="cart"> </ion-icon> -->
-      {{'ADD_TO_ORDER'|translate}}
+      <ion-icon name="save"> </ion-icon>
+      {{'SAVE'|translate}}
     </ion-button>
   </ion-fab>
   <div style="height: 100px;">

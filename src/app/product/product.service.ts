@@ -147,9 +147,10 @@ export class ProductService {
     }
     product.related_products = [];
     product.products.forEach(item => {
+      console.log("producttt", product);
       product.related_products.push({
-        product_id: item.product_id || item.product._id,
-        product_name: item.product.name || item.product_name,
+        product_id: item._id || item.product_id,
+        product_name: item.name || item.product_name,
       })
     });
     delete product.products;

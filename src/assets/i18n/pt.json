@@ -441,5 +441,7 @@
   "ADD_TO_ORDER": "Adicionar ao Pedido",
   "LOADING_PRODUCTS": "Carregando Produtos...",
   "SELECT_SIZE": "Selecione um tamanho",
+  "ADD_SIZE": "Adicionar tamanho",
+  "ADD_RELATED_PRODUCT": "Adicionar produto relacionado",
   "RESULT": "Resultado"
 }

@@ -51,6 +51,7 @@ export class ProductCategoryPage implements OnInit {
       image: new FormControl(''),
       note: new FormControl(''),
       _id: new FormControl(''),
+      _attachments: new FormControl(),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
       write_user: new FormControl(''),

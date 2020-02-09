@@ -146,6 +146,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         products: new FormControl([]),
         sizes: new FormControl([]),
         size: new FormControl(),
+        _attachments: new FormControl(),
         description: new FormControl(''),
       });
 
@@ -752,16 +753,18 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       await profileModal.onDidDismiss();
     }
 
-    async addOption(){
+    async addSize(){
       let prompt = await this.alertCtrl.create({
-        header: this.translate.instant('PRODUCT_PRICE'),
-        message: this.translate.instant('WHAT_PRODUCT_PRICE'),
+        header: this.translate.instant('PRODUCT_SIZE'),
+        message: this.translate.instant('WHAT_PRODUCT_SIZE'),
         inputs: [
           {
+            placeholder: "Nombre",
             type: 'text',
             name: 'name'
         },
         {
+          placeholder: "Precio",
           type: 'number',
           name: 'price',
         },
@@ -786,17 +789,19 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       prompt.present();
     }
 
-    async editOption(item){
+    async editSize(item){
       let prompt = await this.alertCtrl.create({
-        header: this.translate.instant('PRODUCT_PRICE'),
-        message: this.translate.instant('WHAT_PRODUCT_PRICE'),
+        header: this.translate.instant('PRODUCT_SIZE'),
+        message: this.translate.instant('WHAT_PRODUCT_SIZE'),
         inputs: [
           {
+            placeholder: "Nombre",
             type: 'text',
             name: 'name',
             value: item.name
         },
         {
+          placeholder: "Precio",
           type: 'number',
           name: 'price',
           value: item.price

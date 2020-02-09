@@ -114,6 +114,7 @@ export class ConfigPage implements OnInit {
       invoice_template: [''],
       invoicePrint: [{}],
       ticketPrint: [{}],
+      _attachments: undefined,
       users: [],
       _id: [''],
     });
@@ -735,21 +736,6 @@ export class ConfigPage implements OnInit {
     let index = this.configForm.value.products.indexOf(item);
     this.configForm.value.products.splice(index, 1);
     this.configForm.markAsDirty();
-  }
-
-  deleteCategory(item, slidingItem){
-    slidingItem.close();
-    let index = this.configForm.value.categories.indexOf(item);
-    this.configForm.value.categories.splice(index, 1);
-    this.configForm.markAsDirty();
-  }
-
-  flipProducts(){
-    this.showProducts = !this.showProducts;
-  }
-
-  flipCategories(){
-    this.showCategories = !this.showCategories;
   }
 
 }

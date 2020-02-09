@@ -440,5 +440,7 @@
   "SEARCH_ORDER": "Buscar Pedido",
   "ADD_TO_ORDER": "Agregar al Pedido",
   "LOADING_PRODUCTS": "Cargando Productos...",
+  "ADD_SIZE": "Agregar tamaño",
+  "ADD_RELATED_PRODUCT": "Agregar producto relacionado",
   "RESULT": "Resultado"
 }
