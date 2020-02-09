@@ -4,9 +4,11 @@
       <!-- <ion-thumbnail style="--border-radius:10px;"> -->
       <ion-row *ngIf="!select">
         <ion-col class="ion-no-padding">
-          <img style="height: 88px;width: 234px;" [src]="'data:image/png;base64,'+config._attachments['logo.png'].data"
+          <img style="height: 88px;width: 234px;"
+          [src]="'data:image/png;base64,'+config._attachments['logo.png'].data"
           *ngIf="config._attachments && config._attachments['logo.png']">
-          <img style="height: 88px;width: 234px;" src="./assets/images/sem_foto.jpg"
+          <img style="height: 88px;width: 234px;"
+          src="./assets/images/sem_foto.jpg"
           *ngIf="!(config._attachments && config._attachments['logo.png'])">
         </ion-col>
         <ion-col size="3" (click)="presentPopover($event)" *ngIf="logged">
@@ -34,7 +36,7 @@
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col style="text-align: center;font-size: 12px;" class="ion-no-padding" >
+            <ion-col style="text-align: right;font-size: 12px;" class="ion-no-padding" >
                 <ion-button (click)="login()">
                   <ion-icon name="logo-facebook" style="font-size:25px"></ion-icon>
                   <div style="padding: 5px;">
@@ -67,7 +69,7 @@
         </ion-button> -->
     </ion-buttons>
     <ion-row>
-      <ion-col *ngIf="category_id!='all'"
+      <ion-col *ngIf="category_id!='all'||searchTerm"
       size="1.5"
       class="ion-no-padding"
       (click)="goBack()"
@@ -99,16 +101,17 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <h1
-  style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;"
-  *ngIf="!select && !searchTerm && category_id=='all'"
+  style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 8px;margin-bottom: 5px;color: white;"
+  *ngIf="!select && !searchTerm && category_id=='all' && promoted_products.length"
   class="ion-no-padding">
     Algunas recomendaciones para ti
   </h1>
-  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all'">
+  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all' && promoted_products.length">
     <div class="card" *ngFor="let item of promoted_products; let i = index;">
       <ion-row>
-        <ion-card class="list-card" style="width: 180px;display: inline-block;">
-        <ion-row  (click)="selectProduct(item)">
+        <ion-card class="list-card" style="width: 180px;display: inline-block;"
+        (click)="selectProduct(item)">
+        <ion-row >
           <ion-col size="4">
             <img style="height: 50px;width: auto;border-radius: 5px;"
             [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
@@ -147,8 +150,9 @@
       </ion-card>
       </ion-row>
       <ion-row *ngIf="promoted_products2[i]">
-        <ion-card class="list-card" style="width: 180px;display: inline-block;">
-        <ion-row  (click)="selectProduct(promoted_products2[i])">
+        <ion-card class="list-card" style="width: 180px;display: inline-block;"
+          (click)="selectProduct(promoted_products2[i])">
+        <ion-row>
           <ion-col size="4">
             <img style="height: 50px;width: auto;border-radius: 5px;"
             [src]="'data:image/png;base64,'+promoted_products2[i]._attachments['avatar.png'].data"
@@ -187,12 +191,12 @@
       </ion-row>
     </div>
   </div>
-  <h1 *ngIf="!select && !searchTerm && category_id=='all'"
-  style="font-style: italic;font-weight: bold;font-size: 25px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;">
+  <h1 *ngIf="!select && !searchTerm && category_id=='all' && categories.length"
+  style="font-style: italic;font-weight: bold;font-size: 25px;text-align:center;margin-top: 5px;margin-bottom: 10px;color: white;">
     {{'CATEGORIES'| translate}}
   </h1>
-  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all'">
-    <div class="card" style="margin-left: 5px;margin-right:5px;" *ngFor="let item of promoted_categories">
+  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all' && categories.length">
+    <div class="card" style="margin-left: 5px;margin-right:5px;" *ngFor="let item of categories">
         <ion-card class="list-card"
         style="height: 120px;margin:0px"
         (click)="filterCategory(item)">
@@ -216,16 +220,17 @@
   </div>
 
   <h1
-  style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: white;"
+  style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 10px;margin-bottom: 5px;color: white;"
   *ngIf="!select && !searchTerm && category_id=='all'"
   class="ion-no-padding">
     Todos Productos
   </h1>
-  <div class="scrolling-wrapper-flexbox2" *ngIf="!select && !searchTerm && category_id=='all'">
+  <div class="scrolling-wrapper-flexbox2">
     <div class="card" *ngFor="let item of products; let i = index;">
       <ion-row>
-        <ion-card class="list-card" style="display: inline-block;">
-        <ion-row  (click)="selectProduct(item)">
+        <ion-card class="list-card" style="display: inline-block;"
+         (click)="selectProduct(item)">
+        <ion-row>
           <ion-col size="4">
             <img style="height: 50px;width: auto;border-radius: 5px;"
             [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
@@ -269,7 +274,7 @@
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <ion-row *ngIf="products.length==0">
+  <ion-row *ngIf="products.length==0&&category_id=='all'">
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
       <ion-row>
         <ion-col>

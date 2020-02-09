@@ -32,7 +32,7 @@ export class ProductListPage implements OnInit {
   editMode = false;
   promoted_products = [];
   promoted_products2 = [];
-  promoted_categories = [];
+  categories = [];
   config = {};
 
   amount: number = 0;
@@ -225,9 +225,6 @@ export class ProductListPage implements OnInit {
     config.promoted_products.forEach(product=>{
       getList.push(product.product_id);
     })
-    config.promoted_categories.forEach(category=>{
-      getList.push(category.category_id);
-    })
     let docList:any = await this.pouchdbService.getList(getList, true);
     var doc_dict = {};
     docList.forEach(row=>{
@@ -243,11 +240,8 @@ export class ProductListPage implements OnInit {
         first = true;
       }
     })
-    config.promoted_categories.forEach(category=>{
-      this.promoted_categories.push(doc_dict[category.category_id] || {});
-    })
-    // this.promoted_products = config.products;
-    // this.promoted_categories = config.categories;
+    let categories:any = await this.pouchdbService.searchDocTypeData('category');
+    this.categories = categories;
   }
 
   setFilteredItems() {
@@ -255,13 +249,7 @@ export class ProductListPage implements OnInit {
       this.getProductsPage(
         this.searchTerm, 0, this.category_id
       ).then(async (products: any[]) => {
-        if (this.category_id == 'all') {
-          this.products = products;
-        }
-        else {
-          this.products = products.filter(word => word.category_id == this.category_id);
-        }
-        this.page = 1;
+        this.products = products;
         await this.loading.dismiss();
         resolve(true);
       });
@@ -365,13 +353,13 @@ export class ProductListPage implements OnInit {
     }
   }
 
-  getProductsPage(keyword, page, type = 'all') {
+  getProductsPage(keyword, page, category_id = 'all') {
     return new Promise(async (resolve, reject) => {
       let products: any;
-      if (type == 'all') {
+      if (category_id == 'all') {
         products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase');
       } else {
-        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', type, 'name', 'increase')
+        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', category_id, 'name', 'increase')
       }
       // await this.formatService.asyncForEach(products, async (product: any)=>{
       //   let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
@@ -455,6 +443,7 @@ export class ProductListPage implements OnInit {
     }
 
     goBack(){
+      this.searchTerm = "";
       this.category_id = 'all';
       this.setFilteredItems();
     }
