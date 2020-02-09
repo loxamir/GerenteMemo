@@ -4,7 +4,7 @@ import {
   NavParams
 } from '@ionic/angular';
 import 'rxjs/Rx';
-import { File } from '@ionic-native/file/ngx';
+// import { File } from '@ionic-native/file/ngx';
 import { SalePage } from '../sale/sale.page';
 // import { SalesService } from './sales.service';
 import { SalesPopover } from './sale-list.popover';
@@ -39,7 +39,7 @@ export class SaleListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public events:Events,
     public route: ActivatedRoute,
-    public file: File,
+    // public file: File,
     public pouchdbService: PouchdbService,
     public languageService: LanguageService,
     public translate: TranslateService,
@@ -47,7 +47,8 @@ export class SaleListPage implements OnInit {
     this.events.subscribe('changed-sale', (change)=>{
       if (this.appliedChanges.indexOf(change.doc._id+change.doc._rev)==-1){
         this.appliedChanges.push(change.doc._id+change.doc._rev);
-        if(change.changes["0"].rev.split('-')[0] == '1'){
+        console.log("change", change);
+        if(change.doc.status=='WAITING'){
           this.beep();
         }
         this.handleChange(this.sales, change);
