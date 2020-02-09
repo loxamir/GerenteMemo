@@ -17,14 +17,14 @@ export class ContactService {
     return new Promise((resolve, reject)=>{
       this.pouchdbService.getDoc(doc_id, true).then(((pouchData: any) => {
         let getList = [
-          pouchData['address_id'],
+          // pouchData['address_id'],
         ];
         this.pouchdbService.getList(getList).then((docs: any[])=>{
           var doc_dict = {};
           docs.forEach(row=>{
             doc_dict[row.id] = row.doc;
           })
-          pouchData.address = doc_dict[pouchData.address_id] || {};
+          // pouchData.address = doc_dict[pouchData.address_id] || {};
           if (pouchData._attachments && pouchData._attachments['profile.png']) {
             let profile = pouchData._attachments['profile.png'].data;
             pouchData.image = "data:image/png;base64," + profile;
@@ -40,6 +40,7 @@ export class ContactService {
   createContact(contact){
     return new Promise((resolve, reject)=>{
       contact.docType = 'contact';
+      delete contact.image;
       if (contact.code != ''){
         // console.log("sin code", contact.code);
         this.pouchdbService.createDoc(contact).then(doc => {
@@ -58,6 +59,7 @@ export class ContactService {
 
   updateContact(contact){
     contact.docType = 'contact';
+    delete contact.image;
     return this.pouchdbService.updateDoc(contact);
   }
 

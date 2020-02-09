@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/product-list"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/contact-list"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'MY_PROFILE'| translate }}</ion-title>
   </ion-toolbar>
@@ -67,9 +67,9 @@
         <ion-input #name_legal type="text" formControlName="name_legal"></ion-input>
       </ion-item>
  -->
-      <ion-button class="button-100" (click)="logout()">
+      <!-- <ion-button class="button-100" (click)="logout()">
         {{'LOGOUT'|translate}}
-      </ion-button>
+      </ion-button> -->
     <!-- </ion-row> -->
   </form>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="contactForm.dirty">

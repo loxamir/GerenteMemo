@@ -49,7 +49,7 @@ export class SalesPopover {
     this.pop.dismiss();
   }
   products() {
-    this.navCtrl.navigateForward(['/product-list', {}]);
+    this.navCtrl.navigateForward(['/tabs/product-list', {}]);
     this.pop.dismiss();
   }
   receivable() {

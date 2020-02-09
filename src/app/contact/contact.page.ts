@@ -89,6 +89,7 @@ export class ContactPage implements OnInit {
       fixed: new FormControl(false),
       image: new FormControl(''),
       _id: new FormControl(''),
+      _attachments: new FormControl(),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
       write_user: new FormControl(''),
@@ -101,11 +102,6 @@ export class ContactPage implements OnInit {
     await this.loading.present();
 
 
-    this.authService.loggedIn.subscribe(async status => {
-      console.log("estado", status);
-      if (status) {
-        let data = await this.authService.getData();
-        this._id = "contact."+data.currentUser.email;
         if (this._id) {
           this.contactService.getContact(this._id).then((data) => {
             this.contactForm.patchValue(data);
@@ -130,16 +126,12 @@ export class ContactPage implements OnInit {
           // if (data.address.latitude && data.address.longitude){
           //   this.showMap( data.address.latitude, data.address.longitude);
           // }
-          this.loading.dismiss();
-        })
+              this.loading.dismiss();
+            })
           });
         } else {
           this.loading.dismiss();
         }
-      } else {
-        this.loading.dismiss();
-      }
-    });
   }
 
   // showMap(latitude, longitude){
