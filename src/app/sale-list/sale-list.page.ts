@@ -48,7 +48,7 @@ export class SaleListPage implements OnInit {
       if (this.appliedChanges.indexOf(change.doc._id+change.doc._rev)==-1){
         this.appliedChanges.push(change.doc._id+change.doc._rev);
         console.log("change", change);
-        if(change.doc.status=='WAITING'){
+        if(change.doc.status=='WAITING' && change.doc.state=='CONFIRMED'){
           this.beep();
         }
         this.handleChange(this.sales, change);
