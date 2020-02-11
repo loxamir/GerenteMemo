@@ -809,7 +809,7 @@ export class SalePage implements OnInit {
     }
 
     remItem(item) {
-      if (this.saleForm.value.state=='QUOTATION'){
+      if (this.saleForm.value.state=='QUOTATION'&&item.quantity>1){
         item.quantity = parseFloat(item.quantity)-1;
         this.recomputeValues();
         this.saleForm.markAsDirty();
@@ -1968,5 +1968,29 @@ export class SalePage implements OnInit {
         this.saleForm.markAsPristine();
         this.navCtrl.navigateBack('/tabs/sale-list');
       }
+    }
+
+    async cancelQuotation(){
+      let alertPopup = await this.alertCtrl.create({
+        header: this.translate.instant('CANCEL_ORDER'),
+        message: this.translate.instant('SURE_CANCEL_ORDER'),
+          buttons: [{
+                  text: this.translate.instant('YES'),
+                  handler: async () => {
+                    alertPopup.present();
+                    let doc:any = await this.pouchdbService.getDoc(this._id);
+                    this.pouchdbService.deleteDoc(doc);
+                    this.exitPage();
+                  }
+              },
+              {
+                  text: this.translate.instant('NO'),
+                  handler: () => {
+                      // need to do something if the user stays?
+                  }
+              }]
+      });
+      // Show the alert
+      alertPopup.present();
     }
 }

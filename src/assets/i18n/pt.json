@@ -444,5 +444,7 @@
   "ADD_SIZE": "Adicionar tamanho",
   "ADD_RELATED_PRODUCT": "Adicionar produto relacionado",
   "DELIVERY": "Entrega",
+  "CANCEL_ORDER": "Cancelar Pedido",
+  "SURE_CANCEL_ORDER": "Tem certeza que deseja cancelar este pedido?",
   "RESULT": "Resultado"
 }

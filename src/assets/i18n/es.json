@@ -442,6 +442,8 @@
   "LOADING_PRODUCTS": "Cargando Productos...",
   "ADD_SIZE": "Agregar tamaño",
   "ADD_RELATED_PRODUCT": "Agregar producto relacionado",
-    "DELIVERY": "Entrega",
+  "DELIVERY": "Entrega",
+  "CANCEL_ORDER": "Cancelar Pedido",
+  "SURE_CANCEL_ORDER": "Estas seguro que deseas cancelar este pedido?",
   "RESULT": "Resultado"
 }
