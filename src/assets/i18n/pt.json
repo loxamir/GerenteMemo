@@ -441,5 +441,7 @@
   "ADD_TO_ORDER": "Adicionar ao Pedido",
   "LOADING_PRODUCTS": "Carregando Produtos...",
   "SELECT_SIZE": "Selecione um tamanho",
+  "CANCEL_ORDER": "Cancelar Pedido",
+  "SURE_CANCEL_ORDER": "Tem certeza que deseja cancelar este pedido?",
   "RESULT": "Resultado"
 }

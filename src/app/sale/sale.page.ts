@@ -1969,4 +1969,28 @@ export class SalePage implements OnInit {
         this.navCtrl.navigateBack('/sale-list');
       }
     }
+
+    async cancelQuotation(){
+      let alertPopup = await this.alertCtrl.create({
+        header: this.translate.instant('CANCEL_ORDER'),
+        message: this.translate.instant('SURE_CANCEL_ORDER'),
+          buttons: [{
+                  text: this.translate.instant('YES'),
+                  handler: async () => {
+                    alertPopup.present();
+                    let doc:any = await this.pouchdbService.getDoc(this._id);
+                    this.pouchdbService.deleteDoc(doc);
+                    this.exitPage();
+                  }
+              },
+              {
+                  text: this.translate.instant('NO'),
+                  handler: () => {
+                      // need to do something if the user stays?
+                  }
+              }]
+      });
+      // Show the alert
+      alertPopup.present();
+    }
 }

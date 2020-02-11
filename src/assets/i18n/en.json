@@ -438,5 +438,7 @@
   "ADD_TO_ORDER": "Add to Order",
   "LOADING_PRODUCTS": "Loading Products",
   "SELECT_SIZE": "Select a size",
+  "CANCEL_ORDER": "Cancel Order",
+  "SURE_CANCEL_ORDER": "You really want cancel this order?",
   "RESULT": "Result"
 }
