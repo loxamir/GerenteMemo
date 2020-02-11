@@ -253,9 +253,9 @@ export class ProductListPage implements OnInit {
     return new Promise(async (resolve, reject) => {
       let products: any;
       if (type == 'all') {
-        products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase');
+        products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase', 30);
       } else {
-        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', type, 'name', 'increase')
+        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', type, 'name', 'increase', 30)
       }
       // await this.formatService.asyncForEach(products, async (product: any)=>{
       //   let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,

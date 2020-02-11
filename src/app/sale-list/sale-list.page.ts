@@ -163,7 +163,10 @@ export class SaleListPage implements OnInit {
         'sale',
         keyword,
         page,
-        "contact_name"
+        "contact_name",
+        null, 'date',
+        'decrease',
+        30
       ).then((sales: any[]) => {
         resolve(sales);
       });

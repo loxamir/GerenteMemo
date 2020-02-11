@@ -467,11 +467,11 @@ export class PouchdbService {
 
   searchDocTypeData(
     docType, keyword="", page=null, field=null, filter=null, sort='date',
-    direction='decrease'
+    direction='decrease', pageItems=15
   ) {
     return new Promise((resolve, reject)=>{
-      let start = page*15;
-      let end = (page+1)*15;
+      let start = page*pageItems;
+      let end = (page+1)*pageItems;
       if (page == null){
         start = undefined;
         end = undefined;
@@ -518,12 +518,12 @@ export class PouchdbService {
 
   searchDocTypeDataField(
     docType, keyword="", page=null, field=null, field_value="", sort='date',
-    direction='decrease'
+    direction='decrease', pageItems=15
   ) {
     return new Promise((resolve, reject)=>{
       let self = this;
-      let start = page*15;
-      let end = (page+1)*15;
+      let start = page*pageItems;
+      let end = (page+1)*pageItems;
       if (page == null){
         start = undefined;
         end = undefined;

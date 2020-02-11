@@ -98,7 +98,7 @@ export class ContactListPage implements OnInit {
   getContactsPage(keyword, page, field=''){
     return new Promise(resolve => {
       this.pouchdbService.searchDocTypeData(
-        'contact', keyword, page, "document", field, 'name', 'increase'
+        'contact', keyword, page, "document", field, 'name', 'increase', 30
       ).then((contacts: any[]) => {
         resolve(contacts);
       });
