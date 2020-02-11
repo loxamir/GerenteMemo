@@ -182,7 +182,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
                   "fixed": true,
                   "create_user": "",
                   "create_time": "",
-                  "write_user": "larica",
+                  "write_user": "laroca",
                   "write_time": "2020-01-14T20:48:52.405Z",
                   "docType": "contact",
                   "_attachments": {
