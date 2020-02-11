@@ -76,6 +76,7 @@ export class ProductListPage implements OnInit {
   }
 
   async ngOnInit() {
+    console.log("v0.0.6");
     let language:any = await this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang(language);
     this.translate.use(language);
@@ -92,8 +93,54 @@ export class ProductListPage implements OnInit {
         let data = await this.authService.getData();
         this.contact_id = "contact."+data.currentUser.email;
         let contact:any = await this.pouchdbService.getDoc(this.contact_id, true);
+
+        if (JSON.stringify(contact) == "{}"){
+          this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
+            let createdDoc = await this.pouchdbService.createDoc({
+              "_id": "contact."+data.currentUser.email,
+              "name": data.currentUser.displayName,
+              "name_legal": null,
+              "address": "",
+              "phone": "",
+              "document": "",
+              "code": "#3",
+              "section": "salary",
+              "email": data.currentUser.email,
+              "note": "",
+              "customer": true,
+              "supplier": true,
+              "seller": false,
+              "employee": false,
+              "user": false,
+              "user_details": {},
+              "salary": null,
+              "currency": {},
+              "hire_date": null,
+              "salaries": [],
+              "advances": [],
+              "fixed": true,
+              "create_user": "",
+              "create_time": "",
+              "write_user": "larica",
+              "write_time": "2020-01-14T20:48:52.405Z",
+              "docType": "contact",
+              "_attachments": {
+              "profile.png": {
+                "content_type": "image/png",
+                "data": base64image
+              }
+            },
+          })
+          this.contact = createdDoc;
+          console.log("create contact", createdDoc);
+        });
+      } else {
+        console.log("logged contact", contact);
         this.contact = contact;
-        this.contact_name = data.currentUser.displayName;
+      }
+      this.contact_name = data.currentUser.displayName;
+
+
         this.loading.dismiss();
         let order: any = await this.pouchdbService.searchDocTypeData('sale',"",0);
         if (order[0]){
@@ -460,7 +507,100 @@ export class ProductListPage implements OnInit {
       profileModal.present();
     }
 
-    login(){
-      this.authService.login();
+    getBase64Image(imgUrl, callback) {
+      var img = new Image();
+      // onload fires when the image is fully loadded, and has width and height
+      img.onload = function(){
+        var canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        var dataURL = canvas.toDataURL("image/png"),
+            dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+        callback(dataURL); // the base64 string
+      };
+      // set attributes and src
+      img.setAttribute('crossOrigin', 'anonymous'); //
+      img.src = imgUrl;
+    }
+
+    async login(){
+      let teste = await this.authService.login();
+      console.log("teste", teste);
+      this.authService.loggedIn.subscribe(async status => {
+        console.log("status", status);
+        if (status) {
+          this.logged = true;
+          let data = await this.authService.getData();
+          this.contact_id = "contact."+data.currentUser.email;
+          let contact:any = await this.pouchdbService.getDoc(this.contact_id, true);
+
+          if (JSON.stringify(contact) == "{}"){
+            this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
+              let createdDoc = await this.pouchdbService.createDoc({
+                "_id": "contact."+data.currentUser.email,
+                "name": data.currentUser.displayName,
+                "name_legal": null,
+                "address": "",
+                "phone": "",
+                "document": "",
+                "code": "#3",
+                "section": "salary",
+                "email": data.currentUser.email,
+                "note": "",
+                "customer": true,
+                "supplier": true,
+                "seller": false,
+                "employee": false,
+                "user": false,
+                "user_details": {},
+                "salary": null,
+                "currency": {},
+                "hire_date": null,
+                "salaries": [],
+                "advances": [],
+                "fixed": true,
+                "create_user": "",
+                "create_time": "",
+                "write_user": "larica",
+                "write_time": "2020-01-14T20:48:52.405Z",
+                "docType": "contact",
+                "_attachments": {
+                "profile.png": {
+                  "content_type": "image/png",
+                  "data": base64image
+                }
+              },
+            })
+            this.contact = createdDoc;
+            console.log("create contact", createdDoc);
+          });
+        } else {
+          console.log("logged contact", contact);
+          this.contact = contact;
+        }
+        this.contact_name = data.currentUser.displayName;
+
+
+          this.loading.dismiss();
+
+          this.events.subscribe('changed-sale', (data) => {
+            if (data.deleted){
+              this.order = undefined;
+            } else {
+              if (data.doc.state == 'QUOTATION' || data.doc.state == 'CONFIRMED'){
+                this.order = data.doc;
+              } else if (data.doc.state == 'PAID'){
+                this.order = undefined;
+              }
+            }
+          })
+        } else {
+          this.logged = false;
+          this.loading.dismiss();
+        }
+      });
+
     }
 }
