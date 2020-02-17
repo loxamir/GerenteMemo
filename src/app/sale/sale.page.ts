@@ -3,44 +3,16 @@ import { NavController,  LoadingController, Platform, AlertController, Events, T
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { ActivatedRoute, Router } from '@angular/router';
-//import { DecimalPipe } from '@angular/common';
-import { Printer } from '@ionic-native/printer/ngx';
-// import { File } from '@ionic-native/file/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-// import { ImagePicker } from '@ionic-native/image-picker';
-// import { Crop } from '@ionic-native/crop';
 import { SaleService } from './sale.service';
-// import { ContactListPage } from '../contact-list/contact-list.page';
-//import { SaleItemPage } from '../sale-item/sale-item';
-//import { CashMovePage } from '../cash/move/cash-move';
-import { ProductService } from '../product/product.service';
-//import { SalesPage } from '../sales/sales';
-import { ProductListPage } from '../product-list/product-list.page';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 import { AddressListPage } from '../address-list/address-list.page';
-// import { PlannedService } from '../planned/planned.service';
 import { ConfigService } from '../config/config.service';
-import { HostListener } from '@angular/core';
-// import { ReceiptPage } from '../receipt/receipt.page';
-// import { ReceiptService } from '../receipt/receipt.service';
-// import { InvoicePage } from '../invoice/invoice.page';
 import { FormatService } from '../services/format.service';
-// import { CashMoveService } from '../cash/move/cash-move.service';
-// import { StockMoveService } from '../stock/stock-move.service';
-// import { ProjectsPage } from '../project/list/projects';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
-import { SalePopover } from './sale.popover';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-// import { CurrencyListPage } from '../currency-list/currency-list.page';
-// declare var cordova:any;
-// import * as jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-// import { DiscountPage } from '../discount/discount.page';
-// import { CashMovePage } from '../cash-move/cash-move.page';
-// import { ContactPage } from '../contact/contact.page';
+// import { SalePopover } from './sale.popover';
 import { AuthService } from "../services/auth.service";
 
 @Component({
@@ -49,61 +21,11 @@ import { AuthService } from "../services/auth.service";
   styleUrls: ['./sale.page.scss'],
 })
 export class SalePage implements OnInit {
-  @ViewChild('note', { static: false }) note;
-  @ViewChild('corpo', { static: true }) corpo;
-  @HostListener('document:keypress', ['$event'])
-    async handleKeyboardEvent(event: KeyboardEvent) {
-      if (this.listenBarcode && this.saleForm.value.state == 'QUOTATION' && document.activeElement.tagName != "TEXTAREA"){
-        this.corpo.setFocus();
-        this.corpo.value = "";
-        let timeStamp = event.timeStamp - this.timeStamp;
-        this.timeStamp = event.timeStamp;
-        if(event.which === 13){
-          console.log("enter", this.barcode);
-          let found = false;
-          let list = this.saleForm.value.items.filter(item=>item.product.barcode == this.barcode);
-          if (list.length){
-            let index = this.saleForm.value.items.indexOf(list[0]);
-            this.saleForm.value.items[index].quantity += 1;
-            found = true;
-          }
-          if (found){
-            this.recomputeTotal();
-            this.recomputeResidual();
-            this.saleForm.markAsDirty();
-          } else {
-            this.productService.getProductByCode(
-              this.barcode
-            ).then(data => {
-              if (data){
-                this.saleForm.value.items.unshift({
-                  'quantity': 1,
-                  'product': data,
-                  'price': data.price,
-                  'cost': data.cost,
-                })
-                this.recomputeTotal();
-                this.recomputeResidual();
-                this.saleForm.markAsDirty();
-              }
-            });
-          }
-          this.barcode = "";
-        }
-        if(!timeStamp || timeStamp < 20 || this.barcode == ""){
-          this.barcode += event.key;
-        }
-        if( event.which < 48 || event.which >= 58 ){ // not a number
-          this.barcode = "";
-        }
-        setTimeout(function(){
-          this.barcode = ""
-        }, 30);
-      }
-    }
-    listenBarcode = true;
+  // @ViewChild('note', { static: false }) note;
+  // @ViewChild('corpo', { static: true }) corpo;
+    // listenBarcode = true;
     timeStamp: any;
-    barcode: string = "";
+    // barcode: string = "";
     saleForm: FormGroup;
     loading: any;
     today: any;
@@ -126,39 +48,23 @@ export class SalePage implements OnInit {
       public translate: TranslateService,
       public languageService: LanguageService,
       public modalCtrl: ModalController,
-      // public imagePicker: ImagePicker,
-      // public cropService: Crop,
       public platform: Platform,
       public saleService: SaleService,
       public route: ActivatedRoute,
       public formBuilder: FormBuilder,
-      // public app: App,
       public alertCtrl: AlertController,
-      public productService: ProductService,
-      // public plannedService: PlannedService,
-      // public cashMoveService: CashMoveService,
-      // public stockMoveService: StockMoveService,
-      // public receiptService: ReceiptService,
-      public bluetoothSerial: BluetoothSerial,
       public toastCtrl: ToastController,
-      public printer: Printer,
       public configService: ConfigService,
       public formatService: FormatService,
       public events:Events,
       public pouchdbService: PouchdbService,
-      // public modal: ModalController,
       public popoverCtrl: PopoverController,
-      public socialSharing: SocialSharing,
       public authService: AuthService,
     ) {
       this.today = new Date().toISOString();
-
-
-
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       this.avoidAlertMessage = false;
-
       this.contact = this.route.snapshot.paramMap.get('contact');
       this.contact_name = this.route.snapshot.paramMap.get('contact_name');
       this.items = this.route.snapshot.paramMap.get('items');
@@ -206,40 +112,22 @@ export class SalePage implements OnInit {
       this.translate.use(language);
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
-
-
       this.authService.loggedIn.subscribe(async status => {
-
         console.log("status", status);
         if (status) {
-          // this.logged = true;
           let data = await this.authService.getData();
           this.contact_id = "contact."+data.currentUser.email;
-          // if (config.default_contact_id){
-            let default_contact:any = await this.pouchdbService.getDoc(this.contact_id);
-            let default_address:any = await this.pouchdbService.getDoc(default_contact.address_id);
-            this.saleForm.patchValue({
-              'contact': default_contact,
-              'address': default_address,
-            })
-          // }
+          let default_contact:any = await this.pouchdbService.getDoc(this.contact_id);
+          let default_address:any = await this.pouchdbService.getDoc(default_contact.address_id);
+          this.saleForm.patchValue({
+            'contact': default_contact,
+            'address': default_address,
+          })
         }
       })
-
-
-
-      if (config.default_payment_id){
-        let default_payment:any = await this.pouchdbService.getDoc(config.default_payment_id);
-        this.saleForm.patchValue({
-          'paymentCondition': default_payment
-        })
-      }
       if (this._id){
         this.saleService.getSale(this._id).then((data) => {
           this.saleForm.patchValue(data);
-          if (data.state != 'QUOTATION'){
-            // this.saleForm.controls.date.disable();
-          }
           this.loading.dismiss();
         });
       } else {
@@ -251,7 +139,7 @@ export class SalePage implements OnInit {
     }
 
   async saleReturn(){
-    this.listenBarcode = false;
+    // this.listenBarcode = false;
       let formValues = Object.assign({}, this.saleForm.value);
       let items = [];
       formValues.items.forEach((item: any)=>{
@@ -276,88 +164,31 @@ export class SalePage implements OnInit {
       });
       await profileModal.present();
       await profileModal.onDidDismiss();
-      this.listenBarcode = true;
+      // this.listenBarcode = true;
     }
 
-    // async ionViewCanLeave() {
-    //     if(this.saleForm.dirty && ! this.avoidAlertMessage) {
-    //         let alertPopup = await this.alertCtrl.create({
-    //             header: this.translate.instant('DISCARD'),
-    //             message: this.translate.instant('SURE_DONT_SAVE'),
-    //             buttons: [{
-    //                     text: this.translate.instant('YES'),
-    //                     handler: () => {
-    //                         // alertPopup.dismiss().then(() => {
-    //                             this.exitPage();
-    //                         // });
-    //                     }
-    //                 },
-    //                 {
-    //                     text: this.translate.instant('NO'),
-    //                     handler: () => {
-    //                         // need to do something if the user stays?
-    //                     }
-    //                 }]
-    //         });
-    //
-    //         // Show the alert
-    //         alertPopup.present();
-    //
-    //         // Return false to avoid the page to be popped up
-    //         return false;
-    //     }
-    // }
-
-    // private exitPage() {
-    //     this.saleForm.markAsPristine();
-    //     this.navCtrl.navigateBack('/sale-list');
-    // }
-
     async goNextStep() {
-      // await this.loading.present();
       if(this.return){
         await this.buttonSave();
       }
-      // if(!this.saleForm.value._id){
-      //   await this.buttonSave();
-      // }
       if (this.saleForm.value.state == 'QUOTATION'){
         if (! this.confirming){
           this.confirming = true;
           await this.beforeConfirm();
           this.confirming = false;
-          // if (JSON.stringify(this.saleForm.value.paymentCondition) != '{}'
-          // && this.saleForm.value.paymentCondition._id == 'payment-condition.cash'){
-          //   this.addPayment();
-          // }
           if (this.select){
             this.modalCtrl.dismiss();
           }
         }
       }
-      // else if (this.saleForm.value.state == 'CONFIRMED'){
-      //     // await this.loading.dismiss();
-      //     this.addPayment();
-      // } else if (this.saleForm.value.state == 'PAID'){
-      //   if (this.saleForm.value.invoices.length){
-      //     await this.navCtrl.navigateBack('/sale-list');
-      //     // await this.loading.dismiss();
-      //   } else {
-      //     // await this.loading.dismiss();
-      //     this.addInvoice();
-      //   }
-      // }
     }
 
     beforeConfirm(){
       return new Promise(async resolve =>{
         if (this.saleForm.value.items.length == 0){
-          // await this.loading.dismiss();
-          this.addItem();
           resolve(true);
         } else {
           if (Object.keys(this.saleForm.value.address).length === 0){
-            // await this.loading.dismiss();
             this.selectAddress().then(async teste => {
               await this.loading.dismiss();
               if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
@@ -371,7 +202,6 @@ export class SalePage implements OnInit {
               }
             });
           } else if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
-            // await this.loading.dismiss();
             this.selectPaymentCondition().then(async ()=>{
               this.loading = await this.loadingCtrl.create({});
               await this.loading.present();
@@ -380,7 +210,6 @@ export class SalePage implements OnInit {
               resolve(true);
             });
           } else {
-            // await this.loading.dismiss();
             this.loading = await this.loadingCtrl.create({});
             await this.loading.present();
             await this.afterConfirm();
@@ -419,7 +248,6 @@ export class SalePage implements OnInit {
 
     async deleteItem(slidingItem, item){
       if (this.saleForm.value.state=='QUOTATION'){
-        //console.log("delete item", item);
         slidingItem.close();
         let index = this.saleForm.value.items.indexOf(item)
         this.saleForm.value.items.splice(index, 1);
@@ -428,68 +256,17 @@ export class SalePage implements OnInit {
       }
     }
 
-    // deletePayment(item){
-    //   let index = this.saleForm.value.payments.indexOf(item)
-    //   this.saleForm.value.payments.splice(index, 1);
-    //   this.recomputeResidual();
-    // }
-
     recomputeTotal(){
       if (this.saleForm.value.state=='QUOTATION'){
         let total = 0;
         this.saleForm.value.items.forEach((item) => {
           total = total + item.quantity*item.price;
         });
-        // total -= this.saleForm.value.discount.value;
-        //console.log("total", total);
         this.saleForm.patchValue({
           total: total,
         });
       }
     }
-
-    recomputeDiscountLines(){
-      if (this.saleForm.value.state=='QUOTATION'){
-        let discount_lines = 0;
-        this.saleForm.value.items.forEach((item) => {
-          if (item.product._id != "product.discount"){
-            discount_lines += parseFloat(item.quantity)*(parseFloat(item.price_original || item.price)-parseFloat(item.price));
-          }
-        });
-        //console.log("discount_lines", discount_lines);
-        if (!discount_lines){
-          discount_lines = 0;
-        }
-        this.saleForm.value.discount['lines'] = discount_lines
-        this.saleForm.patchValue({
-          discount: this.saleForm.value.discount,
-        });
-      }
-    }
-
-    lineDiscountPercent(line){
-      return (
-        100*(
-          1 - parseFloat(line.price)/parseFloat(line.price_original)
-        )
-      ).toFixed(0)
-    }
-
-    // recomputeUnInvoiced(){
-    //   let amount_unInvoiced = 0;
-    //   this.pouchdbService.getRelated(
-    //     "cash-move", "origin_id", this.saleForm.value._id
-    //   ).then((planned) => {
-    //     planned.forEach((item) => {
-    //       if (item.amount_unInvoiced){
-    //         amount_unInvoiced += parseFloat(item.amount_unInvoiced);
-    //       }
-    //     });
-    //     this.saleForm.patchValue({
-    //       amount_unInvoiced: amount_unInvoiced,
-    //     });
-    //   });
-    // }
 
     recomputeResidual(){
       if (this.saleForm.value.state == 'QUOTATION'){
@@ -500,68 +277,6 @@ export class SalePage implements OnInit {
         this.saleForm.patchValue({
           residual: residual,
         });
-      }
-    }
-
-    async addItem(){
-      let self = this;
-      if (this.saleForm.value.state=='QUOTATION'){
-        this.loading = await this.loadingCtrl.create({});
-        await this.loading.present();
-        this.avoidAlertMessage = true;
-        this.listenBarcode = false;
-        this.events.unsubscribe('select-product');
-        this.events.subscribe('select-product', async (product) => {
-          self.saleForm.value.items.unshift({
-            'quantity': 1,
-            'price': product.price,
-            'cost': product.cost,
-            'product': product,
-            'description': product.name,
-          })
-          self.recomputeValues();
-          self.saleForm.markAsDirty();
-          self.avoidAlertMessage = false;
-          self.events.unsubscribe('select-product');
-          profileModal.dismiss();
-        })
-        let profileModal = await this.modalCtrl.create({
-          component: ProductListPage,
-          componentProps: {
-            "select": true
-          }
-        });
-        await profileModal.present();
-        await this.loading.dismiss();
-        await profileModal.onDidDismiss();
-        this.listenBarcode = true;
-      }
-    }
-
-    async openItem(item) {
-      if (this.saleForm.value.state=='QUOTATION'){
-        this.avoidAlertMessage = true;
-        this.listenBarcode = false;
-        this.events.unsubscribe('select-product');
-        this.events.subscribe('select-product', (data) => {
-          //console.log("vars", data);
-          item.price = data.price;
-          item.product = data;
-          item.description = data.name;
-          this.recomputeValues();
-          this.avoidAlertMessage = false;
-          this.saleForm.markAsDirty();
-          this.events.unsubscribe('select-product');
-          profileModal.dismiss();
-        })
-        let profileModal = await this.modalCtrl.create({
-          component: ProductListPage,
-          componentProps: {
-            "select": true,
-          }});
-          await profileModal.present();
-          await profileModal.onDidDismiss();
-          this.listenBarcode = true;
       }
     }
 
@@ -581,42 +296,9 @@ export class SalePage implements OnInit {
       }
     }
 
-    async editItemPrice(item){
-      if (this.saleForm.value.state=='QUOTATION'){
-        let prompt = await this.alertCtrl.create({
-          header: this.translate.instant('PRODUCT_PRICE'),
-          // message: 'Cual es el precio de este producto?',
-          message: this.translate.instant('WHAT_PRODUCT_PRICE'),
-          inputs: [
-            {
-              type: 'number',
-              name: 'price',
-              value: item.price
-          },
-
-          ],
-          buttons: [
-            {
-              text: this.translate.instant('CANCEL'),
-            },
-            {
-              text: this.translate.instant('CONFIRM'),
-              handler: data => {
-                item.price = data.price;
-                this.recomputeValues();
-                this.saleForm.markAsDirty();
-              }
-            }
-          ]
-        });
-
-        prompt.present();
-      }
-    }
-
     async editItemQuantity(item){
       if (this.saleForm.value.state=='QUOTATION'){
-        this.listenBarcode = false;
+        // this.listenBarcode = false;
         let prompt = await this.alertCtrl.create({
           header: this.translate.instant('PRODUCT_QUANTITY'),
           message: this.translate.instant('WHAT_PRODUCT_QUANTITY'),
@@ -645,7 +327,7 @@ export class SalePage implements OnInit {
 
         await prompt.present();
         await prompt.onDidDismiss();
-        this.listenBarcode = true;
+        // this.listenBarcode = true;
       }
     }
 
@@ -653,7 +335,6 @@ export class SalePage implements OnInit {
       this.recomputeTotal();
       // this.recomputeUnInvoiced();
       this.recomputeResidual();
-      this.recomputeDiscountLines()
       if (this.saleForm.value.total != 0 && this.saleForm.value.residual == 0){
         this.saleForm.patchValue({
           state: "PAID",
@@ -667,17 +348,17 @@ export class SalePage implements OnInit {
       ]
     };
 
-    async presentPopover(myEvent) {
-      let popover = await this.popoverCtrl.create({
-        component: SalePopover,
-        event: myEvent,
-        componentProps: {
-          popoverController: this.popoverCtrl,
-          doc: this
-        }
-      });
-      popover.present();
-    }
+    // async presentPopover(myEvent) {
+    //   let popover = await this.popoverCtrl.create({
+    //     component: SalePopover,
+    //     event: myEvent,
+    //     componentProps: {
+    //       popoverController: this.popoverCtrl,
+    //       doc: this
+    //     }
+    //   });
+    //   popover.present();
+    // }
 
     afterConfirm(){
       return new Promise(async resolve => {
@@ -690,68 +371,56 @@ export class SalePage implements OnInit {
         let createList = [];
         this.configService.getConfigDoc().then((config: any)=>{
           this.pouchdbService.getList([
-            'warehouse.client',
-            config.warehouse_id,
-            'account.other.stock',
-            'account.expense.soldGoodCost',
+            // 'warehouse.client',
+            // config.warehouse_id,
+            // 'account.other.stock',
+            // 'account.expense.soldGoodCost',
             'account.income.sale',
-            this.saleForm.value.paymentCondition.accountTo_id
+            'account.receivable.credit',
+            // this.saleForm.value.paymentCondition.accountTo_id
           ]).then((docList: any)=>{
             let docDict = {}
             docList.forEach(item=>{
               docDict[item.id] = item;
             })
-
-            this.saleForm.value.items.forEach(async (item) => {
-              let product_id = item.product_id || item.product._id;
-              let product_name = item.product_name || item.product.name;
-              item.cost = item.product.cost;
-              if (item.product.type == 'product'){
-                createList.push({
-                  'name': "Venta "+this.saleForm.value.code,
-                  'quantity': parseFloat(item.quantity),
-                  'origin_id': this.saleForm.value._id,
-                  'contact_id': this.saleForm.value.contact._id,
-                  'contact_name': this.saleForm.value.contact.name,
-                  'product_id': product_id,
-                  'product_name': product_name,
-                  'docType': "stock-move",
-                  'date': new Date(),
-                  'cost': parseFloat(item.cost)*parseFloat(item.quantity),
-                  'warehouseFrom_id': config.warehouse_id,
-                  'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
-                  'warehouseTo_id': 'warehouse.client',
-                  'warehouseTo_name': docDict['warehouse.client'].doc.name,
-                })
-                createList.push({
-                  'name': "Venta "+this.saleForm.value.code,
-                  'contact_id': this.saleForm.value.contact._id,
-                  'contact_name': this.saleForm.value.contact.name,
-                  'amount': item.quantity*item.cost,
-                  'origin_id': this.saleForm.value._id,
-                  'date': new Date(),
-                  'accountFrom_id': 'account.other.stock',
-                  'accountFrom_name': docDict['account.other.stock'].doc.name,
-                  'accountTo_id': 'account.expense.soldGoodCost',
-                  'accountTo_name': docDict['account.expense.soldGoodCost'].doc.name,
-                  'docType': "cash-move",
-                })
-              }
-              if (item.quantity < 0){
-                // let product = await this.productService.getProduct(product_id);
-                let old_stock = item.product.stock || 0;
-                let old_cost = item.product.cost || 0;
-                await this.productService.updateStockAndCost(
-                  product_id,
-                  Math.abs(item.quantity),
-                  item.cost,
-                  old_stock,
-                  old_cost);
-              }
-            });
+            // this.saleForm.value.items.forEach(async (item) => {
+            //   let product_id = item.product_id || item.product._id;
+            //   let product_name = item.product_name || item.product.name;
+            //   item.cost = item.product.cost;
+            //   if (item.product.type == 'product'){
+            //     // createList.push({
+            //     //   'name': "Venta "+this.saleForm.value.code,
+            //     //   'quantity': parseFloat(item.quantity),
+            //     //   'origin_id': this.saleForm.value._id,
+            //     //   'contact_id': this.saleForm.value.contact._id,
+            //     //   'contact_name': this.saleForm.value.contact.name,
+            //     //   'product_id': product_id,
+            //     //   'product_name': product_name,
+            //     //   'docType': "stock-move",
+            //     //   'date': new Date(),
+            //     //   'cost': parseFloat(item.cost)*parseFloat(item.quantity),
+            //     //   'warehouseFrom_id': config.warehouse_id,
+            //     //   'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
+            //     //   'warehouseTo_id': 'warehouse.client',
+            //     //   'warehouseTo_name': docDict['warehouse.client'].doc.name,
+            //     // })
+            //     // createList.push({
+            //     //   'name': "Venta "+this.saleForm.value.code,
+            //     //   'contact_id': this.saleForm.value.contact._id,
+            //     //   'contact_name': this.saleForm.value.contact.name,
+            //     //   'amount': item.quantity*item.cost,
+            //     //   'origin_id': this.saleForm.value._id,
+            //     //   'date': new Date(),
+            //     //   'accountFrom_id': 'account.other.stock',
+            //     //   'accountFrom_name': docDict['account.other.stock'].doc.name,
+            //     //   'accountTo_id': 'account.expense.soldGoodCost',
+            //     //   'accountTo_name': docDict['account.expense.soldGoodCost'].doc.name,
+            //     //   'docType': "cash-move",
+            //     // })
+            //   }
+            // });
             this.saleForm.value.paymentCondition.items.forEach(item => {
               let dateDue = this.formatService.addDays(this.today, item.days);
-              // console.log("dentro", this.saleForm.value);
               let amount = (item.percent/100)*this.saleForm.value.total;
               let cashMoveTemplate = {
                 '_return': true,
@@ -769,8 +438,8 @@ export class SalePage implements OnInit {
                 'dateDue': dateDue.toISOString(),
                 'accountFrom_id': 'account.income.sale',
                 'accountFrom_name': docDict['account.income.sale'].doc.name,
-                'accountTo_id': this.saleForm.value.paymentCondition.accountTo_id,
-                'accountTo_name': docDict[this.saleForm.value.paymentCondition.accountTo_id].doc.name,
+                'accountTo_id': 'account.receivable.credit', //this.saleForm.value.paymentCondition.accountTo_id,
+                'accountTo_name': docDict['account.receivable.credit'].doc.name,
               }
               if (this.saleForm.value.currency._id){
                 cashMoveTemplate['currency'] = this.saleForm.value.currency;
@@ -781,14 +450,12 @@ export class SalePage implements OnInit {
               }
               createList.push(cashMoveTemplate);
             });
-            //console.log("createList", createList);
             this.pouchdbService.createDocList(createList).then(async (created: any)=>{
               this.saleForm.patchValue({
                 state: 'CONFIRMED',
                 amount_unInvoiced: this.saleForm.value.total,
                 planned: created.filter(word=>typeof word.amount_residual !== 'undefined'),
               });
-              //console.log("Sale created", created);
               await this.buttonSave();
               resolve(true);
             })
@@ -800,25 +467,16 @@ export class SalePage implements OnInit {
     async saleCancel(){
       let prompt = await this.alertCtrl.create({
         header: this.translate.instant('SURE_CANCEL_SALE'),
-        // message: 'Al cancelar la Compra todos los registros asociados serán borrados',
         message: this.translate.instant('WARNING_CANCEL_SALE'),
         buttons: [
           {
             text: this.translate.instant('NO'),
             handler: data => {
-              //console.log("Cancelar");
             }
           },
           {
             text: this.translate.instant('YES'),
             handler: data => {
-              //console.log("Confirmar");
-              this.saleForm.value.items.forEach((item) => {
-                ////console.log("item", item);
-                // let product_id = item.product_id || item.product._id;
-                // this.productService.updateStock(product_id, item.quantity);
-                //this.saleForm.value.step = 'chooseInvoice';
-              });
               this.saleForm.patchValue({
                  state: 'QUOTATION',
               });
@@ -863,7 +521,7 @@ export class SalePage implements OnInit {
         this.loading = await this.loadingCtrl.create({});
         await this.loading.present();
         this.avoidAlertMessage = true;
-        this.listenBarcode = false;
+        // this.listenBarcode = false;
         this.events.unsubscribe('select-payment-condition');
         this.events.subscribe('select-payment-condition', (data) => {
           this.saleForm.patchValue({
@@ -885,7 +543,7 @@ export class SalePage implements OnInit {
         await profileModal.present();
         await this.loading.dismiss();
         await profileModal.onDidDismiss();
-        this.listenBarcode = true;
+        // this.listenBarcode = true;
       }
     });
     }
@@ -896,7 +554,7 @@ export class SalePage implements OnInit {
           this.loading = await this.loadingCtrl.create({});
           await this.loading.present();
           this.avoidAlertMessage = true;
-          this.listenBarcode = false;
+          // this.listenBarcode = false;
           this.events.unsubscribe('select-address');
           this.events.subscribe('select-address', (data) => {
             this.saleForm.patchValue({
@@ -918,7 +576,7 @@ export class SalePage implements OnInit {
           await profileModal.present();
           await this.loading.dismiss();
           await profileModal.onDidDismiss();
-          this.listenBarcode = true;
+          // this.listenBarcode = true;
         }
       });
     }
@@ -927,24 +585,6 @@ export class SalePage implements OnInit {
       this.navCtrl.navigateBack('/sale-list');
     }
 
-    showNextButton(){
-      // console.log("stock",this.saleForm.value.stock);
-      if (this.saleForm.value.name==null){
-        return true;
-      }
-      else if (this.saleForm.value.price==null){
-        return true;
-      }
-      else if (this.saleForm.value.cost==null){
-        return true;
-      }
-      else if (this.saleForm.value.type=='product'&&this.saleForm.value.stock==null){
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
     discard(){
       this.canDeactivate();
     }

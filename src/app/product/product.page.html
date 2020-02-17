@@ -117,7 +117,7 @@
               <ion-row class="ion-no-padding content-row one-line">
                 <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
                   <ion-button style="height: 15px;width: 100px;">
-                    Adicionar
+                    {{'ADD'|translate}}
                   </ion-button>
                 </ion-col>
               </ion-row>
@@ -125,7 +125,7 @@
           </ion-row>
           <ion-row>
             <ion-col class="item-content">
-            <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+            <div style="height: 25px;font-size: 12px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
               {{item.description}}
             </div>
             </ion-col>
@@ -137,13 +137,13 @@
   </form>
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-    <ion-button (click)="buttonSave()"  color="danger" style="font-size: 10px;--ion-color-base: #FFEB3B !important;--ion-color-contrast: black !important;">
+    <ion-button (click)="buttonSave()"  color="danger" style="font-size: 12px;--ion-color-base: #FFEB3B !important;--ion-color-contrast: black !important;">
       {{ 'Seguir Comprando'| translate }}
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-button (click)="askProduct()"  color="success" style="font-size: 10px;">
+    <ion-button (click)="askProduct()"  color="success" style="font-size: 12px;">
       {{'ADD_TO_ORDER'|translate}}
     </ion-button>
   </ion-fab>

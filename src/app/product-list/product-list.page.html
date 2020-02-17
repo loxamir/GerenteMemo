@@ -4,10 +4,14 @@
       <!-- <ion-thumbnail style="--border-radius:10px;"> -->
       <ion-row *ngIf="!select">
         <ion-col class="ion-no-padding">
-          <img style="height: 88px;width: 234px;"
+          <img
+          alt="Logo del restaurante"
+          style="height: 88px;width: 234px;"
           [src]="'data:image/png;base64,'+config._attachments['logo.png'].data"
           *ngIf="config._attachments && config._attachments['logo.png']">
-          <img style="height: 88px;width: 234px;"
+          <img
+          alt="Logo del restaurante"
+          style="height: 88px;width: 234px;"
           src="./assets/images/sem_foto.jpg"
           *ngIf="!(config._attachments && config._attachments['logo.png'])">
         </ion-col>
@@ -15,6 +19,7 @@
           <ion-row>
             <ion-col style="text-align: center;" class="ion-no-padding" >
               <img
+              alt="Foto de Perfil"
               style="height: 55px;width: 55px;border-radius: 30px;"
               [src]="'data:image/png;base64,'+contact._attachments['profile.png'].data || './assets/images/sem_foto.jpg'"
               *ngIf="contact._attachments && contact._attachments['profile.png']">
@@ -113,10 +118,14 @@
         (click)="selectProduct(item)">
         <ion-row >
           <ion-col size="4">
-            <img style="height: 50px;width: auto;border-radius: 5px;"
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
             [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
             *ngIf="item._attachments && item._attachments['avatar.png']">
-            <img style="height: 50px;width: auto;border-radius: 5px;"
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
             src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
           </ion-col>
           <ion-col class="ion-no-padding">
@@ -133,7 +142,7 @@
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
                 <ion-button style="height: 15px;">
-                  Adicionar
+                  {{'ADD'|translate}}
                 </ion-button>
               </ion-col>
             </ion-row>
@@ -141,7 +150,7 @@
         </ion-row>
         <ion-row>
           <ion-col class="item-content">
-          <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+          <div style="height: 25px;font-size: 12px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
             {{item.description}}
 
           </div>
@@ -154,10 +163,14 @@
           (click)="selectProduct(promoted_products2[i])">
         <ion-row>
           <ion-col size="4">
-            <img style="height: 50px;width: auto;border-radius: 5px;"
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
             [src]="'data:image/png;base64,'+promoted_products2[i]._attachments['avatar.png'].data"
             *ngIf="promoted_products2[i]._attachments && promoted_products2[i]._attachments['avatar.png']">
-            <img style="height: 50px;width: auto;border-radius: 5px;"
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
             src="./assets/images/sem_foto.jpg" *ngIf="!(promoted_products2[i]._attachments && promoted_products2[i]._attachments['avatar.png'])">
           </ion-col>
           <ion-col class="ion-no-padding">
@@ -174,7 +187,7 @@
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
                 <ion-button style="height: 15px;">
-                  Adicionar
+                  {{'ADD'|translate}}
                 </ion-button>
               </ion-col>
             </ion-row>
@@ -182,7 +195,7 @@
         </ion-row>
         <ion-row>
           <ion-col class="item-content">
-          <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+          <div style="height: 25px;font-size: 12px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
             {{item.description}}
           </div>
           </ion-col>
@@ -207,10 +220,12 @@
           </ion-row>
           <ion-row>
             <img
+            alt="Foto del categoria"
             style="height: 95px;width: auto;"
             [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
             *ngIf="item._attachments && item._attachments['avatar.png']">
             <img
+            alt="Foto de la categoria"
             style="height: 95px;width: auto;"
             src="./assets/images/sem_foto.jpg"
             *ngIf="!(item._attachments && item._attachments['avatar.png'])">
@@ -232,10 +247,14 @@
          (click)="selectProduct(item)">
         <ion-row>
           <ion-col size="4">
-            <img style="height: 50px;width: auto;border-radius: 5px;"
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
             [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
             *ngIf="item._attachments && item._attachments['avatar.png']">
-            <img style="height: 50px;width: auto;border-radius: 5px;"
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
             src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
           </ion-col>
           <ion-col class="ion-no-padding">
@@ -252,7 +271,7 @@
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
                 <ion-button style="height: 15px;">
-                  Adicionar
+                  {{'ADD'|translate}}
                 </ion-button>
               </ion-col>
             </ion-row>
@@ -260,7 +279,7 @@
         </ion-row>
         <ion-row>
           <ion-col class="item-content">
-          <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+          <div style="height: 25px;font-size: 12px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
             {{item.description}}
 
           </div>
