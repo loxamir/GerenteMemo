@@ -7,7 +7,7 @@ import { LanguageModel } from "../services/language/language.model";
 import { ActivatedRoute } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
-import { UserPage } from '../user/user.page';
+// import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
 // import { AddressListPage } from '../address-list/address-list.page';
 import { ContactService } from './contact.service';
@@ -216,30 +216,6 @@ export class ContactPage implements OnInit {
     let dv = this.contactForm.value.document.split('-')[1] || '';
     if (dv && dv.length == 1) {
       this.getLegalName();
-    }
-  }
-
-  async editUser(user) {
-    let profileModal = await this.modalCtrl.create({
-      component: UserPage,
-      componentProps: this.contactForm.value.user_details
-    });
-    await profileModal.present();
-    const { data } = await profileModal.onDidDismiss();
-    if (data) {
-      user["name"] = data.name;
-      user["username"] = data.username;
-      user["sale"] = data.sale;
-      user["purchase"] = data.purchase;
-      user["finance"] = data.finance;
-      user["service"] = data.service;
-      user["report"] = data.report;
-      user["config"] = data.config;
-      user["registered"] = data.registered;
-      this.contactForm.patchValue({
-        user_details: user,
-      });
-      this.justSave();
     }
   }
 

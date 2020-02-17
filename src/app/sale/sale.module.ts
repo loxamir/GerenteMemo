@@ -12,10 +12,10 @@ export function createTranslateLoader(http: HttpClient) {
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { Printer } from '@ionic-native/printer/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
+// import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 import { ProductListPage } from '../product-list/product-list.page';
-import { ContactListPage } from '../contact-list/contact-list.page';
-import { CurrencyListPage } from '../currency-list/currency-list.page';
+// import { ContactListPage } from '../contact-list/contact-list.page';
+// import { CurrencyListPage } from '../currency-list/currency-list.page';
 import { SalePopover } from './sale.popover';
 import { IonicModule } from '@ionic/angular';
 

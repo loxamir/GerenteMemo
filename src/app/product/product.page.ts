@@ -9,11 +9,11 @@ import { LanguageModel } from "../services/language/language.model";
 // import { Crop } from '@ionic-native/crop';
 import { ProductService } from './product.service';
 // import { Base64 } from '@ionic-native/base64';
-import { ProductCategoryListPage } from '../product-category-list/product-category-list.page';
-import { BrandListPage } from '../brand-list/brand-list.page';
+// import { ProductCategoryListPage } from '../product-category-list/product-category-list.page';
+// import { BrandListPage } from '../brand-list/brand-list.page';
 // import { Camera, CameraOptions } from '@ionic-native/camera';
-import { StockMoveService } from '../stock-move/stock-move.service';
-import { CashMoveService } from '../cash-move/cash-move.service';
+// import { StockMoveService } from '../stock-move/stock-move.service';
+// import { CashMoveService } from '../cash-move/cash-move.service';
 import { ConfigService } from '../config/config.service';
 import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
@@ -73,8 +73,8 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public events:Events,
       // public camera: Camera,
       public pouchdbService: PouchdbService,
-      public stockMoveService: StockMoveService,
-      public cashMoveService: CashMoveService,
+      // public stockMoveService: StockMoveService,
+      // public cashMoveService: CashMoveService,
       public authService: AuthService,
     ) {
 
@@ -453,24 +453,25 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           docs.forEach(row=>{
             doc_dict[row.id] = row.doc.name;
           })
-          this.stockMoveService.createStockMove({
-            'name': "Ajuste "+this.productForm.value.code,
-            'quantity': Math.abs(difference),
-            'origin_id': this.productForm.value._id,
-            'contact_id': "contact.myCompany",
-            'contact_name': config.name,
-            'product_id': this.productForm.value._id,
-            'date': new Date(),
-            'cost': (parseFloat(this.productForm.value.cost)||0)*Math.abs(difference),
-            'warehouseFrom_id': warehouseFrom_id,
-            'warehouseFrom_name': doc_dict[warehouseFrom_id],
-            'warehouseTo_id': warehouseTo_id,
-            'warehouseTo_name': doc_dict[warehouseTo_id],
-          }).then(res => {
-            // console.log("res", res);
-          });
+          // this.stockMoveService.createStockMove({
+          //   'name': "Ajuste "+this.productForm.value.code,
+          //   'quantity': Math.abs(difference),
+          //   'origin_id': this.productForm.value._id,
+          //   'contact_id': "contact.myCompany",
+          //   'contact_name': config.name,
+          //   'product_id': this.productForm.value._id,
+          //   'date': new Date(),
+          //   'cost': (parseFloat(this.productForm.value.cost)||0)*Math.abs(difference),
+          //   'warehouseFrom_id': warehouseFrom_id,
+          //   'warehouseFrom_name': doc_dict[warehouseFrom_id],
+          //   'warehouseTo_id': warehouseTo_id,
+          //   'warehouseTo_name': doc_dict[warehouseTo_id],
+          // }).then(res => {
+          //   // console.log("res", res);
+          // });
 
-          this.cashMoveService.createCashMove({
+          this.createCashMove({
+            'docType': "cash-move",
             'name': "Ajuste "+this.productForm.value.code,
             'contact_id': "contact.myCompany",
             'contact_name': config.name,
@@ -489,6 +490,96 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         });
       }
     }
+
+
+    async createCashMove(viewData){
+      let cash = Object.assign({}, viewData);
+      cash.amount = cash.amount || 0;
+      cash.docType = 'cash-move';
+      if (viewData.accountTo_id.split(".")[1] == 'receivable'){
+        cash.amount_residual = parseFloat(cash.amount);
+        if (! cash.payments){
+          cash.payments = [];
+        }
+        if (! cash.amount_unInvoiced){
+          cash.amount_unInvoiced = cash.amount;
+        }
+        if (! cash.invoices){
+          cash.invoices = [];
+        }
+        cash.amount_residual = parseFloat(cash.amount);
+      } else if (viewData.accountFrom_id.split(".")[1] == 'payable'){
+        cash.amount_residual = parseFloat(cash.amount);
+        if (! cash.payments){
+          cash.payments = [];
+        }
+        if (! cash.amount_unInvoiced){
+          cash.amount_unInvoiced = cash.amount;
+        }
+        if (! cash.invoices){
+          cash.invoices = [];
+        }
+      } else {
+        delete cash.amount_residual;
+        delete cash.payments;
+      }
+      let docs: any = await this.pouchdbService.getList([
+        cash.accountFrom_id,
+        cash.accountTo_id,
+        cash.contact_id,
+      ]);
+      let docDict = {}
+      docs.forEach(item=>{
+        docDict[item.id] = item;
+      })
+      // console.log("docs", docDict);
+      // console.log("cash", cash);
+
+      if (cash.contact){
+        cash.contact_name = cash.contact.name;
+      } else {
+        if (!cash.contact_id){
+          cash.contact_id = 'contact.unknown';
+        }
+        cash.contact_name = docDict[cash.contact_id].doc.name;
+      }
+      if (cash.accountFrom){
+        cash.accountFrom_name = cash.accountFrom.name;
+      } else {
+        // console.log("docDict[cash.accountFrom_id]", docDict[cash.accountFrom_id])
+        cash.accountFrom_name = docDict[cash.accountFrom_id].doc.name;
+      }
+      if (cash.accountTo){
+        cash.accountTo_name = cash.accountTo.name;
+      } else {
+        cash.accountTo_name = docDict[cash.accountTo_id].doc.name;
+      }
+      return new Promise((resolve, reject)=>{
+        // this.configService.getSequence('cash_move').then((code) => {
+          // cash['code'] = code;
+          // cash['code'] = this.formatService.string_pad(4, code, "right", "0");
+          if (!cash.origin_id){
+            cash.origin_id = "M"+Date.now();
+          }
+          cash.amount = parseFloat(cash.amount);
+          delete cash.cash;
+          delete cash.contact;
+          delete cash.project;
+          delete cash.accountTo;
+          delete cash.accountFrom;
+          cash.currency_id = cash.currency && cash.currency._id || cash.currency_id || '';
+          cash.check_id = cash.check && cash.check._id || cash.check_id || '';
+          delete cash.currency;
+          delete cash.check;
+          return this.pouchdbService.createDoc(cash).then((data: any) => {
+            cash.id = data.id;
+            resolve(cash);
+          })
+        // });
+      });
+    }
+
+
 
     setLanguage(lang: LanguageModel){
       let language_to_set = this.translate.getDefaultLang();
@@ -532,55 +623,55 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     //     }]);
     // }
 
-    selectCategory() {
-      return new Promise(async resolve => {
-        // this.avoidAlertMessage = true;
-        let profileModal = await this.modalCtrl.create({
-          component: ProductCategoryListPage,
-          componentProps: {
-            "select": true,
-          }
-        });
-        await profileModal.present();
-        this.events.unsubscribe('select-category');
-        this.events.subscribe('select-category', (data) => {
-          this.productForm.patchValue({
-            category: data,
-            category_name: data.name,
-          });
-          this.productForm.markAsDirty();
-          // this.avoidAlertMessage = false;
-          this.events.unsubscribe('select-category');
-          profileModal.dismiss();
-          // resolve(true);
-        })
-      });
-    }
-
-    selectBrand() {
-      return new Promise(async resolve => {
-        // this.avoidAlertMessage = true;
-        let profileModal = await this.modalCtrl.create({
-          component: BrandListPage,
-          componentProps: {
-            "select": true,
-          }
-        });
-        await profileModal.present();
-        this.events.unsubscribe('select-brand');
-        this.events.subscribe('select-brand', (data) => {
-          this.productForm.patchValue({
-            brand: data,
-            brand_name: data.name,
-          });
-          this.productForm.markAsDirty();
-          // this.avoidAlertMessage = false;
-          this.events.unsubscribe('select-brand');
-          profileModal.dismiss();
-          // resolve(true);
-        })
-      });
-    }
+    // selectCategory() {
+    //   return new Promise(async resolve => {
+    //     // this.avoidAlertMessage = true;
+    //     let profileModal = await this.modalCtrl.create({
+    //       component: ProductCategoryListPage,
+    //       componentProps: {
+    //         "select": true,
+    //       }
+    //     });
+    //     await profileModal.present();
+    //     this.events.unsubscribe('select-category');
+    //     this.events.subscribe('select-category', (data) => {
+    //       this.productForm.patchValue({
+    //         category: data,
+    //         category_name: data.name,
+    //       });
+    //       this.productForm.markAsDirty();
+    //       // this.avoidAlertMessage = false;
+    //       this.events.unsubscribe('select-category');
+    //       profileModal.dismiss();
+    //       // resolve(true);
+    //     })
+    //   });
+    // }
+    //
+    // selectBrand() {
+    //   return new Promise(async resolve => {
+    //     // this.avoidAlertMessage = true;
+    //     let profileModal = await this.modalCtrl.create({
+    //       component: BrandListPage,
+    //       componentProps: {
+    //         "select": true,
+    //       }
+    //     });
+    //     await profileModal.present();
+    //     this.events.unsubscribe('select-brand');
+    //     this.events.subscribe('select-brand', (data) => {
+    //       this.productForm.patchValue({
+    //         brand: data,
+    //         brand_name: data.name,
+    //       });
+    //       this.productForm.markAsDirty();
+    //       // this.avoidAlertMessage = false;
+    //       this.events.unsubscribe('select-brand');
+    //       profileModal.dismiss();
+    //       // resolve(true);
+    //     })
+    //   });
+    // }
 
     showNextButton(){
       // console.log("stock",this.productForm.value.stock);
@@ -664,192 +755,192 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
 
-    openPWAPhotoPicker() {
-      if (this.pwaphoto == null) {
-        return;
-      }
+    // openPWAPhotoPicker() {
+    //   if (this.pwaphoto == null) {
+    //     return;
+    //   }
+    //
+    //   this.pwaphoto.nativeElement.click();
+    // }
+    //
+    // openPWACamera() {
+    //   if (this.pwacamera == null) {
+    //     return;
+    //   }
+    //
+    //   this.pwacamera.nativeElement.click();
+    // }
+    //
+    // openPWAGalery() {
+    //   if (this.pwagalery == null) {
+    //     return;
+    //   }
+    //
+    //   this.pwagalery.nativeElement.click();
+    // }
+    //
+    // previewFile() {
+    //   let self = this;
+    //   var preview: any = document.querySelector('#imageSrc');
+    //   var file = this.pwaphoto.nativeElement.files[0];
+    //   var reader = new FileReader();
+    //   reader.onload = (event: Event) => {
+    //     preview.src = reader.result;
+    //     this.productForm.patchValue({
+    //       image: reader.result,
+    //     })
+    //     this.productForm.markAsDirty();
+    //     preview.onload = function() {
+    //
+    //       var percentage = 1;
+    //       let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
+    //       var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
+    //       if (image_diameter > max_diameter) {
+    //         percentage = max_diameter / image_diameter
+    //       }
+    //
+    //       var canvas: any = window.document.getElementById("canvas");
+    //       var ctx = canvas.getContext("2d");
+    //       canvas.height = canvas.width * (preview.height / preview.width);
+    //       var oc = window.document.createElement('canvas');
+    //       var octx = oc.getContext('2d');
+    //       oc.width = preview.width * percentage;
+    //       oc.height = preview.height * percentage;
+    //       canvas.width = oc.width;
+    //       canvas.height = oc.height;
+    //       octx.drawImage(preview, 0, 0, oc.width, oc.height);
+    //       octx.drawImage(oc, 0, 0, oc.width, oc.height);
+    //       ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+    //
+    //       let jpg = ctx.canvas.toDataURL("image/jpeg");
+    //       fetch(jpg)
+    //         .then(res => res.blob())
+    //         .then(blob => self.avatar = blob)
+    //     }
+    //   }
+    //
+    //   if (file) {
+    //     reader.readAsDataURL(file);
+    //   }
+    // }
 
-      this.pwaphoto.nativeElement.click();
-    }
+    // async addProduct(){
+    //   this.events.unsubscribe('select-product');
+    //   this.events.subscribe('select-product', async (product) => {
+    //     this.productForm.value.products.unshift(product)
+    //     this.productForm.markAsDirty();
+    //     this.events.unsubscribe('select-product');
+    //     profileModal.dismiss();
+    //   })
+    //   let profileModal = await this.modalCtrl.create({
+    //     component: ProductListPage,
+    //     componentProps: {
+    //       "select": true
+    //     }
+    //   });
+    //   await profileModal.present();
+    //   await this.loading.dismiss();
+    //   await profileModal.onDidDismiss();
+    // }
+    //
+    // async addOption(){
+    //   let prompt = await this.alertCtrl.create({
+    //     header: this.translate.instant('PRODUCT_PRICE'),
+    //     message: this.translate.instant('WHAT_PRODUCT_PRICE'),
+    //     inputs: [
+    //       {
+    //         type: 'text',
+    //         name: 'name'
+    //     },
+    //     {
+    //       type: 'number',
+    //       name: 'price',
+    //     },
+    //     ],
+    //     buttons: [
+    //       {
+    //         text: this.translate.instant('CANCEL'),
+    //       },
+    //       {
+    //         text: this.translate.instant('CONFIRM'),
+    //         handler: data => {
+    //           this.productForm.value.sizes.push({
+    //             name: data.name,
+    //             price: data.price
+    //           })
+    //           this.productForm.markAsDirty();
+    //         }
+    //       }
+    //     ]
+    //   });
+    //
+    //   prompt.present();
+    // }
+    //
+    // async editOption(item){
+    //   let prompt = await this.alertCtrl.create({
+    //     header: this.translate.instant('PRODUCT_PRICE'),
+    //     message: this.translate.instant('WHAT_PRODUCT_PRICE'),
+    //     inputs: [
+    //       {
+    //         type: 'text',
+    //         name: 'name',
+    //         value: item.name
+    //     },
+    //     {
+    //       type: 'number',
+    //       name: 'price',
+    //       value: item.price
+    //     }
+    //     ],
+    //     buttons: [
+    //       {
+    //         text: this.translate.instant('CANCEL'),
+    //       },
+    //       {
+    //         text: this.translate.instant('CONFIRM'),
+    //         handler: data => {
+    //           item.name = data.name;
+    //           item.price = data.price;
+    //           this.productForm.markAsDirty();
+    //         }
+    //       }
+    //     ]
+    //   });
+    //
+    //   prompt.present();
+    // }
 
-    openPWACamera() {
-      if (this.pwacamera == null) {
-        return;
-      }
+    // async selectProduct(product){
+    //   let profileModal = await this.modalCtrl.create({
+    //     component: ProductPage,
+    //     componentProps: {
+    //       "select": true,
+    //       "_id": product._id,
+    //     }
+    //   });
+    //   await profileModal.present();
+    //   await this.loading.dismiss();
+    //   await profileModal.onDidDismiss();
+    // }
+    //
+    // deleteProduct(item, slidingItem){
+    //   slidingItem.close();
+    //   let index = this.productForm.value.products.indexOf(item);
+    //   this.productForm.value.products.splice(index, 1);
+    // }
+    //
+    // deleteSize(item, slidingItem){
+    //   slidingItem.close();
+    //   let index = this.productForm.value.sizes.indexOf(item);
+    //   this.productForm.value.sizes.splice(index, 1);
+    // }
 
-      this.pwacamera.nativeElement.click();
-    }
-
-    openPWAGalery() {
-      if (this.pwagalery == null) {
-        return;
-      }
-
-      this.pwagalery.nativeElement.click();
-    }
-
-    previewFile() {
-      let self = this;
-      var preview: any = document.querySelector('#imageSrc');
-      var file = this.pwaphoto.nativeElement.files[0];
-      var reader = new FileReader();
-      reader.onload = (event: Event) => {
-        preview.src = reader.result;
-        this.productForm.patchValue({
-          image: reader.result,
-        })
-        this.productForm.markAsDirty();
-        preview.onload = function() {
-
-          var percentage = 1;
-          let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
-          var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
-          if (image_diameter > max_diameter) {
-            percentage = max_diameter / image_diameter
-          }
-
-          var canvas: any = window.document.getElementById("canvas");
-          var ctx = canvas.getContext("2d");
-          canvas.height = canvas.width * (preview.height / preview.width);
-          var oc = window.document.createElement('canvas');
-          var octx = oc.getContext('2d');
-          oc.width = preview.width * percentage;
-          oc.height = preview.height * percentage;
-          canvas.width = oc.width;
-          canvas.height = oc.height;
-          octx.drawImage(preview, 0, 0, oc.width, oc.height);
-          octx.drawImage(oc, 0, 0, oc.width, oc.height);
-          ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-
-          let jpg = ctx.canvas.toDataURL("image/jpeg");
-          fetch(jpg)
-            .then(res => res.blob())
-            .then(blob => self.avatar = blob)
-        }
-      }
-
-      if (file) {
-        reader.readAsDataURL(file);
-      }
-    }
-
-    async addProduct(){
-      this.events.unsubscribe('select-product');
-      this.events.subscribe('select-product', async (product) => {
-        this.productForm.value.products.unshift(product)
-        this.productForm.markAsDirty();
-        this.events.unsubscribe('select-product');
-        profileModal.dismiss();
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: ProductListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      await profileModal.present();
-      await this.loading.dismiss();
-      await profileModal.onDidDismiss();
-    }
-
-    async addOption(){
-      let prompt = await this.alertCtrl.create({
-        header: this.translate.instant('PRODUCT_PRICE'),
-        message: this.translate.instant('WHAT_PRODUCT_PRICE'),
-        inputs: [
-          {
-            type: 'text',
-            name: 'name'
-        },
-        {
-          type: 'number',
-          name: 'price',
-        },
-        ],
-        buttons: [
-          {
-            text: this.translate.instant('CANCEL'),
-          },
-          {
-            text: this.translate.instant('CONFIRM'),
-            handler: data => {
-              this.productForm.value.sizes.push({
-                name: data.name,
-                price: data.price
-              })
-              this.productForm.markAsDirty();
-            }
-          }
-        ]
-      });
-
-      prompt.present();
-    }
-
-    async editOption(item){
-      let prompt = await this.alertCtrl.create({
-        header: this.translate.instant('PRODUCT_PRICE'),
-        message: this.translate.instant('WHAT_PRODUCT_PRICE'),
-        inputs: [
-          {
-            type: 'text',
-            name: 'name',
-            value: item.name
-        },
-        {
-          type: 'number',
-          name: 'price',
-          value: item.price
-        }
-        ],
-        buttons: [
-          {
-            text: this.translate.instant('CANCEL'),
-          },
-          {
-            text: this.translate.instant('CONFIRM'),
-            handler: data => {
-              item.name = data.name;
-              item.price = data.price;
-              this.productForm.markAsDirty();
-            }
-          }
-        ]
-      });
-
-      prompt.present();
-    }
-
-    async selectProduct(product){
-      let profileModal = await this.modalCtrl.create({
-        component: ProductPage,
-        componentProps: {
-          "select": true,
-          "_id": product._id,
-        }
-      });
-      await profileModal.present();
-      await this.loading.dismiss();
-      await profileModal.onDidDismiss();
-    }
-
-    deleteProduct(item, slidingItem){
-      slidingItem.close();
-      let index = this.productForm.value.products.indexOf(item);
-      this.productForm.value.products.splice(index, 1);
-    }
-
-    deleteSize(item, slidingItem){
-      slidingItem.close();
-      let index = this.productForm.value.sizes.indexOf(item);
-      this.productForm.value.sizes.splice(index, 1);
-    }
-
-  selectSize(item){
-    this.productForm.patchValue({
-      size: item.name,
-      price: item.price
-    })
-  }
+  // selectSize(item){
+  //   this.productForm.patchValue({
+  //     size: item.name,
+  //     price: item.price
+  //   })
+  // }
 
 }
