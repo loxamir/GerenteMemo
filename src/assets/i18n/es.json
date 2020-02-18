@@ -440,5 +440,6 @@
   "SELECT_SIZE": "Seleccione un tamaño",
   "CANCEL_ORDER": "Cancelar Pedido",
   "SURE_CANCEL_ORDER": "Estas seguro que deseas cancelar este pedido?",
+  "ADD": "Agregar",
   "RESULT": "Resultado"
 }

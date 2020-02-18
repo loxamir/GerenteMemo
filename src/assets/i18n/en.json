@@ -440,5 +440,6 @@
   "SELECT_SIZE": "Select a size",
   "CANCEL_ORDER": "Cancel Order",
   "SURE_CANCEL_ORDER": "You really want cancel this order?",
+  "ADD": "Add",
   "RESULT": "Result"
 }

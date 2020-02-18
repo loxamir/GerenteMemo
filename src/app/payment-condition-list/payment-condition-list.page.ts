@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { NavController, LoadingController,   ModalController, Events} from '@ionic/angular';
+import { NavController, LoadingController,   ModalController } from '@ionic/angular';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
+import { Events } from '../services/events';
 
 @Component({
   selector: 'app-payment-condition-list',
@@ -60,7 +61,7 @@ export class PaymentConditionListPage implements OnInit {
 
   selectPaymentCondition(paymentCondition) {
     this.modalCtrl.dismiss();
-    this.events.publish('select-payment-condition', paymentCondition);
+    this.events.publish('select-payment-condition', {condition: paymentCondition});
   }
 
   doRefresh(refresher) {

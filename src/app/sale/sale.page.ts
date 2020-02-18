@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController,  LoadingController, Platform, AlertController, Events, ToastController, ModalController, PopoverController } from '@ionic/angular';
+import { NavController,  LoadingController, Platform, AlertController, ToastController, ModalController, PopoverController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,6 +14,7 @@ import { FormatService } from '../services/format.service';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 // import { SalePopover } from './sale.popover';
 import { AuthService } from "../services/auth.service";
+import { Events } from '../services/events';
 
 @Component({
   selector: 'app-sale',
@@ -525,8 +526,8 @@ export class SalePage implements OnInit {
         this.events.unsubscribe('select-payment-condition');
         this.events.subscribe('select-payment-condition', (data) => {
           this.saleForm.patchValue({
-            paymentCondition: data,
-            payment_name: data.name,
+            paymentCondition: data.condition,
+            payment_name: data.condition.name,
           });
           this.saleForm.markAsDirty();
           this.avoidAlertMessage = false;
@@ -558,8 +559,8 @@ export class SalePage implements OnInit {
           this.events.unsubscribe('select-address');
           this.events.subscribe('select-address', (data) => {
             this.saleForm.patchValue({
-              address: data,
-              address_name: data.name,
+              address: data.address,
+              address_name: data.address.name,
             });
             this.saleForm.markAsDirty();
             this.avoidAlertMessage = false;

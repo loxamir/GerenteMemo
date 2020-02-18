@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  NavController, LoadingController, PopoverController, Events,
+  NavController, LoadingController, PopoverController,
   NavParams
 } from '@ionic/angular';
 import 'rxjs/Rx';
@@ -14,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { AuthService } from "../services/auth.service";
+import { Events } from '../services/events';
 
 @Component({
   selector: 'app-sale-list',
@@ -44,10 +45,10 @@ export class SaleListPage implements OnInit {
     public languageService: LanguageService,
     public translate: TranslateService,
   ) {
-    this.events.subscribe('changed-sale', (change)=>{
-      if (this.appliedChanges.indexOf(change.doc._id+change.doc._rev)==-1){
-        this.appliedChanges.push(change.doc._id+change.doc._rev);
-        this.handleChange(this.sales, change);
+    this.events.subscribe('changed-sale', (data)=>{
+      if (this.appliedChanges.indexOf(data.change.doc._id+data.change.doc._rev)==-1){
+        this.appliedChanges.push(data.change.doc._id+data.change.doc._rev);
+        this.handleChange(this.sales, data.change);
       }
     })
     this.events.subscribe('got-database', (change)=>{

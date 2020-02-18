@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, LoadingController, ModalController, Events,
+import { NavController, LoadingController, ModalController,
   PopoverController, ToastController, MenuController } from '@ionic/angular';
 import { ProductPage } from '../product/product.page';
 import 'rxjs/Rx';
@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { SalePage } from '../sale/sale.page';
 import { AuthService } from "../services/auth.service";
+import { Events } from '../services/events';
 
 @Component({
   selector: 'app-product-list',
@@ -38,9 +39,9 @@ export class ProductListPage implements OnInit {
   amount: number = 0;
   order: any;
   logged: boolean = false;
-  contact = {};
+  contact: any = {};
   contact_id;
-  contact_name;
+  // contact_name;
 
   constructor(
     public navCtrl: NavController,
@@ -62,8 +63,8 @@ export class ProductListPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
     this.operation = this.route.snapshot.paramMap.get('operation') || this.operation;
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
-    this.events.subscribe('changed-product', (change) => {
-      this.handleChange(this.products, change);
+    this.events.subscribe('changed-product', (data) => {
+      this.handleChange(this.products, data.change);
     })
     // this.events.subscribe('changed-stock-move', (change) => {
     //   this.handleViewChange(this.products, change);
@@ -122,7 +123,7 @@ export class ProductListPage implements OnInit {
               "create_user": "",
               "create_time": "",
               "write_user": "larica",
-              "write_time": "2020-01-14T20:48:52.405Z",
+              "write_time": new Date().toJSON(),
               "docType": "contact",
               "_attachments": {
               "profile.png": {
@@ -138,7 +139,7 @@ export class ProductListPage implements OnInit {
         console.log("logged contact", contact);
         this.contact = contact;
       }
-      this.contact_name = data.currentUser.displayName;
+      // this.contact_name = data.currentUser.displayName;
 
 
         this.loading.dismiss();
@@ -151,12 +152,12 @@ export class ProductListPage implements OnInit {
           }
         }
         this.events.subscribe('changed-sale', (data) => {
-          if (data.deleted){
+          if (data.change.deleted){
             this.order = undefined;
           } else {
-            if (data.doc.state == 'QUOTATION' || data.doc.state == 'CONFIRMED'){
-              this.order = data.doc;
-            } else if (data.doc.state == 'PAID'){
+            if (data.change.doc.state == 'QUOTATION' || data.change.doc.state == 'CONFIRMED'){
+              this.order = data.change.doc;
+            } else if (data.change.doc.state == 'PAID'){
               this.order = undefined;
             }
           }
@@ -170,14 +171,14 @@ export class ProductListPage implements OnInit {
 
 
     this.events.subscribe('add-product', async (data) => {
-      let total = data.price*data.quantity;
+      let total = data.product.price*data.product.quantity;
       let line = {
-        "product_id": data._id,
-        "product_name": data.name,
-        "quantity": data.quantity,
-        "price": data.price,
-        "size": data.size,
-        "note": data.note
+        "product_id": data.product._id,
+        "product_name": data.product.name,
+        "quantity": data.product.quantity,
+        "price": data.product.price,
+        "size": data.product.size,
+        "note": data.product.note
       }
       if (this.order){
         this.order.lines.push(line);
@@ -191,7 +192,7 @@ export class ProductListPage implements OnInit {
       } else {
         let now = new Date().toISOString();
         let order = {
-          "contact_name": this.contact_name,
+          "contact_name": this.contact.name,
           "name": "",
           "code": "123",
           "date": now,
@@ -352,7 +353,7 @@ export class ProductListPage implements OnInit {
   selectProduct(product) {
     if (this.select) {
       this.modalCtrl.dismiss();
-      this.events.publish('select-product', product);
+      this.events.publish('select-product', {product: product});
     } else {
       this.openProduct(product);
     }
@@ -383,7 +384,7 @@ export class ProductListPage implements OnInit {
   async createProduct() {
     this.events.subscribe('create-product', (data) => {
       if (this.select) {
-        this.events.publish('select-product', data);
+        this.events.publish('select-product', {product: data.product});
       }
       this.events.unsubscribe('create-product');
     })
@@ -564,34 +565,34 @@ export class ProductListPage implements OnInit {
                 "create_user": "",
                 "create_time": "",
                 "write_user": "larica",
-                "write_time": "2020-01-14T20:48:52.405Z",
+                "write_time": new Date().toJSON(),
                 "docType": "contact",
                 "_attachments": {
-                "profile.png": {
-                  "content_type": "image/png",
-                  "data": base64image
-                }
-              },
-            })
-            this.contact = createdDoc;
-            console.log("create contact", createdDoc);
-          });
-        } else {
-          console.log("logged contact", contact);
-          this.contact = contact;
-        }
-        this.contact_name = data.currentUser.displayName;
+                  "profile.png": {
+                    "content_type": "image/png",
+                    "data": base64image
+                  }
+                },
+              })
+              this.contact = createdDoc;
+              console.log("create contact", createdDoc);
+            });
+          } else {
+            console.log("logged contact", contact);
+            this.contact = contact;
+          }
+        // this.contact_name = data.currentUser.displayName;
 
 
           this.loading.dismiss();
 
           this.events.subscribe('changed-sale', (data) => {
-            if (data.deleted){
+            if (data.change.deleted){
               this.order = undefined;
             } else {
-              if (data.doc.state == 'QUOTATION' || data.doc.state == 'CONFIRMED'){
-                this.order = data.doc;
-              } else if (data.doc.state == 'PAID'){
+              if (data.change.doc.state == 'QUOTATION' || data.change.doc.state == 'CONFIRMED'){
+                this.order = data.change.doc;
+              } else if (data.change.doc.state == 'PAID'){
                 this.order = undefined;
               }
             }

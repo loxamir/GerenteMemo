@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { NavController, ModalController, LoadingController, AlertController, Events, Platform } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { ActivatedRoute } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
+import { Events } from '../services/events';
 // import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
 declare var google;
@@ -248,7 +249,7 @@ showMap(latitude, longitude){
       this.getLegalName();
     }
   }
-  // 
+  //
   // async editUser(user) {
   //   let profileModal = await this.modalCtrl.create({
   //     component: UserPage,
@@ -294,18 +295,18 @@ showMap(latitude, longitude){
         this.modalCtrl.dismiss();
       } else {
         this.navCtrl.navigateBack('/address-list');
-        this.events.publish('open-address', this.addressForm.value);
+        this.events.publish('open-address', {address: this.addressForm.value});
       }
     } else {
       console.log("create");
       this.createAddress(this.addressForm.value).then((doc: any) => {
         this._id = doc.doc.id;
         if (this.select) {
-          this.events.publish('create-address', this.addressForm.value);
+          this.events.publish('create-address', {address: this.addressForm.value});
           this.modalCtrl.dismiss();
         } else {
           this.navCtrl.navigateBack('/address-list');
-          this.events.publish('create-address', this.addressForm.value);
+          this.events.publish('create-address', {address: this.addressForm.value});
         }
       });
     }

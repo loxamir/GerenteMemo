@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Events, Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import PouchDB1 from 'pouchdb';
 declare var require: any;
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -10,6 +10,7 @@ import { FormatService } from '../format.service';
 // var server = "database.sistemamemo.com";
 var server = "database.sistemamemo.com";
 import { AuthService } from "../../services/auth.service";
+import { Events } from '../../services/events';
 
 @Injectable({ providedIn: 'root' })
 export class PouchdbService {
@@ -114,7 +115,7 @@ export class PouchdbService {
               }
               console.log("database", database);
               this.db.setMaxListeners(50);
-              self.events.publish('got-database');
+              self.events.publish('got-database', {});
               // let loadDemo = await this.storage.get('loadDemo');
               // this.storage.get('password').then(password => {
                 this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
@@ -144,7 +145,7 @@ export class PouchdbService {
                       self.storage.set('loadDemo', true);
                       syncJob.cancel();
                     }
-                    self.events.publish('end-sync');
+                    self.events.publish('end-sync', {});
                     resolve(true)
                     // replication paused (e.g. replication up to date, user went offline)
                   }).on('active', function () {
@@ -218,7 +219,7 @@ export class PouchdbService {
              }
              console.log("database", database);
              this.db.setMaxListeners(50);
-             self.events.publish('got-database');
+             self.events.publish('got-database', {});
              // let loadDemo = await this.storage.get('loadDemo');
              // this.storage.get('password').then(password => {
                this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
@@ -248,7 +249,7 @@ export class PouchdbService {
                      self.storage.set('loadDemo', true);
                      syncJob.cancel();
                    }
-                   self.events.publish('end-sync');
+                   self.events.publish('end-sync', {});
                    resolve(true)
                    // replication paused (e.g. replication up to date, user went offline)
                  }).on('active', function () {
@@ -317,7 +318,7 @@ export class PouchdbService {
   getDisConnect(){
     this.db.close();
     this.docTypes = {};
-    this.events.publish('database-disconnect');
+    this.events.publish('database-disconnect', {});
   }
 
   searchDocs(
@@ -736,7 +737,7 @@ export class PouchdbService {
           }
         }
       }
-      this.events.publish('changed-'+docType, change);
+      this.events.publish('changed-'+docType, {"change": change});
     });
   }
 

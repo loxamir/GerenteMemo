@@ -1,6 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, Input, ViewChild, OnInit  } from '@angular/core';
-import { NavController, LoadingController, ModalController, Events,
+import { NavController, LoadingController, ModalController,
   PopoverController, ToastController } from '@ionic/angular';
 import { AddressPage } from '../address/address.page';
 import 'rxjs/Rx';
@@ -10,6 +10,7 @@ import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from "../services/auth.service";
+import { Events } from '../services/events';
 
 @Component({
   selector: 'app-address-list',
@@ -53,14 +54,11 @@ export class AddressListPage implements OnInit {
     this.seller = this.route.snapshot.paramMap.get('seller')|| false;
     this.employee = this.route.snapshot.paramMap.get('employee')|| false;
     this.customer = this.route.snapshot.paramMap.get('customer')|| false;
-    this.events.subscribe('changed-address', (change)=>{
-      this.handleChange(this.addresss, change);
+    this.events.subscribe('changed-address', (data:any )=>{
+      this.handleChange(this.addresss, data.change);
     })
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
-    // this.events.subscribe('got-database', ()=>{
-    //   this.setFilteredItems();
-    // })
   }
 
   async ngOnInit() {
@@ -272,7 +270,7 @@ export class AddressListPage implements OnInit {
   selectAddress(address) {
     if (this.select){
       // this.navCtrl.pop().then(() => {
-        this.events.publish('select-address', address);
+        this.events.publish('select-address', {address: address});
         this.modalCtrl.dismiss();
       // });
     } else {
@@ -302,9 +300,9 @@ export class AddressListPage implements OnInit {
       }]);
     }
     this.events.subscribe('create-address', (data) => {
-      // console.log("select", data);
+      console.log("select", data);
       if (this.select){
-        this.events.publish('select-address', data);
+        this.events.publish('select-address', {"address": data.address});
         // console.log("dismiss");
         this.modalCtrl.dismiss();
 

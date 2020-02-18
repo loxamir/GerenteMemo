@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { NavController, ModalController, LoadingController, AlertController, Events, Platform } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
@@ -11,6 +11,7 @@ import { RestProvider } from "../services/rest/rest";
 import { AuthService } from "../services/auth.service";
 // import { AddressListPage } from '../address-list/address-list.page';
 import { ContactService } from './contact.service';
+import { Events } from '../services/events';
 // declare var google;
 
 @Component({
@@ -182,7 +183,7 @@ export class ContactPage implements OnInit {
   //       this.events.unsubscribe('select-address');
   //       this.events.subscribe('select-address', (data) => {
   //         this.contactForm.patchValue({
-  //           address: data,
+  //           address: data.address,
   //           // address_name: data.name,
   //         });
   //         this.showMap( data.latitude, data.longitude);
@@ -238,17 +239,17 @@ export class ContactPage implements OnInit {
         this.modalCtrl.dismiss();
       } else {
         this.navCtrl.navigateBack('/product-list');
-        this.events.publish('open-contact', this.contactForm.value);
+        this.events.publish('open-contact', {contact: this.contactForm.value});
       }
     } else {
       this.createContact(this.contactForm.value).then((doc: any) => {
         this._id = doc.doc.id;
         if (this.select) {
-          this.events.publish('create-contact', this.contactForm.value);
+          this.events.publish('create-contact', {contact: this.contactForm.value});
           this.modalCtrl.dismiss();
         } else {
           this.navCtrl.navigateBack('/product-list');
-          this.events.publish('create-contact', this.contactForm.value);
+          this.events.publish('create-contact', {contact: this.contactForm.value});
         }
       });
     }
