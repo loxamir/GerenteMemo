@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
@@ -15,6 +15,7 @@ import { ModalController, LoadingController } from '@ionic/angular';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+  @ViewChild('phone', { static: true }) phone;
   loginForm: FormGroup;
   validation_messages = {
     'phone': [
@@ -52,6 +53,9 @@ export class LoginPage implements OnInit {
         let contact:any = await this.pouchdbService.getDoc("contact."+data.currentUser.email, true);
         if (JSON.stringify(contact) == "{}"){
           console.log("wait create contact");
+          setTimeout(() => {
+            this.phone.setFocus();
+          }, 300);
         } else {
           console.log("logged contact", contact);
           this.events.publish('login-success', {contact: contact});
