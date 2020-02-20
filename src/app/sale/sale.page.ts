@@ -653,4 +653,8 @@ export class SalePage implements OnInit {
       // Show the alert
       alertPopup.present();
     }
+
+    openItem(item){
+      console.log("open Item");
+    }
 }

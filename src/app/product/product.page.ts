@@ -191,7 +191,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.events.publish('add-product', {product: this.productForm.value});
           this.exitPage();
         } else {
-          this.asking = true;
           this.authLogin();
         }
       }
@@ -210,9 +209,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     async authLogin() {
-      this.events.subscribe('login-success', (data) => {
-        this.events.unsubscribe('login-success');
-      })
       let profileModal = await this.modalCtrl.create({
         component: LoginPage,
         componentProps: {}
@@ -567,5 +563,25 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         })
       }
     }
+
+  selectSize(item){
+    this.productForm.patchValue({
+      size: item.name,
+      price: item.price
+    })
+  }
+
+  async selectProduct(product){
+    let profileModal = await this.modalCtrl.create({
+      component: ProductPage,
+      componentProps: {
+        "select": true,
+        "_id": product._id,
+      }
+    });
+    await profileModal.present();
+    await this.loading.dismiss();
+    await profileModal.onDidDismiss();
+  }
 
 }
