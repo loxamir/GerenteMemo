@@ -124,6 +124,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           }
         } else {
           this.logged = false;
+          this.events.subscribe('login-success', (data) => {
+            this.logged = true;
+          })
         }
         this.asking = false;
       });

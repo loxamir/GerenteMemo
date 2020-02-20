@@ -67,81 +67,33 @@ export class ProductListPage implements OnInit {
     this.events.subscribe('changed-product', (data) => {
       this.handleChange(this.products, data.change);
     })
-    // this.events.subscribe('changed-stock-move', (change) => {
-    //   this.handleViewChange(this.products, change);
-    // })
-    // this.events.subscribe('got-database', ()=>{
-    //   this.setFilteredItems();
-    // })
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
   }
 
   async ngOnInit() {
-    console.log("v0.0.6");
     let language:any = await this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang(language);
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-
-
-
-
     this.authService.loggedIn.subscribe(async status => {
       console.log("status ngOnInit", status);
       if (status) {
-        this.logged = true;
         let data = await this.authService.getData();
         this.contact_id = "contact."+data.currentUser.email;
         let contact:any = await this.pouchdbService.getDoc(this.contact_id, true);
 
         if (JSON.stringify(contact) == "{}"){
           console.log("create contact");
-          this.contact = {"name": "Falhado"}
-        //   this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
-        //     let createdDoc = await this.pouchdbService.createDoc({
-        //       "_id": "contact."+data.currentUser.email,
-        //       "name": data.currentUser.displayName,
-        //       "name_legal": null,
-        //       "address": "",
-        //       "phone": "",
-        //       "document": "",
-        //       "code": "#3",
-        //       "section": "salary",
-        //       "email": data.currentUser.email,
-        //       "note": "",
-        //       "customer": true,
-        //       "supplier": true,
-        //       "seller": false,
-        //       "employee": false,
-        //       "user": false,
-        //       "user_details": {},
-        //       "salary": null,
-        //       "currency": {},
-        //       "hire_date": null,
-        //       "salaries": [],
-        //       "advances": [],
-        //       "fixed": true,
-        //       "create_user": "",
-        //       "create_time": "",
-        //       "write_user": "larica",
-        //       "write_time": new Date().toJSON(),
-        //       "docType": "contact",
-        //       "_attachments": {
-        //       "profile.png": {
-        //         "content_type": "image/png",
-        //         "data": base64image
-        //       }
-        //     },
-        //   })
-        //   this.contact = createdDoc;
-        //   console.log("create contact", createdDoc);
-        // });
-      } else {
-        console.log("logged contact", contact);
-        this.contact = contact;
-      }
+          this.events.subscribe('login-success', (data:any)=>{
+            this.logged = true;
+            this.contact = data.contact;
+          })
+        } else {
+          this.logged = true;
+          this.contact = contact;
+        }
 
         this.loading.dismiss();
         let order: any = await this.pouchdbService.searchDocTypeData('sale',"",0);
@@ -165,6 +117,9 @@ export class ProductListPage implements OnInit {
         })
       } else {
         this.logged = false;
+        this.events.subscribe('login-success', (data) => {
+          this.contact = data.contact;
+        })
         this.loading.dismiss();
       }
     });
@@ -187,7 +142,6 @@ export class ProductListPage implements OnInit {
         this.order.amount_unInvoiced += total;
         this.order.residual += total;
         let updatedOrder:any = await this.pouchdbService.updateDoc(this.order);
-        console.log("updatedOrder", updatedOrder);
         this.order._rev = updatedOrder.rev;
 
       } else {
@@ -226,18 +180,15 @@ export class ProductListPage implements OnInit {
           "pay_cond_id": "payment-condition.credit"
           }
           let orderDoc = await this.pouchdbService.createDoc(order);
-          console.log("orderDoc", orderDoc);
+          // console.log("orderDoc", orderDoc);
           this.order = orderDoc;
       }
       // this.events.unsubscribe('open-contact');
     })
     this.menuCtrl.enable(false);
 
-
-
-
     let config: any = (await this.pouchdbService.getDoc('config.profile', true));
-    console.log("config",config);
+    // console.log("config",config);
     if (!config._id){
       let este = await this.pouchdbService.getConnect();
       this.events.subscribe(('end-sync'), async (change) => {
@@ -342,7 +293,6 @@ export class ProductListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ProductListPopover,
       event: myEvent,
@@ -378,26 +328,6 @@ export class ProductListPage implements OnInit {
     this.navCtrl.navigateBack('');
   }
 
-  async createProduct() {
-    this.events.subscribe('create-product', (data) => {
-      if (this.select) {
-        this.events.publish('select-product', {product: data.product});
-      }
-      this.events.unsubscribe('create-product');
-    })
-    if (this.select) {
-      let profileModal = await this.modalCtrl.create({
-        component: ProductPage,
-        componentProps: {
-          "select": true,
-        }
-      })
-      profileModal.present();
-    } else {
-      this.navCtrl.navigateForward('/product', {});
-    }
-  }
-
   getProductsPage(keyword, page, category_id = 'all') {
     return new Promise(async (resolve, reject) => {
       let products: any;
@@ -406,12 +336,6 @@ export class ProductListPage implements OnInit {
       } else {
         products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', category_id, 'name', 'increase')
       }
-      // await this.formatService.asyncForEach(products, async (product: any)=>{
-      //   let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
-      //   ["warehouse.physical.my", product._id],
-      //   ["warehouse.physical.my", product._id+"z"])
-      //   product.stock = viewList && viewList[0] && viewList[0].value || 0;
-      // })
       resolve(products);
     })
   }
@@ -432,164 +356,37 @@ export class ProductListPage implements OnInit {
     })
   }
 
-  async deleteProduct(product) {
-    this.loading = await this.loadingCtrl.create({});
-    await this.loading.present();
-    let viewList: any = await this.pouchdbService.getView('Informes/productUse', 1,
-    [product._id],
-    [product._id+"z"]);
-    if (viewList.length){
-      this.loading.dismiss();
-      let toast = await this.toastCtrl.create({
-      message: "No se puede borrar, producto en uso",
-      duration: 1000
-      });
-      toast.present();
-    } else {
-      await this.pouchdbService.deleteDoc(product);
-      this.loading.dismiss();
-    }
-  }
-
   handleChange(list, change) {
     this.pouchdbService.localHandleChangeData(list, change)
   }
 
-  async handleViewChange(list, change) {
-    list.forEach(async (product:any)=>{
-      // if (product._id == change.id){
-      //   let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
-      //   ["warehouse.physical.my", product._id],
-      //   ["warehouse.physical.my", product._id+"z"])
-      //   product.stock = viewList && viewList[0] && viewList[0].value || 0;
-      //   return;
-      // }
-    })
+  async filterCategory(category) {
+    this.category_id = category._id;
+    this.setFilteredItems();
   }
 
-    // async openOrder() {
-    //   let profileModal = await this.modalCtrl.create({
-    //     component: SalePage,
-    //     componentProps: {
-    //       "select": true,
-    //       "_id": 'sale.5f60137b-2ca5-4291-a1a2-30a68d7e7082',
-    //     }
-    //   })
-    //   profileModal.present();
-    // }
+  goBack(){
+    this.searchTerm = "";
+    this.category_id = 'all';
+    this.setFilteredItems();
+  }
 
-    enableEditMode(){
-      this.editMode = !this.editMode;
-    }
+  async openOrder() {
+    let profileModal = await this.modalCtrl.create({
+      component: SalePage,
+      componentProps: {
+        "select": true,
+        "_id": this.order._id,
+      }
+    })
+    profileModal.present();
+  }
 
-    async filterCategory(category) {
-      this.category_id = category._id;
-      this.setFilteredItems();
-    }
-
-    goBack(){
-      this.searchTerm = "";
-      this.category_id = 'all';
-      this.setFilteredItems();
-    }
-
-    async openOrder() {
-
-      let profileModal = await this.modalCtrl.create({
-        component: SalePage,
-        componentProps: {
-          "select": true,
-          "_id": this.order._id,
-        }
-      })
-      profileModal.present();
-    }
-
-    async login(){
-      this.events.subscribe('login-success', (data) => {
-        this.contact = data.contact;
-        this.events.unsubscribe('login-success');
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: LoginPage,
-        componentProps: {}
-      })
-      profileModal.present();
-    //   let teste = await this.authService.login();
-    //   console.log("teste", teste);
-    //   this.authService.loggedIn.subscribe(async status => {
-    //     console.log("status", status);
-    //     if (status) {
-    //       this.logged = true;
-    //       let data = await this.authService.getData();
-    //       this.contact_id = "contact."+data.currentUser.email;
-    //       let contact:any = await this.pouchdbService.getDoc(this.contact_id, true);
-    //
-    //       if (JSON.stringify(contact) == "{}"){
-    //         this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
-    //           let createdDoc = await this.pouchdbService.createDoc({
-    //             "_id": "contact."+data.currentUser.email,
-    //             "name": data.currentUser.displayName,
-    //             "name_legal": null,
-    //             "address": "",
-    //             "phone": "",
-    //             "document": "",
-    //             "code": "#3",
-    //             "section": "salary",
-    //             "email": data.currentUser.email,
-    //             "note": "",
-    //             "customer": true,
-    //             "supplier": true,
-    //             "seller": false,
-    //             "employee": false,
-    //             "user": false,
-    //             "user_details": {},
-    //             "salary": null,
-    //             "currency": {},
-    //             "hire_date": null,
-    //             "salaries": [],
-    //             "advances": [],
-    //             "fixed": true,
-    //             "create_user": "",
-    //             "create_time": "",
-    //             "write_user": "larica",
-    //             "write_time": new Date().toJSON(),
-    //             "docType": "contact",
-    //             "_attachments": {
-    //               "profile.png": {
-    //                 "content_type": "image/png",
-    //                 "data": base64image
-    //               }
-    //             },
-    //           })
-    //           this.contact = createdDoc;
-    //           console.log("create contact", createdDoc);
-    //         });
-    //       } else {
-    //         console.log("logged contact", contact);
-    //         this.contact = contact;
-    //       }
-    //     // this.contact_name = data.currentUser.displayName;
-    //
-    //
-    //       this.loading.dismiss();
-    //
-    //       this.events.subscribe('changed-sale', (data) => {
-    //         if (data.change.deleted){
-    //           this.order = undefined;
-    //         } else {
-    //           if (data.change.doc.state == 'QUOTATION' || data.change.doc.state == 'CONFIRMED'){
-    //             this.order = data.change.doc;
-    //           } else if (data.change.doc.state == 'PAID'){
-    //             this.order = undefined;
-    //           }
-    //         }
-    //       })
-    //     } else {
-    //       this.logged = false;
-    //       this.loading.dismiss();
-    //     }
-    //   });
-
-    }
+  async login(){
+    let profileModal = await this.modalCtrl.create({
+      component: LoginPage,
+      componentProps: {}
+    })
+    profileModal.present();
+  }
 }
