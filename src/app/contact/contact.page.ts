@@ -204,7 +204,7 @@ export class ContactPage implements OnInit {
 
   logout(){
     this.authService.logout();
-    this.navCtrl.navigateBack(['/product-list', {}]);
+    this.modalCtrl.dismiss();
   }
 
 

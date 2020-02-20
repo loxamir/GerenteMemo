@@ -142,8 +142,6 @@ export class ProductListPage implements OnInit {
         console.log("logged contact", contact);
         this.contact = contact;
       }
-      // this.contact_name = data.currentUser.displayName;
-
 
         this.loading.dismiss();
         let order: any = await this.pouchdbService.searchDocTypeData('sale',"",0);
@@ -508,8 +506,7 @@ export class ProductListPage implements OnInit {
     }
 
     async login(){
-      this.events.subscribe('login-sucess', (data) => {
-        console.log("logins-succc data", data);
+      this.events.subscribe('login-success', (data) => {
         this.contact = data.contact;
         this.events.unsubscribe('login-success');
       })

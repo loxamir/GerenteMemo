@@ -31,13 +31,28 @@
         </ng-container>
       </div>
       <ion-item
-      class="ion-no-padding"
-      class="field-100">
-      <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
-      <ion-input type="text"
-      #phone
-      formControlName="phone"></ion-input>
-    </ion-item>
+        class="ion-no-padding"
+        class="field-100">
+        <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
+        <ion-input type="text"
+        #phone
+        formControlName="phone"></ion-input>
+      </ion-item>
+      <ion-item
+        class="ion-no-padding"
+        class="field-100">
+        <ion-label position="floating">{{'RUC' | translate}}</ion-label>
+        <ion-input type="text"
+        (ionChange)="changedDocument()"
+        formControlName="document"></ion-input>
+      </ion-item>
+      <ion-item
+        class="ion-no-padding"
+        class="field-100">
+        <ion-label position="floating">{{'Razon Social' | translate}}</ion-label>
+        <ion-input type="text"
+        formControlName="name_legal"></ion-input>
+      </ion-item>
     <!-- <ion-item class="ion-no-padding" (click)="selectAddress()" class="field-100">
       <h4 class="field-label">{{'DELIVERY_ADDRESS' | translate }}</h4>
       <h4 class="field-value">{{contactForm.value.address && contactForm.value.address.name || 'SELECT' | translate}}</h4>

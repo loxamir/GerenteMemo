@@ -7,6 +7,7 @@ import { AuthService } from "../services/auth.service";
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { Events } from '../services/events';
 import { RestProvider } from "../services/rest/rest";
+import { ModalController, LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginPage implements OnInit {
       { type: 'required', message: 'PHONE_IS_REQUIRED' }
     ]
   };
+  logged = false;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -29,6 +31,7 @@ export class LoginPage implements OnInit {
     public pouchdbService: PouchdbService,
     public events: Events,
     public restProvider: RestProvider,
+    public modalCtrl: ModalController,
   ) { }
 
   async ngOnInit() {
@@ -40,71 +43,69 @@ export class LoginPage implements OnInit {
     let language:any = await this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang(language);
     this.translate.use(language);
+
+    let teste = await this.authService.login();
+    this.authService.loggedIn.subscribe(async status => {
+      if (status) {
+        this.logged = true;
+        let data = await this.authService.getData();
+        let contact:any = await this.pouchdbService.getDoc("contact."+data.currentUser.email, true);
+        if (JSON.stringify(contact) == "{}"){
+          console.log("wait create contact");
+        } else {
+          console.log("logged contact", contact);
+          this.events.publish('login-success', {contact: contact});
+          this.modalCtrl.dismiss();
+        }
+      } else {
+        this.logged = false;
+      }
+    });
   }
 
-  async doLogin(){
+  async createContact(){
     if (this.loginForm.value.phone){
-      let teste = await this.authService.login();
-      console.log("teste", teste);
-      this.authService.loggedIn.subscribe(async status => {
-        console.log("status", status);
-        if (status) {
-          let data = await this.authService.getData();
-          // this.contact_id = "contact."+data.currentUser.email;
-          let contact:any = await this.pouchdbService.getDoc("contact."+data.currentUser.email, true);
-
-          if (JSON.stringify(contact) == "{}"){
-            this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
-              let createdDoc = await this.pouchdbService.createDoc({
-                "_id": "contact."+data.currentUser.email,
-                "name": data.currentUser.displayName,
-                "name_legal": this.loginForm.value.name_legal,
-                "address": "",
-                "phone": this.loginForm.value.phone,
-                "document": this.loginForm.value.document,
-                "code": "#3",
-                "section": "salary",
-                "email": data.currentUser.email,
-                "note": "",
-                "customer": true,
-                "supplier": true,
-                "seller": false,
-                "employee": false,
-                "user": false,
-                "user_details": {},
-                "salary": null,
-                "currency": {},
-                "hire_date": null,
-                "salaries": [],
-                "advances": [],
-                "fixed": true,
-                "create_user": "",
-                "create_time": "",
-                "write_user": "larica",
-                "write_time": new Date().toJSON(),
-                "docType": "contact",
-                "_attachments": {
-                  "profile.png": {
-                    "content_type": "image/png",
-                    "data": base64image
-                  }
-                },
-              })
-              // this.contact = createdDoc;
-              console.log("create contact", createdDoc);
-              this.events.publish('login-success', {contact: createdDoc});
-            });
-          } else {
-            console.log("logged contact", contact);
-            this.events.publish('login-success', {contact: contact});
-            // this.contact = contact;
-          }
-        // this.contact_name = data.currentUser.displayName;
-
-
-          // this.loading.dismiss();
-
-        }
+      let data = await this.authService.getData();
+      this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
+        let createdDoc = await this.pouchdbService.createDoc({
+          "_id": "contact."+data.currentUser.email,
+          "name": data.currentUser.displayName,
+          "name_legal": this.loginForm.value.name_legal,
+          "address": "",
+          "phone": this.loginForm.value.phone,
+          "document": this.loginForm.value.document,
+          "code": "#3",
+          "section": "salary",
+          "email": data.currentUser.email,
+          "note": "",
+          "customer": true,
+          "supplier": true,
+          "seller": false,
+          "employee": false,
+          "user": false,
+          "user_details": {},
+          "salary": null,
+          "currency": {},
+          "hire_date": null,
+          "salaries": [],
+          "advances": [],
+          "fixed": true,
+          "create_user": "",
+          "create_time": "",
+          "write_user": "larica",
+          "write_time": new Date().toJSON(),
+          "docType": "contact",
+          "_attachments": {
+            "profile.png": {
+              "content_type": "image/png",
+              "data": base64image
+            }
+          },
+        })
+        // this.contact = createdDoc;
+        let contact = await this.pouchdbService.getDoc("contact."+data.currentUser.email, true)
+        this.events.publish('login-success', {contact: contact});
+        this.modalCtrl.dismiss();
       });
     } else {
       this.loginForm.controls.phone.markAsTouched();
