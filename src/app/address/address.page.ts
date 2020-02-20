@@ -8,7 +8,6 @@ import { ActivatedRoute } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
 import { Events } from '../services/events';
-// import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
 declare var google;
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -56,35 +55,15 @@ export class AddressPage implements OnInit {
     private plt: Platform,
   ) {
     this._id = this.route.snapshot.paramMap.get('_id');
-    // this.select = this.route.snapshot.paramMap.get('select');
-    // this.customer = this.route.snapshot.paramMap.get('customer');
-    // this.supplier = this.route.snapshot.paramMap.get('supplier');
-    // this.seller = this.route.snapshot.paramMap.get('seller');
-    // this.employee = this.route.snapshot.paramMap.get('employee');
   }
 
   async ngOnInit() {
     this.addressForm = this.formBuilder.group({
       name: new FormControl('Casa'),
-      // name_legal: new FormControl(null),
-      // address: new FormControl(null),
       latitude: new FormControl(''),
       longitude: new FormControl(''),
       contact_id: new FormControl(''),
-      // section: new FormControl('salary'),
-      // phone: new FormControl(''),
       note: new FormControl(''),
-      // customer: new FormControl(this.customer || false),
-      // supplier: new FormControl(this.supplier || false),
-      // seller: new FormControl(this.seller || false),
-      // employee: new FormControl(this.employee || false),
-      // user: new FormControl(false),
-      // user_details: new FormControl({}),
-      // salary: new FormControl(null),
-      // currency: new FormControl({}),
-      // hire_date: new FormControl(undefined),
-      // salaries: new FormControl([]),
-      // advances: new FormControl([]),
       fixed: new FormControl(false),
       _id: new FormControl(''),
       create_user: new FormControl(''),
@@ -102,7 +81,6 @@ export class AddressPage implements OnInit {
 
       console.log("status", status);
       if (status) {
-        // this.logged = true;
         let data = await this.authService.getData();
         this.contact_id = "contact."+data.currentUser.email;
         this.addressForm.patchValue({
@@ -206,31 +184,11 @@ showMap(latitude, longitude){
     infowindow.open(this.map, marker);
   });
   this.map.setZoom(20);
-    // this.getGPSCordinates();
-
-  //   this.authService.loggedIn.subscribe(async status => {
-  //     console.log("estado", status);
-  //     if (status) {
-  //       let data = await this.authService.getData();
-  //       // this._id = "address."+data.currentUser.email;
-  //       if (this._id) {
-  //         this.getAddress(this._id).then((data) => {
-  //           this.addressForm.patchValue(data);
-  //           this.loading.dismiss();
-  //         });
-  //       } else {
-          this.loading.dismiss();
-  //       }
-  //     } else {
-  //       // this.logged = false;
-  //     }
-  //   });
+  this.loading.dismiss();
   }
 
   getGPSCordinates(){
     this.geolocation.getCurrentPosition().then((resp) => {
-     // resp.coords.latitude
-     // resp.coords.longitude
      console.log("resp", resp);
     }).catch((error) => {
       console.log('Error getting location', error);
@@ -249,30 +207,6 @@ showMap(latitude, longitude){
       this.getLegalName();
     }
   }
-  //
-  // async editUser(user) {
-  //   let profileModal = await this.modalCtrl.create({
-  //     component: UserPage,
-  //     componentProps: this.addressForm.value.user_details
-  //   });
-  //   await profileModal.present();
-  //   const { data } = await profileModal.onDidDismiss();
-  //   if (data) {
-  //     user["name"] = data.name;
-  //     user["username"] = data.username;
-  //     user["sale"] = data.sale;
-  //     user["purchase"] = data.purchase;
-  //     user["finance"] = data.finance;
-  //     user["service"] = data.service;
-  //     user["report"] = data.report;
-  //     user["config"] = data.config;
-  //     user["registered"] = data.registered;
-  //     this.addressForm.patchValue({
-  //       user_details: user,
-  //     });
-  //     this.justSave();
-  //   }
-  // }
 
   justSave() {
     if (this._id) {
@@ -289,7 +223,6 @@ showMap(latitude, longitude){
   buttonSave() {
     console.log("buttonSave");
     if (this._id) {
-      console.log("udate");
       this.updateAddress(this.addressForm.value);
       if (this.select) {
         this.modalCtrl.dismiss();
@@ -298,7 +231,6 @@ showMap(latitude, longitude){
         this.events.publish('open-address', {address: this.addressForm.value});
       }
     } else {
-      console.log("create");
       this.createAddress(this.addressForm.value).then((doc: any) => {
         this._id = doc.doc.id;
         if (this.select) {
@@ -348,15 +280,9 @@ showMap(latitude, longitude){
   createAddress(address) {
     return new Promise((resolve, reject) => {
       address.docType = 'address';
-      // if (address.code != '') {
-      //   this.pouchdbService.createDoc(address).then(doc => {
-      //     resolve({ doc: doc, address: address });
-      //   });
-      // } else {
-        this.pouchdbService.createDoc(address).then(doc => {
-          resolve({ doc: doc, address: address });
-        });
-      // }
+      this.pouchdbService.createDoc(address).then(doc => {
+        resolve({ doc: doc, address: address });
+      });
     });
   }
 

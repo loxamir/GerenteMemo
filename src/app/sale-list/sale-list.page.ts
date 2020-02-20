@@ -6,7 +6,6 @@ import {
 import 'rxjs/Rx';
 import { File } from '@ionic-native/file/ngx';
 import { SalePage } from '../sale/sale.page';
-// import { SalesService } from './sales.service';
 import { SalesPopover } from './sale-list.popover';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -34,7 +33,6 @@ export class SaleListPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    // public salesService: SalesService,
     public authService: AuthService,
     public loadingCtrl: LoadingController,
     public popoverCtrl: PopoverController,
@@ -79,7 +77,6 @@ export class SaleListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: SalesPopover,
       event: myEvent,
@@ -102,8 +99,6 @@ export class SaleListPage implements OnInit {
       if (status) {
         this.logged = true;
         let data = await this.authService.getData();
-        // console.log("got email", data.currentUser.email)
-        // this.contact_id = "contact."+data.currentUser.email;
         this.setFilteredItems();
       } else {
         this.logged = false;

@@ -6,7 +6,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { ProductService } from './product.service';
-import { ConfigService } from '../config/config.service';
 import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { AuthService } from "../services/auth.service";
@@ -39,8 +38,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     theoreticalStock: number = 0;
     opened: boolean = false;
     select;
-    barcode = '';
-    editMode = false;
     avatar = undefined;
     logged: boolean = false;
     asking: boolean = false;
@@ -54,7 +51,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public alertCtrl: AlertController,
       public platform: Platform,
       public productService: ProductService,
-      public configService: ConfigService,
       public route: ActivatedRoute,
       public modalCtrl: ModalController,
       public formBuilder: FormBuilder,
@@ -67,13 +63,8 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       if (this.route.snapshot.paramMap.get('_id')){
         this.opened = true;
       }
-      this.barcode = this.route.snapshot.paramMap.get('barcode');
       this.cost = this.route.snapshot.paramMap.get('cost');
       this.stock = this.route.snapshot.paramMap.get('stock');
-    }
-
-    enableEditMode(){
-      this.editMode = !this.editMode;
     }
 
     async ngOnInit() {
@@ -88,7 +79,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         brand: new FormControl({}),
         cost: new FormControl(this.cost||null),
         code: new FormControl(''),
-        barcode: new FormControl(this.barcode),
+        barcode: new FormControl(''),
         tax: new FormControl(this.route.snapshot.paramMap.get('iva')||'iva10'),
         type: new FormControl(this.route.snapshot.paramMap.get('type')||'product'),
         stock: new FormControl(this.stock||null),
@@ -151,28 +142,8 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.loading.dismiss();
         });
       } else {
-        this.editMode = true;
-        this.getDefaultCategory();
         this.loading.dismiss();
       }
-    }
-
-    getBase64Image(imgUrl, callback) {
-      var img = new Image();
-      // onload fires when the image is fully loadded, and has width and height
-      img.onload = function(){
-        var canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        var dataURL = canvas.toDataURL("image/png"),
-            dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-        callback(dataURL); // the base64 string
-      };
-      // set attributes and src
-      img.setAttribute('crossOrigin', 'anonymous'); //
-      img.src = imgUrl;
     }
 
     async askProduct(){
@@ -199,18 +170,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       }
     }
 
-    getDefaultCategory(){
-      if (this._id){
-        //TODO: find a way to avoid the loading time
-      } else {
-        this.pouchdbService.getDoc('category.'+this.productForm.value.type).then((category)=>{
-          this.productForm.patchValue({
-            category: category
-          })
-        })
-      }
-    }
-
     async authLogin() {
       let profileModal = await this.modalCtrl.create({
         component: LoginPage,
@@ -218,244 +177,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       })
       profileModal.present();
     }
-
-    goNextStep() {
-      if (this.productForm.value.name==null){
-        this.name.setFocus();
-      }
-      else if (this.productForm.value.price==null){
-        this.price.setFocus();
-      }
-      else if (this.productForm.value.cost==null){
-        this.cost.setFocus();
-      }
-      else if (this.productForm.value.stock==null){
-        this.stock.setFocus();
-        return;
-      }
-      else if (this.productForm.dirty) {
-        this.buttonSave();
-      } else {
-        if (this.opened){
-          this.navCtrl.navigateBack('/product-list');
-          // .then(() => {
-            this.events.publish('open-product', {product: this.productForm.value});
-          // });
-        } else {
-          this.navCtrl.navigateBack('/product-list');
-          // .then(() => {
-            this.events.publish('create-product', {product: this.productForm.value});
-          // });
-        }
-      }
-    }
-
-    justSave() {
-      let product = Object.assign({}, this.productForm.value);
-      // if(this.productForm.value.stock != this.theoreticalStock){
-        product.stock = this.theoreticalStock;
-      // }
-      if (this._id){
-        this.productService.updateProduct(product).then(doc=>{
-          this.createInventoryAdjustment();
-          this.productForm.markAsPristine();
-        })
-      } else {
-        this.productService.createProduct(product).then(doc => {
-          //console.log("docss", doc);
-          this.productForm.patchValue({
-            _id: doc['id'],
-          });
-          this._id = doc['id'];
-          this.createInventoryAdjustment();
-          this.productForm.markAsPristine();
-        });
-      }
-    }
-    buttonSave() {
-      this.productForm.patchValue({
-          stock: parseFloat(this.productForm.value.stock) || 0,
-          cost: parseFloat(this.productForm.value.cost) || 0,
-          price: parseFloat(this.productForm.value.price) || 0,
-          stock_min: parseFloat(this.productForm.value.stock_min) || 0,
-      })
-
-      let product = Object.assign({}, this.productForm.value);
-      // console.log("product", product);
-      // if(this.productForm.value.stock != this.theoreticalStock){
-        product.stock = this.theoreticalStock;
-      // }
-      if (this._id){
-        this.productService.updateProduct(product, this.avatar).then(doc=>{
-          this.createInventoryAdjustment();
-        })
-        if (this.select){
-          this.modalCtrl.dismiss();
-          this.events.publish('open-product', {product: this.productForm.value});
-        } else {
-          this.navCtrl.navigateBack('/product-list');
-          // .then(() => {
-            this.events.publish('open-product', {product: this.productForm.value});
-          // });
-        }
-      } else {
-          //console.log("docss", doc);
-        this.productService.createProduct(product, this.avatar).then(async (doc: any) => {
-          let produ:any = await this.pouchdbService.getDoc(doc['id'])
-          this.productForm.patchValue({
-            _id: doc['id'],
-            code: produ.code
-          });
-          this._id = doc['id'];
-          this.createInventoryAdjustment();
-          if (this.select){
-            this.modalCtrl.dismiss();
-            this.events.publish('create-product', {product: this.productForm.value});
-          } else {
-            this.navCtrl.navigateBack('/product-list');
-            // .then(() => {
-              this.events.publish('create-product', {product: this.productForm.value});
-            // });
-          }
-        });
-      }
-    }
-
-    createInventoryAdjustment(){
-      if(this.productForm.value.stock != this.theoreticalStock){
-        this.configService.getConfigDoc().then(async (config: any)=>{
-          let difference = (this.productForm.value.stock - this.theoreticalStock);
-          let warehouseFrom_id = 'warehouse.inventoryAdjust';
-          let warehouseTo_id  = config.warehouse_id;
-          let accountFrom_id = 'account.income.positiveInventory';
-          let accountTo_id  = 'account.other.stock';
-          if (difference < 0) {
-            warehouseFrom_id  = config.warehouse_id;
-            warehouseTo_id = 'warehouse.inventoryAdjust';
-            accountFrom_id = 'account.other.stock';
-            accountTo_id  = 'account.expense.negativeInventory';
-          }
-          let docs: any = await this.pouchdbService.getList([
-            warehouseFrom_id,
-            warehouseTo_id,
-            accountFrom_id,
-            accountTo_id,
-          ]);
-          var doc_dict = {};
-          docs.forEach(row=>{
-            doc_dict[row.id] = row.doc.name;
-          })
-
-          this.createCashMove({
-            'docType': "cash-move",
-            'name': "Ajuste "+this.productForm.value.code,
-            'contact_id': "contact.myCompany",
-            'contact_name': config.name,
-            'amount': (parseFloat(this.productForm.value.cost)||0)*Math.abs(difference),
-            'origin_id': this.productForm.value._id,
-            // "project_id": this.productForm.value.project_id,
-            'date': new Date(),
-            'accountFrom_id': accountFrom_id,
-            'accountFrom_name': doc_dict[accountFrom_id],
-            'accountTo_id': accountTo_id,
-            'accountTo_name': doc_dict[accountTo_id],
-          }).then((plan: any) => {
-            //console.log("Plan", plan);
-            // data['_id'] = plan.id;
-          })
-        });
-      }
-    }
-
-
-    async createCashMove(viewData){
-      let cash = Object.assign({}, viewData);
-      cash.amount = cash.amount || 0;
-      cash.docType = 'cash-move';
-      if (viewData.accountTo_id.split(".")[1] == 'receivable'){
-        cash.amount_residual = parseFloat(cash.amount);
-        if (! cash.payments){
-          cash.payments = [];
-        }
-        if (! cash.amount_unInvoiced){
-          cash.amount_unInvoiced = cash.amount;
-        }
-        if (! cash.invoices){
-          cash.invoices = [];
-        }
-        cash.amount_residual = parseFloat(cash.amount);
-      } else if (viewData.accountFrom_id.split(".")[1] == 'payable'){
-        cash.amount_residual = parseFloat(cash.amount);
-        if (! cash.payments){
-          cash.payments = [];
-        }
-        if (! cash.amount_unInvoiced){
-          cash.amount_unInvoiced = cash.amount;
-        }
-        if (! cash.invoices){
-          cash.invoices = [];
-        }
-      } else {
-        delete cash.amount_residual;
-        delete cash.payments;
-      }
-      let docs: any = await this.pouchdbService.getList([
-        cash.accountFrom_id,
-        cash.accountTo_id,
-        cash.contact_id,
-      ]);
-      let docDict = {}
-      docs.forEach(item=>{
-        docDict[item.id] = item;
-      })
-      // console.log("docs", docDict);
-      // console.log("cash", cash);
-
-      if (cash.contact){
-        cash.contact_name = cash.contact.name;
-      } else {
-        if (!cash.contact_id){
-          cash.contact_id = 'contact.unknown';
-        }
-        cash.contact_name = docDict[cash.contact_id].doc.name;
-      }
-      if (cash.accountFrom){
-        cash.accountFrom_name = cash.accountFrom.name;
-      } else {
-        // console.log("docDict[cash.accountFrom_id]", docDict[cash.accountFrom_id])
-        cash.accountFrom_name = docDict[cash.accountFrom_id].doc.name;
-      }
-      if (cash.accountTo){
-        cash.accountTo_name = cash.accountTo.name;
-      } else {
-        cash.accountTo_name = docDict[cash.accountTo_id].doc.name;
-      }
-      return new Promise((resolve, reject)=>{
-        // this.configService.getSequence('cash_move').then((code) => {
-          // cash['code'] = code;
-          // cash['code'] = this.formatService.string_pad(4, code, "right", "0");
-          if (!cash.origin_id){
-            cash.origin_id = "M"+Date.now();
-          }
-          cash.amount = parseFloat(cash.amount);
-          delete cash.cash;
-          delete cash.contact;
-          delete cash.project;
-          delete cash.accountTo;
-          delete cash.accountFrom;
-          cash.currency_id = cash.currency && cash.currency._id || cash.currency_id || '';
-          cash.check_id = cash.check && cash.check._id || cash.check_id || '';
-          delete cash.currency;
-          delete cash.check;
-          return this.pouchdbService.createDoc(cash).then((data: any) => {
-            cash.id = data.id;
-            resolve(cash);
-          })
-        // });
-      });
-    }
-
-
 
     setLanguage(lang: LanguageModel){
       let language_to_set = this.translate.getDefaultLang();

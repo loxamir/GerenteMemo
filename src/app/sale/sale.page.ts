@@ -9,7 +9,7 @@ import { LanguageModel } from "../services/language/language.model";
 import { SaleService } from './sale.service';
 import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 import { AddressListPage } from '../address-list/address-list.page';
-import { ConfigService } from '../config/config.service';
+import { ConfigService } from '../services/config.service';
 import { FormatService } from '../services/format.service';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
 // import { SalePopover } from './sale.popover';

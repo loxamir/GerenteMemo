@@ -7,12 +7,9 @@ import { LanguageModel } from "../services/language/language.model";
 import { ActivatedRoute } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
-// import { UserPage } from '../user/user.page';
 import { AuthService } from "../services/auth.service";
-// import { AddressListPage } from '../address-list/address-list.page';
 import { ContactService } from './contact.service';
 import { Events } from '../services/events';
-// declare var google;
 
 @Component({
   selector: 'app-contact',

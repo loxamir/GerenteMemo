@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ProductService } from '../product/product.service';
-import { ConfigService } from '../config/config.service';
+import { ConfigService } from '../services/config.service';
 
 @Injectable({
   providedIn: 'root'
