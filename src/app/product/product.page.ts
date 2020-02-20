@@ -10,8 +10,8 @@ import { ConfigService } from '../config/config.service';
 import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { AuthService } from "../services/auth.service";
-import { ProductListPage } from '../product-list/product-list.page';
 import { Events } from '../services/events';
+import { LoginPage } from '../login/login.page';
 
 @Component({
   selector: 'app-product',
@@ -28,7 +28,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
   @ViewChild('cost', { static: true }) cost;
   @ViewChild('type', { static: true }) type;
   @ViewChild('stock', { static: false }) stock;
-  // @ViewChild('barcode') barcodeField;
 
   @ViewChild('category', { static: true }) category;
   @ViewChild('brand', { static: true }) brand;
@@ -49,30 +48,20 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
     constructor(
       public navCtrl: NavController,
-      // public modal: ModalController,
       public loadingCtrl: LoadingController,
       public translate: TranslateService,
       public languageService: LanguageService,
       public alertCtrl: AlertController,
-      // public imagePicker: ImagePicker,
-      // public cropService: Crop,
       public platform: Platform,
       public productService: ProductService,
       public configService: ConfigService,
       public route: ActivatedRoute,
       public modalCtrl: ModalController,
       public formBuilder: FormBuilder,
-      // public base64: Base64,
       public events:Events,
-      // public camera: Camera,
       public pouchdbService: PouchdbService,
-      // public stockMoveService: StockMoveService,
-      // public cashMoveService: CashMoveService,
       public authService: AuthService,
     ) {
-
-
-
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       if (this.route.snapshot.paramMap.get('_id')){
@@ -89,7 +78,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
 
     async ngOnInit() {
       setTimeout(() => {
-        // this.name.setFocus();
         this.productForm.markAsPristine();
       }, 400);
       this.productForm = this.formBuilder.group({
@@ -122,53 +110,17 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       });
 
       this.authService.loggedIn.subscribe(async status => {
-          if (status) {
-            let data = await this.authService.getData();
-            let contact = await this.pouchdbService.getDoc("contact."+data.currentUser.email);
-            //check if contact_id exists
-            if (JSON.stringify(contact) == "{}"){
-              this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
-                let createdDoc = await this.pouchdbService.createDoc({
-                  "_id": "contact."+data.currentUser.email,
-                  "name": data.currentUser.displayName,
-                  "name_legal": null,
-                  "address": "",
-                  "phone": "",
-                  "document": "",
-                  "code": "#3",
-                  "section": "salary",
-                  "email": data.currentUser.email,
-                  "note": "",
-                  "customer": true,
-                  "supplier": false,
-                  "seller": false,
-                  "employee": false,
-                  "user": false,
-                  "user_details": {},
-                  "salary": null,
-                  "currency": {},
-                  "hire_date": null,
-                  "salaries": [],
-                  "advances": [],
-                  "fixed": true,
-                  "create_user": "",
-                  "create_time": "",
-                  "write_user": "larica",
-                  "write_time": new Date().toJSON(),
-                  "docType": "contact",
-                  "_attachments": {
-                  "profile.png": {
-                    "content_type": "image/png",
-                    "data": base64image
-                  }
-                },
-              })
-            });
-          }
-          this.logged = true;
-          if(this.asking){
-            this.events.publish('add-product', {product: this.productForm.value});
-            this.exitPage();
+        if (status) {
+          let data = await this.authService.getData();
+          let contact = await this.pouchdbService.getDoc("contact."+data.currentUser.email);
+          if (JSON.stringify(contact) != "{}"){
+            this.logged = true;
+            if(this.asking){
+              this.events.publish('add-product', {product: this.productForm.value});
+              this.exitPage();
+            }
+          } else {
+            console.log("create user");
           }
         } else {
           this.logged = false;
@@ -258,39 +210,45 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     async authLogin() {
-      this.authService.login();
+      this.events.subscribe('login-success', (data) => {
+        this.events.unsubscribe('login-success');
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: LoginPage,
+        componentProps: {}
+      })
+      profileModal.present();
     }
 
     goNextStep() {
-        if (this.productForm.value.name==null){
-          this.name.setFocus();
-        }
-        else if (this.productForm.value.price==null){
-          this.price.setFocus();
-        }
-        else if (this.productForm.value.cost==null){
-          this.cost.setFocus();
-        }
-        else if (this.productForm.value.stock==null){
-          this.stock.setFocus();
-          return;
-        }
-        else if (this.productForm.dirty) {
-          this.buttonSave();
+      if (this.productForm.value.name==null){
+        this.name.setFocus();
+      }
+      else if (this.productForm.value.price==null){
+        this.price.setFocus();
+      }
+      else if (this.productForm.value.cost==null){
+        this.cost.setFocus();
+      }
+      else if (this.productForm.value.stock==null){
+        this.stock.setFocus();
+        return;
+      }
+      else if (this.productForm.dirty) {
+        this.buttonSave();
+      } else {
+        if (this.opened){
+          this.navCtrl.navigateBack('/product-list');
+          // .then(() => {
+            this.events.publish('open-product', {product: this.productForm.value});
+          // });
         } else {
-          if (this.opened){
-            this.navCtrl.navigateBack('/product-list');
-            // .then(() => {
-              this.events.publish('open-product', {product: this.productForm.value});
-            // });
-          } else {
-            this.navCtrl.navigateBack('/product-list');
-            // .then(() => {
-              this.events.publish('create-product', {product: this.productForm.value});
-            // });
-          }
+          this.navCtrl.navigateBack('/product-list');
+          // .then(() => {
+            this.events.publish('create-product', {product: this.productForm.value});
+          // });
         }
-
+      }
     }
 
     justSave() {
