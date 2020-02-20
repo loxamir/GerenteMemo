@@ -23,14 +23,9 @@ export class ContactPage implements OnInit {
   @ViewChild('name', { static: true }) name;
   @ViewChild('document', { static: true }) document;
   @ViewChild('phone', { static: true }) phone;
-  // @ViewChild('address', { static: true }) address;
-  @ViewChild('salary', { static: false }) salary;
-  // @ViewChild('map', { static: false }) mapElement: ElementRef;
-  // map: any;
 
   contactForm: FormGroup;
   loading: any;
-  languages: Array<LanguageModel>;
   _id: string;
   opened: boolean = false;
   select;
@@ -326,9 +321,9 @@ export class ContactPage implements OnInit {
     // else if (this.contactForm.value.address == null) {
     //   this.address.setFocus();
     // }
-    else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
-      this.salary.setFocus();
-    }
+    // else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
+    //   this.salary.setFocus();
+    // }
   }
 
   getLegalName() {
@@ -364,9 +359,9 @@ export class ContactPage implements OnInit {
     else if (this.contactForm.value.address == null) {
       return true;
     }
-    else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
-      return true;
-    }
+    // else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
+    //   return true;
+    // }
     else {
       return false;
     }

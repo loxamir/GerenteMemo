@@ -444,5 +444,6 @@
   "CANCEL_ORDER": "Cancelar Pedido",
   "SURE_CANCEL_ORDER": "Tem certeza que deseja cancelar este pedido?",
   "ADD": "Adicionar",
+  "PHONE_IS_REQUIRED": "Numero de Telefone é obrigatorio",
   "RESULT": "Resultado"
 }

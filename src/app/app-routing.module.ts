@@ -44,6 +44,10 @@ const routes: Routes = [
   { path: 'sale-list', loadChildren: './sale-list/sale-list.module#SaleListPageModule' },
   // { path: 'payment-condition', loadChildren: './payment-condition/payment-condition.module#PaymentConditionPageModule' },
   { path: 'payment-condition-list', loadChildren: './payment-condition-list/payment-condition-list.module#PaymentConditionListPageModule' },
+  {
+    path: 'login',
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+  },
   // { path: 'advance', loadChildren: './advance/advance.module#AdvancePageModule' },
   // { path: 'config', loadChildren: './config/config.module#ConfigPageModule' },
   // { path: 'invoice-config', loadChildren: './invoice-config/invoice-config.module#InvoiceConfigPageModule' },

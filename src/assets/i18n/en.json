@@ -441,5 +441,6 @@
   "CANCEL_ORDER": "Cancel Order",
   "SURE_CANCEL_ORDER": "You really want cancel this order?",
   "ADD": "Add",
+  "PHONE_IS_REQUIRED": "Phone is required",
   "RESULT": "Result"
 }

@@ -69,6 +69,7 @@ import { AddressListPageModule } from './address-list/address-list.module';
 import { ContactPageModule } from './contact/contact.module';
 import { AddressPageModule } from './address/address.module';
 import { ProductPageModule } from './product/product.module';
+import { LoginPageModule } from './login/login.module';
 // import { DiscountPageModule } from './discount/discount.module';
 
 // import { CheckListPageModule } from './check-list/check-list.module';
@@ -118,6 +119,7 @@ import { SaleListPageModule } from './sale-list/sale-list.module';
     // TabsPageModule,
     SalePageModule,
     ContactPageModule,
+    LoginPageModule,
     SaleListPageModule,
     // LoginPageModule,
     AddressPageModule,

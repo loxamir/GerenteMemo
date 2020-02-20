@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="loginForm">
+    <ion-item class="ion-no-padding" class="field-100">
+      <ion-label position="floating">{{'PHONE'|translate}}</ion-label>
+      <ion-input type="text" #phone formControlName="phone"></ion-input>
+    </ion-item>
+    <div class="validation-errors" style="width: 100%;background:white;">
+      <ng-container *ngFor="let validation of validation_messages.phone">
+        <div style="padding: 5px;" class="error-message" *ngIf="loginForm.get('phone').hasError(validation.type) && (loginForm.get('phone').dirty || loginForm.get('phone').touched)">
+          {{ validation.message|translate }}
+        </div>
+      </ng-container>
+    </div>
+    <h1
+    style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 8px;margin-bottom: 5px;color: white;"
+    class="ion-no-padding">
+      Datos de Facturación (opcional)
+    </h1>
+    <ion-item class="ion-no-padding" class="field-100">
+      <ion-label position="floating">{{'RUC'|translate}}</ion-label>
+      <ion-input type="text" formControlName="document" (ionChange)="changedDocument()"></ion-input>
+    </ion-item>
+    <ion-item class="ion-no-padding" class="field-100">
+      <ion-label position="floating">{{'Razon Social'|translate}}</ion-label>
+      <ion-input type="text" formControlName="name_legal"></ion-input>
+    </ion-item>
+  </form>
+
+  <ion-button (click)="doLogin()" class="button-100">
+    <ion-icon name="logo-facebook" style="font-size:25px"></ion-icon>
+    <div style="padding: 5px;">
+      Entrar
+    </div>
+  </ion-button>
+
+</ion-content>
