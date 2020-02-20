@@ -261,7 +261,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         }
     }
 
-    private exitPage() {
+    exitPage() {
       if (this.select){
         this.modalCtrl.dismiss();
       } else {
