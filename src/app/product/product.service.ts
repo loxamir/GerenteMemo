@@ -38,12 +38,6 @@ export class ProductService {
         })
         console.log("products", product['products']);
         product.stock = 0;
-        if (product._attachments && product._attachments['avatar.png']) {
-          let avatar = product._attachments['avatar.png'].data;
-          product.image = "data:image/png;base64," + avatar;
-        } else {
-          product.image = "./assets/images/sem_foto.jpg";
-        }
         resolve(product);
       });
     });

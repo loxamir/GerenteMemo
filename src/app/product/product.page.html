@@ -21,7 +21,16 @@
   <form class="sample-form validations-form" [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)" style="background: white;">
       <ion-row style="background: white;">
         <ion-col size="3">
-          <img [src]="productForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="height: 74px;display: block;margin-left: auto;margin-right: auto;">
+          <img
+          alt="Logo del producto"
+          style="height: 74px;display: block;margin-left: auto;margin-right: auto;"
+          [src]="'data:image/png;base64,'+productForm.value._attachments['avatar.png'].data"
+          *ngIf="productForm.value._attachments && productForm.value._attachments['avatar.png']">
+          <img
+          alt="Logo del producto"
+          style="height: 74px;display: block;margin-left: auto;margin-right: auto;"
+          src="./assets/images/sem_foto.jpg"
+          *ngIf="!(productForm.value._attachments && productForm.value._attachments['avatar.png'])">
         </ion-col>
         <ion-col>
           <ion-row>

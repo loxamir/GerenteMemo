@@ -27,7 +27,9 @@ export class ProductListPopover {
   async profile() {
     let profileModal = await this.modalCtrl.create({
       component: ContactPage,
-      componentProps: {}
+      componentProps: {
+        select: true
+      }
     })
     profileModal.present();
     // this.navCtrl.navigateForward(['/contact', {}]);

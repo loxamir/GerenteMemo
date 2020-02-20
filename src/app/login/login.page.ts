@@ -23,6 +23,8 @@ export class LoginPage implements OnInit {
     ]
   };
   logged = false;
+  contact_name;
+  contact_picture;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -50,6 +52,11 @@ export class LoginPage implements OnInit {
       if (status) {
         this.logged = true;
         let data = await this.authService.getData();
+        this.contact_name = data.currentUser.displayName;
+
+        this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
+          this.contact_picture = base64image;
+        })
         let contact:any = await this.pouchdbService.getDoc("contact."+data.currentUser.email, true);
         if (JSON.stringify(contact) == "{}"){
           console.log("wait create contact");

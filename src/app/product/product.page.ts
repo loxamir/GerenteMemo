@@ -98,6 +98,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         sizes: new FormControl([]),
         size: new FormControl(),
         description: new FormControl(''),
+        _attachments: new FormControl(),
       });
 
       this.authService.loggedIn.subscribe(async status => {

@@ -86,6 +86,7 @@ export class ContactPage implements OnInit {
       create_time: new FormControl(''),
       write_user: new FormControl(''),
       write_time: new FormControl(''),
+      _attachments: new FormControl(),
     });
     let language: any = await this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang(language);

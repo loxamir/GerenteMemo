@@ -12,27 +12,7 @@ export class ContactService {
   ) {}
 
   getContact(doc_id): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      this.pouchdbService.getDoc(doc_id, true).then(((pouchData: any) => {
-        let getList = [
-          pouchData['address_id'],
-        ];
-        this.pouchdbService.getList(getList).then((docs: any[])=>{
-          var doc_dict = {};
-          docs.forEach(row=>{
-            doc_dict[row.id] = row.doc;
-          })
-          pouchData.address = doc_dict[pouchData.address_id] || {};
-          if (pouchData._attachments && pouchData._attachments['profile.png']) {
-            let profile = pouchData._attachments['profile.png'].data;
-            pouchData.image = "data:image/png;base64," + profile;
-          } else {
-            pouchData.image = "./assets/images/sem_foto.jpg";
-          }
-          resolve(pouchData);
-        })
-      }))
-    })
+    return this.pouchdbService.getDoc(doc_id, true)
   }
 
   createContact(contact){
