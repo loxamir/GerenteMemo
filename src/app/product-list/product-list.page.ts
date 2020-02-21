@@ -187,10 +187,9 @@ export class ProductListPage implements OnInit {
     let config: any = (await this.pouchdbService.getDoc('config.profile', true));
     // console.log("config",config);
     if (!config._id){
-      let este = await this.pouchdbService.getConnect();
       this.events.subscribe(('end-sync'), async (change) => {
         if (!config._id){
-          config = (await this.pouchdbService.getDoc('config.profile', true));
+          config = await this.pouchdbService.getDoc('config.profile', true);
           this.config = config;
           this.setPromoted(config);
         }
@@ -201,7 +200,9 @@ export class ProductListPage implements OnInit {
             this.searchBar.setFocus();
           }, 200);
         }
-        this.events.unsubscribe('end-sync')
+        if (config._id){
+          this.events.unsubscribe('end-sync');
+        }
       })
     } else {
       this.config = config;
