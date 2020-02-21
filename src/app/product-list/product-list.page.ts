@@ -219,6 +219,7 @@ export class ProductListPage implements OnInit {
 
   async setPromoted(config){
     let getList = [];
+    config.promoted_products = config.promoted_products || [];
     config.promoted_products.forEach(product=>{
       getList.push(product.product_id);
     })
