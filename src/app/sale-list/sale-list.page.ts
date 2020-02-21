@@ -4,7 +4,6 @@ import {
   NavParams
 } from '@ionic/angular';
 import 'rxjs/Rx';
-import { File } from '@ionic-native/file/ngx';
 import { SalePage } from '../sale/sale.page';
 import { SalesPopover } from './sale-list.popover';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
@@ -38,7 +37,6 @@ export class SaleListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public events:Events,
     public route: ActivatedRoute,
-    public file: File,
     public pouchdbService: PouchdbService,
     public languageService: LanguageService,
     public translate: TranslateService,
@@ -127,9 +125,6 @@ export class SaleListPage implements OnInit {
   }
 
   async openSale(sale) {
-    this.events.subscribe('open-sale', (data) => {
-      this.events.unsubscribe('open-sale');
-    })
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     await this.navCtrl.navigateForward(['/sale', {'_id': sale._id}]);

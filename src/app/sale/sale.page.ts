@@ -533,7 +533,7 @@ export class SalePage implements OnInit {
           this.avoidAlertMessage = false;
           this.events.unsubscribe('select-payment-condition');
           profileModal.dismiss();
-          resolve(data);
+          resolve(data.condition);
         })
         let profileModal = await this.modalCtrl.create({
           component: PaymentConditionListPage,
@@ -566,7 +566,7 @@ export class SalePage implements OnInit {
             this.avoidAlertMessage = false;
             this.events.unsubscribe('select-address');
             profileModal.dismiss();
-            resolve(data);
+            resolve(data.address);
           })
           let profileModal = await this.modalCtrl.create({
             component: AddressListPage,

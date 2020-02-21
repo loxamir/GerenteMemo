@@ -3,7 +3,6 @@ import { NavController, LoadingController, ModalController,
   PopoverController, ToastController, MenuController } from '@ionic/angular';
 import { ProductPage } from '../product/product.page';
 import 'rxjs/Rx';
-import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductListPopover } from './product-list.popover';
@@ -57,7 +56,6 @@ export class ProductListPage implements OnInit {
     public events: Events,
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
-    public file: File,
     public menuCtrl: MenuController,
     public authService: AuthService,
   ) {
@@ -185,7 +183,6 @@ export class ProductListPage implements OnInit {
       }
       // this.events.unsubscribe('open-contact');
     })
-    this.menuCtrl.enable(false);
 
     let config: any = (await this.pouchdbService.getDoc('config.profile', true));
     // console.log("config",config);
@@ -311,9 +308,6 @@ export class ProductListPage implements OnInit {
   }
 
   async openProduct(product) {
-    this.events.subscribe('open-product', (data) => {
-      this.events.unsubscribe('open-product');
-    })
     let profileModal = await this.modalCtrl.create({
       component: ProductPage,
       componentProps: {

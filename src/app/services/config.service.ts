@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { FormatService } from '../services/format.service';
-import { Storage } from '@ionic/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +12,6 @@ export class ConfigService {
 
   constructor(
     public pouchdbService: PouchdbService,
-    public storage: Storage,
     public formatService: FormatService,
   ) {}
 
@@ -39,12 +37,7 @@ export class ConfigService {
   getMyContact(): Promise<any> {
     return new Promise((resolve, reject)=>{
       this.pouchdbService.getDoc('contact.myCompany').then((data: any) => {
-        //console.log("data config", data);
-        // if(data){
-          // this.unserializeConfig(data._id).then(data => {
-            resolve(data);
-          // });
-        // }
+        resolve(data);
       });
     });
   }
@@ -62,226 +55,22 @@ export class ConfigService {
           data.state  = contact.state;
           resolve(data);
         });
-        // resolve(data);
       });
     });
   }
 
-  async getUser(){
-    let username = await this.storage.get('username');
-    return username;
-  }
-
-  getSequence(docType): Promise<any> {
-    return new Promise(async (resolve, reject)=>{
-      if (docType == 'product' || docType == 'user' || docType == 'cash'){
-
-        let sequence = await this.pouchdbService.getDoc(
-          'sequence'+'.'+docType
-        );
-        let code = sequence['value'];
-        // resolve(code['value']);
-
-        // this.getConfigDoc().then((data) => {
-          // let code = code['value'];
-          //console.log("code", code);
-          let regex = /[0-9]+$/
-          let string_end = code.match(regex).index;
-          let number = code.match(regex)[0];
-          let next_number = parseFloat(number)+1;
-          let prefix = code.substr(0, string_end);
-          let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
-          let new_code = prefix+pad_number;
-          sequence['value'] = new_code;
-          this.pouchdbService.updateDoc(sequence);
-          resolve(code);
-        // });
-      } else {
-        let user = await this.getUser();
-        // console.log("user", user);
-        let data = await this.pouchdbService.getDoc('sequence.'+docType+'.'+user);
-        let code = data['value'];
-        // console.log('code', code);
-        let regex = /[0-9]+$/
-        let string_end = code.match(regex).index;
-        let number = code.match(regex)[0];
-        let next_number = parseFloat(number)+1;
-        let prefix = code.substr(0, string_end);
-        let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
-        let new_code = prefix+pad_number;
-        data['value'] = new_code;
-        // console.log("data", data);
-        let test = await this.pouchdbService.updateDoc(data);
-        // console.log("test", test);
-        resolve(code);
-      }
-    });
-    //code = this.formatService.string_pad(4, code.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-  }
-
-  showNextSequence(docType): Promise<any> {
-    return new Promise(async (resolve, reject)=>{
-      if (docType == 'product' || docType == 'user'){
-        let code = await this.pouchdbService.getDoc(
-          'sequence'+'.'+docType
-        );
-        resolve(code['value']);
-      } else {
-        let user = await this.getUser();
-        // console.log("user", user);
-        let code = await this.pouchdbService.getDoc(
-          'sequence'+'.'+docType+'.'+user
-        );
-        // console.log('code', code);
-        resolve(code['value']);
-      }
-    });
-    //code = this.formatService.string_pad(4, code.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-  }
-
-  setNextSequence(docType, current_code, new_code=null): Promise<any> {
-    return new Promise(async (resolve, reject)=>{
-      let od_code = new_code;
-      if (docType == 'product' || docType == 'user'){
-        // this.code = current_code.toString();
-
-        let data = await this.pouchdbService.getDoc('sequence'+'.'+docType);
-        // this.getConfigDoc().then((data) => {
-          //console.log("new_code", this.code);
-          // let code = this.code;
-          if (od_code){
-            data['value'] = od_code;
-            this.pouchdbService.updateDoc(data);
-            resolve(current_code);
-          } else {
-            let regex = /[0-9]+$/;
-            let string_end = current_code.match(regex).index;
-            //console.log("string_end", string_end);
-            let number = current_code.match(regex)[0];
-            let next_number = parseFloat(number)+1;
-            let prefix = current_code.substr(0, string_end);
-            let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
-            let new_code = prefix+pad_number;
-            data['value'] = new_code;
-            this.pouchdbService.updateDoc(data);
-            resolve(current_code);
-          }
-        // });
-      } else {
-        let user = await this.getUser();
-        // let code = data['value'];
-        // console.log("user", user);
-        let data = await this.pouchdbService.getDoc('sequence'+'.'+docType+'.'+user);
-        // console.log('code', code);
-        let regex = /[0-9]+$/
-        let string_end = current_code.match(regex).index;
-        let number = current_code.match(regex)[0];
-        let next_number = parseFloat(number)+1;
-        let prefix = current_code.substr(0, string_end);
-        let pad_number = this.formatService.string_pad(number.length, next_number, "right", "0");
-        let new_code = prefix+pad_number;
-        data['value'] = new_code;
-        // console.log("data", data);
-        let test = await this.pouchdbService.updateDoc(data);
-        // console.log("test", test);
-        resolve(current_code);
-        //console.log("new_code1", new_code);
-
-      }
-    });
-    //code = this.formatService.string_pad(4, code.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-  }
-
   async unserializeConfig(pouchData){
-    // console.log("pouchData18", pouchData);
     return new Promise(async (resolve, reject)=>{
-        // let promise_ids = []
-        // let index = 0;
-        // let get_contact = false;
-        // let pay_cond_id = false;
-        // let account_id = false;
-        // let warehouse_id = false;
-        // let contact_id = false;
-        // let labor_product_id = false;
-        // let travel_product_id = false;
-        // let input_product_id = false;
-        ////console.log("pouchData",pouchData);
-        // if (pouchData['currency_id']){
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['currency_id']));
-        //   get_contact = true;
-        //   index += 1;
-        // }
-        // if (pouchData['cash_id']){
-        //   pay_cond_id = true;
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['cash_id']));
-        //   index += 1;
-        // }
-        // if (pouchData['account_id']){
-        //   account_id = true;
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['account_id']));
-        //   index += 1;
-        // }
-        // if (pouchData['contact_id']){
-        //   contact_id = true;
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['contact_id']));
-        //   index += 1;
-        // }
-        // if (pouchData['labor_product_id']){
-        //   labor_product_id = true;
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['labor_product_id']));
-        //   index += 1;
-        // }
-        // if (pouchData['travel_product_id']){
-        //   travel_product_id = true;
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['travel_product_id']));
-        //   index += 1;
-        // }
-        // console.log("Passed", pouchData);
-        pouchData['travel_product'] = await this.pouchdbService.getDoc(pouchData['travel_product_id']);
-        pouchData['warehouse'] = await this.pouchdbService.getDoc(pouchData['warehouse_id']);
-        pouchData['currency'] = await this.pouchdbService.getDoc(pouchData['currency_id']);
-        pouchData['labor_product'] = await this.pouchdbService.getDoc(pouchData['labor_product_id']);
-        pouchData['contact'] = await this.pouchdbService.getDoc(pouchData['contact_id']);
-        pouchData['cash'] = await this.pouchdbService.getDoc(pouchData['cash_id']);
-        pouchData['default_contact'] = await this.pouchdbService.getDoc(pouchData['default_contact_id']);
-        pouchData['default_payment'] = await this.pouchdbService.getDoc(pouchData['default_payment_id']);
-        pouchData['product_sequence'] = (await this.pouchdbService.getDoc('sequence.product'))['value'];
-
-        // if (pouchData['warehouse_id']){
-        //   warehouse_id = true;
-        //   console.log("warehouse_id", pouchData['warehouse_id']);
-        //   promise_ids.push(this.pouchdbService.getDoc(pouchData['warehouse_id']));
-        //   index += 1;
-        // }
-        // index += 1;
-        // promise_ids.push(this.getAvatar({'_id': doc_id}));
-        // Promise.all(promise_ids).then((promise_data) => {
-        //   if (get_contact){
-        //     pouchData['currency'] = promise_data[0];
-        //   }
-        //   if (pay_cond_id){
-        //     pouchData['cash'] = promise_data[1];
-        //   }
-        //   if (account_id){
-        //     pouchData['account'] = promise_data[2];
-        //   }
-        //   if (contact_id){
-        //     pouchData['contact'] = promise_data[3];
-        //   }
-        //   if (labor_product_id){
-        //     pouchData['labor_product'] = promise_data[4];
-        //   }
-        //   if (travel_product_id){
-        //     pouchData['travel_product'] = promise_data[5];
-        //   }
-          // if (warehouse_id){
-          //   console.log("promise_data", promise_data)
-          //
-          // }
-          // pouchData['image'] = promise_data[8];
-
-          resolve(pouchData);
-        // });
+      pouchData['travel_product'] = await this.pouchdbService.getDoc(pouchData['travel_product_id']);
+      pouchData['warehouse'] = await this.pouchdbService.getDoc(pouchData['warehouse_id']);
+      pouchData['currency'] = await this.pouchdbService.getDoc(pouchData['currency_id']);
+      pouchData['labor_product'] = await this.pouchdbService.getDoc(pouchData['labor_product_id']);
+      pouchData['contact'] = await this.pouchdbService.getDoc(pouchData['contact_id']);
+      pouchData['cash'] = await this.pouchdbService.getDoc(pouchData['cash_id']);
+      pouchData['default_contact'] = await this.pouchdbService.getDoc(pouchData['default_contact_id']);
+      pouchData['default_payment'] = await this.pouchdbService.getDoc(pouchData['default_payment_id']);
+      pouchData['product_sequence'] = (await this.pouchdbService.getDoc('sequence.product'))['value'];
+      resolve(pouchData);
     });
   }
 

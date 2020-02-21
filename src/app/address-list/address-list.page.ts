@@ -6,7 +6,6 @@ import { AddressPage } from '../address/address.page';
 import 'rxjs/Rx';
 import { LanguageService } from "../services/language/language.service";
 import { AddressListPopover } from './address-list.popover';
-import { File } from '@ionic-native/file/ngx';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from "../services/auth.service";
@@ -41,7 +40,6 @@ export class AddressListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public popoverCtrl: PopoverController,
     public toastCtrl: ToastController,
-    public file: File,
     public loadingCtrl: LoadingController,
     public languageService: LanguageService,
     public translate: TranslateService,
@@ -240,18 +238,6 @@ export class AddressListPage implements OnInit {
   }
 
   async openAddress(address) {
-    this.events.subscribe('open-address', (data) => {
-      this.events.unsubscribe('open-address');
-    })
-    // console.log("address", address);
-    // if (this.select){
-    //   // this.navCtrl.push(AddressPage, {'_id': address._id});
-    //   this.router.navigate(['address', {'_id': address._id}]);
-    // } else {
-      // let newRootNav = <NavController>this.app.getRootNavById('n4');
-      // newRootNav.push(AddressPage, {'_id': address._id});
-
-      // this.router.navigate(['address', {'_id': address._id}]);
     if (this.select){
       let profileModal = await this.modalCtrl.create({
         component: AddressPage,

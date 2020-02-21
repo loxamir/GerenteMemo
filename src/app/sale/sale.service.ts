@@ -26,19 +26,9 @@ export class SaleService {
   createSale(viewData){
     return new Promise((resolve, reject)=>{
       let sale = this.serializeSale(viewData);
-      if (sale.code != ''){
-        this.pouchdbService.createDoc(sale).then(doc => {
-          resolve({doc: doc, sale: sale});
-        });
-      } else {
-        this.configService.getSequence('sale').then((code) => {
-          sale['code'] = code;
-          this.pouchdbService.createDoc(sale).then(doc => {
-            resolve({doc: doc, sale: sale});
-          });
-        });
-      }
-
+      this.pouchdbService.createDoc(sale).then(doc => {
+        resolve({doc: doc, sale: sale});
+      });
     });
   }
 

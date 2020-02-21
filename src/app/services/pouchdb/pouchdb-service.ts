@@ -5,7 +5,6 @@ declare var require: any;
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import PouchdbUpsert from 'pouchdb-upsert';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
-import { Storage } from '@ionic/storage';
 import { FormatService } from '../format.service';
 // var server = "database.sistemamemo.com";
 var server = "database.sistemamemo.com";
@@ -23,7 +22,6 @@ export class PouchdbService {
   constructor(
     public http: HttpClient,
     public zone: NgZone,
-    public storage: Storage,
     public platform: Platform,
     public events: Events,
     public formatService: FormatService,
@@ -141,10 +139,6 @@ export class PouchdbService {
                     console.log("sync change", info);
                   }).on('paused', async (err) => {
                     console.log("sync paused", err);
-                    if (username == 'memo'){
-                      self.storage.set('loadDemo', true);
-                      syncJob.cancel();
-                    }
                     self.events.publish('end-sync', {});
                     resolve(true)
                     // replication paused (e.g. replication up to date, user went offline)
@@ -245,10 +239,6 @@ export class PouchdbService {
                    console.log("sync change", info);
                  }).on('paused', async (err) => {
                    console.log("sync paused", err);
-                   if (username == 'memo'){
-                     self.storage.set('loadDemo', true);
-                     syncJob.cancel();
-                   }
                    self.events.publish('end-sync', {});
                    resolve(true)
                    // replication paused (e.g. replication up to date, user went offline)
