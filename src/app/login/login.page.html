@@ -9,7 +9,7 @@
     <ion-row style="background: white;">
       <ion-col size="2">
         <img
-        alt="Logo del producto"
+        alt="profile picture"
         style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;"
         [src]="'data:image/png;base64,'+contact_picture">
       </ion-col>
@@ -47,7 +47,7 @@
     </ion-item>
   </form>
 
-  <ion-button (click)="createContact()" class="button-100">
+  <ion-button (click)="createContact()" class="button-100" *ngIf="contact_name">
     <ion-icon name="logo-facebook" style="font-size:25px"></ion-icon>
     <div style="padding: 5px;">
       Entrar
