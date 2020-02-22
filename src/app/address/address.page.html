@@ -22,122 +22,8 @@
           </div>
         </ng-container>
       </div>
-      <!-- <ion-item
-       class="ion-no-padding"
-       class="field-50">
-        <ion-label position="floating">{{'DOCUMENT' | translate}}</ion-label>
-        <ion-input type="text"
-        (ionChange)="changedDocument()"
-        #document
-        formControlName="document"></ion-input>
-      </ion-item> -->
-      <!-- <ion-item
-      class="ion-no-padding"
-      class="field-50">
-      <ion-label position="floating">{{'PHONE' | translate}}</ion-label>
-      <ion-input type="text"
-      #phone
-      formControlName="phone"></ion-input>
-    </ion-item> -->
-    <!-- <div class="validation-errors" style="width: 50%;">
-      <ng-container *ngFor="let validation of validation_messages.document">
-        <div class="error-message" *ngIf="addressForm.get('document').hasError(validation.type) && (addressForm.get('document').dirty || addressForm.get('document').touched)">
-          {{ validation.message }}
-        </div>
-      </ng-container>
-    </div> -->
-      <!-- <ion-item class="field-100 ion-no-padding">
-        <ion-label position="floating">{{'Razon Social' | translate}}</ion-label>
-        <ion-input #name_legal type="text" formControlName="name_legal"></ion-input>
-      </ion-item> -->
-
-      <!-- <ion-item
-       class="ion-no-padding"
-       class="field-50">
-        <ion-label position="floating">{{'ADDRESS' | translate}}</ion-label>
-        <ion-input type="text"
-        #address
-        formControlName="address"></ion-input>
-      </ion-item> -->
-
-      <!-- <ion-item
-       class="ion-no-padding"
-       class="field-50">
-        <ion-label position="floating">{{'Latitude' | translate}}</ion-label>
-        <ion-input type="text"
-        formControlName="latitude"></ion-input>
-      </ion-item>
-      <ion-item
-       class="ion-no-padding"
-       class="field-50">
-        <ion-label position="floating">{{'Longitude' | translate}}</ion-label>
-        <ion-input type="text"
-        formControlName="longitude"></ion-input>
-      </ion-item> -->
-
-      <!-- <ion-item
-       class="ion-no-padding"
-       class="field-50">
-         <ion-label>{{'Cliente' | translate}}</ion-label>
-         <ion-toggle formControlName="customer"></ion-toggle>
-      </ion-item>
-
-      <ion-item
-       class="ion-no-padding"
-       class="field-50">
-         <ion-label>{{'Proveedor' | translate}}</ion-label>
-         <ion-toggle formControlName="supplier"></ion-toggle>
-      </ion-item>
-
-      <ion-item
-       class="ion-no-padding"
-       class="field-50">
-         <ion-label>{{'Vendedor' | translate}}</ion-label>
-         <ion-toggle formControlName="seller"></ion-toggle>
-      </ion-item>
-
-      <ion-item
-       class="ion-no-padding"
-       class="field-50">
-         <ion-label>{{'Funcionario' | translate}}</ion-label>
-         <ion-toggle formControlName="employee"></ion-toggle>
-      </ion-item> -->
     </ion-row>
-    <!-- <ion-row>
-      <ion-item
-       class="ion-no-padding"
-       class="field-100">
-         <ion-label>{{'Usuario' | translate}}</ion-label>
-         <ion-toggle formControlName="user"></ion-toggle>
-      </ion-item>
-      <ion-col size="12" class="item-content" *ngIf="addressForm.value.user">
-        <ion-button (click)="editUser(addressForm.value.user_details)" class="button-100">Configurar Usuario</ion-button>
-      </ion-col>
-    </ion-row> -->
       <ion-row>
-      <!-- <ion-item
-       class="ion-no-padding"
-       *ngIf="addressForm.value.employee"
-       class="field-50">
-        <ion-label position="floating">{{'SALARY' | translate }}</ion-label>
-        <ion-input #salary type="number"
-        formControlName="salary"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="addressForm.value.employee" class="ion-no-padding" (click)="selectCurrency()"
-      class="field-50">
-        <div class="field-many2one">
-          <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-          <h4 class="field-value">{{addressForm.value.currency && addressForm.value.currency.name || 'SELECT'|translate}}</h4>
-        </div>
-      </ion-item>
-      <ion-item
-      *ngIf="addressForm.value.employee"
-      class="ion-no-padding"
-      class="field-100">
-        <ion-label position="floating" class="field-label">{{'HIRE_DATE' | translate }}</ion-label>
-        <ion-datetime class="sale-date" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" class="task-date" formControlName="hire_date">
-        </ion-datetime>
-      </ion-item> -->
       <ion-item class="field-100">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-input type="text" formControlName="note"></ion-input>
@@ -145,96 +31,8 @@
 
       <div #map id="map"></div>
     </ion-row>
-    <!-- <ion-segment formControlName="section" class="cash-segment" *ngIf="addressForm.value.employee">
-      <ion-segment-button value="advance">
-        Anticipos
-      </ion-segment-button>
-      <ion-segment-button value="salary">
-        Salarios
-      </ion-segment-button>
-    </ion-segment>
-
-
-
-    <div [ngSwitch]="addressForm.value.section" class="forms-wrapper" *ngIf="addressForm.value.employee">
-      <div *ngSwitchCase="'salary'" class="post-example-view">
-        <ion-row style="margin-top: 5px;background: #1c61f3;border-radius: 7px;border: 1px solid #1c61f3;"
-        (click)="addSalary()">
-          <a style="color:white;cursor: default;font-size:16px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
-            + Agregar Salario
-          </a>
-        </ion-row>
-        <ion-item style="background-color: #ddd" *ngIf="addressForm.value.employee">
-          <ion-item-sliding class="list-item" *ngFor="let item of addressForm.value.salaries; let i = index;">
-            <ion-item (click)="openSalary(item)" style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
-              <ion-row>
-                <ion-col class="ion-no-padding">
-                  <h4 class="field-label">AMOUNT</h4>
-                  <h4 class="user-name">{{item.amount}}</h4>
-                </ion-col>
-                <ion-col class="ion-no-padding">
-                  <h4 class="field-label">{{'DATE'|translate}}</h4>
-                  <h4 class="user-name">{{item.date|date: 'dd/MM/yyyy'}}</h4>
-                </ion-col>
-              </ion-row>
-            </ion-item>
-            <ion-item-options>
-              <ion-item-option (click)="removeSalary(item)">
-                {{ 'DELETE'| translate }}
-              </ion-item-option>
-
-            </ion-item-options>
-          </ion-item-sliding>
-        </ion-item>
-
-      </div>
-      <div *ngSwitchCase="'advance'" class="post-example-view">
-        <ion-row style="margin-top: 5px;background: #1c61f3;border-radius: 5px;border: 1px solid #1c61f3;"
-        (click)="addAdvance()">
-          <a style="color:white;cursor: default;font-size:16px;margin-left: 32%;margin-top: 8px;margin-bottom: 8px;">
-            + Agregar Anticipo
-          </a>
-        </ion-row>
-        <ion-item style="background-color: #ddd" *ngIf="addressForm.value.employee">
-          <ion-item-sliding class="list-item" *ngFor="let item of addressForm.value.advances; let i = index;">
-            <ion-item (click)="openAdvance(item)" style="border: 1px solid #ddd;height: 50px;border-left: 1px solid #1c61f3;border-right: 1px solid #1c61f3;">
-              <ion-row>
-                <ion-col class="ion-no-padding">
-                  <h4 class="field-label">AMOUNT</h4>
-                  <h4 class="user-name">{{item.amount}}</h4>
-                </ion-col>
-                <ion-col class="ion-no-padding">
-                  <h4 class="field-label">{{'DATE'|translate}}</h4>
-                  <h4 class="user-name">{{item.date|date: 'dd/MM/yyyy'}}</h4>
-                </ion-col>
-              </ion-row>
-            </ion-item>
-            <ion-item-options>
-              <ion-item-option (click)="removeAdvance(item)">
-                {{ 'DELETE'| translate }}
-              </ion-item-option>
-            </ion-item-options>
-          </ion-item-sliding>
-        </ion-item>
-      </div>
-    </div> -->
   </form>
 
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
-    <ion-button (click)="goNextStep()"  class="next-button">
-      <ion-icon name="fastforward"> </ion-icon>
-      {{'NEXT'|translate}}
-    </ion-button>
-  </ion-fab> -->
-<!--
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-    <ion-button (click)="discard()" color="danger">
-      <ion-icon name="backspace" *ngIf="addressForm.dirty"> </ion-icon>
-      <ion-icon name="arrow-back" *ngIf="!addressForm.dirty"> </ion-icon>
-      <span *ngIf="addressForm.dirty">{{ 'DISCARD'| translate }}</span>
-      <span *ngIf="!addressForm.dirty">{{ 'GO_BACK'| translate }}</span>
-    </ion-button>
-  </ion-fab> -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="addressForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">
@@ -242,8 +40,5 @@
       {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
-  <!-- <div style="height: 100px;">
-  </div> -->
-
 
 </ion-content>

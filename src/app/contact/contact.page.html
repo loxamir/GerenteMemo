@@ -8,7 +8,6 @@
 </ion-header>
 
 <ion-content>
-
   <form [formGroup]="contactForm"  (ngSubmit)="onSubmit(contactForm.value)">
     <ion-row style="background: white;">
       <ion-col size="2">
@@ -30,7 +29,6 @@
         </ion-item>
       </ion-col>
     </ion-row>
-
     <ion-row>
       <div class="validation-errors" style="width: 100%">
         <ng-container *ngFor="let validation of validation_messages.name">
@@ -62,39 +60,10 @@
         <ion-input type="text"
         formControlName="name_legal"></ion-input>
       </ion-item>
-    <!-- <ion-item class="ion-no-padding" (click)="selectAddress()" class="field-100">
-      <h4 class="field-label">{{'DELIVERY_ADDRESS' | translate }}</h4>
-      <h4 class="field-value">{{contactForm.value.address && contactForm.value.address.name || 'SELECT' | translate}}</h4>
-    </ion-item>
-    <div #map id="map"></div> -->
-  </ion-row>
-<!-- <h1>Facturación</h1>
-<ion-row>
-      <ion-item
-       class="ion-no-padding"
-       class="field-100">
-        <ion-label position="floating">{{'RUC' | translate}}</ion-label>
-        <ion-input type="text"
-        (ionChange)="changedDocument()"
-        #document
-        formControlName="document"></ion-input>
-      </ion-item>
-      <div class="validation-errors" style="width: 50%;">
-        <ng-container *ngFor="let validation of validation_messages.document">
-          <div class="error-message" *ngIf="contactForm.get('document').hasError(validation.type) && (contactForm.get('document').dirty || contactForm.get('document').touched)">
-            {{ validation.message }}
-          </div>
-        </ng-container>
-      </div>
-      <ion-item class="field-100 ion-no-padding">
-        <ion-label position="floating">{{'Razon Social' | translate}}</ion-label>
-        <ion-input #name_legal type="text" formControlName="name_legal"></ion-input>
-      </ion-item>
- -->
-      <ion-button class="button-100" (click)="logout()">
-        {{'LOGOUT'|translate}}
-      </ion-button>
-    <!-- </ion-row> -->
+    </ion-row>
+    <ion-button class="button-100" (click)="logout()">
+      {{'LOGOUT'|translate}}
+    </ion-button>
   </form>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="contactForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">

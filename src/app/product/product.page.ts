@@ -230,35 +230,26 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.canDeactivate();
     }
     async canDeactivate() {
-        if(this.productForm.dirty) {
-            let alertPopup = await this.alertCtrl.create({
-                header: this.translate.instant('DISCARD'),
-                message: this.translate.instant('SURE_DONT_SAVE'),
-                buttons: [{
-                        text: this.translate.instant('YES'),
-                        handler: () => {
-                            // alertPopup.dismiss().then(() => {
-
-                                this.exitPage();
-                            // });
-                        }
-                    },
-                    {
-                        text: this.translate.instant('NO'),
-                        handler: () => {
-                            // need to do something if the user stays?
-                        }
-                    }]
-            });
-
-            // Show the alert
-            alertPopup.present();
-
-            // Return false to avoid the page to be popped up
-            return false;
-        } else {
-          this.exitPage();
-        }
+      if(this.productForm.dirty) {
+        let alertPopup = await this.alertCtrl.create({
+          header: this.translate.instant('DISCARD'),
+          message: this.translate.instant('SURE_DONT_SAVE'),
+          buttons: [{
+              text: this.translate.instant('YES'),
+              handler: () => {
+                this.exitPage();
+              }
+            },
+            {
+              text: this.translate.instant('NO'),
+              handler: () => {}
+            }]
+        });
+        alertPopup.present();
+        return false;
+      } else {
+        this.exitPage();
+      }
     }
 
     exitPage() {
@@ -276,7 +267,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.productForm.patchValue({
         quantity: quantity
       })
-        // this.recomputeValues();
     }
 
     remItem() {

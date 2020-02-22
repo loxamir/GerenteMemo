@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button icon-only (click)="discard()">
-        <ion-icon name="arrow-round-back"></ion-icon>
+        <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title *ngIf="return">
@@ -12,9 +12,6 @@
       {{ 'ORDER' | translate }}: {{saleForm.value.code}}
     </ion-title>
     <ion-buttons slot="end">
-      <!-- <ion-button icon-only (click)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
-      </ion-button> -->
     </ion-buttons>
   </ion-toolbar>
   <ion-row style="height: 50px;">
@@ -45,31 +42,12 @@
       </div>
     </ion-col>
   </ion-row>
-
-
-
-
-
 </ion-header>
 
 <ion-content background="#ddd" >
   <ion-input #corpo style="height: 0px;--padding-top: 0px;--padding-bottom: 0px;--padding-start: 0px;"></ion-input>
-  <form [formGroup]="saleForm" (ngSubmit)="onSubmit(saleForm.value)">
-    <!-- <ion-row>
-      <ion-col class="ion-no-padding field-many2one-edit">
-        <h4 class="field-label-col">{{'CONTACT' | translate }}</h4>
-        <h4 class="field-value-col">{{saleForm.value.contact && saleForm.value.contact.name || 'SELECT' | translate}}</h4>
-      </ion-col>
-    </ion-row> -->
+  <form [formGroup]="saleForm">
     <ion-row class="ion-justify-content-center">
-      <!-- <ion-item class="ion-no-padding field-50">
-        <h4 class="field-label">{{'DATE' | translate }}</h4>
-        <ion-datetime class="field-50-datetime"
-        displayFormat="DD/MM/YYYY"
-        pickerFormat="DD/MM/YYYY"
-        formControlName="date">
-        </ion-datetime>
-      </ion-item> -->
       <ion-item class="ion-no-padding" (click)="selectAddress()" class="field-50">
         <h4 class="field-label">{{'DELIVERY_ADDRESS' | translate }}</h4>
         <h4 class="field-value">{{saleForm.value.address && saleForm.value.address.name || 'SELECT' | translate}}</h4>
@@ -78,24 +56,7 @@
         <h4 class="field-label">{{'PAYMENT_METHOD' | translate }}</h4>
         <h4 class="field-value">{{saleForm.value.paymentCondition && saleForm.value.paymentCondition.name || 'SELECT' | translate}}</h4>
       </ion-item>
-      <!-- <ion-item class="ion-no-padding" (click)="selectSeller()" class="field-100">
-        <h4 class="field-label">{{'SELLER' | translate }}</h4>
-        <h4 class="field-value">{{saleForm.value.seller_name || 'SELECT' | translate}}</h4>
-      </ion-item> -->
-      <!-- <ion-item class="ion-no-padding" (click)="selectCurrency()" class="field-50">
-        <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-        <h4 class="field-value">{{saleForm.value.currency && saleForm.value.currency.name || 'SELECT'|translate}}</h4>
-      </ion-item> -->
     </ion-row>
-    <!-- <ion-row>
-      <ion-col *ngIf="saleForm.value.state != 'QUOTATION' && saleForm.value.amount_unInvoiced == saleForm.value.total">
-        <ion-button class="button-100" (click)="addInvoice()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>{{ 'CREATE_INVOICE' | translate }}</ion-button>
-      </ion-col>
-    </ion-row> -->
-
-
-
-
     <ion-item class="field-100" *ngIf="saleForm.value.note != undefined">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-textarea autoGrow="true" rows="1" #note formControlName="note"></ion-textarea>
@@ -115,10 +76,10 @@
                 <ion-icon name="trash" class="open-item-arrow"></ion-icon>
               </ion-col>
               <ion-col>
-                <ion-row (click)="openItem(item)" class="product-name-row">
+                <ion-row class="product-name-row">
                   {{item.product && item.product.code}} - {{item.product && item.product.name}}
                 </ion-row>
-                <ion-row (click)="openItem(item)" class="product-name-row" *ngIf="item.size">
+                <ion-row class="product-name-row" *ngIf="item.size">
                   {{'SIZE'| translate}}: {{item.size}}
                 </ion-row>
                 <ion-row class="ion-no-padding content-row one-line">
@@ -146,7 +107,6 @@
                 </ion-row>
               </ion-col>
               <ion-col size="6">
-
                 <ion-row>
                   <ion-col style="text-align: center;">
                     {{ 'QUANTITY' | translate }}
@@ -167,8 +127,6 @@
             </ion-row>
               </ion-col>
             </ion-row>
-
-
       </ion-card>
       </ion-item>
         <ion-item-options  side="end">
@@ -179,11 +137,6 @@
       </ion-item-sliding>
     </section>
     </ion-list>
-    <!-- <ion-row>
-      <ion-col size="12" *ngIf="saleForm.value.state == 'QUOTATION'">
-        <ion-button class="button-100" (click)="addItem()" color="success"><ion-icon name="add" style="margin-right:10px;"></ion-icon> {{ 'ADD_ITEM' | translate }}</ion-button>
-      </ion-col>
-    </ion-row> -->
   </form>
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed" *ngIf="saleForm.value.state == 'QUOTATION'">

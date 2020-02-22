@@ -47,9 +47,6 @@ export class SaleListPage implements OnInit {
         this.handleChange(this.sales, data.change);
       }
     })
-    this.events.subscribe('got-database', (change)=>{
-      this.setFilteredItems();
-    })
   }
 
   doInfinite(infiniteScroll) {

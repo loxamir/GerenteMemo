@@ -103,27 +103,7 @@ export class ContactPage implements OnInit {
         if (this._id) {
           this.contactService.getContact(this._id).then((data) => {
             this.contactForm.patchValue(data);
-
             this.plt.ready().then(() => {
-
-          // let mapOptions = {
-          //   zoom: 20,
-          //   mapTypeId: google.maps.MapTypeId.HYBRID,
-          //   mapTypeControl: false,
-          //   streetViewControl: false,
-          //   fullscreenControl: false
-          // }
-          // this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-          //
-          // let options = {
-          //   maximumAge: 3000,
-          //   timeout: 5000,
-          //   enableHighAccuracy: true
-          // }
-          // console.log("data", data);
-          // if (data.address.latitude && data.address.longitude){
-          //   this.showMap( data.address.latitude, data.address.longitude);
-          // }
         })
             this.loading.dismiss();
           });
@@ -135,70 +115,6 @@ export class ContactPage implements OnInit {
       }
     });
   }
-
-  // showMap(latitude, longitude){
-  //   let latLng = new google.maps.LatLng(latitude, longitude);
-  //   this.map.setCenter(latLng);
-  //   const icon = {
-  //     url: 'assets/icon/favicon.png', // image url
-  //     scaledSize: new google.maps.Size(50, 50), // scaled size
-  //   };
-  //   const marker = new google.maps.Marker({
-  //     position: latLng,
-  //     map: this.map,
-  //     title: 'Hello World!',
-  //     icon: icon
-  //   });
-  //   const contentString = '<div id="content">' +
-  //   '<div id="siteNotice">' +
-  //   '</div>' +
-  //   '<h1 id="firstHeading" class="firstHeading">Local de Entrega</h1>' +
-  //   '<div id="bodyContent">' +
-  //   // '<img src="assets/icon/user.png" width="200">' +
-  //   '<p>Este es el local donde se entregara el pedido</p><br/><br/>';
-  //   const infowindow = new google.maps.InfoWindow({
-  //     content: contentString,
-  //     maxWidth: 400
-  //   });
-  //   marker.addListener('click', function() {
-  //     infowindow.open(this.map, marker);
-  //   });
-  //   this.map.setZoom(20);
-  // }
-
-  // selectAddress() {
-  //   return new Promise(async resolve => {
-  //     // if (this.contactForm.value.state=='QUOTATION'){
-  //       this.loading = await this.loadingCtrl.create({});
-  //       await this.loading.present();
-  //       // this.avoidAlertMessage = true;
-  //       // this.listenBarcode = false;
-  //       this.events.unsubscribe('select-address');
-  //       this.events.subscribe('select-address', (data) => {
-  //         this.contactForm.patchValue({
-  //           address: data.address,
-  //           // address_name: data.name,
-  //         });
-  //         this.showMap( data.latitude, data.longitude);
-  //         this.contactForm.markAsDirty();
-  //         // this.avoidAlertMessage = false;
-  //         this.events.unsubscribe('select-address');
-  //         profileModal.dismiss();
-  //         resolve(data);
-  //       })
-  //       let profileModal = await this.modalCtrl.create({
-  //         component: AddressListPage,
-  //         componentProps: {
-  //           "select": true
-  //         }
-  //       });
-  //       await profileModal.present();
-  //       await this.loading.dismiss();
-  //       await profileModal.onDidDismiss();
-  //       // this.listenBarcode = true;
-  //     // }
-  //   });
-  // }
 
   logout(){
     this.authService.logout();
@@ -284,8 +200,6 @@ export class ContactPage implements OnInit {
     return new Promise((resolve, reject) => {
       let contact = Object.assign({}, viewData);
       contact.docType = 'contact';
-      // contact.address_id = contact.address._id;
-      // delete contact.address;
       if (contact.code != '') {
         this.pouchdbService.createDoc(contact).then(doc => {
           resolve({ doc: doc, contact: contact });
@@ -301,8 +215,6 @@ export class ContactPage implements OnInit {
   updateContact(viewData) {
     let contact = Object.assign({}, viewData);
     contact.docType = 'contact';
-    // contact.address_id = contact.address._id;
-    // delete contact.address;
     return this.pouchdbService.updateDoc(contact);
   }
 
@@ -316,12 +228,6 @@ export class ContactPage implements OnInit {
     else if (this.contactForm.value.phone == null) {
       this.phone.setFocus();
     }
-    // else if (this.contactForm.value.address == null) {
-    //   this.address.setFocus();
-    // }
-    // else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
-    //   this.salary.setFocus();
-    // }
   }
 
   getLegalName() {
@@ -357,9 +263,6 @@ export class ContactPage implements OnInit {
     else if (this.contactForm.value.address == null) {
       return true;
     }
-    // else if (this.contactForm.value.employee == true && this.contactForm.value.salary == null) {
-    //   return true;
-    // }
     else {
       return false;
     }

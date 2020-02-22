@@ -41,7 +41,6 @@ export class ProductListPage implements OnInit {
   logged: boolean = false;
   contact: any = {};
   contact_id;
-  // contact_name;
 
   constructor(
     public navCtrl: NavController,

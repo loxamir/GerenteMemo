@@ -22,16 +22,10 @@ import { Events } from '../services/events';
   styleUrls: ['./sale.page.scss'],
 })
 export class SalePage implements OnInit {
-  // @ViewChild('note', { static: false }) note;
-  // @ViewChild('corpo', { static: true }) corpo;
-    // listenBarcode = true;
-    timeStamp: any;
-    // barcode: string = "";
     saleForm: FormGroup;
     loading: any;
     today: any;
     _id: string;
-    avoidAlertMessage: boolean;
     select;
     languages: Array<LanguageModel>;
     contact;
@@ -65,7 +59,6 @@ export class SalePage implements OnInit {
       this.today = new Date().toISOString();
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
-      this.avoidAlertMessage = false;
       this.contact = this.route.snapshot.paramMap.get('contact');
       this.contact_name = this.route.snapshot.paramMap.get('contact_name');
       this.items = this.route.snapshot.paramMap.get('items');
@@ -482,7 +475,6 @@ export class SalePage implements OnInit {
                  state: 'QUOTATION',
               });
               this.removeQuotes();
-              this.removeStockMoves();
               this.buttonSave();
             }
           }
@@ -503,26 +495,11 @@ export class SalePage implements OnInit {
       });
     }
 
-    removeStockMoves(){
-      this.pouchdbService.getRelated(
-      "stock-move", "origin_id", this.saleForm.value._id).then((docs) => {
-        docs.forEach(doc=>{
-          this.saleService.deleteSale(doc);
-        })
-      });
-    }
-
-    onSubmit(values){
-      //console.log(values);
-    }
-
     selectPaymentCondition() {
       return new Promise(async resolve => {
       if (this.saleForm.value.state=='QUOTATION'){
         this.loading = await this.loadingCtrl.create({});
         await this.loading.present();
-        this.avoidAlertMessage = true;
-        // this.listenBarcode = false;
         this.events.unsubscribe('select-payment-condition');
         this.events.subscribe('select-payment-condition', (data) => {
           this.saleForm.patchValue({
@@ -530,7 +507,6 @@ export class SalePage implements OnInit {
             payment_name: data.condition.name,
           });
           this.saleForm.markAsDirty();
-          this.avoidAlertMessage = false;
           this.events.unsubscribe('select-payment-condition');
           profileModal.dismiss();
           resolve(data.condition);
@@ -544,7 +520,6 @@ export class SalePage implements OnInit {
         await profileModal.present();
         await this.loading.dismiss();
         await profileModal.onDidDismiss();
-        // this.listenBarcode = true;
       }
     });
     }
@@ -554,8 +529,6 @@ export class SalePage implements OnInit {
         if (this.saleForm.value.state=='QUOTATION'){
           this.loading = await this.loadingCtrl.create({});
           await this.loading.present();
-          this.avoidAlertMessage = true;
-          // this.listenBarcode = false;
           this.events.unsubscribe('select-address');
           this.events.subscribe('select-address', (data) => {
             this.saleForm.patchValue({
@@ -563,7 +536,6 @@ export class SalePage implements OnInit {
               address_name: data.address.name,
             });
             this.saleForm.markAsDirty();
-            this.avoidAlertMessage = false;
             this.events.unsubscribe('select-address');
             profileModal.dismiss();
             resolve(data.address);
@@ -577,7 +549,6 @@ export class SalePage implements OnInit {
           await profileModal.present();
           await this.loading.dismiss();
           await profileModal.onDidDismiss();
-          // this.listenBarcode = true;
         }
       });
     }
@@ -590,35 +561,26 @@ export class SalePage implements OnInit {
       this.canDeactivate();
     }
     async canDeactivate() {
-        if(this.saleForm.dirty) {
-            let alertPopup = await this.alertCtrl.create({
-              header: this.translate.instant('DISCARD'),
-              // message: this.translate.instant('SURE_DONT_SAVE'),
-              message: this.translate.instant('SURE_DONT_SAVE'),
-                buttons: [{
-                        text: this.translate.instant('YES'),
-                        handler: () => {
-                            // alertPopup.dismiss().then(() => {
-                                this.exitPage();
-                            // });
-                        }
-                    },
-                    {
-                        text: this.translate.instant('NO'),
-                        handler: () => {
-                            // need to do something if the user stays?
-                        }
-                    }]
-            });
-
-            // Show the alert
-            alertPopup.present();
-
-            // Return false to avoid the page to be popped up
-            return false;
-        } else {
-          this.exitPage();
-        }
+      if(this.saleForm.dirty) {
+        let alertPopup = await this.alertCtrl.create({
+          header: this.translate.instant('DISCARD'),
+          message: this.translate.instant('SURE_DONT_SAVE'),
+          buttons: [{
+            text: this.translate.instant('YES'),
+            handler: () => {
+              this.exitPage();
+            }
+          },
+          {
+            text: this.translate.instant('NO'),
+            handler: () => {}
+          }]
+        });
+        alertPopup.present();
+        return false;
+      } else {
+        this.exitPage();
+      }
     }
 
     private exitPage() {
@@ -634,27 +596,20 @@ export class SalePage implements OnInit {
       let alertPopup = await this.alertCtrl.create({
         header: this.translate.instant('CANCEL_ORDER'),
         message: this.translate.instant('SURE_CANCEL_ORDER'),
-          buttons: [{
-                  text: this.translate.instant('YES'),
-                  handler: async () => {
-                    alertPopup.present();
-                    let doc:any = await this.pouchdbService.getDoc(this._id);
-                    this.pouchdbService.deleteDoc(doc);
-                    this.exitPage();
-                  }
-              },
-              {
-                  text: this.translate.instant('NO'),
-                  handler: () => {
-                      // need to do something if the user stays?
-                  }
-              }]
+        buttons: [{
+          text: this.translate.instant('YES'),
+          handler: async () => {
+            alertPopup.present();
+            let doc:any = await this.pouchdbService.getDoc(this._id);
+            this.pouchdbService.deleteDoc(doc);
+            this.exitPage();
+          }
+        },
+        {
+          text: this.translate.instant('NO'),
+          handler: () => {}
+        }]
       });
-      // Show the alert
       alertPopup.present();
-    }
-
-    openItem(item){
-      console.log("open Item");
     }
 }
