@@ -25,6 +25,7 @@ export class LoginPage implements OnInit {
   logged = false;
   contact_name;
   contact_picture;
+  loading: any;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -35,6 +36,7 @@ export class LoginPage implements OnInit {
     public events: Events,
     public restProvider: RestProvider,
     public modalCtrl: ModalController,
+    public loadingCtrl: LoadingController,
   ) { }
 
   async ngOnInit() {
@@ -46,7 +48,8 @@ export class LoginPage implements OnInit {
     let language:any = await this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang(language);
     this.translate.use(language);
-
+    this.loading = await this.loadingCtrl.create({});
+    await this.loading.present();
     let teste = await this.authService.login();
     this.authService.loggedIn.subscribe(async status => {
       if (status) {
@@ -57,16 +60,19 @@ export class LoginPage implements OnInit {
         this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
           this.contact_picture = base64image;
         })
-        let contact:any = await this.pouchdbService.getDoc("contact."+data.currentUser.email, true);
+        let contact:any = await this.pouchdbService.getRemoteDoc("contact."+data.currentUser.email, true);
         if (JSON.stringify(contact) == "{}"){
           console.log("wait create contact");
+          this.loading.dismiss();
           setTimeout(() => {
             this.phone.setFocus();
           }, 300);
         } else {
           console.log("logged contact", contact);
           this.events.publish('login-success', {contact: contact});
-          this.modalCtrl.dismiss();
+          let sync = await this.pouchdbService.sync();
+          window.location.reload();
+          // await this.modalCtrl.dismiss();
         }
       } else {
         this.logged = false;
@@ -76,6 +82,8 @@ export class LoginPage implements OnInit {
 
   async createContact(){
     if (this.loginForm.value.phone){
+      this.loading = await this.loadingCtrl.create({});
+      await this.loading.present();
       let data = await this.authService.getData();
       this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
         let createdDoc = await this.pouchdbService.createDoc({
@@ -116,7 +124,9 @@ export class LoginPage implements OnInit {
         // this.contact = createdDoc;
         let contact = await this.pouchdbService.getDoc("contact."+data.currentUser.email, true)
         this.events.publish('login-success', {contact: contact});
-        this.modalCtrl.dismiss();
+        let sync = await this.pouchdbService.sync();
+        window.location.reload();
+        // this.modalCtrl.dismiss();
       });
     } else {
       this.loginForm.controls.phone.markAsTouched();

@@ -73,6 +73,25 @@ export class PouchdbService {
     })
   }
 
+  getRemoteDoc(doc_id, attachments=false){
+    return new Promise(async (resolve, reject)=>{
+      if (typeof doc_id === "string"){
+        try {
+          let remote = new PouchDB1(this.remote);
+          let test = await remote.get(doc_id, {
+            attachments: attachments,
+            // binary: true
+          });
+          resolve(test);
+        } catch {
+          resolve({})
+        }
+      } else {
+        resolve({})
+      }
+    })
+  }
+
   getConnect(){
     let self = this;
     return new Promise(async (resolve, reject)=>{
@@ -113,11 +132,9 @@ export class PouchdbService {
               }
               console.log("database", database);
               this.db.setMaxListeners(50);
-              self.events.publish('got-database', {});
               // let loadDemo = await this.storage.get('loadDemo');
               // this.storage.get('password').then(password => {
                 this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
-                let contact_id = this.contact_id;
                 // if (database != 'memo' || !loadDemo){
                   let options = {
                     live: true,
@@ -131,7 +148,7 @@ export class PouchdbService {
                     filter: "syncFilter/by_agent",
                     // filter: "_view",
                     // view: 'syncFilter/Clientes',
-                    query_params: { "contact": contact_id}
+                    query_params: { "contact": this.contact_id }
                   }
                   let syncJob = this.db.sync(this.remote, options)
                   .on('change', function (info) {
@@ -213,17 +230,15 @@ export class PouchdbService {
              }
              console.log("database", database);
              this.db.setMaxListeners(50);
-             self.events.publish('got-database', {});
              // let loadDemo = await this.storage.get('loadDemo');
              // this.storage.get('password').then(password => {
                this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
-               let contact_id = this.contact_id;
                // if (database != 'memo' || !loadDemo){
-                 let options = {
-                   live: true,
-                   retry: true,
-                   filter: "syncFilter/by_agent",
-                 }
+               let options = {
+                 live: true,
+                 retry: true,
+                 filter: "syncFilter/by_agent",
+               }
                  let syncJob = this.db.sync(this.remote, options)
                  .on('change', function (info) {
                    // handle change
@@ -272,9 +287,27 @@ export class PouchdbService {
          //   });
          // });
 
+        }
+      });
+    });
+  }
+
+  sync(){
+    return new Promise((resolve, reject)=>{
+      let options = {
+        filter: "syncFilter/by_agent",
+        query_params: { "contact": this.contact_id}
       }
+      this.db.replicate.from(this.remote, options).on('complete', function (info) {
+        // yay, we're in sync!
+        console.log("complete sync----------'", info)
+        resolve(true);
+      }).on('error', function (err) {
+        // boo, we hit an error!
+        console.log("hit error", err)
+        resolve(false)
       });
-      });
+    });
   }
 
   async getUser(){
@@ -461,9 +494,8 @@ export class PouchdbService {
   }
 
   deleteDoc(doc){
-    this.db.remove(doc).catch((err) => {
-      console.log("Delete error", err);
-    });
+    doc._deleted = true;
+    return this.updateDoc(doc);
   }
 
   getRelated(docType, related, id): Promise<any> {
