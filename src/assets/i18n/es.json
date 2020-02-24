@@ -429,5 +429,7 @@
   "SELECT_A_COMPANY": "Seleccione una empresa para empezar",
   "SEE_DEMO": "Prueba Gratis",
   "ADD_COST": "Agregar Costo",
+  "SALE_MARGIN": "Margen de Venta",
+  "ROUND_FACTOR": "Redondeo",
   "RESULT": "Resultado"
 }

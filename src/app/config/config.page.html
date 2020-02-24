@@ -80,7 +80,14 @@
       <ion-input type="text" formControlName="product_sequence"></ion-input>
     </ion-item>
 
-
+    <ion-item class="ion-no-padding field-50">
+      <ion-label position="floating">{{'SALE_MARGIN' | translate}}</ion-label>
+      <ion-input type="text" formControlName="sale_margin"></ion-input>
+    </ion-item>
+    <ion-item class="ion-no-padding field-50">
+      <ion-label position="floating">{{'ROUND_FACTOR' | translate}}</ion-label>
+      <ion-input type="text" formControlName="round_factor"></ion-input>
+    </ion-item>
 
     <ion-col class="item-content">
       <ion-button class="print-invoice" (click)="configInvoicePrint()" style="width: 99%">Configurar Factura</ion-button>

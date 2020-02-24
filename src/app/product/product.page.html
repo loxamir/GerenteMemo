@@ -24,7 +24,8 @@
       </ion-item>
       <ion-item class="ion-no-padding field-50">
         <ion-label position="floating">{{'PURCHASE_COST' | translate}}</ion-label>
-        <ion-input #cost type="number" formControlName="cost"></ion-input>
+        <ion-input #cost type="number" formControlName="cost"
+        (ionChange)="compute_sale_price()"></ion-input>
       </ion-item>
       <ion-item class="ion-no-padding field-50">
         <ion-label position="floating">{{'TYPE' | translate}}</ion-label>

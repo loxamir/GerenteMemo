@@ -429,5 +429,7 @@
   "SEE_DEMO": "Teste Gratis",
   "CHOOSE_LANGUAGE": "Escolher Idioma",
   "ADD_COST": "Adicionar Custo",
+  "SALE_MARGIN": "Margem de Venda",
+  "ROUND_FACTOR": "Arrendondamento",
   "RESULT": "Resultado"
 }

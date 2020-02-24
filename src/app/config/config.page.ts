@@ -101,6 +101,8 @@ export class ConfigPage implements OnInit {
       cash_move_sequence: [1],
       stock_move_sequence: [1],
       currency_precision: 2,
+      sale_margin: 100,
+      round_factor: 500,
       invoice_template: [''],
       invoicePrint: [{}],
       ticketPrint: [{}],

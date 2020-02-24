@@ -429,5 +429,7 @@
   "SELECT_A_COMPANY": "Select a company to start",
   "SEE_DEMO": "Free Try",
   "ADD_COST": "Add Cost",
+  "SALE_MARGIN": "Sale Margin",
+  "ROUND_FACTOR": "Round Factor",
   "RESULT": "Result"
 }

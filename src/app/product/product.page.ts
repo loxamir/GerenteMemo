@@ -44,6 +44,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     select;
     barcode = '';
     user: any = {};
+    config: any = {};
 
     constructor(
       public navCtrl: NavController,
@@ -135,6 +136,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.user = (await this.pouchdbService.getUser());
+      this.config = await this.pouchdbService.getDoc("config.profile")
       if (this.user.editProduct == false){
         let prompt = await this.alertCtrl.create({
           header: 'Sin Permiso',
@@ -527,6 +529,16 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       } else {
         this.productForm.markAsPristine();
         this.navCtrl.navigateBack('/product-list');
+      }
+    }
+
+    compute_sale_price(){
+      if (this.config.sale_margin && this.config.round_factor){
+        let cost = this.productForm.value.cost;
+        let price = Math.round(cost*(1+this.config.sale_margin/100)/(this.config.round_factor))*this.config.round_factor;
+        this.productForm.patchValue({
+          price: price
+        })
       }
     }
 
