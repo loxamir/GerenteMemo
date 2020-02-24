@@ -18,14 +18,26 @@
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input #name type="text" formControlName="name"></ion-input>
       </ion-item>
-      <ion-item class="ion-no-padding field-50">
-        <ion-label position="floating">{{'SALE_PRICE' | translate}}</ion-label>
-        <ion-input #price type="number" formControlName="price"></ion-input>
-      </ion-item>
-      <ion-item class="ion-no-padding field-50">
+      <ion-item class="ion-no-padding field-44">
         <ion-label position="floating">{{'PURCHASE_COST' | translate}}</ion-label>
         <ion-input #cost type="number" formControlName="cost"
         (ionChange)="compute_sale_price()"></ion-input>
+      </ion-item>
+      <div class="field-16">
+        <ion-row>
+          <ion-col style="font-size:12px;">
+            {{'MARGIN'|translate}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col style="font-size:14px;">
+            {{ (productForm.value.price/productForm.value.cost - 1)*100||0|number:'1.0-0'}}%
+          </ion-col>
+        </ion-row>
+      </div>
+      <ion-item class="ion-no-padding field-40">
+        <ion-label position="floating">{{'SALE_PRICE' | translate}}</ion-label>
+        <ion-input #price type="number" formControlName="price"></ion-input>
       </ion-item>
       <ion-item class="ion-no-padding field-50">
         <ion-label position="floating">{{'TYPE' | translate}}</ion-label>
