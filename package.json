@@ -1,8 +1,8 @@
 {
-  "name": "SistemaMemo",
+  "name": "DeliveryApp",
   "version": "1.0.0",
   "author": "Marcelo Pickler",
-  "homepage": "https://www.sistemamemo.com",
+  "homepage": "https://www.deliveryapp.com.py",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
