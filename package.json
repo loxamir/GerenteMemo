@@ -2,7 +2,7 @@
   "name": "AgroMemo",
   "version": "1.0.0",
   "author": "Marcelo Pickler",
-  "homepage": "https://www.sistemamemo.com",
+  "homepage": "https://www.agromemo.com",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

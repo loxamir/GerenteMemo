@@ -1,5 +1,5 @@
 {
-  "appId": "com.sistemamemo.agro",
+  "appId": "com.agromemo.app",
   "appName": "AgroMemo",
   "bundledWebRuntime": false,
   "npmClient": "npm",
