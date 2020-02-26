@@ -2,7 +2,7 @@
   "index": "/index.html",
   "assetGroups": [
     {
-      "name": "DeliveryApp",
+      "name": "AppDelivery",
       "installMode": "prefetch",
       "resources": {
         "files": [

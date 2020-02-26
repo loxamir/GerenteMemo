@@ -1,5 +1,5 @@
 {
-  "name": "DeliveryApp",
+  "name": "AppDelivery",
   "integrations": {
     "cordova": {},
     "capacitor": {}

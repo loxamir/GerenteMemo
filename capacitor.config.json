@@ -1,6 +1,6 @@
 {
-  "appId": "py.com.deliveryapp.app",
-  "appName": "DeliveryApp",
+  "appId": "py.com.appdelivery.app",
+  "appName": "AppDelivery",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
