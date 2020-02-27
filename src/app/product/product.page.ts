@@ -146,7 +146,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         products: new FormControl([]),
         sizes: new FormControl([]),
         size: new FormControl(),
-        _attachments: new FormControl(),
+        _attachments: new FormControl({}),
         description: new FormControl(''),
       });
 

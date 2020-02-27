@@ -87,9 +87,8 @@ export class ContactPage implements OnInit {
       salaries: new FormControl([]),
       advances: new FormControl([]),
       fixed: new FormControl(false),
-      image: new FormControl(''),
       _id: new FormControl(''),
-      _attachments: new FormControl(),
+      _attachments: new FormControl({}),
       create_user: new FormControl(''),
       create_time: new FormControl(''),
       write_user: new FormControl(''),
@@ -237,10 +236,10 @@ export class ContactPage implements OnInit {
 
   justSave() {
     if (this._id) {
-      this.updateContact(this.contactForm.value);
+      this.contactService.updateContact(this.contactForm.value);
       this.contactForm.markAsPristine();
     } else {
-      this.createContact(this.contactForm.value).then((doc: any) => {
+      this.contactService.createContact(this.contactForm.value).then((doc: any) => {
         this._id = doc.doc.id;
         this.contactForm.markAsPristine();
       });
@@ -249,7 +248,7 @@ export class ContactPage implements OnInit {
 
   buttonSave() {
     if (this._id) {
-      this.updateContact(this.contactForm.value);
+      this.contactService.updateContact(this.contactForm.value);
       if (this.select) {
         this.modalCtrl.dismiss();
       } else {
@@ -257,7 +256,7 @@ export class ContactPage implements OnInit {
         this.events.publish('open-contact', this.contactForm.value);
       }
     } else {
-      this.createContact(this.contactForm.value).then((doc: any) => {
+      this.contactService.createContact(this.contactForm.value).then((doc: any) => {
         this._id = doc.doc.id;
         if (this.select) {
           this.events.publish('create-contact', this.contactForm.value);
@@ -301,31 +300,6 @@ export class ContactPage implements OnInit {
     setTimeout(() => {
       this.name.setFocus();
     }, 200);
-  }
-  createContact(viewData) {
-    return new Promise((resolve, reject) => {
-      let contact = Object.assign({}, viewData);
-      contact.docType = 'contact';
-      // contact.address_id = contact.address._id;
-      // delete contact.address;
-      if (contact.code != '') {
-        this.pouchdbService.createDoc(contact).then(doc => {
-          resolve({ doc: doc, contact: contact });
-        });
-      } else {
-        this.pouchdbService.createDoc(contact).then(doc => {
-          resolve({ doc: doc, contact: contact });
-        });
-      }
-    });
-  }
-
-  updateContact(viewData) {
-    let contact = Object.assign({}, viewData);
-    contact.docType = 'contact';
-    // contact.address_id = contact.address._id;
-    // delete contact.address;
-    return this.pouchdbService.updateDoc(contact);
   }
 
   goNextStep() {

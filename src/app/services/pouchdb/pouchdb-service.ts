@@ -110,17 +110,7 @@ export class PouchdbService {
             if (database != 'memo' || !loadDemo){
               let options = {
                 live: true,
-                retry: true,
-                // filter: (doc) => {
-                //   if(doc._id.split(".")[0] == 'product'){
-                //     return true;
-                //   }
-                //    return false;
-                //  }
-                // filter: "syncFilter/by_agent",
-                // filter: "_view",
-                // view: 'syncFilter/Clientes',
-                // query_params: { "contact": "contact.loxamir@gmail.com"}
+                retry: true
               }
               let syncJob = this.db.sync(this.remote, options)
               .on('change', function (info) {

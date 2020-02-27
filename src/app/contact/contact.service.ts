@@ -24,42 +24,31 @@ export class ContactService {
           docs.forEach(row=>{
             doc_dict[row.id] = row.doc;
           })
-          // pouchData.address = doc_dict[pouchData.address_id] || {};
-          if (pouchData._attachments && pouchData._attachments['profile.png']) {
-            let profile = pouchData._attachments['profile.png'].data;
-            pouchData.image = "data:image/png;base64," + profile;
-          } else {
-            pouchData.image = "./assets/images/sem_foto.jpg";
-          }
           resolve(pouchData);
         })
       }))
     })
   }
 
-  createContact(contact){
-    return new Promise((resolve, reject)=>{
+  createContact(viewData) {
+    return new Promise((resolve, reject) => {
+      let contact = Object.assign({}, viewData);
       contact.docType = 'contact';
-      delete contact.image;
-      if (contact.code != ''){
-        // console.log("sin code", contact.code);
+      if (contact.code != '') {
         this.pouchdbService.createDoc(contact).then(doc => {
-          resolve({doc: doc, contact: contact});
+          resolve({ doc: doc, contact: contact });
         });
       } else {
-        // this.configService.getSequence('contact').then((code) => {
-          // contact['code'] = code;
-          this.pouchdbService.createDoc(contact).then(doc => {
-            resolve({doc: doc, contact: contact});
-          });
-        // });
+        this.pouchdbService.createDoc(contact).then(doc => {
+          resolve({ doc: doc, contact: contact });
+        });
       }
     });
   }
 
-  updateContact(contact){
+  updateContact(viewData) {
+    let contact = Object.assign({}, viewData);
     contact.docType = 'contact';
-    delete contact.image;
     return this.pouchdbService.updateDoc(contact);
   }
 

@@ -1147,8 +1147,8 @@ export class InvoicePage implements OnInit {
                name: 'MyDocument',
                //printerId: 'printer007',
                duplex: false,
-               landscape: false,
-               grayscale: true
+               // landscape: false,
+               // grayscale: true
              };
              //console.log("dafdata", data.invoice_template);
              let template = template_model;

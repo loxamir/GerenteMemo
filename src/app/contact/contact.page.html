@@ -12,7 +12,16 @@
   <form [formGroup]="contactForm"  (ngSubmit)="onSubmit(contactForm.value)">
     <ion-row style="background: white;">
       <ion-col size="2">
-        <img [src]="contactForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;">
+        <img
+        alt="Logo del producto"
+        style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;"
+        [src]="'data:image/png;base64,'+contactForm.value._attachments['profile.png'].data"
+        *ngIf="contactForm.value._attachments && contactForm.value._attachments['profile.png']">
+        <img
+        alt="Logo del producto"
+        style="max-height: 250px;display: block;margin-left: auto;margin-right: auto;"
+        src="./assets/images/sem_foto.jpg"
+        *ngIf="!(contactForm.value._attachments && contactForm.value._attachments['profile.png'])">
       </ion-col>
       <ion-col>
         <ion-item  class="field-100">
