@@ -33,6 +33,7 @@ export class ProductListPage implements OnInit {
   promoted_products2 = [];
   promoted_categories = [];
   config = {};
+  appliedChanges = [];
 
   constructor(
     public navCtrl: NavController,
@@ -53,7 +54,10 @@ export class ProductListPage implements OnInit {
     this.operation = this.route.snapshot.paramMap.get('operation') || this.operation;
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
     this.events.subscribe('changed-product', (change) => {
-      this.handleChange(this.products, change);
+      if (this.appliedChanges.indexOf(change.doc._id+change.doc._rev)==-1){
+        this.appliedChanges.push(change.doc._id+change.doc._rev);
+        this.handleChange(this.products, change);
+      }
     })
     // this.events.subscribe('changed-stock-move', (change) => {
     //   this.handleViewChange(this.products, change);

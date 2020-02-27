@@ -28,6 +28,7 @@ export class ContactListPage implements OnInit {
   seller;
   employee;
   customer;
+  appliedChanges = [];
 
   constructor(
     public route: ActivatedRoute,
@@ -51,7 +52,10 @@ export class ContactListPage implements OnInit {
     this.employee = this.route.snapshot.paramMap.get('employee')|| false;
     this.customer = this.route.snapshot.paramMap.get('customer')|| false;
     this.events.subscribe('changed-contact', (change)=>{
-      this.handleChange(this.contacts, change);
+      if (this.appliedChanges.indexOf(change.doc._id+change.doc._rev)==-1){
+        this.appliedChanges.push(change.doc._id+change.doc._rev);
+        this.handleChange(this.contacts, change);
+      }
     })
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
