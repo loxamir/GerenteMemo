@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "Sistema Memo",
+  "appId": "py.com.appdelivery.central",
+  "appName": "CentralAppDelivery",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
