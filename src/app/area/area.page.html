@@ -71,14 +71,17 @@
                     <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.rain'">
                       {{item.doc.quantity|number:'1.0'}} mm
                     </h1>
-                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
+                    <!-- <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
                       {{item.doc.croped/60|number:'1.0'}} {{'BAGS'|translate}}
-                    </h1>
+                    </h1> -->
                     <ul class="activity-note" *ngIf="item.doc.activity_id == 'activity.spray' || item.doc.activity_id == 'activity.work' || item.doc.activity_id == 'activity.plant'">
                       <li *ngFor="let input of item.doc.inputs">
                         {{ input.product_name }}
                       </li>
                     </ul>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
+                      {{'TOTAL'|translate}}: {{item.doc.croped|number:'1.0-0'}} Kg - {{(item.doc.croped/item.doc.surface)|number:'1.0-0'}} Kg/ha
+                    </h1>
                     <h1 class="activity-note" *ngIf="item.doc.cost">
                       {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}} - $ {{(item.doc.cost/item.doc.surface)|number:'1.'+currency_precision}}/ha
                     </h1>
@@ -163,14 +166,17 @@
                     <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.rain'">
                       {{item.doc.quantity|number:'1.0'}} mm
                     </h1>
-                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
+                    <!-- <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
                       {{item.doc.croped/60|number:'1.0'}} {{'BAGS'|translate}}
-                    </h1>
+                    </h1> -->
                     <ul class="activity-note" *ngIf="item.doc.activity_id == 'activity.spray' || item.doc.activity_id == 'activity.plant' || item.doc.activity_id == 'activity.plant'">
                       <li *ngFor="let input of item.doc.inputs">
                         {{ input.product_name }}
                       </li>
                     </ul>
+                    <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
+                      {{'TOTAL'|translate}}: {{item.doc.croped|number:'1.0-0'}} Kg - {{(item.doc.croped/item.doc.surface)|number:'1.0-0'}} Kg/ha
+                    </h1>
                     <h1 class="activity-note" *ngIf="item.doc.cost">
                       {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}} - $ {{item.doc.cost/item.doc.surface}}/ha
                     </h1>

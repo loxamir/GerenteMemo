@@ -13,7 +13,7 @@
       </h1> -->
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button icon-only
+      <ion-button icon-only *ngIf="!this.list"
               (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </ion-button>
@@ -155,7 +155,7 @@
                 <ion-label slot="end">100%</ion-label>
               </ion-range>
             </ion-item>
-            <ion-item *ngIf="field.type == 'formula'" class="field-100" style="--background: #dddddd;border:0px;">
+            <ion-item *ngIf="field.type == 'formula'" class="field-100" style="--background: #dddddd;border:0px;height: 57PX;">
               <div class="field-many2one" style="border: 0px;">
                 <h4 class="field-label">{{field.label|translate}}</h4>
                 <h4 class="field-value-bigger" style="font-size: 20px;color: #1a73e8;margin-top: 10px;">{{ fields[field.name]|number:'1.'+currency_precision}}</h4>
@@ -177,7 +177,13 @@
                     <ion-row style="width: 100%" (click)="editFieldItem(field.name, i)">
                       <ion-col *ngFor="let atribute of field.attributes;">
                         <h4 class="field-label" style="margin-top: 0px;">{{atribute.label|translate}}</h4>
-                        <h4 class="user-name"  style="margin-bottom: 0px;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
+                        <h4 class="user-name"
+                        *ngIf="checkIsNaN(item, atribute)"
+                        style="margin-bottom: 0px;">{{item[atribute.name] && item[atribute.name].name || item[atribute.name]}}</h4>
+                        <h4
+                        class="user-name"
+                        *ngIf="!checkIsNaN(item, atribute)"
+                        style="margin-bottom: 0px;">{{(item[atribute.name] && item[atribute.name].name || item[atribute.name])|number}}</h4>
                       </ion-col>
                     </ion-row>
                     <ion-row no-padding>
@@ -245,7 +251,12 @@
                   <ion-row (click)="editFieldItem(field.name, i)">
                     <ion-col *ngFor="let atribute of field.attributes;">
                       <h4 class="field-label" style="margin-top: 0px;">{{atribute.label|translate}}</h4>
-                      <h4 class="user-name"  style="margin-bottom: 0px;text-align: center;">{{ roundFieldItem(item, atribute) }}</h4>
+                      <h4 class="user-name"
+                      *ngIf="checkIsNaN(item, atribute)"
+                      style="margin-bottom: 0px;text-align: center;">{{ roundFieldItem(item, atribute) }}</h4>
+                      <h4 class="user-name"
+                      *ngIf="!checkIsNaN(item, atribute)"
+                      style="margin-bottom: 0px;text-align: center;">{{ roundFieldItem(item, atribute)|number }}</h4>
                     </ion-col>
                   </ion-row>
                   <ion-row no-padding>

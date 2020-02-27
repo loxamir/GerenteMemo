@@ -1211,6 +1211,17 @@ export class WorkPage implements OnInit {
     }
   }
 
+  checkIsNaN(item, atribute){
+    if (atribute){
+      let it = item[atribute.name] && item[atribute.name].name || item[atribute.name];
+      if (isNaN(it)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
   async onChangeArea(data){
     let formData = {
       area: data,
