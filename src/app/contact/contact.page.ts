@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from "../services/rest/rest";
 import { UserPage } from '../user/user.page';
-import { AuthService } from "../services/auth.service";
+// import { AuthService } from "../services/auth.service";
 // import { AddressListPage } from '../address-list/address-list.page';
 import { ContactService } from './contact.service';
 // declare var google;
@@ -50,7 +50,7 @@ export class ContactPage implements OnInit {
     public events: Events,
     public pouchdbService: PouchdbService,
     public restProvider: RestProvider,
-    public authService: AuthService,
+    // public authService: AuthService,
     public contactService: ContactService,
     private plt: Platform,
   ) {
@@ -198,10 +198,10 @@ export class ContactPage implements OnInit {
   //   });
   // }
 
-  logout(){
-    this.authService.logout();
-    this.navCtrl.navigateBack(['/tabs/product-list', {}]);
-  }
+  // logout(){
+  //   // this.authService.logout();
+  //   this.navCtrl.navigateBack(['/tabs/product-list', {}]);
+  // }
 
 
   changedDocument() {

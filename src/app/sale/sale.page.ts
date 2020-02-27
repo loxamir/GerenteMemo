@@ -41,7 +41,7 @@ import html2canvas from 'html2canvas';
 import { DiscountPage } from '../discount/discount.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { ContactPage } from '../contact/contact.page';
-import { AuthService } from "../services/auth.service";
+// import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: 'app-sale',
@@ -149,7 +149,7 @@ export class SalePage implements OnInit {
       // public modal: ModalController,
       public popoverCtrl: PopoverController,
       public socialSharing: SocialSharing,
-      public authService: AuthService,
+      // public authService: AuthService,
     ) {
       this.today = new Date().toISOString();
 
@@ -208,23 +208,23 @@ export class SalePage implements OnInit {
       this.currency_precision = config.currency_precision;
 
 
-      this.authService.loggedIn.subscribe(async status => {
-
-        console.log("status", status);
-        if (status) {
-          // this.logged = true;
-          let data = await this.authService.getData();
-          this.contact_id = "contact."+data.currentUser.email;
-          // if (config.default_contact_id){
-            let default_contact:any = await this.pouchdbService.getDoc(this.contact_id);
-            let default_address:any = await this.pouchdbService.getDoc(default_contact.address_id);
-            this.saleForm.patchValue({
-              'contact': default_contact,
-              'address': default_address,
-            })
-          // }
-        }
-      })
+      // this.authService.loggedIn.subscribe(async status => {
+      //
+      //   console.log("status", status);
+      //   if (status) {
+      //     // this.logged = true;
+      //     let data = await this.authService.getData();
+      //     this.contact_id = "contact."+data.currentUser.email;
+      //     // if (config.default_contact_id){
+      //       let default_contact:any = await this.pouchdbService.getDoc(this.contact_id);
+      //       let default_address:any = await this.pouchdbService.getDoc(default_contact.address_id);
+      //       this.saleForm.patchValue({
+      //         'contact': default_contact,
+      //         'address': default_address,
+      //       })
+      //     // }
+      //   }
+      // })
 
 
 

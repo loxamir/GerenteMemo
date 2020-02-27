@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-import { AuthService } from "../services/auth.service";
+// import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: 'app-sale-list',
@@ -34,7 +34,7 @@ export class SaleListPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     // public salesService: SalesService,
-    public authService: AuthService,
+    // public authService: AuthService,
     public loadingCtrl: LoadingController,
     public popoverCtrl: PopoverController,
     public events:Events,
@@ -108,7 +108,7 @@ export class SaleListPage implements OnInit {
     this.currency_precision = config.currency_precision;
     // this.authService.loggedIn.subscribe(async status => {
     await this.setFilteredItems();
-      this.loading.dismiss();
+    await this.loading.dismiss();
       // if (status) {
       //   this.logged = true;
       //   let data = await this.authService.getData();

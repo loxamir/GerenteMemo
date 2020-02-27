@@ -74,17 +74,17 @@ export class PouchdbService {
   getConnect(){
     let self = this;
     return new Promise(async (resolve, reject)=>{
-      // this.storage.get("username").then(username => {
-        let username="laroca";
-        let database="laroca";
-        let password="123";
+      this.storage.get("username").then(username => {
+        // let username="laroca";
+        // let database="laroca";
+        // let password="123";
         console.log("username", username);
         if (! username){
           resolve(false);
           return;
         }
         this.username = username;
-        // this.storage.get("database").then(async database => {
+        this.storage.get("database").then(async database => {
           if (! database){
             resolve(false);
             return;
@@ -105,7 +105,7 @@ export class PouchdbService {
           this.db.setMaxListeners(50);
           self.events.publish('got-database');
           let loadDemo = await this.storage.get('loadDemo');
-          // this.storage.get('password').then(password => {
+          this.storage.get('password').then(password => {
             this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
             if (database != 'memo' || !loadDemo){
               let options = {
@@ -170,9 +170,9 @@ export class PouchdbService {
               // resolve(false)
             });
 
-          // })
-      //   });
-      // });
+          })
+        });
+      });
     });
   }
 

@@ -234,7 +234,9 @@ export class ConfigService {
         pouchData['product_sequence'] = (doc_dict['sequence.product'])['value'];
         pouchData['products'] = [];
         pouchData.promoted_products.forEach((line: any)=>{
-          pouchData['products'].push(doc_dict[line.product_id]);
+          if (doc_dict[line.product_id]){
+            pouchData['products'].push(doc_dict[line.product_id]);
+          }
         })
         pouchData['categories'] = [];
         pouchData.promoted_categories.forEach((line: any)=>{
@@ -302,7 +304,7 @@ export class ConfigService {
   }
 
   async updateConfig(viewData, blob){
-    let config = this.serializeConfig(viewData);
+    let config:any = this.serializeConfig(viewData);
     if (blob) {
       await this.pouchdbService.attachFile(config._id, 'logo.png', blob);
       let data: any = await this.pouchdbService.getDoc(config._id);

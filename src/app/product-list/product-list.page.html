@@ -33,8 +33,7 @@
           </ion-thumbnail> -->
     <!-- </ion-title> -->
     <ion-buttons slot="start">
-        <!-- <ion-menu-button *ngIf="!select"></ion-menu-button> -->
-
+      <ion-back-button defaultHref="/tabs/sale-list" *ngIf="!select"></ion-back-button>
         <ion-button *ngIf="select"
                 (click)="discard()">
           <ion-icon name="arrow-back"></ion-icon>
@@ -250,14 +249,14 @@
     <ion-col style="width:80%;margin-left:10%;margin-right:10%;margin-top: 0%;background: white;border-radius:10px;background: ">
       <ion-row>
         <ion-col>
-          <h1>{{'LOADING_PRODUCTS' | translate }}</h1>
+          <h1>{{'NO_PRODUCTS' | translate }}</h1>
         </ion-col>
       </ion-row>
-      <!-- <ion-row>
+      <ion-row>
         <ion-col>
           <h4>{{'FIRST_PRODUCT'| translate}}</h4>
         </ion-col>
-      </ion-row> -->
+      </ion-row>
     </ion-col>
   </ion-row>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
