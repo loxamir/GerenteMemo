@@ -104,8 +104,8 @@ export class PouchdbService {
           this.contact_id = "contact."+data.currentUser.email;
           // this.setFilteredItems();
           // this.storage.get("username").then(username => {
-            let username="laroca";
-            let database="laroca";
+            let username="ted1";
+            let database="ted1";
             let password="123";
             console.log("username", username);
             if (! username){
@@ -202,8 +202,8 @@ export class PouchdbService {
          console.log("not git");
 
          // this.storage.get("username").then(username => {
-           let username="laroca";
-           let database="laroca";
+           let username="ted1";
+           let database="ted1";
            let password="123";
            console.log("username", username);
            if (! username){
