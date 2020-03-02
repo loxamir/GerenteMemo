@@ -605,7 +605,7 @@ export class ActivityReportPage implements OnInit {
           planned_yield += parseFloat(item['planned']);
         });
         this.loading.dismiss();
-        let areas:any = await this.pouchdbService.getView('Informes/areaCrop',2);
+        let areas:any = await this.pouchdbService.getView('Informes/areaCropReport',2);
         output.forEach(saida=>{
           let areaSize = areas.filter(fil=>fil.key[0] == saida.id && fil.key[1] == this.reportActivityForm.value.crop._id)
           saida.area = areaSize[0].value;
