@@ -167,6 +167,9 @@ export class SalePage implements OnInit {
       }
       if (this.saleForm.value.state == 'QUOTATION'){
         if (! this.confirming){
+          this.saleForm.patchValue({
+            date: new Date().toISOString()
+          });
           this.confirming = true;
           await this.beforeConfirm();
           this.confirming = false;
