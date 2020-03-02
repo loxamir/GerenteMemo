@@ -70,6 +70,7 @@
           <ion-card class="list-card">
             <ion-row>
               <ion-col
+              *ngIf="!item.fixed"
               (click)="deleteItem(slidingItem, item)"
               size="1"
               style="background: #3773e8;color: white;font-size: 20px;text-align: center;">
@@ -129,11 +130,11 @@
             </ion-row>
       </ion-card>
       </ion-item>
-        <ion-item-options  side="end">
+        <!-- <ion-item-options  side="end">
           <ion-item-option (click)="deleteItem(slidingItem, item)"  *ngIf="saleForm.value.state=='QUOTATION'">
             {{ 'DELETE' | translate }}
           </ion-item-option>
-        </ion-item-options>
+        </ion-item-options> -->
       </ion-item-sliding>
     </section>
     </ion-list>

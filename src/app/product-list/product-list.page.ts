@@ -142,6 +142,15 @@ export class ProductListPage implements OnInit {
         this.order._rev = updatedOrder.rev;
 
       } else {
+        let delivery_product:any = await this.pouchdbService.getDoc("product.delivery");
+        let delivery = {
+          "product_id": delivery_product._id,
+          "product_name": delivery_product.name,
+          "quantity": 1,
+          "price":delivery_product.price,
+          "note": delivery_product.description,
+          "fixed": true,
+        }
         let now = new Date().toISOString();
         let order = {
           "contact_name": this.contact.name,
@@ -170,7 +179,7 @@ export class ProductListPage implements OnInit {
           "create_time": now,
           "write_user": "admin",
           "write_time": now,
-          "lines": [line],
+          "lines": [line, delivery],
           "docType": "sale",
           "contact_id": this.contact_id,
           "project_id": "",
@@ -247,7 +256,7 @@ export class ProductListPage implements OnInit {
       this.getProductsPage(
         this.searchTerm, 0, this.category_id
       ).then(async (products: any[]) => {
-        this.products = products;
+        this.products = products.filter(product=>product._id!='product.delivery');
         await this.loading.dismiss();
         resolve(true);
       });
@@ -257,8 +266,8 @@ export class ProductListPage implements OnInit {
   searchItems() {
     this.searchItemsS(
       this.searchTerm, 0
-    ).then((items) => {
-      this.products = items;
+    ).then((items:any) => {
+      this.products = items.filter(product=>product._id!='product.delivery');
       this.page = 1;
       this.loading.dismiss();
     });
@@ -270,7 +279,9 @@ export class ProductListPage implements OnInit {
         this.searchTerm, this.page, this.category_id
       ).then((products: any[]) => {
         products.forEach(product => {
-          this.products.push(product);
+          if (product._id!='product.delivery' && products.indexOf(product) == -1){
+            this.products.push(product);
+          }
         });
         this.page += 1;
       });
@@ -283,7 +294,7 @@ export class ProductListPage implements OnInit {
       this.getProductsPage(
         this.searchTerm, 0, this.category_id
       ).then((products: any[]) => {
-        this.products = products;
+        this.products = products.filter(product=>product._id!='product.delivery');
         this.page = 1;
       });
       refresher.target.complete();
