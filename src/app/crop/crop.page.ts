@@ -77,9 +77,11 @@ export class CropPage implements OnInit {
       // currency_name: new FormControl(''),
       moves: new FormControl([]),
       items: new FormControl([]),
+      average_price: new FormControl(0),
+      contracts: new FormControl([]),
       // checks: new FormControl([]),
       // type: new FormControl('liquidity'),
-      // sequence: new FormControl(1),
+      section: new FormControl('places'),
       state: new FormControl('ACTIVE'),
       area: new FormControl(0),
       code: new FormControl(''),
@@ -342,13 +344,110 @@ export class CropPage implements OnInit {
     }
   }
 
+  async addContract(){
+    // if (this.cropForm.value.state=='ACTIVE'){
+      let prompt = await this.alertCtrl.create({
+        header: this.translate.instant('SALE_CONTRACT'),
+        message: this.translate.instant('COMPLETE_PRICE_AND_QUANTITY'),
+        inputs: [
+          {
+            type: 'number',
+            name: 'price',
+            placeholder: this.translate.instant('PRICE')
+          },
+          {
+            type: 'number',
+            name: 'quantity',
+            placeholder:  this.translate.instant('QUANTITY')
+          },
+        ],
+        buttons: [
+          {
+            text: this.translate.instant('CANCEL'),
+          },
+          {
+            text: this.translate.instant('CONFIRM'),
+            handler: data => {
+              this.cropForm.value.contracts.unshift({
+                'price': parseFloat(data.price),
+                'quantity': parseFloat(data.quantity),
+              })
+              this.recomputeValues();
+              this.cropForm.markAsDirty();
+            }
+          }
+        ]
+      });
+
+      await prompt.present();
+      await prompt.onDidDismiss();
+    // }
+  }
+
+  async editContract(item){
+    // if (this.cropForm.value.state=='ACTIVE'){
+      let prompt = await this.alertCtrl.create({
+        header: this.translate.instant('SALE_CONTRACT'),
+        message: this.translate.instant('COMPLETE_PRICE_AND_QUANTITY'),
+        inputs: [
+          {
+            type: 'number',
+            name: 'price',
+            placeholder: this.translate.instant('PRICE'),
+            value: item.price
+        },
+        {
+          type: 'number',
+          name: 'quantity',
+          placeholder:  this.translate.instant('QUANTITY'),
+          value: item.quantity
+      },
+        ],
+        buttons: [
+          {
+            text: this.translate.instant('CANCEL'),
+          },
+          {
+            text: this.translate.instant('CONFIRM'),
+            handler: data => {
+              item.price = parseFloat(data.price);
+              item.quantity = parseFloat(data.quantity);
+              this.recomputeValues();
+              this.cropForm.markAsDirty();
+            }
+          }
+        ]
+      });
+
+      await prompt.present();
+      await prompt.onDidDismiss();
+    // }
+  }
+
+  async deleteContract(slidingItem, item){
+    // if (this.cropForm.value.state=='ACTIVE'){
+      slidingItem.close();
+      let index = this.cropForm.value.contracts.indexOf(item)
+      this.cropForm.value.contracts.splice(index, 1);
+      this.cropForm.markAsDirty();
+      this.recomputeValues();
+    // }
+  }
+
   recomputeValues(){
     let areaTotal = 0;
+    let quantityTotal = 0;
+    let contractTotal = 0;
     this.cropForm.value.items.forEach((field)=>{
       areaTotal += parseFloat(field.area);
     })
+    this.cropForm.value.contracts.forEach((field)=>{
+      quantityTotal += parseFloat(field.quantity);
+      contractTotal += parseFloat(field.quantity)*parseFloat(field.price);
+    })
     this.cropForm.patchValue({
       'area': areaTotal,
+      'average_price': Math.round((contractTotal/quantityTotal)*100)/100
     })
     console.log("recompute values");
   }

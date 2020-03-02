@@ -584,5 +584,9 @@
   "ADD_PLACE": "Add Place",
   "FINISH": "Finish",
   "FINISHED": "Finished",
+  "COMPLETE_PRICE_AND_QUANTITY": "Complete the price and quantity sold",
+  "ADD_CONTRACT": "Add Contract",
+  "SALE_CONTRACT": "Sale Contract",
+  "AVERAGE_PRICE": "Average Price",
   "RESULT": "Result"
 }

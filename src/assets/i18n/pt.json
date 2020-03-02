@@ -584,5 +584,9 @@
   "ADD_PLACE": "Adicionar Lugar",
   "FINISH": "Finalizar",
   "FINISHED": "Finalizada",
+  "COMPLETE_PRICE_AND_QUANTITY": "Complete o preço e a quantidade vendida",
+  "ADD_CONTRACT": "Adicionar Contrato",
+  "SALE_CONTRACT": "Contrato de Venta",
+  "AVERAGE_PRICE": "Preço Médio",
   "RESULT": "Resultado"
 }
