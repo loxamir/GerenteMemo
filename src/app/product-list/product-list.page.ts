@@ -151,6 +151,7 @@ export class ProductListPage implements OnInit {
           "note": delivery_product.description,
           "fixed": true,
         }
+        total += delivery_product.price;
         let now = new Date().toISOString();
         let order = {
           "contact_name": this.contact.name,
