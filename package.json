@@ -1,8 +1,8 @@
 {
-  "name": "AppDelivery",
+  "name": "Ted Bebidas",
   "version": "1.0.0",
   "author": "Marcelo Pickler",
-  "homepage": "https://www.appdelivery.com.py",
+  "homepage": "https://ted.appdelivery.com.py",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
