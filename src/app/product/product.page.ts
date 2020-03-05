@@ -45,6 +45,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     barcode = '';
     user: any = {};
     config: any = {};
+    loaded: boolean = false;
 
     constructor(
       public navCtrl: NavController,
@@ -153,15 +154,17 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         return;
       }
       if (this._id){
-        this.productService.getProduct(this._id).then((data) => {
-          this.productForm.patchValue(data);
+        this.productService.getProduct(this._id).then(async (data) => {
+          await this.productForm.patchValue(data);
           this.theoreticalStock = data.stock;
-          this.productForm.markAsPristine();
-          this.loading.dismiss();
+          await this.productForm.markAsPristine();
+          await this.loading.dismiss();
+          this.loaded = true;
         });
       } else {
         this.getDefaultCategory();
-        this.loading.dismiss();
+        await this.loading.dismiss();
+        this.loaded = true;
       }
     }
 
@@ -533,7 +536,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     compute_sale_price(){
-      if (this.config.sale_margin && this.config.round_factor){
+      if (this.config.sale_margin && this.config.round_factor && this.loaded && this.productForm.value.cost){
         let cost = this.productForm.value.cost;
         let price = Math.round(cost*(1+this.config.sale_margin/100)/(this.config.round_factor))*this.config.round_factor;
         this.productForm.patchValue({

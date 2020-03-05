@@ -21,7 +21,7 @@
       <ion-item class="ion-no-padding field-44">
         <ion-label position="floating">{{'PURCHASE_COST' | translate}}</ion-label>
         <ion-input #cost type="number" formControlName="cost"
-        (ionChange)="compute_sale_price()"></ion-input>
+        (ngModelChange)="compute_sale_price()"></ion-input>
       </ion-item>
       <div class="field-16">
         <ion-row>
