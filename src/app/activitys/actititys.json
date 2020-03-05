@@ -12,106 +12,10 @@
           "invisible": "true",
           "readonly": "",
           "note": "",
-          "attributes": [
-
-          ],
+          "attributes": [],
           "class": "half-width",
           "sequence": 0,
-          "activity": {
-
-          },
-          "activity_id": "",
-          "onchange": null,
-          "default": null,
-          "context": "{}"
-        },
-        {
-          "name": "contract",
-          "type": "many2one",
-          "label": "CONTRACT",
-          "model": "future-contract",
-          "formula": "",
-          "script": "",
-          "invisible": "",
-          "readonly": "",
-          "note": "",
-          "attributes": [
-
-          ],
-          "class": "full-width",
-          "sequence": 73,
-          "activity": {
-
-          },
-          "activity_id": "",
-          "onchange": "warehouse=#warehouse_id",
-          "default": null,
-          "context": "{}"
-        },
-        {
-          "name": "warehouse",
-          "type": "many2one",
-          "label": "WAREHOUSE",
-          "model": "warehouse",
-          "formula": "",
-          "script": "",
-          "invisible": "",
-          "readonly": "",
-          "note": "",
-          "attributes": [
-
-          ],
-          "class": "full-width",
-          "sequence": 75,
-          "activity": {
-
-          },
-          "activity_id": "",
-          "onchange": null,
-          "default": null,
-          "context": "{}"
-        },
-        {
-          "name": "subtotal",
-          "type": "formula",
-          "label": "SUBTOTAL",
-          "model": "",
-          "formula": "this.workForm.value.cost*this.workForm.value.quantity/1000",
-          "script": "",
-          "invisible": "",
-          "readonly": "",
-          "note": "",
-          "attributes": [
-
-          ],
-          "class": "half-width",
-          "sequence": 80,
-          "activity": {
-
-          },
-          "activity_id": "",
-          "onchange": null,
-          "default": null,
-          "context": "{}"
-        },
-        {
-          "name": "cost",
-          "type": "float",
-          "label": "COST_TON_KM",
-          "model": "",
-          "formula": "",
-          "script": "",
-          "invisible": "",
-          "readonly": "",
-          "note": "",
-          "attributes": [
-
-          ],
-          "class": "full-width",
-          "sequence": 60,
-          "activity": {
-
-          },
+          "activity": {},
           "activity_id": "",
           "onchange": null,
           "default": null,
@@ -127,14 +31,10 @@
           "invisible": "",
           "readonly": "",
           "note": "",
-          "attributes": [
-
-          ],
+          "attributes": [],
           "class": "full-width",
           "sequence": 40,
-          "activity": {
-
-          },
+          "activity": {},
           "activity_id": "",
           "onchange": "distance=1;cost=salary;",
           "default": null,
@@ -150,14 +50,10 @@
           "invisible": "",
           "readonly": "",
           "note": "",
-          "attributes": [
-
-          ],
+          "attributes": [],
           "class": "half-width",
           "sequence": 20,
-          "activity": {
-
-          },
+          "activity": {},
           "activity_id": "",
           "default": null,
           "context": "{}",
@@ -175,17 +71,13 @@
           "note": "",
           "class": "half-width",
           "sequence": 30,
-          "activity": {
-
-          },
+          "activity": {},
           "activity_id": "",
           "opts": {
             "showBackdrop": true,
             "enableBackdropDismiss": true
           },
-          "attributes": [
-
-          ],
+          "attributes": [],
           "default": null,
           "context": "{}",
           "onchange": null
@@ -206,13 +98,9 @@
           "readonly": "",
           "class": "full-width",
           "sequence": 10,
-          "activity": {
-
-          },
+          "activity": {},
           "activity_id": "",
-          "attributes": [
-
-          ],
+          "attributes": [],
           "default": null,
           "context": "{}",
           "onchange": null
@@ -221,129 +109,6 @@
       "note": "",
       "summary": "",
       "saveScript": "",
-      "show": false,
-      "type": "area",
-      "docType": "activity",
-      "write_user": "agrotoro",
-      "write_time": "2019-07-25T19:44:03.537Z"
-    },
-    {
-      "_id": "activity.machines",
-      "name": "ADD_MACHINE",
-      "fields": [{
-          "name": "unit_cost",
-          "type": "formula",
-          "label": "Costo/ha",
-          "model": "",
-          "formula": "form.cost*form.quantity/this.input.surface",
-          "script": "",
-          "invisible": "",
-          "readonly": "",
-          "note": "",
-          "attributes": [],
-          "class": "half-width",
-          "sequence": 98,
-          "activity_name": "",
-          "activity_id": "",
-          "onchange": null,
-          "default": null,
-          "context": "{}"
-        },{
-          "name": "subtotal",
-          "type": "formula",
-          "label": "SUBTOTAL",
-          "model": "",
-          "formula": "form.cost*form.quantity",
-          "script": "",
-          "invisible": "",
-          "readonly": "",
-          "note": "",
-          "attributes": [
-
-          ],
-          "class": "half-width",
-          "sequence": 99,
-          "activity": {
-
-          },
-          "activity_id": "",
-          "onchange": null,
-          "default": null,
-          "context": "{}"
-        },
-        {
-          "name": "cost",
-          "type": "float",
-          "label": "HOUR_COST",
-          "model": "",
-          "formula": "",
-          "script": "",
-          "invisible": "",
-          "readonly": "",
-          "note": "",
-          "attributes": [
-
-          ],
-          "class": "half-width",
-          "sequence": 25,
-          "activity": {
-
-          },
-          "activity_id": "",
-          "onchange": null,
-          "default": null,
-          "context": "{}"
-        },
-        {
-          "name": "quantity",
-          "type": "float",
-          "label": "HOURS",
-          "model": "",
-          "formula": "",
-          "script": "",
-          "invisible": "",
-          "readonly": "",
-          "note": "",
-          "attributes": [
-
-          ],
-          "class": "half-width",
-          "sequence": 20,
-          "activity": {
-
-          },
-          "activity_id": "",
-          "context": "{}",
-          "default": 1,
-          "onchange": null
-        },
-        {
-          "name": "machine",
-          "type": "many2one",
-          "label": "MACHINE",
-          "model": "machine",
-          "formula": "",
-          "script": "",
-          "invisible": "",
-          "readonly": "",
-          "note": "",
-          "attributes": [
-
-          ],
-          "class": "full-width",
-          "sequence": 0,
-          "activity": {
-
-          },
-          "activity_id": "",
-          "context": "{}",
-          "onchange": "time=1;cost=hourCost;",
-          "default": null
-        }
-      ],
-      "note": "",
-      "summary": null,
-      "saveScript": null,
       "show": false,
       "type": "area",
       "docType": "activity"
@@ -739,9 +504,7 @@
       "saveScript": null,
       "show": true,
       "type": "area",
-      "docType": "activity",
-      "write_user": "agrotoro",
-      "write_time": "2019-07-23T18:58:41.325Z"
+      "docType": "activity"
     },
     {
       "_id": "activity.anotation",
@@ -825,7 +588,7 @@
           "onchange": null,
           "default": null,
           "context": "{}"
-        },{
+        }, {
           "name": "dosage",
           "type": "float",
           "label": "Dosagem/ha",
@@ -1055,6 +818,44 @@
       "_id": "activity.harvest",
       "name": "HARVEST_ACTIVITY",
       "fields": [{
+          "name": "yield_area",
+          "type": "formula",
+          "label": "Kg/ha",
+          "model": "",
+          "formula": "this.sumListField('loads', 'quantity')/this.workForm.value.surface",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 39,
+          "activity_name": "",
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },
+        {
+          "name": "surface",
+          "type": "float",
+          "label": "Area(ha)",
+          "model": "",
+          "formula": "",
+          "script": "",
+          "invisible": "",
+          "readonly": "",
+          "note": "",
+          "attributes": [],
+          "class": "half-width",
+          "sequence": 20,
+          "activity_name": "",
+          "activity_id": "",
+          "onchange": null,
+          "default": null,
+          "context": "{}"
+        },
+        {
           "name": "cost",
           "type": "formula",
           "label": "COST",
@@ -1064,18 +865,15 @@
           "invisible": "",
           "readonly": "",
           "note": "",
-          "attributes": [
-
-          ],
+          "attributes": [],
           "class": "half-width",
           "sequence": 21,
-          "activity": {
-
-          },
+          "activity": {},
           "activity_id": "",
           "onchange": null,
           "default": null,
-          "context": "{}"
+          "context": "{}",
+          "activity_name": ""
         },
         {
           "name": "croped",
@@ -1087,18 +885,15 @@
           "invisible": "",
           "readonly": "",
           "note": "",
-          "attributes": [
-
-          ],
+          "attributes": [],
           "class": "half-width",
-          "sequence": 20,
-          "activity": {
-
-          },
+          "sequence": 31,
+          "activity": {},
           "activity_id": "",
           "onchange": null,
           "default": null,
-          "context": "{}"
+          "context": "{}",
+          "activity_name": ""
         },
         {
           "name": "loads",
@@ -1111,12 +906,16 @@
           "readonly": "",
           "note": "",
           "attributes": [{
-              "name": "subtotal",
-              "label": "COST"
-            },
-            {
               "name": "quantity",
               "label": "NET_WEIGHT_KG"
+            },
+            {
+              "name": "impurity",
+              "label": "IMPURITY_IN_PERCENT"
+            },
+            {
+              "name": "humidity",
+              "label": "HUMIDITY_IN_PERCENT"
             }
           ],
           "class": "full-width",
@@ -1133,14 +932,10 @@
                 "invisible": "true",
                 "readonly": "",
                 "note": "",
-                "attributes": [
-
-                ],
+                "attributes": [],
                 "class": "half-width",
                 "sequence": 0,
-                "activity": {
-
-                },
+                "activity": {},
                 "activity_id": "",
                 "onchange": null,
                 "default": null,
@@ -1156,14 +951,10 @@
                 "invisible": "",
                 "readonly": "",
                 "note": "",
-                "attributes": [
-
-                ],
+                "attributes": [],
                 "class": "full-width",
                 "sequence": 73,
-                "activity": {
-
-                },
+                "activity": {},
                 "activity_id": "",
                 "onchange": "warehouse=#warehouse_id",
                 "default": null,
@@ -1179,14 +970,10 @@
                 "invisible": "",
                 "readonly": "",
                 "note": "",
-                "attributes": [
-
-                ],
+                "attributes": [],
                 "class": "full-width",
                 "sequence": 75,
-                "activity": {
-
-                },
+                "activity": {},
                 "activity_id": "",
                 "onchange": null,
                 "default": null,
@@ -1202,14 +989,10 @@
                 "invisible": "",
                 "readonly": "",
                 "note": "",
-                "attributes": [
-
-                ],
+                "attributes": [],
                 "class": "half-width",
                 "sequence": 80,
-                "activity": {
-
-                },
+                "activity": {},
                 "activity_id": "",
                 "onchange": null,
                 "default": null,
@@ -1225,14 +1008,10 @@
                 "invisible": "",
                 "readonly": "",
                 "note": "",
-                "attributes": [
-
-                ],
+                "attributes": [],
                 "class": "full-width",
                 "sequence": 60,
-                "activity": {
-
-                },
+                "activity": {},
                 "activity_id": "",
                 "onchange": null,
                 "default": null,
@@ -1248,14 +1027,10 @@
                 "invisible": "",
                 "readonly": "",
                 "note": "",
-                "attributes": [
-
-                ],
+                "attributes": [],
                 "class": "full-width",
                 "sequence": 40,
-                "activity": {
-
-                },
+                "activity": {},
                 "activity_id": "",
                 "onchange": "distance=1;cost=salary;",
                 "default": null,
@@ -1271,14 +1046,10 @@
                 "invisible": "",
                 "readonly": "",
                 "note": "",
-                "attributes": [
-
-                ],
+                "attributes": [],
                 "class": "half-width",
                 "sequence": 20,
-                "activity": {
-
-                },
+                "activity": {},
                 "activity_id": "",
                 "default": null,
                 "context": "{}",
@@ -1296,17 +1067,13 @@
                 "note": "",
                 "class": "half-width",
                 "sequence": 30,
-                "activity": {
-
-                },
+                "activity": {},
                 "activity_id": "",
                 "opts": {
                   "showBackdrop": true,
                   "enableBackdropDismiss": true
                 },
-                "attributes": [
-
-                ],
+                "attributes": [],
                 "default": null,
                 "context": "{}",
                 "onchange": null
@@ -1327,13 +1094,9 @@
                 "readonly": "",
                 "class": "full-width",
                 "sequence": 10,
-                "activity": {
-
-                },
+                "activity": {},
                 "activity_id": "",
-                "attributes": [
-
-                ],
+                "attributes": [],
                 "default": null,
                 "context": "{}",
                 "onchange": null
@@ -1345,14 +1108,13 @@
             "show": false,
             "type": "area",
             "docType": "activity",
-            "write_user": "agrotoro",
-            "write_time": "2019-07-25T19:44:03.537Z",
             "_id": "activity.loads"
           },
           "activity_id": "activity.loads",
           "default": null,
           "context": "{}",
-          "onchange": null
+          "onchange": null,
+          "activity_name": ""
         },
         {
           "name": "contacts",
@@ -1395,14 +1157,10 @@
           "invisible": "",
           "readonly": "",
           "note": "",
-          "attributes": [
-
-          ],
+          "attributes": [],
           "class": "half-width",
           "sequence": 15,
-          "activity": {
-
-          },
+          "activity": {},
           "activity_id": "",
           "default": null,
           "context": "{}",
@@ -1455,12 +1213,8 @@
             "showBackdrop": true,
             "enableBackdropDismiss": true
           },
-          "attributes": [
-
-          ],
-          "activity": {
-
-          },
+          "attributes": [],
+          "activity": {},
           "activity_id": "",
           "context": "{}",
           "default": null,
@@ -1472,9 +1226,7 @@
       "saveScript": "this.stockMoveCreateListFixedProduct(\"loads\", \"Cosecha\", form.crop.product_id)",
       "show": true,
       "type": "area",
-      "docType": "activity",
-      "write_user": "agrotoro",
-      "write_time": "2019-07-25T19:44:17.905Z"
+      "docType": "activity"
     },
     {
       "_id": "activity.maintenance",
@@ -1659,8 +1411,7 @@
     {
       "_id": "activity.plant",
       "name": "PLANT_ACTIVITY",
-      "fields": [
-        {
+      "fields": [{
           "name": "unit_cost",
           "type": "formula",
           "label": "Costo/ha",
@@ -1678,7 +1429,7 @@
           "onchange": null,
           "default": null,
           "context": "{}"
-        },{
+        }, {
           "name": "surface",
           "type": "float",
           "label": "Area(ha)",
@@ -1873,9 +1624,7 @@
       "saveScript": "this.stockMoveCreateList(\"inputs\", \"Plantio\")",
       "show": true,
       "type": "area",
-      "docType": "activity",
-      "write_user": "agromemo",
-      "write_time": "2019-08-14T12:29:48.923Z"
+      "docType": "activity"
     },
     {
       "_id": "activity.rain",
@@ -1959,7 +1708,7 @@
           "onchange": null,
           "default": null,
           "context": "{}"
-        },{
+        }, {
           "name": "surface",
           "type": "float",
           "label": "Area(ha)",
@@ -2146,9 +1895,7 @@
       "saveScript": "this.stockMoveCreateList(\"inputs\", \"Pulverización\")",
       "show": true,
       "type": "area",
-      "docType": "activity",
-      "write_user": "agrotoro",
-      "write_time": "2019-07-19T12:57:05.383Z"
+      "docType": "activity"
     },
     {
       "_id": "activity.work",
@@ -2382,9 +2129,7 @@
       "saveScript": "this.stockMoveCreateList(\"inputs\", \"Otro Servicio\")",
       "show": true,
       "type": "area",
-      "docType": "activity",
-      "write_user": "agrotoro",
-      "write_time": "2019-07-19T12:58:06.585Z"
+      "docType": "activity"
     },
     {
       "_id": "activity.workMachine",
@@ -2713,9 +2458,7 @@
       "saveScript": "this.stockMoveCreateList(\"inputs\", \"Flete\")",
       "show": true,
       "type": "machine",
-      "docType": "activity",
-      "write_user": "agromagro",
-      "write_time": "2019-08-20T12:19:43.182Z"
+      "docType": "activity"
     }
   ]
 }
