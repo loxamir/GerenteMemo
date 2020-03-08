@@ -457,4 +457,9 @@ showMap(latitude, longitude){
       this.navCtrl.navigateBack('/address-list');
     }
   }
+
+  showOnGoogleMaps(){
+    let url = "https://www.google.com/maps/place/"+this.addressForm.value.latitude+","+this.addressForm.value.longitude;
+    window.open(url);
+  }
 }

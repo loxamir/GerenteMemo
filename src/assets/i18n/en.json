@@ -445,5 +445,6 @@
   "DELIVERY": "Delivery",
   "CANCEL_ORDER": "Cancel Order",
   "SURE_CANCEL_ORDER": "You really want cancel this order?",
+  "SEE_ON_GOOGLE_MAPS": "See on Google Maps",
   "RESULT": "Result"
 }

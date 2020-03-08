@@ -42,6 +42,7 @@ import { DiscountPage } from '../discount/discount.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { ContactPage } from '../contact/contact.page';
 // import { AuthService } from "../services/auth.service";
+import { AddressPage } from '../address/address.page';
 
 @Component({
   selector: 'app-sale',
@@ -1470,6 +1471,15 @@ export class SalePage implements OnInit {
           await this.loading.dismiss();
           await profileModal.onDidDismiss();
           this.listenBarcode = true;
+        } else {
+          let profileModal = await this.modalCtrl.create({
+            component: AddressPage,
+            componentProps: {
+              "select": true,
+              "_id": this.saleForm.value.address._id,
+            }
+          });
+          await profileModal.present();
         }
       });
     }
