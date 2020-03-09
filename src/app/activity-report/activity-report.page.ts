@@ -48,6 +48,7 @@ export class ActivityReportPage implements OnInit {
   languages: Array<LanguageModel>;
   filter = {};
 
+  items = [true];
   title: string = 'D3.js with Ionic 2!';
   margin = { top: 20, right: 20, bottom: 30, left: 50 };
   width: number;
@@ -1380,6 +1381,7 @@ export class ActivityReportPage implements OnInit {
     let items_quantity = 0;
     let planned = 0;
     let planned_yield = 0;
+    this.items = this.reportActivityForm.value.items;
     this.reportActivityForm.value.items.forEach((item) => {
       total += parseFloat(item.total);
       items_product_total += 1;
@@ -1400,8 +1402,13 @@ export class ActivityReportPage implements OnInit {
       "total": total,
     });
     this.drawPie();
-    this.drawNewBar();
-    // this.drawNewLine();
+    if (this.reportActivityForm.value.groupBy == 'area'){
+      this.drawNewBar2();
+    } else if (this.reportActivityForm.value.groupBy == 'yieldArea' || this.reportActivityForm.value.groupBy == 'yieldAreakg'){
+      this.drawNewBar3();
+    } else {
+      this.drawNewBar();
+    }
   }
 
   drawNewBar() {
@@ -1649,6 +1656,217 @@ export class ActivityReportPage implements OnInit {
       .attr('y', legendRectSize - legendSpacing + 8)
       .attr('font-size', '12')
       .text(function(d: any) { return d; }); // return label
+  }
+
+  drawNewBar2() {
+    let self = this;
+    var dataset = this.reportActivityForm.value.items;
+    console.log("dataset", dataset[0]);
+    var width = 320;
+    var height = 200;
+    var color:any = d3Scale.scaleOrdinal()
+      .range(d3.schemeCategory10);
+
+
+    var legendRectSize = 10; // defines the size of the colored squares in legend
+    var legendSpacing = 10;
+
+    if (d3.select("#barChart").select('svg').nodes()[0]) {
+      let node: any = d3.select("#barChart").select('svg').nodes()[0];
+      node.remove();
+    }
+    var svg = d3.select("#barChart")
+      .append("svg")
+      .attr("width", '100%')
+      .attr("height", '100%')
+      .append('g')
+      .attr('transform', 'translate(' + (width / 3.5) + ',' + (height / 2) + ')');
+
+    //Init axis
+    this.x = d3Scale.scaleBand().rangeRound([0, 220]).padding(0.1);
+    this.y = d3Scale.scaleLinear().rangeRound([height, -80]);
+    this.x.domain(dataset.map((d: any) => this.translate.instant(d.name)));
+    this.y.domain([0, d3Array.max(dataset, (d: any) => d.total/d.quantity)]);
+
+    //Draw Axis
+    svg.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3Axis.axisBottom(this.x))
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", function(d) {
+        return "rotate(-45)"
+      });
+    svg.append("g")
+        .attr("class", "axis axis--y")
+        // .call(d3Axis.axisLeft(this.y).ticks(10))
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height/2)
+        .attr("dy", "-5em")
+        .style("text-anchor", "middle");
+        // .text("Grafico de Barras");
+
+      svg.append("g")
+          .attr("class", "axis axis--y")
+          .call(d3Axis.axisLeft(this.y).ticks(10))
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("x", -height/2)
+          .attr("dy", "-3em")
+          .style("text-anchor", "middle");
+          // .text("Amount Dispensed");
+
+    // define tooltip
+    var tooltip = d3.select('#barChart') // select element in the DOM with id 'chart'
+      .append('div') // append a div element to the element we've selected
+      .attr('class', 'tooltip'); // add class 'tooltip' on the divs we just selected
+
+    tooltip.append('div') // add divs to the tooltip defined above
+      .attr('class', 'label'); // add class 'label' on the selection
+
+    tooltip.append('div') // add divs to the tooltip defined above
+      .attr('class', 'count'); // add class 'count' on the selection
+
+    tooltip.append('div') // add divs to the tooltip defined above
+      .attr('class', 'percent'); // add class 'percent' on the selection
+
+    var path = svg.selectAll(".bar")
+      .data(this.reportActivityForm.value.items)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", (d: any) => this.x(this.translate.instant(d.name)))
+      .attr("y", (d: any) => this.y(d.total/d.quantity))
+      .attr("width", this.x.bandwidth())
+      .style("fill", (d: any) => color(d['name']))
+      .attr("height", (d:any) => height - this.y(d.total/d.quantity))
+      .each(function(d:any) { self._current - d; });
+
+    path.on('mouseover', (d:any) =>{  // when mouse enters div
+      d3.sum(dataset.map(function(d:any) { // calculate the total number of tickets in the dataset
+        return (d.enabled) ? d.total/d.quantity : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase
+      }));
+      tooltip.select('.label').html(this.translate.instant(d.name)); // set current label
+      tooltip.select('.count').html('$' + (d.total/d.quantity).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")); // set current count
+      tooltip.style('display', 'block'); // set display
+    });
+
+    path.on('mouseout', function() { // when mouse leaves div
+      tooltip.style('display', 'none'); // hide tooltip for that element
+    });
+
+    path.on('mousemove', function(d) { // when mouse moves
+      tooltip.style('top', (d3.event.layerY - 80) + 'px') // always 10px below the cursor
+        .style('left', (d3.event.layerX - 65) + 'px'); // always 10px to the right of the mouse
+    });
+  }
+
+  drawNewBar3() {
+    let self = this;
+    var dataset = this.reportActivityForm.value.items;
+    var width = 320;
+    var height = 200;
+    var color:any = d3Scale.scaleOrdinal()
+      .range(d3.schemeCategory10);
+
+
+    var legendRectSize = 10; // defines the size of the colored squares in legend
+    var legendSpacing = 10;
+
+    if (d3.select("#barChart").select('svg').nodes()[0]) {
+      let node: any = d3.select("#barChart").select('svg').nodes()[0];
+      node.remove();
+    }
+    var svg = d3.select("#barChart")
+      .append("svg")
+      .attr("width", '100%')
+      .attr("height", '100%')
+      .append('g')
+      .attr('transform', 'translate(' + (width / 3.5) + ',' + (height / 2) + ')');
+
+    //Init axis
+    this.x = d3Scale.scaleBand().rangeRound([0, 220]).padding(0.1);
+    this.y = d3Scale.scaleLinear().rangeRound([height, -80]);
+    this.x.domain(dataset.map((d: any) => this.translate.instant(d.name)));
+    this.y.domain([0, d3Array.max(dataset, (d: any) => d.margin/d.area)]);
+
+    //Draw Axis
+    svg.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3Axis.axisBottom(this.x))
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", function(d) {
+        return "rotate(-45)"
+      });
+    svg.append("g")
+        .attr("class", "axis axis--y")
+        // .call(d3Axis.axisLeft(this.y).ticks(10))
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height/2)
+        .attr("dy", "-5em")
+        .style("text-anchor", "middle");
+        // .text("Grafico de Barras");
+
+      svg.append("g")
+          .attr("class", "axis axis--y")
+          .call(d3Axis.axisLeft(this.y).ticks(10))
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("x", -height/2)
+          .attr("dy", "-3em")
+          .style("text-anchor", "middle");
+          // .text("Amount Dispensed");
+
+    // define tooltip
+    var tooltip = d3.select('#barChart') // select element in the DOM with id 'chart'
+      .append('div') // append a div element to the element we've selected
+      .attr('class', 'tooltip'); // add class 'tooltip' on the divs we just selected
+
+    tooltip.append('div') // add divs to the tooltip defined above
+      .attr('class', 'label'); // add class 'label' on the selection
+
+    tooltip.append('div') // add divs to the tooltip defined above
+      .attr('class', 'count'); // add class 'count' on the selection
+
+    tooltip.append('div') // add divs to the tooltip defined above
+      .attr('class', 'percent'); // add class 'percent' on the selection
+
+    var path = svg.selectAll(".bar")
+      .data(this.reportActivityForm.value.items)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", (d: any) => this.x(this.translate.instant(d.name)))
+      .attr("y", (d: any) => this.y(d.margin/d.area))
+      .attr("width", this.x.bandwidth())
+      .style("fill", (d: any) => color(d['name']))
+      .attr("height", (d:any) => height - this.y(d.margin/d.area))
+      .each(function(d:any) { self._current - d; });
+
+    path.on('mouseover', (d:any) =>{  // when mouse enters div
+      d3.sum(dataset.map(function(d:any) { // calculate the total number of tickets in the dataset
+        return (d.enabled) ? d.margin/d.area : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase
+      }));
+      tooltip.select('.label').html(this.translate.instant(d.name)); // set current label
+      tooltip.select('.count').html('$' + (d.margin/d.area).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")); // set current count
+      tooltip.style('display', 'block'); // set display
+    });
+
+    path.on('mouseout', function() { // when mouse leaves div
+      tooltip.style('display', 'none'); // hide tooltip for that element
+    });
+
+    path.on('mousemove', function(d) { // when mouse moves
+      tooltip.style('top', (d3.event.layerY - 80) + 'px') // always 10px below the cursor
+        .style('left', (d3.event.layerX - 65) + 'px'); // always 10px to the right of the mouse
+    });
   }
 
   drawNewLine() {
