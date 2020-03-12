@@ -589,5 +589,12 @@
   "ADD_CONTRACT": "Agregar Contrato",
   "SALE_CONTRACT": "Contrato de Venta",
   "AVERAGE_PRICE": "Precio Promedio",
+  "RESULT_TOTAL": "Resultado Total",
+  "AVERAGE_INCOME": "Ingreso Promédio",
+  "INCOME_1": "Ingreso",
+  "MARGIN_TOTAL": "Margen Total",
+  "EARNINGS": "Ganancia",
+  "TOTAL_EARNINGS": "Ganancia Total",
+  "HARVEST_TOTAL": "Total Cosechado",
   "RESULT": "Resultado"
 }

@@ -588,5 +588,12 @@
   "ADD_CONTRACT": "Add Contract",
   "SALE_CONTRACT": "Sale Contract",
   "AVERAGE_PRICE": "Average Price",
+  "RESULT_TOTAL": "Result Total",
+  "AVERAGE_INCOME": "Average Income",
+  "INCOME_1": "Income",
+  "MARGIN_TOTAL": "Total Margin",
+  "EARNINGS": "Earnings",
+  "TOTAL_EARNINGS": "Total Earnings",
+  "HARVEST_TOTAL": "Total Harvest",
   "RESULT": "Result"
 }
