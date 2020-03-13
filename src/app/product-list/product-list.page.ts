@@ -258,6 +258,7 @@ export class ProductListPage implements OnInit {
         this.searchTerm, 0, this.category_id
       ).then(async (products: any[]) => {
         this.products = products.filter(product=>product._id!='product.delivery');
+        this.page = 1;
         await this.loading.dismiss();
         resolve(true);
       });
@@ -280,7 +281,7 @@ export class ProductListPage implements OnInit {
         this.searchTerm, this.page, this.category_id
       ).then((products: any[]) => {
         products.forEach(product => {
-          if (product._id!='product.delivery' && products.indexOf(product) == -1){
+          if (product._id!='product.delivery' && this.products.indexOf(product) == -1){
             this.products.push(product);
           }
         });
