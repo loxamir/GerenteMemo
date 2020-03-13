@@ -178,7 +178,7 @@
             (click)="showReportYield(item)">
               <h4 class="field-label" style="text-align: center;">{{'MARGIN' | translate}}</h4>
               <h4 class="field-value" style="color:green;text-align: center;">
-                {{(item.average_price/(item.production_cost*1000/item.yieldTotal) - 1)*100|number:'1.0-0'}} %
+                {{(1-item.production_cost*1000/item.yieldTotal/item.average_price)*100|number:'1.0-0'}} %
               </h4>
             </ion-col>
           </ion-row>
