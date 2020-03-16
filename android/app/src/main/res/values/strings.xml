@@ -4,4 +4,6 @@
     <string name="title_activity_main">Ted Bebidas</string>
     <string name="package_name">py.com.appdelivery.ted</string>
     <string name="custom_url_scheme">py.com.appdelivery.ted</string>
+    <string name="fb_app_id">561164558063246</string>
+    <string name="fb_app_name">pyfood</string>
 </resources>

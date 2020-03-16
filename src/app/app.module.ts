@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+// import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
@@ -73,7 +73,7 @@ import { SaleListPageModule } from './sale-list/sale-list.module';
     // NativeStorage,
     // File,
     StatusBar,
-    SplashScreen,
+    // SplashScreen,
     Facebook,
     Geolocation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

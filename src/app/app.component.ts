@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Platform, ModalController } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+// import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PouchdbService } from './services/pouchdb/pouchdb-service';
 import { AuthService } from "./services/auth.service";
@@ -12,7 +12,7 @@ import { AuthService } from "./services/auth.service";
 export class AppComponent {
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
+    // private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     public modalCtrl: ModalController,
     public pouchdbService: PouchdbService,
@@ -29,7 +29,7 @@ export class AppComponent {
         this.statusBar.show()
         this.statusBar.styleLightContent()
         this.statusBar.backgroundColorByHexString('#1652a0');
-        this.splashScreen.hide();
+        // this.splashScreen.hide();
       }
     });
   }
