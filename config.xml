@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="py.com.appdelivery.app" version="0.0.12" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>AppDelivery</name>
+<widget id="py.com.appdelivery.pub" version="0.0.12" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Pub Petiscos</name>
     <description>Elijas que queres comer</description>
     <author email="loxamir@gmail.com" href="http://www.sistemamemo.com/">Marcelo Pickler</author>
     <content src="index.html" />

@@ -1,8 +1,8 @@
 {
-  "name": "AppDelivery",
+  "name": "Pub Petiscos",
   "version": "1.0.0",
   "author": "Marcelo Pickler",
-  "homepage": "https://www.appdelivery.com.py",
+  "homepage": "https://pub.appdelivery.com.py",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

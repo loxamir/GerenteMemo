@@ -1,6 +1,6 @@
 {
-  "appId": "py.com.appdelivery.app",
-  "appName": "AppDelivery",
+  "appId": "py.com.appdelivery.pub",
+  "appName": "Pub Petiscos",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
