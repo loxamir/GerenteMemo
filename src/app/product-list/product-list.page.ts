@@ -257,7 +257,7 @@ export class ProductListPage implements OnInit {
       this.getProductsPage(
         this.searchTerm, 0, this.category_id
       ).then(async (products: any[]) => {
-        this.products = products.filter(product=>product._id!='product.delivery');
+        this.products = products.filter(product=>product.publish==true);
         this.page = 1;
         await this.loading.dismiss();
         resolve(true);
@@ -269,7 +269,7 @@ export class ProductListPage implements OnInit {
     this.searchItemsS(
       this.searchTerm, 0
     ).then((items:any) => {
-      this.products = items.filter(product=>product._id!='product.delivery');
+      this.products = items.filter(product=>product.publish==true);
       this.page = 1;
       this.loading.dismiss();
     });
@@ -281,7 +281,7 @@ export class ProductListPage implements OnInit {
         this.searchTerm, this.page, this.category_id
       ).then((products: any[]) => {
         products.forEach(product => {
-          if (product._id!='product.delivery' && this.products.indexOf(product) == -1){
+          if (product.publish==true && this.products.indexOf(product) == -1){
             this.products.push(product);
           }
         });
@@ -296,7 +296,7 @@ export class ProductListPage implements OnInit {
       this.getProductsPage(
         this.searchTerm, 0, this.category_id
       ).then((products: any[]) => {
-        this.products = products.filter(product=>product._id!='product.delivery');
+        this.products = products.filter(product=>product.publish==true);
         this.page = 1;
       });
       refresher.target.complete();
