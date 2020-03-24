@@ -225,8 +225,12 @@
           <ion-col class="item-content">
           <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
             {{item.description}}
-
           </div>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="item.publish" style="background-color: lightgreen;color: black;">
+          <ion-col class="list-tag ion-no-padding">
+              Publicado
           </ion-col>
         </ion-row>
       </ion-card>
