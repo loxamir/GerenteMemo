@@ -142,6 +142,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         create_time: new FormControl(''),
         write_user: new FormControl(''),
         write_time: new FormControl(''),
+        publish: new FormControl(false),
         quantity: new FormControl(1),
         products: new FormControl([]),
         sizes: new FormControl([]),

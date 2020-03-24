@@ -42,7 +42,12 @@
           </ion-row>
         </ion-col>
       </ion-row>
-
+      <ion-item
+       class="ion-no-padding"
+       class="field-100">
+         <ion-label>{{'Publicar' | translate}}</ion-label>
+         <ion-toggle formControlName="publish"></ion-toggle>
+      </ion-item>
       <ion-item class="ion-no-padding" (click)="selectCategory()" class="field-100">
         <h4 class="field-label">{{'CATEGORY' | translate }}</h4>
         <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'SELECT'|translate}}</h4>
