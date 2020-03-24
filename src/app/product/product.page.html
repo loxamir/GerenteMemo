@@ -10,7 +10,7 @@
   <form class="sample-form validations-form" [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
     <ion-row>
       <ion-item class="field-100">
-        <ion-label position="floating">{{'NAME' | translate}}</ion-label>
+        <ion-label position="floating" style="margin-left: 16px;">{{'NAME' | translate}}</ion-label>
         <ion-input #name type="text" formControlName="name"></ion-input>
       </ion-item>
       <!-- <ion-item no-padding class="field-50">

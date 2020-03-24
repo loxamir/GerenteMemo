@@ -100,10 +100,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     async ngOnInit() {
-      setTimeout(() => {
-        this.name.setFocus();
-        this.productForm.markAsPristine();
-      }, 400);
       this.productForm = this.formBuilder.group({
         name: new FormControl(null, Validators.required),
         // image: new FormControl(''),
@@ -142,6 +138,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       } else {
         this.getDefaultCategory();
         this.loading.dismiss();
+        setTimeout(() => {
+          this.name.setFocus();
+          this.productForm.markAsPristine();
+        }, 400);
       }
     }
 
