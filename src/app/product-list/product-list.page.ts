@@ -271,16 +271,18 @@ export class ProductListPage implements OnInit {
 
   doInfinite(infiniteScroll) {
     setTimeout(() => {
-      this.getProductsPage(
-        this.searchTerm, this.page, this.category_id
-      ).then((products: any[]) => {
-        products.forEach(product => {
-          // if (product.publish==true && this.products.indexOf(product) == -1){
+      if (this.searchTerm){
+        this.searchItemsLoad();
+      } else {
+        this.getProductsPage(
+          this.searchTerm, this.page, this.category_id
+        ).then((products: any[]) => {
+          products.forEach(product => {
             this.products.push(product);
-          // }
+          });
+          this.page += 1;
         });
-        this.page += 1;
-      });
+      }
       infiniteScroll.target.complete();
     }, 50);
   }
@@ -334,12 +336,7 @@ export class ProductListPage implements OnInit {
   getProductsPage(keyword, page, category_id = 'all') {
     return new Promise(async (resolve, reject) => {
       let products: any;
-      if (keyword){
-        this.searchItems()
-      } else
       if (category_id == 'all') {
-        // products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase');
-        // products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase');
         let products_tmp:any = await this.pouchdbService.getView('Informes/publishedProducts', undefined,
         [""],
         ["z"],
@@ -350,19 +347,11 @@ export class ProductListPage implements OnInit {
         true,
         )
         let products = [];
-        // products_tmp.forEach(product=>{
-        //   // console.log("productsssss", product);
-        //   products.push(product.doc);
-        // })
         products = products_tmp.map(function(item){
-           return item.doc; //retorna o item original elevado ao quadrado
+          return item.doc;
         });
-        // console.log("allt products", products);
         resolve(products);
       } else {
-        // products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', category_id, 'name', 'increase')
-        // console.log("resolve(", products,")");
-
         let products_tmp:any = await this.pouchdbService.getView('Informes/publishedProducts', undefined,
         [category_id],
         [category_id+"z"],
@@ -373,14 +362,9 @@ export class ProductListPage implements OnInit {
         true,
         )
         let products = [];
-        // products_tmp.forEach(product=>{
-        //   // console.log("productsssss", product);
-        //   products.push(product.doc);
-        // })
         products = products_tmp.map(function(item){
-           return item.doc; //retorna o item original elevado ao quadrado
+          return item.doc;
         });
-        console.log("category products", products);
         resolve(products);
       }
     })
@@ -389,33 +373,87 @@ export class ProductListPage implements OnInit {
   searchItems() {
     return new Promise(resolve => {
       console.log("searchDocs")
-      this.pouchdbService.searchDocs(
-        'product',
-        this.searchTerm,
-        this.last_record,
-        undefined,
-        undefined,
-        'name',
-        'increase',
-        true
-      ).then((items:any) => {
-        console.log("ittems",items);
-        console.log("items", items);
-        if (!this.searchTerm){
-          this.page = 1;
-        }
-        if (this.page == 1){
+      if (this.category_id == 'all'){
+        this.pouchdbService.searchDocs(
+          'product',
+          this.searchTerm,
+          '',
+          undefined,
+          undefined,
+          'name',
+          'increase',
+          true
+        ).then((items:any) => {
+          console.log("ittems",items);
           this.products = items;
-        } else {
+          this.page = 1;
+          this.last_record = items && items.length && items[items.length-1].name || '';
+          this.loading.dismiss();
+          resolve(items);
+        })
+      } else {
+        this.pouchdbService.searchDocsField(
+          'product',
+          this.searchTerm,
+          '',
+          'category_id',
+          this.category_id,
+          'name',
+          'increase',
+          true
+        ).then((items:any) => {
+          this.products = items;
+          this.page = 1;
+          this.last_record = items && items.length && items[items.length-1].name || '';
+          this.loading.dismiss();
+          resolve(items);
+        })
+      }
+    })
+  }
+
+  searchItemsLoad() {
+    return new Promise(resolve => {
+      console.log("searchDocs")
+      if (this.category_id == 'all'){
+        this.pouchdbService.searchDocs(
+          'product',
+          this.searchTerm,
+          this.last_record,
+          undefined,
+          undefined,
+          'name',
+          'increase',
+          true
+        ).then((items:any) => {
           items.forEach(item=>{
             this.products.push(item);
           })
-        }
-        this.page += 1;
-        this.last_record = items && items.length && items[items.length-1].name || '';
-        this.loading.dismiss();
-        resolve(items);
-      })
+          this.page += 1;
+          this.last_record = items && items.length && items[items.length-1].name || '';
+          this.loading.dismiss();
+          resolve(items);
+        })
+      } else {
+        this.pouchdbService.searchDocsField(
+          'product',
+          this.searchTerm,
+          this.last_record,
+          'category_id',
+          this.category_id,
+          'name',
+          'increase',
+          true
+        ).then((items:any) => {
+          items.forEach(item=>{
+            this.products.push(item);
+          })
+          this.page += 1;
+          this.last_record = items && items.length && items[items.length-1].name || '';
+          this.loading.dismiss();
+          resolve(items);
+        })
+      }
     })
   }
 

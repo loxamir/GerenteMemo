@@ -227,34 +227,28 @@ export class PouchdbService {
         dict[field] = {$regex: "(?i)"+keyword};
         dad['$or'].push(dict)
       }
-      console.log("before Index", sort);
       await this.db.createIndex({
         index: {fields: [sort]}
       })
-      console.log("after index");
       let newSort = {}
       if (direction == 'decrease'){
         newSort[sort] = 'desc';
       } else {
         newSort[sort] = 'asc';
       }
-      console.log("before find", dad, newSort)
       self.db.find({
         selector: dad,
         sort: [newSort],
         limit: 10,
       }).then(async data=>{
         if (attachments){
-          console.log("data.docs", data.docs);
           let getList = data.docs.map(found=>{
             return found._id
           })
-          console.log("getList", getList);
           let items:any = await this.getList(getList, true);
           let docs = items.map(found=>{
             return found.doc
           })
-          console.log("docs", docs);
           resolve(docs);
         } else {
           resolve(data.docs);
@@ -263,6 +257,64 @@ export class PouchdbService {
     });
   }
 
+  searchDocsField(
+    docType, keyword="", last_record='', field=undefined, filter=undefined,
+    sort='date', direction='decrease', attachments=false
+  ){
+    let self = this;
+    return new Promise(async (resolve, reject)=>{
+      let dad = {
+        "$or": [
+          {
+              "name": {
+                  $regex: "(?i)"+keyword
+              }
+          },
+          {
+              "code": {
+                  $regex: "(?i)"+keyword
+              }
+          }
+      ],
+      "$and": [
+        {docType: {$eq: docType}},
+        {name: {$gt: last_record}}
+      ]}
+
+      if (field) {
+        let dict: any = {};
+        dict[field] = {$eq: filter};
+        dad['$and'].push(dict)
+      }
+      await this.db.createIndex({
+        index: {fields: [sort]}
+      })
+      let newSort = {}
+      if (direction == 'decrease'){
+        newSort[sort] = 'desc';
+      } else {
+        newSort[sort] = 'asc';
+      }
+      self.db.find({
+        selector: dad,
+        sort: [newSort],
+        limit: 10,
+      }).then(async data=>{
+        if (attachments){
+          let getList = data.docs.map(found=>{
+            return found._id
+          })
+          let items:any = await this.getList(getList, true);
+          let docs = items.map(found=>{
+            return found.doc
+          })
+          resolve(docs);
+        } else {
+          resolve(data.docs);
+        }
+      });
+    });
+  }
 
   getView(
     viewName,
