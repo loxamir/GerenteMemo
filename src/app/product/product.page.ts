@@ -19,6 +19,7 @@ import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 // import { AuthService } from "../services/auth.service";
 import { ProductListPage } from '../product-list/product-list.page';
+import { ImageModalPage } from '../image-modal/image-modal.page';
 
 @Component({
   selector: 'app-product',
@@ -54,7 +55,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     asking: boolean = false;
     currency_precision = 0;
     sliderOpts = {
-      zoom:false,
+      // zoom:false,
+      zoom: {
+        maxRatio: 5
+      },
       slidesPerView: 1.5,
       centeredSlides: true,
       spaceBetween: 20
@@ -849,8 +853,20 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     })
   }
 
-  openPreview(img){
+  openPreview1(img){
     console.log("show img", img);
   }
+
+  openPreview(img) {
+    this.modalCtrl.create({
+      component: ImageModalPage,
+      componentProps: {
+        img: img
+      }
+    }).then(modal => {
+      modal.present();
+    });
+  }
+
 
 }

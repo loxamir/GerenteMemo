@@ -86,6 +86,7 @@ const routes: Routes = [
   { path: 'brand-list', loadChildren: './brand-list/brand-list.module#BrandListPageModule' },
   { path: 'brand', loadChildren: './brand/brand.module#BrandPageModule' },
   { path: 'stock-report', loadChildren: './stock-report/stock-report.module#StockReportPageModule' },
+  { path: 'image-modal', loadChildren: './image-modal/image-modal.module#ImageModalPageModule' },
   // { path: 'tabs/contact-list', loadChildren: './contact-list/contact-list.module#ContactListPageModule'}
 ];
 

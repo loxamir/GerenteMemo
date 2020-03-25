@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
-
+import { ImageModalPageModule } from './image-modal/image-modal.module';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -123,6 +123,7 @@ import { environment } from '../environments/environment';
     ContractListPageModule,
     DiscountPageModule,
     CashMovePageModule,
+    ImageModalPageModule,
     BrandListPageModule,
     ProductCategoryListPageModule,
     AccountCategoryListPageModule,
