@@ -27,6 +27,7 @@ export class ProductListPage implements OnInit {
   select;
   category_id: string = 'all';
   page = 0;
+  last_record = '';
   operation = "sale";
   searchTerm: string = '';
   currency_precision = 0;
@@ -74,160 +75,163 @@ export class ProductListPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-    this.authService.loggedIn.subscribe(async status => {
-      console.log("status ngOnInit", status);
-      if (status) {
-        let data = await this.authService.getData();
-        this.contact_id = "contact."+data.currentUser.email;
-        let contact:any = await this.pouchdbService.getDoc(this.contact_id, true);
+    await this.setFilteredItems();
+    // this.authService.loggedIn.subscribe(async status => {
+    //   console.log("status ngOnInit", status);
+    //   if (status) {
+    //     let data = await this.authService.getData();
+    //     this.contact_id = "contact."+data.currentUser.email;
+    //     let contact:any = await this.pouchdbService.getDoc(this.contact_id, true);
+    //
+    //     if (JSON.stringify(contact) == "{}"){
+    //       console.log("create contact");
+    //       this.events.subscribe('login-success', (data:any)=>{
+    //         this.logged = true;
+    //         this.contact = data.contact;
+    //       })
+    //     } else {
+    //       this.logged = true;
+    //       this.contact = contact;
+    //     }
+    //
+    //     this.loading.dismiss();
+    //     let order: any = await this.pouchdbService.searchDocTypeData('sale',"",0);
+    //     if (order[0]){
+    //       if (order[0].state == 'QUOTATION'
+    //       || order[0].state == 'CONFIRMED'
+    //     ){
+    //         this.order = order[0];
+    //       }
+    //     }
+    //     this.events.subscribe('changed-sale', (data) => {
+    //       if (data.change.deleted){
+    //         this.order = undefined;
+    //       } else {
+    //         if (data.change.doc.state == 'QUOTATION' || data.change.doc.state == 'CONFIRMED'){
+    //           this.order = data.change.doc;
+    //         } else if (data.change.doc.state == 'PAID'){
+    //           this.order = undefined;
+    //         }
+    //       }
+    //     })
+    //   } else {
+    //     this.logged = false;
+    //     this.events.subscribe('login-success', (data) => {
+    //       this.contact = data.contact;
+    //     })
+    //     this.loading.dismiss();
+    //   }
+    // });
 
-        if (JSON.stringify(contact) == "{}"){
-          console.log("create contact");
-          this.events.subscribe('login-success', (data:any)=>{
-            this.logged = true;
-            this.contact = data.contact;
-          })
-        } else {
-          this.logged = true;
-          this.contact = contact;
-        }
-
-        this.loading.dismiss();
-        let order: any = await this.pouchdbService.searchDocTypeData('sale',"",0);
-        if (order[0]){
-          if (order[0].state == 'QUOTATION'
-          || order[0].state == 'CONFIRMED'
-        ){
-            this.order = order[0];
-          }
-        }
-        this.events.subscribe('changed-sale', (data) => {
-          if (data.change.deleted){
-            this.order = undefined;
-          } else {
-            if (data.change.doc.state == 'QUOTATION' || data.change.doc.state == 'CONFIRMED'){
-              this.order = data.change.doc;
-            } else if (data.change.doc.state == 'PAID'){
-              this.order = undefined;
-            }
-          }
-        })
-      } else {
-        this.logged = false;
-        this.events.subscribe('login-success', (data) => {
-          this.contact = data.contact;
-        })
-        this.loading.dismiss();
-      }
-    });
 
 
-
-    this.events.subscribe('add-product', async (data) => {
-      let total = data.product.price*data.product.quantity;
-      let line = {
-        "product_id": data.product._id,
-        "product_name": data.product.name,
-        "quantity": data.product.quantity,
-        "price": data.product.price,
-        "size": data.product.size,
-        "note": data.product.note
-      }
-      if (this.order){
-        this.order.lines.push(line);
-        this.order.total += total;
-        this.order.amount_unInvoiced += total;
-        this.order.residual += total;
-        let updatedOrder:any = await this.pouchdbService.updateDoc(this.order);
-        this.order._rev = updatedOrder.rev;
-
-      } else {
-        let delivery_product:any = await this.pouchdbService.getDoc("product.delivery");
-        let delivery = {
-          "product_id": delivery_product._id,
-          "product_name": delivery_product.name,
-          "quantity": 1,
-          "price":delivery_product.price,
-          "note": delivery_product.description,
-          "fixed": true,
-        }
-        total += delivery_product.price;
-        let now = new Date().toISOString();
-        let order = {
-          "contact_name": this.contact.name,
-          "name": "",
-          "code": "123",
-          "date": now,
-          "origin_id": null,
-          "total": total,
-          "residual": total,
-          "note": null,
-          "state": "QUOTATION",
-          "discount": {
-            "value": 0,
-            "discountProduct": true,
-            "lines": 0
-          },
-          "payments": [],
-          "payment_name": "Credito",
-          "invoice": "",
-          "invoices": [],
-          "amount_unInvoiced": total,
-          "seller": {},
-          "seller_name": "",
-          "currency": {},
-          "create_user": "admin",
-          "create_time": now,
-          "write_user": "admin",
-          "write_time": now,
-          "lines": [line, delivery],
-          "docType": "sale",
-          "contact_id": this.contact_id,
-          "project_id": "",
-          "pay_cond_id": "payment-condition.credit"
-          }
-          let orderDoc = await this.pouchdbService.createDoc(order);
-          // console.log("orderDoc", orderDoc);
-          this.order = orderDoc;
-      }
-      // this.events.unsubscribe('open-contact');
-    })
+    // this.events.subscribe('add-product', async (data) => {
+    //   let total = data.product.price*data.product.quantity;
+    //   let line = {
+    //     "product_id": data.product._id,
+    //     "product_name": data.product.name,
+    //     "quantity": data.product.quantity,
+    //     "price": data.product.price,
+    //     "size": data.product.size,
+    //     "note": data.product.note
+    //   }
+    //   if (this.order){
+    //     this.order.lines.push(line);
+    //     this.order.total += total;
+    //     this.order.amount_unInvoiced += total;
+    //     this.order.residual += total;
+    //     let updatedOrder:any = await this.pouchdbService.updateDoc(this.order);
+    //     this.order._rev = updatedOrder.rev;
+    //
+    //   } else {
+    //     let delivery_product:any = await this.pouchdbService.getDoc("product.delivery");
+    //     let delivery = {
+    //       "product_id": delivery_product._id,
+    //       "product_name": delivery_product.name,
+    //       "quantity": 1,
+    //       "price":delivery_product.price,
+    //       "note": delivery_product.description,
+    //       "fixed": true,
+    //     }
+    //     total += delivery_product.price;
+    //     let now = new Date().toISOString();
+    //     let order = {
+    //       "contact_name": this.contact.name,
+    //       "name": "",
+    //       "code": "123",
+    //       "date": now,
+    //       "origin_id": null,
+    //       "total": total,
+    //       "residual": total,
+    //       "note": null,
+    //       "state": "QUOTATION",
+    //       "discount": {
+    //         "value": 0,
+    //         "discountProduct": true,
+    //         "lines": 0
+    //       },
+    //       "payments": [],
+    //       "payment_name": "Credito",
+    //       "invoice": "",
+    //       "invoices": [],
+    //       "amount_unInvoiced": total,
+    //       "seller": {},
+    //       "seller_name": "",
+    //       "currency": {},
+    //       "create_user": "admin",
+    //       "create_time": now,
+    //       "write_user": "admin",
+    //       "write_time": now,
+    //       "lines": [line, delivery],
+    //       "docType": "sale",
+    //       "contact_id": this.contact_id,
+    //       "project_id": "",
+    //       "pay_cond_id": "payment-condition.credit"
+    //       }
+    //       let orderDoc = await this.pouchdbService.createDoc(order);
+    //       // console.log("orderDoc", orderDoc);
+    //       this.order = orderDoc;
+    //   }
+    //   // this.events.unsubscribe('open-contact');
+    // })
 
     let config: any = (await this.pouchdbService.getDoc('config.profile', true));
     // console.log("config",config);
-    if (!config._id){
-      this.events.subscribe(('end-sync'), async (change) => {
-        if (!config._id){
-          config = await this.pouchdbService.getDoc('config.profile', true);
-          this.config = config;
-          this.setPromoted(config);
-        }
-        this.currency_precision = config.currency_precision || this.currency_precision;
-        await this.setFilteredItems();
-        if (this.select) {
-          setTimeout(() => {
-            this.searchBar.setFocus();
-          }, 200);
-        }
-        if (config._id){
-          this.events.unsubscribe('end-sync');
-        }
-      })
-    } else {
+    // if (!config._id){
+    //   this.events.subscribe(('end-sync'), async (change) => {
+    //     if (!config._id){
+    //       config = await this.pouchdbService.getDoc('config.profile', true);
+    //       this.config = config;
+    //       this.setPromoted(config);
+    //     }
+    //     this.currency_precision = config.currency_precision || this.currency_precision;
+    //     await this.setFilteredItems();
+    //     if (this.select) {
+    //       setTimeout(() => {
+    //         this.searchBar.setFocus();
+    //       }, 200);
+    //     }
+    //     // if (config._id){
+    //     //   this.events.unsubscribe('end-sync');
+    //     // }
+    //   })
+    // } else {
       this.config = config;
       this.setPromoted(config);
       this.currency_precision = config.currency_precision || this.currency_precision;
-      await this.setFilteredItems();
+
       if (this.select) {
         setTimeout(() => {
           this.searchBar.setFocus();
         }, 200);
       }
-    }
+    // }
 
   }
 
   async setPromoted(config){
+    let categories:any = await this.pouchdbService.searchDocTypeData('category');
+    this.categories = categories;
     let getList = [];
     config.promoted_products = config.promoted_products || [];
     config.promoted_products.forEach(product=>{
@@ -248,8 +252,8 @@ export class ProductListPage implements OnInit {
         first = true;
       }
     })
-    let categories:any = await this.pouchdbService.searchDocTypeData('category');
-    this.categories = categories;
+
+
   }
 
   setFilteredItems() {
@@ -257,21 +261,11 @@ export class ProductListPage implements OnInit {
       this.getProductsPage(
         this.searchTerm, 0, this.category_id
       ).then(async (products: any[]) => {
-        this.products = products.filter(product=>product.publish==true);
+        this.products = products;
         this.page = 1;
         await this.loading.dismiss();
         resolve(true);
       });
-    });
-  }
-
-  searchItems() {
-    this.searchItemsS(
-      this.searchTerm, 0
-    ).then((items:any) => {
-      this.products = items.filter(product=>product.publish==true);
-      this.page = 1;
-      this.loading.dismiss();
     });
   }
 
@@ -281,9 +275,9 @@ export class ProductListPage implements OnInit {
         this.searchTerm, this.page, this.category_id
       ).then((products: any[]) => {
         products.forEach(product => {
-          if (product.publish==true && this.products.indexOf(product) == -1){
+          // if (product.publish==true && this.products.indexOf(product) == -1){
             this.products.push(product);
-          }
+          // }
         });
         this.page += 1;
       });
@@ -296,7 +290,7 @@ export class ProductListPage implements OnInit {
       this.getProductsPage(
         this.searchTerm, 0, this.category_id
       ).then((products: any[]) => {
-        this.products = products.filter(product=>product.publish==true);
+        this.products = products;
         this.page = 1;
       });
       refresher.target.complete();
@@ -327,6 +321,7 @@ export class ProductListPage implements OnInit {
       componentProps: {
         "select": true,
         "_id": product._id,
+        "product": product,
       }
     })
     profileModal.present();
@@ -339,26 +334,86 @@ export class ProductListPage implements OnInit {
   getProductsPage(keyword, page, category_id = 'all') {
     return new Promise(async (resolve, reject) => {
       let products: any;
+      if (keyword){
+        this.searchItems()
+      } else
       if (category_id == 'all') {
-        products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase');
+        // products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase');
+        // products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase');
+        let products_tmp:any = await this.pouchdbService.getView('Informes/publishedProducts', undefined,
+        [""],
+        ["z"],
+        false,
+        false,
+        15,
+        15*this.page,
+        true,
+        )
+        let products = [];
+        // products_tmp.forEach(product=>{
+        //   // console.log("productsssss", product);
+        //   products.push(product.doc);
+        // })
+        products = products_tmp.map(function(item){
+           return item.doc; //retorna o item original elevado ao quadrado
+        });
+        // console.log("allt products", products);
+        resolve(products);
       } else {
-        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', category_id, 'name', 'increase')
+        // products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', category_id, 'name', 'increase')
+        // console.log("resolve(", products,")");
+
+        let products_tmp:any = await this.pouchdbService.getView('Informes/publishedProducts', undefined,
+        [category_id],
+        [category_id+"z"],
+        false,
+        false,
+        15,
+        15*this.page,
+        true,
+        )
+        let products = [];
+        // products_tmp.forEach(product=>{
+        //   // console.log("productsssss", product);
+        //   products.push(product.doc);
+        // })
+        products = products_tmp.map(function(item){
+           return item.doc; //retorna o item original elevado ao quadrado
+        });
+        console.log("category products", products);
+        resolve(products);
       }
-      resolve(products);
     })
   }
 
-  searchItemsS(keyword, page) {
+  searchItems() {
     return new Promise(resolve => {
+      console.log("searchDocs")
       this.pouchdbService.searchDocs(
         'product',
-        keyword,
-        page,
+        this.searchTerm,
+        this.last_record,
         undefined,
         undefined,
         'name',
-        'increase'
-      ).then((items) => {
+        'increase',
+        true
+      ).then((items:any) => {
+        console.log("ittems",items);
+        console.log("items", items);
+        if (!this.searchTerm){
+          this.page = 1;
+        }
+        if (this.page == 1){
+          this.products = items;
+        } else {
+          items.forEach(item=>{
+            this.products.push(item);
+          })
+        }
+        this.page += 1;
+        this.last_record = items && items.length && items[items.length-1].name || '';
+        this.loading.dismiss();
         resolve(items);
       })
     })
@@ -370,6 +425,7 @@ export class ProductListPage implements OnInit {
 
   async filterCategory(category) {
     this.category_id = category._id;
+    this.products = [];
     this.setFilteredItems();
   }
 

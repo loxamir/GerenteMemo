@@ -42,6 +42,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     logged: boolean = false;
     asking: boolean = false;
     currency_precision = 0;
+    product;
 
     constructor(
       public navCtrl: NavController,
@@ -59,6 +60,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public authService: AuthService,
     ) {
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.product = this.route.snapshot.paramMap.get('product');
       this.select = this.route.snapshot.paramMap.get('select');
       if (this.route.snapshot.paramMap.get('_id')){
         this.opened = true;
@@ -127,7 +129,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
-      if (this._id){
+      if (this.product){
+        this.productForm.patchValue(this.product);
+        this.productForm.markAsPristine();
+        this.loading.dismiss();
+      }
+      else if (this._id){
         this.productService.getProduct(this._id).then((data) => {
           setTimeout(() => {
             if (data.sizes && data.sizes[0]){

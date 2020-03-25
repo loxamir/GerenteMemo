@@ -11,7 +11,7 @@
             *ngIf="!(config._attachments && config._attachments['logo.png'])">
           </ion-skeleton-text>
         </ion-col>
-        <ion-col size="3" (click)="presentPopover($event)" *ngIf="logged">
+        <!-- <ion-col size="3" (click)="presentPopover($event)" *ngIf="logged">
           <ion-row>
             <ion-col style="text-align: center;" class="ion-no-padding" >
               <img
@@ -42,7 +42,7 @@
                 </ion-button>
             </ion-col>
           </ion-row>
-        </ion-col>
+        </ion-col> -->
       </ion-row>
     <ion-buttons slot="start">
         <ion-button *ngIf="select"
@@ -82,7 +82,7 @@
   style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 8px;margin-bottom: 5px;color: white;"
   *ngIf="!select && !searchTerm && category_id=='all'"
   class="ion-no-padding">
-    Algunas recomendaciones para ti
+    Productos Destacados
   </h1>
   <div class="scrolling-wrapper-flexbox" *ngIf="promoted_products.length && !select && !searchTerm && category_id=='all' && promoted_products.length">
     <div class="card" *ngFor="let item of promoted_products; let i = index;">
@@ -631,7 +631,11 @@
     </div>
   </div>
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+    <!-- <ion-infinite-scroll-content></ion-infinite-scroll-content> -->
   </ion-infinite-scroll>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
       <ion-row *ngIf="order" (click)="openOrder()">

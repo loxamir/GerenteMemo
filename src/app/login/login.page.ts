@@ -70,7 +70,7 @@ export class LoginPage implements OnInit {
         } else {
           console.log("logged contact", contact);
           this.events.publish('login-success', {contact: contact});
-          let sync = await this.pouchdbService.sync();
+          // let sync = await this.pouchdbService.sync();
           window.location.reload();
           // await this.modalCtrl.dismiss();
         }
@@ -124,7 +124,7 @@ export class LoginPage implements OnInit {
         // this.contact = createdDoc;
         let contact = await this.pouchdbService.getDoc("contact."+data.currentUser.email, true)
         this.events.publish('login-success', {contact: contact});
-        let sync = await this.pouchdbService.sync();
+        // let sync = await this.pouchdbService.sync();
         window.location.reload();
         // this.modalCtrl.dismiss();
       });
