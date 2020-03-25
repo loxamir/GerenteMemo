@@ -53,6 +53,15 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     logged: boolean = false;
     asking: boolean = false;
     currency_precision = 0;
+    sliderOpts = {
+      zoom:false,
+      slidesPerView: 1.5,
+      centeredSlides: true,
+      spaceBetween: 20
+    }
+    product_images = [];
+    changed_images = [];
+    deleted_images = [];
 
     constructor(
       public navCtrl: NavController,
@@ -122,7 +131,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       }, 400);
       this.productForm = this.formBuilder.group({
         name: new FormControl(null, Validators.required),
-        image: new FormControl(''),
         price: new FormControl(null, Validators.required),
         category: new FormControl({}),
         brand: new FormControl({}),
@@ -220,6 +228,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
               });
             }
           }, 400);
+          Object.keys(data._attachments).forEach(file=>{
+            this.product_images.push('https://database.sistemamemo.com/catalogo/'+data._id+'/'+file);
+          })
           this.productForm.patchValue(data);
           this.theoreticalStock = data.stock;
           this.productForm.markAsPristine();
@@ -359,29 +370,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       //   this.navCtrl.navigateBack();
       // }
     }
-
-    justSave() {
-      let product = Object.assign({}, this.productForm.value);
-      // if(this.productForm.value.stock != this.theoreticalStock){
-        product.stock = this.theoreticalStock;
-      // }
-      if (this._id){
-        this.productService.updateProduct(product).then(doc=>{
-          this.createInventoryAdjustment();
-          this.productForm.markAsPristine();
-        })
-      } else {
-        this.productService.createProduct(product).then(doc => {
-          //console.log("docss", doc);
-          this.productForm.patchValue({
-            _id: doc['id'],
-          });
-          this._id = doc['id'];
-          this.createInventoryAdjustment();
-          this.productForm.markAsPristine();
-        });
-      }
-    }
     buttonSave() {
       this.productForm.patchValue({
           stock: parseFloat(this.productForm.value.stock) || 0,
@@ -396,7 +384,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         product.stock = this.theoreticalStock;
       // }
       if (this._id){
-        this.productService.updateProduct(product, this.avatar).then(doc=>{
+        this.productService.updateProduct(product, this.changed_images).then(doc=>{
           this.createInventoryAdjustment();
         })
         if (this.select){
@@ -697,37 +685,40 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       var reader = new FileReader();
       reader.onload = (event: Event) => {
         preview.src = reader.result;
-        this.productForm.patchValue({
+        this.product_images.push(reader.result);
+        this.changed_images.push({
+          name: "image-"+this.pouchdbService.getUUID(),
+          action: "ADD",
           image: reader.result,
         })
         this.productForm.markAsDirty();
-        preview.onload = function() {
-
-          var percentage = 1;
-          let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
-          var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
-          if (image_diameter > max_diameter) {
-            percentage = max_diameter / image_diameter
-          }
-
-          var canvas: any = window.document.getElementById("canvas");
-          var ctx = canvas.getContext("2d");
-          canvas.height = canvas.width * (preview.height / preview.width);
-          var oc = window.document.createElement('canvas');
-          var octx = oc.getContext('2d');
-          oc.width = preview.width * percentage;
-          oc.height = preview.height * percentage;
-          canvas.width = oc.width;
-          canvas.height = oc.height;
-          octx.drawImage(preview, 0, 0, oc.width, oc.height);
-          octx.drawImage(oc, 0, 0, oc.width, oc.height);
-          ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-
-          let jpg = ctx.canvas.toDataURL("image/jpeg");
-          fetch(jpg)
-            .then(res => res.blob())
-            .then(blob => self.avatar = blob)
-        }
+        // preview.onload = function() {
+        //
+        //   var percentage = 1;
+        //   let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
+        //   var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
+        //   if (image_diameter > max_diameter) {
+        //     percentage = max_diameter / image_diameter
+        //   }
+        //
+        //   var canvas: any = window.document.getElementById("canvas");
+        //   var ctx = canvas.getContext("2d");
+        //   canvas.height = canvas.width * (preview.height / preview.width);
+        //   var oc = window.document.createElement('canvas');
+        //   var octx = oc.getContext('2d');
+        //   oc.width = preview.width * percentage;
+        //   oc.height = preview.height * percentage;
+        //   canvas.width = oc.width;
+        //   canvas.height = oc.height;
+        //   octx.drawImage(preview, 0, 0, oc.width, oc.height);
+        //   octx.drawImage(oc, 0, 0, oc.width, oc.height);
+        //   ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+        //
+        //   let jpg = ctx.canvas.toDataURL("image/jpeg");
+        //   fetch(jpg)
+        //     .then(res => res.blob())
+        //     .then(blob => self.avatar = blob)
+        // }
       }
 
       if (file) {
@@ -856,6 +847,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       size: item.name,
       price: item.price
     })
+  }
+
+  openPreview(img){
+    console.log("show img", img);
   }
 
 }

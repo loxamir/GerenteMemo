@@ -1,10 +1,8 @@
 import { Injectable } from "@angular/core";
-// import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ConfigService } from '../config/config.service';
-// import { StockMoveService } from '../stock-move/stock-move.service';
-// import { CashMoveService } from '../cash-move/cash-move.service';
+import { FormatService } from '../services/format.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +10,9 @@ import { ConfigService } from '../config/config.service';
 export class ProductService {
 
   constructor(
-    // public http: Http,
     public pouchdbService: PouchdbService,
     public configService: ConfigService,
-    // public cashMoveService: CashMoveService,
-    // public stockMoveService: StockMoveService,
+    public formatService: FormatService,
   ) {}
 
   getProduct(doc_id): Promise<any> {
@@ -121,7 +117,7 @@ export class ProductService {
     });
   }
 
-  async updateProduct(viewData, blob = undefined){
+  async updateProduct(viewData, changed_images = []){
     let product = Object.assign({}, viewData);
     product.docType = 'product';
     product.price = product.price && parseFloat(product.price) || 0;
@@ -139,15 +135,24 @@ export class ProductService {
     product.brand_name = product.brand && product.brand.name || product.brand_name;
     delete product.brand;
     delete product.image;
-    if (blob) {
-      await this.pouchdbService.attachFile(product._id, 'avatar.png', blob);
-      let data: any = await this.pouchdbService.getDoc(product._id);
-      let attachments = data._attachments;
-      product._attachments = attachments;
+    console.log("changed_images", changed_images);
+    if (changed_images.length) {
+      await this.formatService.asyncForEach(changed_images, async (image: any) => {
+        if (image.action == 'ADD'){
+          //Add image
+          let dda = image.image.split('base64,')[1];
+          await this.pouchdbService.attachFile(product._id, image.name, dda);
+          let data: any = await this.pouchdbService.getDoc(product._id);
+          let attachments = data._attachments;
+          product._rev = data._rev;
+          product._attachments = attachments;
+        } else if (image.action == 'DEL'){
+          //Remove image
+        }
+      })
     }
     product.related_products = [];
     product.products.forEach(item => {
-      console.log("producttt", product);
       product.related_products.push({
         product_id: item._id || item.product_id,
         product_name: item.name || item.product_name,
