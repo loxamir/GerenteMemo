@@ -18,47 +18,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'sale-list',
-        children: [
-          {
-            path: '',
-            loadChildren: '../sale-list/sale-list.module#SaleListPageModule'
-          }
-        ]
-      },
-      {
-        path: 'contact-list',
-        children: [
-          {
-            path: '',
-            loadChildren: '../contact-list/contact-list.module#ContactListPageModule'
-          }
-        ]
-      },
-      {
         path: 'config',
         children: [
           {
             path: '',
             loadChildren: '../config/config.module#ConfigPageModule'
-          }
-        ]
-      },
-      {
-        path: 'profile',
-        children: [
-          {
-            path: '',
-            loadChildren: '../contact/contact.module#ContactPageModule'
-          }
-        ]
-      },
-      {
-        path: 'service-list',
-        children: [
-          {
-            path: '',
-            loadChildren: '../service-list/service-list.module#ServiceListPageModule'
           }
         ]
       },

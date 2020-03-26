@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, Events, ModalController } from '@ionic/angular';
+import { NavController, LoadingController, ModalController } from '@ionic/angular';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BrandPage } from '../brand/brand.page';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
+import { Events } from '../services/events';
 
 @Component({
   selector: 'app-brand-list',

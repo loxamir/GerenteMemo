@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController, Events, ToastController, MenuController,
+import { LoadingController, ToastController, MenuController,
   PopoverController, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
@@ -12,6 +12,7 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { RestProvider } from '../services/rest/rest';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoginPopover } from './login.popover';
+import { Events } from '../services/events';
 
 @Component({
   selector: 'app-login',
@@ -339,7 +340,7 @@ export class LoginPage implements OnInit {
       this.pouchdbService.getConnect();
       this.events.subscribe('end-sync', async () => {
         this.events.unsubscribe('end-sync');
-        await this.router.navigate(['/tabs/sale-list']);
+        await this.router.navigate(['/tabs/product-list']);
         // this.menuCtrl.enable(true);
         this.menuCtrl.enable(false);
         await toast.dismiss();

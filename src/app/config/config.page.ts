@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { NavController,  ModalController, LoadingController,  Events, AlertController } from '@ionic/angular';
+import { NavController,  ModalController, LoadingController, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,22 +10,23 @@ import { LanguageModel } from "../services/language/language.model";
 import { ConfigService } from './config.service';
 // import { Base64 } from '@ionic-native/base64';
 //import { CategoriesPage } from '../category/list/categories';
-import { CurrencyListPage } from '../currency-list/currency-list.page';
-import { CashListPage } from '../cash-list/cash-list.page';
-import { AccountListPage } from '../account-list/account-list.page';
-import { ContactListPage } from '../contact-list/contact-list.page';
-import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
+// import { CurrencyListPage } from '../currency-list/currency-list.page';
+// import { CashListPage } from '../cash-list/cash-list.page';
+// import { AccountListPage } from '../account-list/account-list.page';
+// import { ContactListPage } from '../contact-list/contact-list.page';
+// import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
 import { Storage } from '@ionic/storage';
 // import { Camera, CameraOptions } from '@ionic-native/camera';
 import { ProductListPage } from '../product-list/product-list.page';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { InvoiceConfigPage } from '../invoice-config/invoice-config.page';
-import { TicketConfigPage } from '../ticket-config/ticket-config.page';
-import { UserPage } from '../user/user.page';
+// import { InvoiceConfigPage } from '../invoice-config/invoice-config.page';
+// import { TicketConfigPage } from '../ticket-config/ticket-config.page';
+// import { UserPage } from '../user/user.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RestProvider } from "../services/rest/rest";
-import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
+// import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
 import { ProductCategoryListPage } from '../product-category-list/product-category-list.page';
+import { Events } from '../services/events';
 
 @Component({
   selector: 'app-config',
@@ -139,7 +140,7 @@ export class ConfigPage implements OnInit {
       this.modalCtrl.dismiss();
       this.events.publish('open-config', this.configForm.value);
     } else {
-      this.navCtrl.navigateBack('/tabs/sale-list');
+      this.navCtrl.navigateBack('/tabs/product-list');
       // .then(() => {
         this.events.publish('open-config', this.configForm.value);
       // });
@@ -180,213 +181,213 @@ export class ConfigPage implements OnInit {
       this.configForm.value.users.splice(index, 1);
   }
 
-  selectCurrency() {
-    return new Promise(async resolve => {
-      this.events.subscribe('select-currency', (data) => {
-        this.configForm.patchValue({
-          currency: data,
-          currency_precision: data.precision,
-        });
-        this.configForm.markAsDirty();
-        this.events.unsubscribe('select-currency');
-        resolve(data);
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: CurrencyListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-    });
-  }
-
-  selectCash() {
-    return new Promise(async resolve => {
-      this.events.subscribe('select-cash', (data) => {
-        this.configForm.patchValue({
-          cash: data,
-        });
-        this.configForm.markAsDirty();
-        this.events.unsubscribe('select-cash');
-        resolve(data);
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: CashListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-    });
-  }
-
-  selectLaborProduct() {
-    return new Promise(async resolve => {
-      this.events.subscribe('select-product', (data) => {
-        this.configForm.patchValue({
-          labor_product: data,
-        });
-        this.configForm.markAsDirty();
-        this.events.unsubscribe('select-product');
-        resolve(data);
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: ProductListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-    });
-  }
-
-  selectInputProduct() {
-    return new Promise(async resolve => {
-      this.events.subscribe('select-product', (data) => {
-        this.configForm.patchValue({
-          input_product: data,
-        });
-        this.configForm.markAsDirty();
-        this.events.unsubscribe('select-product');
-        resolve(data);
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: ProductListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-    });
-  }
-
-  selectTravelProduct() {
-    return new Promise(async resolve => {
-      this.events.subscribe('select-product', (data) => {
-        this.configForm.patchValue({
-          travel_product: data,
-        });
-        this.configForm.markAsDirty();
-        this.events.unsubscribe('select-product');
-        resolve(data);
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: ProductListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-    });
-  }
-
-  selectAccount() {
-    return new Promise(async resolve => {
-      this.events.subscribe('select-account', (data) => {
-        this.configForm.patchValue({
-          account: data,
-        });
-        this.configForm.markAsDirty();
-        this.events.unsubscribe('select-account');
-        resolve(data);
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: AccountListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-    });
-  }
-  selectWarehouse() {
-    return new Promise(async resolve => {
-      this.events.subscribe('select-warehouse', (data) => {
-        this.configForm.patchValue({
-          warehouse: data,
-        });
-        this.configForm.markAsDirty();
-        this.events.unsubscribe('select-warehouse');
-        resolve(data);
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: WarehouseListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-    });
-  }
-  selectContact() {
-    return new Promise(async resolve => {
-      let profileModal = await this.modalCtrl.create({
-        component: ContactListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-
-      this.events.subscribe('select-contact', (data) => {
-        this.configForm.patchValue({
-          contact: data,
-        });
-        this.configForm.markAsDirty();
-        profileModal.dismiss();
-        this.events.unsubscribe('select-contact');
-        resolve(data);
-      })
-      // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
-    });
-  }
-
-  selectDefaultContact() {
-    return new Promise(async resolve => {
-      let profileModal = await this.modalCtrl.create({
-        component: ContactListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-
-      this.events.subscribe('select-contact', (data) => {
-        this.configForm.patchValue({
-          default_contact: data,
-        });
-        this.configForm.markAsDirty();
-        profileModal.dismiss();
-        this.events.unsubscribe('select-contact');
-        resolve(data);
-      })
-      // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
-    });
-  }
-
-  selectDefaultPayment() {
-    return new Promise(async resolve => {
-      let profileModal = await this.modalCtrl.create({
-        component: PaymentConditionListPage,
-        componentProps: {
-          "select": true
-        }
-      });
-      profileModal.present();
-
-      this.events.subscribe('select-payment-condition', (data) => {
-        this.configForm.patchValue({
-          default_payment: data,
-        });
-        this.configForm.markAsDirty();
-        profileModal.dismiss();
-        this.events.unsubscribe('select-payment-condition');
-        resolve(data);
-      })
-      // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
-    });
-  }
+  // selectCurrency() {
+  //   return new Promise(async resolve => {
+  //     this.events.subscribe('select-currency', (data) => {
+  //       this.configForm.patchValue({
+  //         currency: data,
+  //         currency_precision: data.precision,
+  //       });
+  //       this.configForm.markAsDirty();
+  //       this.events.unsubscribe('select-currency');
+  //       resolve(data);
+  //     })
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: CurrencyListPage,
+  //       componentProps: {
+  //         "select": true
+  //       }
+  //     });
+  //     profileModal.present();
+  //   });
+  // }
+  //
+  // selectCash() {
+  //   return new Promise(async resolve => {
+  //     this.events.subscribe('select-cash', (data) => {
+  //       this.configForm.patchValue({
+  //         cash: data,
+  //       });
+  //       this.configForm.markAsDirty();
+  //       this.events.unsubscribe('select-cash');
+  //       resolve(data);
+  //     })
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: CashListPage,
+  //       componentProps: {
+  //         "select": true
+  //       }
+  //     });
+  //     profileModal.present();
+  //   });
+  // }
+  //
+  // selectLaborProduct() {
+  //   return new Promise(async resolve => {
+  //     this.events.subscribe('select-product', (data) => {
+  //       this.configForm.patchValue({
+  //         labor_product: data,
+  //       });
+  //       this.configForm.markAsDirty();
+  //       this.events.unsubscribe('select-product');
+  //       resolve(data);
+  //     })
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: ProductListPage,
+  //       componentProps: {
+  //         "select": true
+  //       }
+  //     });
+  //     profileModal.present();
+  //   });
+  // }
+  //
+  // selectInputProduct() {
+  //   return new Promise(async resolve => {
+  //     this.events.subscribe('select-product', (data) => {
+  //       this.configForm.patchValue({
+  //         input_product: data,
+  //       });
+  //       this.configForm.markAsDirty();
+  //       this.events.unsubscribe('select-product');
+  //       resolve(data);
+  //     })
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: ProductListPage,
+  //       componentProps: {
+  //         "select": true
+  //       }
+  //     });
+  //     profileModal.present();
+  //   });
+  // }
+  //
+  // selectTravelProduct() {
+  //   return new Promise(async resolve => {
+  //     this.events.subscribe('select-product', (data) => {
+  //       this.configForm.patchValue({
+  //         travel_product: data,
+  //       });
+  //       this.configForm.markAsDirty();
+  //       this.events.unsubscribe('select-product');
+  //       resolve(data);
+  //     })
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: ProductListPage,
+  //       componentProps: {
+  //         "select": true
+  //       }
+  //     });
+  //     profileModal.present();
+  //   });
+  // }
+  //
+  // selectAccount() {
+  //   return new Promise(async resolve => {
+  //     this.events.subscribe('select-account', (data) => {
+  //       this.configForm.patchValue({
+  //         account: data,
+  //       });
+  //       this.configForm.markAsDirty();
+  //       this.events.unsubscribe('select-account');
+  //       resolve(data);
+  //     })
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: AccountListPage,
+  //       componentProps: {
+  //         "select": true
+  //       }
+  //     });
+  //     profileModal.present();
+  //   });
+  // }
+  // selectWarehouse() {
+  //   return new Promise(async resolve => {
+  //     this.events.subscribe('select-warehouse', (data) => {
+  //       this.configForm.patchValue({
+  //         warehouse: data,
+  //       });
+  //       this.configForm.markAsDirty();
+  //       this.events.unsubscribe('select-warehouse');
+  //       resolve(data);
+  //     })
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: WarehouseListPage,
+  //       componentProps: {
+  //         "select": true
+  //       }
+  //     });
+  //     profileModal.present();
+  //   });
+  // }
+  // selectContact() {
+  //   return new Promise(async resolve => {
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: ContactListPage,
+  //       componentProps: {
+  //         "select": true
+  //       }
+  //     });
+  //     profileModal.present();
+  //
+  //     this.events.subscribe('select-contact', (data) => {
+  //       this.configForm.patchValue({
+  //         contact: data,
+  //       });
+  //       this.configForm.markAsDirty();
+  //       profileModal.dismiss();
+  //       this.events.unsubscribe('select-contact');
+  //       resolve(data);
+  //     })
+  //     // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
+  //   });
+  // }
+  //
+  // selectDefaultContact() {
+  //   return new Promise(async resolve => {
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: ContactListPage,
+  //       componentProps: {
+  //         "select": true
+  //       }
+  //     });
+  //     profileModal.present();
+  //
+  //     this.events.subscribe('select-contact', (data) => {
+  //       this.configForm.patchValue({
+  //         default_contact: data,
+  //       });
+  //       this.configForm.markAsDirty();
+  //       profileModal.dismiss();
+  //       this.events.unsubscribe('select-contact');
+  //       resolve(data);
+  //     })
+  //     // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
+  //   });
+  // }
+  //
+  // selectDefaultPayment() {
+  //   return new Promise(async resolve => {
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: PaymentConditionListPage,
+  //       componentProps: {
+  //         "select": true
+  //       }
+  //     });
+  //     profileModal.present();
+  //
+  //     this.events.subscribe('select-payment-condition', (data) => {
+  //       this.configForm.patchValue({
+  //         default_payment: data,
+  //       });
+  //       this.configForm.markAsDirty();
+  //       profileModal.dismiss();
+  //       this.events.unsubscribe('select-payment-condition');
+  //       resolve(data);
+  //     })
+  //     // this.navCtrl.navigateForward(['/contact-list', {"select": true}]);
+  //   });
+  // }
 
 
   logout() {
@@ -429,111 +430,111 @@ export class ConfigPage implements OnInit {
     // this.pouchdbService.duplicateDb();
   }
 
-  async configInvoicePrint() {
-    // return new Promise(async resolve => {
-      // console.log("invoice", {"teste": "ok"});
-      let profileModal = await this.modalCtrl.create({
-        component: InvoiceConfigPage,
-        componentProps: this.configForm.value.invoicePrint,
-      });
-      await profileModal.present();
-      const { data } = await profileModal.onDidDismiss();
-      // await profileModal.onDidDismiss(data => {
-        if (data) {
-          Object.keys(data).forEach(key=>{
-            if (key != 'invoiceDateType' && key != 'invoicePaymentType' && key != 'paperSize'){
-              data[key] = parseFloat(data[key]);
-            }
-          })
-          this.configForm.patchValue({
-            invoicePrint: data,
-          });
-          this.justSave();
-        }
-      // });
-
-    // });
-  }
-
-  async configTicketPrint() {
-    // return new Promise(async resolve => {
-      // console.log("ticket", {"teste": "ok"});
-      let profileModal = await this.modalCtrl.create({
-        component: TicketConfigPage,
-        componentProps: this.configForm.value.ticketPrint,
-      });
-      await profileModal.present();
-      const { data } = await profileModal.onDidDismiss();
-      // await profileModal.onDidDismiss(data => {
-        if (data) {
-          // Object.keys(data).forEach(key=>{
-          //   if (key != 'invoiceDateType' && key != 'invoicePaymentType' && key != 'paperSize'){
-          //     data[key] = parseFloat(data[key]);
-          //   }
-          // })
-          this.configForm.patchValue({
-            ticketPrint: data,
-          });
-          this.justSave();
-        }
-      // });
-
-    // });
-  }
-
-
-  addUser() {
-    return new Promise(async resolve => {
-      let profileModal = await this.modalCtrl.create({
-        component: UserPage,
-        componentProps: {}
-      });
-      await profileModal.present();
-      // let data = await profileModal.onDidDismiss();
-      const { data } = await profileModal.onDidDismiss();
-      // console.log("userdata", data);
-      // data => {
-        if (data) {
-          this.configForm.value.users.push(data);
-          this.configForm.patchValue({
-            users: this.configForm.value.users,
-          });
-          this.configForm.markAsDirty();
-        }
-      // });
-    });
-  }
-
-  async editUser(user) {
-    // return new Promise(resolve => {
-      let profileModal = await this.modalCtrl.create({
-        component: UserPage,
-        componentProps: user
-      });
-      await profileModal.present();
-      // let data: any = profileModal.onDidDismiss();
-      const { data } = await profileModal.onDidDismiss();
-      // data => {
-        if (data) {
-          user["name"] = data.name;
-          user["username"] = data.username;
-          user["sale"] = data.sale;
-          user["purchase"] = data.purchase;
-          user["finance"] = data.finance;
-          user["service"] = data.service;
-          user["report"] = data.report;
-          user["config"] = data.config;
-          user["registered"] = data.registered;
-          // console.log("data user", data);
-          // console.log("user user", user);
-          // this.configForm.patchValue({
-          //   users: this.configForm.value.users,
-          // });
-          this.configForm.markAsDirty();
-        }
-      // });
-    // });
-  }
+  // async configInvoicePrint() {
+  //   // return new Promise(async resolve => {
+  //     // console.log("invoice", {"teste": "ok"});
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: InvoiceConfigPage,
+  //       componentProps: this.configForm.value.invoicePrint,
+  //     });
+  //     await profileModal.present();
+  //     const { data } = await profileModal.onDidDismiss();
+  //     // await profileModal.onDidDismiss(data => {
+  //       if (data) {
+  //         Object.keys(data).forEach(key=>{
+  //           if (key != 'invoiceDateType' && key != 'invoicePaymentType' && key != 'paperSize'){
+  //             data[key] = parseFloat(data[key]);
+  //           }
+  //         })
+  //         this.configForm.patchValue({
+  //           invoicePrint: data,
+  //         });
+  //         this.justSave();
+  //       }
+  //     // });
+  //
+  //   // });
+  // }
+  //
+  // async configTicketPrint() {
+  //   // return new Promise(async resolve => {
+  //     // console.log("ticket", {"teste": "ok"});
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: TicketConfigPage,
+  //       componentProps: this.configForm.value.ticketPrint,
+  //     });
+  //     await profileModal.present();
+  //     const { data } = await profileModal.onDidDismiss();
+  //     // await profileModal.onDidDismiss(data => {
+  //       if (data) {
+  //         // Object.keys(data).forEach(key=>{
+  //         //   if (key != 'invoiceDateType' && key != 'invoicePaymentType' && key != 'paperSize'){
+  //         //     data[key] = parseFloat(data[key]);
+  //         //   }
+  //         // })
+  //         this.configForm.patchValue({
+  //           ticketPrint: data,
+  //         });
+  //         this.justSave();
+  //       }
+  //     // });
+  //
+  //   // });
+  // }
+  //
+  //
+  // addUser() {
+  //   return new Promise(async resolve => {
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: UserPage,
+  //       componentProps: {}
+  //     });
+  //     await profileModal.present();
+  //     // let data = await profileModal.onDidDismiss();
+  //     const { data } = await profileModal.onDidDismiss();
+  //     // console.log("userdata", data);
+  //     // data => {
+  //       if (data) {
+  //         this.configForm.value.users.push(data);
+  //         this.configForm.patchValue({
+  //           users: this.configForm.value.users,
+  //         });
+  //         this.configForm.markAsDirty();
+  //       }
+  //     // });
+  //   });
+  // }
+  //
+  // async editUser(user) {
+  //   // return new Promise(resolve => {
+  //     let profileModal = await this.modalCtrl.create({
+  //       component: UserPage,
+  //       componentProps: user
+  //     });
+  //     await profileModal.present();
+  //     // let data: any = profileModal.onDidDismiss();
+  //     const { data } = await profileModal.onDidDismiss();
+  //     // data => {
+  //       if (data) {
+  //         user["name"] = data.name;
+  //         user["username"] = data.username;
+  //         user["sale"] = data.sale;
+  //         user["purchase"] = data.purchase;
+  //         user["finance"] = data.finance;
+  //         user["service"] = data.service;
+  //         user["report"] = data.report;
+  //         user["config"] = data.config;
+  //         user["registered"] = data.registered;
+  //         // console.log("data user", data);
+  //         // console.log("user user", user);
+  //         // this.configForm.patchValue({
+  //         //   users: this.configForm.value.users,
+  //         // });
+  //         this.configForm.markAsDirty();
+  //       }
+  //     // });
+  //   // });
+  // }
 
 
   discard(){

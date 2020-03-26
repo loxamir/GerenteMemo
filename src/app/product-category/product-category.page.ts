@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { NavController, AlertController, ModalController, LoadingController, Events } from '@ionic/angular';
+import { NavController, AlertController, ModalController, LoadingController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -9,6 +9,7 @@ import { LanguageModel } from "../services/language/language.model";
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute } from '@angular/router';
 import { ProductCategoryService } from './product-category.service';
+import { Events } from '../services/events';
 
 @Component({
   selector: 'app-product-category',

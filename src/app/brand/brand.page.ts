@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, AlertController, ModalController, LoadingController, Events } from '@ionic/angular';
+import { NavController, AlertController, ModalController, LoadingController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -8,6 +8,7 @@ import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ActivatedRoute } from '@angular/router';
+import { Events } from '../services/events';
 
 @Component({
   selector: 'app-brand',
