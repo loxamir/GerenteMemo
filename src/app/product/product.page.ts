@@ -56,10 +56,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     asking: boolean = false;
     currency_precision = 0;
     sliderOpts = {
-      // zoom:false,
-      zoom: {
-        maxRatio: 5
-      },
+      zoom:false,
       slidesPerView: 1.5,
       centeredSlides: true,
       spaceBetween: 20

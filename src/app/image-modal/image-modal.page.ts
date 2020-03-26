@@ -19,6 +19,7 @@ export class ImageModalPage implements OnInit {
   // doc: any;
 
   sliderOpts = {
+    passiveListeners: false,
     zoom: {
       maxRatio: 5
     }
