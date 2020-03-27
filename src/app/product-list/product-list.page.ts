@@ -95,14 +95,11 @@ export class ProductListPage implements OnInit {
 
   setFilteredItems() {
     return new Promise(async (resolve, reject) => {
-      this.getProductsPage(
-        this.searchTerm, 0, this.category_id
-      ).then(async (products: any[]) => {
-        this.products = products;
-        this.page = 1;
-        // await this.loading.dismiss();
-        resolve(true);
-      });
+      let products:any = await this.getProductsPage();
+      this.products = products;
+      this.page = 0;
+      // await this.loading.dismiss();
+      resolve(true);
     });
   }
 
@@ -112,26 +109,21 @@ export class ProductListPage implements OnInit {
         await this.searchItemsLoad();
         infiniteScroll.target.complete();
       } else {
-        let products: any = await this.getProductsPage(
-          this.searchTerm, this.page, this.category_id
-        );
+        this.page += 1;
+        let products: any = await this.getProductsPage();
         products.forEach(product => {
           this.products.push(product);
         });
-        this.page += 1;
         infiniteScroll.target.complete();
       }
     }, 50);
   }
 
   doRefresh(refresher) {
-    setTimeout(() => {
-      this.getProductsPage(
-        this.searchTerm, 0, this.category_id
-      ).then((products: any[]) => {
-        this.products = products;
-        this.page = 1;
-      });
+    setTimeout(async() => {
+      let products: any = await this.getProductsPage();
+      this.products = products;
+      this.page = 1;
       refresher.target.complete();
     }, 50);
   }
@@ -162,11 +154,11 @@ export class ProductListPage implements OnInit {
     this.navCtrl.navigateBack('');
   }
 
-  getProductsPage(keyword, page, category_id = 'all') {
+  getProductsPage() {
     return new Promise(async (resolve, reject) => {
-      if (category_id == 'all') {
+      if (this.category_id == 'all') {
         let products_tmp:any = await this.pouchdbService.getView(
-          'Informes/publishedProducts',
+          'Informes/publishedSequence',
           undefined,
           [""],
           ["z"],
@@ -184,10 +176,10 @@ export class ProductListPage implements OnInit {
         resolve(products);
       } else {
         let products_tmp:any = await this.pouchdbService.getView(
-          'Informes/publishedProducts',
+          'Informes/publishedProductCategory',
           undefined,
-          [category_id],
-          [category_id+"z"],
+          [this.category_id],
+          [this.category_id+"z"],
           false,
           false,
           15,
@@ -231,7 +223,7 @@ export class ProductListPage implements OnInit {
           '',
           'category_id',
           this.category_id,
-          'name',
+          'sequence',
           'increase',
           true
         ).then((items:any) => {
@@ -295,22 +287,16 @@ export class ProductListPage implements OnInit {
   }
 
   async filterCategory(category) {
+    this.page = 0;
     this.category_id = category._id;
     this.products = [];
     this.setFilteredItems();
   }
 
   goBack(){
+    this.page = 0;
     this.searchTerm = "";
     this.category_id = 'all';
     this.setFilteredItems();
   }
-
-  // async login(){
-  //   let profileModal = await this.modalCtrl.create({
-  //     component: LoginPage,
-  //     componentProps: {}
-  //   })
-  //   profileModal.present();
-  // }
 }

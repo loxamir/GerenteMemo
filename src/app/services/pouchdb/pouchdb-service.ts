@@ -239,7 +239,7 @@ export class PouchdbService {
       self.db.find({
         selector: dad,
         sort: [newSort],
-        limit: 10,
+        limit: 15,
       }).then(async data=>{
         if (attachments){
           // let getList = data.docs.map(found=>{
