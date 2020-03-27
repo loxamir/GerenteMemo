@@ -27,6 +27,7 @@
         placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
         [(ngModel)]="searchTerm"
         #searchBar
+        debonce="500"
         (ionChange)="searchItems()">
       </ion-searchbar>
       </ion-col>

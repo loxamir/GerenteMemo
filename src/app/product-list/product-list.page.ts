@@ -196,43 +196,48 @@ export class ProductListPage implements OnInit {
   }
 
   searchItems() {
-    return new Promise(resolve => {
-      console.log("searchDocs")
-      if (this.category_id == 'all'){
-        this.pouchdbService.searchDocs(
-          'product',
-          this.searchTerm,
-          '',
-          undefined,
-          undefined,
-          'name',
-          'increase',
-          true
-        ).then((items:any) => {
-          console.log("ittems",items);
-          this.products = items;
-          this.page = 1;
-          this.last_record = items && items.length && items[items.length-1].name || '';
-          // this.loading.dismiss();
-          resolve(items);
-        })
+    return new Promise(async resolve => {
+      if (!this.searchTerm){
+        this.page = 0;
+        let products = await this.getProductsPage();
+        this.products = products;
       } else {
-        this.pouchdbService.searchDocsField(
-          'product',
-          this.searchTerm,
-          '',
-          'category_id',
-          this.category_id,
-          'sequence',
-          'increase',
-          true
-        ).then((items:any) => {
-          this.products = items;
-          this.page = 1;
-          this.last_record = items && items.length && items[items.length-1].name || '';
-          // this.loading.dismiss();
-          resolve(items);
-        })
+        if (this.category_id == 'all'){
+          this.pouchdbService.searchDocs(
+            'product',
+            this.searchTerm,
+            '',
+            undefined,
+            undefined,
+            'name',
+            'increase',
+            true
+          ).then((items:any) => {
+            console.log("ittems",items);
+            this.products = items;
+            this.page = 0;
+            this.last_record = items && items.length && items[items.length-1].name || '';
+            // this.loading.dismiss();
+            resolve(items);
+          })
+        } else {
+          this.pouchdbService.searchDocsField(
+            'product',
+            this.searchTerm,
+            '',
+            'category_id',
+            this.category_id,
+            'sequence',
+            'increase',
+            true
+          ).then((items:any) => {
+            this.products = items;
+            this.page = 0;
+            this.last_record = items && items.length && items[items.length-1].name || '';
+            // this.loading.dismiss();
+            resolve(items);
+          })
+        }
       }
     })
   }
