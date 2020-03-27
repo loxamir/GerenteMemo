@@ -25,7 +25,6 @@ export class ProductListPage implements OnInit {
   category_id: string = 'all';
   page = 0;
   last_record = '';
-  operation = "sale";
   searchTerm: string = '';
   currency_precision = 0;
   categories = [];
@@ -47,7 +46,6 @@ export class ProductListPage implements OnInit {
     public menuCtrl: MenuController,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
-    this.operation = this.route.snapshot.paramMap.get('operation') || this.operation;
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
     this.events.subscribe('changed-product', (data) => {
       this.handleChange(this.products, data.change);
@@ -109,20 +107,20 @@ export class ProductListPage implements OnInit {
   }
 
   doInfinite(infiniteScroll) {
-    setTimeout(() => {
+    setTimeout(async () => {
       if (this.searchTerm){
-        this.searchItemsLoad();
+        await this.searchItemsLoad();
+        infiniteScroll.target.complete();
       } else {
-        this.getProductsPage(
+        let products: any = await this.getProductsPage(
           this.searchTerm, this.page, this.category_id
-        ).then((products: any[]) => {
-          products.forEach(product => {
-            this.products.push(product);
-          });
-          this.page += 1;
+        );
+        products.forEach(product => {
+          this.products.push(product);
         });
+        this.page += 1;
+        infiniteScroll.target.complete();
       }
-      infiniteScroll.target.complete();
     }, 50);
   }
 
@@ -166,31 +164,35 @@ export class ProductListPage implements OnInit {
 
   getProductsPage(keyword, page, category_id = 'all') {
     return new Promise(async (resolve, reject) => {
-      let products: any;
       if (category_id == 'all') {
-        let products_tmp:any = await this.pouchdbService.getView('Informes/publishedProducts', undefined,
-        [""],
-        ["z"],
-        false,
-        false,
-        15,
-        15*this.page,
-        true,
+        let products_tmp:any = await this.pouchdbService.getView(
+          'Informes/publishedProducts',
+          undefined,
+          [""],
+          ["z"],
+          false,
+          false,
+          15,
+          15*this.page,
+          true,
         )
+        console.log("products_tmp", products_tmp);
         let products = [];
         products = products_tmp.map(function(item){
           return item.doc;
         });
         resolve(products);
       } else {
-        let products_tmp:any = await this.pouchdbService.getView('Informes/publishedProducts', undefined,
-        ["", category_id],
-        ["z", category_id+"z"],
-        false,
-        false,
-        15,
-        15*this.page,
-        true,
+        let products_tmp:any = await this.pouchdbService.getView(
+          'Informes/publishedProducts',
+          undefined,
+          [category_id],
+          [category_id+"z"],
+          false,
+          false,
+          15,
+          15*this.page,
+          true,
         )
         let products = [];
         products = products_tmp.map(function(item){
@@ -229,8 +231,8 @@ export class ProductListPage implements OnInit {
           '',
           'category_id',
           this.category_id,
-          'sequence',
-          'decrease',
+          'name',
+          'increase',
           true
         ).then((items:any) => {
           this.products = items;
@@ -253,7 +255,7 @@ export class ProductListPage implements OnInit {
           this.last_record,
           undefined,
           undefined,
-          'sequence',
+          'name',
           'increase',
           true
         ).then((items:any) => {
@@ -272,7 +274,7 @@ export class ProductListPage implements OnInit {
           this.last_record,
           'category_id',
           this.category_id,
-          'sequence',
+          'name',
           'increase',
           true
         ).then((items:any) => {
