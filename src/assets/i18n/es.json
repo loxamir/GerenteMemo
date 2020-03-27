@@ -442,5 +442,6 @@
   "SURE_CANCEL_ORDER": "Estas seguro que deseas cancelar este pedido?",
   "ADD": "Agregar",
   "PHONE_IS_REQUIRED": "Numero de Telefono es obligatorio",
+  "ASK_QUOTATION": "Solicitar Presupuesto",
   "RESULT": "Resultado"
 }

@@ -4,8 +4,8 @@ import PouchDB1 from 'pouchdb';
 import PouchdbFind from 'pouchdb-find';
 declare var require: any;
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import PouchdbUpsert from 'pouchdb-upsert';
-import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
+// import PouchdbUpsert from 'pouchdb-upsert';
+// import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { FormatService } from '../format.service';
 // var server = "database.sistemamemo.com";
 var server = "database.sistemamemo.com";
@@ -95,8 +95,8 @@ export class PouchdbService {
     let self = this;
     return new Promise((resolve, reject)=>{
       // this.storage.get("username").then(username => {
-        let username = "ted1";
-        let database = "ted1";
+        let username = "catalogo";
+        let database = "catalogo";
         let password = "123";
         console.log("username", username);
         if (! username){
@@ -110,7 +110,7 @@ export class PouchdbService {
             return;
           }
           let PouchDB: any = PouchDB1;
-          PouchDB.plugin(PouchdbUpsert);
+          // PouchDB.plugin(PouchdbUpsert);
           PouchDB.plugin(PouchdbFind);
           // if (this.platform.is('cordova')){
           //   PouchDB.plugin(cordovaSqlitePlugin);
@@ -242,14 +242,14 @@ export class PouchdbService {
         limit: 10,
       }).then(async data=>{
         if (attachments){
-          let getList = data.docs.map(found=>{
-            return found._id
-          })
-          let items:any = await this.getList(getList, true);
-          let docs = items.map(found=>{
-            return found.doc
-          })
-          resolve(docs);
+          // let getList = data.docs.map(found=>{
+          //   return found._id
+          // })
+          // let items:any = await this.getList(getList, true);
+          // let docs = items.map(found=>{
+          //   return found.doc
+          // })
+          resolve(data.docs);
         } else {
           resolve(data.docs);
         }
@@ -301,14 +301,14 @@ export class PouchdbService {
         limit: 10,
       }).then(async data=>{
         if (attachments){
-          let getList = data.docs.map(found=>{
-            return found._id
-          })
-          let items:any = await this.getList(getList, true);
-          let docs = items.map(found=>{
-            return found.doc
-          })
-          resolve(docs);
+          // let getList = data.docs.map(found=>{
+          //   return found._id
+          // })
+          // let items:any = await this.getList(getList, true);
+          // let docs = items.map(found=>{
+          //   return found.doc
+          // })
+          resolve(data.docs);
         } else {
           resolve(data.docs);
         }
@@ -338,7 +338,7 @@ export class PouchdbService {
         'limit': limit,
         'skip': skip,
         'include_docs': include_docs,
-        'attachments': true,
+        'attachments': false,
         'keys': keys,
       }
       this.db.query(viewName, options).then(function (res) {
@@ -432,24 +432,24 @@ export class PouchdbService {
     })
   }
 
-  updateDoc(doc){
-    return new Promise((resolve, reject)=>{
-      let time = new Date().toJSON();
-      doc.write_user = this.username;
-      doc.write_time = time;
-      this.db.upsert(doc._id, function () {
-        return doc;
-      }).then(function (res) {
-        resolve(res);
-      }).catch(function (err) {
-      });
-    });
-  }
-
-  deleteDoc(doc){
-    doc._deleted = true;
-    return this.updateDoc(doc);
-  }
+  // updateDoc(doc){
+  //   return new Promise((resolve, reject)=>{
+  //     let time = new Date().toJSON();
+  //     doc.write_user = this.username;
+  //     doc.write_time = time;
+  //     this.db.upsert(doc._id, function () {
+  //       return doc;
+  //     }).then(function (res) {
+  //       resolve(res);
+  //     }).catch(function (err) {
+  //     });
+  //   });
+  // }
+  //
+  // deleteDoc(doc){
+  //   doc._deleted = true;
+  //   return this.updateDoc(doc);
+  // }
 
   getRelated(docType, related, id): Promise<any> {
     return new Promise((resolve, reject)=>{

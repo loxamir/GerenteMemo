@@ -1,27 +1,28 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { Routes, RouterModule } from '@angular/router';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
-import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-
-import { AddressListPage } from './address-list.page';
+import { ImageModalPage } from './image-modal.page';
+import { ImageModalPopover } from './image-modal.popover';
 
 const routes: Routes = [
   {
     path: '',
-    component: AddressListPage
+    component: ImageModalPage
   }
 ];
 
 @NgModule({
   imports: [
-    HttpClientModule,
+    CommonModule,
+    FormsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -29,12 +30,10 @@ const routes: Routes = [
         deps: [HttpClient]
       }
     }),
-    CommonModule,
-    FormsModule,
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AddressListPage],
-  entryComponents: []
+  declarations: [ImageModalPage, ImageModalPopover],
+  entryComponents: [ImageModalPopover]
 })
-export class AddressListPageModule {}
+export class ImageModalPageModule {}

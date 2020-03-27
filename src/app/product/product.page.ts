@@ -8,9 +8,7 @@ import { LanguageModel } from "../services/language/language.model";
 import { ProductService } from './product.service';
 import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
-import { AuthService } from "../services/auth.service";
-import { Events } from '../services/events';
-import { LoginPage } from '../login/login.page';
+import { ImageModalPage } from '../image-modal/image-modal.page';
 
 @Component({
   selector: 'app-product',
@@ -18,31 +16,22 @@ import { LoginPage } from '../login/login.page';
   styleUrls: ['./product.page.scss'],
 })
 export class ProductPage implements OnInit, CanDeactivate<boolean> {
-  @ViewChild('pwaphoto', { static: false }) pwaphoto: ElementRef;
-  @ViewChild('pwacamera', { static: false }) pwacamera: ElementRef;
-  @ViewChild('pwagalery', { static: false }) pwagalery: ElementRef;
-
-  @ViewChild('name', { static: true }) name;
-  @ViewChild('price', { static: true }) price;
-  @ViewChild('cost', { static: true }) cost;
-  @ViewChild('type', { static: true }) type;
-  @ViewChild('stock', { static: false }) stock;
-
-  @ViewChild('category', { static: true }) category;
-  @ViewChild('brand', { static: true }) brand;
-  @ViewChild('tax', { static: false })tax;
     productForm: FormGroup;
     loading: any;
     _id: string;
     languages: Array<LanguageModel>;
-    theoreticalStock: number = 0;
-    opened: boolean = false;
     select;
-    avatar = undefined;
-    logged: boolean = false;
-    asking: boolean = false;
     currency_precision = 0;
     product;
+    product_images = [];
+    sliderOpts = {
+      zoom:false,
+      slidesPerView: 1.5,
+      centeredSlides: true,
+      autoplay: true,
+      speed: 1000,
+      spaceBetween: 20
+    }
 
     constructor(
       public navCtrl: NavController,
@@ -55,18 +44,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public route: ActivatedRoute,
       public modalCtrl: ModalController,
       public formBuilder: FormBuilder,
-      public events:Events,
       public pouchdbService: PouchdbService,
-      public authService: AuthService,
     ) {
       this._id = this.route.snapshot.paramMap.get('_id');
-      this.product = this.route.snapshot.paramMap.get('product');
+      // let test =
+      this.product = JSON.parse(this.route.snapshot.paramMap.get('product'));
       this.select = this.route.snapshot.paramMap.get('select');
-      if (this.route.snapshot.paramMap.get('_id')){
-        this.opened = true;
-      }
-      this.cost = this.route.snapshot.paramMap.get('cost');
-      this.stock = this.route.snapshot.paramMap.get('stock');
     }
 
     async ngOnInit() {
@@ -79,16 +62,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         price: new FormControl(null, Validators.required),
         category: new FormControl({}),
         brand: new FormControl({}),
-        cost: new FormControl(this.cost||null),
         code: new FormControl(''),
         barcode: new FormControl(''),
-        tax: new FormControl(this.route.snapshot.paramMap.get('iva')||'iva10'),
-        type: new FormControl(this.route.snapshot.paramMap.get('type')||'product'),
-        stock: new FormControl(this.stock||null),
-        stock_min: new FormControl(this.route.snapshot.paramMap.get('stock_min')),
         note: new FormControl(''),
         date: new FormControl(new Date().toJSON()),
-        unity: new FormControl(this.route.snapshot.paramMap.get('unity')||'un'),
         fixed: new FormControl(false),
         _id: new FormControl(''),
         create_user: new FormControl(''),
@@ -103,34 +80,17 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         _attachments: new FormControl(),
       });
 
-      this.authService.loggedIn.subscribe(async status => {
-        if (status) {
-          let data = await this.authService.getData();
-          let contact = await this.pouchdbService.getDoc("contact."+data.currentUser.email);
-          if (JSON.stringify(contact) != "{}"){
-            this.logged = true;
-            if(this.asking){
-              this.events.publish('add-product', {product: this.productForm.value});
-              this.exitPage();
-            }
-          } else {
-            console.log("create user");
-          }
-        } else {
-          this.logged = false;
-          this.events.subscribe('login-success', (data) => {
-            this.logged = true;
-          })
-        }
-        this.asking = false;
-      });
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
       this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       if (this.product){
+
         this.productForm.patchValue(this.product);
+        Object.keys(this.product._attachments).forEach(file=>{
+          this.product_images.push('https://database.sistemamemo.com/catalogo/'+this.product._id+'/'+file);
+        })
         this.productForm.markAsPristine();
         this.loading.dismiss();
       }
@@ -144,46 +104,16 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
               });
             }
           }, 400);
+          Object.keys(data._attachments).forEach(file=>{
+            this.product_images.push('https://database.sistemamemo.com/catalogo/'+data._id+'/'+file);
+          })
           this.productForm.patchValue(data);
-          this.theoreticalStock = data.stock;
           this.productForm.markAsPristine();
           this.loading.dismiss();
         });
       } else {
         this.loading.dismiss();
       }
-    }
-
-    async askProduct(){
-      let orders:any = await this.pouchdbService.searchDocTypeData(
-        'sale', "CONFIRMED", 0, "state");
-      if (orders[0]){
-        let alertPopup = await this.alertCtrl.create({
-            header: this.translate.instant('Pedido Pendiente'),
-            message: this.translate.instant('No puedes hacer un nuevo pedido mientras hay otro pendiente'),
-            buttons: [{
-                    text: this.translate.instant('OK'),
-                    handler: () => {
-                    }
-                }]
-        });
-        alertPopup.present();
-      } else {
-        if (this.logged){
-          this.events.publish('add-product', {product: this.productForm.value});
-          this.exitPage();
-        } else {
-          this.authLogin();
-        }
-      }
-    }
-
-    async authLogin() {
-      let profileModal = await this.modalCtrl.create({
-        component: LoginPage,
-        componentProps: {}
-      })
-      profileModal.present();
     }
 
     setLanguage(lang: LanguageModel){
@@ -196,43 +126,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.translate.use(language_to_set);
     }
 
-    validation_messages = {
-      'name': [
-        { type: 'required', message: 'Name is required.' }
-      ],
-      'price': [
-        { type: 'required', message: 'Price is required.' }
-      ],
-      'cost': [
-        { type: 'required', message: 'Cost is required.' }
-      ],
-      'stock': [
-        { type: 'required', message: 'Stock is required.' }
-      ]
-    };
-
-    onSubmit(values){
-      //console.log(values);
-    }
-
-    showNextButton(){
-      // console.log("stock",this.productForm.value.stock);
-      if (this.productForm.value.name==null){
-        return true;
-      }
-      else if (this.productForm.value.price==null){
-        return true;
-      }
-      else if (this.productForm.value.cost==null){
-        return true;
-      }
-      else if (this.productForm.value.type=='product'&&this.productForm.value.stock==null){
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
     discard(){
       this.canDeactivate();
     }
@@ -268,24 +161,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       }
     }
 
-    sumItem() {
-      let quantity = this.productForm.value.quantity;
-      quantity += 1;
-      this.productForm.patchValue({
-        quantity: quantity
-      })
-    }
-
-    remItem() {
-      let quantity = this.productForm.value.quantity;
-      if (quantity>1){
-        quantity -= 1;
-        this.productForm.patchValue({
-          quantity: quantity
-        })
-      }
-    }
-
   selectSize(item){
     this.productForm.patchValue({
       size: item.name,
@@ -304,6 +179,21 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     await profileModal.present();
     await this.loading.dismiss();
     await profileModal.onDidDismiss();
+  }
+
+  openPreview(img) {
+    this.modalCtrl.create({
+      component: ImageModalPage,
+      componentProps: {
+        img: img
+      }
+    }).then(modal => {
+      modal.present();
+    });
+  }
+
+  askQuote(){
+    console.log("send quote by whatsapp");
   }
 
 }

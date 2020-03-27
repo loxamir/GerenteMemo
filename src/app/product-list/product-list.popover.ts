@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
 import {  NavController, PopoverController, NavParams, ModalController } from '@ionic/angular';
-import { ContactPage } from '../contact/contact.page';
-import { SaleListPage } from '../sale-list/sale-list.page';
-import { AddressListPage } from '../address-list/address-list.page';
 
 @Component({
   template: `
@@ -25,13 +22,13 @@ export class ProductListPopover {
   }
 
   async profile() {
-    let profileModal = await this.modalCtrl.create({
-      component: ContactPage,
-      componentProps: {
-        select: true
-      }
-    })
-    profileModal.present();
+    // let profileModal = await this.modalCtrl.create({
+    //   component: ContactPage,
+    //   componentProps: {
+    //     select: true
+    //   }
+    // })
+    // profileModal.present();
     // this.navCtrl.navigateForward(['/contact', {}]);
     this.pop.dismiss();
   }
