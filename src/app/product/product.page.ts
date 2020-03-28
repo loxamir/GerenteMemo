@@ -38,6 +38,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     currency_precision = 0;
     product_images = [];
     changed_images = [];
+    database = '';
 
     constructor(
       public navCtrl: NavController,
@@ -73,7 +74,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         brand: new FormControl({}),
         cost: new FormControl(0),
         code: new FormControl(''),
-        sequence: new FormControl(''),
+        sequence: new FormControl('9999'),
         barcode: new FormControl(),
         tax: new FormControl(),
         type: new FormControl(),
@@ -88,7 +89,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         create_time: new FormControl(''),
         write_user: new FormControl(''),
         write_time: new FormControl(''),
-        publish: new FormControl(false),
+        publish: new FormControl(true),
         quantity: new FormControl(1),
         products: new FormControl([]),
         images: new FormControl([]),
@@ -97,6 +98,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         _attachments: new FormControl({}),
         description: new FormControl(''),
       });
+      this.database = this.pouchdbService.getDatabaseName();
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
       this.translate.use(language);
@@ -114,7 +116,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           }, 400);
           if (data._attachments){
             Object.keys(data._attachments).forEach(file_name=>{
-              this.product_images.push('https://database.sistemamemo.com/catalogo/'+data._id+'/'+file_name);
+              this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+data._id+'/'+file_name);
             })
           }
           this.productForm.patchValue(data);

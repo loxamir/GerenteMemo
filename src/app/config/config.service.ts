@@ -28,41 +28,33 @@ export class ConfigService {
         }
 
         this.unserializeConfig(configData).then((data: any) => {
-          this.pouchdbService.getDoc('contact.myCompany').then((contact: any) => {
-            data.name = contact.name;
-            data.doc  = contact.document;
-            data.phone  = contact.phone;
-            data.email  = contact.email;
-            data.city  = contact.city;
-            data.country  = contact.country;
-            data.state  = contact.state;
+          // this.pouchdbService.getDoc('contact.myCompany').then((contact: any) => {
+          //   data.name = contact.name;
+          //   data.doc  = contact.document;
+          //   data.phone  = contact.phone;
+          //   data.email  = contact.email;
+          //   data.city  = contact.city;
+          //   data.country  = contact.country;
+          //   data.state  = contact.state;
             resolve(data);
-          });
+          // });
         });
-    });
-  }
-
-  getMyContact(): Promise<any> {
-    return new Promise((resolve, reject)=>{
-      this.pouchdbService.getDoc('contact.myCompany').then((data: any) => {
-        resolve(data);
-      });
     });
   }
 
   getConfigDoc(): Promise<any> {
     return new Promise((resolve, reject)=>{
       this.pouchdbService.getDoc('config.profile').then((data: any) => {
-        this.pouchdbService.getDoc('contact.myCompany').then((contact: any) => {
-          data.name = contact.name;
-          data.doc  = contact.document;
-          data.phone  = contact.phone;
-          data.email  = contact.email;
-          data.city  = contact.city;
-          data.country  = contact.country;
-          data.state  = contact.state;
+        // this.pouchdbService.getDoc('contact.myCompany').then((contact: any) => {
+        //   data.name = contact.name;
+        //   data.doc  = contact.document;
+        //   data.phone  = contact.phone;
+        //   data.email  = contact.email;
+        //   data.city  = contact.city;
+        //   data.country  = contact.country;
+        //   data.state  = contact.state;
           resolve(data);
-        });
+        // });
         // resolve(data);
       });
     });
@@ -196,52 +188,52 @@ export class ConfigService {
   async unserializeConfig(pouchData){
     return new Promise(async (resolve, reject)=>{
       let getList = [
-        pouchData['travel_product_id'],
-        pouchData['warehouse_id'],
+        // pouchData['travel_product_id'],
+        // pouchData['warehouse_id'],
         pouchData['currency_id'],
-        pouchData['labor_product_id'],
-        pouchData['contact_id'],
-        pouchData['cash_id'],
-        pouchData['default_contact_id'],
-        pouchData['default_payment_id'],
+        // pouchData['labor_product_id'],
+        // pouchData['contact_id'],
+        // pouchData['cash_id'],
+        // pouchData['default_contact_id'],
+        // pouchData['default_payment_id'],
         'sequence.product',
       ];
-      pouchData['promoted_products'].forEach((item) => {
-        if (getList.indexOf(item['product_id'])==-1){
-          getList.push(item['product_id']);
-        }
-      });
+      // pouchData['promoted_products'].forEach((item) => {
+      //   if (getList.indexOf(item['product_id'])==-1){
+      //     getList.push(item['product_id']);
+      //   }
+      // });
 
-      pouchData['promoted_categories'].forEach((item) => {
-        if (getList.indexOf(item['category_id'])==-1){
-          getList.push(item['category_id']);
-        }
-      });
+      // pouchData['promoted_categories'].forEach((item) => {
+      //   if (getList.indexOf(item['category_id'])==-1){
+      //     getList.push(item['category_id']);
+      //   }
+      // });
 
       this.pouchdbService.getList(getList, true).then((docs: any[])=>{
         var doc_dict = {};
         docs.forEach(row=>{
           doc_dict[row.id] = row.doc;
         })
-        pouchData['travel_product'] = doc_dict[pouchData['travel_product_id']] || {};
-        pouchData['warehouse'] = doc_dict[pouchData['warehouse_id']] || {};
+        // pouchData['travel_product'] = doc_dict[pouchData['travel_product_id']] || {};
+        // pouchData['warehouse'] = doc_dict[pouchData['warehouse_id']] || {};
         pouchData['currency'] = doc_dict[pouchData['currency_id']] || {};
-        pouchData['labor_product'] = doc_dict[pouchData['labor_product_id']] || {};
-        pouchData['contact'] = doc_dict[pouchData['contact_id']] || {};
-        pouchData['cash'] = doc_dict[pouchData['cash_id']];
-        pouchData['default_contact'] = doc_dict[pouchData['default_contact_id']] || {};
-        pouchData['default_payment'] = doc_dict[pouchData['default_payment_id']] || {};
+        // pouchData['labor_product'] = doc_dict[pouchData['labor_product_id']] || {};
+        // pouchData['contact'] = doc_dict[pouchData['contact_id']] || {};
+        // pouchData['cash'] = doc_dict[pouchData['cash_id']];
+        // pouchData['default_contact'] = doc_dict[pouchData['default_contact_id']] || {};
+        // pouchData['default_payment'] = doc_dict[pouchData['default_payment_id']] || {};
         pouchData['product_sequence'] = (doc_dict['sequence.product'])['value'];
-        pouchData['products'] = [];
-        pouchData.promoted_products.forEach((line: any)=>{
-          if (doc_dict[line.product_id]){
-            pouchData['products'].push(doc_dict[line.product_id]);
-          }
-        })
-        pouchData['categories'] = [];
-        pouchData.promoted_categories.forEach((line: any)=>{
-          pouchData['categories'].push(doc_dict[line.category_id]);
-        })
+        // pouchData['products'] = [];
+        // pouchData.promoted_products.forEach((line: any)=>{
+        //   if (doc_dict[line.product_id]){
+        //     pouchData['products'].push(doc_dict[line.product_id]);
+        //   }
+        // })
+        // pouchData['categories'] = [];
+        // pouchData.promoted_categories.forEach((line: any)=>{
+        //   pouchData['categories'].push(doc_dict[line.category_id]);
+        // })
         resolve(pouchData);
       });
     });
@@ -250,43 +242,43 @@ export class ConfigService {
   serializeConfig(viewData){
     let config = Object.assign({}, viewData);
     config.docType = 'config';
-    config.cash_id = config.cash._id;
-    delete config.cash;
-    config.default_contact_id = config.default_contact._id;
-    delete config.default_contact;
-    config.default_payment_id = config.default_payment._id;
-    delete config.default_payment;
-    config.account_id = config.account._id;
-    delete config.account;
-    config.warehouse_id = config.warehouse._id;
-    delete config.warehouse;
-    config.contact_id = config.contact._id;
-    delete config.contact;
+    // config.cash_id = config.cash._id;
+    // delete config.cash;
+    // config.default_contact_id = config.default_contact._id;
+    // delete config.default_contact;
+    // config.default_payment_id = config.default_payment._id;
+    // delete config.default_payment;
+    // config.account_id = config.account._id;
+    // delete config.account;
+    // config.warehouse_id = config.warehouse._id;
+    // delete config.warehouse;
+    // config.contact_id = config.contact._id;
+    // delete config.contact;
     config.currency_id = config.currency._id;
     delete config.currency;
-    config.labor_product_id = config.labor_product._id;
-    delete config.labor_product;
-    config.travel_product_id = config.travel_product._id;
-    delete config.travel_product;
-    config.input_product_id = config.input_product._id;
-    delete config.input_product;
+    // config.labor_product_id = config.labor_product._id;
+    // delete config.labor_product;
+    // config.travel_product_id = config.travel_product._id;
+    // delete config.travel_product;
+    // config.input_product_id = config.input_product._id;
+    // delete config.input_product;
     delete config.image;
-    config.promoted_products = [];
-    config.products.forEach(item => {
-      config.promoted_products.push({
-        product_id: item._id,
-        product_name: item.name,
-      })
-    });
-    delete config.products;
-    config.promoted_categories = [];
-    config.categories.forEach(item => {
-      config.promoted_categories.push({
-        category_id: item._id,
-        category_name: item.name,
-      })
-    });
-    delete config.categories;
+    // config.promoted_products = [];
+    // config.products.forEach(item => {
+    //   config.promoted_products.push({
+    //     product_id: item._id,
+    //     product_name: item.name,
+    //   })
+    // });
+    // delete config.products;
+    // config.promoted_categories = [];
+    // config.categories.forEach(item => {
+    //   config.promoted_categories.push({
+    //     category_id: item._id,
+    //     category_name: item.name,
+    //   })
+    // });
+    // delete config.categories;
     return config;
   }
 
