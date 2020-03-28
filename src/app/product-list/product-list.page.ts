@@ -54,9 +54,9 @@ export class ProductListPage implements OnInit {
     this.operation = this.route.snapshot.paramMap.get('operation') || this.operation;
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
     this.events.subscribe('changed-product', (change) => {
-      if (this.appliedChanges.indexOf(change.doc._id+change.doc._rev)==-1){
-        this.appliedChanges.push(change.doc._id+change.doc._rev);
-        this.handleChange(this.products, change);
+      if (this.appliedChanges.indexOf(change.change.doc._id+change.change.doc._rev)==-1){
+        this.appliedChanges.push(change.change.doc._id+change.change.doc._rev);
+        this.handleChange(this.products, change.change);
       }
     })
     // this.events.subscribe('changed-stock-move', (change) => {
@@ -257,9 +257,9 @@ export class ProductListPage implements OnInit {
     return new Promise(async (resolve, reject) => {
       let products: any;
       if (type == 'all') {
-        products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'name', 'increase', 30);
+        products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'sequence', 'increase', 30);
       } else {
-        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', type, 'name', 'increase', 30)
+        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', type, 'sequence', 'increase', 30)
       }
       // await this.formatService.asyncForEach(products, async (product: any)=>{
       //   let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,

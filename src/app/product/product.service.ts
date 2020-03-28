@@ -147,6 +147,7 @@ export class ProductService {
           product._rev = data._rev;
           product._attachments = attachments;
         } else if (image.action == 'DEL'){
+          delete product._attachments[image.name];
           //Remove image
         }
       })

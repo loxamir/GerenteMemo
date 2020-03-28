@@ -138,6 +138,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         brand: new FormControl({}),
         cost: new FormControl(this.cost||null),
         code: new FormControl(''),
+        sequence: new FormControl(''),
         barcode: new FormControl(this.barcode),
         tax: new FormControl(this.route.snapshot.paramMap.get('iva')||'iva10'),
         type: new FormControl(this.route.snapshot.paramMap.get('type')||'product'),
@@ -160,61 +161,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         _attachments: new FormControl({}),
         description: new FormControl(''),
       });
-
-      // this.authService.loggedIn.subscribe(async status => {
-      //     if (status) {
-      //       let data = await this.authService.getData();
-      //       let contact = await this.pouchdbService.getDoc("contact."+data.currentUser.email);
-      //       //check if contact_id exists
-      //       if (JSON.stringify(contact) == "{}"){
-      //         this.getBase64Image(data.currentUser.photoURL,async (base64image) => {
-      //           let createdDoc = await this.pouchdbService.createDoc({
-      //             "_id": "contact."+data.currentUser.email,
-      //             "name": data.currentUser.displayName,
-      //             "name_legal": null,
-      //             "address": "",
-      //             "phone": "",
-      //             "document": "",
-      //             "code": "#3",
-      //             "section": "salary",
-      //             "email": data.currentUser.email,
-      //             "note": "",
-      //             "customer": true,
-      //             "supplier": true,
-      //             "seller": false,
-      //             "employee": false,
-      //             "user": false,
-      //             "user_details": {},
-      //             "salary": null,
-      //             "currency": {},
-      //             "hire_date": null,
-      //             "salaries": [],
-      //             "advances": [],
-      //             "fixed": true,
-      //             "create_user": "",
-      //             "create_time": "",
-      //             "write_user": "laroca",
-      //             "write_time": "2020-01-14T20:48:52.405Z",
-      //             "docType": "contact",
-      //             "_attachments": {
-      //             "profile.png": {
-      //               "content_type": "image/png",
-      //               "data": base64image
-      //             }
-      //           },
-      //         })
-      //       });
-      //     }
-      //     this.logged = true;
-      //     if(this.asking){
-      //       this.events.publish('add-product', this.productForm.value);
-      //       this.exitPage();
-      //     }
-      //   } else {
-      //     this.logged = false;
-      //   }
-      //   this.asking = false;
-      // });
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
       this.translate.use(language);
@@ -866,5 +812,16 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     });
   }
 
-
+  deleteImage(img){
+    let index = this.product_images.indexOf(img);
+    if (index!=-1){
+      this.product_images.splice(index, 1)
+    }
+    let src = img.split('/');
+    this.changed_images.push({
+      name: src[src.length - 1],
+      action: "DEL",
+      image: img,
+    })
+  }
 }

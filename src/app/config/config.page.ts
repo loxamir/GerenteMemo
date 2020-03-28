@@ -115,6 +115,7 @@ export class ConfigPage implements OnInit {
       invoice_template: [''],
       invoicePrint: [{}],
       ticketPrint: [{}],
+      whatsapp: [''],
       _attachments: undefined,
       users: [],
       _id: [''],

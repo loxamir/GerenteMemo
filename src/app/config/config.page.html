@@ -4,11 +4,6 @@
       <ion-back-button defaultHref="/tabs/product-list"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'CONFIG' | translate }}</ion-title>
-    <!-- <ion-buttons slot="end" [hidden]="!configForm.dirty">
-      <ion-button (click)="buttonSave()">
-        {{ 'SAVE' | translate }}
-      </ion-button>
-    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -21,147 +16,21 @@
     <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
   </div>
   <ion-row style="background: white;">
-        <img [src]="configForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
-      </ion-row>
-
+    <img [src]="configForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+  </ion-row>
   <ion-row class="ion-justify-content-center">
-    <!-- <ion-item class="ion-no-padding" (click)="selectAccount()" class="field-50">
-      <h4 class="field-label">{{'ACCOUNT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.account && configForm.value.account.name || 'SELECT'|translate}}</h4>
-    </ion-item> -->
-
-    <!-- <ion-item class="ion-no-padding" (click)="selectDefaultContact()" class="field-50">
-      <h4 class="field-label">{{'DEFAULT_CONTACT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.default_contact && configForm.value.default_contact.name || 'SELECT'|translate}}</h4>
-    </ion-item>
-
-    <ion-item class="ion-no-padding" (click)="selectDefaultPayment()" class="field-50">
-      <h4 class="field-label">{{'DEFAULT_PAYMENT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.default_payment && configForm.value.default_payment.name || 'SELECT'|translate}}</h4>
-    </ion-item>
-
-    <ion-item class="ion-no-padding" (click)="selectWarehouse()" class="field-50">
-      <h4 class="field-label">{{'WAREHOUSE' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.warehouse && configForm.value.warehouse.name || 'SELECT'|translate}}</h4>
-    </ion-item>
-
-    <ion-item class="ion-no-padding" (click)="selectCurrency()" class="field-50">
-      <h4 class="field-label">{{'CURRENCY' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.currency && configForm.value.currency.name || 'SELECT'|translate}}</h4>
-    </ion-item> -->
-
-    <!-- <ion-item class="ion-no-padding" (click)="selectContact()" class="field-50">
-      <h4 class="field-label">{{'CONTACT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.contact && configForm.value.contact.name || 'SELECT'|translate}}</h4>
-    </ion-item> -->
-
-    <!-- <ion-item class="ion-no-padding" (click)="selectLaborProduct()" class="field-50">
-      <h4 class="field-label">{{'LABOR_PRODUCT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.labor_product && configForm.value.labor_product.name || 'SELECT'|translate}}</h4>
-    </ion-item>
-
-
-    <ion-item class="ion-no-padding" (click)="selectTravelProduct()" class="field-50">
-      <h4 class="field-label">{{'TRAVEL_PRODUCT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.travel_product && configForm.value.travel_product.name || 'SELECT'|translate}}</h4>
-    </ion-item> -->
-
-    <!-- <ion-item class="ion-no-padding" (click)="selectInputProduct()" class="field-50">
-      <h4 class="field-label">{{'INPUT_PRODUCT' | translate }}</h4>
-      <h4 class="field-value">{{configForm.value.input_product && configForm.value.input_product.name || 'SELECT'|translate}}</h4>
-    </ion-item> -->
-
-    <!-- <ion-item class="ion-no-padding field-50">
-      <ion-label position="floating">{{'invoice_sequence' | translate}}</ion-label>
-      <ion-input type="text" formControlName="invoice_sequence"></ion-input>
-    </ion-item> -->
-    <!-- <ion-item class="ion-no-padding" (click)="selectCash()" class="field-50">
-      <div class="field-many2one">
-        <h4 class="field-label">{{'CASH' | translate }}</h4>
-        <h4 class="field-value">{{configForm.value.cash && configForm.value.cash.name || 'SELECT'|translate}}</h4>
-      </div>
-    </ion-item> -->
-    <!-- <ion-item class="ion-no-padding field-50">
-      <ion-label position="floating">{{'PRODUCT_SEQUENCE' | translate}}</ion-label>
-      <ion-input type="text" formControlName="product_sequence"></ion-input>
-    </ion-item> -->
-
-    <ion-item class="ion-no-padding field-50">
+    <ion-item class="ion-no-padding field-100">
       <ion-label position="floating">{{'NAME' | translate}}</ion-label>
       <ion-input type="text" formControlName="name"></ion-input>
     </ion-item>
-    <ion-item class="ion-no-padding field-50">
-      <ion-label position="floating">{{'COLOR' | translate}}</ion-label>
-      <ion-input type="text" formControlName="color"></ion-input>
+    <ion-item class="ion-no-padding field-100">
+      <ion-label position="floating">{{'WhatsApp'}}</ion-label>
+      <ion-input type="text" formControlName="whatsapp"></ion-input>
     </ion-item>
-
-    <!-- <ion-col class="item-content">
-      <ion-button class="print-invoice" (click)="configInvoicePrint()" style="width: 99%">Configurar Factura</ion-button>
-    </ion-col>
-
-    <ion-col class="item-content">
-      <ion-button class="print-invoice" (click)="configTicketPrint()" style="width: 99%">Configurar Ticket</ion-button>
-    </ion-col> -->
-    <ion-button class="button-100" (click)="addProduct()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>{{ 'ADD_PROMOTED_PRODUCT' | translate }}</ion-button>
-    <div class="scrolling-wrapper-flexbox2">
-      <div class="card" *ngFor="let item of configForm.value.products; let i = index;">
-        <ion-item-sliding  #slidingItem>
-          <ion-item class="ion-no-padding">
-        <!-- <ion-row> -->
-          <ion-card class="list-card" style="display: inline-block;">
-          <ion-row>
-            <ion-col size="4">
-              <img style="height: 50px;width: auto;border-radius: 5px;"
-              [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
-              *ngIf="item._attachments && item._attachments['avatar.png']">
-              <img style="height: 50px;width: auto;border-radius: 5px;"
-              src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
-            </ion-col>
-            <ion-col class="ion-no-padding">
-              <ion-row class="producto">
-                <ion-col class="ion-no-padding">
-                  <h3 class="item-title" style="font-size: 13px;height: 30px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">{{ item.name }}</h3>
-                </ion-col>
-              </ion-row>
-              <ion-row class="ion-no-padding content-row one-line">
-                <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
-                  <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+configForm.value.currency_precision}} G$</h2>
-                </ion-col>
-              </ion-row>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="item-content">
-            <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
-              {{item.description}}
-            </div>
-            </ion-col>
-          </ion-row>
-        </ion-card>
-        <!-- </ion-row> -->
-      </ion-item>
-        <ion-item-options>
-          <ion-item-option (click)="deleteProduct(item, slidingItem)">
-            {{ 'DELETE'| translate }}
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-      </div>
-    </div>
   </ion-row>
 
   </form>
   <span>v0.0.10</span>
-
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-    <ion-button (click)="discard()" color="danger">
-      <ion-icon name="backspace" *ngIf="configForm.dirty"> </ion-icon>
-      <ion-icon name="arrow-back" *ngIf="!configForm.dirty"> </ion-icon>
-      <span *ngIf="configForm.dirty">{{ 'DISCARD'| translate }}</span>
-      <span *ngIf="!configForm.dirty">{{ 'GO_BACK'| translate }}</span>
-    </ion-button>
-  </ion-fab>
-
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="configForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
