@@ -28,7 +28,7 @@ export class ProductListPage implements OnInit {
   searchTerm: string = '';
   currency_precision = 0;
   categories = [];
-  config = {};
+  config:any = {};
 
   constructor(
     public navCtrl: NavController,
