@@ -5,7 +5,7 @@
           <img
           alt="Logo del restaurante"
           style="height: 88px;width: 234px;"
-          src="https://database.sistemamemo.com/catalogo/config.profile/logo.png">
+          [src]="'https://database.sistemamemo.com/'+database+'/config.profile/logo.png'">
         </ion-col>
       </ion-row>
     <ion-buttons slot="start">
@@ -40,7 +40,7 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <h1 *ngIf="!select && !searchTerm && category_id=='all'"
+  <h1 *ngIf="!select && !searchTerm && category_id=='all' && categories.length"
   style="font-style: italic;font-weight: bold;font-size: 16px;text-align:center;margin-top: 5px;margin-bottom: 10px;color: white;">
     {{'CATEGORIES'| translate}}
   </h1>
@@ -58,54 +58,13 @@
             <img
             alt="Foto del categoria"
             style="height: 95px;width: auto;"
-            [src]="'https://database.sistemamemo.com/catalogo/'+item._id+'/avatar.png'">
-          </ion-row>
-        </ion-card>
-    </div>
-  </div>
-  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all' && !categories.length">
-    <div class="card" style="margin-left: 5px;margin-right:5px;">
-        <ion-card class="list-card"
-        style="height: 120px;margin:0px">
-          <ion-row  class="producto">
-            <ion-col class="ion-no-padding">
-              <h3 class="item-title">
-                <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
-              </h3>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-skeleton-text animated style="width: 150px;height:150px;margin:5px;"></ion-skeleton-text>
-          </ion-row>
-        </ion-card>
-    </div>
-    <div class="card" style="margin-left: 5px;margin-right:5px;">
-        <ion-card class="list-card"
-        style="height: 120px;margin:0px">
-          <ion-row  class="producto">
-            <ion-col class="ion-no-padding">
-              <h3 class="item-title">
-                <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
-              </h3>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-skeleton-text animated style="width: 150px;height:150px;margin:5px;"></ion-skeleton-text>
-          </ion-row>
-        </ion-card>
-    </div>
-    <div class="card" style="margin-left: 5px;margin-right:5px;">
-        <ion-card class="list-card"
-        style="height: 120px;margin:0px">
-          <ion-row  class="producto">
-            <ion-col class="ion-no-padding">
-              <h3 class="item-title">
-                <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
-              </h3>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-skeleton-text animated style="width: 150px;height:150px;margin:5px;"></ion-skeleton-text>
+            *ngIf="item._attachments"
+            [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/avatar.png'">
+            <img
+            alt="Foto del categoria"
+            style="height: 95px;width: auto;"
+            *ngIf="!item._attachments"
+            src="./assets/images/sem_foto.jpg">
           </ion-row>
         </ion-card>
     </div>
@@ -126,7 +85,13 @@
             <img
             alt="Foto del producto"
             style="height: 50px;width: auto;border-radius: 5px;"
-            [src]="'https://database.sistemamemo.com/catalogo/'+item._id+'/'+item.images[0]">
+            *ngIf="item._attachments"
+            [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/'+item.images[0]">
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
+            *ngIf="!item._attachments"
+            src="./assets/images/sem_foto.jpg">
           </ion-col>
           <ion-col class="ion-no-padding">
             <ion-row class="producto">
@@ -136,7 +101,8 @@
             </ion-row>
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
-                <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
+                <h2 class="list-big-number" style="color: green;font-size: 13px;" *ngIf="item.price">{{item.price| number:'1.'+currency_precision}} G$</h2>
+                <h2 class="list-big-number" style="color: green;font-size: 13px;" *ngIf="!item.price">Consultar Precio</h2>
               </ion-col>
             </ion-row>
             <ion-row class="ion-no-padding content-row one-line">
@@ -159,7 +125,7 @@
       </ion-row>
     </div>
   </div>
-  <div class="scrolling-wrapper-flexbox2" *ngIf="products.length==0&&category_id=='all'">
+  <div class="scrolling-wrapper-flexbox2" *ngIf="products.length==0&&category_id=='all'&& !searchTerm">
     <div class="card">
       <ion-row>
         <ion-card class="list-card" style="display: inline-block;">

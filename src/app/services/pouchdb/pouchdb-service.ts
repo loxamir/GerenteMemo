@@ -17,6 +17,7 @@ export class PouchdbService {
   remote: any;
   docTypes = {};
   username = undefined;
+  database = '';
 
   constructor(
     public http: HttpClient,
@@ -90,13 +91,17 @@ export class PouchdbService {
     })
   }
 
+  getDatabaseName(){
+    return this.database;
+  }
+
   getConnect(){
     console.log("getConnect");
     let self = this;
     return new Promise((resolve, reject)=>{
       // this.storage.get("username").then(username => {
-        let username = "catalogo";
-        let database = "catalogo";
+        let username = "catalogo_oga";
+        let database = "catalogo_oga";
         let password = "123";
         console.log("username", username);
         if (! username){
@@ -109,6 +114,7 @@ export class PouchdbService {
             resolve(false);
             return;
           }
+          this.database = database;
           let PouchDB: any = PouchDB1;
           // PouchDB.plugin(PouchdbUpsert);
           PouchDB.plugin(PouchdbFind);

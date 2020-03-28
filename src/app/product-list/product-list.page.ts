@@ -29,6 +29,7 @@ export class ProductListPage implements OnInit {
   currency_precision = 0;
   categories = [];
   config:any = {};
+  database = '';
 
   constructor(
     public navCtrl: NavController,
@@ -58,6 +59,7 @@ export class ProductListPage implements OnInit {
     let language:any = await this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang(language);
     this.translate.use(language);
+    this.database = this.pouchdbService.getDatabaseName();
     // this.loading = await this.loadingCtrl.create({});
     this.showCategories();
     this.setFilteredItems();
@@ -76,8 +78,9 @@ export class ProductListPage implements OnInit {
 
   async showCategories(){
     if (this.category_id=='all'){
-      let categories_tmp:any = await this.pouchdbService.getView('Informes/categories', undefined,
-      [""],
+      let categories_tmp:any = await this.pouchdbService.getView('Informes/categories',
+      undefined,
+      [],
       ["z"],
       false,
       false,
@@ -161,7 +164,7 @@ export class ProductListPage implements OnInit {
         let products_tmp:any = await this.pouchdbService.getView(
           'Informes/publishedSequence',
           undefined,
-          [""],
+          [],
           ["z"],
           false,
           false,

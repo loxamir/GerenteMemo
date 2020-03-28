@@ -33,6 +33,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       speed: 1000,
       spaceBetween: 20
     }
+    database = '';
 
     constructor(
       public navCtrl: NavController,
@@ -80,17 +81,19 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         description: new FormControl(''),
         _attachments: new FormControl(),
       });
+      this.database = this.pouchdbService.getDatabaseName();
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
       this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       if (this.product){
-
         this.productForm.patchValue(this.product);
-        Object.keys(this.product._attachments).forEach(file=>{
-          this.product_images.push('https://database.sistemamemo.com/catalogo/'+this.product._id+'/'+file);
-        })
+        if (this.product._attachments){
+          Object.keys(this.product._attachments).forEach(file=>{
+            this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+this.product._id+'/'+file);
+          })
+        }
         this.productForm.markAsPristine();
         this.loading.dismiss();
       }
@@ -104,9 +107,11 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
               });
             }
           }, 400);
-          Object.keys(data._attachments).forEach(file=>{
-            this.product_images.push('https://database.sistemamemo.com/catalogo/'+data._id+'/'+file);
-          })
+          if (data._attachments){
+            Object.keys(data._attachments).forEach(file=>{
+              this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+data._id+'/'+file);
+            })
+          }
           this.productForm.patchValue(data);
           this.productForm.markAsPristine();
           this.loading.dismiss();
