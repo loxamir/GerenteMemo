@@ -25,13 +25,8 @@ export class ProductListPage implements OnInit {
   select;
   category_id: string = 'all';
   page = 0;
-  operation = "sale";
   searchTerm: string = '';
   currency_precision = 0;
-  editMode = false;
-  promoted_products = [];
-  promoted_products2 = [];
-  promoted_categories = [];
   config = {};
   appliedChanges = [];
 
@@ -51,7 +46,6 @@ export class ProductListPage implements OnInit {
     public file: File,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
-    this.operation = this.route.snapshot.paramMap.get('operation') || this.operation;
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
     this.events.subscribe('changed-product', (change) => {
       if (this.appliedChanges.indexOf(change.change.doc._id+change.change.doc._rev)==-1){
@@ -59,12 +53,6 @@ export class ProductListPage implements OnInit {
         this.handleChange(this.products, change.change);
       }
     })
-    // this.events.subscribe('changed-stock-move', (change) => {
-    //   this.handleViewChange(this.products, change);
-    // })
-    // this.events.subscribe('got-database', ()=>{
-    //   this.setFilteredItems();
-    // })
     var foo = { foo: true };
     history.pushState(foo, "Anything", " ");
   }
@@ -76,14 +64,12 @@ export class ProductListPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile', true));
-    console.log("config",config);
     if (!config._id){
       let este = await this.pouchdbService.getConnect();
       this.events.subscribe(('end-sync'), async (change) => {
         if (!config._id){
           config = (await this.pouchdbService.getDoc('config.profile', true));
           this.config = config;
-          this.setPromoted(config);
         }
         this.currency_precision = config.currency_precision || this.currency_precision;
         await this.setFilteredItems();
@@ -96,7 +82,6 @@ export class ProductListPage implements OnInit {
       })
     } else {
       this.config = config;
-      this.setPromoted(config);
       this.currency_precision = config.currency_precision || this.currency_precision;
       await this.setFilteredItems();
       if (this.select) {
@@ -105,37 +90,6 @@ export class ProductListPage implements OnInit {
         }, 200);
       }
     }
-
-  }
-
-  async setPromoted(config){
-    let getList = [];
-    config.promoted_products.forEach(product=>{
-      getList.push(product.product_id);
-    })
-    config.promoted_categories.forEach(category=>{
-      getList.push(category.category_id);
-    })
-    let docList:any = await this.pouchdbService.getList(getList, true);
-    var doc_dict = {};
-    docList.forEach(row=>{
-      doc_dict[row.id] = row.doc;
-    })
-    let first = true;
-    config.promoted_products.forEach(product=>{
-      if (first){
-        this.promoted_products.push(doc_dict[product.product_id] || {});
-        first = false;
-      } else {
-        this.promoted_products2.push(doc_dict[product.product_id] || {});
-        first = true;
-      }
-    })
-    config.promoted_categories.forEach(category=>{
-      this.promoted_categories.push(doc_dict[category.category_id] || {});
-    })
-    // this.promoted_products = config.products;
-    // this.promoted_categories = config.categories;
   }
 
   setFilteredItems() {
@@ -193,7 +147,6 @@ export class ProductListPage implements OnInit {
   }
 
   async presentPopover(myEvent) {
-    // console.log("teste my event");
     let popover = await this.popoverCtrl.create({
       component: ProductListPopover,
       event: myEvent,
@@ -202,19 +155,7 @@ export class ProductListPage implements OnInit {
     popover.present();
   }
 
-  selectProduct(product) {
-    if (this.select) {
-      this.modalCtrl.dismiss();
-      this.events.publish('select-product', product);
-    } else {
-      this.openProduct(product);
-    }
-  }
-
   async openProduct(product) {
-    this.events.subscribe('open-product', (data) => {
-      this.events.unsubscribe('open-product');
-    })
     // if (this.select) {
       let profileModal = await this.modalCtrl.create({
         component: ProductPage,
@@ -261,12 +202,6 @@ export class ProductListPage implements OnInit {
       } else {
         products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', type, 'sequence', 'increase', 30)
       }
-      // await this.formatService.asyncForEach(products, async (product: any)=>{
-      //   let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
-      //   ["warehouse.physical.my", product._id],
-      //   ["warehouse.physical.my", product._id+"z"])
-      //   product.stock = viewList && viewList[0] && viewList[0].value || 0;
-      // })
       resolve(products);
     })
   }
@@ -310,31 +245,22 @@ export class ProductListPage implements OnInit {
     this.pouchdbService.localHandleChangeData(list, change)
   }
 
-  async handleViewChange(list, change) {
-    list.forEach(async (product:any)=>{
-      // if (product._id == change.id){
-      //   let viewList: any = await this.pouchdbService.getView('stock/Depositos', 2,
-      //   ["warehouse.physical.my", product._id],
-      //   ["warehouse.physical.my", product._id+"z"])
-      //   product.stock = viewList && viewList[0] && viewList[0].value || 0;
-      //   return;
-      // }
-    })
-  }
-
-    // async openOrder() {
-    //   let profileModal = await this.modalCtrl.create({
-    //     component: SalePage,
-    //     componentProps: {
-    //       "select": true,
-    //       "_id": 'sale.5f60137b-2ca5-4291-a1a2-30a68d7e7082',
-    //     }
-    //   })
-    //   profileModal.present();
-    // }
-
-    enableEditMode(){
-      this.editMode = !this.editMode;
+    async setImages(){
+      console.log("set Images");
+      let products:any = await this.pouchdbService.getDocType('product');
+      products.forEach(variable => {
+        if (!variable.images ){
+          variable.images = [];
+          if (variable._attachments){
+            Object.keys(variable._attachments).forEach((file_name:any)=>{
+              variable.images.push(file_name);
+            })
+          }
+        }
+      });
+      console.log("seted Images", products);
+      await this.pouchdbService.updateDocList(products);
+      console.log("Finish");
     }
 
     async filterCategory(category) {

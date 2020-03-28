@@ -71,7 +71,7 @@ export class ProductService {
     });
   }
 
-  createProduct(viewData, blob = undefined){
+  createProduct(viewData, changed_images = []){
     return new Promise((resolve, reject)=>{
       let product = Object.assign({}, viewData);
       product.docType = 'product';
@@ -101,8 +101,18 @@ export class ProductService {
 
           product['code'] = code;
           this.pouchdbService.createDoc(product).then(async doc => {
-            if (blob) {
-              let avai = await this.pouchdbService.attachFile(doc['id'], 'avatar.png', blob);
+            if (changed_images.length) {
+              await this.formatService.asyncForEach(changed_images, async (image: any) => {
+                if (image.action == 'ADD'){
+                  //Add image
+                  let dda = image.image.split('base64,')[1];
+                  await this.pouchdbService.attachFile(product._id, image.name, dda);
+                  let data: any = await this.pouchdbService.getDoc(product._id);
+                  let attachments = data._attachments;
+                  product._rev = data._rev;
+                  product._attachments = attachments;
+                }
+              })
             }
             resolve({ doc: doc, product: product });
             // resolve(this.pouchdbService.createDoc(product));
@@ -166,67 +176,4 @@ export class ProductService {
   deleteProduct(product){
     return this.pouchdbService.deleteDoc(product);
   }
-
-  updateStockAndCost(id, new_stock, new_cost, old_stock, old_cost){
-    if (!old_cost){
-      old_cost = 0;
-    }
-    this.pouchdbService.getDoc(id).then((product) => {
-      if (old_stock < 0){
-        old_stock = 0;
-      }
-      let current_total_cost = parseFloat(old_stock)*parseFloat(old_cost);
-      let new_total_cost = parseFloat(new_stock)*parseFloat(new_cost);
-      let new_total_stock = parseFloat(new_stock) + parseFloat(old_stock);
-      let newCost = (current_total_cost + new_total_cost)/new_total_stock;
-      product['cost'] = newCost;
-      this.updateProduct(product);
-    });
-  }
-
-  // createInventoryAdjustment(product_data, difference){
-  //   // if(product_data.stock != this.theoreticalStock){
-  //     this.configService.getConfigDoc().then((config: any)=>{
-  //       // let difference = (product_data.stock - theoreticalStock);
-  //       let warehouseFrom_id = 'warehouse.inventoryAdjust';
-  //       let warehouseTo_id  = config.warehouse_id;
-  //       let accountFrom_id = 'account.other.inventoryAdjust';
-  //       let accountTo_id  = 'account.other.stock';
-  //       if (difference < 0) {
-  //         warehouseFrom_id  = config.warehouse_id;
-  //         warehouseTo_id = 'warehouse.inventoryAdjust';
-  //         accountFrom_id = 'account.other.stock';
-  //         accountTo_id  = 'account.other.inventoryAdjust';
-  //       }
-  //       this.stockMoveService.createStockMove({
-  //         'name': "Ajuste "+product_data.code,
-  //         'quantity': Math.abs(difference),
-  //         'origin_id': product_data._id,
-  //         'contact_id': "contact.myCompany",
-  //         'product_id': product_data._id,
-  //         'date': new Date(),
-  //         'cost': product_data.cost*Math.abs(difference),
-  //         'warehouseFrom_id': warehouseFrom_id,
-  //         'warehouseTo_id': warehouseTo_id,
-  //       }).then(res => {
-  //         console.log("res", res);
-  //       });
-  //
-  //       this.cashMoveService.createCashMove({
-  //         'name': "Ajuste "+product_data.code,
-  //         'contact_id': "contact.myCompany",
-  //         'amount': product_data.cost*Math.abs(difference),
-  //         'origin_id': product_data._id,
-  //         // "project_id": product_data.project_id,
-  //         'date': new Date(),
-  //         'accountFrom_id': accountFrom_id,
-  //         'accountTo_id': accountTo_id,
-  //       }).then((plan: any) => {
-  //         //console.log("Plan", plan);
-  //         // data['_id'] = plan.id;
-  //         // this.saleForm.value.planned.push(data);
-  //       })
-  //     });
-  //   // }
-  // }
 }
