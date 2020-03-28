@@ -23,6 +23,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     select;
     currency_precision = 0;
     product;
+    whatsapp;
     product_images = [];
     sliderOpts = {
       zoom:false,
@@ -47,7 +48,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public pouchdbService: PouchdbService,
     ) {
       this._id = this.route.snapshot.paramMap.get('_id');
-      // let test =
+      this.whatsapp = this.route.snapshot.paramMap.get('whatsapp');
       this.product = JSON.parse(this.route.snapshot.paramMap.get('product'));
       this.select = this.route.snapshot.paramMap.get('select');
     }
@@ -79,7 +80,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         description: new FormControl(''),
         _attachments: new FormControl(),
       });
-
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
       this.translate.use(language);
@@ -168,7 +168,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     })
   }
 
-  async selectProduct(product){
+  async openProduct(product){
     let profileModal = await this.modalCtrl.create({
       component: ProductPage,
       componentProps: {

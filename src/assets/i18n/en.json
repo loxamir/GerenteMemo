@@ -443,5 +443,8 @@
   "ADD": "Add",
   "PHONE_IS_REQUIRED": "Phone is required",
   "ASK_QUOTATION": "Ask Quotation",
+  "AVAILABLE_VARIANTIONS": "Available Variations",
+  "RELATED_PRODUCTS": "Related Products",
+  "SHOW": "Show",
   "RESULT": "Result"
 }

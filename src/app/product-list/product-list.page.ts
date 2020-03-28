@@ -144,6 +144,7 @@ export class ProductListPage implements OnInit {
         "select": true,
         "_id": product._id,
         "product": product,
+        "whatsapp": this.config.whatsapp,
       }
     })
     profileModal.present();

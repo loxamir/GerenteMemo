@@ -126,7 +126,7 @@
             <img
             alt="Foto del producto"
             style="height: 50px;width: auto;border-radius: 5px;"
-            [src]="'https://database.sistemamemo.com/catalogo/'+item._id+'/avatar.png'">
+            [src]="'https://database.sistemamemo.com/catalogo/'+item._id+'/'+item.images[0]">
           </ion-col>
           <ion-col class="ion-no-padding">
             <ion-row class="producto">
@@ -142,7 +142,7 @@
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
                 <ion-button style="height: 15px;">
-                  {{'ADD'|translate}}
+                  {{'SHOW'|translate}}
                 </ion-button>
               </ion-col>
             </ion-row>
@@ -184,7 +184,7 @@
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
                 <ion-button style="height: 15px;">
-                  {{'ADD'|translate}}
+                  {{'SHOW'|translate}}
                 </ion-button>
               </ion-col>
             </ion-row>
@@ -224,7 +224,7 @@
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
                 <ion-button style="height: 15px;">
-                  {{'ADD'|translate}}
+                  {{'SHOW'|translate}}
                 </ion-button>
               </ion-col>
             </ion-row>
@@ -264,7 +264,7 @@
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
                 <ion-button style="height: 15px;">
-                  {{'ADD'|translate}}
+                  {{'SHOW'|translate}}
                 </ion-button>
               </ion-col>
             </ion-row>

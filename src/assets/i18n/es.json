@@ -443,5 +443,8 @@
   "ADD": "Agregar",
   "PHONE_IS_REQUIRED": "Numero de Telefono es obligatorio",
   "ASK_QUOTATION": "Solicitar Presupuesto",
+  "AVAILABLE_VARIANTIONS": "Variaciones Disponibles",
+  "RELATED_PRODUCTS": "Productos Relacionados",
+  "SHOW": "Mostrar",
   "RESULT": "Resultado"
 }
