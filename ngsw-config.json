@@ -3,7 +3,7 @@
   "assetGroups": [
     {
       "name": "Ted Bebidas",
-      "installMode": "lazzy",
+      "installMode": "prefetch",
       "resources": {
         "files": [
           "/favicon.ico",
@@ -14,8 +14,8 @@
       }
     }, {
       "name": "assets",
-      "installMode": "lazzy",
-      "updateMode": "lazzy",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
       "resources": {
         "files": [
           "/assets/**"
