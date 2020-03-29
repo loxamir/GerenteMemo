@@ -157,16 +157,16 @@ export class ProductListPage implements OnInit {
 
   async openProduct(product) {
     // if (this.select) {
-      let profileModal = await this.modalCtrl.create({
-        component: ProductPage,
-        componentProps: {
-          "select": true,
-          "_id": product._id,
-        }
-      })
-      profileModal.present();
+      // let profileModal = await this.modalCtrl.create({
+      //   component: ProductPage,
+      //   componentProps: {
+      //     "select": true,
+      //     "_id": product._id,
+      //   }
+      // })
+      // profileModal.present();
     // } else {
-    //   this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
+      this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
     // }
   }
 

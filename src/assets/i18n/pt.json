@@ -447,5 +447,11 @@
   "CANCEL_ORDER": "Cancelar Pedido",
   "SURE_CANCEL_ORDER": "Tem certeza que deseja cancelar este pedido?",
   "SEE_ON_GOOGLE_MAPS": "Ver no Google Maps",
+  "OPTIONAL": "Opcional",
+  "MORE_FIELDS": "Mais Campos",
+  "HIDE_FIELDS": "Esconder Campos",
+  "PUBLISHED": "Publicado",
+  "POSITION": "Posição",
+  "ADD_IMAGES": "Adiconar Imagens",
   "RESULT": "Resultado"
 }

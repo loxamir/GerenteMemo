@@ -39,6 +39,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     product_images = [];
     changed_images = [];
     database = '';
+    moreFields = false;
 
     constructor(
       public navCtrl: NavController,
@@ -63,10 +64,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
     async ngOnInit() {
-      setTimeout(() => {
-        // this.name.setFocus();
-        this.productForm.markAsPristine();
-      }, 400);
       this.productForm = this.formBuilder.group({
         name: new FormControl(null, Validators.required),
         price: new FormControl(null, Validators.required),
@@ -120,7 +117,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             })
           }
           this.productForm.patchValue(data);
-          this.productForm.markAsPristine();
           this.loading.dismiss();
         });
       } else {
@@ -518,5 +514,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     if (index2!=-1){
       this.productForm.value.images.splice(index2, 1)
     }
+  }
+
+  showFields(){
+    this.moreFields = true;
+  }
+  hideFields(){
+    this.moreFields = false;
   }
 }

@@ -31,50 +31,91 @@
         </ion-item-options>
       </ion-item-sliding>
       </div>
+
+      <div class="card">
+        <!-- <ion-item-sliding class="list-item"> -->
+          <ion-item class="ion-no-padding">
+            <ion-card class="list-card" style="display: inline-block;text-align:center;" (click)="openPWAPhotoPicker()">
+              <!-- <div style="add-image-div"> -->
+                <!-- <ion-row style="height: -webkit-fill-available;"></ion-row> -->
+                <ion-row style="padding-top:30px">
+                  <ion-col style="font-size: 30px;">
+                    <ion-icon name="camera"></ion-icon>
+                  </ion-col>
+                </ion-row>
+                <ion-row style="padding-bottom:30px">
+                  <ion-col style="font-size: 20px;">
+                    {{'ADD_IMAGES'|translate}}
+                  </ion-col>
+                </ion-row>
+                <!-- <ion-row style="height: -webkit-fill-available;"></ion-row> -->
+              <!-- </div> -->
+          </ion-card>
+        </ion-item>
+      <!-- </ion-item-sliding> -->
+      </div>
     </div>
-    <ion-button class="button-100" (click)="openPWAPhotoPicker()">
-      ADD IMAGE
-    </ion-button>
+
     <img [src]="productForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="height: 0px;display: block;margin-left: auto;margin-right: auto;">
       <ion-row style="background: white;">
-        <ion-col>
+        <!-- <ion-col>
           <ion-row>
-            <ion-col>
+            <ion-col> -->
               <ion-item class="field-100">
                 <ion-label position="floating">{{'NAME' | translate}}</ion-label>
                 <ion-input type="text" formControlName="name"></ion-input>
               </ion-item>
-            </ion-col>
+            <!-- </ion-col>
           </ion-row>
+
           <ion-row>
-            <ion-col style="font-size: 12px;">
-              <ion-item class="field-100">
-                <ion-label position="floating">{{'description' | translate}}</ion-label>
-                <ion-input type="text" formControlName="description"></ion-input>
-              </ion-item>
-            </ion-col>
+            <ion-col style="font-size: 12px;"> -->
+            <ion-item class="field-100">
+              <ion-label position="floating">{{'PRICE' | translate}} ({{'OPTIONAL' | translate}})</ion-label>
+              <ion-input type="text" formControlName="price"></ion-input>
+            </ion-item>
+
+            <!-- </ion-col>
           </ion-row>
-        </ion-col>
+        </ion-col> -->
+
       </ion-row>
-      <ion-row>
-        <ion-item class="field-50">
-          <ion-label position="floating">{{'PRICE' | translate}}</ion-label>
-          <ion-input type="number" formControlName="price"></ion-input>
+      <ion-row (click)="showFields()" *ngIf="!moreFields" class="more-field">
+        <div>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+          {{'MORE_FIELDS'|translate}}
+        </div>
+      </ion-row>
+      <div *ngIf="moreFields">
+        <ion-row (click)="hideFields()" class="more-field">
+          <div>
+            <ion-icon name="chevron-down-outline"></ion-icon>
+            {{'HIDE_FIELDS'|translate}}
+          </div>
+        </ion-row>
+        <ion-row>
+          <ion-item class="field-100">
+            <ion-label position="floating">{{'DESCRIPTION' | translate}}</ion-label>
+            <ion-input type="text" formControlName="description"></ion-input>
+          </ion-item>
+          <ion-item class="ion-no-padding" (click)="selectCategory()" class="field-50">
+            <h4 class="field-label">{{'CATEGORY' | translate }}</h4>
+            <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'SELECT'|translate}}</h4>
+          </ion-item>
+          <ion-item
+          class="ion-no-padding"
+          class="field-50">
+          <ion-label>{{'PUBLISHED' | translate}}</ion-label>
+          <ion-toggle formControlName="publish"></ion-toggle>
         </ion-item>
-        <ion-item class="ion-no-padding" (click)="selectCategory()" class="field-50">
-          <h4 class="field-label">{{'CATEGORY' | translate }}</h4>
-          <h4 class="field-value">{{productForm.value.category && productForm.value.category.name || 'SELECT'|translate}}</h4>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'CODE' | translate}}</ion-label>
+          <ion-input type="text" formControlName="code"></ion-input>
         </ion-item>
         <ion-item class="field-50">
-          <ion-label position="floating">{{'SEQUENCE' | translate}}</ion-label>
+          <ion-label position="floating">{{'POSITION' | translate}}</ion-label>
           <ion-input type="text" formControlName="sequence"></ion-input>
         </ion-item>
-        <ion-item
-        class="ion-no-padding"
-        class="field-50">
-        <ion-label>{{'Publicar' | translate}}</ion-label>
-        <ion-toggle formControlName="publish"></ion-toggle>
-      </ion-item>
       </ion-row>
       <ion-row>
         <ion-col>
@@ -85,29 +126,29 @@
         <div class="card" *ngFor="let item of productForm.value.sizes" >
           <ion-item-sliding class="list-item"  #slidingItem>
             <ion-item class="ion-no-padding" style="--background: white;">
-            <ion-card class="list-card"
-            style="border: 1px solid #8ebbf3;"
-            (click)="editSize(item)">
+              <ion-card class="list-card"
+              style="border: 1px solid #8ebbf3;"
+              (click)="editSize(item)">
               <ion-row>
                 <ion-col style="color: #ff1919;font-weight:bold;text-align:center;">
                   {{item.name}}
                 </ion-col>
               </ion-row>
-              <ion-row>
+              <ion-row *ngIf="item.price">
                 <ion-col style="color: black;font-weight:bold;text-align:center;">
                   Gs {{item.price|number:'1.0-0'}}
                 </ion-col>
               </ion-row>
             </ion-card>
-        </ion-item>
+          </ion-item>
           <ion-item-options>
             <ion-item-option (click)="deleteSize(item, slidingItem)">
               {{ 'DELETE'| translate }}
             </ion-item-option>
           </ion-item-options>
         </ion-item-sliding>
-        </div>
       </div>
+    </div>
     <ion-row>
       <ion-col>
         <ion-button class="button-100" (click)="addProduct()"><ion-icon name="paper" style="margin-right:10px;"></ion-icon>{{ 'ADD_RELATED_PRODUCT' | translate }}</ion-button>
@@ -117,49 +158,49 @@
       <div class="card" *ngFor="let item of productForm.value.products; let i = index;">
         <ion-item-sliding class="list-item"  #slidingItem>
           <ion-item class="ion-no-padding" style="--background: white;">
-
-          <ion-card class="list-card" style="width: 180px;display: inline-block;border: 1px solid #8ebbf3;">
-          <ion-row>
-            <ion-col size="4">
-              <img style="height: 50px;width: auto;border-radius: 5px;"
-              [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
-              *ngIf="item._attachments && item._attachments['avatar.png']">
-              <img style="height: 50px;width: auto;border-radius: 5px;"
-              src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
-            </ion-col>
-            <ion-col class="ion-no-padding">
-              <ion-row class="producto">
+            <ion-card class="list-card" style="width: 180px;display: inline-block;border: 1px solid #8ebbf3;">
+              <ion-row>
+                <ion-col size="4">
+                  <img style="height: 50px;width: auto;border-radius: 5px;"
+                  [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
+                  *ngIf="item._attachments && item._attachments['avatar.png']">
+                  <img style="height: 50px;width: auto;border-radius: 5px;"
+                  src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
+                </ion-col>
                 <ion-col class="ion-no-padding">
-                  <h3 class="item-title" style="font-size: 13px;height: 30px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">{{ item.name }}</h3>
+                  <ion-row class="producto">
+                    <ion-col class="ion-no-padding">
+                      <h3 class="item-title" style="font-size: 13px;height: 30px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">{{ item.name }}</h3>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row class="ion-no-padding content-row one-line">
+                    <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                      <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
+                    </ion-col>
+                  </ion-row>
                 </ion-col>
               </ion-row>
-              <ion-row class="ion-no-padding content-row one-line">
-                <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
-                  <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
+              <ion-row>
+                <ion-col class="item-content">
+                  <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+                    {{item.description}}
+                  </div>
                 </ion-col>
               </ion-row>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="item-content">
-            <div style="height: 22px;font-size: 10px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
-              {{item.description}}
-            </div>
-            </ion-col>
-          </ion-row>
-        </ion-card>
-      </ion-item>
-        <ion-item-options>
-          <ion-item-option (click)="deleteProduct(item, slidingItem)">
-            {{ 'DELETE'| translate }}
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
+            </ion-card>
+          </ion-item>
+          <ion-item-options>
+            <ion-item-option (click)="deleteProduct(item, slidingItem)">
+              {{ 'DELETE'| translate }}
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
       </div>
     </div>
+      </div>
   </form>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="productForm.dirty">
     <ion-button (click)="buttonSave()"  color="success" style="font-size: 10px;">
       <ion-icon name="save"> </ion-icon>
       {{'SAVE'|translate}}
