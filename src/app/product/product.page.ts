@@ -504,7 +504,19 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     });
   }
 
-  deleteImage(img){
+  deleteImage(file_name){
+      this.changed_images.push({
+        name: file_name,
+        action: "DEL",
+      });
+      let index2 = this.productForm.value.images.indexOf(file_name);
+      if (index2!=-1){
+        this.productForm.value.images.splice(index2, 1)
+      }
+      this.productForm.markAsDirty();
+  }
+
+  deleteImageTmp(img){
     let index = this.product_images.indexOf(img);
     if (index!=-1){
       this.product_images.splice(index, 1)
@@ -523,10 +535,11 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.changed_images.splice(index3, 1)
       }
     }
-    let index2 = this.productForm.value.images.indexOf(file_name);
-    if (index2!=-1){
-      this.productForm.value.images.splice(index2, 1)
-    }
+    // let index2 = this.productForm.value.images.indexOf(file_name);
+    // if (index2!=-1){
+    //   this.productForm.value.images.splice(index2, 1)
+    // }
+    // this.productForm.markAsDirty();
   }
 
   showFields(){

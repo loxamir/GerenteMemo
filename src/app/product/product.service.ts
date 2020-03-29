@@ -154,6 +154,7 @@ export class ProductService {
           await this.pouchdbService.attachFile(product._id, image.name, dda);
           let data: any = await this.pouchdbService.getDoc(product._id);
           let attachments = data._attachments;
+          product.images.push(image.name);
           product._rev = data._rev;
           product._attachments = attachments;
         } else if (image.action == 'DEL'){
