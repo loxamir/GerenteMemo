@@ -2,7 +2,7 @@
   "index": "/index.html",
   "assetGroups": [
     {
-      "name": "Expositor.Online",
+      "name": "Expositor Online",
       "installMode": "prefetch",
       "resources": {
         "files": [
