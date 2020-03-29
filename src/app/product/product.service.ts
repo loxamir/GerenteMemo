@@ -20,7 +20,7 @@ export class ProductService {
       let product:any = await this.pouchdbService.getDoc(doc_id, true);
       let getList = [
         product['category_id'],
-        product['brand_id'],
+        // product['brand_id'],
       ];
       product['related_products'] = product['related_products'] || [];
       product['related_products'].forEach((item) => {
@@ -35,19 +35,19 @@ export class ProductService {
           doc_dict[row.id] = row.doc;
         })
         product.category = doc_dict[product.category_id] || {};
-        product.brand = doc_dict[product.brand_id] || {};
+        // product.brand = doc_dict[product.brand_id] || {};
         product['products'] = [];
         product.related_products.forEach((line: any)=>{
           product['products'].push(doc_dict[line.product_id]);
         })
         console.log("products", product['products']);
-        product.stock = 0;
-        if (product._attachments && product._attachments['avatar.png']) {
-          let avatar = product._attachments['avatar.png'].data;
-          product.image = "data:image/png;base64," + avatar;
-        } else {
-          product.image = "./assets/images/sem_foto.jpg";
-        }
+        // product.stock = 0;
+        // if (product._attachments && product._attachments['avatar.png']) {
+        //   let avatar = product._attachments['avatar.png'].data;
+        //   product.image = "data:image/png;base64," + avatar;
+        // } else {
+        //   product.image = "./assets/images/sem_foto.jpg";
+        // }
         resolve(product);
       });
     });
@@ -77,15 +77,15 @@ export class ProductService {
       product.docType = 'product';
       product.price = product.price && parseFloat(product.price) || 0;
       product.cost = product.cost && parseFloat(product.cost) || 0;
-      product.stock = product.stock && parseFloat(product.stock) || 0;
-      product.stock_min = product.stock_min && parseFloat(product.stock_min) || 0;
+      // product.stock = product.stock && parseFloat(product.stock) || 0;
+      // product.stock_min = product.stock_min && parseFloat(product.stock_min) || 0;
       product.category_id = product.category && product.category._id || product.category_id;
       product.category_name = product.category && product.category.name || product.category_name;
       delete product.category;
-      product.brand_id = product.brand && product.brand._id || product.brand_id;
-      product.brand_name = product.brand && product.brand.name || product.brand_name;
-      delete product.brand;
-      delete product.image;
+      // product.brand_id = product.brand && product.brand._id || product.brand_id;
+      // product.brand_name = product.brand && product.brand.name || product.brand_name;
+      // delete product.brand;
+      // delete product.image;
       product.related_products = [];
       product.products.forEach(item => {
         product.related_products.push({
@@ -132,19 +132,19 @@ export class ProductService {
     product.docType = 'product';
     product.price = product.price && parseFloat(product.price) || 0;
     product.cost = product.cost && parseFloat(product.cost) || 0;
-    product.stock = product.stock && parseFloat(product.stock) || 0;
-    product.stock_min = product.stock_min && parseFloat(product.stock_min) || 0;
+    // product.stock = product.stock && parseFloat(product.stock) || 0;
+    // product.stock_min = product.stock_min && parseFloat(product.stock_min) || 0;
     if (product.category){
       product.category_id = product.category._id;
     }
     product.category_name = product.category && product.category.name || product.category_name;
     delete product.category;
-    if (product.brand){
-      product.brand_id = product.brand._id;
-    }
-    product.brand_name = product.brand && product.brand.name || product.brand_name;
-    delete product.brand;
-    delete product.image;
+    // if (product.brand){
+    //   product.brand_id = product.brand._id;
+    // }
+    // product.brand_name = product.brand && product.brand.name || product.brand_name;
+    // delete product.brand;
+    // delete product.image;
     console.log("changed_images", changed_images);
     if (changed_images.length) {
       await this.formatService.asyncForEach(changed_images, async (image: any) => {

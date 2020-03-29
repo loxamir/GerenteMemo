@@ -16,6 +16,25 @@
   </div>
   <form class="sample-form validations-form" [formGroup]="productForm" style="background: white;">
     <div class="scrolling-wrapper-flexbox2">
+      <div class="card" *ngFor="let item of productForm.value.images; let i = index;">
+        <ion-item-sliding class="list-item">
+          <ion-item class="ion-no-padding">
+            <ion-card class="list-card" style="display: inline-block;"
+            (click)="openPreview(img)">
+            <img
+            *ngIf="productForm.value._attachments && productForm.value._attachments[item] && productForm.value._attachments[item].data"
+            [src]="'data:image/png;base64,'+productForm.value._attachments[item].data"
+            style="height: 140px;width: auto;border-radius: 5px;"/>
+          </ion-card>
+        </ion-item>
+        <ion-item-options>
+          <ion-item-option (click)="deleteImage(img)">
+            {{ 'DELETE'| translate }}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+      </div>
+
       <div class="card" *ngFor="let img of product_images; let i = index;">
         <ion-item-sliding class="list-item">
           <ion-item class="ion-no-padding">
@@ -33,30 +52,24 @@
       </div>
 
       <div class="card">
-        <!-- <ion-item-sliding class="list-item"> -->
-          <ion-item class="ion-no-padding">
-            <ion-card class="list-card" style="display: inline-block;text-align:center;" (click)="openPWAPhotoPicker()">
-              <!-- <div style="add-image-div"> -->
-                <!-- <ion-row style="height: -webkit-fill-available;"></ion-row> -->
-                <ion-row style="padding-top:30px">
-                  <ion-col style="font-size: 30px;">
-                    <ion-icon name="camera"></ion-icon>
-                  </ion-col>
-                </ion-row>
-                <ion-row style="padding-bottom:30px">
-                  <ion-col style="font-size: 20px;">
-                    {{'ADD_IMAGES'|translate}}
-                  </ion-col>
-                </ion-row>
-                <!-- <ion-row style="height: -webkit-fill-available;"></ion-row> -->
-              <!-- </div> -->
+        <ion-item class="ion-no-padding">
+          <ion-card class="list-card" style="display: inline-block;text-align:center;" (click)="openPWAPhotoPicker()">
+            <ion-row style="padding-top:30px">
+              <ion-col style="font-size: 30px;">
+                <ion-icon name="camera"></ion-icon>
+              </ion-col>
+            </ion-row>
+            <ion-row style="padding-bottom:30px">
+              <ion-col style="font-size: 20px;">
+                {{'ADD_IMAGES'|translate}}
+              </ion-col>
+            </ion-row>
           </ion-card>
         </ion-item>
-      <!-- </ion-item-sliding> -->
       </div>
     </div>
 
-    <img [src]="productForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="height: 0px;display: block;margin-left: auto;margin-right: auto;">
+    <img [src]="'./assets/images/sem_foto.jpg'" id="imageSrc" style="display: none;margin-left: auto;margin-right: auto;">
       <ion-row style="background: white;">
         <!-- <ion-col>
           <ion-row>
@@ -82,15 +95,15 @@
       </ion-row>
       <ion-row (click)="showFields()" *ngIf="!moreFields" class="more-field">
         <div>
-          <ion-icon name="chevron-forward-outline"></ion-icon>
-          {{'MORE_FIELDS'|translate}}
+          <ion-icon style="margin-bottom: -2px;" name="chevron-forward-outline"></ion-icon>
+            {{'MORE_FIELDS'|translate}}
         </div>
       </ion-row>
       <div *ngIf="moreFields">
         <ion-row (click)="hideFields()" class="more-field">
           <div>
-            <ion-icon name="chevron-down-outline"></ion-icon>
-            {{'HIDE_FIELDS'|translate}}
+            <ion-icon style="margin-bottom: -2px;" name="chevron-down-outline"></ion-icon>
+            {{'LESS_FIELDS'|translate}}
           </div>
         </ion-row>
         <ion-row>
