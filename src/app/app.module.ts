@@ -3,8 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { ImageModalPageModule } from './image-modal/image-modal.module';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+// import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+// import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -22,8 +22,8 @@ import es from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
 registerLocaleData(es);
 // Custom Imports
-import { Facebook } from "@ionic-native/facebook/ngx";
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+// import { Facebook } from "@ionic-native/facebook/ngx";
+// import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { ProductListPage } from './product-list/product-list.page';
 import { ProductCategoryListPageModule } from './product-category-list/product-category-list.module';
 import { ProductListPageModule } from './product-list/product-list.module';
@@ -68,10 +68,10 @@ import { environment } from '../environments/environment';
         { provide: LOCALE_ID, useValue: 'es-PY' },
     NativeStorage,
     File,
-    StatusBar,
-    SplashScreen,
-    Facebook,
-    Geolocation,
+    // StatusBar,
+    // SplashScreen,
+    // Facebook,
+    // Geolocation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

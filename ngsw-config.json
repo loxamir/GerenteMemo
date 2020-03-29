@@ -2,7 +2,7 @@
   "index": "/index.html",
   "assetGroups": [
     {
-      "name": "CentralAppDelivery",
+      "name": "Expositor.Online",
       "installMode": "prefetch",
       "resources": {
         "files": [

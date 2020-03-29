@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Platform, MenuController, ModalController, LoadingController } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+// import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+// import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { PouchdbService } from './services/pouchdb/pouchdb-service';
 import { Storage } from '@ionic/storage';
-import { AuthService } from "./services/auth.service";
+// import { AuthService } from "./services/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -53,33 +53,33 @@ export class AppComponent implements OnInit {
 
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
+    // private splashScreen: SplashScreen,
     public translate: TranslateService,
-    private statusBar: StatusBar,
+    // private statusBar: StatusBar,
     public router: Router,
     public menuCtrl: MenuController,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public pouchdbService: PouchdbService,
     public storage: Storage,
-    private authService: AuthService
+    // private authService: AuthService
   ) {
     this.initializeApp();
     this.backButtonListener();
   }
 
   initializeApp() {
-    this.authService.init();
+    // this.authService.init();
     this.platform.ready().then(() => {
       if (this.platform.is('cordova')){
         //
         //
         // this.statusBar.styleDefault();
-        this.statusBar.show()
+        // this.statusBar.show()
         // this.statusBar.overlaysWebView(true);
-        this.statusBar.styleLightContent()
-        this.statusBar.backgroundColorByHexString('#1652a0');
-        this.splashScreen.hide();
+        // this.statusBar.styleLightContent()
+        // this.statusBar.backgroundColorByHexString('#1652a0');
+        // this.splashScreen.hide();
       }
     });
   }

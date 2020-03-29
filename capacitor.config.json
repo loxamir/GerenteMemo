@@ -1,6 +1,6 @@
 {
-  "appId": "py.com.appdelivery.central",
-  "appName": "CentralAppDelivery",
+  "appId": "online.expositor",
+  "appName": "Expositor.Online",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
