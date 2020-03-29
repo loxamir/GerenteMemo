@@ -132,19 +132,11 @@ export class ProductService {
     product.docType = 'product';
     product.price = product.price && parseFloat(product.price) || 0;
     product.cost = product.cost && parseFloat(product.cost) || 0;
-    // product.stock = product.stock && parseFloat(product.stock) || 0;
-    // product.stock_min = product.stock_min && parseFloat(product.stock_min) || 0;
     if (product.category){
       product.category_id = product.category._id;
     }
     product.category_name = product.category && product.category.name || product.category_name;
     delete product.category;
-    // if (product.brand){
-    //   product.brand_id = product.brand._id;
-    // }
-    // product.brand_name = product.brand && product.brand.name || product.brand_name;
-    // delete product.brand;
-    // delete product.image;
     console.log("changed_images", changed_images);
     if (changed_images.length) {
       await this.formatService.asyncForEach(changed_images, async (image: any) => {

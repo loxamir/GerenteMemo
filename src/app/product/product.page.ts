@@ -315,24 +315,13 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       var reader = new FileReader();
       reader.onload = (event: Event) => {
         preview.src = reader.result;
-        // this.product_images.push(reader.result);
-        // let image_name = "image-"+this.pouchdbService.getUUID();
-        // this.changed_images.push({
-        //   name: image_name,
-        //   action: "ADD",
-        //   image: reader.result,
-        // })
-        // this.productForm.value.images.push(image_name);
-        // this.productForm.markAsDirty();
         preview.onload = () => {
-
           var percentage = 1;
           let max_diameter = (800 ** 2 + 600 ** 2) ** (1 / 2);
           var image_diameter = (preview.height ** 2 + preview.width ** 2) ** (1 / 2)
           if (image_diameter > max_diameter) {
             percentage = max_diameter / image_diameter
           }
-
           var canvas: any = window.document.getElementById("canvas");
           var ctx = canvas.getContext("2d");
           canvas.height = canvas.width * (preview.height / preview.width);
@@ -345,23 +334,15 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           octx.drawImage(preview, 0, 0, oc.width, oc.height);
           octx.drawImage(oc, 0, 0, oc.width, oc.height);
           ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
-          let self = this;
           let jpg = ctx.canvas.toDataURL("image/jpeg");
-          fetch(jpg)
-          .then(res => res.blob())
-          .then(blob => {
-            console.log("this.product_images", this.product_images, self.product_images)
-            this.product_images.push(reader.result);
-            let image_name = "image-"+this.pouchdbService.getUUID();
-            console.log("image", image_name, reader.result)
-            this.changed_images.push({
-              name: image_name,
-              action: "ADD",
-              image: reader.result,
-            })
-            // this.productForm.value.images.push(image_name);
-            this.productForm.markAsDirty();
+          this.product_images.push(jpg);
+          let image_name = "image-"+this.pouchdbService.getUUID();
+          this.changed_images.push({
+            name: image_name,
+            action: "ADD",
+            image: jpg,
           })
+          this.productForm.markAsDirty();
         }
       }
 
