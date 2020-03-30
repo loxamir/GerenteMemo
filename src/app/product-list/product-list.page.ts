@@ -225,20 +225,8 @@ export class ProductListPage implements OnInit {
   async deleteProduct(product) {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
-    let viewList: any = await this.pouchdbService.getView('Informes/productUse', 1,
-    [product._id],
-    [product._id+"z"]);
-    if (viewList.length){
-      this.loading.dismiss();
-      let toast = await this.toastCtrl.create({
-      message: "No se puede borrar, producto en uso",
-      duration: 1000
-      });
-      toast.present();
-    } else {
-      await this.pouchdbService.deleteDoc(product);
-      this.loading.dismiss();
-    }
+    await this.pouchdbService.deleteDoc(product);
+    this.loading.dismiss();
   }
 
   handleChange(list, change) {

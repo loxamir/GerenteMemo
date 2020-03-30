@@ -342,6 +342,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             action: "ADD",
             image: jpg,
           })
+          this.productForm.patchValue({})
           this.productForm.markAsDirty();
         }
       }

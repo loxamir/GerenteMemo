@@ -77,15 +77,9 @@ export class ProductService {
       product.docType = 'product';
       product.price = product.price && parseFloat(product.price) || 0;
       product.cost = product.cost && parseFloat(product.cost) || 0;
-      // product.stock = product.stock && parseFloat(product.stock) || 0;
-      // product.stock_min = product.stock_min && parseFloat(product.stock_min) || 0;
       product.category_id = product.category && product.category._id || product.category_id;
       product.category_name = product.category && product.category.name || product.category_name;
       delete product.category;
-      // product.brand_id = product.brand && product.brand._id || product.brand_id;
-      // product.brand_name = product.brand && product.brand.name || product.brand_name;
-      // delete product.brand;
-      // delete product.image;
       product.related_products = [];
       product.products.forEach(item => {
         product.related_products.push({
@@ -95,10 +89,28 @@ export class ProductService {
       });
       delete product.products;
       if (product.code != ''){
-        resolve(this.pouchdbService.createDoc(product));
+        this.pouchdbService.createDoc(product).then(async doc => {
+          if (changed_images.length) {
+            await this.formatService.asyncForEach(changed_images, async (image: any) => {
+              if (image.action == 'ADD'){
+                //Add image
+                let dda = image.image.split('base64,')[1];
+                await this.pouchdbService.attachFile(product._id, image.name, dda);
+                let data: any = await this.pouchdbService.getDoc(product._id);
+                let attachments = data._attachments;
+                product.images.push(image.name);
+                product._rev = data._rev;
+                product._attachments = attachments;
+              } else if (image.action == 'DEL'){
+                delete product._attachments[image.name];
+                //Remove image
+              }
+            })
+          }
+          resolve(this.pouchdbService.createDoc(product));
+        });
       } else {
         this.configService.getSequence('product').then((code) => {
-
           product['code'] = code;
           this.pouchdbService.createDoc(product).then(async doc => {
             if (changed_images.length) {
@@ -109,21 +121,19 @@ export class ProductService {
                   await this.pouchdbService.attachFile(product._id, image.name, dda);
                   let data: any = await this.pouchdbService.getDoc(product._id);
                   let attachments = data._attachments;
+                  product.images.push(image.name);
                   product._rev = data._rev;
                   product._attachments = attachments;
+                } else if (image.action == 'DEL'){
+                  delete product._attachments[image.name];
+                  //Remove image
                 }
               })
             }
-            resolve({ doc: doc, product: product });
-            // resolve(this.pouchdbService.createDoc(product));
+            resolve(this.pouchdbService.createDoc(product));
           });
-
-
         });
       }
-      // if (product.stock > 0){
-      //   this.createInventoryAdjustment(product, product.stock);
-      // }
     });
   }
 
