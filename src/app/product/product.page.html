@@ -31,7 +31,7 @@
                 {{item.name}}
               </ion-col>
             </ion-row>
-            <ion-row>
+            <ion-row *ngIf="item.price">
               <ion-col style="color: black;font-weight:bold">
                 Gs {{item.price|number:'1.0-0'}}
               </ion-col>
@@ -42,24 +42,22 @@
     </div> -->
     <div class="scrolling-wrapper-flexbox2" style="background: white;">
         <div class="card" *ngFor="let item of productForm.value.sizes" >
-          <!-- <ion-item-sliding class="list-item"  #slidingItem> -->
-            <ion-item class="ion-no-padding" style="--background: white;">
+          <ion-item class="ion-no-padding" style="--background: white;">
             <ion-card class="list-card"
-            style="border: 1px solid #8ebbf3;"
+            [class.selected]="item.name == productForm.value.size"
             (click)="selectSize(item)">
               <ion-row>
                 <ion-col style="color: #ff1919;font-weight:bold;text-align:center;">
                   {{item.name}}
                 </ion-col>
               </ion-row>
-              <ion-row>
+              <ion-row *ngIf="item.price">
                 <ion-col style="color: black;font-weight:bold;text-align:center;">
                   Gs {{item.price|number:'1.0-0'}}
                 </ion-col>
               </ion-row>
             </ion-card>
         </ion-item>
-        <!-- </ion-item-sliding> -->
         </div>
       </div>
     <h1 style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: #3773e8;" *ngIf="productForm.value.products.length" class="ion-no-padding">
@@ -122,7 +120,7 @@
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="whatsapp">
-    <a target="_blank" href="https://api.whatsapp.com/send?phone={{whatsapp}}&text=Eu+tenho+interesse+nesse+producto+http://expositor.online/product;_id={{productForm.value._id}}" rel="noopener">
+    <a target="_blank" href="https://api.whatsapp.com/send?phone={{whatsapp}}&text={{'IM_INTERESTED_IN'|translate}} +{{productForm.value.name+(productForm.value.size && ' - '+productForm.value.size||'')+' - Codigo '+productForm.value.code}}" rel="noopener">
       <ion-button  color="success" style="font-size: 12px;">
         <ion-icon name="logo-whatsapp" style="padding-right: 5px;padding-left: 3px;font-size: 25px;"></ion-icon>
         {{'ASK_QUOTATION'|translate}}

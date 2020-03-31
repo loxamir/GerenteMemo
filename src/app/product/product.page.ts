@@ -77,7 +77,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         quantity: new FormControl(1),
         products: new FormControl([]),
         sizes: new FormControl([]),
-        size: new FormControl(),
+        size: new FormControl(''),
         description: new FormControl(''),
         _attachments: new FormControl(),
       });
@@ -88,10 +88,13 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       if (this.product){
+        if (this.product.sizes && this.product.sizes[0]){
+          this.product.size = this.product.sizes[0].name;
+        }
         this.productForm.patchValue(this.product);
         if (this.product._attachments){
-          Object.keys(this.product._attachments).forEach(file=>{
-            this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+this.product._id+'/'+file);
+          this.product.images.forEach(file_name=>{
+            this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+this.product._id+'/'+file_name);
           })
         }
         this.productForm.markAsPristine();
@@ -99,6 +102,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       }
       else if (this._id){
         this.productService.getProduct(this._id).then((data) => {
+          if (data._attachments){
+            data.images.forEach(file_name=>{
+              this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+data._id+'/'+file_name);
+            })
+          }
+          this.productForm.patchValue(data);
           setTimeout(() => {
             if (data.sizes && data.sizes[0]){
               data.size = data.sizes[0].name;
@@ -107,12 +116,6 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
               });
             }
           }, 400);
-          if (data._attachments){
-            Object.keys(data._attachments).forEach(file=>{
-              this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+data._id+'/'+file);
-            })
-          }
-          this.productForm.patchValue(data);
           this.productForm.markAsPristine();
           this.loading.dismiss();
         });
@@ -167,10 +170,13 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     }
 
   selectSize(item){
-    this.productForm.patchValue({
+    let dict = {
       size: item.name,
-      price: item.price
-    })
+    }
+    if (item.price){
+      dict['price'] = item.price
+    }
+    this.productForm.patchValue(dict)
   }
 
   async openProduct(product){
