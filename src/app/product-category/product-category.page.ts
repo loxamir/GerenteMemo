@@ -56,6 +56,7 @@ export class ProductCategoryPage implements OnInit {
       create_user: new FormControl(''),
       create_time: new FormControl(''),
       write_user: new FormControl(''),
+      sequence: new FormControl('9999'),
       write_time: new FormControl(''),
     });
     let language:any = await this.languageService.getDefaultLanguage();
