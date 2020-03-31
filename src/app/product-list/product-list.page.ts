@@ -28,7 +28,7 @@ export class ProductListPage implements OnInit {
   page = 0;
   searchTerm: string = '';
   currency_precision = 0;
-  config = {};
+  config:any = {};
   appliedChanges = [];
   categories = [];
 
@@ -167,16 +167,12 @@ export class ProductListPage implements OnInit {
   }
 }
 
-async showConfig(product) {
-  // if (this.select) {
+async showConfig() {
     let profileModal = await this.modalCtrl.create({
       component: ConfigPage,
       componentProps: {}
     })
     profileModal.present();
-  // } else {
-    // this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
-  // }
 }
 
   async openProduct(product) {

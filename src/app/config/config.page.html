@@ -10,8 +10,7 @@
 <ion-content class="config-content" style="background-color: #ddd">
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
   <form class="sample-form validations-form"
-  [formGroup]="configForm"
-  (ngSubmit)="onSubmit(configForm.value)">
+  [formGroup]="configForm">
   <div id="pwa">
     <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
   </div>
