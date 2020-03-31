@@ -11,6 +11,7 @@ import { FormatService } from '../services/format.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { Events } from '../services/events';
+import { ConfigPage } from '../config/config.page';
 
 @Component({
   selector: 'app-product-list',
@@ -29,6 +30,7 @@ export class ProductListPage implements OnInit {
   currency_precision = 0;
   config = {};
   appliedChanges = [];
+  categories = [];
 
   constructor(
     public navCtrl: NavController,
@@ -64,6 +66,7 @@ export class ProductListPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile', true));
+    this.showCategories();
     if (!config._id){
       let este = await this.pouchdbService.getConnect();
       this.events.subscribe(('end-sync'), async (change) => {
@@ -154,6 +157,27 @@ export class ProductListPage implements OnInit {
     });
     popover.present();
   }
+
+  async showCategories(){
+  if (this.category_id=='all'){
+    let categories:any = await this.pouchdbService.searchDocTypeData(
+    'category',
+    "", null, null, null, 'sequence', 'increase');
+    this.categories = categories;
+  }
+}
+
+async showConfig(product) {
+  // if (this.select) {
+    let profileModal = await this.modalCtrl.create({
+      component: ConfigPage,
+      componentProps: {}
+    })
+    profileModal.present();
+  // } else {
+    // this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
+  // }
+}
 
   async openProduct(product) {
     // if (this.select) {

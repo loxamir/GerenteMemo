@@ -230,6 +230,8 @@ export class ProductCategoryPage implements OnInit {
         oc.height = preview.height * percentage;
         canvas.width = oc.width;
         canvas.height = oc.height;
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         octx.drawImage(preview, 0, 0, oc.width, oc.height);
         octx.drawImage(oc, 0, 0, oc.width, oc.height);
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);

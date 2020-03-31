@@ -9,7 +9,6 @@ const routes: Routes = [
   { path: 'product-category-list', loadChildren: './product-category-list/product-category-list.module#ProductCategoryListPageModule' },
   { path: 'product-list', loadChildren: './product-list/product-list.module#ProductListPageModule' },
   { path: 'config', loadChildren: './config/config.module#ConfigPageModule' },
-  { path: 'tabs', loadChildren: './tabs/tabs.module#TabsPageModule' },
   { path: 'image-modal', loadChildren: './image-modal/image-modal.module#ImageModalPageModule' },
 ];
 

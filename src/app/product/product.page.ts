@@ -171,7 +171,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           this.modalCtrl.dismiss();
           this.events.publish('open-product', this.productForm.value);
         } else {
-          this.navCtrl.navigateBack('/tabs/product-list');
+          this.navCtrl.navigateBack('/product-list');
           this.events.publish('open-product', this.productForm.value);
         }
       } else {
@@ -186,7 +186,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             this.modalCtrl.dismiss();
             this.events.publish('create-product', this.productForm.value);
           } else {
-            this.navCtrl.navigateBack('/tabs/product-list');
+            this.navCtrl.navigateBack('/product-list');
             this.events.publish('create-product', this.productForm.value);
           }
         });
@@ -283,7 +283,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.modalCtrl.dismiss();
       } else {
         this.productForm.markAsPristine();
-        this.navCtrl.navigateBack('/tabs/product-list');
+        this.navCtrl.navigateBack('/product-list');
       }
     }
 
@@ -331,6 +331,8 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
           oc.height = preview.height * percentage;
           canvas.width = oc.width;
           canvas.height = oc.height;
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
           octx.drawImage(preview, 0, 0, oc.width, oc.height);
           octx.drawImage(oc, 0, 0, oc.width, oc.height);
           ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);

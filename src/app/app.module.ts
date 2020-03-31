@@ -30,7 +30,8 @@ import { ProductListPageModule } from './product-list/product-list.module';
 import { LoginPageModule } from './login/login.module';
 import { ProductCategoryPageModule } from './product-category/product-category.module';
 import { ProductPageModule } from './product/product.module';
-import { TabsPageModule } from './tabs/tabs.module';
+import { ConfigPageModule } from './config/config.module';
+import { ConfigPage } from './config/config.page';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
@@ -40,11 +41,12 @@ import { environment } from '../environments/environment';
   ],
   entryComponents: [
     ProductListPage,
+    ConfigPage,
   ],
   imports: [
     LoginPageModule,
-    TabsPageModule,
     ProductListPageModule,
+    ConfigPageModule,
     ImageModalPageModule,
     ProductCategoryListPageModule,
     BrowserModule,
