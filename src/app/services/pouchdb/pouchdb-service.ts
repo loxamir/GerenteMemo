@@ -100,9 +100,9 @@ export class PouchdbService {
     let self = this;
     return new Promise((resolve, reject)=>{
       // this.storage.get("username").then(username => {
-        let username = "catalogo_oga";
-        let database = "catalogo_oga";
-        let password = "123";
+        let username = "ropas";
+        let database = "ropas";
+        let password = "tusrop@123";
         console.log("username", username);
         if (! username){
           resolve(false);

@@ -1,8 +1,8 @@
 {
-  "name": "TedBebidas",
+  "name": "CatalogoOnline",
   "version": "1.0.0",
   "author": "Marcelo Pickler",
-  "homepage": "https://ted.appdelivery.com.py",
+  "homepage": "https://ropas.expositor.online",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

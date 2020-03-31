@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="py.com.appdelivery.ted" version="0.0.12" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Ted Bebidas</name>
-    <description>Hagas tu pedido online</description>
+<widget id="online.expositor.ropas" version="0.0.12" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Tienda de Ropas</name>
+    <description>Catalogo Online</description>
     <author email="loxamir@gmail.com" href="http://www.sistemamemo.com/">Marcelo Pickler</author>
     <content src="index.html" />
     <access origin="*" />

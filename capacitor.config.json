@@ -1,6 +1,6 @@
 {
-  "appId": "py.com.appdelivery.ted",
-  "appName": "Ted Bebidas",
+  "appId": "online.expositor.ropas",
+  "appName": "Tienda de Ropas",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
