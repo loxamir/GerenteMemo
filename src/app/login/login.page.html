@@ -13,7 +13,7 @@
     </ion-title>
     <ion-buttons slot="end">
       <ion-button icon-only (click)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon name="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -125,9 +125,6 @@
     </div>
   </form>
 
-
-
-
     <div *ngIf="selected_user" style="background: #2d3a98;">
       <h2 class="section-title" style="color:white;font-size: 1.5rem;padding: 0.6rem;">{{ 'HELLO' | translate}}  {{ username }}!</h2>
       <h2 class="section-title" style="color:white;font-size: 1rem;padding-bottom: 0.6rem;">{{ 'SELECT_A_COMPANY' | translate}}</h2>
@@ -147,23 +144,7 @@
         </ion-col>
       </ion-item>
     </div>
-  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-    <a target="_blank" href="https://www.youtube.com/channel/UCfjFZyo8jvrx0ILRBTk2XRQ" rel="noopener">
-    <ion-button style="--color: white; --background: white;">
-      <ion-icon name="logo-youtube" style="margin-right: 5px;color: red;"> </ion-icon>
-      <span style="color: black;font-weight: bold;">{{ 'VIDEOS'| translate }}</span>
-    </ion-button>
-  </a>
-  </ion-fab>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <a target="_blank" href="https://wa.me/595986154975" rel="noopener">
-    <ion-button style="--color: white; --background: white;">
-      <ion-icon name="logo-whatsapp" style="margin-right: 5px;color: green;"> </ion-icon>
-      <span style="color: black;font-weight: bold;">{{ 'CONTACT' | translate }}</span>
-    </ion-button>
-  </a>
-  </ion-fab> -->
+
   <div style="height: 100px;">
   </div>
 </ion-content>
-<!-- <div id="dvContainer">your content here<span>tes<b>teste</b>te</span></div> -->
