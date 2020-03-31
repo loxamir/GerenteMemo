@@ -4,8 +4,13 @@
         <ion-col class="ion-no-padding">
           <img
           alt="Logo del restaurante"
-          style="height: 88px;width: 234px;"
+          style="max-width: 100%;max-height: 100px;border-radius: 5px;margin-top: 5px;"
           [src]="'https://database.sistemamemo.com/'+database+'/config.profile/logo.png'">
+        </ion-col>
+        <ion-col>
+          <h1 style="font-size: 20px;text-align:center;">
+            {{config.name}}
+          </h1>
         </ion-col>
       </ion-row>
     <ion-buttons slot="start">
