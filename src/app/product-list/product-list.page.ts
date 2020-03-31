@@ -170,7 +170,9 @@ export class ProductListPage implements OnInit {
 async showConfig() {
     let profileModal = await this.modalCtrl.create({
       component: ConfigPage,
-      componentProps: {}
+      componentProps: {
+        select: true
+      }
     })
     profileModal.present();
 }
