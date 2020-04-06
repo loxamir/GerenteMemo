@@ -102,7 +102,7 @@ export class PouchdbService {
       // this.storage.get("username").then(username => {
         let username = "ropas";
         let database = "ropas";
-        let password = "tusrop@123";
+        let password = "tusropa123";
         console.log("username", username);
         if (! username){
           resolve(false);
