@@ -30,6 +30,8 @@ export class FutureContractListPage implements OnInit {
   currency_precision = 2;
   select;
   selecting=false;
+  quantity = 0;
+  amount = 0;
 
   constructor(
     public navCtrl: NavController,

@@ -67,8 +67,6 @@ export class FutureContractPage implements OnInit {
   languages: Array<LanguageModel>;
   contact;
   crop;
-  quantity = 0;
-  amount = 0;
   warehouse;
   contact_name;
   items;
