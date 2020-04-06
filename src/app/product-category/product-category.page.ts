@@ -207,9 +207,15 @@ export class ProductCategoryPage implements OnInit {
     var file = this.pwaphoto.nativeElement.files[0];
     var reader = new FileReader();
     reader.onload = (event: Event) => {
-      preview.src = reader.result;
+      let myData = reader.result.split('base64,')[1];
+      // preview.src = reader.result;
       this.categoryForm.patchValue({
-        image: reader.result,
+        _attachments: {
+          'avatar.png': {
+            type: 'image/jpeg',
+            data: myData,
+          }
+        }
       })
       this.categoryForm.markAsDirty();
       preview.onload = function() {

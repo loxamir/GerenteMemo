@@ -143,7 +143,14 @@ export class ProductCategoryListPage implements OnInit {
   // }
 
   getCategories(keyword, page){
-    return this.pouchdbService.searchDocTypeData('category', keyword, page);
+    return this.pouchdbService.searchDocTypeData(
+      'category',
+      keyword, page,
+      undefined,
+      undefined,
+      'sequence',
+      'increase'
+    );
   }
 
   deleteCategory(category) {

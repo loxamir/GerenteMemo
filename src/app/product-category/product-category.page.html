@@ -19,7 +19,13 @@
   </div>
   <form class="sample-form validations-form" [formGroup]="categoryForm"  (ngSubmit)="onSubmit(categoryForm.value)">
     <ion-row style="background: white;">
-      <img [src]="categoryForm.value.image || './assets/images/sem_foto.jpg'" id="imageSrc" style="height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()">
+      <img src="./assets/images/sem_foto.jpg" id="imageSrc" style="height: 250px;display: block;margin-left: auto;margin-right: auto;" (click)="openPWAPhotoPicker()"
+      *ngIf="!(categoryForm.value._attachments && categoryForm.value._attachments['avatar.png'] && categoryForm.value._attachments['avatar.png'].data)">
+      <img
+      *ngIf="categoryForm.value._attachments && categoryForm.value._attachments['avatar.png'] && categoryForm.value._attachments['avatar.png'].data"
+      [src]="'data:image/jpeg;base64,'+categoryForm.value._attachments['avatar.png'].data"
+      (click)="openPWAPhotoPicker()"
+      id="imageSrc" style="height: 250px;display: block;margin-left: auto;margin-right: auto;"/>
     </ion-row>
     <ion-item  class="field-100">
       <ion-label position="floating">{{'NAME' | translate}}</ion-label>
