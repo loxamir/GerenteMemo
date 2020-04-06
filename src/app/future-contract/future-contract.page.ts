@@ -53,6 +53,7 @@ import { SalePage } from '../sale/sale.page';
 export class FutureContractPage implements OnInit {
   @ViewChild('note', { static: true }) note;
   @ViewChild('quantity', { static: true }) quantity;
+  @ViewChild('price', { static: true }) price;
   @ViewChild('corpo', { static: true }) corpo;
   listenBarcode = true;
   timeStamp: any;
@@ -322,8 +323,8 @@ export class FutureContractPage implements OnInit {
   confirmState() {
     if (!this.futureContractForm.value.quantity) {
       this.quantity.setFocus();
-    } else if (Object.keys(this.futureContractForm.value.product).length === 0) {
-      this.selectProduct();
+    } else if (!this.futureContractForm.value.price) {
+      this.price.setFocus();
     } else if (Object.keys(this.futureContractForm.value.contact).length === 0) {
       this.selectContact();
     } else {

@@ -81,6 +81,10 @@
       </ion-col>
     </ion-row>
     <ion-row>
+      <ion-item class="field-100">
+          <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
+          <ion-textarea autoGrow="true" rows="1" #note formControlName="note"></ion-textarea>
+      </ion-item>
       <ion-col *ngIf="purchaseForm.value.state != 'QUOTATION' && purchaseForm.value.amount_unInvoiced == purchaseForm.value.total">
         <ion-button class="button-100" (click)="addInvoice()">{{ 'REGISTER_INVOICE'| translate}}</ion-button>
       </ion-col>

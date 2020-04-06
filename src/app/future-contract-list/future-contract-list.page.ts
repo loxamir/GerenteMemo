@@ -68,6 +68,17 @@ export class FutureContractListPage implements OnInit {
     }, 50);
   }
 
+  async getSummary(){
+    let quantity = 0;
+    let amount = 0;
+    this.futureContracts.forEach(variable => {
+        amount += parseFloat(variable.price)*parseFloat(variable.quantity);
+        quantity += parseFloat(variable.quantity);
+    });
+    this.quantity = quantity;
+    this.amount = amount;
+  }
+
   doRefresh(refresher) {
     setTimeout(() => {
       this.setFilteredItems();
@@ -147,7 +158,7 @@ export class FutureContractListPage implements OnInit {
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
-    this.setFilteredItems();
+    await this.setFilteredItems();
   }
 
   setFilteredItems() {
@@ -157,6 +168,7 @@ export class FutureContractListPage implements OnInit {
       this.futureContracts = futureContracts;
       this.page = 1;
       this.loading.dismiss();
+      this.getSummary();
     });
   }
 

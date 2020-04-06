@@ -19,6 +19,21 @@
 </ion-header>
 
 <ion-content>
+  <ion-row style="background-color: white;">
+    <ion-col class="field-100">
+      {{'TOTAL_QUANTITY' | translate }}
+      <div class="cash-move-amount negative" style="text-align: center">
+        <h2 class="list-big-number" style="color: blue;">{{quantity|number:'1.0-'+currency_precision}} ton</h2>
+      </div>
+    </ion-col>
+    <ion-col width-50 class="field-100">
+      {{'TOTAL_AMOUNT' | translate }}
+      <div class="cash-move-amount positive" style="text-align: center">
+        <h2 class="list-big-number" style="color: green;">$ {{amount|number:'1.0-'+currency_precision}}</h2>
+
+      </div>
+    </ion-col>
+  </ion-row>
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -34,22 +49,22 @@
      <ion-row no-padding class="content-row one-line" [class.selected]="item.selected">
         <ion-col no-padding size="6">
           <h3 class="item-title" style="font-size:15px;">{{item.product_name | translate}}</h3>
-          <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.date_delivery|date: 'dd/MM/yyyy'}}</h3>
+          <!-- <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.date_delivery|date: 'dd/MM/yyyy'}}</h3> -->
           <h3 style="font-size: 15px;font-weight: normal;margin-top:0;margin-bottom:0;">
             <span style="margin-left: 5px">{{item.code}}</span>
           </h3>
         </ion-col>
         <ion-col no-padding size="6" align-self-center>
-          <h2 *ngIf="item.quantity > 0" class="list-big-number" style="color: blue;">{{item.quantity| number:'1.0'}} Kg</h2>
+          <h2 *ngIf="item.quantity > 0" class="list-big-number" style="color: blue;">{{item.quantity| number:'1.0-'+currency_precision}} ton</h2>
           <h2 *ngIf="item.price > 0" class="list-big-number" style="color: green;">$ {{item.price| number:'1.'+currency_precision}}</h2>
           <!-- <h2 *ngIf="item.total <= 0" class="list-big-number" style="color: red;">$ {{item.total| number:'1.'+currency_precision}}</h2> -->
           <!-- <h2 *ngIf="item.residual > 0" class="list-big-number" style="color: red;"> {{item.residual| number:'1.0'}}</h2> -->
-          <div *ngIf="(item.delivered + item.settled -item.sold) > 0" class="residual-value">
+          <!-- <div *ngIf="(item.delivered + item.settled -item.sold) > 0" class="residual-value">
             {{'TO_INVOICE'|translate}} $ {{ (item.delivered + item.settled -item.sold)*(item.price-item.cost) | number:'1.'+currency_precision }}
           </div>
           <div *ngIf="(item.quantity-item.delivered - item.settled ) > 0" class="residual-value">
-          {{'TO_DELIVERY'| translate}} {{ item.quantity-item.delivered - item.settled| number:'1.0' }} Kg
-          </div>
+          {{'TO_DELIVERY'| translate}} {{ item.quantity-item.delivered - item.settled| number:'1.0' }} ton
+          </div> -->
           <!-- <div *ngIf="item.residual > 0 && item.state!='CANCELED'" class="residual-value">
             Entregue {{ item.delivered | number:'1.0' }}
           </div> -->
