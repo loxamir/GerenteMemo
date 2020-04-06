@@ -72,7 +72,7 @@ export class ProductService {
   }
 
   createProduct(viewData, changed_images = []){
-    return new Promise((resolve, reject)=>{
+    return new Promise(async (resolve, reject)=>{
       let product = Object.assign({}, viewData);
       product.docType = 'product';
       product.price = product.price && parseFloat(product.price) || 0;
@@ -88,50 +88,26 @@ export class ProductService {
         })
       });
       delete product.products;
-      if (product.code != ''){
-        this.pouchdbService.createDoc(product).then(async doc => {
-          if (changed_images.length) {
-            await this.formatService.asyncForEach(changed_images, async (image: any) => {
-              if (image.action == 'ADD'){
-                //Add image
-                let dda = image.image.split('base64,')[1];
-                await this.pouchdbService.attachFile(product._id, image.name, dda);
-                let data: any = await this.pouchdbService.getDoc(product._id);
-                let attachments = data._attachments;
-                product.images.push(image.name);
-                product._rev = data._rev;
-                product._attachments = attachments;
-              } else if (image.action == 'DEL'){
-                delete product._attachments[image.name];
-                //Remove image
-              }
-            })
+      if (changed_images.length) {
+        product._attachments = {};
+        await this.formatService.asyncForEach(changed_images, async (image: any) => {
+          if (image.action == 'ADD'){
+            //Add image
+            let dda = image.image.split('base64,')[1];
+            product._attachments[image.name] = {
+              type: 'image/jpeg',
+              data: dda
+            }
+            product.images.push(image.name);
           }
-          resolve(this.pouchdbService.createDoc(product));
-        });
+        })
+      }
+      if (product.code != ''){
+        resolve(this.pouchdbService.createDoc(product));
       } else {
         this.configService.getSequence('product').then((code) => {
           product['code'] = code;
-          this.pouchdbService.createDoc(product).then(async doc => {
-            if (changed_images.length) {
-              await this.formatService.asyncForEach(changed_images, async (image: any) => {
-                if (image.action == 'ADD'){
-                  //Add image
-                  let dda = image.image.split('base64,')[1];
-                  await this.pouchdbService.attachFile(product._id, image.name, dda);
-                  let data: any = await this.pouchdbService.getDoc(product._id);
-                  let attachments = data._attachments;
-                  product.images.push(image.name);
-                  product._rev = data._rev;
-                  product._attachments = attachments;
-                } else if (image.action == 'DEL'){
-                  delete product._attachments[image.name];
-                  //Remove image
-                }
-              })
-            }
-            resolve(this.pouchdbService.createDoc(product));
-          });
+          resolve(this.pouchdbService.createDoc(product))
         });
       }
     });
