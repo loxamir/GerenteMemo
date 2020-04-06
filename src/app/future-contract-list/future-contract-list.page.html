@@ -16,9 +16,6 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-</ion-header>
-
-<ion-content>
   <ion-row style="background-color: white;">
     <ion-col class="field-100">
       {{'TOTAL_QUANTITY' | translate }}
@@ -30,10 +27,11 @@
       {{'TOTAL_AMOUNT' | translate }}
       <div class="cash-move-amount positive" style="text-align: center">
         <h2 class="list-big-number" style="color: green;">$ {{amount|number:'1.0-'+currency_precision}}</h2>
-
       </div>
     </ion-col>
   </ion-row>
+</ion-header>
+<ion-content>
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
