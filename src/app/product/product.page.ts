@@ -40,6 +40,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     changed_images = [];
     database = '';
     moreFields = false;
+    config = {};
 
     constructor(
       public navCtrl: NavController,
@@ -96,6 +97,8 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         description: new FormControl(''),
       });
       this.database = this.pouchdbService.getDatabaseName();
+      let config: any = (await this.pouchdbService.getDoc('config.profile', true));
+      this.currency_precision = config.currency_precision || this.currency_precision;
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
       this.translate.use(language);

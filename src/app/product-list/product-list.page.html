@@ -119,7 +119,8 @@
             </ion-row>
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
-                <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
+                <h2 *ngIf="config.currency_id == 'currency.PYG'" class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
+                <h2 *ngIf="config.currency_id == 'currency.BRL'" class="list-big-number" style="color: green;font-size: 13px;">R$ {{item.price| number:'1.'+currency_precision}}</h2>
               </ion-col>
             </ion-row>
           </ion-col>
