@@ -68,17 +68,19 @@
   <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all' && categories.length">
     <div class="card" style="margin-left: 5px;margin-right:5px;" *ngFor="let item of categories">
         <ion-card class="list-card"
-        style="height: 120px;margin:0px"
+        style="height: 100%;margin:0px;width: 100px;"
         (click)="filterCategory(item)">
-          <ion-row  class="producto">
+          <ion-row  class="producto" style="height:39px;">
             <ion-col class="ion-no-padding">
-              <h3 class="item-title">{{ item.name }}</h3>
+              <h3 class="item-title" style="font-size: 17px;word-break: break-word;width: 100px;">
+                {{ item.name }}
+              </h3>
             </ion-col>
           </ion-row>
           <ion-row>
             <img
             alt="Foto del categoria"
-            style="height: 95px;width: auto;"
+            style="height: 95px;width: 100%;"
             *ngIf="item._attachments"
             [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/avatar.png'">
             <img
