@@ -3,6 +3,7 @@ import { Platform } from '@ionic/angular';
 import PouchDB1 from 'pouchdb';
 import PouchdbFind from 'pouchdb-find';
 declare var require: any;
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 // import PouchdbUpsert from 'pouchdb-upsert';
 // import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
@@ -25,9 +26,13 @@ export class PouchdbService {
     public platform: Platform,
     public events: Events,
     public formatService: FormatService,
+    public route: ActivatedRoute,
   ) {
     this.platform.ready().then(() => {
-      this.getConnect();
+      this.database = this.route.snapshot.paramMap.get('database')
+      console.log("conect databaess", this.database);
+
+      // this.getConnect();
     });
   }
 
@@ -95,14 +100,14 @@ export class PouchdbService {
     return this.database;
   }
 
-  getConnect(){
+  getConnect(database){
     console.log("getConnect");
     let self = this;
     return new Promise((resolve, reject)=>{
       // this.storage.get("username").then(username => {
-        let username = "ropas";
-        let database = "ropas";
-        let password = "tusropa123";
+        let username = "cliente";
+        // let database = "ropas";
+        let password = "cliente";
         console.log("username", username);
         if (! username){
           resolve(false);
@@ -127,6 +132,7 @@ export class PouchdbService {
           console.log("database", database);
           // this.storage.get('password').then(password => {
             this.db = new PouchDB("https://"+username+":"+password+"@"+server+'/'+database);
+            resolve(true);
             // self.events.publish('got-database', {});
             // this.db.setMaxListeners(50);
             // this.remote = "https://"+username+":"+password+"@"+server+'/'+database;

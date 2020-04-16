@@ -48,18 +48,22 @@ export class ProductListPage implements OnInit {
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
+
+    this.database = this.route.snapshot.paramMap.get('database')
     this.events.subscribe('changed-product', (data) => {
       this.handleChange(this.products, data.change);
     })
-    var foo = { foo: true };
-    history.pushState(foo, "Anything", " ");
+    // var foo = { foo: true };
+    // history.pushState(foo, "Anything", " ");
   }
 
   async ngOnInit() {
+    console.log("this.database", this.database);
+    await this.pouchdbService.getConnect(this.database);
     let language:any = await this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang(language);
     this.translate.use(language);
-    this.database = this.pouchdbService.getDatabaseName();
+    // this.database = this.pouchdbService.getDatabaseName();
     // this.loading = await this.loadingCtrl.create({});
     this.showCategories();
     this.setFilteredItems();
