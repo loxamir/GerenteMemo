@@ -136,11 +136,11 @@ export class ProductCategoryListPage implements OnInit {
     }, 50);
   }
 
-  // deleteCategory(category){
-  //   let index = this.categories.indexOf(category);
-  //   this.categories.splice(index, 1);
-  //   this.categoriesService.deleteCategory(category);
-  // }
+  deleteCategory(category){
+    let index = this.categories.indexOf(category);
+    this.categories.splice(index, 1);
+    return this.pouchdbService.deleteDoc(category);
+  }
 
   getCategories(keyword, page){
     return this.pouchdbService.searchDocTypeData(
@@ -153,8 +153,8 @@ export class ProductCategoryListPage implements OnInit {
     );
   }
 
-  deleteCategory(category) {
-    return this.pouchdbService.deleteDoc(category);
-  }
+  // deleteCategory(category) {
+  //   return this.pouchdbService.deleteDoc(category);
+  // }
 
 }
