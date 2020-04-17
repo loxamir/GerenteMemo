@@ -22,6 +22,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     languages: Array<LanguageModel>;
     select;
     currency_precision = 0;
+    currency_symbol = '$';
     product;
     whatsapp;
     product_images = [];
@@ -49,6 +50,8 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public pouchdbService: PouchdbService,
     ) {
       this._id = this.route.snapshot.paramMap.get('_id');
+      this.currency_symbol = this.route.snapshot.paramMap.get('currency_symbol');
+      this.currency_precision = parseInt(this.route.snapshot.paramMap.get('currency_precision')) || this.currency_precision;
       this.whatsapp = this.route.snapshot.paramMap.get('whatsapp');
       this.product = JSON.parse(this.route.snapshot.paramMap.get('product'));
       this.select = this.route.snapshot.paramMap.get('select');
@@ -83,6 +86,11 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       });
       this.database = this.pouchdbService.getDatabaseName();
       let language:any = await this.languageService.getDefaultLanguage();
+      if (!this.currency_precision || !this.currency_symbol){
+        let config:any = await this.pouchdbService.getDoc('config.profile');
+        this.currency_symbol = config.currency_symbol;
+        this.currency_precision = config.currency_precision;
+      }
       this.translate.setDefaultLang(language);
       this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});

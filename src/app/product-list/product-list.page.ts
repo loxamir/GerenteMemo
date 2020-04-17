@@ -10,6 +10,7 @@ import { FormatService } from '../services/format.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { Events } from '../services/events';
+import { Title }     from '@angular/platform-browser';
 
 @Component({
   selector: 'app-product-list',
@@ -45,6 +46,7 @@ export class ProductListPage implements OnInit {
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
     public menuCtrl: MenuController,
+    private titleService: Title
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
@@ -68,8 +70,8 @@ export class ProductListPage implements OnInit {
     this.showCategories();
     this.setFilteredItems();
     // await this.loading.present();
-
     let config: any = (await this.pouchdbService.getDoc('config.profile', false));
+    this.titleService.setTitle(config.name);
     this.config = config;
     this.currency_precision = config.currency_precision || this.currency_precision;
     //
@@ -151,6 +153,8 @@ export class ProductListPage implements OnInit {
         "select": true,
         "_id": product._id,
         "product": product,
+        "currency_symbol": this.config.currency_symbol,
+        "currency_precision": this.config.currency_precision,
         "whatsapp": this.config.whatsapp,
       }
     })

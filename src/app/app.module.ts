@@ -20,6 +20,7 @@ import { ProductListPageModule } from './product-list/product-list.module';
 import { ProductPageModule } from './product/product.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { Title }  from '@angular/platform-browser';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { environment } from '../environments/environment';
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })],
   providers: [
+    Title,
     { provide: LOCALE_ID, useValue: 'es-PY' },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar  style="--background: {{config.bg_color}};">
       <ion-row *ngIf="!select">
         <ion-col class="ion-no-padding">
           <img
@@ -57,7 +57,7 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content class="list-mini-content">
+<ion-content class="list-mini-content" style="--background: {{config.bg_color}};">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -124,7 +124,7 @@
             </ion-row>
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
-                <h2 class="list-big-number" style="color: green;font-size: 13px;" *ngIf="item.price">G$ {{item.price| number:'1.'+currency_precision}}</h2>
+                <h2 class="list-big-number" style="color: green;font-size: 13px;" *ngIf="item.price">{{config.currency_symbol}} {{item.price| number:'1.'+currency_precision}}</h2>
                 <h2 class="list-big-number" style="color: green;font-size: 13px;" *ngIf="!item.price">Consultar Precio</h2>
               </ion-col>
             </ion-row>
