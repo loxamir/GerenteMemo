@@ -124,7 +124,7 @@
             </ion-row>
             <ion-row class="ion-no-padding content-row one-line">
               <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
-                <h2 class="list-big-number" style="color: green;font-size: 13px;" *ngIf="item.price">{{item.price| number:'1.'+currency_precision}} G$</h2>
+                <h2 class="list-big-number" style="color: green;font-size: 13px;" *ngIf="item.price">G$ {{item.price| number:'1.'+currency_precision}}</h2>
                 <h2 class="list-big-number" style="color: green;font-size: 13px;" *ngIf="!item.price">Consultar Precio</h2>
               </ion-col>
             </ion-row>
