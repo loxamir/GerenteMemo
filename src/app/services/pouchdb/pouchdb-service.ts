@@ -216,23 +216,45 @@ export class PouchdbService {
   ){
     let self = this;
     return new Promise(async (resolve, reject)=>{
-      let dad = {
-        "$or": [
-          {
-              "name": {
-                  $regex: "(?i)"+keyword
-              }
-          },
-          {
-              "code": {
-                  $regex: "(?i)"+keyword
-              }
-          }
-      ],
-      "$and": [
-        {docType: {$eq: docType}},
-        {name: {$gt: last_record}}
-      ]}
+      let dad = {};
+      if (docType == 'product'){
+        dad = {
+          "$or": [
+            {
+                "name": {
+                    $regex: "(?i)"+keyword
+                }
+            },
+            {
+                "code": {
+                    $regex: "(?i)"+keyword
+                }
+            }
+        ],
+        "$and": [
+          {publish: {$eq: true}},
+          {docType: {$eq: docType}},
+          {name: {$gt: last_record}}
+        ]}
+      } else {
+        dad = {
+          "$or": [
+            {
+                "name": {
+                    $regex: "(?i)"+keyword
+                }
+            },
+            {
+                "code": {
+                    $regex: "(?i)"+keyword
+                }
+            }
+        ],
+        "$and": [
+          {docType: {$eq: docType}},
+          {name: {$gt: last_record}}
+        ]}
+      }
 
       if (field) {
         let dict: any = {};

@@ -12,7 +12,7 @@
           <ion-col>{{this.productForm.value.name}}</ion-col>
         </ion-row>
         <ion-row *ngIf="this.productForm.value.price">
-          <ion-col style="font-size: 20px;font-weight:bold;color:green;">{{this.productForm.value.price| number:'1.'+currency_precision}} G$</ion-col>
+          <ion-col style="font-size: 20px;font-weight:bold;color:green;">G$ {{this.productForm.value.price| number:'1.'+currency_precision}}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col style="font-size: 12px;">{{this.productForm.value.description}}</ion-col>
@@ -88,7 +88,7 @@
                 </ion-row>
                 <ion-row class="ion-no-padding content-row one-line">
                   <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
-                    <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
+                    <h2 class="list-big-number" style="color: green;font-size: 13px;">G$ {{item.price| number:'1.'+currency_precision}}</h2>
                   </ion-col>
                 </ion-row>
                 <ion-row class="ion-no-padding content-row one-line">
