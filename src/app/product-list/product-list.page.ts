@@ -51,7 +51,7 @@ export class ProductListPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
 
-    this.database = this.route.snapshot.paramMap.get('database');
+    this.database = document.URL.split('://')[1].split('.')[0];
     this.events.subscribe('changed-product', (data) => {
       this.handleChange(this.products, data.change);
     })

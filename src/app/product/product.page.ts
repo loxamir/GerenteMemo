@@ -55,7 +55,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.whatsapp = this.route.snapshot.paramMap.get('whatsapp');
       this.product = JSON.parse(this.route.snapshot.paramMap.get('product'));
       this.select = this.route.snapshot.paramMap.get('select');
-      this.database = this.route.snapshot.paramMap.get('database');
+      this.database = document.URL.split('://')[1].split('.')[0];
     }
 
     async ngOnInit() {
@@ -174,7 +174,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.modalCtrl.dismiss();
       } else {
         this.productForm.markAsPristine();
-        this.navCtrl.navigateBack('/'+this.database);
+        this.navCtrl.navigateBack('/product-list');
       }
     }
 
