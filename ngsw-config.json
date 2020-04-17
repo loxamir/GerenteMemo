@@ -2,7 +2,7 @@
   "index": "/index.html",
   "assetGroups": [
     {
-      "name": "Tienda de Ropas",
+      "name": "Expositor Online",
       "installMode": "prefetch",
       "resources": {
         "files": [

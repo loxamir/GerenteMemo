@@ -1,6 +1,6 @@
 {
-  "appId": "online.expositor.ropas",
-  "appName": "Tienda de Ropas",
+  "appId": "online.expositor",
+  "appName": "Expositor Online",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

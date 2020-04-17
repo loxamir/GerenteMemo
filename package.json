@@ -2,7 +2,7 @@
   "name": "CatalogoOnline",
   "version": "1.0.0",
   "author": "Marcelo Pickler",
-  "homepage": "https://ropas.expositor.online",
+  "homepage": "https://expositor.online",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
