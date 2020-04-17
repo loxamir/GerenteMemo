@@ -51,7 +51,7 @@ export class ProductListPage implements OnInit {
     this.select = this.route.snapshot.paramMap.get('select');
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
 
-    this.database = this.route.snapshot.paramMap.get('database')
+    this.database = this.route.snapshot.paramMap.get('database');
     this.events.subscribe('changed-product', (data) => {
       this.handleChange(this.products, data.change);
     })
@@ -61,19 +61,29 @@ export class ProductListPage implements OnInit {
 
   async ngOnInit() {
     console.log("this.database", this.database);
-    await this.pouchdbService.getConnect(this.database);
-    let language:any = await this.languageService.getDefaultLanguage();
-    this.translate.setDefaultLang(language);
-    this.translate.use(language);
-    // this.database = this.pouchdbService.getDatabaseName();
-    // this.loading = await this.loadingCtrl.create({});
-    this.showCategories();
-    this.setFilteredItems();
-    // await this.loading.present();
-    let config: any = (await this.pouchdbService.getDoc('config.profile', false));
-    this.titleService.setTitle(config.name);
-    this.config = config;
-    this.currency_precision = config.currency_precision || this.currency_precision;
+    if (!this.database){
+      console.log("redirect to expositor.Online");
+    } else {
+      let connection = await this.pouchdbService.getConnect(this.database);
+      console.log("connection", connection);
+      if (!connection){
+        this.database = '';
+      } else {
+
+        let language:any = await this.languageService.getDefaultLanguage();
+        this.translate.setDefaultLang(language);
+        this.translate.use(language);
+        // this.database = this.pouchdbService.getDatabaseName();
+        // this.loading = await this.loadingCtrl.create({});
+        this.showCategories();
+        this.setFilteredItems();
+        // await this.loading.present();
+        let config: any = (await this.pouchdbService.getDoc('config.profile', false));
+        this.titleService.setTitle(config.name);
+        this.config = config;
+        this.currency_precision = config.currency_precision || this.currency_precision;
+      }
+    }
     //
     // if (this.select) {
     //   setTimeout(() => {
@@ -147,6 +157,7 @@ export class ProductListPage implements OnInit {
   }
 
   async openProduct(product) {
+    console.log("product_id", product._id);
     let profileModal = await this.modalCtrl.create({
       component: ProductPage,
       componentProps: {
@@ -156,10 +167,17 @@ export class ProductListPage implements OnInit {
         "currency_symbol": this.config.currency_symbol,
         "currency_precision": this.config.currency_precision,
         "whatsapp": this.config.whatsapp,
+        "database": this.database,
       }
     })
     profileModal.present();
-    // this.navCtrl.navigateForward(['/product', { '_id': product._id}])
+    // this.navCtrl.navigateForward(['/product', {
+    //
+    //   "select": true,
+    //   "_id": product._id,
+    //   "product": product,
+    //   "whatsapp": this.config.whatsapp,
+    //   }])
   }
 
   closeModal() {

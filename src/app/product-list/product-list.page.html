@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="database">
   <ion-toolbar  style="--background: {{config.bg_color}};">
       <ion-row *ngIf="!select">
         <ion-col class="ion-no-padding">
@@ -57,7 +57,7 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content class="list-mini-content" style="--background: {{config.bg_color}};">
+<ion-content  *ngIf="database" class="list-mini-content" style="--background: {{config.bg_color}};">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -317,3 +317,8 @@
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>
+<div *ngIf="!database">
+  <h2>
+    Site not found
+  </h2>
+</div>

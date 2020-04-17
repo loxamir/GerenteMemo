@@ -55,6 +55,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.whatsapp = this.route.snapshot.paramMap.get('whatsapp');
       this.product = JSON.parse(this.route.snapshot.paramMap.get('product'));
       this.select = this.route.snapshot.paramMap.get('select');
+      this.database = this.route.snapshot.paramMap.get('database');
     }
 
     async ngOnInit() {
@@ -84,9 +85,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         description: new FormControl(''),
         _attachments: new FormControl(),
       });
-      this.database = this.pouchdbService.getDatabaseName();
       let language:any = await this.languageService.getDefaultLanguage();
       if (!this.currency_precision || !this.currency_symbol){
+        this.pouchdbService.getConnect(this.database);
         let config:any = await this.pouchdbService.getDoc('config.profile');
         this.currency_symbol = config.currency_symbol;
         this.currency_precision = config.currency_precision;
@@ -173,7 +174,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         this.modalCtrl.dismiss();
       } else {
         this.productForm.markAsPristine();
-        this.navCtrl.navigateBack('/product-list');
+        this.navCtrl.navigateBack('/'+this.database);
       }
     }
 

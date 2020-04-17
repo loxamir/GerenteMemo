@@ -132,7 +132,21 @@ export class PouchdbService {
           console.log("database", database);
           // this.storage.get('password').then(password => {
             this.db = new PouchDB("https://"+username+":"+password+"@"+server+'/'+database);
-            resolve(true);
+
+            this.db.info()
+  .then(() => {
+    console.log("info true");
+    // The database exists.
+    // Do something...
+    resolve(true);
+  })
+  .catch(e => {
+    console.log("info false");
+    resolve(false);
+    // No database found and it was not created.
+    // Do something else...
+  });
+            // resolve(true);
             // self.events.publish('got-database', {});
             // this.db.setMaxListeners(50);
             // this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
