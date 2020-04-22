@@ -21,6 +21,8 @@ import { FormatService } from "../services/format.service";
 import { ProductListPage } from '../product-list/product-list.page';
 import { AreasPage } from '../areas/areas.page';
 
+import { FutureContractPage } from '../future-contract/future-contract.page';
+
 @Component({
   selector: 'app-crop',
   templateUrl: './crop.page.html',
@@ -37,6 +39,10 @@ export class CropPage implements OnInit {
   today = new Date();
   currency_precision = 2;
   areaMeasure = "ha";
+
+  contracts_quantity = 0;
+  contracts_amount = 0;
+  deleteList = [];
 
   constructor(
     public navCtrl: NavController,
@@ -79,7 +85,7 @@ export class CropPage implements OnInit {
       items: new FormControl([]),
       average_price: new FormControl(0),
       contracts: new FormControl([]),
-      // checks: new FormControl([]),
+      futureContracts: new FormControl([]),
       // type: new FormControl('liquidity'),
       section: new FormControl('places'),
       state: new FormControl('ACTIVE'),
@@ -98,6 +104,7 @@ export class CropPage implements OnInit {
     if (this._id){
       this.cropService.getCrop(this._id).then((data) => {
         this.cropForm.patchValue(data);
+        this.recomputeValues();
         this.loading.dismiss();
       });
     } else {
@@ -106,6 +113,9 @@ export class CropPage implements OnInit {
   }
 
   buttonSave() {
+    this.deleteList.forEach(item=>{
+      this.pouchdbService.deleteDoc(item);
+    })
     if (this._id){
       this.cropService.updateCrop(this.cropForm.value);
       // this.navCtrl.navigateBack().then(() => {
@@ -345,90 +355,71 @@ export class CropPage implements OnInit {
   }
 
   async addContract(){
-    // if (this.cropForm.value.state=='ACTIVE'){
-      let prompt = await this.alertCtrl.create({
-        header: this.translate.instant('SALE_CONTRACT'),
-        message: this.translate.instant('COMPLETE_PRICE_AND_QUANTITY'),
-        inputs: [
-          {
-            type: 'number',
-            name: 'price',
-            placeholder: this.translate.instant('PRICE')
-          },
-          {
-            type: 'number',
-            name: 'quantity',
-            placeholder:  this.translate.instant('QUANTITY')
-          },
-        ],
-        buttons: [
-          {
-            text: this.translate.instant('CANCEL'),
-          },
-          {
-            text: this.translate.instant('CONFIRM'),
-            handler: data => {
-              this.cropForm.value.contracts.unshift({
-                'price': parseFloat(data.price),
-                'quantity': parseFloat(data.quantity),
-              })
-              this.recomputeValues();
-              this.cropForm.markAsDirty();
-            }
-          }
-        ]
+    if (!this.cropForm.value._id){
+      //TODO: Avoid orphan contracts
+      let alertPopup = await this.alertCtrl.create({
+        header: this.translate.instant('NEED_SAVE'),
+        message: this.translate.instant('SAVE_CROP_FIRST'),
+        buttons: [{
+          text: this.translate.instant('Ok'),
+          handler: () => { }
+        }]
       });
+      alertPopup.present();
+    } else {
 
-      await prompt.present();
-      await prompt.onDidDismiss();
-    // }
+    return new Promise(async resolve => {
+      this.events.unsubscribe('create-future-contract');
+      this.events.subscribe('create-future-contract', (data) => {
+        this.cropForm.value.futureContracts.unshift(data);
+        this.recomputeValues();
+        this.cropForm.markAsDirty();
+        this.events.unsubscribe('create-future-contract');
+        profileModal.dismiss();
+        resolve(true);
+      })
+
+      let profileModal = await this.modalCtrl.create({
+        component: FutureContractPage,
+        componentProps: {
+          "select": true,
+          "crop": this.cropForm.value,
+        }
+      });
+      profileModal.present();
+    });
+    }
   }
 
-  async editContract(item){
-    // if (this.cropForm.value.state=='ACTIVE'){
-      let prompt = await this.alertCtrl.create({
-        header: this.translate.instant('SALE_CONTRACT'),
-        message: this.translate.instant('COMPLETE_PRICE_AND_QUANTITY'),
-        inputs: [
-          {
-            type: 'number',
-            name: 'price',
-            placeholder: this.translate.instant('PRICE'),
-            value: item.price
-        },
-        {
-          type: 'number',
-          name: 'quantity',
-          placeholder:  this.translate.instant('QUANTITY'),
-          value: item.quantity
-      },
-        ],
-        buttons: [
-          {
-            text: this.translate.instant('CANCEL'),
-          },
-          {
-            text: this.translate.instant('CONFIRM'),
-            handler: data => {
-              item.price = parseFloat(data.price);
-              item.quantity = parseFloat(data.quantity);
-              this.recomputeValues();
-              this.cropForm.markAsDirty();
-            }
-          }
-        ]
-      });
+  async editContract(contract, index){
 
-      await prompt.present();
-      await prompt.onDidDismiss();
-    // }
+    return new Promise(async resolve => {
+      this.events.unsubscribe('edit-future-contract');
+      this.events.subscribe('edit-future-contract', (data) => {
+        this.cropForm.value.futureContracts[index] = data;
+        this.cropForm.markAsDirty();
+        this.recomputeValues();
+        this.events.unsubscribe('edit-future-contract');
+        profileModal.dismiss();
+        resolve(true);
+      })
+      let profileModal = await this.modalCtrl.create({
+        component: FutureContractPage,
+        componentProps: {
+          "select": true,
+          "_id": contract._id,
+        }
+      });
+      profileModal.present();
+    });
   }
 
   async deleteContract(slidingItem, item){
     // if (this.cropForm.value.state=='ACTIVE'){
+    this.deleteList.push(item);
       slidingItem.close();
-      let index = this.cropForm.value.contracts.indexOf(item)
-      this.cropForm.value.contracts.splice(index, 1);
+      let index = this.cropForm.value.futureContracts.indexOf(item)
+      this.cropForm.value.futureContracts.splice(index, 1);
       this.cropForm.markAsDirty();
       this.recomputeValues();
     // }
@@ -438,13 +429,19 @@ export class CropPage implements OnInit {
     let areaTotal = 0;
     let quantityTotal = 0;
     let contractTotal = 0;
-    this.cropForm.value.items.forEach((field)=>{
-      areaTotal += parseFloat(field.area);
-    })
-    this.cropForm.value.contracts.forEach((field)=>{
-      quantityTotal += parseFloat(field.quantity);
-      contractTotal += parseFloat(field.quantity)*parseFloat(field.price);
-    })
+
+    quantityTotal = this.cropForm.value.futureContracts.reduce((prevVal, contract)=>{
+      return prevVal + contract.quantity;
+    }, 0)
+    this.contracts_quantity = quantityTotal;
+    contractTotal = this.cropForm.value.futureContracts.reduce((prevVal, contract)=>{
+      return prevVal + contract.price*contract.quantity;
+    }, 0);
+    this.contracts_amount = contractTotal;
+
+    areaTotal = this.cropForm.value.items.reduce((prevVal, field)=>{
+      return prevVal + field.area;
+    }, 0)
     this.cropForm.patchValue({
       'area': areaTotal,
       'average_price': Math.round((contractTotal/quantityTotal)*100)/100

@@ -39,6 +39,21 @@ export class CropService {
           'area': field.area,
         })
       })
+      let contracts:any = await this.pouchdbService.getView(
+        'Informes/CropContracts', 2,
+        [doc_id, '0'],
+        [doc_id, 'z'],
+        true,
+        true,
+        undefined,
+        undefined,
+        true,
+        undefined
+      );
+      let futureContracts = contracts.map(contract=>{
+        return contract.doc;
+      })
+      crop['futureContracts'] = futureContracts;
       resolve(crop);
     });
   }

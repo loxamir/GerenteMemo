@@ -598,5 +598,8 @@
   "HARVEST_TOTAL": "Total Cosechado",
   "CROP_REPORT": "Informe de Zafra",
   "TOTAL_QUANTITY": "Cantidad Total",
+  "TOTAL_AREA": "Area Total",
+  "NEED_SAVE": "Hace Falta Guardar",
+  "SAVE_CROP_FIRST": "Antes de agregar contratos es necesario guardar la zafra",
   "RESULT": "Resultado"
 }

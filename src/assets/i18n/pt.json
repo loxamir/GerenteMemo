@@ -597,5 +597,8 @@
   "HARVEST_TOTAL": "Total Colhido",
   "CROP_REPORT": "Relatorio de Safra",
   "TOTAL_QUANTITY": "Quantidade Total",
+  "TOTAL_AREA": "Area Total",
+  "NEED_SAVE": "Necesario Salvar",
+  "SAVE_CROP_FIRST": "Antes de adicionar contratos você precisa salvar a safra",
   "RESULT": "Resultado"
 }

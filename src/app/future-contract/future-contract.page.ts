@@ -38,7 +38,6 @@ import { CurrencyListPage } from '../currency-list/currency-list.page';
 // declare var cordova:any;
 // import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { DiscountPage } from '../discount/discount.page';
 import { CashMovePage } from '../cash-move/cash-move.page';
 import { ContactPage } from '../contact/contact.page';
 import { WarehouseListPage } from '../warehouse-list/warehouse-list.page';
@@ -396,131 +395,7 @@ export class FutureContractPage implements OnInit {
     await profileModal.onDidDismiss();
   }
 
-  computePercent() {
-    return (
-      (
-        100 *
-        (
-          parseFloat(this.futureContractForm.value.discount.value) +
-          parseFloat(this.futureContractForm.value.discount.lines)
-        ) /
-        (
-          parseFloat(this.futureContractForm.value.discount.value) +
-          parseFloat(this.futureContractForm.value.discount.lines) +
-          this.futureContractForm.value.total
-        )
-      ).toFixed(0)
-    )
-  }
 
-  computeDiscount() {
-    return (
-      parseFloat(this.futureContractForm.value.discount.value) +
-      parseFloat(this.futureContractForm.value.discount.lines)
-    )
-  }
-
-  computeDiscountPercent() {
-    return (
-      (100 * (
-        parseFloat(this.futureContractForm.value.discount.value)
-      ) /
-        (
-          parseFloat(this.futureContractForm.value.discount.value) +
-          this.futureContractForm.value.total
-        )).toFixed(0)
-    )
-  }
-
-  setDiscount() {
-    // if (this.futureContractForm.value.state == 'QUOTATION'){
-    let self = this;
-    this.listenBarcode = false;
-    return new Promise(async resolve => {
-      let previous = this.futureContractForm.value.discount.value;
-      this.events.subscribe('set-discount', async (data) => {
-        if (parseFloat(data.discount_amount) && !previous) {
-          let product: any = await this.pouchdbService.getDoc('product.discount');
-          self.futureContractForm.value.items.unshift({
-            'quantity': 1,
-            'price': -data.discount_amount,
-            'cost': 0,
-            'product': product,
-            'description': product.name,
-          })
-        } else if (parseFloat(data.discount_amount) && previous) {
-          self.futureContractForm.value.items.forEach(item => {
-            if (item.product._id == 'product.discount') {
-              discountProduct = true;
-              item.price = -data.discount_amount;
-            }
-            return;
-          })
-        } else if (previous && !parseFloat(data.discount_amount)) {
-          self.futureContractForm.value.items.forEach((item, index) => {
-            if (item.product._id == 'product.discount') {
-              self.futureContractForm.value.items.splice(index, 1)
-            }
-            return;
-          })
-        }
-        this.futureContractForm.patchValue({
-          discount: {
-            value: data.discount_amount,
-            discountProduct: data.discountProduct
-          }
-        });
-        self.recomputeValues();
-        this.events.unsubscribe('set-discount');
-        resolve(true);
-      })
-      let discountProduct = this.futureContractForm.value.discount.discountProduct;
-      let amount_original = parseFloat(this.futureContractForm.value.total) + parseFloat(this.futureContractForm.value.discount.value || 0);
-      let new_amount = parseFloat(this.futureContractForm.value.total);
-      let profileModal = await this.modalCtrl.create({
-        component: DiscountPage,
-        componentProps: {
-          "amount_original": amount_original,
-          "new_amount": new_amount,
-          "currency_precision": this.currency_precision,
-          "showProduct": true,
-          "discountProduct": discountProduct
-        },
-        cssClass: "discount-modal"
-      });
-      await profileModal.present();
-      await profileModal.onDidDismiss();
-      this.events.unsubscribe('set-discount');
-      this.listenBarcode = true;
-    });
-    // }
-  }
-
-  setLineDiscount(line) {
-    this.listenBarcode = false;
-    return new Promise(async resolve => {
-      this.events.subscribe('set-discount', (data) => {
-        line.price_original = parseFloat(line.price_original) || line.price;
-        line.price = parseFloat(data.new_amount);
-        this.events.unsubscribe('set-discount');
-        this.recomputeValues();
-        resolve(true);
-      })
-      let profileModal = await this.modalCtrl.create({
-        component: DiscountPage,
-        componentProps: {
-          "amount_original": line.price_original || line.price,
-          "new_amount": line.price,
-          "currency_precision": this.currency_precision,
-        },
-        cssClass: "discount-modal"
-      });
-      await profileModal.present();
-      await profileModal.onDidDismiss();
-      this.events.unsubscribe('set-discount');
-      this.listenBarcode = true;
-    });
-  }
 
   selectCurrency() {
     return new Promise(async resolve => {
@@ -581,6 +456,7 @@ export class FutureContractPage implements OnInit {
       if (this._id) {
         await this.futureContractService.updateFutureContract(this.futureContractForm.value);
         this.futureContractForm.markAsPristine();
+        this.events.publish('edit-future-contract', this.futureContractForm.value);
         resolve(true);
       } else {
         this.futureContractService.createFutureContract(this.futureContractForm.value).then(doc => {
@@ -594,6 +470,7 @@ export class FutureContractPage implements OnInit {
           });
           this._id = doc['doc'].id;
           this.futureContractForm.markAsPristine();
+          this.events.publish('create-future-contract', this.futureContractForm.value);
           resolve(true);
         });
       }

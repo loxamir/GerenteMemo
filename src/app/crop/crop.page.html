@@ -22,40 +22,10 @@
         <ion-label position="floating">{{'NAME' | translate}}</ion-label>
         <ion-input #name type="text" formControlName="name"></ion-input>
       </ion-item>
-      <!-- <ion-item no-padding class="field-50">
-      <h4 class="field-label">{{'START_DATE' | translate }}</h4>
-      <ion-datetime class="field-50-datetime"
-      displayFormat="DD/MM/YYYY"
-      pickerFormat="DD/MM/YYYY"
-      formControlName="date_start"
-      [max]="today.getFullYear()+5">
-      </ion-datetime>
-    </ion-item>
-    <ion-item no-padding class="field-50">
-      <h4 class="field-label">{{'END_DATE' | translate }}</h4>
-      <ion-datetime class="field-50-datetime"
-      displayFormat="DD/MM/YYYY"
-      pickerFormat="DD/MM/YYYY"
-      formControlName="date_end"
-      [max]="today.getFullYear()+5">
-      </ion-datetime>
-    </ion-item> -->
       <ion-item no-padding (click)="selectProduct()" class="field-100">
         <div class="field-many2one">
           <h4 class="field-label">{{'PRODUCED_PRODUCT' | translate}}</h4>
           <h4 class="field-value">{{cropForm.value.product && cropForm.value.product.name || 'SELECT'|translate}}</h4>
-        </div>
-      </ion-item>
-      <ion-item no-padding class="field-50">
-        <div class="field-many2one" style="color:blue;">
-          <h4 class="field-label">{{'AVERAGE_PRICE' | translate}}</h4>
-          <h4 class="field-value">{{cropForm.value.average_price}}</h4>
-        </div>
-      </ion-item>
-      <ion-item no-padding class="field-50">
-        <div class="field-many2one" style="color:blue;">
-          <h4 class="field-label">{{'Area Total' | translate}}</h4>
-          <h4 class="field-value">{{cropForm.value.area}}</h4>
         </div>
       </ion-item>
     </ion-row>
@@ -67,12 +37,6 @@
         <ion-button class="button-100" (click)="setDone()" color="primary" *ngIf="cropForm.value.state == 'ACTIVE'">
           <ion-icon name="check" style="margin-right:10px;"></ion-icon> {{ 'FINISH' | translate }}
         </ion-button>
-        <!-- <ion-button class="button-100" (click)="addItem()" color="success">
-          <ion-icon name="add" style="margin-right:10px;"></ion-icon> {{ 'ADD_PLACE' | translate }}
-        </ion-button>
-        <ion-button class="button-100" (click)="addContract()" color="success">
-          <ion-icon name="add" style="margin-right:10px;"></ion-icon> {{ 'ADD_CONTRACT' | translate }}
-        </ion-button> -->
       </ion-col>
     </ion-row>
 
@@ -88,6 +52,34 @@
     </ion-segment>
     <div class="forms-wrapper">
       <div *ngIf="cropForm.value.section == 'contracts'" class="post-example-view">
+        <ion-row style="background-color: white;">
+          <ion-col class="field-100">
+            {{'TOTAL_QUANTITY' | translate }}
+            <div class="cash-move-amount negative">
+              <h2 class="list-big-number" style="color: blue;text-align: center; ">{{contracts_quantity|number:'1.0-3'}} ton</h2>
+            </div>
+          </ion-col>
+          <ion-col width-50 class="field-100">
+            {{'TOTAL_AMOUNT' | translate }}
+            <div class="cash-move-amount positive">
+              <h2 class="list-big-number" style="color: green;text-align: center; ">$ {{contracts_amount|number:'1.0-'+currency_precision}}</h2>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row style="background-color: white;">
+          <ion-col class="field-100">
+            {{'AVERAGE_PRICE' | translate }}
+            <div class="cash-move-amount negative">
+              <h2 class="list-big-number" style="color: green;text-align: center; ">$ {{cropForm.value.average_price|number:'1.0-'+currency_precision}}</h2>
+            </div>
+          </ion-col>
+          <ion-col class="field-100">
+            {{'QUANTITY' | translate }}
+            <div class="cash-move-amount negative">
+              <h2 class="list-big-number" style="color: blue;text-align: center; ">{{cropForm.value.futureContracts.length}} {{'CONTRACTS' | translate}}</h2>
+            </div>
+          </ion-col>
+        </ion-row>
         <ion-col size="12">
           <ion-button
           (click)="addContract()"
@@ -96,23 +88,20 @@
             {{'ADD_CONTRACT'|translate}}
           </ion-button>
         </ion-col>
-        <ion-list no-lines *ngIf="cropForm.value.contracts.length">
+        <ion-list no-lines *ngIf="cropForm.value.futureContracts.length">
           <section>
             <h2 class="section-title">{{'CONTRACTS' | translate}}</h2>
-            <ion-item-sliding class="list-item" *ngFor="let item of cropForm.value.contracts" #slidingItem>
+            <ion-item-sliding class="list-item" *ngFor="let item of cropForm.value.futureContracts; let i = index;" #slidingItem>
               <ion-item class="internal-item" style="margin-left: 10px;margin-right: 10px;">
-                <ion-card class="list-card" (click)="editContract(item)">
+                <ion-card class="list-card" (click)="editContract(item, i)">
                   <ion-row no-padding class="content-row one-line">
                     <ion-col no-padding style="text-align: center; margin-right: 0.5em;">
-                      <!-- <h2 class="list-big-number" style="color: green;text-align: center;">$ {{item.price}}</h2> -->
-                      <h4 class="field-label">{{'PRICE' | translate}}</h4>
-                      <!-- <h4 class="field-value" style="color: green;">{{item.price}}</h4> -->
-                      <h2 class="list-big-number" style="color: green;text-align: center;padding-top: 5px;">$ {{item.price|number:'1.2-2'}}</h2>
+                      <h4 class="field-label">{{'QUANTITY' | translate}}</h4>
+                      <h2 class="list-big-number" style="color: green;text-align: center;padding-top: 5px;">{{item.quantity|number:'1.0-3'}} ton</h2>
                     </ion-col>
                     <ion-col no-padding style="text-align: center; margin-right: 0.5em;">
-                      <h4 class="field-label">{{'QUANTITY' | translate}}</h4>
-                      <!-- <h4 class="field-value" style="color: green;">{{item.quantity}}</h4> -->
-                      <h2 class="list-big-number" style="color: green;text-align: center;padding-top: 5px;">{{item.quantity|number:'1.0-0'}} ton</h2>
+                      <h4 class="field-label">{{'PRICE' | translate}}</h4>
+                      <h2 class="list-big-number" style="color: green;text-align: center;padding-top: 5px;">$ {{item.price|number:'1.2-2'}}</h2>
                     </ion-col>
                   </ion-row>
                 </ion-card>
@@ -127,6 +116,20 @@
         </ion-list>
       </div>
       <div *ngIf="cropForm.value.section == 'places'" class="post-example-view">
+        <ion-row style="background-color: white;">
+          <ion-col width-50 class="field-100">
+            {{'QUANTITY' | translate }}
+            <div class="cash-move-amount positive">
+              <h2 class="list-big-number" style="color: green;text-align: center; ">{{cropForm.value.items.length}} {{'PLACES'|translate}}</h2>
+            </div>
+          </ion-col>
+          <ion-col class="field-100">
+            {{'TOTAL_AREA' | translate }}
+            <div class="cash-move-amount negative">
+              <h2 class="list-big-number" style="color: blue;text-align: center; ">{{cropForm.value.area}} ha</h2>
+            </div>
+          </ion-col>
+        </ion-row>
         <ion-col size="12">
           <ion-button
           (click)="addItem()"
@@ -163,47 +166,9 @@
         </ion-list>
       </div>
     </div>
-    <!-- <ion-list no-lines>
-      <ion-item-sliding class="list-item" *ngFor="let item of cropForm.value.moves.sort(this.formatService.compare)">
-        <ion-item no-padding (click)="openWork(item)" style="margin-bottom: 0px; margin-top:0px;">
-          <ion-card class="list-card" style="">
-            <ion-row>
-              <ion-col>
-                <h3 class="item-name"><b>{{ item.activity_name || 'NOT_INFORMED'|translate}}</b></h3>
-              </ion-col>
-            </ion-row>
-            <ion-row no-padding class="content-row one-line">
-              <ion-col no-padding size="6">
-                <h3 class="item-title" style="font-size:15px;font-weight: bold">{{item.area_name | translate}}</h3>
-                <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateStart|date: 'dd/MM/yyyy'}}</h3>
-                <h3 class="schedule-month" style="font-size:15px;margin-left: 5px">{{item.dateEnd|date: 'dd/MM/yyyy'}}</h3>
-              </ion-col>
-              <ion-col no-padding size="6" align-self-center>
-                <h2 *ngIf="item.progress < 100" class="list-big-number" style="color: red;">{{item.progress| number:'1.0'}}%</h2>
-                <h2 *ngIf="item.progress == 100" class="list-big-number" style="color: green;">{{item.progress| number:'1.0'}}%</h2>
-              </ion-col>
-            </ion-row>
-          </ion-card>
-        </ion-item>
-
-        <ion-item-options>
-          <ion-item-option (click)="deleteCropMove(item)">
-            {{'DELETE'|translate}}
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list> -->
-
     <ion-row style="height:15px;">
     </ion-row>
   </form>
-
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" class="add-product-button">
-    <ion-fab-button (click)="addActivity()">
-      <ion-icon name="add">
-      </ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-button (click)="discard()" color="danger" class="discard-button">
