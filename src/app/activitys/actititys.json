@@ -820,7 +820,7 @@
       "fields": [{
           "name": "yield_area",
           "type": "formula",
-          "label": "Kg/ha",
+          "label": "ton/ha",
           "model": "",
           "formula": "this.sumListField('loads', 'quantity')/this.workForm.value.surface",
           "script": "",

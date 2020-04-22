@@ -14,6 +14,8 @@ import { CropService } from '../crop/crop.service';
 import { CropPage } from '../crop/crop.page';
 import { WorkService } from '../work/work.service';
 import { FilterPage } from '../filter/filter.page';
+import { FutureContractListPage } from '../future-contract-list/future-contract-list.page';
+import { CropsPopover } from './crops.popover';
 
 @Component({
   selector: 'app-crops',
@@ -29,7 +31,7 @@ export class CropsPage implements OnInit {
   select;
   page = 0;
   areaMeasure = "ha";
-  yieldMeasure = "Kg";
+  yieldMeasure = "ton";
   constructor(
     public navCtrl: NavController,
     public cropsService: CropsService,
@@ -178,5 +180,17 @@ export class CropsPage implements OnInit {
       groupBy: "yieldAreakg",
       'crop_id': item._id,
     }]);
+  }
+
+  async presentPopover(myEvent) {
+    let popover = await this.popoverCtrl.create({
+      component: CropsPopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
   }
 }

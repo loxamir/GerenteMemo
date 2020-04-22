@@ -80,7 +80,7 @@
                       </li>
                     </ul>
                     <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
-                      {{'TOTAL'|translate}}: {{item.doc.croped|number:'1.0-0'}} Kg - {{(item.doc.croped/item.doc.surface)|number:'1.0-0'}} Kg/ha
+                      {{'TOTAL'|translate}}: {{item.doc.croped|number:'1.0-0'}} ton - {{(item.doc.croped/item.doc.surface)|number:'1.0-0'}} ton/ha
                     </h1>
                     <h1 class="activity-note" *ngIf="item.doc.cost">
                       {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}} - $ {{(item.doc.cost/item.doc.surface)|number:'1.'+currency_precision}}/ha
@@ -175,7 +175,7 @@
                       </li>
                     </ul>
                     <h1 class="activity-note" *ngIf="item.doc.activity_id == 'activity.harvest'">
-                      {{'TOTAL'|translate}}: {{item.doc.croped|number:'1.0-0'}} Kg - {{(item.doc.croped/item.doc.surface)|number:'1.0-0'}} Kg/ha
+                      {{'TOTAL'|translate}}: {{item.doc.croped|number:'1.0-0'}} ton - {{(item.doc.croped/item.doc.surface)|number:'1.0-0'}} ton/ha
                     </h1>
                     <h1 class="activity-note" *ngIf="item.doc.cost">
                       {{'COST'|translate}}: $ {{item.doc.cost|number:'1.'+currency_precision}} - $ {{item.doc.cost/item.doc.surface}}/ha
