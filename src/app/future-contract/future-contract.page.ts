@@ -395,8 +395,6 @@ export class FutureContractPage implements OnInit {
     await profileModal.onDidDismiss();
   }
 
-
-
   selectCurrency() {
     return new Promise(async resolve => {
       this.listenBarcode = false;
@@ -517,49 +515,6 @@ export class FutureContractPage implements OnInit {
       });
     }
   }
-
-  recomputeDiscountLines() {
-    if (this.futureContractForm.value.state == 'QUOTATION') {
-      let discount_lines = 0;
-      this.futureContractForm.value.items.forEach((item) => {
-        if (item.product._id != "product.discount") {
-          discount_lines += parseFloat(item.quantity) * (parseFloat(item.price_original || item.price) - parseFloat(item.price));
-        }
-      });
-      //console.log("discount_lines", discount_lines);
-      if (!discount_lines) {
-        discount_lines = 0;
-      }
-      this.futureContractForm.value.discount['lines'] = discount_lines
-      this.futureContractForm.patchValue({
-        discount: this.futureContractForm.value.discount,
-      });
-    }
-  }
-
-  lineDiscountPercent(line) {
-    return (
-      100 * (
-        1 - parseFloat(line.price) / parseFloat(line.price_original)
-      )
-    ).toFixed(0)
-  }
-
-  // recomputeUnInvoiced(){
-  //   let amount_unInvoiced = 0;
-  //   this.pouchdbService.getRelated(
-  //     "cash-move", "origin_id", this.futureContractForm.value._id
-  //   ).then((planned) => {
-  //     planned.forEach((item) => {
-  //       if (item.amount_unInvoiced){
-  //         amount_unInvoiced += parseFloat(item.amount_unInvoiced);
-  //       }
-  //     });
-  //     this.futureContractForm.patchValue({
-  //       amount_unInvoiced: amount_unInvoiced,
-  //     });
-  //   });
-  // }
 
   recomputeResidual() {
     if (this.futureContractForm.value.state == 'QUOTATION') {
@@ -768,7 +723,6 @@ export class FutureContractPage implements OnInit {
     this.recomputeTotal();
     // this.recomputeUnInvoiced();
     this.recomputeResidual();
-    this.recomputeDiscountLines()
     if (this.futureContractForm.value.total != 0 && this.futureContractForm.value.residual == 0) {
       this.futureContractForm.patchValue({
         state: "PAID",
@@ -1394,7 +1348,6 @@ export class FutureContractPage implements OnInit {
         ticket += head_code + "|" + head_quantity + "|" + head_price + "|" + head_subtotal + "\n";
         ticket += lines;
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-') + "\n";
-        ticket += "Descuento" + this.formatService.string_pad(data.ticketPrint.paperWidth - 9, "$ " + this.computeDiscount().toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right") + "\n";
         ticket += "TOTAL" + this.formatService.string_pad(data.ticketPrint.paperWidth - 5, "$ " + this.futureContractForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right") + "\n";
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-') + "\n";
         ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth) + "\n";
@@ -1499,14 +1452,6 @@ export class FutureContractPage implements OnInit {
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-') + "\n";
         ticket += lines;
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-') + "\n";
-        if (this.computePercent()) {
-          // ticket += "Descuento"+this.formatService.string_pad(data.ticketPrint.paperWidth-9, this.computePercent()+"%", "right")+"\n";
-          ticket += this.formatService.string_pad(data.ticketPrint.paperWidth,
-            "Descuento:" + this.formatService.string_pad(
-              14, "$ " + this.computeDiscount().toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right") + " ",
-            'right', ' '
-          ) + "\n";
-        }
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth,
           "Valor Total:" + this.formatService.string_pad(
             14, "$ " + this.futureContractForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right") + " ",
@@ -1577,9 +1522,6 @@ export class FutureContractPage implements OnInit {
         ticket += head_code + "|" + head_quantity + "|" + head_price + "|" + head_subtotal + "\n";
         ticket += lines;
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-') + "\n";
-        if (this.computePercent()) {
-          ticket += "Descuento" + this.formatService.string_pad(data.ticketPrint.paperWidth - 9, "$ " + this.computeDiscount().toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right") + "\n";
-        }
         ticket += "TOTAL" + this.formatService.string_pad(data.ticketPrint.paperWidth - 5, "$ " + this.futureContractForm.value.total.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right") + "\n";
         ticket += this.formatService.string_pad(data.ticketPrint.paperWidth, "", 'center', '-') + "\n";
         ticket += this.formatService.breakString(data.ticketPrint.ticketComment, data.ticketPrint.paperWidth) + "\n";
