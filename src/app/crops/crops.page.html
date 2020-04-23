@@ -122,7 +122,7 @@
             (click)="showReportYield(item)">
               <h4 class="field-label">{{'EARNINGS' | translate}}($/{{areaMeasure}})</h4>
               <h4 class="field-value" style="color:green; font-size:30px;">
-                $ {{(contracts_amount - item.production_cost)/(item.area || 1)|number:'1.0-0'}}
+                $ {{(item.contracts_amount - item.production_cost)/(item.area || 1)|number:'1.0-0'}}
               </h4>
             </ion-col>
           </ion-row>
