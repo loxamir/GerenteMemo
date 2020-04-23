@@ -40,8 +40,6 @@ export class CropPage implements OnInit {
   currency_precision = 2;
   areaMeasure = "ha";
 
-  contracts_quantity = 0;
-  contracts_amount = 0;
   deleteList = [];
 
   constructor(
@@ -91,6 +89,8 @@ export class CropPage implements OnInit {
       state: new FormControl('ACTIVE'),
       area: new FormControl(0),
       code: new FormControl(''),
+      contracts_quantity: new FormControl(0),
+      contracts_amount: new FormControl(0),
       _id: new FormControl(''),
     });
     let language: any = await this.languageService.getDefaultLanguage();
@@ -429,20 +429,18 @@ export class CropPage implements OnInit {
     let areaTotal = 0;
     let quantityTotal = 0;
     let contractTotal = 0;
-
     quantityTotal = this.cropForm.value.futureContracts.reduce((prevVal, contract)=>{
       return prevVal + contract.quantity;
     }, 0)
-    this.contracts_quantity = quantityTotal;
     contractTotal = this.cropForm.value.futureContracts.reduce((prevVal, contract)=>{
       return prevVal + contract.price*contract.quantity;
     }, 0);
-    this.contracts_amount = contractTotal;
-
     areaTotal = this.cropForm.value.items.reduce((prevVal, field)=>{
       return prevVal + field.area;
     }, 0)
     this.cropForm.patchValue({
+      'contracts_amount': contractTotal,
+      'contracts_quantity': quantityTotal,
       'area': areaTotal,
       'average_price': Math.round((contractTotal/quantityTotal)*100)/100
     })

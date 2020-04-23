@@ -56,13 +56,13 @@
           <ion-col class="field-100">
             {{'TOTAL_QUANTITY' | translate }}
             <div class="cash-move-amount negative">
-              <h2 class="list-big-number" style="color: blue;text-align: center; ">{{contracts_quantity|number:'1.0-3'}} ton</h2>
+              <h2 class="list-big-number" style="color: blue;text-align: center; ">{{cropForm.value.contracts_quantity|number:'1.0-3'}} ton</h2>
             </div>
           </ion-col>
           <ion-col width-50 class="field-100">
             {{'TOTAL_AMOUNT' | translate }}
             <div class="cash-move-amount positive">
-              <h2 class="list-big-number" style="color: green;text-align: center; ">$ {{contracts_amount|number:'1.0-'+currency_precision}}</h2>
+              <h2 class="list-big-number" style="color: green;text-align: center; ">$ {{cropForm.value.contracts_amount|number:'1.0-'+currency_precision}}</h2>
             </div>
           </ion-col>
         </ion-row>

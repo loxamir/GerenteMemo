@@ -114,8 +114,7 @@
             (click)="showReport(item)">
               <h4 class="field-label">{{'INCOME_1' | translate}}($/{{areaMeasure}})</h4>
               <h4 class="field-value" style="color:green; font-size:30px;">
-                $ {{item.average_price*item.yieldTotal/1000/(item.area || 1)|number:'1.0-0'}}
-                <!-- $ {{item.average_price|number:'1.0-2'}} -->
+                $ {{item.contracts_amount/(item.area || 1)|number:'1.0-0'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
@@ -123,7 +122,7 @@
             (click)="showReportYield(item)">
               <h4 class="field-label">{{'EARNINGS' | translate}}($/{{areaMeasure}})</h4>
               <h4 class="field-value" style="color:green; font-size:30px;">
-                $ {{(item.average_price*item.yieldTotal/1000 - item.production_cost)/(item.area || 1)|number:'1.0-0'}}
+                $ {{(contracts_amount - item.production_cost)/(item.area || 1)|number:'1.0-0'}}
               </h4>
             </ion-col>
           </ion-row>
@@ -134,7 +133,7 @@
             (click)="showReport(item)">
               <h4 class="field-label">{{'TOTAL_INCOME' | translate}}</h4>
               <h4 class="field-value" style="color:green">
-                $ {{item.average_price*item.yieldTotal/1000|number:'1.0-0'}}
+                $ {{item.contracts_amount|number:'1.0-0'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50"
@@ -142,7 +141,7 @@
             (click)="showReportYield(item)">
               <h4 class="field-label">{{'TOTAL_EARNINGS' | translate}}</h4>
               <h4 class="field-value" style="color:green">
-                $ {{item.average_price*item.yieldTotal/1000 - item.production_cost|number:'1.0-0'}}
+                $ {{item.contracts_amount - item.production_cost|number:'1.0-0'}}
               </h4>
             </ion-col>
           </ion-row>
