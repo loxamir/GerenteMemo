@@ -600,5 +600,7 @@
   "TOTAL_AREA": "Total Area",
   "NEED_SAVE": "Need Save",
   "SAVE_CROP_FIRST": "Before add contracts you need to save the crop",
+  "COST_REPORT": "Cost Report",
+  "YIELD_REPORT": "Yield Report",
   "RESULT": "Result"
 }

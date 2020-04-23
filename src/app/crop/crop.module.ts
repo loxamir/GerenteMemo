@@ -13,6 +13,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { CropPage } from './crop.page';
+import { CropPopover } from './crop.popover';
 
 const routes: Routes = [
   {
@@ -37,7 +38,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CropPage],
-  providers: [CropService]
+  declarations: [CropPage, CropPopover],
+  providers: [CropService],
+  entryComponents: [CropPopover],
 })
 export class CropPageModule {}

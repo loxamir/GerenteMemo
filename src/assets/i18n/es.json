@@ -601,5 +601,7 @@
   "TOTAL_AREA": "Area Total",
   "NEED_SAVE": "Hace Falta Guardar",
   "SAVE_CROP_FIRST": "Antes de agregar contratos es necesario guardar la zafra",
+  "COST_REPORT": "Informe de Costos",
+  "YIELD_REPORT": "Informe de Cosecha",
   "RESULT": "Resultado"
 }

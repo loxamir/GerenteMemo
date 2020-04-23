@@ -7,6 +7,9 @@
       {{'CROP'|translate}} - {{cropForm.value.code}}
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button  (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 

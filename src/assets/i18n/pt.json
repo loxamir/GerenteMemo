@@ -600,5 +600,7 @@
   "TOTAL_AREA": "Area Total",
   "NEED_SAVE": "Necesario Salvar",
   "SAVE_CROP_FIRST": "Antes de adicionar contratos você precisa salvar a safra",
+  "COST_REPORT": "Relatorio de Custos",
+  "YIELD_REPORT": "Relatorio de Colheita",
   "RESULT": "Resultado"
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController,  ModalController, LoadingController,
+import { NavController,  ModalController, LoadingController, PopoverController,
    AlertController, Events } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
@@ -20,7 +20,7 @@ import { FormatService } from "../services/format.service";
 // import { AccountsPage } from './move/account/list/accounts';
 import { ProductListPage } from '../product-list/product-list.page';
 import { AreasPage } from '../areas/areas.page';
-
+import { CropPopover } from './crop.popover';
 import { FutureContractPage } from '../future-contract/future-contract.page';
 
 @Component({
@@ -48,17 +48,14 @@ export class CropPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    // public imagePicker: ImagePicker,
-    // public cropService: Crop,
-    // public platform: Platform,
     public cropService: CropService,
-    // public cropMoveService: CropMoveService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
     public pouchdbService: PouchdbService,
     public events: Events,
     public formatService: FormatService,
+    public popoverCtrl: PopoverController,
   ) {
     //this.loading = //this.loadingCtrl.create({});
     this.languages = this.languageService.getLanguages();
@@ -143,6 +140,18 @@ export class CropPage implements OnInit {
         }
       });
     }
+  }
+
+  async presentPopover(myEvent) {
+    let popover = await this.popoverCtrl.create({
+      component: CropPopover,
+      event: myEvent,
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
+    });
+    popover.present();
   }
 
   selectProduct() {

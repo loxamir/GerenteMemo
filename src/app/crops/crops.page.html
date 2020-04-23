@@ -51,10 +51,9 @@
       </ion-item>
     <ion-item no-padding style="margin-bottom: 0px; margin-top:0px;"
     *ngIf="!select">
-        <ion-card class="crop-card" no-padding button="true" >
+        <ion-card class="crop-card" no-padding button="true" (click)="openCrop(item)">
           <ion-row >
-            <ion-col style="font-size:20px;border-bottom:1px solid #ddd"
-            (click)="openCrop(item)">
+            <ion-col style="font-size:20px;border-bottom:1px solid #ddd">
               {{ item.name }}
               <h2 class="crop-subtitle" *ngIf="item.fields && item.fields.length > 1">
                 {{ item.fields.length }} {{'PLACES'|translate}} - {{item.area}} {{areaMeasure}}
@@ -63,24 +62,18 @@
                 1 {{'PLACE'|translate}} - {{item.area}} {{areaMeasure}}
               </h2>
             </ion-col>
-            <ion-col size="2" class="open-item-col"
-            (click)="openCrop(item)">
-              <ion-icon name="open" class="open-item-arrow"></ion-icon>
-            </ion-col>
           </ion-row>
           <ion-row style="padding-left: 2%;"
           *ngIf="item.production_cost|| item.yieldTotal">
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
-            *ngIf="item.production_cost"
-            (click)="showReport(item)">
+            *ngIf="item.production_cost">
               <h4 class="field-label">{{'COST' | translate}}($/{{areaMeasure}})</h4>
               <h4 class="field-value" style="color:red; font-size:30px;">
                 $ {{item.production_cost/item.area|number:'1.0-0'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
-            *ngIf="item.yieldTotal"
-            (click)="showReportYield(item)">
+            *ngIf="item.yieldTotal">
               <h4 class="field-label">{{'YIELD' | translate}}({{yieldMeasure}}/{{areaMeasure}})</h4>
               <h4 class="field-value" style="color:green; font-size:30px;">
                 {{item.yieldTotal/((item.area || 1))|number:'1.0-0'}}
@@ -90,16 +83,14 @@
           <ion-row style="padding-left: 2%;height: 2rem;"
           *ngIf="item.production_cost|| item.yieldTotal">
             <ion-col no-padding class="report-50"
-            *ngIf="item.production_cost"
-            (click)="showReport(item)">
+            *ngIf="item.production_cost">
               <h4 class="field-label">{{'TOTAL_COST' | translate}}</h4>
               <h4 class="field-value" style="color:red">
                 $ {{item.production_cost|number:'1.0-0'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50"
-            *ngIf="item.yieldTotal"
-            (click)="showReportYield(item)">
+            *ngIf="item.yieldTotal">
               <h4 class="field-label">{{'HARVEST_TOTAL' | translate}}({{yieldMeasure}})</h4>
               <h4 class="field-value" style="color:green">
                 {{item.yieldTotal|number:'1.0-0'}}
@@ -110,16 +101,14 @@
           <ion-row style="padding-left: 2%;"
           *ngIf="item.average_price && (item.production_cost || item.yieldTotal)">
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
-            *ngIf="item.yieldTotal && item.average_price"
-            (click)="showReport(item)">
+            *ngIf="item.yieldTotal && item.average_price">
               <h4 class="field-label">{{'INCOME_1' | translate}}($/{{areaMeasure}})</h4>
               <h4 class="field-value" style="color:green; font-size:30px;">
                 $ {{item.contracts_amount/(item.area || 1)|number:'1.0-0'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
-            *ngIf="item.yieldTotal && item.average_price && item.yieldTotal"
-            (click)="showReportYield(item)">
+            *ngIf="item.yieldTotal && item.average_price && item.yieldTotal">
               <h4 class="field-label">{{'EARNINGS' | translate}}($/{{areaMeasure}})</h4>
               <h4 class="field-value" style="color:green; font-size:30px;">
                 $ {{(item.contracts_amount - item.production_cost)/(item.area || 1)|number:'1.0-0'}}
@@ -129,16 +118,14 @@
           <ion-row style="padding-left: 2%;height: 2rem;"
           *ngIf="item.average_price && (item.production_cost || item.yieldTotal)">
             <ion-col no-padding class="report-50"
-            *ngIf="item.yieldTotal && item.average_price"
-            (click)="showReport(item)">
+            *ngIf="item.yieldTotal && item.average_price">
               <h4 class="field-label">{{'TOTAL_INCOME' | translate}}</h4>
               <h4 class="field-value" style="color:green">
                 $ {{item.contracts_amount|number:'1.0-0'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50"
-            *ngIf="item.yieldTotal && item.production_cost"
-            (click)="showReportYield(item)">
+            *ngIf="item.yieldTotal && item.production_cost">
               <h4 class="field-label">{{'TOTAL_EARNINGS' | translate}}</h4>
               <h4 class="field-value" style="color:green">
                 $ {{item.contracts_amount - item.production_cost|number:'1.0-0'}}
@@ -149,32 +136,28 @@
 
           <ion-row style="padding-left: 2%;"
           *ngIf="item.average_price">
-            <ion-col no-padding class="report-50" style="margin-top: 15px;"
-            (click)="showReport(item)">
+            <ion-col no-padding class="report-50" style="margin-top: 15px;">
               <h4 class="field-label" style="text-align: center;">{{'PRICE' | translate}}($/ton)</h4>
               <h4 class="field-value" style="color:green;text-align: center;">
                 $ {{item.average_price|number:'1.0-0'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
-            *ngIf="item.yieldTotal && item.production_cost"
-            (click)="showReportYield(item)">
+            *ngIf="item.yieldTotal && item.production_cost">
               <h4 class="field-label" style="text-align: center;">{{'COST' | translate}}($/ton)</h4>
               <h4 class="field-value" style="color:green;text-align: center;">
                 $ {{item.production_cost*1000/item.yieldTotal|number:'1.0-0'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
-            *ngIf="item.yieldTotal && item.production_cost"
-            (click)="showReportYield(item)">
+            *ngIf="item.yieldTotal && item.production_cost">
               <h4 class="field-label" style="text-align: center;">{{'EARNINGS' | translate}}($/ton)</h4>
               <h4 class="field-value" style="color:green;text-align: center;">
                 $ {{item.average_price - item.production_cost*1000/item.yieldTotal|number:'1.0-0'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
-            *ngIf="item.yieldTotal && item.production_cost"
-            (click)="showReportYield(item)">
+            *ngIf="item.yieldTotal && item.production_cost">
               <h4 class="field-label" style="text-align: center;">{{'MARGIN' | translate}}</h4>
               <h4 class="field-value" style="color:green;text-align: center;">
                 {{(1-item.production_cost*1000/item.yieldTotal/item.average_price)*100|number:'1.0-0'}} %
