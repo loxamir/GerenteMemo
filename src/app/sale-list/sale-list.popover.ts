@@ -7,7 +7,6 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
     <ion-item style="background-color: white;" ion-item (click)="receivable()">{{'RECEIVABLE_ACCOUNTS'|translate}}</ion-item>
     <ion-item style="background-color: white;" ion-item (click)="invoice()">{{'INVOICES'|translate}}</ion-item>
     <ion-item style="background-color: white;" ion-item (click)="receipts()">{{'RECEIPTS'|translate}}</ion-item>
-    <ion-item style="background-color: white;" ion-item (click)="contracts()">{{'CONTRACTS'|translate}}</ion-item>
     <!--ion-item ion-item (click)="importer()">Importador Ventas</ion-item>
     <ion-item (click)="importerLine()">Importador Lineas</ion-item-->
   </ion-list>
