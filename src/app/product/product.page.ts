@@ -102,9 +102,13 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         }
         this.productForm.patchValue(this.product);
         if (this.product._attachments){
-          this.product.images.forEach(file_name=>{
-            this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+this.product._id+'/'+file_name);
-          })
+          if (this.product.images){
+            this.product.images.forEach(file_name=>{
+              this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+this.product._id+'/'+file_name);
+            })
+          } else {
+            this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+this.product._id+'/avatar.png');
+          }
         }
         this.productForm.markAsPristine();
         this.loading.dismiss();
@@ -112,9 +116,13 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       else if (this._id){
         this.productService.getProduct(this._id).then((data) => {
           if (data._attachments){
-            data.images.forEach(file_name=>{
-              this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+data._id+'/'+file_name);
-            })
+            if (data.images){
+              data.images.forEach(file_name=>{
+                this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+data._id+'/'+file_name);
+              })
+            } else {
+              this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+this.product._id+'/avatar.png');
+            }
           }
           this.productForm.patchValue(data);
           setTimeout(() => {

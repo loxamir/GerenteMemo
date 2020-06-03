@@ -108,8 +108,13 @@
             <img
             alt="Foto del producto"
             style="height: 50px;width: auto;border-radius: 5px;"
-            *ngIf="item._attachments"
+            *ngIf="item._attachments && item.images"
             [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/'+item.images[0]">
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
+            *ngIf="item._attachments && ! item.images"
+            [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/avatar.png'">
             <img
             alt="Foto del producto"
             style="height: 50px;width: auto;border-radius: 5px;"
