@@ -86,6 +86,7 @@ export class ConfigPage implements OnInit {
       email: ['', Validators.required],
       city: [''],
       country: [''],
+      whatsapp: '',
       state: [''],
       // tab: ['profile'],
       invoice_sequence: [''],
