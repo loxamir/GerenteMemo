@@ -9,6 +9,7 @@ import { ProductService } from './product.service';
 import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ImageModalPage } from '../image-modal/image-modal.page';
+import { Title }     from '@angular/platform-browser';
 
 @Component({
   selector: 'app-product',
@@ -23,6 +24,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     select;
     currency_precision = 0;
     currency_symbol = '$';
+    config:any = {};
     product;
     whatsapp;
     product_images = [];
@@ -48,6 +50,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public modalCtrl: ModalController,
       public formBuilder: FormBuilder,
       public pouchdbService: PouchdbService,
+      private titleService: Title,
     ) {
       this._id = this.route.snapshot.paramMap.get('_id');
       this.currency_symbol = this.route.snapshot.paramMap.get('currency_symbol');
@@ -83,12 +86,15 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         sizes: new FormControl([]),
         size: new FormControl(''),
         description: new FormControl(''),
+        images: new FormControl([]),
         _attachments: new FormControl(),
       });
       let language:any = await this.languageService.getDefaultLanguage();
       if (!this.currency_precision || !this.currency_symbol){
         this.pouchdbService.getConnect(this.database);
-        let config:any = await this.pouchdbService.getDoc('config.profile');
+        let config: any = await this.pouchdbService.getDoc('config.profile', false);
+        this.config = config;
+        this.titleService.setTitle(config.name);
         this.currency_symbol = config.currency_symbol;
         this.currency_precision = config.currency_precision;
       }

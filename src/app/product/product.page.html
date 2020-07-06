@@ -1,3 +1,46 @@
+<ion-header *ngIf="database" style="margin-bottom: 5%;">
+  <ion-toolbar  style="--background: {{config.bg_color}};">
+      <ion-row>
+        <ion-col class="ion-no-padding">
+          <img
+          alt="Logo"
+          style="max-width: 100%;max-height: 100px;border-radius: 5px;margin-top: 5px;"
+          [src]="'https://database.sistemamemo.com/'+database+'/config.profile/logo.png'">
+        </ion-col>
+        <ion-col>
+          <ion-row>
+            <ion-col>
+              <h1 style="font-size: 20px;text-align:center;">
+                {{config.name}}
+              </h1>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <a target="_blank" href="https://api.whatsapp.com/send?phone={{config.whatsapp}}&text={{'HELLO'|translate}}+{{config.name}}!+{{'VISITOR_MESSAGE'|translate}}" rel="noopener">
+                <h1  color="success" style="font-size: 12px;color: green;border-radius: 5px;background: white;max-width: 156px;text-align: center;margin: auto;">
+                  <ion-icon name="logo-whatsapp" style="padding-right: 5px;padding-left: 3px;font-size: 25px;"></ion-icon>
+                  <div style="display: inline-block;font-size: 17px;vertical-align: super;">
+                    {{(config.whatsapp || "").replace("+595", "0").replace("+55", "0")}}
+                  </div>
+                </h1>
+              </a>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    <ion-buttons slot="start">
+        <ion-button
+                (click)="exitPage()">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
 <ion-content class="product-content" style="--background: white;">
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
   <form class="sample-form validations-form" [formGroup]="productForm" style="background: white;">
@@ -17,6 +60,13 @@
         <ion-row>
           <ion-col style="font-size: 12px;">{{this.productForm.value.description}}</ion-col>
         </ion-row>
+      </ion-col>
+      <ion-col size="2">
+        <a href="/product/{{productForm.value._id}}" target="_blank">
+          <ion-button  style="font-size: 12px;">
+          <ion-icon name="share-social" style="padding-right: 5px;padding-left: 3px;font-size: 25px;"></ion-icon>
+        </ion-button>
+      </a>
       </ion-col>
     </ion-row>
     <h1 *ngIf="productForm.value.sizes.length" style="background: white;font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: #3773e8;">
@@ -119,8 +169,8 @@
     </ion-button>
   </ion-fab>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="whatsapp">
-    <a target="_blank" href="https://api.whatsapp.com/send?phone={{whatsapp}}&text={{'IM_INTERESTED_IN'|translate}} +{{productForm.value.name+(productForm.value.size && ' - '+productForm.value.size||'')+' - Codigo '+productForm.value.code}}" rel="noopener">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="config.whatsapp">
+    <a target="_blank" href="https://api.whatsapp.com/send?phone={{config.whatsapp}}&text={{'IM_INTERESTED_IN'|translate}} +{{productForm.value.name+(productForm.value.size && ' - '+productForm.value.size||'')+' - Codigo '+productForm.value.code}}" rel="noopener">
       <ion-button  color="success" style="font-size: 12px;">
         <ion-icon name="logo-whatsapp" style="padding-right: 5px;padding-left: 3px;font-size: 25px;"></ion-icon>
         {{'ASK_QUOTATION'|translate}}
