@@ -97,6 +97,7 @@ export class ConfigPage implements OnInit {
       product_sequence: [1],
       purchase_sequence: [1],
       asset_sequence: [1],
+      _attachments: [],
       contact_sequence: [1],
       cash_move_sequence: [1],
       stock_move_sequence: [1],
