@@ -878,7 +878,7 @@ export class SalePage implements OnInit {
             state: 'CONFIRMED',
             planned: planned
           })
-          this.buttonSave();
+          // this.buttonSave();
         });
         this.events.unsubscribe('cancel-receipt');
       });
@@ -1118,7 +1118,7 @@ export class SalePage implements OnInit {
           });
           this.recomputeValues();
           this.avoidAlertMessage = false;
-          this.buttonSave();
+          // this.buttonSave();
           this.events.unsubscribe('create-receipt');
           // profileModal.dismiss();
         });

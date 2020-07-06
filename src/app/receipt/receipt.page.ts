@@ -1311,95 +1311,95 @@ export class ReceiptPage implements OnInit {
           // console.log("item_residual1", item1.origin_id, item_residual);
           // console.log("ORIGIN", item1.origin_id.split('.')[0]);
           let smallDiff = 10**(-1*this.receipt_currency_precision)*this.receipt_exchange_rate;
-          if (item1.origin_id.split('.')[0] == 'sale') {
-            // console.log("findSale");
-            let sale: any = await this.pouchdbService.getDoc(item1.origin_id);
-            // console.log("sALE", JSON.stringify(sale))
-            sale.residual = item1.amount_residual;
-            // console.log("item_residual2", item_residual);
-            let sale_item_paid = item_paid;
-            paid_document_amount = item_paid;
-            if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
-              sale.state = "PAID";
-              sale.residual = 0;
-              sale_item_paid += item1.amount_residual;
-              paid_document_amount += item1.amount_residual;
-            }
-            sale.payments.push({
-              "paid": sale_item_paid,
-              "date": this.receiptForm.value.date,
-              "state": "CONFIRMED",
-              "_id": this.receiptForm.value._id,
-            });
-
-            // console.log("SALE RES", JSON.stringify(sale));
-            await this.pouchdbService.updateDoc(sale);
-          }
-          else if (item1.origin_id.split('.')[0] == 'purchase') {
-            this.pouchdbService.getDoc(item1.origin_id).then((purchase: any) => {
-              purchase.residual = item1.amount_residual;
-              // console.log("item_residual2", item_residual);
-              let item_paid_purchase = item_paid;
-              paid_document_amount = item_paid;
-              if (purchase.currency_id){
-                item_paid_purchase = item_paid/this.receipt_exchange_rate;
-                paid_document_amount = item_paid/this.receipt_exchange_rate;
-              }
-              if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
-                purchase.state = "PAID";
-                purchase.residual = 0;
-                item_paid_purchase += item1.amount_residual;
-                paid_document_amount += item1.amount_residual;
-              }
-              purchase.payments.push({
-                "paid": item_paid_purchase,
-                "date": this.receiptForm.value.date,
-                "state": "CONFIRMED",
-                "_id": this.receiptForm.value._id,
-              });
-              this.pouchdbService.updateDoc(purchase);
-            })
-          }
-          else if (item1.origin_id.split('.')[0] == 'service') {
-            // this.pouchdbService.getDoc(item1.origin_id).then((service: any) => {
-            //   service.residual = item1.amount_residual;
-            //   service.payments.push({
-            //     "paid": item_paid,
-            //     "date": this.receiptForm.value.date,
-            //     "state": "CONFIRMED",
-            //     "_id": this.receiptForm.value._id,
-            //   });
-            //   if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
-            //     service.state = "PAID";
-            //     service.residual = 0;
-            //   }
-            //   this.pouchdbService.updateDoc(service);
-            // })
-
-            this.pouchdbService.getDoc(item1.origin_id).then((service: any) => {
-              service.residual = item1.amount_residual;
-              // console.log("item_residual2", item_residual);
-              let item_paid_service = item_paid;
-              paid_document_amount = item_paid;
-              // if (service.currency_id){
-              //   item_paid_purchase = item_paid/this.receipt_exchange_rate;
-              //   paid_document_amount = item_paid/this.receipt_exchange_rate;
-              // }
-              if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
-                service.state = "PAID";
-                service.residual = 0;
-                item_paid_service += item1.amount_residual;
-                paid_document_amount += item1.amount_residual;
-              }
-              service.payments.push({
-                "paid": item_paid_service,
-                "date": this.receiptForm.value.date,
-                "state": "CONFIRMED",
-                "_id": this.receiptForm.value._id,
-              });
-              this.pouchdbService.updateDoc(service);
-            })
-          }
+          // if (item1.origin_id.split('.')[0] == 'sale') {
+          //   // console.log("findSale");
+          //   let sale: any = await this.pouchdbService.getDoc(item1.origin_id);
+          //   // console.log("sALE", JSON.stringify(sale))
+          //   sale.residual = item1.amount_residual;
+          //   // console.log("item_residual2", item_residual);
+          //   let sale_item_paid = item_paid;
+          //   paid_document_amount = item_paid;
+          //   if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
+          //     sale.state = "PAID";
+          //     sale.residual = 0;
+          //     sale_item_paid += item1.amount_residual;
+          //     paid_document_amount += item1.amount_residual;
+          //   }
+          //   sale.payments.push({
+          //     "paid": sale_item_paid,
+          //     "date": this.receiptForm.value.date,
+          //     "state": "CONFIRMED",
+          //     "_id": this.receiptForm.value._id,
+          //   });
+          //
+          //   // console.log("SALE RES", JSON.stringify(sale));
+          //   await this.pouchdbService.updateDoc(sale);
+          // }
+          // else if (item1.origin_id.split('.')[0] == 'purchase') {
+          //   this.pouchdbService.getDoc(item1.origin_id).then((purchase: any) => {
+          //     purchase.residual = item1.amount_residual;
+          //     // console.log("item_residual2", item_residual);
+          //     let item_paid_purchase = item_paid;
+          //     paid_document_amount = item_paid;
+          //     if (purchase.currency_id){
+          //       item_paid_purchase = item_paid/this.receipt_exchange_rate;
+          //       paid_document_amount = item_paid/this.receipt_exchange_rate;
+          //     }
+          //     if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
+          //       purchase.state = "PAID";
+          //       purchase.residual = 0;
+          //       item_paid_purchase += item1.amount_residual;
+          //       paid_document_amount += item1.amount_residual;
+          //     }
+          //     purchase.payments.push({
+          //       "paid": item_paid_purchase,
+          //       "date": this.receiptForm.value.date,
+          //       "state": "CONFIRMED",
+          //       "_id": this.receiptForm.value._id,
+          //     });
+          //     this.pouchdbService.updateDoc(purchase);
+          //   })
+          // }
+          // else if (item1.origin_id.split('.')[0] == 'service') {
+          //   // this.pouchdbService.getDoc(item1.origin_id).then((service: any) => {
+          //   //   service.residual = item1.amount_residual;
+          //   //   service.payments.push({
+          //   //     "paid": item_paid,
+          //   //     "date": this.receiptForm.value.date,
+          //   //     "state": "CONFIRMED",
+          //   //     "_id": this.receiptForm.value._id,
+          //   //   });
+          //   //   if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
+          //   //     service.state = "PAID";
+          //   //     service.residual = 0;
+          //   //   }
+          //   //   this.pouchdbService.updateDoc(service);
+          //   // })
+          //
+          //   this.pouchdbService.getDoc(item1.origin_id).then((service: any) => {
+          //     service.residual = item1.amount_residual;
+          //     // console.log("item_residual2", item_residual);
+          //     let item_paid_service = item_paid;
+          //     paid_document_amount = item_paid;
+          //     // if (service.currency_id){
+          //     //   item_paid_purchase = item_paid/this.receipt_exchange_rate;
+          //     //   paid_document_amount = item_paid/this.receipt_exchange_rate;
+          //     // }
+          //     if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
+          //       service.state = "PAID";
+          //       service.residual = 0;
+          //       item_paid_service += item1.amount_residual;
+          //       paid_document_amount += item1.amount_residual;
+          //     }
+          //     service.payments.push({
+          //       "paid": item_paid_service,
+          //       "date": this.receiptForm.value.date,
+          //       "state": "CONFIRMED",
+          //       "_id": this.receiptForm.value._id,
+          //     });
+          //     this.pouchdbService.updateDoc(service);
+          //   })
+          // }
         });
         Promise.all(promise_ids2).then(res => {
           if (

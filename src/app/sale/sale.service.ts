@@ -95,14 +95,7 @@ export class SaleService {
             getList.push(item['product_id']);
           }
         });
-        // if (pouchData['moves']){
-        //   pouchData['moves'].forEach((item) => {
-        //     if (getList.indexOf(item)==-1){
-        //       getList.push(item);
-        //     }
-        //   });
-        // }
-        this.pouchdbService.getList(getList).then((docs: any[])=>{
+        this.pouchdbService.getList(getList).then(async (docs: any[])=>{
           var doc_dict = {};
           docs.forEach(row=>{
             doc_dict[row.id] = row.doc;
@@ -119,21 +112,30 @@ export class SaleService {
               'cost': line.cost || 0,
             })
           })
-          // if (pouchData.moves){
-          //   pouchData['planned'] = [];
-          //   pouchData.moves.forEach(line=>{
-          //     console.log("liena", line);
-          //     pouchData['planned'].push(doc_dict[line])
-          //   })
-          //   console.log("doc_dict", doc_dict);
-          //   resolve(pouchData);
-          // } else {
-            this.pouchdbService.getRelated(
-            "cash-move", "origin_id", doc_id).then((planned) => {
-              pouchData['planned'] = planned.filter(word=>typeof word.amount_residual !== 'undefined');
-              resolve(pouchData);
+          let planned: any = await this.pouchdbService.getView(
+            'Informes/Pagares', 5, [doc_id, null], [doc_id, "z"]);
+            pouchData['planned'] = planned.map(move=>{
+              return {
+                date: move['key'][1],
+                name: move['key'][2],
+                amount_residual: move['key'][3],
+                dateDue: move['key'][4],
+                _id: move['key'][5],
+                amount: move.value,
+              }
             });
-          // }
+          let payments: any = await this.pouchdbService.getView(
+            'Informes/Recibos', 3, ["Venta "+pouchData.code, null], ["Venta "+pouchData.code, "z"]);
+            pouchData['payments'] = payments.map(receipt=>{
+              return {date: receipt['key'][1], paid: receipt.value, _id: receipt['key'][2]}
+            });
+            let paid_value = payments.reduce(function(paid, item) {
+              paid += parseFloat(item.value);
+              return paid
+            }, 0)
+            console.log("paid", paid_value);
+            pouchData['residual'] = pouchData['total']-paid_value;
+            resolve(pouchData);
         })
       }));
     });
