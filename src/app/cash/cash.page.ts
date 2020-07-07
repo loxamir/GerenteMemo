@@ -457,4 +457,11 @@ export class CashPage implements OnInit {
     // this.cashForm.value.items.slice(item, 1);
     // this.cashForm.value.balance -= item.amount;
   }
+
+  doInfinite(infiniteScroll){
+    setTimeout( async () => {
+      await this.cashService.loadMoves(this._id, this.cashForm.value);
+      infiniteScroll.target.complete();
+    }, 50);
+  }
 }

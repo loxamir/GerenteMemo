@@ -228,7 +228,8 @@ export class PouchdbService {
     limit=undefined,
     skip=undefined,
     include_docs=false,
-    keys=undefined
+    keys=undefined,
+    descending=false,
   ){
     return new Promise((resolve, reject)=>{
       let options = {
@@ -241,6 +242,7 @@ export class PouchdbService {
         'skip': skip,
         'include_docs': include_docs,
         'keys': keys,
+        'descending': descending,
       }
       this.db.query(viewName, options).then(function (res) {
         resolve(res.rows);
