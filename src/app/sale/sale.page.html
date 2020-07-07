@@ -47,7 +47,7 @@
       </div>
     </ion-col>
     <ion-col size="4">
-      <div [class.unclicked]="saleForm.value.state!='PAID'" [class.clicked]="saleForm.value.state=='PAID'" class="arrow">
+      <div [class.unclicked]="saleForm.value.residual>0 || saleForm.value.state == 'QUOTATION'" [class.clicked]="saleForm.value.state == 'CONFIRMED' && saleForm.value.residual==0" class="arrow">
         <span class="state-label">{{ 'STATE_RECEIVED' | translate}}</span>
       </div>
     </ion-col>
@@ -326,7 +326,7 @@
     </ion-button>
   </ion-fab>
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'CONFIRMED'">
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'CONFIRMED' && saleForm.value.residual > 0">
     <ion-button (click)="addPayment()"  class="next-button" color="primary">
       <ion-icon name="cash"> </ion-icon>
       {{ 'TO_RECEIVE' | translate }}

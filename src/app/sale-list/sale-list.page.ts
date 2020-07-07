@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
+import { FormatService } from '../services/format.service';
 
 @Component({
   selector: 'app-sale-list',
@@ -38,6 +39,7 @@ export class SaleListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public languageService: LanguageService,
     public translate: TranslateService,
+    public formatService: FormatService,
   ) {
 
 
@@ -138,7 +140,20 @@ export class SaleListPage implements OnInit {
         keyword,
         page,
         "contact_name"
-      ).then((sales: any[]) => {
+      ).then(async (sales: any[]) => {
+        await this.formatService.asyncForEach(sales, async (sale: any) => {
+          let payments: any = await this.pouchdbService.getView(
+            'Informes/Recibos', 3, ["Venta "+sale.code, null], ["Venta "+sale.code, "z"]);
+            let paid_value = payments.reduce(function(paid, item) {
+              paid += parseFloat(item.value);
+              return paid
+            }, 0)
+            let residual = sale['total']-paid_value;
+            sale['residual'] = residual
+            if (sale.state == 'CONFIRMED' && residual == 0){
+              sale.state = 'PAID';
+            }
+        })
         resolve(sales);
       });
     });

@@ -113,7 +113,7 @@ export class SaleService {
             })
           })
           let planned: any = await this.pouchdbService.getView(
-            'Informes/Pagares', 5, [doc_id, null], [doc_id, "z"]);
+            'Informes/Pagares', 6, [doc_id, null], [doc_id, "z"]);
             pouchData['planned'] = planned.map(move=>{
               return {
                 date: move['key'][1],

@@ -1123,9 +1123,10 @@ export class SalePage implements OnInit {
           // profileModal.dismiss();
         });
         let plannedItems = [];
-        this.saleForm.value.planned.forEach(planned => {
+        await this.formatService.asyncForEach(this.saleForm.value.planned, async (planned: any) => {
           if (planned.amount_residual && planned.amount_residual != 0){
-            plannedItems.push(planned);
+            let cashMove:any = await this.pouchdbService.getDoc(planned._id);
+            plannedItems.push(cashMove);
           }
         })
 
