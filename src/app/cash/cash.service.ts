@@ -25,7 +25,7 @@ export class CashService {
       let payableList = [];
       this.pouchdbService.getView(
         'Informes/CaixasPagina', 6,
-        [doc_id+this.lastMove],
+        [doc_id+"z"],
         [doc_id],
         true,
         true,

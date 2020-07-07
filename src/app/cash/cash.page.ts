@@ -191,6 +191,17 @@ export class CashPage implements OnInit {
 
   closeCash() {
     return new Promise(async resolve => {
+      let moves: any = await this.pouchdbService.getView(
+        'Informes/CaixasAberto', 1, [this._id, null], [this._id, "z"],
+        false,
+        false,
+        undefined,
+        undefined,
+        true,
+      );
+        let docs = moves.map((doc)=>{
+          return doc.doc;
+        })
       let profileModal = await this.modalCtrl.create({
         component: ClosePage,
         componentProps: {
@@ -198,7 +209,7 @@ export class CashPage implements OnInit {
           "amount_open": this.cashForm.value.closes[0] && this.cashForm.value.closes[0].amount_physical || 0,
           "amount_theoretical": this.cashForm.value.balance,
           "cash_id": this.cashForm.value._id,
-          "accountMoves": this.cashForm.value.moves
+          "accountMoves": docs
         }
       });
       profileModal.present();

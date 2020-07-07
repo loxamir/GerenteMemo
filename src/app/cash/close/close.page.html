@@ -89,7 +89,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-list no-lines>
+    <ion-list no-lines *ngIf="_id">
       <ion-item-sliding class="list-item" *ngFor="let item of closeForm.value.accountMoves && closeForm.value.accountMoves.sort(this.formatService.compare) || []">
         <ion-item class="ion-no-padding" (click)="openItem(item)" style="margin-bottom: 0px; margin-top:0px;">
           <ion-card class="list-card" style="border-radius: 5px;">

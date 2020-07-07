@@ -19,7 +19,7 @@ import { ConfigService } from '../../config/config.service';
 export class ClosePage implements OnInit {
   @ViewChild('input', { static: true }) input;
   @Input() amount_theoretical;
-  @Input() accountMoves;
+  @Input() accountMoves = [];
   @Input() cash_id;
   @Input() _id;
   @Input() select;
@@ -48,7 +48,7 @@ export class ClosePage implements OnInit {
     public pouchdbService: PouchdbService,
   ) {
     this.amount_theoretical = this.route.snapshot.paramMap.get('amount_theoretical');
-    this.accountMoves = this.route.snapshot.paramMap.get('accountMoves');
+    // this.accountMoves = this.route.snapshot.paramMap.get('accountMoves');
     this.cash_id = this.route.snapshot.paramMap.get('cash_id');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
