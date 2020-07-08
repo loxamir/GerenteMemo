@@ -149,9 +149,11 @@ export class SaleListPage implements OnInit {
               return paid
             }, 0)
             let residual = sale['total']-paid_value;
-            sale['residual'] = residual
+            sale['residual'] = residual;
             if (sale.state == 'CONFIRMED' && residual == 0){
               sale.state = 'PAID';
+            } else if (sale.state == 'PAID' && sale['residual'] > 0){
+              sale.state = 'CONFIRMED';
             }
         })
         resolve(sales);
