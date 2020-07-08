@@ -5,8 +5,7 @@
         <img
         alt="Logo del restaurante"
         style="max-width: 100%;max-height: 100px;border-radius: 5px;margin-top: 5px;"
-        [src]="'data:image/png;base64,'+config._attachments['logo.png'].data"
-        *ngIf="config._attachments && config._attachments['logo.png'] && config._attachments['logo.png'].data">
+        [src]="'https://database.sistemamemo.com/'+database+'/config.profile/logo.png'">
       </ion-col>
       <ion-col>
         <ion-row>
@@ -78,13 +77,13 @@
             <img
             alt="Foto del categoria"
             style="height: 95px;width: 100%;"
-            *ngIf="item._attachments && item._attachments['avatar.png'] && item._attachments['avatar.png'].data"
-            [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data"
+            *ngIf="item._attachments && item._attachments['avatar.png']"
+            [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/'+'avatar.png'"
             >
             <img
             alt="Foto del categoria"
             style="height: 95px;width: auto;"
-            *ngIf="!(item._attachments && item._attachments['avatar.png'] && item._attachments['avatar.png'].data)"
+            *ngIf="!(item._attachments && item._attachments['avatar.png'])"
             src="./assets/images/sem_foto.jpg">
           </ion-row>
         </ion-card>
@@ -108,8 +107,8 @@
             src="./assets/images/sem_foto.jpg"
             *ngIf="!item.images || !item.images.length">
             <img style="height: 50px;width: auto;border-radius: 5px;"
-            [src]="'data:image/png;base64,'+item._attachments[item.images[0]].data"
-            *ngIf="item.images && item.images.length && item._attachments && item._attachments[item.images[0]] && item._attachments[item.images[0]].data">
+            [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/'+item.images[0]"
+            *ngIf="item.images && item.images.length && item._attachments && item._attachments[item.images[0]]">
           </ion-col>
           <ion-col class="ion-no-padding">
             <ion-row class="producto">

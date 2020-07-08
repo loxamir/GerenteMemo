@@ -31,6 +31,8 @@ export class ProductListPage implements OnInit {
   config:any = {};
   appliedChanges = [];
   categories = [];
+  database = '';
+  last_record = '';
 
   constructor(
     public navCtrl: NavController,
@@ -47,6 +49,7 @@ export class ProductListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public file: File,
   ) {
+    this.database = this.pouchdbService.getDatabaseName();
     this.select = this.route.snapshot.paramMap.get('select');
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
     this.events.subscribe('changed-product', (change) => {
@@ -66,7 +69,6 @@ export class ProductListPage implements OnInit {
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config: any = (await this.pouchdbService.getDoc('config.profile', true));
-    this.showCategories();
     if (!config._id){
       let este = await this.pouchdbService.getConnect();
       this.events.subscribe(('end-sync'), async (change) => {
@@ -75,6 +77,7 @@ export class ProductListPage implements OnInit {
           this.config = config;
         }
         this.currency_precision = config.currency_precision || this.currency_precision;
+        this.showCategories();
         await this.setFilteredItems();
         if (this.select) {
           setTimeout(() => {
@@ -86,6 +89,7 @@ export class ProductListPage implements OnInit {
     } else {
       this.config = config;
       this.currency_precision = config.currency_precision || this.currency_precision;
+      this.showCategories();
       await this.setFilteredItems();
       if (this.select) {
         setTimeout(() => {
@@ -95,59 +99,96 @@ export class ProductListPage implements OnInit {
     }
   }
 
-  setFilteredItems() {
-    return new Promise(async (resolve, reject) => {
-      this.getProductsPage(
-        this.searchTerm, 0, this.category_id
-      ).then(async (products: any[]) => {
-        if (this.category_id == 'all') {
-          this.products = products;
-        }
-        else {
-          this.products = products.filter(word => word.category_id == this.category_id);
-        }
-        this.page = 1;
-        await this.loading.dismiss();
-        resolve(true);
-      });
-    });
-  }
+  // setFilteredItems() {
+  //   return new Promise(async (resolve, reject) => {
+  //     this.getProductsPage(
+  //       this.searchTerm, 0, this.category_id
+  //     ).then(async (products: any[]) => {
+  //       console.log("set filter on", products);
+  //       if (this.category_id == 'all') {
+  //         this.products = products;
+  //       }
+  //       else {
+  //         this.products = products.filter(word => word.category_id == this.category_id);
+  //       }
+  //       this.page = 1;
+  //       await this.loading.dismiss();
+  //       resolve(true);
+  //     });
+  //   });
+  // }
 
-  searchItems() {
-    this.searchItemsS(
-      this.searchTerm, 0
-    ).then((items) => {
-      this.products = items;
-      this.page = 1;
-      this.loading.dismiss();
-    });
-  }
+  setFilteredItems() {
+   return new Promise(async (resolve, reject) => {
+     let products:any = await this.getProductsPage();
+     this.products = products;
+     this.page = 0;
+     await this.loading.dismiss();
+     resolve(true);
+   });
+ }
+
+  // searchItems() {
+  //   this.searchItemsS(
+  //     this.searchTerm, 0
+  //   ).then((items) => {
+  //     this.products = items;
+  //     this.page = 1;
+  //     this.loading.dismiss();
+  //   });
+  // }
+
+  // doInfinite(infiniteScroll) {
+  //   setTimeout(() => {
+  //     this.getProductsPage(
+  //       this.searchTerm, this.page, this.category_id
+  //     ).then((products: any[]) => {
+  //       products.forEach(product => {
+  //         this.products.push(product);
+  //       });
+  //       this.page += 1;
+  //     });
+  //     infiniteScroll.target.complete();
+  //   }, 50);
+  // }
 
   doInfinite(infiniteScroll) {
-    setTimeout(() => {
-      this.getProductsPage(
-        this.searchTerm, this.page, this.category_id
-      ).then((products: any[]) => {
-        products.forEach(product => {
-          this.products.push(product);
-        });
-        this.page += 1;
+  setTimeout(async () => {
+    if (this.searchTerm){
+      await this.searchItemsLoad();
+      infiniteScroll.target.complete();
+    } else {
+      this.page += 1;
+      let products: any = await this.getProductsPage();
+      products.forEach(product => {
+        this.products.push(product);
       });
       infiniteScroll.target.complete();
-    }, 50);
-  }
+    }
+  }, 50);
+}
+
+  // doRefresh(refresher) {
+  //   setTimeout(() => {
+  //     this.getProductsPage(
+  //       this.searchTerm, 0, this.category_id
+  //     ).then((products: any[]) => {
+  //       this.products = products;
+  //       this.page = 1;
+  //     });
+  //     refresher.target.complete();
+  //   }, 50);
+  // }
 
   doRefresh(refresher) {
-    setTimeout(() => {
-      this.getProductsPage(
-        this.searchTerm, 0, this.category_id
-      ).then((products: any[]) => {
-        this.products = products;
-        this.page = 1;
-      });
-      refresher.target.complete();
-    }, 50);
-  }
+  setTimeout(async() => {
+    let products: any = await this.getProductsPage();
+    this.products = products;
+    this.page = 1;
+    refresher.target.complete();
+  }, 50);
+}
+
 
   async presentPopover(myEvent) {
     let popover = await this.popoverCtrl.create({
@@ -158,12 +199,32 @@ export class ProductListPage implements OnInit {
     popover.present();
   }
 
-  async showCategories(){
+//   async showCategories(){
+//   if (this.category_id=='all'){
+//     let categories:any = await this.pouchdbService.searchDocTypeData(
+//     'category',
+//     "", null, null, null, 'sequence', 'increase');
+//     this.categories = categories;
+//   }
+// }
+
+async showCategories(){
   if (this.category_id=='all'){
-    let categories:any = await this.pouchdbService.searchDocTypeData(
-    'category',
-    "", null, null, null, 'sequence', 'increase');
-    this.categories = categories;
+    let categories_tmp:any = await this.pouchdbService.getView('Informes/categories',
+    undefined,
+    [],
+    ["z"],
+    false,
+    false,
+    undefined,
+    undefined,
+    true,
+  )
+  let categories = [];
+  categories = categories_tmp.map(function(item){
+    return item.doc;
+  });
+  this.categories = categories;
   }
 }
 
@@ -216,31 +277,165 @@ async showConfig() {
     }
   }
 
-  getProductsPage(keyword, page, type = 'all') {
-    return new Promise(async (resolve, reject) => {
-      let products: any;
-      if (type == 'all') {
-        products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'sequence', 'increase', 30);
-      } else {
-        products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', type, 'sequence', 'increase', 30)
-      }
+  // getProductsPage(keyword, page, type = 'all') {
+  //   return new Promise(async (resolve, reject) => {
+  //     let products: any;
+  //     if (type == 'all') {
+  //       console.log("get all");
+  //       products = await this.pouchdbService.searchDocTypeData('product', keyword, page, null, null, 'sequence', 'increase', 30);
+  //       console.log("igot all");
+  //     } else {
+  //       products = await this.pouchdbService.searchDocTypeDataField('product', keyword, page, 'category_id', type, 'sequence', 'increase', 30)
+  //     }
+  //     resolve(products);
+  //   })
+  // }
+  getProductsPage() {
+  return new Promise(async (resolve, reject) => {
+    if (this.category_id == 'all') {
+      let products_tmp:any = await this.pouchdbService.getView(
+        'Informes/publishedSequence',
+        undefined,
+        [],
+        ["z"],
+        false,
+        false,
+        15,
+        15*this.page,
+        true,
+      )
+      console.log("products_tmp", products_tmp);
+      let products = [];
+      products = products_tmp.map(function(item){
+        return item.doc;
+      });
       resolve(products);
+    } else {
+      let products_tmp:any = await this.pouchdbService.getView(
+        'Informes/publishedProductCategory',
+        undefined,
+        [this.category_id],
+        [this.category_id+"z"],
+        false,
+        false,
+        15,
+        15*this.page,
+        true,
+      )
+      let products = [];
+      products = products_tmp.map(function(item){
+        return item.doc;
+      });
+      resolve(products);
+    }
+  })
+}
+
+  // searchItemsS(keyword, page) {
+  //   return new Promise(resolve => {
+  //     this.pouchdbService.searchDocs(
+  //       'product',
+  //       keyword,
+  //       page,
+  //       undefined,
+  //       undefined,
+  //       'name',
+  //       'increase'
+  //     ).then((items) => {
+  //       resolve(items);
+  //     })
+  //   })
+  // }
+
+  searchItems() {
+    return new Promise(async resolve => {
+      if (!this.searchTerm){
+        this.page = 0;
+        let products = await this.getProductsPage();
+        this.products = products;
+      } else {
+        if (this.category_id == 'all'){
+          this.pouchdbService.searchDocs(
+            'product',
+            this.searchTerm,
+            '',
+            undefined,
+            undefined,
+            'name',
+            'increase',
+            true
+          ).then((items:any) => {
+            console.log("ittems",items);
+            this.products = items;
+            this.page = 0;
+            this.last_record = items && items.length && items[items.length-1].name || '';
+            // this.loading.dismiss();
+            resolve(items);
+          })
+        } else {
+          this.pouchdbService.searchDocsField(
+            'product',
+            this.searchTerm,
+            '',
+            'category_id',
+            this.category_id,
+            'sequence',
+            'increase',
+            true
+          ).then((items:any) => {
+            this.products = items;
+            this.page = 0;
+            this.last_record = items && items.length && items[items.length-1].name || '';
+            // this.loading.dismiss();
+            resolve(items);
+          })
+        }
+      }
     })
   }
 
-  searchItemsS(keyword, page) {
+  searchItemsLoad() {
     return new Promise(resolve => {
-      this.pouchdbService.searchDocs(
-        'product',
-        keyword,
-        page,
-        undefined,
-        undefined,
-        'name',
-        'increase'
-      ).then((items) => {
-        resolve(items);
-      })
+      console.log("searchDocs")
+      if (this.category_id == 'all'){
+        this.pouchdbService.searchDocs(
+          'product',
+          this.searchTerm,
+          this.last_record,
+          undefined,
+          undefined,
+          'name',
+          'increase',
+          true
+        ).then((items:any) => {
+          items.forEach(item=>{
+            this.products.push(item);
+          })
+          this.page += 1;
+          this.last_record = items && items.length && items[items.length-1].name || '';
+          // this.loading.dismiss();
+          resolve(items);
+        })
+      } else {
+        this.pouchdbService.searchDocsField(
+          'product',
+          this.searchTerm,
+          this.last_record,
+          'category_id',
+          this.category_id,
+          'name',
+          'increase',
+          true
+        ).then((items:any) => {
+          items.forEach(item=>{
+            this.products.push(item);
+          })
+          this.page += 1;
+          this.last_record = items && items.length && items[items.length-1].name || '';
+          // this.loading.dismiss();
+          resolve(items);
+        })
+      }
     })
   }
 

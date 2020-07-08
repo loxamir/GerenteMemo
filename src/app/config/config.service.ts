@@ -189,7 +189,7 @@ export class ConfigService {
     return new Promise(async (resolve, reject)=>{
       let getList = [
         // pouchData['travel_product_id'],
-        // pouchData['warehouse_id'],
+        pouchData['warehouse_id'],
         pouchData['currency_id'],
         // pouchData['labor_product_id'],
         // pouchData['contact_id'],
@@ -216,7 +216,7 @@ export class ConfigService {
           doc_dict[row.id] = row.doc;
         })
         // pouchData['travel_product'] = doc_dict[pouchData['travel_product_id']] || {};
-        // pouchData['warehouse'] = doc_dict[pouchData['warehouse_id']] || {};
+        pouchData['warehouse'] = doc_dict[pouchData['warehouse_id']] || {};
         pouchData['currency'] = doc_dict[pouchData['currency_id']] || {};
         // pouchData['labor_product'] = doc_dict[pouchData['labor_product_id']] || {};
         // pouchData['contact'] = doc_dict[pouchData['contact_id']] || {};
@@ -250,8 +250,8 @@ export class ConfigService {
     // delete config.default_payment;
     // config.account_id = config.account._id;
     // delete config.account;
-    // config.warehouse_id = config.warehouse._id;
-    // delete config.warehouse;
+    config.warehouse_id = config.warehouse._id;
+    delete config.warehouse;
     // config.contact_id = config.contact._id;
     // delete config.contact;
     config.currency_id = config.currency._id;

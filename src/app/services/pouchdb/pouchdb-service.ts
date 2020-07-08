@@ -1,15 +1,17 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import PouchDB1 from 'pouchdb';
+import PouchdbFind from 'pouchdb-find';
 declare var require: any;
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import PouchdbUpsert from 'pouchdb-upsert';
-import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { Storage } from '@ionic/storage';
+// import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import { FormatService } from '../format.service';
-import { Events } from '../../services/events';
 // var server = "database.sistemamemo.com";
 var server = "database.sistemamemo.com";
+import { Events } from '../../services/events';
 
 @Injectable({ providedIn: 'root' })
 export class PouchdbService {
@@ -26,9 +28,9 @@ export class PouchdbService {
     public platform: Platform,
     public events: Events,
     public formatService: FormatService,
+    public route: ActivatedRoute,
   ) {
     this.platform.ready().then(() => {
-      this.getConnect();
     });
   }
 
@@ -73,20 +75,46 @@ export class PouchdbService {
     })
   }
 
+  getRemoteDoc(doc_id, attachments=false){
+    return new Promise(async (resolve, reject)=>{
+      if (typeof doc_id === "string"){
+        try {
+          let remote = new PouchDB1(this.remote);
+          let test = await remote.get(doc_id, {
+            attachments: attachments,
+            // binary: true
+          });
+          resolve(test);
+        } catch {
+          resolve({})
+        }
+      } else {
+        resolve({})
+      }
+    })
+  }
+
+  getDatabaseName(){
+    return this.database;
+  }
+
   getConnect(){
+    console.log("getConnect");
     let self = this;
     return new Promise(async (resolve, reject)=>{
-      this.storage.get("username").then(username => {
-        // let username="laroca";
-        // let database="laroca";
-        // let password="123";
+      let username: any = await this.storage.get("username");
+      let password: any = await this.storage.get("password");
+      let database: any = await this.storage.get("database");
+        // let username = "pickler";
+        // let database = "ropas";
+        // let password = "123";
         console.log("username", username);
         if (! username){
           resolve(false);
           return;
         }
         this.username = username;
-        this.storage.get("database").then(async database => {
+        // this.storage.get("database").then(database => {
           if (! database){
             resolve(false);
             return;
@@ -94,78 +122,84 @@ export class PouchdbService {
           this.database = database;
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
-          if (this.platform.is('cordova')){
-            PouchDB.plugin(cordovaSqlitePlugin);
-            this.db = new PouchDB(database, {
-              adapter: 'cordova-sqlite',
-              location: 'default',
-              androidDatabaseImplementation: 2
-            })
-          } else {
-            this.db = new PouchDB(database);
-          }
+          PouchDB.plugin(PouchdbFind);
+          // if (this.platform.is('cordova')){
+          //   PouchDB.plugin(cordovaSqlitePlugin);
+          //   this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+          // } else {
+            // this.db = new PouchDB(database);
+          // }
           console.log("database", database);
-          this.db.setMaxListeners(50);
-          self.events.publish('got-database', {});
-          let loadDemo = await this.storage.get('loadDemo');
-          this.storage.get('password').then(password => {
-            this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
-            if (database != 'memo' || !loadDemo){
-              let options = {
-                live: true,
-                retry: true
-              }
-              let syncJob = this.db.sync(this.remote, options)
-              .on('change', function (info) {
-                // handle change
-                console.log("sync change", info);
-              }).on('paused', async (err) => {
-                console.log("sync paused", err);
-                if (username == 'memo'){
-                  self.storage.set('loadDemo', true);
-                  syncJob.cancel();
-                }
-                self.events.publish('end-sync', {});
-                resolve(true)
-                // replication paused (e.g. replication up to date, user went offline)
-              }).on('active', function () {
-                console.log("sync activated");
-                // replicate resumed (e.g. new changes replicating, user went back online)
-              }).on('denied', function (err) {
-                console.log("sync no permissions", err);
-                // a document failed to replicate (e.g. due to permissions)
-              }).on('complete', function (info) {
-                console.log("sync complete", info);
-                // handle complete
-              }).on('error', function (err) {
-                console.log("sync other error", err);
-                // handle error
-              });
-            } else {
-              setTimeout(function(){
-                self.events.publish('end-sync', {});
-              }, 500);
-            }
+          // this.storage.get('password').then(password => {
+            this.db = new PouchDB("https://"+username+":"+password+"@"+server+'/'+database);
 
-            this.db.changes({
-              live: true,
-              since: 'now',
-              include_docs: true,
-              attachments: true,
-              // binary: true,
-            }).on('change', (change) => {
-              // console.log("changed", change);
-              this.handleChangeData(change);
-            }).on('complete', function(info) {
-              //console.log("have info", info);
-            }).on('error', function (err) {
-              console.log("errou", err);
-              // resolve(false)
-            });
+            this.db.info()
+  .then(() => {
+    console.log("info true");
+    // The database exists.
+    // Do something...
+    resolve(true);
+    // self.events.publish('got-database', {});
+    setTimeout(function(){
+      self.events.publish('end-sync', {});
+    }, 100);
+  })
+  .catch(e => {
+    console.log("info false");
+    resolve(false);
+    // No database found and it was not created.
+    // Do something else...
+  });
+            // resolve(true);
+            // self.events.publish('got-database', {});
+            // this.db.setMaxListeners(50);
+            // this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
+            // let options = {
+            //   live: true,
+            //   retry: true
+            // };
 
-          })
-        });
-      });
+            // this.db.changes({
+            //   live: true,
+            //   since: 'now',
+            //   include_docs: true
+            // }).on('change', (change) => {
+            //   // console.log("changed", change);
+            //   this.handleChangeData(change);
+            // }).on('complete', function(info) {
+            //   //console.log("have info", info);
+            // }).on('error', function (err) {
+            //   console.log("errou", err);
+            //   // resolve(false)
+            // });
+
+            // setTimeout(function(){
+            //   self.events.publish('end-sync', {});
+            // }, 100);
+            // this.db.sync(this.remote, options)
+            // .on('change', function (info) {
+            //   // handle change
+            //   console.log("sync change", info);
+            // }).on('paused', function (err) {
+            //   console.log("sync paused", err);
+            //   self.events.publish('end-sync');
+            //   // replication paused (e.g. replication up to date, user went offline)
+            // }).on('active', function () {
+            //   console.log("sync activated");
+            //   // replicate resumed (e.g. new changes replicating, user went back online)
+            // }).on('denied', function (err) {
+            //   console.log("sync no permissions", err);
+            //   // a document failed to replicate (e.g. due to permissions)
+            // }).on('complete', function (info) {
+            //   console.log("sync complete", info);
+            //   // handle complete
+            // }).on('error', function (err) {
+            //   console.log("sync other error", err);
+            //   // handle error
+            // });
+      //     })
+      //   });
+      // });
     });
   }
 
@@ -195,33 +229,144 @@ export class PouchdbService {
   }
 
   searchDocs(
-    docType, keyword="", page=null, field=undefined, filter=undefined,
-    sort='date', direction='decrease'
+    docType, keyword="", last_record='', field=undefined, filter=undefined,
+    sort='date', direction='decrease', attachments=false
   ){
-    return new Promise((resolve, reject)=>{
-      let start = page*15;
-      let self = this;
-      let end = (page+1)*15;
-      if (page == null){
-        start = undefined;
-        end = undefined;
+    let self = this;
+    return new Promise(async (resolve, reject)=>{
+      let dad = {};
+      if (docType == 'product'){
+        dad = {
+          "$or": [
+            {
+                "name": {
+                    $regex: "(?i)"+keyword
+                }
+            },
+            {
+                "code": {
+                    $regex: "(?i)"+keyword
+                }
+            }
+        ],
+        "$and": [
+          {publish: {$eq: true}},
+          {docType: {$eq: docType}},
+          {name: {$gt: last_record}}
+        ]}
+      } else {
+        dad = {
+          "$or": [
+            {
+                "name": {
+                    $regex: "(?i)"+keyword
+                }
+            },
+            {
+                "code": {
+                    $regex: "(?i)"+keyword
+                }
+            }
+        ],
+        "$and": [
+          {docType: {$eq: docType}},
+          {name: {$gt: last_record}}
+        ]}
       }
-      let docs = this.docTypes[docType].filter(
-        word => filter && word[filter] || ! filter && true)
-      .filter(word => field && word[field]
-        && word[field].toString().search(new RegExp(keyword, "i")) != -1
-        || (word['name']
-        && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
-        || (word.code && word.code.toString().search(keyword) != -1))
-      .sort(function(a, b) {
-        return self.formatService.compareField(a, b, sort, direction);
+
+      if (field) {
+        let dict: any = {};
+        dict[field] = {$regex: "(?i)"+keyword};
+        dad['$or'].push(dict)
+      }
+      await this.db.createIndex({
+        index: {fields: [sort]}
       })
-      .slice(start, end);
-      // console.log(docs)
-      resolve(docs);
+      let newSort = {}
+      if (direction == 'decrease'){
+        newSort[sort] = 'desc';
+      } else {
+        newSort[sort] = 'asc';
+      }
+      self.db.find({
+        selector: dad,
+        sort: [newSort],
+        limit: 15,
+      }).then(async data=>{
+        if (attachments){
+          // let getList = data.docs.map(found=>{
+          //   return found._id
+          // })
+          // let items:any = await this.getList(getList, true);
+          // let docs = items.map(found=>{
+          //   return found.doc
+          // })
+          resolve(data.docs);
+        } else {
+          resolve(data.docs);
+        }
+      });
     });
   }
 
+  searchDocsField(
+    docType, keyword="", last_record='', field=undefined, filter=undefined,
+    sort='date', direction='decrease', attachments=false
+  ){
+    let self = this;
+    return new Promise(async (resolve, reject)=>{
+      let dad = {
+        "$or": [
+          {
+              "name": {
+                  $regex: "(?i)"+keyword
+              }
+          },
+          {
+              "code": {
+                  $regex: "(?i)"+keyword
+              }
+          }
+      ],
+      "$and": [
+        {docType: {$eq: docType}},
+        {name: {$gt: last_record}}
+      ]}
+
+      if (field) {
+        let dict: any = {};
+        dict[field] = {$eq: filter};
+        dad['$and'].push(dict)
+      }
+      await this.db.createIndex({
+        index: {fields: [sort]}
+      })
+      let newSort = {}
+      if (direction == 'decrease'){
+        newSort[sort] = 'desc';
+      } else {
+        newSort[sort] = 'asc';
+      }
+      self.db.find({
+        selector: dad,
+        sort: [newSort],
+        limit: 10,
+      }).then(async data=>{
+        if (attachments){
+          // let getList = data.docs.map(found=>{
+          //   return found._id
+          // })
+          // let items:any = await this.getList(getList, true);
+          // let docs = items.map(found=>{
+          //   return found.doc
+          // })
+          resolve(data.docs);
+        } else {
+          resolve(data.docs);
+        }
+      });
+    });
+  }
 
   getView(
     viewName,
@@ -245,6 +390,7 @@ export class PouchdbService {
         'limit': limit,
         'skip': skip,
         'include_docs': include_docs,
+        'attachments': false,
         'keys': keys,
       }
       this.db.query(viewName, options).then(function (res) {
@@ -470,29 +616,24 @@ export class PouchdbService {
         end = undefined;
       }
       let self = this;
-      if (this.docTypes[docType]){
-        let docs = this.docTypes[docType].filter(
-          word => filter && word[filter] || ! filter && true)
-        .filter(
-          word => field && word[field]
-          && word[field].toString().search(new RegExp(keyword, "i")) != -1
-          || (word['name']
-          && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
-          || (word.code && word.code.toString().search(keyword) != -1))
-        .sort(function(a, b) {
-          return self.formatService.compareField(a, b, sort, direction);
-        })
-        .slice(start, end);
-        // console.log("lista 1", docs);
-        // let lista2 = docs.sort(function(a, b) {
-        //   return self.formatService.compareField(a, b, 'name', 'increase');
-        // })
-        // console.log("lista 2", lista2);
-        resolve(docs);
-      } else {
+      // if (this.docTypes[docType]){
+      //   let docs = this.docTypes[docType].filter(
+      //     word => filter && word[filter] || ! filter && true)
+      //   .filter(
+      //     word => field && word[field]
+      //     && word[field].toString().search(new RegExp(keyword, "i")) != -1
+      //     || (word['name']
+      //     && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
+      //     || (word.code && word.code.toString().search(keyword) != -1))
+      //   .sort(function(a, b) {
+      //     return self.formatService.compareField(a, b, sort, direction);
+      //   })
+      //   .slice(start, end);
+      //   resolve(docs);
+      // } else {
         this.getDocType(docType).then((docList: any[])=>{
-          this.docTypes[docType] = docList;
-          let docs = this.docTypes[docType].filter(
+          // this.docTypes[docType] = docList;
+          let docs = docList.filter(
             word => filter && word[filter] || ! filter && true)
           .filter(word => field && word[field]
             && word[field].toString().search(new RegExp(keyword, "i")) != -1
@@ -505,7 +646,7 @@ export class PouchdbService {
           .slice(start, end);
           resolve(docs);
         })
-      }
+      // }
     });
   }
 
@@ -521,21 +662,21 @@ export class PouchdbService {
         start = undefined;
         end = undefined;
       }
-      if (this.docTypes[docType]){
-        let docs = this.docTypes[docType].filter(
-          word => field && word[field] == field_value)
-        .filter(word => (word['name']
-        && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
-        || (word.code && word.code.toString().search(keyword) != -1))
-        .sort(function(a, b) {
-          return self.formatService.compareField(a, b, sort, direction);
-        })
-        .slice(start, end);
-        resolve(docs);
-      } else {
+      // if (this.docTypes[docType]){
+      //   let docs = this.docTypes[docType].filter(
+      //     word => field && word[field] == field_value)
+      //   .filter(word => (word['name']
+      //   && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
+      //   || (word.code && word.code.toString().search(keyword) != -1))
+      //   .sort(function(a, b) {
+      //     return self.formatService.compareField(a, b, sort, direction);
+      //   })
+      //   .slice(start, end);
+      //   resolve(docs);
+      // } else {
         this.getDocType(docType).then((docList: any[])=>{
-          this.docTypes[docType] = docList;
-          let docs = this.docTypes[docType].filter(
+          // this.docTypes[docType] = docList;
+          let docs = docList.filter(
             word => field && word[field] == field_value)
           .filter(word => (word['name']
           && word['name'].toString().search(new RegExp(keyword, "i")) != -1)
@@ -546,7 +687,7 @@ export class PouchdbService {
           .slice(start, end);
           resolve(docs);
         })
-      }
+      // }
     });
   }
 
@@ -610,7 +751,7 @@ export class PouchdbService {
           }
         }
       }
-      this.events.publish('changed-'+docType, {change: change});
+      this.events.publish('changed-'+docType, {"change": change});
     });
   }
 
@@ -662,9 +803,5 @@ export class PouchdbService {
         list.unshift({doc: change.doc});
       }
     }
-  }
-
-  getDatabaseName(){
-    return this.database;
   }
 }
