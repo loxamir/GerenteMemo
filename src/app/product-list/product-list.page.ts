@@ -106,7 +106,7 @@ export class ProductListPage implements OnInit {
     if (!this.logged){
       this.loading.dismiss();
       // let order: any = await this.pouchdbService.searchDocTypeData('sale',"",0);
-      let order: any = await this.storage.get("sales")
+      let order: any = await this.storage.get("order")
       if (order){
         if (order.state == 'QUOTATION'
         || order.state == 'CONFIRMED'
@@ -115,6 +115,12 @@ export class ProductListPage implements OnInit {
         }
       }
     }
+
+    this.events.subscribe('cancel-sale', async (data) => {
+      this.order = undefined;
+      this.storage.set("order", undefined)
+      console.log("cancel sale", this.order);
+    })
 
 
     this.events.subscribe('add-product', async (data) => {
@@ -134,6 +140,7 @@ export class ProductListPage implements OnInit {
         this.order.total += total;
         this.order.amount_unInvoiced += total;
         this.order.residual += total;
+        this.storage.set("order", this.order)
         // let updatedOrder:any = await this.pouchdbService.updateDoc(this.order);
         // this.order._rev = updatedOrder.rev;
 

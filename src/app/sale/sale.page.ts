@@ -36,6 +36,7 @@ export class SalePage implements OnInit {
     currency_precision = 2;
     confirming = false;
     contact_id;
+    config: any = {};
 
     constructor(
       public navCtrl: NavController,
@@ -105,6 +106,7 @@ export class SalePage implements OnInit {
       this.translate.setDefaultLang(language);
       this.translate.use(language);
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
+      this.config = config;
       // this.currency_precision = config.currency_precision;
       // this.authService.loggedIn.subscribe(async status => {
       //   console.log("status", status);
@@ -162,89 +164,53 @@ export class SalePage implements OnInit {
       // this.listenBarcode = true;
     }
 
+     sendWhatsMsg(){
+       console.log("send order to whatsapp", this.saleForm.value);
+       let text = "Gostaria de pedir o seguinte: %0a";
+       this.saleForm.value.items.forEach(item=>{
+         text += item.quantity+" - "+item.product_name+' - R$+ '+(item.price*item.quantity).toFixed(2)+"%0a";
+         // text += 'R$+ '+(item.price*item.quantity).toFixed(2) + ' - ' + item.quantity+" - "+item.product_name+"%0a";
+       })
+       let total = this.saleForm.value.total.toFixed(2);
+       // console.log("total", total);
+       text += "Total: R$+ "+total+"%0a";
+       window.open("https://api.whatsapp.com/send?phone=+"+this.config.whatsapp+"&text="+text);
+     }
+
     async goNextStep() {
-      console.log("send order to whatsapp", this.saleForm.value);
-      // if(this.return){
-      //   await this.buttonSave();
-      // }
-      // if (this.saleForm.value.state == 'QUOTATION'){
-      //   if (! this.confirming){
-      //     this.saleForm.patchValue({
-      //       date: new Date().toISOString()
-      //     });
-      //     this.confirming = true;
-      //     await this.beforeConfirm();
-      //     this.confirming = false;
-      //     if (this.select){
-      //       this.modalCtrl.dismiss();
-      //     }
-      //   }
+      // if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
+      //   this.selectPaymentCondition().then(async ()=>{
+      //     this.sendWhatsMsg();
+      //   });
+      // } else {
+        this.sendWhatsMsg();
       // }
     }
 
-    beforeConfirm(){
-      return new Promise(async resolve =>{
-        if (this.saleForm.value.items.length == 0){
-          resolve(true);
-        } else {
-          // if (Object.keys(this.saleForm.value.address).length === 0){
-          //   this.selectAddress().then(async teste => {
-          //     await this.loading.dismiss();
-          //     if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
-          //       this.selectPaymentCondition().then(async ()=>{
-          //         this.loading = await this.loadingCtrl.create({});
-          //         await this.loading.present();
-          //         await this.afterConfirm();
-          //         await this.loading.dismiss();
-          //         resolve(true);
-          //       });
-          //     }
-          //   });
-          // } else
-          if (Object.keys(this.saleForm.value.paymentCondition).length === 0){
-            this.selectPaymentCondition().then(async ()=>{
-              this.loading = await this.loadingCtrl.create({});
-              await this.loading.present();
-              await this.afterConfirm();
-              await this.loading.dismiss();
-              resolve(true);
-            });
-          } else {
-            this.loading = await this.loadingCtrl.create({});
-            await this.loading.present();
-            await this.afterConfirm();
-            await this.loading.dismiss();
-            resolve(true);
-          }
-        }
-      })
-    }
 
-
-
-    buttonSave() {
-      return new Promise(async resolve => {
-        if (this._id){
-          await this.saleService.updateSale(this.saleForm.value);
-          this.saleForm.markAsPristine();
-          resolve(true);
-        } else {
-          this.saleService.createSale(this.saleForm.value).then(doc => {
-            this.saleForm.patchValue({
-              _id: doc['doc'].id,
-              code: doc['sale'].code,
-              create_time: doc['sale'].create_time,
-              create_user: doc['sale'].create_user,
-              write_time: doc['sale'].write_time,
-              write_user: doc['sale'].write_user,
-            });
-            this._id = doc['doc'].id;
-            this.saleForm.markAsPristine();
-            resolve(true);
-          });
-        }
-      })
-    }
+    // buttonSave() {
+    //   return new Promise(async resolve => {
+    //     if (this._id){
+    //       await this.saleService.updateSale(this.saleForm.value);
+    //       this.saleForm.markAsPristine();
+    //       resolve(true);
+    //     } else {
+    //       this.saleService.createSale(this.saleForm.value).then(doc => {
+    //         this.saleForm.patchValue({
+    //           _id: doc['doc'].id,
+    //           code: doc['sale'].code,
+    //           create_time: doc['sale'].create_time,
+    //           create_user: doc['sale'].create_user,
+    //           write_time: doc['sale'].write_time,
+    //           write_user: doc['sale'].write_user,
+    //         });
+    //         this._id = doc['doc'].id;
+    //         this.saleForm.markAsPristine();
+    //         resolve(true);
+    //       });
+    //     }
+    //   })
+    // }
 
     async deleteItem(slidingItem, item){
       if (this.saleForm.value.state=='QUOTATION'){
@@ -360,16 +326,16 @@ export class SalePage implements OnInit {
     //   popover.present();
     // }
 
-    afterConfirm(){
-      return new Promise(async resolve => {
-        // this.saleForm.patchValue({
-        //   amount_unInvoiced: this.saleForm.value.total,
-        // });
-        if(!this.saleForm.value._id){
-          await this.buttonSave();
-        }
-        let createList = [];
-        console.log("confirmed");
+    // afterConfirm(){
+    //   return new Promise(async resolve => {
+    //     // this.saleForm.patchValue({
+    //     //   amount_unInvoiced: this.saleForm.value.total,
+    //     // });
+    //     if(!this.saleForm.value._id){
+    //       await this.buttonSave();
+    //     }
+    //     let createList = [];
+    //     console.log("confirmed");
         // this.configService.getConfigDoc().then((config: any)=>{
         //   this.pouchdbService.getList([
         //     // 'warehouse.client',
@@ -462,8 +428,8 @@ export class SalePage implements OnInit {
         //     })
         //   })
         // });
-      });
-    }
+    //   });
+    // }
 
     async saleCancel(){
       let prompt = await this.alertCtrl.create({
@@ -481,8 +447,9 @@ export class SalePage implements OnInit {
               this.saleForm.patchValue({
                  state: 'QUOTATION',
               });
-              this.removeQuotes();
-              this.buttonSave();
+              // this.removeQuotes();
+              // this.buttonSave();
+              this.events.publish('cancel-sale', {});
             }
           }
         ]
@@ -490,17 +457,17 @@ export class SalePage implements OnInit {
       prompt.present();
     }
 
-    removeQuotes(){
-      this.pouchdbService.getRelated(
-      "cash-move", "origin_id", this.saleForm.value._id).then((docs) => {
-        docs.forEach(doc=>{
-          this.pouchdbService.deleteDoc(doc);
-        })
-      });
-      this.saleForm.patchValue({
-        'planned': [],
-      });
-    }
+    // removeQuotes(){
+    //   this.pouchdbService.getRelated(
+    //   "cash-move", "origin_id", this.saleForm.value._id).then((docs) => {
+    //     docs.forEach(doc=>{
+    //       this.pouchdbService.deleteDoc(doc);
+    //     })
+    //   });
+    //   this.saleForm.patchValue({
+    //     'planned': [],
+    //   });
+    // }
 
     selectPaymentCondition() {
       return new Promise(async resolve => {
@@ -606,9 +573,10 @@ export class SalePage implements OnInit {
         buttons: [{
           text: this.translate.instant('YES'),
           handler: async () => {
-            alertPopup.present();
-            let doc:any = await this.pouchdbService.getDoc(this._id);
-            this.pouchdbService.deleteDoc(doc);
+            // alertPopup.present();
+            // let doc:any = await this.pouchdbService.getDoc(this._id);
+            // this.pouchdbService.deleteDoc(doc);
+            this.events.publish('cancel-sale', {});
             this.exitPage();
           }
         },

@@ -19,13 +19,13 @@
       <h4 class="field-label-col">{{'TOTAL' | translate}}</h4>
       <h4 class="field-value-col" style="color:blue">$ {{saleForm.value.total|number:'1.'+currency_precision}}</h4>
     </ion-col>
-  <ion-col
+  <!-- <ion-col
   *ngIf="saleForm.value.state=='CONFIRMED'">
       <h4 class="field-label-col">{{'TO_RECEIVE' | translate}}</h4>
       <h4 class="field-value-col" style="color:red">$ {{saleForm.value.residual|number:'1.'+currency_precision}}</h4>
-  </ion-col>
+  </ion-col> -->
   </ion-row>
-  <ion-row  class="state-header">
+  <!-- <ion-row  class="state-header">
     <ion-col size="4">
       <div class="clicked arron">
         <span class="state-label">{{ 'STATE_QUOTATION' | translate}}</span>
@@ -41,26 +41,22 @@
         <span class="state-label">{{ 'STATE_RECEIVED' | translate}}</span>
       </div>
     </ion-col>
-  </ion-row>
+  </ion-row> -->
 </ion-header>
 
 <ion-content background="#ddd" >
   <ion-input #corpo style="height: 0px;--padding-top: 0px;--padding-bottom: 0px;--padding-start: 0px;"></ion-input>
   <form [formGroup]="saleForm">
-    <ion-row class="ion-justify-content-center">
-      <!-- <ion-item class="ion-no-padding" (click)="selectAddress()" class="field-50">
-        <h4 class="field-label">{{'DELIVERY_ADDRESS' | translate }}</h4>
-        <h4 class="field-value">{{saleForm.value.address && saleForm.value.address.name || 'SELECT' | translate}}</h4>
-      </ion-item> -->
-      <ion-item class="ion-no-padding" (click)="selectPaymentCondition()" class="field-50">
+    <!-- <ion-row class="ion-justify-content-center">
+      <ion-item class="ion-no-padding" (click)="selectPaymentCondition()" class="field-100">
         <h4 class="field-label">{{'PAYMENT_METHOD' | translate }}</h4>
         <h4 class="field-value">{{saleForm.value.paymentCondition && saleForm.value.paymentCondition.name || 'SELECT' | translate}}</h4>
       </ion-item>
-    </ion-row>
-    <ion-item class="field-100" *ngIf="saleForm.value.note != undefined">
+    </ion-row> -->
+    <!-- <ion-item class="field-100" *ngIf="saleForm.value.note != undefined">
         <ion-label position="floating">{{'NOTE' | translate}}</ion-label>
         <ion-textarea autoGrow="true" rows="1" #note formControlName="note"></ion-textarea>
-    </ion-item>
+    </ion-item> -->
 
     <ion-list no-lines *ngIf="saleForm.value.items.length">
       <section>
@@ -146,19 +142,19 @@
       {{ 'CANCEL' | translate }}
     </ion-button>
   </ion-fab>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'QUOTATION' && saleForm.value.items.length">
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'QUOTATION' && saleForm.value.items.length">
     <ion-button (click)="goNextStep()"  class="next-button" color="primary">
       <ion-icon name="checkmark"> </ion-icon>
       {{ 'CONFIRM' | translate }}
     </ion-button>
-  </ion-fab>
-
-  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="saleForm.dirty">
-    <ion-button (click)="buttonSave()"  color="success" class="save-button">
-      <ion-icon name="save"> </ion-icon>
-      {{ 'SAVE' | translate }}
-    </ion-button>
   </ion-fab> -->
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="saleForm.value.state == 'QUOTATION' && saleForm.value.items.length">
+    <ion-button (click)="goNextStep()"  color="success" class="save-button">
+      <ion-icon name="logo-whatsapp" style="margin-right:10px;"></ion-icon>
+      {{ 'Enviar pedido' | translate }}
+    </ion-button>
+  </ion-fab>
   <div style="height: 100px;">
   </div>
 </ion-content>

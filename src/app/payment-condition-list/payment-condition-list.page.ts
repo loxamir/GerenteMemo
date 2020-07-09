@@ -60,7 +60,7 @@ export class PaymentConditionListPage implements OnInit {
     // return this.pouchdbService.searchDocTypeData('payment-condition');
     return new Promise(async (resolve, reject) => {
     let products_tmp:any = await this.pouchdbService.getView(
-      'Informes/publishedSequence',
+      'Informes/Pagamentos',
       undefined,
       [],
       ["z"],
