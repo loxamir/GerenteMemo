@@ -41,6 +41,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     database = '';
     moreFields = false;
     config = {};
+    logged: boolean = false;
 
     constructor(
       public navCtrl: NavController,
@@ -96,14 +97,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         _attachments: new FormControl({}),
         description: new FormControl(''),
       });
+
       this.database = this.pouchdbService.getDatabaseName();
-      let config: any = (await this.pouchdbService.getDoc('config.profile', true));
-      this.currency_precision = config.currency_precision || this.currency_precision;
       let language:any = await this.languageService.getDefaultLanguage();
       this.translate.setDefaultLang(language);
       this.translate.use(language);
-      this.loading = await this.loadingCtrl.create({});
-      await this.loading.present();
+
       if (this._id){
         this.productService.getProduct(this._id).then((data) => {
           setTimeout(() => {
@@ -121,12 +120,40 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             console.log("product_images", this.product_images);
           }
           this.productForm.patchValue(data);
-          this.loading.dismiss();
+          // this.loading.dismiss();
         });
       } else {
+        this.loading = await this.loadingCtrl.create({});
+        await this.loading.present();
+        this.pouchdbService.getConnect();
+        let config: any = (await this.pouchdbService.getDoc('config.profile', true));
+        this.currency_precision = config.currency_precision || this.currency_precision;
+
         this.getDefaultCategory();
         this.loading.dismiss();
       }
+    }
+
+    async askProduct(){
+      // let orders:any = await this.s.searchDocTypeData(
+      //   'sale', "CONFIRMED", 0, "state");
+      // if (orders[0]){
+      //   let alertPopup = await this.alertCtrl.create({
+      //       header: this.translate.instant('Pedido Pendiente'),
+      //       message: this.translate.instant('No puedes hacer un nuevo pedido mientras hay otro pendiente'),
+      //       buttons: [{
+      //               text: this.translate.instant('OK'),
+      //               handler: () => {
+      //               }
+      //           }]
+      //   });
+      //   alertPopup.present();
+      // } else {
+        if (!this.logged){
+          this.events.publish('add-product', {product: this.productForm.value});
+          this.exitPage();
+        }
+      // }
     }
 
     getBase64Image(imgUrl, callback) {

@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="logged">
   <ion-toolbar>
     <ion-row (click)="showConfig()">
       <ion-col class="ion-no-padding">
@@ -54,7 +54,7 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content class="list-mini-content">
+<ion-content class="list-mini-content"  *ngIf="logged">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -170,5 +170,355 @@
           <ion-icon name="add">
           </ion-icon>
       </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<ion-header *ngIf="!logged">
+<ion-toolbar  style="--background: {{config.bg_color}};">
+      <ion-row *ngIf="!select">
+        <ion-col class="ion-no-padding">
+          <img
+          alt="Logo"
+          style="max-width: 100%;max-height: 100px;border-radius: 5px;margin-top: 5px;"
+          [src]="'https://database.sistemamemo.com/'+database+'/config.profile/logo.png'">
+        </ion-col>
+        <ion-col>
+          <ion-row>
+            <ion-col>
+              <h1 style="font-size: 20px;text-align:center;">
+                {{config.name}}
+              </h1>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <a target="_blank" href="https://api.whatsapp.com/send?phone={{config.whatsapp}}&text={{'HELLO'|translate}}+{{config.name}}!+{{'VISITOR_MESSAGE'|translate}}" rel="noopener">
+                <h1  color="success" style="font-size: 12px;color: green;border-radius: 5px;background: white;max-width: 156px;text-align: center;margin: auto;">
+                  <ion-icon name="logo-whatsapp" style="padding-right: 5px;padding-left: 3px;font-size: 25px;"></ion-icon>
+                  <div style="display: inline-block;font-size: 17px;vertical-align: super;">
+                    {{(config.whatsapp || "").replace("+595", "0").replace("+55", "0")}}
+                  </div>
+                </h1>
+              </a>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    <ion-buttons slot="start">
+        <ion-button *ngIf="select"
+                (click)="discard()">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+    <ion-row>
+      <ion-col *ngIf="category_id!='all'||searchTerm"
+      size="1.5"
+      class="ion-no-padding"
+      (click)="goBack()"
+      style="margin: auto;padding-left: 10px;font-size:25px;">
+        <ion-icon name="arrow-back"  (click)="goBack()"></ion-icon>
+      </ion-col>
+      <ion-col  class="ion-no-padding">
+        <ion-searchbar
+        placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
+        [(ngModel)]="searchTerm"
+        #searchBar
+        debonce="500"
+        (ionChange)="searchItems()">
+      </ion-searchbar>
+      </ion-col>
+    </ion-row>
+    <ion-buttons slot="end">
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content   *ngIf="!logged" class="list-mini-content" style="--background: {{config.bg_color}};">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <h1 *ngIf="!select && !searchTerm && category_id=='all' && categories.length"
+  style="font-style: italic;font-weight: bold;font-size: 16px;text-align:center;margin-top: 5px;margin-bottom: 10px;color: white;">
+    {{'CATEGORIES'| translate}}
+  </h1>
+  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all' && categories.length">
+    <div class="card" style="margin-left: 5px;margin-right:5px;" *ngFor="let item of categories">
+        <ion-card class="list-card"
+        style="height: 100%;margin:0px;width: 100px;"
+        (click)="filterCategory(item)">
+          <ion-row  class="producto" style="height:39px;">
+            <ion-col class="ion-no-padding">
+              <h3 class="item-title" style="font-size: 17px;word-break: break-word;width: 100px;">
+                {{ item.name }}
+              </h3>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <img
+            alt="Foto del categoria"
+            style="height: 95px;width: 100%;"
+            *ngIf="item._attachments"
+            [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/avatar.png'">
+            <img
+            alt="Foto del categoria"
+            style="height: 95px;width: auto;"
+            *ngIf="!item._attachments"
+            src="./assets/images/sem_foto.jpg">
+          </ion-row>
+        </ion-card>
+    </div>
+  </div>
+  <h1
+  style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 10px;margin-bottom: 5px;color: white;"
+  *ngIf="!select && !searchTerm && category_id=='all'"
+  class="ion-no-padding">
+    {{ 'PRODUCTS'|translate }}
+  </h1>
+  <div class="scrolling-wrapper-flexbox2" *ngIf="products.length">
+    <div class="card" *ngFor="let item of products; let i = index;">
+      <ion-row>
+        <ion-card class="list-card" style="display: inline-block;"
+         (click)="openProduct(item)">
+        <ion-row>
+          <ion-col size="4">
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
+            *ngIf="item._attachments && item.images"
+            [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/'+item.images[0]">
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
+            *ngIf="item._attachments && ! item.images"
+            [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/avatar.png'">
+            <img
+            alt="Foto del producto"
+            style="height: 50px;width: auto;border-radius: 5px;"
+            *ngIf="!item._attachments"
+            src="./assets/images/sem_foto.jpg">
+          </ion-col>
+          <ion-col class="ion-no-padding">
+            <ion-row class="producto">
+              <ion-col class="ion-no-padding">
+                <h3 class="item-title" style="font-size: 13px;height: 30px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">{{ item.name }}</h3>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                <h2 class="list-big-number" style="color: green;font-size: 13px;" *ngIf="item.price">{{config.currency_symbol}} {{item.price| number:'1.'+currency_precision}}</h2>
+                <h2 class="list-big-number" style="color: green;font-size: 13px;" *ngIf="!item.price">Consultar Precio</h2>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                <ion-button style="height: 15px;">
+                  {{'SHOW'|translate}}
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="item-content">
+          <div style="height: 25px;font-size: 12px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+            {{item.description}}
+          </div>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      </ion-row>
+    </div>
+  </div>
+  <div class="scrolling-wrapper-flexbox2" *ngIf="products.length==0&&category_id=='all'&& !searchTerm">
+    <div class="card">
+      <ion-row>
+        <ion-card class="list-card" style="display: inline-block;">
+        <ion-row>
+          <ion-col size="4">
+            <ion-skeleton-text animated style="width: 100%;height:100%;"></ion-skeleton-text>
+          </ion-col>
+          <ion-col class="ion-no-padding">
+            <ion-row class="producto">
+              <ion-col class="ion-no-padding">
+                <h3 class="item-title" style="font-size: 13px;height: 30px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+                  <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+                </h3>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                <h2 class="list-big-number" style="color: green;font-size: 13px;">
+                  <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></h2>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                <ion-button style="height: 15px;">
+                  {{'SHOW'|translate}}
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="item-content">
+          <div style="height: 25px;font-size: 12px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+            <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+          </div>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      </ion-row>
+    </div>
+    <div class="card">
+      <ion-row>
+        <ion-card class="list-card" style="display: inline-block;">
+        <ion-row>
+          <ion-col size="4">
+            <ion-skeleton-text animated style="width: 100%;height:100%;"></ion-skeleton-text>
+          </ion-col>
+          <ion-col class="ion-no-padding">
+            <ion-row class="producto">
+              <ion-col class="ion-no-padding">
+                <h3 class="item-title" style="font-size: 13px;height: 30px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+                  <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+                </h3>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                <h2 class="list-big-number" style="color: green;font-size: 13px;">
+                  <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></h2>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                <ion-button style="height: 15px;">
+                  {{'SHOW'|translate}}
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="item-content">
+          <div style="height: 25px;font-size: 12px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+            <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+          </div>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      </ion-row>
+    </div>
+    <div class="card">
+      <ion-row>
+        <ion-card class="list-card" style="display: inline-block;">
+        <ion-row>
+          <ion-col size="4">
+            <ion-skeleton-text animated style="width: 100%;height:100%;"></ion-skeleton-text>
+          </ion-col>
+          <ion-col class="ion-no-padding">
+            <ion-row class="producto">
+              <ion-col class="ion-no-padding">
+                <h3 class="item-title" style="font-size: 13px;height: 30px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+                  <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+                </h3>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                <h2 class="list-big-number" style="color: green;font-size: 13px;">
+                  <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></h2>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                <ion-button style="height: 15px;">
+                  {{'SHOW'|translate}}
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="item-content">
+          <div style="height: 25px;font-size: 12px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+            <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+          </div>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      </ion-row>
+    </div>
+    <div class="card">
+      <ion-row>
+        <ion-card class="list-card" style="display: inline-block;">
+        <ion-row>
+          <ion-col size="4">
+            <ion-skeleton-text animated style="width: 100%;height:100%;"></ion-skeleton-text>
+          </ion-col>
+          <ion-col class="ion-no-padding">
+            <ion-row class="producto">
+              <ion-col class="ion-no-padding">
+                <h3 class="item-title" style="font-size: 13px;height: 30px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+                  <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+                </h3>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                <h2 class="list-big-number" style="color: green;font-size: 13px;">
+                  <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></h2>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-padding content-row one-line">
+              <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
+                <ion-button style="height: 15px;">
+                  {{'ADD'|translate}}
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="item-content">
+          <div style="height: 25px;font-size: 12px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+            <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+          </div>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      </ion-row>
+    </div>
+  </div>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Cargando más productos...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="order">
+      <ion-row (click)="openOrder()">
+        <ion-toolbar style="--ion-background-color: linear-gradient(to left,#c50303,#a92c2c);color: white;    border-radius: 10px;">
+          <ion-title *ngIf="this.order.state == 'QUOTATION'">
+            Ver pedido
+          </ion-title>
+          <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'WAITING'">
+            En Espera
+          </ion-title>
+          <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'PRODUCTION'">
+            En Producción
+          </ion-title>
+          <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'DELIVERY'">
+            En Entrega
+          </ion-title>
+          <ion-buttons slot="end">
+            <ion-button style="font-size: 25px;">
+               {{order.total|number}} G$
+
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-row>
   </ion-fab>
 </ion-content>

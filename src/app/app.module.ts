@@ -24,10 +24,11 @@ registerLocaleData(es);
 // Custom Imports
 // import { Facebook } from "@ionic-native/facebook/ngx";
 // import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { SalePageModule } from './sale/sale.module';
+import { PaymentConditionListPageModule } from './payment-condition-list/payment-condition-list.module';
 import { ProductListPage } from './product-list/product-list.page';
 import { ProductCategoryListPageModule } from './product-category-list/product-category-list.module';
 import { ProductListPageModule } from './product-list/product-list.module';
-import { LoginPageModule } from './login/login.module';
 import { ProductCategoryPageModule } from './product-category/product-category.module';
 import { ProductPageModule } from './product/product.module';
 import { ConfigPageModule } from './config/config.module';
@@ -44,8 +45,9 @@ import { environment } from '../environments/environment';
     ConfigPage,
   ],
   imports: [
-    LoginPageModule,
     ProductListPageModule,
+    SalePageModule,
+    PaymentConditionListPageModule,
     ConfigPageModule,
     ImageModalPageModule,
     ProductCategoryListPageModule,

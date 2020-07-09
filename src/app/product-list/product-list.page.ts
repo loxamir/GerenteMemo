@@ -12,6 +12,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { Events } from '../services/events';
 import { ConfigPage } from '../config/config.page';
+import { SalePage } from '../sale/sale.page';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-product-list',
@@ -33,6 +35,8 @@ export class ProductListPage implements OnInit {
   categories = [];
   database = '';
   last_record = '';
+  order: any;
+  logged: boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -44,6 +48,7 @@ export class ProductListPage implements OnInit {
     public formatService: FormatService,
     public languageService: LanguageService,
     public toastCtrl: ToastController,
+    public storage: Storage,
     public events: Events,
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
@@ -97,6 +102,106 @@ export class ProductListPage implements OnInit {
         }, 200);
       }
     }
+
+    if (!this.logged){
+      this.loading.dismiss();
+      // let order: any = await this.pouchdbService.searchDocTypeData('sale',"",0);
+      let order: any = await this.storage.get("sales")
+      if (order){
+        if (order.state == 'QUOTATION'
+        || order.state == 'CONFIRMED'
+      ){
+          this.order = order;
+        }
+      }
+    }
+
+
+    this.events.subscribe('add-product', async (data) => {
+      console.log("addProduct");
+      let total = data.product.price*data.product.quantity;
+      let line = {
+        product: data.product,
+        "product_id": data.product._id,
+        "product_name": data.product.name,
+        "quantity": data.product.quantity,
+        "price": data.product.price,
+        "size": data.product.size,
+        "note": data.product.note
+      }
+      if (this.order){
+        this.order.items.push(line);
+        this.order.total += total;
+        this.order.amount_unInvoiced += total;
+        this.order.residual += total;
+        // let updatedOrder:any = await this.pouchdbService.updateDoc(this.order);
+        // this.order._rev = updatedOrder.rev;
+
+      } else {
+        // let delivery_product:any = await this.pouchdbService.getDoc("product.delivery");
+        // let delivery = {
+        //   "product_id": delivery_product._id,
+        //   "product_name": delivery_product.name,
+        //   "quantity": 1,
+        //   "price":delivery_product.price,
+        //   "note": delivery_product.description,
+        //   "fixed": true,
+        // }
+        // total += delivery_product.price;
+        let now = new Date().toISOString();
+        let order = {
+          // "contact_name": this.contact.name,
+          "name": "",
+          "code": "123",
+          "date": now,
+          "origin_id": null,
+          "total": total,
+          "residual": total,
+          "note": null,
+          "state": "QUOTATION",
+          "discount": {
+            "value": 0,
+            "discountProduct": true,
+            "lines": 0
+          },
+          "payments": [],
+          "payment_name": "Credito",
+          "invoice": "",
+          "invoices": [],
+          "amount_unInvoiced": total,
+          "seller": {},
+          "seller_name": "",
+          "currency": {},
+          "create_user": "admin",
+          "create_time": now,
+          "write_user": "admin",
+          "write_time": now,
+          "items": [line],
+          // "lines": [line, delivery],
+          "docType": "sale",
+          // "contact_id": this.contact_id,
+          "project_id": "",
+          "pay_cond_id": "payment-condition.credit"
+          }
+          // let orderDoc = await this.pouchdbService.createDoc(order);
+          this.storage.set("order", order)
+          // console.log("orderDoc", orderDoc);
+          this.order = order;
+      }
+      console.log("order", this.order);
+      // this.events.unsubscribe('open-contact');
+    })
+  }
+
+  async openOrder() {
+    let profileModal = await this.modalCtrl.create({
+      component: SalePage,
+      componentProps: {
+        "select": true,
+        "data": this.order,
+      }
+    })
+    profileModal.present();
   }
 
   // setFilteredItems() {
@@ -239,18 +344,18 @@ async showConfig() {
 }
 
   async openProduct(product) {
-    // if (this.select) {
-      // let profileModal = await this.modalCtrl.create({
-      //   component: ProductPage,
-      //   componentProps: {
-      //     "select": true,
-      //     "_id": product._id,
-      //   }
-      // })
-      // profileModal.present();
-    // } else {
+    if (this.logged) {
       this.navCtrl.navigateForward(['/product', { '_id': product._id }]);
-    // }
+    } else {
+      let profileModal = await this.modalCtrl.create({
+        component: ProductPage,
+        componentProps: {
+          "select": true,
+          "_id": product._id,
+        }
+      })
+      profileModal.present();
+    }
   }
 
   closeModal() {
@@ -476,5 +581,14 @@ async showConfig() {
     goBack(){
       this.category_id = 'all';
       this.setFilteredItems();
+    }
+
+    selectProduct(product) {
+      if (this.select) {
+        this.modalCtrl.dismiss();
+        this.events.publish('select-product', {product: product});
+      } else {
+        this.openProduct(product);
+      }
     }
 }

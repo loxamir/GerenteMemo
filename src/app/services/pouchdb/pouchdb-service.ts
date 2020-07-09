@@ -19,7 +19,7 @@ export class PouchdbService {
   remote: any;
   docTypes = {};
   username = undefined;
-  database = '';
+  database = 'testet';
 
   constructor(
     public http: HttpClient,
@@ -102,12 +102,12 @@ export class PouchdbService {
     console.log("getConnect");
     let self = this;
     return new Promise(async (resolve, reject)=>{
-      let username: any = await this.storage.get("username");
-      let password: any = await this.storage.get("password");
-      let database: any = await this.storage.get("database");
-        // let username = "pickler";
-        // let database = "ropas";
-        // let password = "123";
+      // let username: any = await this.storage.get("username");
+      // let password: any = await this.storage.get("password");
+      // let database: any = await this.storage.get("database");
+        let username = "pickler";
+        let database = "testet";
+        let password = "123";
         console.log("username", username);
         if (! username){
           resolve(false);

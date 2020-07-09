@@ -1,50 +1,41 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-
-import { IonicModule } from '@ionic/angular';
-
-import { LoginPage } from './login.page';
-import { IonicStorageModule } from '@ionic/storage';
-
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, '../../assets/i18n/', '.json');
 }
 
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 
-import { LoginPopover } from './login.popover';
+import { PaymentConditionListPage } from './payment-condition-list.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: LoginPage
+    component: PaymentConditionListPage
   }
 ];
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
     ReactiveFormsModule,
-    IonicStorageModule.forRoot(),
+    HttpClientModule,
     TranslateModule.forRoot({
-    loader: {
+      loader: {
         provide: TranslateLoader,
         useFactory: (createTranslateLoader),
         deps: [HttpClient]
       }
     }),
+    CommonModule,
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [LoginPage, LoginPopover],
-  entryComponents:[LoginPopover]
+  declarations: [PaymentConditionListPage]
 })
-export class LoginPageModule {}
+export class PaymentConditionListPageModule {}
