@@ -35,7 +35,10 @@ export class CashService {
         undefined,
         true,
       ).then(async (planneds: any[]) => {
-        this.lastMove = planneds[planneds.length - 1].key[0].split(doc_id)[1];
+        console.log("planneds", planneds);
+        if (planneds.length){
+          this.lastMove = planneds[planneds.length - 1].key[0].split(doc_id)[1];
+        }
         let promise_ids = [];
         let pts = [];
         let getList = [];
@@ -119,7 +122,9 @@ export class CashService {
       undefined,
       true,
     ).then(async (planneds: any[]) => {
-      this.lastMove = planneds[planneds.length - 1].key[0].split(doc_id)[1];
+      if (planneds.length){
+        this.lastMove = planneds[planneds.length - 1].key[0].split(doc_id)[1];
+      }
       let promise_ids = [];
       let pts = [];
       let getList = [];
