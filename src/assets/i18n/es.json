@@ -443,6 +443,7 @@
   "ADD_SIZE": "Agregar tamaño",
   "ADD_RELATED_PRODUCT": "Agregar producto relacionado",
   "DELIVERY": "Entrega",
+  "SELECT_SIZE": "Seleccione un tamaño",
   "CANCEL_ORDER": "Cancelar Pedido",
   "SURE_CANCEL_ORDER": "Estas seguro que deseas cancelar este pedido?",
   "SEE_ON_GOOGLE_MAPS": "Ver en Google Maps",
@@ -452,5 +453,13 @@
   "PUBLISHED": "Publicado",
   "POSITION": "Posición",
   "ADD_IMAGES": "Agregar Imagenes",
+  "ADD": "Agregar",
+  "PHONE_IS_REQUIRED": "Numero de Telefono es obligatorio",
+  "ASK_QUOTATION": "Solicitar Presupuesto",
+  "AVAILABLE_VARIANTIONS": "Variaciones Disponibles",
+  "RELATED_PRODUCTS": "Productos Relacionados",
+  "SHOW": "Mostrar",
+  "IM_INTERESTED_IN": "Estoy interesado en",
+  "VISITOR_MESSAGE": "Entre en tu catalogo online",
   "RESULT": "Resultado"
 }

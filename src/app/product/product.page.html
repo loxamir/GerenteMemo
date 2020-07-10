@@ -226,27 +226,81 @@
 
 
 
-<ion-content class="product-content" style="--background: white;"  *ngIf="!logged">
+<ion-header *ngIf="database && !logged && !product" style="margin-bottom: 5%;">
+  <ion-toolbar  style="--background: {{config.bg_color}};">
+      <ion-row>
+        <ion-col class="ion-no-padding">
+          <img
+          alt="Logo"
+          style="max-width: 100%;max-height: 100px;border-radius: 5px;margin-top: 5px;"
+          [src]="'https://database.sistemamemo.com/'+database+'/config.profile/logo.png'">
+        </ion-col>
+        <ion-col>
+          <ion-row>
+            <ion-col>
+              <h1 style="font-size: 20px;text-align:center;">
+                {{config.name}}
+              </h1>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <a target="_blank" href="https://api.whatsapp.com/send?phone={{config.whatsapp}}&text={{'HELLO'|translate}}+{{config.name}}!+{{'VISITOR_MESSAGE'|translate}}" rel="noopener">
+                <h1  color="success" style="font-size: 12px;color: green;border-radius: 5px;background: white;max-width: 156px;text-align: center;margin: auto;">
+                  <ion-icon name="logo-whatsapp" style="padding-right: 5px;padding-left: 3px;font-size: 25px;"></ion-icon>
+                  <div style="display: inline-block;font-size: 17px;vertical-align: super;">
+                    {{(config.whatsapp || "").replace("+595", "0").replace("+55", "0")}}
+                  </div>
+                </h1>
+              </a>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    <ion-buttons slot="start">
+        <ion-button
+                (click)="exitPage()">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="product-content" style="--background: white;"  *ngIf="database && !logged">
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
-  <form class="sample-form validations-form" [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)" style="background: white;">
+  <form class="sample-form validations-form" [formGroup]="productForm" style="background: white;">
+    <ion-slides [options]="sliderOpts">
+      <ion-slide *ngFor="let img of product_images">
+        <img [src]="img" style="height:250px;" (click)="openPreview(img)" />
+      </ion-slide>
+    </ion-slides>
     <ion-row style="background: white;">
-      <ion-col size="3">
-        <img alt="Logo del producto" style="height: 74px;display: block;margin-left: auto;margin-right: auto;" [src]="'data:image/png;base64,'+productForm.value._attachments['avatar.png'].data" *ngIf="productForm.value._attachments && productForm.value._attachments['avatar.png']">
-        <img alt="Logo del producto" style="height: 74px;display: block;margin-left: auto;margin-right: auto;" src="./assets/images/sem_foto.jpg" *ngIf="!(productForm.value._attachments && productForm.value._attachments['avatar.png'])">
-      </ion-col>
       <ion-col>
         <ion-row>
           <ion-col>{{this.productForm.value.name}}</ion-col>
+        </ion-row>
+        <ion-row *ngIf="this.productForm.value.price">
+          <ion-col style="font-size: 20px;font-weight:bold;color:green;">{{currency_symbol}} {{this.productForm.value.price| number:'1.'+currency_precision}}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col style="font-size: 12px;">{{this.productForm.value.description}}</ion-col>
         </ion-row>
       </ion-col>
+      <!-- <ion-col size="2">
+        <a href="/product/{{productForm.value._id}}" target="_blank">
+          <ion-button  style="font-size: 12px;">
+          <ion-icon name="share-social" style="padding-right: 5px;padding-left: 3px;font-size: 25px;"></ion-icon>
+        </ion-button>
+      </a>
+      </ion-col> -->
     </ion-row>
     <h1 *ngIf="productForm.value.sizes.length" style="background: white;font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: #3773e8;">
-      {{'SELECT_SIZE'| translate}}
+      {{'AVAILABLE_VARIANTIONS'| translate}}
     </h1>
-    <div class="scrolling-wrapper-flexbox" style="background: white;">
+    <!-- <div class="scrolling-wrapper-flexbox" style="background: white;">
       <div class="card" *ngFor="let item of productForm.value.sizes">
         <div style="padding: 5px">
           <ion-card class="list-card" [class.selected]="item.name == productForm.value.size" (click)="selectSize(item)">
@@ -255,7 +309,7 @@
                 {{item.name}}
               </ion-col>
             </ion-row>
-            <ion-row>
+            <ion-row *ngIf="item.price">
               <ion-col style="color: black;font-weight:bold">
                 Gs {{item.price|number:'1.0-0'}}
               </ion-col>
@@ -263,37 +317,46 @@
           </ion-card>
         </div>
       </div>
-    </div>
-    <ion-row style="background-color: white;">
-      <ion-col size="3">
-        <ion-button class="quantity-button" (click)="remItem()">-</ion-button>
-      </ion-col>
-      <ion-col size="6" style="text-align: center;font-size: 20px;margin-top: 8px;">
-        {{this.productForm.value.quantity}}
-      </ion-col>
-      <ion-col size="3">
-        <ion-button class="quantity-button" (click)="sumItem()">+</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-item style="--background: white;">
-      <h4 class="field-label-col">{{'SUBTOTAL' | translate}}</h4>
-      <h4 class="field-value-col-2" style="color:blue">{{this.productForm.value.quantity*this.productForm.value.price|number}} G$</h4>
-    </ion-item>
-    <ion-item class="field-100">
-      <ion-label position="floating">{{'OBSERVATION' | translate}}</ion-label>
-      <ion-input type="text" formControlName="note" placeholder="Ejemplo: Sin cebolla"></ion-input>
-    </ion-item>
+    </div> -->
+    <div class="scrolling-wrapper-flexbox2" style="background: white;">
+        <div class="card" *ngFor="let item of productForm.value.sizes" >
+          <ion-item class="ion-no-padding" style="--background: white;">
+            <ion-card class="list-card"
+            [class.selected]="item.name == productForm.value.size"
+            (click)="selectSize(item)">
+              <ion-row>
+                <ion-col style="color: #ff1919;font-weight:bold;text-align:center;">
+                  {{item.name}}
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="item.price">
+                <ion-col style="color: black;font-weight:bold;text-align:center;">
+                  Gs {{item.price|number:'1.0-0'}}
+                </ion-col>
+              </ion-row>
+            </ion-card>
+        </ion-item>
+        </div>
+      </div>
     <h1 style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 5px;margin-bottom: 0px;color: #3773e8;" *ngIf="productForm.value.products.length" class="ion-no-padding">
-      Quizas tambien quieras pedir
+      {{'RELATED_PRODUCTS'| translate}}
     </h1>
     <div class="scrolling-wrapper-flexbox" *ngIf="productForm.value.products.length">
       <div class="card" *ngFor="let item of productForm.value.products; let i = index;">
         <ion-row>
           <ion-card class="list-card" style="width: 180px;display: inline-block;border: 1px solid #8ebbf3;">
-            <ion-row (click)="selectProduct(item)">
+            <ion-row (click)="openProduct(item)">
               <ion-col size="4">
-                <img style="height: 50px;width: auto;border-radius: 5px;" [src]="'data:image/png;base64,'+item._attachments['avatar.png'].data" *ngIf="item._attachments && item._attachments['avatar.png']">
-                <img style="height: 50px;width: auto;border-radius: 5px;" src="./assets/images/sem_foto.jpg" *ngIf="!(item._attachments && item._attachments['avatar.png'])">
+                <img
+                alt="Foto del producto"
+                style="height: 50px;width: auto;border-radius: 5px;"
+                *ngIf="item._attachments"
+                [src]="'https://database.sistemamemo.com/'+database+'/'+item._id+'/'+item.images[0]">
+                <img
+                alt="Foto del categoria"
+                style="height: 95px;width: auto;"
+                *ngIf="!item._attachments"
+                src="./assets/images/sem_foto.jpg">
               </ion-col>
               <ion-col class="ion-no-padding">
                 <ion-row class="producto">
@@ -303,13 +366,13 @@
                 </ion-row>
                 <ion-row class="ion-no-padding content-row one-line">
                   <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
-                    <h2 class="list-big-number" style="color: green;font-size: 13px;">{{item.price| number:'1.'+currency_precision}} G$</h2>
+                    <h2 class="list-big-number" style="color: green;font-size: 13px;">{{currency_symbol}} {{item.price| number:'1.'+currency_precision}}</h2>
                   </ion-col>
                 </ion-row>
                 <ion-row class="ion-no-padding content-row one-line">
                   <ion-col class="ion-no-padding" style="text-align: right; margin-right: 0.5em;">
                     <ion-button style="height: 15px;width: 100px;">
-                      {{'ADD'|translate}}
+                      {{'SHOW'|translate}}
                     </ion-button>
                   </ion-col>
                 </ion-row>

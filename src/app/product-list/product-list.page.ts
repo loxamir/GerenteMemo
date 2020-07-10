@@ -216,6 +216,14 @@ export class ProductListPage implements OnInit {
     profileModal.present();
   }
 
+  async logout(){
+    await this.storage.set('username', false);
+    await this.storage.set('password', false);
+    await this.storage.set('database', false);
+    await this.storage.set('language', false);
+    window.location.reload();
+  }
+
   // setFilteredItems() {
   //   return new Promise(async (resolve, reject) => {
   //     this.getProductsPage(
@@ -311,7 +319,10 @@ export class ProductListPage implements OnInit {
     let popover = await this.popoverCtrl.create({
       component: ProductListPopover,
       event: myEvent,
-      componentProps: { popoverController: this.popoverCtrl }
+      componentProps: {
+        popoverController: this.popoverCtrl,
+        doc: this
+      }
     });
     popover.present();
   }
@@ -364,6 +375,11 @@ async showConfig() {
         componentProps: {
           "select": true,
           "_id": product._id,
+          "product": product,
+          "currency_symbol": this.config.currency_symbol,
+          "currency_precision": this.config.currency_precision,
+          "whatsapp": this.config.whatsapp,
+          "database": this.database,
         }
       })
       profileModal.present();

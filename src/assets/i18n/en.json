@@ -443,6 +443,7 @@
   "ADD_SIZE": "Add Size",
   "ADD_RELATED_PRODUCT": "Add related product",
   "DELIVERY": "Delivery",
+  "SELECT_SIZE": "Select a size",
   "CANCEL_ORDER": "Cancel Order",
   "SURE_CANCEL_ORDER": "You really want cancel this order?",
   "SEE_ON_GOOGLE_MAPS": "See on Google Maps",
@@ -452,5 +453,13 @@
   "PUBLISHED": "Published",
   "POSITION": "Position",
   "ADD_IMAGES": "Add Images",
+  "ADD": "Add",
+  "PHONE_IS_REQUIRED": "Phone is required",
+  "ASK_QUOTATION": "Ask Quotation",
+  "AVAILABLE_VARIANTIONS": "Available Variations",
+  "RELATED_PRODUCTS": "Related Products",
+  "SHOW": "Show",
+  "IM_INTERESTED_IN": "I'm interested in",
+  "VISITOR_MESSAGE": "I access your online catalog",
   "RESULT": "Result"
 }

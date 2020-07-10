@@ -237,10 +237,11 @@ export class LoginPage implements OnInit {
     this.translate.setDefaultLang(this.language);
     this.translate.use(this.language);
     this.username = this.loginForm.value.user.toLowerCase();
-    if (dbList.length == 1){
-      this.selectDatabase(dbList[0]);
-    }
-    this.menuCtrl.enable(false);
+    // if (dbList.length == 1){
+    //   this.selectDatabase(dbList[0]);
+    // }
+    await this.router.navigate(['/product-list']);
+    // this.menuCtrl.enable(false);
     this.loading.dismiss();
   }
 
@@ -354,7 +355,8 @@ export class LoginPage implements OnInit {
     await this.storage.set('password', false);
     await this.storage.set('database', false);
     await this.storage.set('language', false);
-    window.location.reload();
+    await this.router.navigate(['/product-list']);
+    // window.location.reload();
   }
 
   createLogin(datas){

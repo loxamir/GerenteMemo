@@ -1,5 +1,5 @@
-<ion-header *ngIf="logged">
-  <ion-toolbar>
+<ion-header *ngIf="database && logged">
+  <ion-toolbar style="--ion-background-color: {{config.bg_color}};">
     <ion-row (click)="showConfig()">
       <ion-col class="ion-no-padding">
         <img
@@ -27,34 +27,32 @@
           </ion-row>
       </ion-col>
     </ion-row>
-    <ion-buttons slot="start">
-        <ion-button *ngIf="select"
-                (click)="discard()">
-          <ion-icon name="arrow-back"></ion-icon>
-        </ion-button>
-    </ion-buttons>
-    <ion-row>
-      <ion-col *ngIf="category_id!='all'"
-      size="1.5"
-      class="ion-no-padding"
-      (click)="goBack()"
-      style="margin: auto;padding-left: 10px;font-size:25px;">
-        <ion-icon name="arrow-back"  (click)="goBack()"></ion-icon>
-      </ion-col>
-      <ion-col  class="ion-no-padding">
-        <ion-searchbar
-        placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
-        [(ngModel)]="searchTerm"
-        #searchBar
-        (ionChange)="searchItems()">
-      </ion-searchbar>
-      </ion-col>
-    </ion-row>
     <ion-buttons slot="end">
+      <ion-button (click)="presentPopover()">
+        <ion-icon name="ellipsis-vertical"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-row>
+    <ion-col *ngIf="category_id!='all'"
+    size="1.5"
+    class="ion-no-padding"
+    (click)="goBack()"
+    style="margin: auto;padding-left: 10px;font-size:25px;">
+      <ion-icon name="arrow-back"  (click)="goBack()"></ion-icon>
+    </ion-col>
+    <ion-col  class="ion-no-padding">
+      <ion-searchbar
+      style="background: {{config.bg_color}};"
+      placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
+      [(ngModel)]="searchTerm"
+      #searchBar
+      (ionChange)="searchItems()">
+    </ion-searchbar>
+    </ion-col>
+  </ion-row>
 </ion-header>
-<ion-content class="list-mini-content"  *ngIf="logged">
+<ion-content class="list-mini-content"  *ngIf="database && logged" style="--background: {{config.bg_color}};">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -96,7 +94,7 @@
       {{ 'PRODUCTS'|translate }}
     </h1>
 
-  <div class="scrolling-wrapper-flexbox2">
+  <div class="scrolling-wrapper-flexbox2" style="--ion-background-color: {{config.bg_color}};">
     <div class="card" *ngFor="let item of products; let i = index;">
       <ion-item-sliding class="list-item">
         <ion-item class="ion-no-padding">
@@ -173,8 +171,8 @@
   </ion-fab>
 </ion-content>
 
-<ion-header *ngIf="!logged">
-<ion-toolbar  style="--background: {{config.bg_color}};">
+<ion-header *ngIf="database && !logged">
+  <ion-toolbar  style="--background: {{config.bg_color}};">
       <ion-row *ngIf="!select">
         <ion-col class="ion-no-padding">
           <img
@@ -203,52 +201,37 @@
             </ion-col>
           </ion-row>
         </ion-col>
-        <ion-col size="4" *ngIf="!logged">
-          <ion-row>
-            <ion-col style="text-align: center;min-height:15px;" class="ion-no-padding" >
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col style="text-align: right;font-size: 12px;" class="ion-no-padding" >
-                <ion-button (click)="login()">
-                  <ion-icon name="logo-facebook" style="font-size:25px"></ion-icon>
-                  <div style="padding: 5px;">
-                    Entrar
-                  </div>
-                </ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-col>
       </ion-row>
-    <ion-buttons slot="start">
+    <!-- <ion-buttons slot="start">
         <ion-button *ngIf="select"
                 (click)="discard()">
           <ion-icon name="arrow-back"></ion-icon>
         </ion-button>
-    </ion-buttons>
-    <ion-row>
-      <ion-col *ngIf="category_id!='all'||searchTerm"
-      size="1.5"
-      class="ion-no-padding"
-      (click)="goBack()"
-      style="margin: auto;padding-left: 10px;font-size:25px;">
-        <ion-icon name="arrow-back"  (click)="goBack()"></ion-icon>
-      </ion-col>
-      <ion-col  class="ion-no-padding">
-        <ion-searchbar
-        placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
-        [(ngModel)]="searchTerm"
-        #searchBar
-        debonce="500"
-        (ionChange)="searchItems()">
-      </ion-searchbar>
-      </ion-col>
-    </ion-row>
+    </ion-buttons> -->
     <ion-buttons slot="end">
     </ion-buttons>
   </ion-toolbar>
+  <ion-row>
+    <ion-col *ngIf="category_id!='all'||searchTerm"
+    size="1.5"
+    class="ion-no-padding"
+    (click)="goBack()"
+    style="margin: auto;padding-left: 10px;font-size:25px;">
+      <ion-icon name="arrow-back"  (click)="goBack()"></ion-icon>
+    </ion-col>
+    <ion-col  class="ion-no-padding">
+      <ion-searchbar
+      placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
+      style="background: {{config.bg_color}};"
+      [(ngModel)]="searchTerm"
+      #searchBar
+      debonce="500"
+      (ionChange)="searchItems()">
+    </ion-searchbar>
+    </ion-col>
+  </ion-row>
 </ion-header>
-<ion-content   *ngIf="!logged" class="list-mini-content" style="--background: {{config.bg_color}};">
+<ion-content  *ngIf="database && !logged" class="list-mini-content" style="--background: {{config.bg_color}};">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -538,3 +521,8 @@
       </ion-row>
   </ion-fab>
 </ion-content>
+<div *ngIf="!database">
+  <h2>
+    Site not found
+  </h2>
+</div>

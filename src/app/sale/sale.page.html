@@ -5,11 +5,8 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title *ngIf="return">
-      {{ 'RETURN' | translate }}: {{saleForm.value.code}}
-    </ion-title>
     <ion-title *ngIf="!return">
-      {{ 'ORDER' | translate }}: {{saleForm.value.code}}
+      {{ 'ORDER' | translate }}
     </ion-title>
     <ion-buttons slot="end">
     </ion-buttons>

@@ -453,5 +453,13 @@
   "PUBLISHED": "Publicado",
   "POSITION": "Posição",
   "ADD_IMAGES": "Adicionar Imagens",
+  "ADD": "Adicionar",
+  "PHONE_IS_REQUIRED": "Numero de Telefone é obrigatorio",
+  "ASK_QUOTATION": "Solicitar Orçamento",
+  "AVAILABLE_VARIANTIONS": "Variações Disponiveis",
+  "RELATED_PRODUCTS": "Produtos Relacionados",
+  "SHOW": "Mostrar",
+  "IM_INTERESTED_IN": "Estou interesado em",
+  "VISITOR_MESSAGE": "Entrei no seu catalogo online",
   "RESULT": "Resultado"
 }

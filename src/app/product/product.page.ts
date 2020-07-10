@@ -13,6 +13,8 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { ProductListPage } from '../product-list/product-list.page';
 import { ImageModalPage } from '../image-modal/image-modal.page';
 import { Events } from '../services/events';
+import { Title }     from '@angular/platform-browser';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-product',
@@ -40,8 +42,19 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     changed_images = [];
     database = '';
     moreFields = false;
-    config = {};
     logged: boolean = false;
+    currency_symbol = '$';
+    config:any = {};
+    product;
+    whatsapp;
+    sliderOpts = {
+      zoom:false,
+      slidesPerView: 1.5,
+      centeredSlides: true,
+      autoplay: true,
+      speed: 1000,
+      spaceBetween: 20
+    }
 
     constructor(
       public navCtrl: NavController,
@@ -57,9 +70,18 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public formBuilder: FormBuilder,
       public events:Events,
       public pouchdbService: PouchdbService,
+      public storage: Storage,
+      private titleService: Title,
     ) {
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
+      this.currency_symbol = this.route.snapshot.paramMap.get('currency_symbol');
+      this.currency_precision = parseInt(this.route.snapshot.paramMap.get('currency_precision')) || this.currency_precision;
+      this.whatsapp = this.route.snapshot.paramMap.get('whatsapp');
+      this.product = JSON.parse(this.route.snapshot.paramMap.get('product'));
+      this.select = this.route.snapshot.paramMap.get('select');
+      // this.database = document.URL.split('://')[1].split('.')[0];
+
       if (this.route.snapshot.paramMap.get('_id')){
         this.opened = true;
       }
@@ -97,12 +119,42 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         _attachments: new FormControl({}),
         description: new FormControl(''),
       });
-
+      let username = await this.storage.get("username");
+      if (username){
+        console.log("username", username);
+        this.logged = true;
+      }
       this.database = this.pouchdbService.getDatabaseName();
       let language:any = await this.languageService.getDefaultLanguage();
+      if (!this.currency_precision || !this.currency_symbol){
+        if (!this.product){
+          this.pouchdbService.getConnect();
+        }
+        let config: any = await this.pouchdbService.getDoc('config.profile', false);
+        this.config = config;
+        this.titleService.setTitle(config.name);
+        this.currency_symbol = config.currency_symbol;
+        this.currency_precision = config.currency_precision;
+      }
       this.translate.setDefaultLang(language);
       this.translate.use(language);
-
+      if (this.product){
+        if (this.product.sizes && this.product.sizes[0]){
+          this.product.size = this.product.sizes[0].name;
+        }
+        this.productForm.patchValue(this.product);
+        if (this.product._attachments){
+          if (this.product.images){
+            this.product.images.forEach(file_name=>{
+              this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+this.product._id+'/'+file_name);
+            })
+          } else {
+            this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+this.product._id+'/avatar.png');
+          }
+        }
+        this.productForm.markAsPristine();
+        // this.loading.dismiss();
+      } else
       if (this._id){
         this.productService.getProduct(this._id).then((data) => {
           setTimeout(() => {
@@ -120,6 +172,15 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             console.log("product_images", this.product_images);
           }
           this.productForm.patchValue(data);
+          if (!this.logged && data._attachments){
+            if (data.images){
+              data.images.forEach(file_name=>{
+                this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+data._id+'/'+file_name);
+              })
+            } else {
+              this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+data._id+'/avatar.png');
+            }
+          }
           // this.loading.dismiss();
         });
       } else {

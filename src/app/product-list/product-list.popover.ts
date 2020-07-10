@@ -4,10 +4,8 @@ import {  NavController, PopoverController, NavParams } from '@ionic/angular';
 @Component({
   template: `
   <ion-list>
-    <ion-item style="background-color: white;" ion-item (click)="showWarehouses()">Depositos</ion-item>
-    <ion-item style="background-color: white;" ion-item (click)="importer()">Importar Productos</ion-item>
-    <ion-item style="background-color: white;" ion-item (click)="stockMoves()">Movimientos</ion-item>
-
+    <ion-item (click)="edit()">Editar Perfil</ion-item>
+    <ion-item (click)="logout()">Sair</ion-item>
   </ion-list>
   `
 })
@@ -21,18 +19,13 @@ export class ProductListPopover {
     this.pop = navParams.get('popoverController');
   }
 
-  showWarehouses(){
+  edit(){
     this.pop.dismiss();
-    this.navCtrl.navigateForward(['/warehouse-list', {}]);
+    this.navParams.data.doc.showConfig();
   }
 
-  importer(){
+  logout(){
     this.pop.dismiss();
-    this.navCtrl.navigateForward(['/importer', {'docType': 'product'}]);
-  }
-
-  stockMoves() {
-    this.pop.dismiss();
-    this.navCtrl.navigateForward(['/stock-move-list', {}]);
+    this.navParams.data.doc.logout();
   }
 }

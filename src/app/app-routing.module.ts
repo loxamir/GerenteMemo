@@ -5,6 +5,7 @@ const routes: Routes = [
   { path: '', redirectTo: 'product-list', pathMatch: 'full' },
   { path: 'sale', loadChildren: './sale/sale.module#SalePageModule' },
   { path: 'product', loadChildren: './product/product.module#ProductPageModule' },
+  { path: 'product/:_id', loadChildren: './product/product.module#ProductPageModule' },
   { path: 'product-category-list', loadChildren: './payment-condition-list/payment-condition-list.module#PaymentConditionListPageModule' },
   { path: 'product-category', loadChildren: './product-category/product-category.module#ProductCategoryPageModule' },
   { path: 'product-category-list', loadChildren: './product-category-list/product-category-list.module#ProductCategoryListPageModule' },
