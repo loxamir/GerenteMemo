@@ -73,6 +73,11 @@ export class ProductListPage implements OnInit {
     this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
+    let username = await this.storage.get("username");
+    if (username){
+      console.log("username", username);
+      this.logged = true;
+    }
     let config: any = (await this.pouchdbService.getDoc('config.profile', true));
     if (!config._id){
       let este = await this.pouchdbService.getConnect();
@@ -363,6 +368,10 @@ async showConfig() {
       })
       profileModal.present();
     }
+  }
+
+  login(){
+    this.navCtrl.navigateForward(['/login', {}]);
   }
 
   closeModal() {

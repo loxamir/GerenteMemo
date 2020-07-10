@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'product-list', loadChildren: './product-list/product-list.module#ProductListPageModule' },
   { path: 'config', loadChildren: './config/config.module#ConfigPageModule' },
   { path: 'image-modal', loadChildren: './image-modal/image-modal.module#ImageModalPageModule' },
+  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
 ];
 
 @NgModule({

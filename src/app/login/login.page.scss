@@ -1,0 +1,39 @@
+
+.login-box {
+  margin: 10px;
+  padding: 30px;
+  background: white;
+  margin-top: 30px;
+  border-radius:10px;
+}
+
+@media screen and (min-width: 360px){
+  .login-box {
+    width: 340px;
+    margin: auto;
+    padding: 30px;
+    background: white;
+    margin-top: 30px;
+    border-radius:10px;
+  }
+}
+
+.login-input {
+  --background: white;
+  --color: #489d44;
+  border: 1px solid green;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+.login-input-label {
+  padding-left: 15px;color: #3773e8;
+}
+
+.login-input-field {
+  --color: black;
+}
+
+.login-header {
+  display: inline-flex;
+}

@@ -33,6 +33,7 @@ import { ProductCategoryPageModule } from './product-category/product-category.m
 import { ProductPageModule } from './product/product.module';
 import { ConfigPageModule } from './config/config.module';
 import { ConfigPage } from './config/config.page';
+import { LoginPageModule } from './login/login.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
@@ -49,6 +50,7 @@ import { environment } from '../environments/environment';
     SalePageModule,
     PaymentConditionListPageModule,
     ConfigPageModule,
+    LoginPageModule,
     ImageModalPageModule,
     ProductCategoryListPageModule,
     BrowserModule,
