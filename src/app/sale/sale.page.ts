@@ -164,14 +164,16 @@ export class SalePage implements OnInit {
 
      sendWhatsMsg(){
        console.log("send order to whatsapp", this.saleForm.value);
-       let text = "Gostaria de pedir o seguinte: %0a";
+       let likeToAsk = this.translate.instant('WOULD_LIKE_TO_ASK');
+       let text = likeToAsk+": %0a";
+       let currency_symbol = this.config.currency_symbol || '$'
        this.saleForm.value.items.forEach(item=>{
-         text += item.quantity+" - "+item.product_name+' - R$+ '+(item.price*item.quantity).toFixed(2)+"%0a";
+         text += item.quantity+" - "+item.product_name+' - '+ currency_symbol + ' ' +(item.price*item.quantity).toFixed(2)+"%0a";
          // text += 'R$+ '+(item.price*item.quantity).toFixed(2) + ' - ' + item.quantity+" - "+item.product_name+"%0a";
        })
        let total = this.saleForm.value.total.toFixed(2);
        // console.log("total", total);
-       text += "Total: R$+ "+total+"%0a";
+       text += "Total: "+currency_symbol+"+ "+total+"%0a";
        window.open("https://api.whatsapp.com/send?phone=+"+this.config.whatsapp+"&text="+text);
      }
 

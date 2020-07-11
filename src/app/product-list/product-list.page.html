@@ -509,22 +509,12 @@
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="order">
       <ion-row (click)="openOrder()">
         <ion-toolbar style="--ion-background-color: linear-gradient(to left,#c50303,#a92c2c);color: white;    border-radius: 10px;">
-          <ion-title *ngIf="this.order.state == 'QUOTATION'">
+          <ion-title>
             Ver pedido
-          </ion-title>
-          <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'WAITING'">
-            En Espera
-          </ion-title>
-          <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'PRODUCTION'">
-            En Producción
-          </ion-title>
-          <ion-title *ngIf="this.order.state == 'CONFIRMED' && this.order.status == 'DELIVERY'">
-            En Entrega
           </ion-title>
           <ion-buttons slot="end">
             <ion-button style="font-size: 25px;">
-               {{order.total|number}} G$
-
+               {{order.total|number}} {{config.currency_symbol || '$'}}
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
