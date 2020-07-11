@@ -49,6 +49,7 @@
       type="search"
       enterkeyhin="enter"
       inputmode="search"
+      (search)="searchItems()"
       #searchBar>
     </ion-searchbar>
     </ion-col>
@@ -229,6 +230,9 @@
       style="background: {{config.bg_color}};"
       placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
       [(ngModel)]="searchTerm"
+      type="search"
+      inputmode="search"
+      (search)="searchItems()"
       inputmode="search"
       #searchBar>
     </ion-searchbar>
