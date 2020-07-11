@@ -19,7 +19,7 @@ export class PouchdbService {
   remote: any;
   docTypes = {};
   username = undefined;
-  database = 'testet';
+  database = '';
 
   constructor(
     public http: HttpClient,
@@ -31,6 +31,7 @@ export class PouchdbService {
     public route: ActivatedRoute,
   ) {
     this.platform.ready().then(() => {
+      this.database = this.route.snapshot.paramMap.get('database');
     });
   }
 
@@ -105,9 +106,9 @@ export class PouchdbService {
       // let username: any = await this.storage.get("username");
       // let password: any = await this.storage.get("password");
       // let database: any = await this.storage.get("database");
-        let username = "pickler";
-        let database = "testet";
-        let password = "123";
+        let username = "cliente";
+        let password = "cliente";
+        // let database = this.database;
         console.log("username", username);
         if (! username){
           resolve(false);
@@ -115,11 +116,11 @@ export class PouchdbService {
         }
         this.username = username;
         // this.storage.get("database").then(database => {
-          if (! database){
+          if (! this.database){
             resolve(false);
             return;
           }
-          this.database = database;
+          // this.database = database;
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
           PouchDB.plugin(PouchdbFind);
@@ -129,9 +130,9 @@ export class PouchdbService {
           // } else {
             // this.db = new PouchDB(database);
           // }
-          console.log("database", database);
+          console.log("database", this.database);
           // this.storage.get('password').then(password => {
-            this.db = new PouchDB("https://"+username+":"+password+"@"+server+'/'+database);
+            this.db = new PouchDB("https://"+username+":"+password+"@"+server+'/'+this.database);
 
             this.db.info()
   .then(() => {
