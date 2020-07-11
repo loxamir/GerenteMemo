@@ -55,9 +55,10 @@ export class ProductListPage implements OnInit {
     public popoverCtrl: PopoverController,
     public file: File,
   ) {
-    this.database = this.pouchdbService.getDatabaseName();
+    // this.database = this.pouchdbService.getDatabaseName();
     this.select = this.route.snapshot.paramMap.get('select');
     this.category_id = this.route.snapshot.paramMap.get('category_id') || 'all';
+    this.database = document.URL.split('://')[1].split('.')[0];
     this.events.subscribe('changed-product', (change) => {
       if (this.appliedChanges.indexOf(change.change.doc._id+change.change.doc._rev)==-1){
         this.appliedChanges.push(change.change.doc._id+change.change.doc._rev);
@@ -69,141 +70,151 @@ export class ProductListPage implements OnInit {
   }
 
   async ngOnInit() {
-    let language:any = await this.languageService.getDefaultLanguage();
-    this.translate.setDefaultLang(language);
-    this.translate.use(language);
-    this.loading = await this.loadingCtrl.create({});
-    await this.loading.present();
-    let username = await this.storage.get("username");
-    if (username){
-      console.log("username", username);
-      this.logged = true;
-    }
-    let config: any = (await this.pouchdbService.getDoc('config.profile', true));
-    if (!config._id){
-      let este = await this.pouchdbService.getConnect();
-      this.events.subscribe(('end-sync'), async (change) => {
-        if (!config._id){
-          config = (await this.pouchdbService.getDoc('config.profile', true));
-          this.config = config;
-        }
-        this.currency_precision = config.currency_precision || this.currency_precision;
-        this.showCategories();
-        await this.setFilteredItems();
-        if (this.select) {
-          setTimeout(() => {
-            this.searchBar.setFocus();
-          }, 200);
-        }
-        this.events.unsubscribe('end-sync')
-      })
+    if (!this.database){
+      console.log("redirect to expositor.Online");
     } else {
-      this.config = config;
-      this.currency_precision = config.currency_precision || this.currency_precision;
-      this.showCategories();
-      await this.setFilteredItems();
-      if (this.select) {
-        setTimeout(() => {
-          this.searchBar.setFocus();
-        }, 200);
-      }
-    }
-
-    if (!this.logged){
-      this.loading.dismiss();
-      // let order: any = await this.pouchdbService.searchDocTypeData('sale',"",0);
-      let order: any = await this.storage.get("order")
-      if (order){
-        if (order.state == 'QUOTATION'
-        || order.state == 'CONFIRMED'
-      ){
-          this.order = order;
-        }
-      }
-    }
-
-    this.events.subscribe('cancel-sale', async (data) => {
-      this.order = undefined;
-      this.storage.set("order", undefined)
-      console.log("cancel sale", this.order);
-    })
-
-
-    this.events.subscribe('add-product', async (data) => {
-      console.log("addProduct");
-      let total = data.product.price*data.product.quantity;
-      let line = {
-        product: data.product,
-        "product_id": data.product._id,
-        "product_name": data.product.name,
-        "quantity": data.product.quantity,
-        "price": data.product.price,
-        "size": data.product.size,
-        "note": data.product.note
-      }
-      if (this.order){
-        this.order.items.push(line);
-        this.order.total += total;
-        this.order.amount_unInvoiced += total;
-        this.order.residual += total;
-        this.storage.set("order", this.order)
-        // let updatedOrder:any = await this.pouchdbService.updateDoc(this.order);
-        // this.order._rev = updatedOrder.rev;
-
+      let connection = await this.pouchdbService.getConnect(this.database);
+      console.log("connection", connection);
+      if (!connection){
+        this.database = '';
       } else {
-        // let delivery_product:any = await this.pouchdbService.getDoc("product.delivery");
-        // let delivery = {
-        //   "product_id": delivery_product._id,
-        //   "product_name": delivery_product.name,
-        //   "quantity": 1,
-        //   "price":delivery_product.price,
-        //   "note": delivery_product.description,
-        //   "fixed": true,
-        // }
-        // total += delivery_product.price;
-        let now = new Date().toISOString();
-        let order = {
-          // "contact_name": this.contact.name,
-          "name": "",
-          "code": "123",
-          "date": now,
-          "origin_id": null,
-          "total": total,
-          "residual": total,
-          "note": null,
-          "state": "QUOTATION",
-          "discount": {
-            "value": 0,
-            "discountProduct": true,
-            "lines": 0
-          },
-          "payments": [],
-          "payment_name": "Credito",
-          "invoice": "",
-          "invoices": [],
-          "amount_unInvoiced": total,
-          "seller": {},
-          "seller_name": "",
-          "currency": {},
-          "create_user": "admin",
-          "create_time": now,
-          "write_user": "admin",
-          "write_time": now,
-          "items": [line],
-          // "lines": [line, delivery],
-          "docType": "sale",
-          // "contact_id": this.contact_id,
-          "project_id": "",
-          "pay_cond_id": "payment-condition.credit"
+        let language:any = await this.languageService.getDefaultLanguage();
+        this.translate.setDefaultLang(language);
+        this.translate.use(language);
+        this.loading = await this.loadingCtrl.create({});
+        await this.loading.present();
+        let username = await this.storage.get("username");
+        if (username){
+          console.log("username", username);
+          this.logged = true;
+        }
+        let config: any = (await this.pouchdbService.getDoc('config.profile', true));
+        if (!config._id){
+          let este = await this.pouchdbService.getConnect(this.database);
+          this.events.subscribe(('end-sync'), async (change) => {
+            if (!config._id){
+              config = (await this.pouchdbService.getDoc('config.profile', true));
+              this.config = config;
+            }
+            this.currency_precision = config.currency_precision || this.currency_precision;
+            this.showCategories();
+            await this.setFilteredItems();
+            if (this.select) {
+              setTimeout(() => {
+                this.searchBar.setFocus();
+              }, 200);
+            }
+            this.events.unsubscribe('end-sync')
+          })
+        } else {
+          this.config = config;
+          this.currency_precision = config.currency_precision || this.currency_precision;
+          this.showCategories();
+          await this.setFilteredItems();
+          if (this.select) {
+            setTimeout(() => {
+              this.searchBar.setFocus();
+            }, 200);
           }
-          // let orderDoc = await this.pouchdbService.createDoc(order);
-          this.storage.set("order", order)
-          // console.log("orderDoc", orderDoc);
-          this.order = order;
+        }
+
+        if (!this.logged){
+          this.loading.dismiss();
+          // let order: any = await this.pouchdbService.searchDocTypeData('sale',"",0);
+          let order: any = await this.storage.get("order")
+          if (order){
+            if (order.state == 'QUOTATION'
+            || order.state == 'CONFIRMED'
+          ){
+              this.order = order;
+            }
+          }
+        }
+
+        this.events.subscribe('cancel-sale', async (data) => {
+          this.order = undefined;
+          this.storage.set("order", undefined)
+          console.log("cancel sale", this.order);
+        })
+
+
+        this.events.subscribe('add-product', async (data) => {
+          console.log("addProduct");
+          let total = data.product.price*data.product.quantity;
+          let line = {
+            product: data.product,
+            "product_id": data.product._id,
+            "product_name": data.product.name,
+            "quantity": data.product.quantity,
+            "price": data.product.price,
+            "size": data.product.size,
+            "note": data.product.note
+          }
+          if (this.order){
+            this.order.items.push(line);
+            this.order.total += total;
+            this.order.amount_unInvoiced += total;
+            this.order.residual += total;
+            this.storage.set("order", this.order)
+            // let updatedOrder:any = await this.pouchdbService.updateDoc(this.order);
+            // this.order._rev = updatedOrder.rev;
+
+          } else {
+            // let delivery_product:any = await this.pouchdbService.getDoc("product.delivery");
+            // let delivery = {
+            //   "product_id": delivery_product._id,
+            //   "product_name": delivery_product.name,
+            //   "quantity": 1,
+            //   "price":delivery_product.price,
+            //   "note": delivery_product.description,
+            //   "fixed": true,
+            // }
+            // total += delivery_product.price;
+            let now = new Date().toISOString();
+            let order = {
+              // "contact_name": this.contact.name,
+              "name": "",
+              "code": "123",
+              "date": now,
+              "origin_id": null,
+              "total": total,
+              "residual": total,
+              "note": null,
+              "state": "QUOTATION",
+              "discount": {
+                "value": 0,
+                "discountProduct": true,
+                "lines": 0
+              },
+              "payments": [],
+              "payment_name": "Credito",
+              "invoice": "",
+              "invoices": [],
+              "amount_unInvoiced": total,
+              "seller": {},
+              "seller_name": "",
+              "currency": {},
+              "create_user": "admin",
+              "create_time": now,
+              "write_user": "admin",
+              "write_time": now,
+              "items": [line],
+              // "lines": [line, delivery],
+              "docType": "sale",
+              // "contact_id": this.contact_id,
+              "project_id": "",
+              "pay_cond_id": "payment-condition.credit"
+              }
+              // let orderDoc = await this.pouchdbService.createDoc(order);
+              this.storage.set("order", order)
+              // console.log("orderDoc", orderDoc);
+              this.order = order;
+          }
+          console.log("order", this.order);
+          // this.events.unsubscribe('open-contact');
+        })
       }
-      console.log("order", this.order);
-      // this.events.unsubscribe('open-contact');
-    })
+    }
   }
 
   async openOrder() {

@@ -25,7 +25,6 @@ registerLocaleData(es);
 // import { Facebook } from "@ionic-native/facebook/ngx";
 // import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SalePageModule } from './sale/sale.module';
-import { PaymentConditionListPageModule } from './payment-condition-list/payment-condition-list.module';
 import { ProductListPage } from './product-list/product-list.page';
 import { ProductCategoryListPageModule } from './product-category-list/product-category-list.module';
 import { ProductListPageModule } from './product-list/product-list.module';
@@ -48,7 +47,6 @@ import { environment } from '../environments/environment';
   imports: [
     ProductListPageModule,
     SalePageModule,
-    PaymentConditionListPageModule,
     ConfigPageModule,
     LoginPageModule,
     ImageModalPageModule,

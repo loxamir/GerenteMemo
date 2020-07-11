@@ -99,7 +99,7 @@ export class PouchdbService {
     return this.database;
   }
 
-  getConnect(){
+  getConnect(database){
     console.log("getConnect");
     let self = this;
     return new Promise(async (resolve, reject)=>{
@@ -116,11 +116,11 @@ export class PouchdbService {
         }
         this.username = username;
         // this.storage.get("database").then(database => {
-          if (! this.database){
+          if (! database){
             resolve(false);
             return;
           }
-          // this.database = database;
+          this.database = database;
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
           PouchDB.plugin(PouchdbFind);
@@ -130,9 +130,9 @@ export class PouchdbService {
           // } else {
             // this.db = new PouchDB(database);
           // }
-          console.log("database", this.database);
+          console.log("database", database);
           // this.storage.get('password').then(password => {
-            this.db = new PouchDB("https://"+username+":"+password+"@"+server+'/'+this.database);
+            this.db = new PouchDB("https://"+username+":"+password+"@"+server+'/'+database);
 
             this.db.info()
   .then(() => {

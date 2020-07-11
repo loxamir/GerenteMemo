@@ -31,6 +31,7 @@ export class LoginPage implements OnInit {
   today = new Date().toISOString();
   language;
   demo;
+  database = '';
 
   constructor(
     public loadingCtrl: LoadingController,
@@ -48,6 +49,7 @@ export class LoginPage implements OnInit {
     public route: ActivatedRoute,
     public router: Router,
   ) {
+    this.database = document.URL.split('://')[1].split('.')[0];
     this.demo = this.route.snapshot.paramMap.get('demo');
     if (this.demo){
       this.show_create = true;
@@ -338,7 +340,7 @@ export class LoginPage implements OnInit {
         message: "Sincronizando...",
       });
       await toast.present();
-      this.pouchdbService.getConnect();
+      this.pouchdbService.getConnect(this.database);
       this.events.subscribe('end-sync', async () => {
         this.events.unsubscribe('end-sync');
         await this.router.navigate(['/product-list']);

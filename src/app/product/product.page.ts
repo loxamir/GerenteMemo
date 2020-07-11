@@ -80,7 +80,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       this.whatsapp = this.route.snapshot.paramMap.get('whatsapp');
       this.product = JSON.parse(this.route.snapshot.paramMap.get('product'));
       this.select = this.route.snapshot.paramMap.get('select');
-      // this.database = document.URL.split('://')[1].split('.')[0];
+      this.database = document.URL.split('://')[1].split('.')[0];
 
       if (this.route.snapshot.paramMap.get('_id')){
         this.opened = true;
@@ -124,11 +124,11 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         console.log("username", username);
         this.logged = true;
       }
-      this.database = this.pouchdbService.getDatabaseName();
+      // this.database = this.pouchdbService.getDatabaseName();
       let language:any = await this.languageService.getDefaultLanguage();
       if (!this.currency_precision || !this.currency_symbol){
         if (!this.product){
-          this.pouchdbService.getConnect();
+          this.pouchdbService.getConnect(this.database);
         }
         let config: any = await this.pouchdbService.getDoc('config.profile', false);
         this.config = config;
@@ -188,7 +188,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       } else {
         this.loading = await this.loadingCtrl.create({});
         await this.loading.present();
-        this.pouchdbService.getConnect();
+        this.pouchdbService.getConnect(this.database);
         let config: any = (await this.pouchdbService.getDoc('config.profile', true));
         this.currency_precision = config.currency_precision || this.currency_precision;
 

@@ -7,8 +7,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
 import { SaleService } from './sale.service';
-import { PaymentConditionListPage } from '../payment-condition-list/payment-condition-list.page';
-// import { AddressListPage } from '../address-list/address-list.page';
 import { ConfigService } from '../config/config.service';
 import { FormatService } from '../services/format.service';
 import { PouchdbService } from "../services/pouchdb/pouchdb-service";
@@ -469,34 +467,34 @@ export class SalePage implements OnInit {
     //   });
     // }
 
-    selectPaymentCondition() {
-      return new Promise(async resolve => {
-      if (this.saleForm.value.state=='QUOTATION'){
-        this.loading = await this.loadingCtrl.create({});
-        await this.loading.present();
-        this.events.unsubscribe('select-payment-condition');
-        this.events.subscribe('select-payment-condition', (data) => {
-          this.saleForm.patchValue({
-            paymentCondition: data.condition,
-            payment_name: data.condition.name,
-          });
-          this.saleForm.markAsDirty();
-          this.events.unsubscribe('select-payment-condition');
-          profileModal.dismiss();
-          resolve(data.condition);
-        })
-        let profileModal = await this.modalCtrl.create({
-          component: PaymentConditionListPage,
-          componentProps: {
-            "select": true
-          }
-        });
-        await profileModal.present();
-        await this.loading.dismiss();
-        await profileModal.onDidDismiss();
-      }
-    });
-    }
+    // selectPaymentCondition() {
+    //   return new Promise(async resolve => {
+    //   if (this.saleForm.value.state=='QUOTATION'){
+    //     this.loading = await this.loadingCtrl.create({});
+    //     await this.loading.present();
+    //     this.events.unsubscribe('select-payment-condition');
+    //     this.events.subscribe('select-payment-condition', (data) => {
+    //       this.saleForm.patchValue({
+    //         paymentCondition: data.condition,
+    //         payment_name: data.condition.name,
+    //       });
+    //       this.saleForm.markAsDirty();
+    //       this.events.unsubscribe('select-payment-condition');
+    //       profileModal.dismiss();
+    //       resolve(data.condition);
+    //     })
+    //     let profileModal = await this.modalCtrl.create({
+    //       component: PaymentConditionListPage,
+    //       componentProps: {
+    //         "select": true
+    //       }
+    //     });
+    //     await profileModal.present();
+    //     await this.loading.dismiss();
+    //     await profileModal.onDidDismiss();
+    //   }
+    // });
+    // }
 
     // selectAddress() {
     //   return new Promise(async resolve => {

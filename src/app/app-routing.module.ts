@@ -6,7 +6,6 @@ const routes: Routes = [
   { path: 'sale', loadChildren: './sale/sale.module#SalePageModule' },
   { path: 'product', loadChildren: './product/product.module#ProductPageModule' },
   { path: 'product/:_id', loadChildren: './product/product.module#ProductPageModule' },
-  { path: 'product-category-list', loadChildren: './payment-condition-list/payment-condition-list.module#PaymentConditionListPageModule' },
   { path: 'product-category', loadChildren: './product-category/product-category.module#ProductCategoryPageModule' },
   { path: 'product-category-list', loadChildren: './product-category-list/product-category-list.module#ProductCategoryListPageModule' },
   { path: 'product-list', loadChildren: './product-list/product-list.module#ProductListPageModule' },
