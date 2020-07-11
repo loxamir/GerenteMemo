@@ -1,5 +1,5 @@
 <ion-header *ngIf="logged">
-  <ion-toolbar>
+  <ion-toolbar style="--ion-background-color: {{config.bg_color}};">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/product-list"></ion-back-button>
     </ion-buttons>
@@ -14,7 +14,7 @@
     <input type="file" id="pwaphoto" #pwaphoto accept="image/*" (change)="previewFile()" style="display: none;">
   </div>
   <form class="sample-form validations-form" [formGroup]="productForm" style="background: white;">
-    <div class="scrolling-wrapper-flexbox2">
+    <div class="scrolling-wrapper-flexbox2" style="background: #a9a9a9;">
       <div class="card" *ngFor="let item of productForm.value.images; let i = index;">
         <ion-item-sliding class="list-item">
           <ion-item class="ion-no-padding">

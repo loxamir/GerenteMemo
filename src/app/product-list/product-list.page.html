@@ -33,7 +33,7 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-row>
+  <ion-row style="background: {{config.bg_color}};color: white;">
     <ion-col *ngIf="category_id!='all'"
     size="1.5"
     class="ion-no-padding"
@@ -46,9 +46,14 @@
       style="background: {{config.bg_color}};"
       placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
       [(ngModel)]="searchTerm"
-      #searchBar
-      (ionChange)="searchItems()">
+      type="search"
+      enterkeyhin="enter"
+      inputmode="search"
+      #searchBar>
     </ion-searchbar>
+    </ion-col>
+    <ion-col size="1.5" style="margin: auto;font-size:25px;">
+      <ion-icon name="search" (click)="searchItems()"></ion-icon>
     </ion-col>
   </ion-row>
 </ion-header>
@@ -57,11 +62,11 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <h1 *ngIf="!select && !searchTerm && category_id=='all' && categories.length"
+  <h1 *ngIf="!select && !current_search && category_id=='all' && categories.length"
   style="font-style: italic;font-weight: bold;font-size: 16px;text-align:center;margin-top: 5px;margin-bottom: 10px;color: white;">
     {{'CATEGORIES'| translate}}
   </h1>
-  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all' && categories.length">
+  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !current_search && category_id=='all' && categories.length">
     <div class="card" style="margin-left: 5px;margin-right:5px;" *ngFor="let item of categories">
         <ion-card class="list-card"
         style="height: 100%;margin:0px;width: 100px;"
@@ -89,7 +94,7 @@
   </div>
   <h1
     style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 10px;margin-bottom: 5px;color: white;"
-    *ngIf="!select && !searchTerm && category_id=='all'"
+    *ngIf="!select && !current_search && category_id=='all'"
     class="ion-no-padding">
       {{ 'PRODUCTS'|translate }}
     </h1>
@@ -211,8 +216,8 @@
     <ion-buttons slot="end">
     </ion-buttons>
   </ion-toolbar>
-  <ion-row>
-    <ion-col *ngIf="category_id!='all'||searchTerm"
+  <ion-row style="background: {{config.bg_color}};color: white;">
+    <ion-col *ngIf="category_id!='all'"
     size="1.5"
     class="ion-no-padding"
     (click)="goBack()"
@@ -221,13 +226,15 @@
     </ion-col>
     <ion-col  class="ion-no-padding">
       <ion-searchbar
-      placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
       style="background: {{config.bg_color}};"
+      placeholder="{{ 'SEARCH_PRODUCT' | translate }}"
       [(ngModel)]="searchTerm"
-      #searchBar
-      debonce="500"
-      (ionChange)="searchItems()">
+      inputmode="search"
+      #searchBar>
     </ion-searchbar>
+    </ion-col>
+    <ion-col size="1.5" style="margin: auto;font-size:25px;">
+      <ion-icon name="search" (click)="searchItems()"></ion-icon>
     </ion-col>
   </ion-row>
 </ion-header>
@@ -235,11 +242,11 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <h1 *ngIf="!select && !searchTerm && category_id=='all' && categories.length"
+  <h1 *ngIf="!select && !current_search && category_id=='all' && categories.length"
   style="font-style: italic;font-weight: bold;font-size: 16px;text-align:center;margin-top: 5px;margin-bottom: 10px;color: white;">
     {{'CATEGORIES'| translate}}
   </h1>
-  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !searchTerm && category_id=='all' && categories.length">
+  <div class="scrolling-wrapper-flexbox" *ngIf="!select && !current_search && category_id=='all' && categories.length">
     <div class="card" style="margin-left: 5px;margin-right:5px;" *ngFor="let item of categories">
         <ion-card class="list-card"
         style="height: 100%;margin:0px;width: 100px;"
@@ -268,7 +275,7 @@
   </div>
   <h1
   style="font-style: italic;font-weight: bold;font-size: 15px;text-align:center;margin-top: 10px;margin-bottom: 5px;color: white;"
-  *ngIf="!select && !searchTerm && category_id=='all'"
+  *ngIf="!select && !current_search && category_id=='all'"
   class="ion-no-padding">
     {{ 'PRODUCTS'|translate }}
   </h1>
@@ -327,7 +334,7 @@
       </ion-row>
     </div>
   </div>
-  <div class="scrolling-wrapper-flexbox2" *ngIf="products.length==0&&category_id=='all'&& !searchTerm">
+  <div class="scrolling-wrapper-flexbox2" *ngIf="products.length==0&&category_id=='all'&& !current_search">
     <div class="card">
       <ion-row>
         <ion-card class="list-card" style="display: inline-block;">

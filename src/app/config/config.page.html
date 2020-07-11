@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar  style="--ion-background-color: {{configForm.value.bg_color}};">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/product-list"></ion-back-button>
     </ion-buttons>
@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="config-content" style="background-color: #ddd">
+<ion-content class="config-content" style="--ion-background-color: white">
   <canvas id="canvas" height=200 width=200 style="display:none"></canvas>
   <form class="sample-form validations-form"
   [formGroup]="configForm">
@@ -27,19 +27,17 @@
       <ion-input type="text" formControlName="whatsapp"></ion-input>
     </ion-item>
     <ion-item class="ion-no-padding field-100">
-      <ion-label position="floating">{{'COLOR'}}</ion-label>
+      <ion-label position="floating">{{'BACKGROUND_COLOR' | translate}}</ion-label>
       <ion-input type="text" formControlName="bg_color"></ion-input>
     </ion-item>
   </ion-row>
 
+  <h1 style="margin-top: 11px;font-size: 15px;text-align: right;padding-right: 15px;">v0.0.11</h1>
   </form>
-  <span>v0.0.10</span>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="configForm.dirty">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
       {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
-  <div style="height: 100px;">
-  </div>
 </ion-content>

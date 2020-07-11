@@ -57,7 +57,7 @@ export class ConfigPage implements OnInit {
     this.configForm = this.formBuilder.group({
       name: ['', Validators.required],
       image: [''],
-      bg_color: ['blue'],
+      bg_color: ['#a9a9a9'],
       serviceNote: [''],
       doc: [''],
       currency: [{}],

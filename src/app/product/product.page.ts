@@ -156,6 +156,8 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         // this.loading.dismiss();
       } else
       if (this._id){
+        this.loading = await this.loadingCtrl.create({});
+        await this.loading.present();
         this.productService.getProduct(this._id).then((data) => {
           setTimeout(() => {
             if (data.sizes && data.sizes[0]){
@@ -181,7 +183,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
               this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+data._id+'/avatar.png');
             }
           }
-          // this.loading.dismiss();
+          this.loading.dismiss();
         });
       } else {
         this.loading = await this.loadingCtrl.create({});
