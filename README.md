@@ -70,3 +70,6 @@ zipalign -v 4 app-release-unsigned.apk android.apk
 ionic cordova build android --prod --release -- -- --keystore=my-release-key.keystore --alias=alias_name
 
 # Tests instalation see https://lathonez.com/2018/ionic-2-unit-testing/
+
+
+# To generate icons use https://app-manifest.firebaseapp.com/ or search for 'pwa icon generator'
