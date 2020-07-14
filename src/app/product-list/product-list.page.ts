@@ -113,7 +113,9 @@ export class ProductListPage implements OnInit {
           await this.setFilteredItems();
           if (this.select) {
             setTimeout(() => {
-              this.searchBar.setFocus();
+              if (this.searchBar){
+                this.searchBar.setFocus();
+              }
             }, 200);
           }
         }
@@ -765,7 +767,7 @@ async showConfig() {
     selectProduct(product) {
       if (this.select) {
         this.modalCtrl.dismiss();
-        this.events.publish('select-product', {product: product});
+        this.events.publish('select-product', product);
       } else {
         this.openProduct(product);
       }

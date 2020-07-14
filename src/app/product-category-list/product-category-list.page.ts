@@ -19,6 +19,8 @@ export class ProductCategoryListPage implements OnInit {
   select;
   searchTerm: string = '';
   page = 0;
+  database = '';
+  config:any = {};
 
   constructor(
     public navCtrl: NavController,
@@ -39,6 +41,9 @@ export class ProductCategoryListPage implements OnInit {
     let language:any = await this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang(language);
     this.translate.use(language);
+    await this.pouchdbService.getConnect(this.database);
+    let config = await this.pouchdbService.getDoc('config.profile', true);
+    this.config = config;
     this.setFilteredItems();
   }
 
@@ -142,15 +147,35 @@ export class ProductCategoryListPage implements OnInit {
     return this.pouchdbService.deleteDoc(category);
   }
 
+  // getCategories(keyword, page){
+  //   return this.pouchdbService.searchDocTypeData(
+  //     'category',
+  //     keyword, page,
+  //     undefined,
+  //     undefined,
+  //     'sequence',
+  //     'increase'
+  //   );
+  // }
+
   getCategories(keyword, page){
-    return this.pouchdbService.searchDocTypeData(
-      'category',
-      keyword, page,
-      undefined,
-      undefined,
-      'sequence',
-      'increase'
-    );
+    return new Promise(async (resolve, reject)=>{
+      let categories_tmp:any = await this.pouchdbService.getView('Informes/categories',
+        undefined,
+        [],
+        ["z"],
+        false,
+        false,
+        undefined,
+        undefined,
+        true,
+      )
+      let categories = [];
+      categories = categories_tmp.map(function(item){
+        return item.doc;
+      });
+      resolve(categories);
+    })
   }
 
   // deleteCategory(category) {

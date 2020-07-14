@@ -88,7 +88,7 @@ export class ProductCategoryPage implements OnInit {
   //   }
   // }
 
-  buttonSave() {
+  async buttonSave() {
     if (this._id){
       this.productCategoryService.updateCategory(this.categoryForm.value, this.avatar);
       if (this.select){
@@ -100,7 +100,8 @@ export class ProductCategoryPage implements OnInit {
         // });
       }
     } else {
-      this.productCategoryService.createCategory(this.categoryForm.value, this.avatar);
+      let category:any = await this.productCategoryService.createCategory(this.categoryForm.value, this.avatar);
+      this.categoryForm.value._id = category.id;
       if (this.select){
         this.modalCtrl.dismiss();
         this.events.publish('create-category', this.categoryForm.value);
