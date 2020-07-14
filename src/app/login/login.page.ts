@@ -160,20 +160,28 @@ export class LoginPage implements OnInit {
   }
 
   login (){
-    this.checkLogin(
-      this.loginForm.value.user.toLowerCase(),
-      this.loginForm.value.password
-    ).then(async (loginData: any)=>{
-      if (loginData.ok){
-        this.doLogin();
-      } else {
-        let toast = await this.toastCtrl.create({
-          message: "Usuario o Contraseña Equivocados",
-          duration: 3000
-        });
-        await toast.present();
-      }
-    })
+    if (this.database == this.loginForm.value.user.toLowerCase()){
+      this.checkLogin(
+        this.loginForm.value.user.toLowerCase(),
+        this.loginForm.value.password
+      ).then(async (loginData: any)=>{
+        if (loginData.ok){
+          this.doLogin();
+        } else {
+          this.wrongLogin();
+        }
+      })
+    } else {
+      this.wrongLogin();
+    }
+  }
+
+  async wrongLogin(){
+    let toast = await this.toastCtrl.create({
+      message: "Usuario o Contraseña Equivocados",
+      duration: 3000
+    });
+    await toast.present();
   }
 
   register (){
