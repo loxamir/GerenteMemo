@@ -34,7 +34,7 @@ export class ProductCategoryListPage implements OnInit {
     public events: Events,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
-
+    this.database = document.URL.split('://')[1].split('.')[0];
   }
 
   async ngOnInit() {
