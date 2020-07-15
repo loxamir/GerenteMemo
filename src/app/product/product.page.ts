@@ -152,8 +152,11 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
             this.product_images.push('https://database.sistemamemo.com/'+this.database+'/'+this.product._id+'/avatar.png');
           }
         }
+        let produ:any = await this.productService.getProduct(this.product._id);
+        this.productForm.patchValue({
+          "products": produ.products,
+        })
         this.productForm.markAsPristine();
-        // this.loading.dismiss();
       } else
       if (this._id){
         this.loading = await this.loadingCtrl.create({});

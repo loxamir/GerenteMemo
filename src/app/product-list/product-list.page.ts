@@ -14,6 +14,7 @@ import { Events } from '../services/events';
 import { ConfigPage } from '../config/config.page';
 import { SalePage } from '../sale/sale.page';
 import { Storage } from '@ionic/storage';
+import { Title }     from '@angular/platform-browser';
 
 @Component({
   selector: 'app-product-list',
@@ -54,6 +55,7 @@ export class ProductListPage implements OnInit {
     public route: ActivatedRoute,
     public popoverCtrl: PopoverController,
     public file: File,
+    private titleService: Title,
   ) {
     // this.database = this.pouchdbService.getDatabaseName();
     this.select = this.route.snapshot.paramMap.get('select');
@@ -91,6 +93,7 @@ export class ProductListPage implements OnInit {
         let config: any = (await this.pouchdbService.getDoc('config.profile', true));
         if (!config._id){
           let este = await this.pouchdbService.getConnect(this.database);
+          this.titleService.setTitle(config.name);
           this.events.subscribe(('end-sync'), async (change) => {
             if (!config._id){
               config = (await this.pouchdbService.getDoc('config.profile', true));
@@ -109,6 +112,7 @@ export class ProductListPage implements OnInit {
         } else {
           this.config = config;
           this.currency_precision = config.currency_precision || this.currency_precision;
+          this.titleService.setTitle(config.name);
           this.showCategories();
           await this.setFilteredItems();
           if (this.select) {
