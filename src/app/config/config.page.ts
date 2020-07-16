@@ -88,7 +88,7 @@ export class ConfigPage implements OnInit {
       country: [''],
       whatsapp: '',
       state: [''],
-      // tab: ['profile'],
+      bg_color: "blue",
       invoice_sequence: [''],
       sale_sequence: [1],
       service_sequence: [1],
