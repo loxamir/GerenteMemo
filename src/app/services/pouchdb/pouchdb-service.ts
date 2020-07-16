@@ -16,6 +16,7 @@ export class PouchdbService {
   remote: any;
   docTypes = {};
   username = undefined;
+  database = '';
 
   constructor(
     public http: HttpClient,
@@ -86,6 +87,7 @@ export class PouchdbService {
             resolve(false);
             return;
           }
+          this.database = database;
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
           if (this.platform.is('cordova')){
@@ -659,5 +661,9 @@ export class PouchdbService {
         list.unshift({doc: change.doc});
       }
     }
+  }
+
+  getDatabaseName(){
+    return this.database;
   }
 }

@@ -616,4 +616,47 @@ export class ConfigPage implements OnInit {
       await callback(array[index], index, array);
     }
   }
+
+  async fixSync(){
+    // Let us open our database
+    let database = "_pouch_"+this.pouchdbService.getDatabaseName();
+    console.log("database used", database)
+    const DBOpenRequest = window.indexedDB.open(database, 5);
+
+    DBOpenRequest.onerror = function(event) {
+      console.log('Error loading database', event);
+    };
+
+    DBOpenRequest.onsuccess = (event)=> {
+
+      // store the result of opening the database in the db variable. This is used a lot below
+      let db = DBOpenRequest.result;
+      console.log('Database initialised', db);
+
+      // Run the displayData() function to populate the task list with all the to-do list data already in the IDB
+      this.displayData(db);
+    };
+  }
+
+  displayData(db) {
+    let objectStore = db.transaction(['by-sequence'], "readwrite").objectStore('by-sequence');
+    objectStore.openCursor().onsuccess = function(event) {
+      let cursor = event.target.result;
+        // if there is still another cursor to go, keep runing this code
+        if(cursor) {
+          // console.log("cursor", cursor.value._attachments);
+          if (!cursor.value._attachments){
+            if ( cursor.value._attachments === undefined){
+              // console.log("defined", cursor.value._attachments);
+            } else {
+              console.log("detected", cursor);
+              const updateData = cursor.value;
+              updateData._attachments = undefined;
+              cursor.update(updateData);
+            }
+          }
+          cursor.continue();
+        }
+      }
+    }
 }
