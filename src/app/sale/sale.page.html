@@ -326,7 +326,7 @@
     </ion-button>
   </ion-fab>
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'CONFIRMED' && saleForm.value.residual > 0">
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="saleForm.value.state == 'CONFIRMED' && saleForm.value.residual != 0">
     <ion-button (click)="addPayment()"  class="next-button" color="primary">
       <ion-icon name="cash"> </ion-icon>
       {{ 'TO_RECEIVE' | translate }}
