@@ -23,6 +23,7 @@ import { CheckListPage } from '../check-list/check-list.page';
 import { CheckPage } from '../check/check.page';
 import { ReceiptPopover } from './receipt.popover';
 import { AccountListPage } from '../account-list/account-list.page';
+import { CheckService } from '../check/check.service';
 
 @Component({
   selector: 'app-receipt',
@@ -83,11 +84,12 @@ export class ReceiptPage implements OnInit {
     public pouchdbService: PouchdbService,
     public popoverCtrl: PopoverController,
     public events: Events,
+    public checkService: CheckService,
   ) {
     this.today = new Date().toISOString();
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     this.avoidAlertMessage = false;
@@ -132,9 +134,27 @@ export class ReceiptPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.user = (await this.pouchdbService.getUser());
+    if (this.user.createReceipt == false){
+      let prompt = await this.alertCtrl.create({
+        header: 'Sin Permiso',
+        message: 'No tienes permiso para crear recibos',
+        buttons: [
+          {
+            text: 'Ok'
+          }
+        ]
+      });
+      prompt.present();
+      await this.loading.dismiss();
+      this.exitPage();
+      return;
+    }
     let config: any = await this.configService.getConfig();
     this.config = config;
     this.company_currency_precision = config.currency_precision;
@@ -594,7 +614,7 @@ export class ReceiptPage implements OnInit {
             text: 'Cancel'
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: data => {
               item.amount = data.amount;
               this.recomputeValues();
@@ -844,7 +864,7 @@ export class ReceiptPage implements OnInit {
         message: 'Estas seguro que deseas confirmar la el recibo?',
         buttons: [
           {
-            text: 'Cancelar',
+            text: this.translate.instant('CANCEL'),
             role: 'cancel',
             handler: data => {
               //console.log("Cancelar");
@@ -852,7 +872,7 @@ export class ReceiptPage implements OnInit {
             }
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: async data => {
               //console.log("Confirmar");
               this.loading = await this.loadingCtrl.create({});
@@ -937,6 +957,9 @@ export class ReceiptPage implements OnInit {
       })
       let amount_paid = (this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit) * this.receipt_exchange_rate;
       let amount_paid2 = this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit;
+      if (this.receiptForm.value.amount_paid < 0){
+        amount_paid2 = this.receiptForm.value.amount_paid - this.receiptForm.value.change;
+      }
       let paid_real = this.receiptForm.value.paid - this.receiptForm.value.change;
       let paid_currency = (
         paid_real * this.receipt_exchange_rate
@@ -1284,38 +1307,39 @@ export class ReceiptPage implements OnInit {
               check.state = 'DELIVERED';
               check.account_id = 'account.payable.credit';
             }
-            promise_ids2.push(this.pouchdbService.updateDoc(check));
+            promise_ids2.push(this.checkService.updateCheck(check));
           }
 
           promise_ids2.push(this.pouchdbService.updateDoc(item1));
           // console.log("item_residual1", item1.origin_id, item_residual);
           // console.log("ORIGIN", item1.origin_id.split('.')[0]);
           let smallDiff = 10**(-1*this.receipt_currency_precision)*this.receipt_exchange_rate;
-          if (item1.origin_id.split('.')[0] == 'sale') {
-            // console.log("findSale");
-            let sale: any = await this.pouchdbService.getDoc(item1.origin_id);
-            // console.log("sALE", JSON.stringify(sale))
-            sale.residual = item1.amount_residual;
-            // console.log("item_residual2", item_residual);
-            let sale_item_paid = item_paid;
-            paid_document_amount = item_paid;
-            if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
-              sale.state = "PAID";
-              sale.residual = 0;
-              sale_item_paid += item1.amount_residual;
-              paid_document_amount += item1.amount_residual;
-            }
-            sale.payments.push({
-              "paid": sale_item_paid,
-              "date": this.receiptForm.value.date,
-              "state": "CONFIRMED",
-              "_id": this.receiptForm.value._id,
-            });
-
-            // console.log("SALE RES", JSON.stringify(sale));
-            await this.pouchdbService.updateDoc(sale);
-          }
-          else if (item1.origin_id.split('.')[0] == 'purchase') {
+          // if (item1.origin_id.split('.')[0] == 'sale') {
+          //   // console.log("findSale");
+          //   let sale: any = await this.pouchdbService.getDoc(item1.origin_id);
+          //   // console.log("sALE", JSON.stringify(sale))
+          //   sale.residual = item1.amount_residual;
+          //   // console.log("item_residual2", item_residual);
+          //   let sale_item_paid = item_paid;
+          //   paid_document_amount = item_paid;
+          //   if (item1.amount_residual <= smallDiff && item1.amount_residual >= -smallDiff){
+          //     sale.state = "PAID";
+          //     sale.residual = 0;
+          //     sale_item_paid += item1.amount_residual;
+          //     paid_document_amount += item1.amount_residual;
+          //   }
+          //   sale.payments.push({
+          //     "paid": sale_item_paid,
+          //     "date": this.receiptForm.value.date,
+          //     "state": "CONFIRMED",
+          //     "_id": this.receiptForm.value._id,
+          //   });
+          //
+          //   // console.log("SALE RES", JSON.stringify(sale));
+          //   await this.pouchdbService.updateDoc(sale);
+          // }
+          // else
+          if (item1.origin_id.split('.')[0] == 'purchase') {
             this.pouchdbService.getDoc(item1.origin_id).then((purchase: any) => {
               purchase.residual = item1.amount_residual;
               // console.log("item_residual2", item_residual);
@@ -1743,10 +1767,10 @@ export class ReceiptPage implements OnInit {
   async canDeactivate() {
     if (this.receiptForm.dirty) {
       let alertPopup = await this.alertCtrl.create({
-        header: 'Descartar',
-        message: '¿Deseas salir sin guardar?',
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
         buttons: [{
-          text: 'Si',
+          text: this.translate.instant('YES'),
           handler: () => {
             // alertPopup.dismiss().then(() => {
             this.exitPage();
@@ -1754,7 +1778,7 @@ export class ReceiptPage implements OnInit {
           }
         },
         {
-          text: 'No',
+          text: this.translate.instant('NO'),
           handler: () => {
             // need to do something if the user stays?
           }
@@ -1801,12 +1825,12 @@ export class ReceiptPage implements OnInit {
         message: 'Al cancelar el Recibo todos los registros asociados serán borrados',
         buttons: [
           {
-            text: 'No',
+            text: this.translate.instant('NO'),
             handler: data => {
             }
           },
           {
-            text: 'Si',
+            text: this.translate.instant('YES'),
             handler: async data => {
               await this.removeCashMoves();
               this.events.publish('cancel-receipt', this.receiptForm.value._id);
@@ -1853,9 +1877,9 @@ export class ReceiptPage implements OnInit {
           })
           paidMove.payments = payments;
           if (total > 0){
-            paidMove.amount_residual += total;
+            paidMove.amount_residual = paidMove.amount;
             if (paidMove.currency_id){
-              paidMove.currency_residual += total_currency;
+              paidMove.currency_residual += paidMove.amount_currency;
             }
             await this.pouchdbService.updateDoc(paidMove);
           }

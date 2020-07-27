@@ -17,6 +17,7 @@ export class PouchdbService {
   remote: any;
   docTypes = {};
   username = undefined;
+  database = '';
 
   constructor(
     public http: HttpClient,
@@ -50,6 +51,28 @@ export class PouchdbService {
     });
   }
 
+  attachFile(doc_id, file_name, file_data){
+    return new Promise(async (resolve, reject)=>{
+      let document: any = await this.getDoc(doc_id);
+      let attach = await this.db.putAttachment(doc_id, file_name, document._rev, file_data, 'image/png');
+      resolve(attach);
+    })
+  }
+
+  async getAttachment(doc_id, file_name){
+    let self = this;
+    return new Promise(async (resolve, reject)=>{
+      try {
+        let data = await self.db.getAttachment(doc_id, file_name);
+        resolve(data)
+      }
+      catch (err) {
+        console.log(err);
+        resolve(false);
+      }
+    })
+  }
+
   getConnect(){
     let self = this;
     return new Promise((resolve, reject)=>{
@@ -60,23 +83,29 @@ export class PouchdbService {
           return;
         }
         this.username = username;
-        this.storage.get("database").then(database => {
+        this.storage.get("database").then(async database => {
           if (! database){
             resolve(false);
             return;
           }
+          this.database = database;
           let PouchDB: any = PouchDB1;
           PouchDB.plugin(PouchdbUpsert);
           PouchDB.plugin(PouchdbFind);
           if (this.platform.is('cordova')){
             PouchDB.plugin(cordovaSqlitePlugin);
-            this.db = new PouchDB(database, { adapter: 'cordova-sqlite' });
+            this.db = new PouchDB(database, {
+              adapter: 'cordova-sqlite',
+              location: 'default',
+              androidDatabaseImplementation: 2
+            })
           } else {
             this.db = new PouchDB(database);
           }
           console.log("database", database);
           this.db.setMaxListeners(50);
           self.events.publish('got-database');
+          let loadDemo = await this.storage.get('loadDemo');
           this.storage.get('password').then(password => {
             this.db = new PouchDB("https://"+username+":"+password+"@"+server+'/'+database);
             // this.remote = "https://"+username+":"+password+"@"+server+'/'+database;
@@ -88,7 +117,9 @@ export class PouchdbService {
             this.db.changes({
               live: true,
               since: 'now',
-              include_docs: true
+              include_docs: true,
+              attachments: true,
+              // binary: true,
             }).on('change', (change) => {
               // console.log("changed", change);
               this.handleChangeData(change);
@@ -217,7 +248,8 @@ export class PouchdbService {
     limit=undefined,
     skip=undefined,
     include_docs=false,
-    keys=undefined
+    keys=undefined,
+    descending=false,
   ){
     return new Promise((resolve, reject)=>{
       let options = {
@@ -230,6 +262,7 @@ export class PouchdbService {
         'skip': skip,
         'include_docs': include_docs,
         'keys': keys,
+        'descending': descending,
       }
       this.db.query(viewName, options).then(function (res) {
         resolve(res.rows);
@@ -239,11 +272,14 @@ export class PouchdbService {
     });
   }
 
-  getDoc(doc_id) {
+  getDoc(doc_id, attachments=false) {
     return new Promise(async (resolve, reject)=>{
       if (typeof doc_id === "string"){
         try {
-          let test = await this.db.get(doc_id);
+          let test = await this.db.get(doc_id, {
+            attachments: attachments,
+            // binary: true
+          });
           resolve(test);
         } catch {
           resolve({})
@@ -333,8 +369,8 @@ export class PouchdbService {
     });
   }
 
-  deleteDoc(doc){
-    this.db.remove(doc).catch((err) => {
+  deleteDoc(doc_id){
+    this.db.remove(doc_id).catch((err) => {
       console.log("Delete error", err);
     });
   }
@@ -349,12 +385,48 @@ export class PouchdbService {
     });
   }
 
+  getViewInv(
+    viewName,
+    level=undefined,
+    startkey=undefined,
+    endkey=undefined,
+    reduce=true,
+    group=true,
+    limit=undefined,
+    skip=undefined,
+    include_docs=false,
+    keys=undefined
+  ){
+    return new Promise((resolve, reject)=>{
+      let options = {
+        'reduce': reduce,
+        'group': group,
+        'group_level':level,
+        'startkey': startkey,
+        'endkey': endkey,
+        'limit': limit,
+        'skip': skip,
+        'include_docs': include_docs,
+        'keys': keys,
+        'descending': true,
+        'inclusive_end': true,
+      }
+      this.db.query(viewName, options).then(function (res) {
+        resolve(res.rows);
+      }).catch(function (err) {
+        console.log("error", err);
+      });
+    });
+  }
+
   getDocType(docType) {
     return new Promise((resolve, reject)=>{
       let self = this;
         this.db.allDocs({
           include_docs : true,
           startkey: docType+".",
+          attachments: true,
+          // binary: true,
           endkey: docType+".z",
         }).then((res) => {
           let docs = [];
@@ -368,7 +440,7 @@ export class PouchdbService {
     });
   }
 
-  getList(list) {
+  getList(list, includeAttach=false) {
     return new Promise((resolve, reject)=>{
         let list2 = [];
         list.forEach(variable => {
@@ -378,6 +450,8 @@ export class PouchdbService {
         });
         this.db.allDocs({
           include_docs : true,
+          attachments: includeAttach,
+          // binary: true,
           keys: list2
         }).then((res) => {
           resolve(res.rows);
@@ -575,5 +649,34 @@ export class PouchdbService {
         list.unshift(change.doc);
       }
     }
+  }
+
+  localHandleChangeDataDoc(list, change){
+    let changedDoc = null;
+    let changedIndex = null;
+    list.forEach((doc, index) => {
+      if(doc.doc._id === change.id){
+        changedDoc = doc.doc;
+        changedIndex = index;
+      }
+    });
+    //A document was deleted
+    if(change.deleted){
+      list.splice(changedIndex, 1);
+    }
+    else {
+      //A document was updated
+      if(changedDoc){
+        list[changedIndex].doc = change.doc;
+      }
+      //A document was added
+      else {
+        list.unshift({doc: change.doc});
+      }
+    }
+  }
+
+  getDatabaseName(){
+    return this.database;
   }
 }

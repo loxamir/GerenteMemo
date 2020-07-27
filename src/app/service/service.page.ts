@@ -132,9 +132,9 @@ export class ServicePage implements OnInit {
       public popoverCtrl: PopoverController,
     ) {
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.avoidAlertMessage = false;
     }
@@ -154,7 +154,7 @@ export class ServicePage implements OnInit {
         work_amount: new FormControl(0),
         quantity: new FormControl(1),
         note: new FormControl(''),
-        state: new FormControl('DRAFT'),
+        state: new FormControl('QUOTATION'),
         // tab: new FormControl('service'),
         works: new FormControl([]),
         results: new FormControl([]),
@@ -167,7 +167,6 @@ export class ServicePage implements OnInit {
         currency: new FormControl(''),
         weather: new FormControl(''),
         language: new FormControl(''),
-        production: new FormControl(this.route.snapshot.paramMap.get('production')||false),
         location: new FormControl(''),
         description: new FormControl(''),
         equipment: new FormControl({}),
@@ -176,6 +175,7 @@ export class ServicePage implements OnInit {
         payments: new FormControl([]),
         project: new FormControl({}),
         input_amount: new FormControl(0),
+        cost: new FormControl(0),
         paymentCondition: new FormControl({}),
         payment_name: new FormControl(''),
         // equipment_number: new FormControl(''),
@@ -193,6 +193,9 @@ export class ServicePage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       this.configService.getConfig().then((data) => {
@@ -215,11 +218,9 @@ export class ServicePage implements OnInit {
           });
         } else {
           this.loading.dismiss();
-          if (!this.serviceForm.value.production){
-            setTimeout(() => {
-              this.clientRequest.setFocus();
-            }, 700);
-          }
+          setTimeout(() => {
+            this.clientRequest.setFocus();
+          }, 700);
         }
       });
 
@@ -322,304 +323,52 @@ export class ServicePage implements OnInit {
 
 
     setSchedule() {
-      if (this.serviceForm.value.production){
-        if (Object.keys(this.serviceForm.value.contact).length === 0){
-          this.selectProduct().then(()=>{
-            this.serviceForm.patchValue({
-              'state': "SCHEDULED",
-            });
-            this.buttonSave();
-          });
-        } else {
+      if (Object.keys(this.serviceForm.value.contact).length === 0){
+        this.selectContact().then(()=>{
           this.serviceForm.patchValue({
             'state': "SCHEDULED",
           });
           this.buttonSave();
-        }
+        });
       } else {
-        if (Object.keys(this.serviceForm.value.contact).length === 0){
-          this.selectContact().then(()=>{
-            this.serviceForm.patchValue({
-              'state': "SCHEDULED",
-            });
-            this.buttonSave();
-          });
-        } else {
-          this.serviceForm.patchValue({
-            'state': "SCHEDULED",
-          });
-          this.buttonSave();
-        }
+        this.serviceForm.patchValue({
+          'state': "SCHEDULED",
+        });
+        this.buttonSave();
       }
     }
+
     setStarted() {
-      if (this.serviceForm.value.production){
-        if (Object.keys(this.serviceForm.value.product).length === 0){
-          this.selectProduct().then(()=>{
-            this.serviceForm.patchValue({
-              'state': "STARTED",
-            });
-            this.buttonSave();
-          });
-        } else {
+      if (Object.keys(this.serviceForm.value.contact).length === 0){
+        this.selectContact().then(()=>{
           this.serviceForm.patchValue({
             'state': "STARTED",
           });
           this.buttonSave();
-        }
+        });
       } else {
-        if (Object.keys(this.serviceForm.value.contact).length === 0){
-          this.selectContact().then(()=>{
-            this.serviceForm.patchValue({
-              'state': "STARTED",
-            });
-            this.buttonSave();
-          });
-        } else {
-          this.serviceForm.patchValue({
-            'state': "STARTED",
-          });
-          this.buttonSave();
-        }
+        this.serviceForm.patchValue({
+          'state': "STARTED",
+        });
+        this.buttonSave();
       }
     }
-
-    // listenRequest() {
-    //   let options = {
-    //     language: 'pt-BR'
-    //   }
-    //   this.speechRecognition.hasPermission()
-    //   .then((hasPermission: boolean) => {
-    //     if (!hasPermission) {
-    //       this.speechRecognition.requestPermission();
-    //     } else {
-    //       this.speechRecognition.startListening(options).subscribe(matches => {
-    //         this.serviceForm.patchValue({
-    //           client_request: matches[0],
-    //         });
-    //         this.serviceForm.markAsDirty();
-    //       });
-    //     }
-    //   });
-    // }
-
-    // listenService() {
-    //   let options = {
-    //     language: 'pt-BR'
-    //   }
-    //   this.speechRecognition.hasPermission()
-    //   .then((hasPermission: boolean) => {
-    //     if (!hasPermission) {
-    //       this.speechRecognition.requestPermission();
-    //     } else {
-    //       this.tts.speak({
-    //         text: "Diga oque deseja",
-    //         //rate: this.rate/10,
-    //         locale: "pt-BR"
-    //       })
-    //       .then(() => {
-    //         //console.log('Success1');
-    //         this.speechRecognition.startListening(options).subscribe(matches => {
-    //           this.serviceForm.patchValue({
-    //             service_overview: matches[0],
-    //           });
-    //         });
-    //       })
-    //       .catch((reason: any) => console.log(reason));
-    //     }
-    //   });
-    // }
-
-    // async ionViewCanLeave() {
-    //     if(this.serviceForm.dirty && ! this.avoidAlertMessage) {
-    //         let alertPopup = await this.alertCtrl.create({
-    //             header: 'Descartar',
-    //             message: '¿Deseas salir sin guardar?',
-    //             buttons: [{
-    //                     text: 'Si',
-    //                     handler: () => {
-    //                         // alertPopup.dismiss().then(() => {
-    //                             this.exitPage();
-    //                         // });
-    //                     }
-    //                 },
-    //                 {
-    //                     text: 'No',
-    //                     handler: () => {
-    //                         // need to do something if the user stays?
-    //                     }
-    //                 }]
-    //         });
-    //
-    //         // Show the alert
-    //         alertPopup.present();
-    //
-    //         // Return false to avoid the page to be popped up
-    //         return false;
-    //     }
-    // }
-    //
-    // private exitPage() {
-    //     this.serviceForm.markAsPristine();
-    //     // this.navCtrl.navigateBack();
-    // }
-
-    // async goNextStep() {
-    //   if (this.serviceForm.value.state == 'DRAFT' || this.serviceForm.value.state == 'SCHEDULED'){
-    //     console.log("set Focus");
-    //     if (this.serviceForm.value.client_request == '' && !this.serviceForm.value.production){
-    //       this.clientRequest.setFocus();
-    //     }
-    //     else if (this.serviceForm.value.production){
-    //       if (Object.keys(this.serviceForm.value.product).length === 0){
-    //         this.selectProduct();
-    //       } else {
-    //         this.setStarted();
-    //         return;
-    //       }
-    //     } else {
-    //       if (Object.keys(this.serviceForm.value.contact).length === 0){
-    //         this.selectContact();
-    //       } else {
-    //         this.setStarted();
-    //         return;
-    //       }
-    //     }
-    //   }
-    //   else if (this.serviceForm.value.state == 'STARTED'){
-    //     // if(!this.serviceForm.value._id){
-    //     //   this.buttonSave();
-    //     // }
-    //     if (this.serviceForm.value.works.length==0){
-    //       this.addWork();
-    //     }
-    //     else if (this.serviceForm.value.inputs.length==0 && ! this.ignore_inputs){
-    //       console.log("ignore_inputs");
-    //       let prompt = await this.alertCtrl.create({
-    //         header: 'Productos Consumidos',
-    //         message: 'Has consumido algun producto durante el trabajo?',
-    //         buttons: [
-    //           {
-    //             text: 'No',
-    //             handler: async data => {
-    //               console.log("ignore_inputs");
-    //
-    //               this.ignore_inputs = true;
-    //               if (!this.serviceForm.value.production){
-    //                 let prompt = await this.alertCtrl.create({
-    //                   header: 'Viaticos',
-    //                   message: 'Has hecho algun viaje para realizar el trabajo?',
-    //                   buttons: [
-    //                     {
-    //                       text: 'No',
-    //                       handler: data => {
-    //                         // this.addTravel();
-    //                         this.ignore_travels = true;
-    //                       }
-    //                     },
-    //                     {
-    //                       text: 'Si',
-    //                       handler: data => {
-    //                         this.addTravel();
-    //                       }
-    //                     }
-    //                   ]
-    //                 });
-    //                 prompt.present();
-    //               }
-    //             }
-    //           },
-    //           {
-    //             text: 'Si',
-    //             handler: data => {
-    //               this.addInput();
-    //               // item.description = data.description;
-    //             }
-    //           }
-    //         ]
-    //       });
-    //
-    //       prompt.present();
-    //     }
-    //     else if (this.serviceForm.value.travels.length==0 && ! this.ignore_travels && !this.serviceForm.value.production){
-    //       console.log("ignore_travels");
-    //       let prompt = await this.alertCtrl.create({
-    //         header: 'Viaticos',
-    //         message: 'Has hecho algun viaje para realizar el trabajo?',
-    //         buttons: [
-    //           {
-    //             text: 'No',
-    //             handler: data => {
-    //               // this.addTravel();
-    //               this.ignore_travels = true;
-    //             }
-    //           },
-    //           {
-    //             text: 'Si',
-    //             handler: data => {
-    //               this.addTravel();
-    //             }
-    //           }
-    //         ]
-    //       });
-    //       prompt.present();
-    //     }
-    //     else {
-    //       console.log("Confirm Service");
-    //       this.beforeConfirm();
-    //     }
-    //   } else if (this.serviceForm.value.production){
-    //     this.beforeConfirm();
-    //   } else if (this.serviceForm.value.state == 'CONFIRMED'){
-    //       this.beforeAddPayment();
-    //   } else if (this.serviceForm.value.state == 'PAID'){
-    //     if (this.serviceForm.value.invoices.length){
-    //       // this.navCtrl.navigateBack();
-    //     } else {
-    //       this.addInvoice();
-    //     }
-    //   }
-    // }
-
-    // beforeConfirm(){
-    //   //if ( this.serviceForm.value.product){
-    //   if (Object.keys(this.serviceForm.value.contact).length === 0){
-    //     this.selectContact().then(()=>{
-    //       this.serviceConfirm();
-    //     })
-    //   } else {
-    //     this.serviceConfirm();
-    //   }
-    // }
 
     beforeConfirm(){
-      //console.log("datos", this.serviceForm.value);
-      if (this.serviceForm.value.production){
-        this.pouchdbService.getDoc('contact.myCompany').then((contact: any)=>{
-          this.serviceForm.patchValue({
-            'contact': contact,
-            'contact_name': contact && contact.name || "",
-          });
-
-          this.serviceConfirm();
-        })
-      }
-      else {
-        if (Object.keys(this.serviceForm.value.contact).length === 0){
-          this.selectContact().then( teste => {
-            if (Object.keys(this.serviceForm.value.paymentCondition).length === 0){
-              this.selectPaymentCondition().then(()=>{
-                this.serviceConfirm();
-              });
-            }
-          });
-        } else if (Object.keys(this.serviceForm.value.paymentCondition).length === 0){
-          this.selectPaymentCondition().then(()=>{
-            this.serviceConfirm();
-          });
-        } else {
-          this.serviceConfirm();
-        }
+      if (Object.keys(this.serviceForm.value.contact).length === 0){
+        this.selectContact().then( teste => {
+          if (Object.keys(this.serviceForm.value.paymentCondition).length === 0){
+            this.selectPaymentCondition().then(()=>{
+              this.afterConfirm();
+            });
+          }
+        });
+      } else if (Object.keys(this.serviceForm.value.paymentCondition).length === 0){
+        this.selectPaymentCondition().then(()=>{
+          this.afterConfirm();
+        });
+      } else {
+        this.afterConfirm();
       }
     }
 
@@ -644,39 +393,9 @@ export class ServicePage implements OnInit {
       }
     }
 
-    async editDescription(item){
-      if (this.serviceForm.value.state=='DRAFT'){
-        let prompt = await this.alertCtrl.create({
-          header: 'Description de la linea',
-          message: 'Cual es la mejor description para esta linea?',
-          inputs: [
-            {
-              type: 'text',
-              name: 'description',
-              value: item.description
-          },
-
-          ],
-          buttons: [
-            {
-              text: 'Cancelar'
-            },
-            {
-              text: 'Confirmar',
-              handler: data => {
-                item.description = data.description;
-              }
-            }
-          ]
-        });
-
-        prompt.present();
-      }
-    }
-
     selectPaymentCondition() {
       return new Promise(async resolve => {
-      if (this.serviceForm.value.state=='STARTED' || this.serviceForm.value.state=='DRAFT' || this.serviceForm.value.state=='SCHEDULED'){
+      if (this.serviceForm.value.state=='STARTED' || this.serviceForm.value.state=='QUOTATION' || this.serviceForm.value.state=='DRAFT' || this.serviceForm.value.state=='SCHEDULED'){
         this.avoidAlertMessage = true;
         this.events.unsubscribe('select-payment-condition');
         let profileModal = await this.modalCtrl.create({
@@ -717,7 +436,7 @@ export class ServicePage implements OnInit {
     }
 
     beforeAddPayment(){
-      if (this.serviceForm.value.state == "DRAFT"){
+      if (this.serviceForm.value.state == "QUOTATION" || this.serviceForm.value.state=='DRAFT'){
         // this.afterConfirm().then(data => {
           this.addPayment();
         // });
@@ -780,7 +499,7 @@ export class ServicePage implements OnInit {
       this.avoidAlertMessage = true;
       this.events.unsubscribe('create-invoice');
       let items = [];
-      this.serviceForm.value.inputs.forEach(input=>{
+      this.serviceForm.value.works.forEach(input=>{
         items.push({
           'product': input.product,
           'description': input.description,
@@ -803,21 +522,21 @@ export class ServicePage implements OnInit {
       //   travel_sum.price = travel_total/travel_sum['quantity'];
       //   items.unshift(travel_sum);
       // }
-      let work_sum = {
-        'product': this.labor_product,
-        'description': this.labor_product['name'],
-        'price': 0,
-        'quantity': 0,
-      }
-      let labor_total = 0;
-      this.serviceForm.value.works.forEach(work=>{
-        labor_total += parseFloat(work['quantity']) * parseFloat(work['price'])
-        work_sum['quantity'] += parseFloat(work['quantity']);
-      })
-      if (work_sum['quantity'] > 0){
-        work_sum.price = labor_total/work_sum['quantity'];
-        items.unshift(work_sum);
-      }
+      // let work_sum = {
+      //   'product': this.labor_product,
+      //   'description': this.labor_product['name'],
+      //   'price': 0,
+      //   'quantity': 0,
+      // }
+      // let labor_total = 0;
+      // this.serviceForm.value.works.forEach(work=>{
+      //   labor_total += parseFloat(work['quantity']) * parseFloat(work['price'])
+      //   work_sum['quantity'] += parseFloat(work['quantity']);
+      // })
+      // if (work_sum['quantity'] > 0){
+      //   work_sum.price = labor_total/work_sum['quantity'];
+      //   items.unshift(work_sum);
+      // }
       let paymentType = 'Credito';
       if (this.serviceForm.value.paymentCondition._id == 'payment-condition.cash'){
         paymentType = 'Contado';
@@ -911,8 +630,7 @@ export class ServicePage implements OnInit {
 
     recomputeTotal(){
       // if (this.serviceForm.value.state=='DRAFT'){
-        let total = this.serviceForm.value.work_amount +
-          this.serviceForm.value.input_amount;
+        let total = this.serviceForm.value.work_amount;
         this.serviceForm.patchValue({
           total: total,
         });
@@ -922,11 +640,7 @@ export class ServicePage implements OnInit {
     // recomputeTravels(){
     //   let travels = 0;
     //   this.serviceForm.value.travels.forEach((travel) => {
-    //     if (this.serviceForm.value.production){
-    //       travels += parseFloat(travel.distance || 0)*parseFloat(travel.cost || 0);
-    //     } else {
-    //       travels += parseFloat(travel.distance || 0)*parseFloat(travel.price || 0);
-    //     }
+    //      ravels += parseFloat(travel.distance || 0)*parseFloat(travel.price || 0);
     //   });
     //   console.log("travel", travels);
     //   this.serviceForm.patchValue({
@@ -937,30 +651,30 @@ export class ServicePage implements OnInit {
     recomputeWorks(){
       let works = 0;
       this.serviceForm.value.works.forEach((work) => {
-        if (this.serviceForm.value.production){
-          works += parseFloat(work.quantity|| 0)*parseFloat(work.cost || 0);
-        } else {
-          works += parseFloat(work.quantity|| 0)*parseFloat(work.price || 0);
-        }
+        works += parseFloat(work.quantity|| 0)*parseFloat(work.price || 0);
+      });
+      let cost = works;
+      this.serviceForm.value.works.forEach((input) => {
+        cost += parseFloat(input.quantity)*parseFloat(input.cost|| 0);
       });
       this.serviceForm.patchValue({
         work_amount: works,
+        cost: cost
       });
     }
 
     recomputeInputs(){
       let inputs = 0;
       this.serviceForm.value.inputs.forEach((input) => {
-        if (this.serviceForm.value.production){
-          // works += parseFloat(work.quantity)*parseFloat(this.labor_product['cost']);
-          inputs += parseFloat(input.quantity)*parseFloat(input.cost|| 0);
-        } else {
-          // works += parseFloat(work.quantity)*parseFloat(this.labor_product['price']);
-          inputs += parseFloat(input.quantity)*parseFloat(input.price|| 0);
-        }
+        inputs += parseFloat(input.quantity)*parseFloat(input.cost|| 0);
+      });
+      let cost = inputs;
+      this.serviceForm.value.works.forEach((input) => {
+        cost += parseFloat(input.quantity)*parseFloat(input.cost|| 0);
       });
       this.serviceForm.patchValue({
         input_amount: inputs,
+        cost: cost
       });
     }
 
@@ -1013,8 +727,8 @@ export class ServicePage implements OnInit {
     async editWorkPrice(item){
       if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
-          header: 'Precio del servicio',
-          message: 'Cual es el precio de este servicio?',
+          header: this.translate.instant('SERVICE_PRICE'),
+          // message: 'Cual es el precio de este servicio?',
           inputs: [
             {
               type: 'number',
@@ -1025,10 +739,10 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancelar'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -1089,10 +803,10 @@ export class ServicePage implements OnInit {
     //       ],
     //       buttons: [
     //         {
-    //           text: 'Cancelar'
+    //           text: this.translate.instant('CANCEL'),
     //         },
     //         {
-    //           text: 'Confirmar',
+    //           text: this.translate.instant('CONFIRM'),
     //           handler: data => {
     //             item.price = data.price;
     //             this.recomputeValues();
@@ -1142,7 +856,7 @@ export class ServicePage implements OnInit {
           component: ProductListPage,
           componentProps: {
             "select": true,
-            "type": "product",
+            // "type": "product",
           }
         });
         await profileModal.present();
@@ -1248,8 +962,8 @@ export class ServicePage implements OnInit {
     async editItemPrice(item){
       if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
-          header: 'Precio del Producto',
-          message: 'Cual es el precio de este producto?',
+          header: this.translate.instant('PRODUCT_PRICE'),
+          // message: 'Cual es el precio de este producto?',
           inputs: [
             {
               type: 'number',
@@ -1260,12 +974,44 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancelar'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
+                this.recomputeValues();
+                this.serviceForm.markAsDirty();
+              }
+            }
+          ]
+        });
+
+        prompt.present();
+      }
+    }
+
+    async editItemCost(item){
+      if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
+        let prompt = await this.alertCtrl.create({
+          header: this.translate.instant('PRODUCT_COST'),
+          // message: 'Cual es el precio de este producto?',
+          inputs: [
+            {
+              type: 'number',
+              name: 'cost',
+              value: item.cost
+          },
+
+          ],
+          buttons: [
+            {
+              text: this.translate.instant('CANCEL'),
+            },
+            {
+              text: this.translate.instant('CONFIRM'),
+              handler: data => {
+                item.cost = data.cost;
                 this.recomputeValues();
                 this.serviceForm.markAsDirty();
               }
@@ -1280,8 +1026,8 @@ export class ServicePage implements OnInit {
     async editItemQuantity(item){
       if (this.serviceForm.value.state!='CONFIRMED' && this.serviceForm.value.state!='PRODUCED'){
         let prompt = await this.alertCtrl.create({
-          header: 'Cantidad del Producto',
-          message: 'Cual es el Cantidad de este producto?',
+          header: this.translate.instant('PRODUCT_QUANTITY'),
+          // message: 'Cual es el Cantidad de este producto?',
           inputs: [
             {
               type: 'number',
@@ -1292,81 +1038,12 @@ export class ServicePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancelar'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.quantity = data.quantity;
-                this.recomputeValues();
-                this.serviceForm.markAsDirty();
-              }
-            }
-          ]
-        });
-
-        prompt.present();
-      }
-    }
-
-    async editQuantity(){
-      if (this.serviceForm.value.state=='DRAFT'){
-        let prompt = await this.alertCtrl.create({
-          header: 'Cantidad del Producto',
-          message: 'Cual es el Cantidad de este producto?',
-          inputs: [
-            {
-              type: 'number',
-              name: 'quantity',
-              value: this.serviceForm.value.quantity,
-          },
-
-          ],
-          buttons: [
-            {
-              text: 'Cancelar'
-            },
-            {
-              text: 'Confirmar',
-              handler: data => {
-                this.serviceForm.patchValue({
-                  'quantity': data.quantity,
-                })
-                this.recomputeValues();
-                this.serviceForm.markAsDirty();
-              }
-            }
-          ]
-        });
-
-        prompt.present();
-      }
-    }
-
-    async editPrice(){
-      if (this.serviceForm.value.state=='DRAFT'){
-        let prompt = await this.alertCtrl.create({
-          header: 'Valor total esperado',
-          message: 'Cual es el Cantidad de este producto?',
-          inputs: [
-            {
-              type: 'number',
-              name: 'price',
-              value: this.serviceForm.value.price,
-          },
-
-          ],
-          buttons: [
-            {
-              text: 'Cancelar'
-            },
-            {
-              text: 'Confirmar',
-              handler: data => {
-                //console.log("service number", data.number);
-                this.serviceForm.patchValue({
-                  'price': data.price,
-                });
                 this.recomputeValues();
                 this.serviceForm.markAsDirty();
               }
@@ -1398,46 +1075,16 @@ export class ServicePage implements OnInit {
       }
     }
 
-    async serviceConfirm(){
-      let totalCost = this.serviceForm.value.total;
-      let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas confirmar el servicio?',
-        message: 'Si la confirmas no podras cambiar los productos ni el cliente',
-        buttons: [
-          {
-            text: 'Cancelar',
-            handler: data => {
-              //console.log("Cancelar");
-            }
-          },
-          {
-            text: 'Confirmar',
-            handler: data => {
-              this.afterConfirm();
-            }
-          }
-        ]
-      });
-      prompt.present();
-    }
-
-
     afterConfirm(){
       return new Promise(resolve => {
-        let totalCost = this.serviceForm.value.total;
         let warehouseTo_id = 'warehouse.client';
         let createList = [];
-        if (this.serviceForm.value.production){
-          warehouseTo_id = 'warehouse.production';
-        }
         this.configService.getConfigDoc().then((config: any)=>{
-
           this.pouchdbService.getList([
             config.warehouse_id,
             warehouseTo_id,
             'account.other.stock',
             'account.expense.serviceCost',
-            'warehouse.production',
             'account.income.service',
             this.serviceForm.value.paymentCondition.accountTo_id,
           ]).then((docList: any)=>{
@@ -1445,28 +1092,27 @@ export class ServicePage implements OnInit {
             docList.forEach(item=>{
               docDict[item.id] = item;
             })
-
-
             this.serviceForm.value.inputs.forEach((item) => {
-              let product_id = item.product._id;
-              let product_name = item.product && item.product.name;
-              createList.push({
-                'docType': "stock-move",
-                'name': "Servicio "+this.serviceForm.value.code,
-                'quantity': parseFloat(item.quantity),
-                'origin_id': this.serviceForm.value._id,
-                'contact_id': this.serviceForm.value.contact._id,
-                'contact_name': this.serviceForm.value.contact.name,
-                'product_id': product_id,
-                'product_name': product_name,
-                'date': new Date(),
-                'cost': item.cost*item.quantity,
-                'warehouseFrom_id': config.warehouse_id,
-                'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
-                'warehouseTo_id': warehouseTo_id,
-                'warehouseTo_name': docDict[warehouseTo_id].doc.name,
-              })
-              if (! this.serviceForm.value.production){
+              if (item.product.type == 'product'){
+                let product_id = item.product._id;
+                let product_name = item.product && item.product.name;
+                // item.cost = item.product.cost; //Active this line to get product cost at confirmation
+                createList.push({
+                  'docType': "stock-move",
+                  'name': "Servicio "+this.serviceForm.value.code,
+                  'quantity': parseFloat(item.quantity),
+                  'origin_id': this.serviceForm.value._id,
+                  'contact_id': this.serviceForm.value.contact._id,
+                  'contact_name': this.serviceForm.value.contact.name,
+                  'product_id': product_id,
+                  'product_name': product_name,
+                  'date': new Date(),
+                  'cost': item.cost*item.quantity,
+                  'warehouseFrom_id': config.warehouse_id,
+                  'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
+                  'warehouseTo_id': warehouseTo_id,
+                  'warehouseTo_name': docDict[warehouseTo_id].doc.name,
+                })
                 createList.push({
                   'docType': "cash-move",
                   'name': "Servicio "+this.serviceForm.value.code,
@@ -1484,73 +1130,74 @@ export class ServicePage implements OnInit {
               }
             });
 
-
-            if (this.serviceForm.value.production){
-              let product_id = this.serviceForm.value.product_id || this.serviceForm.value.product._id;
-              let product_name = this.serviceForm.value.product.name || this.serviceForm.value.product_name;
-              let unit_cost = this.serviceForm.value.input_amount/this.serviceForm.value.quantity;
-              createList.push({
-                'docType': "stock-move",
-                'name': "Servicio "+this.serviceForm.value.code,
-                'quantity': parseFloat(this.serviceForm.value.quantity),
-                'origin_id': this.serviceForm.value._id,
-                'contact_id': this.serviceForm.value.contact._id,
-                'contact_name': this.serviceForm.value.contact.name,
-                'product_id': product_id,
-                'product_name': product_name,
-                'date': new Date(),
-                'cost': this.serviceForm.value.input_amount,
-                'warehouseFrom_id': 'warehouse.production',
-                'warehouseFrom_name': docDict['warehouse.production'].doc.name,
-                'warehouseTo_id': config.warehouse_id,
-                'warehouseTo_name': docDict[config.warehouse_id].doc.name,
-              });
-              this.productService.updateStockAndCost(
-                product_id,
-                this.serviceForm.value.quantity,
-                this.serviceForm.value.input_amount/this.serviceForm.value.quantity,
-                this.serviceForm.value.product.stock,
-                this.serviceForm.value.product.cost);
-
-            } else {
-              this.serviceForm.value.paymentCondition.items.forEach(item => {
-                let dateDue = this.addDays(this.today, item.days);
-                //console.log("dentro", this.serviceForm.value);
-                let amount = (item.percent/100)*this.serviceForm.value.total;
+            this.serviceForm.value.works.forEach((item) => {
+              if (item.product.type == 'product'){
+                let product_id = item.product._id;
+                let product_name = item.product && item.product.name;
+                // item.cost = item.product.cost; //Active this line to get product cost at confirmation
                 createList.push({
-                  '_return': true,
-                  'docType': "cash-move",
+                  'docType': "stock-move",
+                  'name': "Servicio "+this.serviceForm.value.code,
+                  'quantity': parseFloat(item.quantity),
+                  'origin_id': this.serviceForm.value._id,
+                  'contact_id': this.serviceForm.value.contact._id,
+                  'contact_name': this.serviceForm.value.contact.name,
+                  'product_id': product_id,
+                  'product_name': product_name,
                   'date': new Date(),
+                  'cost': item.cost*item.quantity,
+                  'warehouseFrom_id': config.warehouse_id,
+                  'warehouseFrom_name': docDict[config.warehouse_id].doc.name,
+                  'warehouseTo_id': warehouseTo_id,
+                  'warehouseTo_name': docDict[warehouseTo_id].doc.name,
+                })
+                createList.push({
+                  'docType': "cash-move",
                   'name': "Servicio "+this.serviceForm.value.code,
                   'contact_id': this.serviceForm.value.contact._id,
                   'contact_name': this.serviceForm.value.contact.name,
-                  'amount': amount,
-                  'amount_residual': amount,
-                  'amount_unInvoiced': amount,
-                  'payments': [],
-                  'invoices': [],
+                  'amount': item.quantity*(item.product.cost || 0),
                   'origin_id': this.serviceForm.value._id,
-                  'dateDue': dateDue,
-                  'accountFrom_id': 'account.income.service',
-                  'accountFrom_name': docDict['account.income.service'].doc.name,
-                  'accountTo_id': this.serviceForm.value.paymentCondition.accountTo_id,
-                  'accountTo_name': docDict[this.serviceForm.value.paymentCondition.accountTo_id].doc.name,
-                });
+                  // "project_id": this.serviceForm.value.project_id,
+                  'date': new Date(),
+                  'accountFrom_id': 'account.other.stock',
+                  'accountFrom_name': docDict['account.other.stock'].doc.name,
+                  'accountTo_id': 'account.expense.serviceCost',
+                  'accountTo_name': docDict['account.expense.serviceCost'].doc.name,
+                })
+              }
+            });
+
+            this.serviceForm.value.paymentCondition.items.forEach(item => {
+              let dateDue = this.addDays(this.today, item.days);
+              let amount = (item.percent/100)*this.serviceForm.value.total;
+              createList.push({
+                '_return': true,
+                'docType': "cash-move",
+                'date': new Date(),
+                'name': "Servicio "+this.serviceForm.value.code,
+                'contact_id': this.serviceForm.value.contact._id,
+                'contact_name': this.serviceForm.value.contact.name,
+                'amount': amount,
+                'amount_residual': amount,
+                'amount_unInvoiced': amount,
+                'payments': [],
+                'invoices': [],
+                'origin_id': this.serviceForm.value._id,
+                'dateDue': dateDue,
+                'accountFrom_id': 'account.income.service',
+                'accountFrom_name': docDict['account.income.service'].doc.name,
+                'accountTo_id': this.serviceForm.value.paymentCondition.accountTo_id,
+                'accountTo_name': docDict[this.serviceForm.value.paymentCondition.accountTo_id].doc.name,
               });
-            }
-            let state;
-            if (this.serviceForm.value.production){
-              state = 'PRODUCED';
-            } else {
-              state = 'CONFIRMED';
-            }
+            });
+            let state = 'CONFIRMED';
             this.pouchdbService.createDocList(createList).then((created: any)=>{
               this.serviceForm.patchValue({
                 state: state,
                 amount_unInvoiced: this.serviceForm.value.total,
                 planned: created,
               });
-              //console.log("Purchase created", created);
               this.buttonSave();
               resolve(true);
             })
@@ -1560,25 +1207,25 @@ export class ServicePage implements OnInit {
     }
 
     async serviceCancel(){
-      let name = "Desconfirmar";
+      let name = this.translate.instant('UNCONFIRM');
+      let state = 'STARTED';
       if (this.serviceForm.value.state != 'CONFIRMED'){
-        name = "Volver a Borrador";
+        name = this.translate.instant('BACK_TO_QUOTATION');
+        state = 'QUOTATION';
       }
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas '+name+' el Servicio?',
-        message: 'Al '+name+' el Servicio todos los registros asociados serán borrados',
+        header: this.translate.instant('YOU_WANT')+name+this.translate.instant('THE_SERVICE')+'?',
+        message: this.translate.instant('AT')+name+this.translate.instant('WARNING_CANCEL_SERVICE'),
         buttons: [
           {
-            text: 'No',
-            handler: data => {
-              //console.log("Cancelar");
-            }
+            text: this.translate.instant('NO'),
+            handler: data => {}
           },
           {
-            text: 'Si',
+            text: this.translate.instant('YES'),
             handler: data => {
               this.serviceForm.patchValue({
-                 state: 'DRAFT',
+                 state: state,
               });
               this.removeQuotes();
               this.removeStockMoves();
@@ -1592,7 +1239,6 @@ export class ServicePage implements OnInit {
 
     removeQuotes(){
       this.serviceForm.value.planned.forEach(planned => {
-        //console.log("removed planned", planned);
         this.deleteService(planned);
       });
       this.serviceForm.patchValue({
@@ -1614,7 +1260,6 @@ export class ServicePage implements OnInit {
     }
 
     selectContact() {
-      //console.log("values");
       if (this.serviceForm.value.state!='PAID' && this.serviceForm.value.state!='CONFIRMED'){
         return new Promise(async resolve => {
           this.avoidAlertMessage = true;
@@ -1643,52 +1288,34 @@ export class ServicePage implements OnInit {
       }
     }
 
-    // selectEquipment() {
-    //   //console.log("values");
+    // selectProduct() {
     //   if (this.serviceForm.value.state!='PAID'){
-    //     return new Promise(resolve => {
-    //       let profileModal = this.modalCtrl.create({ component:ServiceEquipmentPage, this.serviceForm.value.equipment);
-    //       let data: any profileModal.onDidDismiss();
-    //         //console.log(data);
-    //         if (data) {
-    //           this.serviceForm.patchValue({
-    //             equipment: data,
-    //           });
+    //     return new Promise(async resolve => {
+    //       this.avoidAlertMessage = true;
+    //       this.events.unsubscribe('select-product');
+    //       let profileModal = await this.modalCtrl.create({
+    //         component:ProductListPage,
+    //         componentProps: {
+    //           "select": true,
     //         }
     //       });
-    //       profileModal.present();
+    //       await profileModal.present();
+    //       this.events.subscribe('select-product', (data) => {
+    //         this.serviceForm.patchValue({
+    //           product: data,
+    //           product_name: data.name,
+    //           price: data.price,
+    //         });
+    //         this.serviceForm.markAsDirty();
+    //         this.avoidAlertMessage = false;
+    //         this.recomputeValues();
+    //         profileModal.dismiss();
+    //         this.events.unsubscribe('select-product');
+    //         resolve(data);
+    //       })
     //     });
     //   }
     // }
-
-    selectProduct() {
-      if (this.serviceForm.value.state!='PAID'){
-        return new Promise(async resolve => {
-          this.avoidAlertMessage = true;
-          this.events.unsubscribe('select-product');
-          let profileModal = await this.modalCtrl.create({
-            component:ProductListPage,
-            componentProps: {
-              "select": true,
-            }
-          });
-          await profileModal.present();
-          this.events.subscribe('select-product', (data) => {
-            this.serviceForm.patchValue({
-              product: data,
-              product_name: data.name,
-              price: data.price,
-            });
-            this.serviceForm.markAsDirty();
-            this.avoidAlertMessage = false;
-            this.recomputeValues();
-            profileModal.dismiss();
-            this.events.unsubscribe('select-product');
-            resolve(data);
-          })
-        });
-      }
-    }
 
     print() {
       if (this.platform.is('cordova')){
@@ -2310,84 +1937,22 @@ export class ServicePage implements OnInit {
       });
     }
 
-    // unserializeService(doc_id){
-    //   return new Promise((resolve, reject)=>{
-    //     return this.pouchdbService.getDoc(doc_id).then((pouchData => {
-    //       let promise_ids = []
-    //       let index = 0;
-    //       let get_contact = false;
-    //       let get_responsable = false;
-    //       // let project_id = false;
-    //       ////console.log("pouchData",pouchData);
-    //       if (pouchData['contact_id']){
-    //         promise_ids.push(this.pouchdbService.getDoc(pouchData['contact_id']));
-    //         get_contact = true;
-    //         index += 1;
-    //       }
-    //       if (pouchData['responsable_id']){
-    //         get_responsable = true;
-    //         promise_ids.push(this.pouchdbService.getDoc(pouchData['responsable_id']));
-    //         index += 1;
-    //       }
-    //       pouchData['lines'].forEach((input) => {
-    //         promise_ids.push(this.productService.getProduct(input['product_id']));
-    //       });
-    //       pouchData['inputs'] = [];
-    //       Promise.all(promise_ids).then((promise_data) => {
-    //         if (get_contact){
-    //           pouchData['contact'] = promise_data[0];
-    //         }
-    //         if (get_responsable){
-    //           pouchData['responsable'] = promise_data[1];
-    //         }
-    //         for(let i=index;i<pouchData['lines'].length+index;i++){
-    //           pouchData['inputs'].push({
-    //             'product': promise_data[i],
-    //             'description': pouchData['lines'][i-index]['description'],
-    //             'quantity': pouchData['lines'][i-index]['quantity'],
-    //             'price': pouchData['lines'][i-index]['price'],
-    //             'cost': pouchData['lines'][i-index]['cost'],
-    //           })
-    //         }
-    //         this.pouchdbService.getRelated(
-    //         "cash-move", "origin_id", doc_id).then((planned) => {
-    //           console.log("Planned", planned);
-    //           pouchData['planned'] = planned;
-    //           resolve(pouchData);
-    //         });
-    //       });
-    //     }));
-    //   });
-    // }
-
     updateService(viewData){
       let service = this.serializeService(viewData)
       return this.pouchdbService.updateDoc(service);
     }
 
     deleteService(service){
-    //  if (service.state == 'DRAFT'){
-        return this.pouchdbService.deleteDoc(service);
-    //  }
+      return this.pouchdbService.deleteDoc(service);
     }
 
     showNextButton(){
-      // console.log("stock",this.serviceForm.value.stock);
       if (this.serviceForm.value.state=='PAID'){
         return false;
       }
       else if (this.serviceForm.value.state=='PRODUCED'){
         return false;
       }
-      // else if (this.serviceForm.value.price==null){
-      //   return true;
-      // }
-      // else if (this.serviceForm.value.cost==null){
-      //   return true;
-      // }
-      // else if (this.serviceForm.value.type=='product'&&this.serviceForm.value.stock==null){
-      //   return true;
-      // }
       else {
         return true;
       }
@@ -2397,30 +1962,31 @@ export class ServicePage implements OnInit {
     }
     async canDeactivate() {
         if(this.serviceForm.dirty) {
-            let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
-                buttons: [{
-                        text: 'Si',
-                        handler: () => {
-                            // alertPopup.dismiss().then(() => {
-                                this.exitPage();
-                            // });
-                        }
-                    },
-                    {
-                        text: 'No',
-                        handler: () => {
-                            // need to do something if the user stays?
-                        }
-                    }]
-            });
+          let alertPopup = await this.alertCtrl.create({
+            header: this.translate.instant('DISCARD'),
+            // message: this.translate.instant('SURE_DONT_SAVE'),
+            message: this.translate.instant('SURE_DONT_SAVE'),
+              buttons: [{
+                      text: this.translate.instant('YES'),
+                      handler: () => {
+                          // alertPopup.dismiss().then(() => {
+                              this.exitPage();
+                          // });
+                      }
+                  },
+                  {
+                      text: this.translate.instant('NO'),
+                      handler: () => {
+                          // need to do something if the user stays?
+                      }
+                  }]
+          });
 
-            // Show the alert
-            alertPopup.present();
+          // Show the alert
+          alertPopup.present();
 
-            // Return false to avoid the page to be popped up
-            return false;
+          // Return false to avoid the page to be popped up
+          return false;
         } else {
           this.exitPage();
         }

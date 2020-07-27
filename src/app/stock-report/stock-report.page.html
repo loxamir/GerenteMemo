@@ -1,23 +1,26 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/report-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'Stock' | translate }}: {{reportStockForm.value.code}}
+        {{ 'STOCK' | translate }}: {{reportStockForm.value.code}}
       </ion-row>
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="printPDF()">
+        pdf
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="report-content" style="background-color: #ddd">
   <form class="sample-form validations-form" [formGroup]="reportStockForm" (ngSubmit)="onSubmit(reportStockForm.value)">
-    <ion-row justify-content-center>
-      <ion-item no-padding class="field-50">
-        <h4 class="field-label">{{'Desde' | translate }}</h4>
+    <ion-row class="ion-justify-content-center">
+      <ion-item class="ion-no-padding field-50">
+        <h4 class="field-label">{{'FROM' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="goNextStep()"
         displayFormat="DD/MM/YYYY"
@@ -26,8 +29,8 @@
         [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-item>
-      <ion-item no-padding class="field-50">
-        <h4 class="field-label">{{'Hasta' | translate }}</h4>
+      <ion-item class="ion-no-padding field-50">
+        <h4 class="field-label">{{'TO' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="goNextStep()"
         displayFormat="DD/MM/YYYY"
@@ -37,181 +40,173 @@
         </ion-datetime>
       </ion-item>
       <ion-item
-      no-padding
+      class="ion-no-padding"
       class="field-100">
-        <ion-label  position="floating">{{'Agrupado Por' | translate}}</ion-label>
+        <ion-label  position="floating">{{'GROUP_BY' | translate}}</ion-label>
         <ion-select #groupBy formControlName="groupBy"
           style="text-align: center;"
           interface="popover"
           (ionChange)="goNextStep()"
           cancelText="{{ 'CANCEL' | translate }}"
           okText="{{ 'OK' | translate }}">
-          <ion-select-option value="product">Producto</ion-select-option>
-          <ion-select-option value="category">Categoria</ion-select-option>
-          <ion-select-option value="brand">Marca</ion-select-option>
+          <ion-select-option value="product">{{'PRODUCT'|translate}}</ion-select-option>
+          <ion-select-option value="category">{{'CATEGORY'|translate}}</ion-select-option>
+          <ion-select-option value="brand">{{'BRAND'|translate}}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-card class="list-card">
         <ion-list>
           <div *ngIf="reportStockForm.value.groupBy == 'product'">
-            <!-- <div *ngIf="reportStockForm.value.reportType == 'stock'"> -->
               <ion-list no-lines>
                 <ion-row class="report-title">
-                  <ion-col width-40 (click)="orderByName()">
-                    Producto
+                  <ion-col (click)="orderByName()">
+                    {{'PRODUCT'|translate}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                    Costo
+                  <ion-col style="text-align: right" (click)="orderByMargin()">
+                    {{'COST'|translate}}
                   </ion-col>
-                  <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                    Cantidad
+                  <ion-col style="text-align: right" (click)="orderByQuantity()">
+                    {{'QUANTITY'|translate}}
                   </ion-col>
-                  <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
-                    Valoración
+                  <ion-col style="text-align: right" (click)="orderByTotal()">
+                    {{'VALUATION'|translate}}
                   </ion-col>
                 </ion-row>
                 <ion-row *ngFor="let item of reportStockForm.value.items">
-                  <ion-col width-40 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.name}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.total/item.quantity|number:'1.'+currency_precision}}
                   </ion-col>
-                  <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.quantity}}
                   </ion-col>
-                  <ion-col width-25 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
                 <ion-row class="report-title">
-                  <ion-col  width-40>
-                    TOTAL
+                  <ion-col >
+                  {{'TOTAL_UPPER'|translate}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right">
+                  <ion-col style="text-align: right">
                     <!-- {{items_margin|number:'1.'+currency_precision}} -->
                   </ion-col>
-                  <ion-col width-15 style="text-align: right">
+                  <ion-col style="text-align: right">
                     {{items_quantity|number:'1.'+currency_precision}}
                   </ion-col>
-                  <ion-col width-25 style="text-align: right">
+                  <ion-col style="text-align: right">
                     {{total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
               </ion-list>
-            <!-- </div> -->
           </div>
           <div *ngIf="reportStockForm.value.groupBy == 'category'">
-            <!-- <div *ngIf="reportStockForm.value.reportType == 'stock'"> -->
               <ion-list no-lines>
                 <ion-row class="report-title">
-                  <ion-col width-40 (click)="orderByName()">
-                    Categoria
+                  <ion-col (click)="orderByName()">
+                    {{'CATEGORY'|translate}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                    Costo
+                  <ion-col style="text-align: right" (click)="orderByMargin()">
+                    {{'COST'|translate}}
                   </ion-col>
-                  <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                    Cantidad
+                  <ion-col style="text-align: right" (click)="orderByQuantity()">
+                    {{'QUANTITY'|translate}}
                   </ion-col>
-                  <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
-                    Valoración
+                  <ion-col style="text-align: right" (click)="orderByTotal()">
+                    {{'VALUATION'|translate}}
                   </ion-col>
                 </ion-row>
                 <ion-row *ngFor="let item of reportStockForm.value.items">
-                  <ion-col width-40 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.name}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.total/item.quantity|number:'1.'+currency_precision}}
                   </ion-col>
-                  <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.quantity}}
                   </ion-col>
-                  <ion-col width-25 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
                 <ion-row class="report-title">
-                  <ion-col  width-40>
-                    TOTAL
+                  <ion-col >
+                  {{'TOTAL_UPPER'|translate}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right">
-                    <!-- {{items_margin|number:'1.'+currency_precision}} -->
+                  <ion-col style="text-align: right">
                   </ion-col>
-                  <ion-col width-15 style="text-align: right">
+                  <ion-col style="text-align: right">
                     {{items_quantity|number:'1.'+currency_precision}}
                   </ion-col>
-                  <ion-col width-25 style="text-align: right">
+                  <ion-col style="text-align: right">
                     {{total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
               </ion-list>
-            <!-- </div> -->
           </div>
           <div *ngIf="reportStockForm.value.groupBy == 'brand'">
-            <!-- <div *ngIf="reportStockForm.value.reportType == 'stock'"> -->
               <ion-list no-lines>
                 <ion-row class="report-title">
-                  <ion-col width-40 (click)="orderByName()">
-                    Categoria
+                  <ion-col (click)="orderByName()">
+                    {{'BRAND'|translate}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" (click)="orderByMargin()">
-                    Costo
+                  <ion-col style="text-align: right" (click)="orderByMargin()">
+                    {{'COST'|translate}}
                   </ion-col>
-                  <ion-col width-15 style="text-align: right" (click)="orderByQuantity()">
-                    Cantidad
+                  <ion-col style="text-align: right" (click)="orderByQuantity()">
+                    {{'QUANTITY'|translate}}
                   </ion-col>
-                  <ion-col width-25 style="text-align: right" (click)="orderByTotal()">
-                    Valoración
+                  <ion-col style="text-align: right" (click)="orderByTotal()">
+                    {{'VALUATION'|translate}}
                   </ion-col>
                 </ion-row>
                 <ion-row *ngFor="let item of reportStockForm.value.items">
-                  <ion-col width-40 [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.name}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.total/item.quantity|number:'1.'+currency_precision}}
                   </ion-col>
-                  <ion-col width-15 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.quantity}}
                   </ion-col>
-                  <ion-col width-25 style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
+                  <ion-col style="text-align: right" [class.quotation]="item.marker && !item.sumatory" [class.unmarked]="!item.marker && !item.sumatory" [class.sumatory]="item.sumatory">
                     {{item.total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
                 <ion-row class="report-title">
-                  <ion-col  width-40>
-                    TOTAL
+                  <ion-col >
+                  {{'TOTAL_UPPER'|translate}}
                   </ion-col>
-                  <ion-col width-20 style="text-align: right">
-                    <!-- {{items_margin|number:'1.'+currency_precision}} -->
+                  <ion-col style="text-align: right">
                   </ion-col>
-                  <ion-col width-15 style="text-align: right">
+                  <ion-col style="text-align: right">
                     {{items_quantity|number:'1.'+currency_precision}}
                   </ion-col>
-                  <ion-col width-25 style="text-align: right">
+                  <ion-col style="text-align: right">
                     {{total|number:'1.'+currency_precision}}
                   </ion-col>
                 </ion-row>
               </ion-list>
-            <!-- </div> -->
           </div>
         </ion-list>
       </ion-card>
 
-      <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;">
+      <ion-card class="list-card" style="width: 100%;margin-bottom: 2%;margin-top: 1%;">
         <ion-row>
           <ion-col>
-            <div id="barChart" style="width: calc(100% - 20px);margin-bottom: 0%;height: 390px;">
+            <div id="barChart" style="width: 100%;margin-bottom: 0%;height: 390px;">
             </div>
           </ion-col>
         </ion-row>
       </ion-card>
-      <ion-card class="list-card" style="width: calc(100% - 20px);margin-bottom: 2%;margin-top: 1%;">
+      <ion-card class="list-card" style="width: 100%;margin-bottom: 2%;margin-top: 1%;">
         <ion-row>
           <ion-col>
-            <div id="chart" style="width: calc(100% - 20px);margin-bottom: 2%;height:200px"></div>
+            <div id="chart" style="width: 100%;margin-bottom: 2%;height:200px"></div>
           </ion-col>
         </ion-row>
       </ion-card>

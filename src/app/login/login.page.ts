@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController, Events, ToastController, MenuController, PopoverController } from '@ionic/angular';
+import { LoadingController, Events, ToastController, MenuController,
+  PopoverController, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import 'rxjs/Rx';
 
@@ -25,9 +26,10 @@ export class LoginPage implements OnInit {
   show_create: boolean = false;
   selected_user: boolean = false;
   databaseList: [];
-  username: '';
+  username = '';
   today = new Date().toISOString();
-  // campaign;
+  language;
+  demo;
 
   constructor(
     public loadingCtrl: LoadingController,
@@ -37,6 +39,7 @@ export class LoginPage implements OnInit {
     public storage: Storage,
     public events: Events,
     public popoverCtrl: PopoverController,
+    public alertCtrl: AlertController,
     public menuCtrl: MenuController,
     public pouchdbService: PouchdbService,
     public toastCtrl: ToastController,
@@ -44,10 +47,10 @@ export class LoginPage implements OnInit {
     public route: ActivatedRoute,
     public router: Router,
   ) {
-
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+    this.demo = this.route.snapshot.paramMap.get('demo');
+    if (this.demo){
+      this.show_create = true;
+    }
     this.storage.get("username").then((username)=>{
       this.username = username;
       if (username){
@@ -58,10 +61,6 @@ export class LoginPage implements OnInit {
       }
     })
   }
-
-  // showCampaign(){
-  //   console.log("campaign", this.campaign);
-  // }
 
   async ngOnInit() {
     this.loginForm = new FormGroup({
@@ -76,19 +75,19 @@ export class LoginPage implements OnInit {
         Validators.pattern('^[a-zA-Z0-9_.+-]+$')
       ])),
       password: new FormControl('', Validators.required),
+      address: new FormControl('', Validators.required),
     });
     this.loading = await this.loadingCtrl.create({});
-    // let campaign = await this.storage.get("campaign");
-    // this.campaign = campaign || this.route.snapshot.paramMap.get('campaign');
-    // if (this.campaign && ! campaign){
-    //   await this.storage.set('campaign', this.campaign);
-    // }
-    // this.showCampaign();
-    let username = await this.storage.get('username');
+    this.language = await this.storage.get("language");
+    if (!this.language){
+      this.language = navigator.language.split('-')[0];
+    }
+    this.translate.setDefaultLang(this.language);
+    this.translate.use(this.language);
+    this.username = await this.storage.get('username');
     setTimeout(() => {
       this.menuCtrl.enable(false);
     }, 500);
-
   }
 
   payDatabase(database){
@@ -128,10 +127,33 @@ export class LoginPage implements OnInit {
 
   showCreate(){
     this.show_create = true;
+    this.loginForm.patchValue({
+      "user": "memo",
+      "password": "123",
+    })
   }
 
   showLogin(){
+    this.loginForm.patchValue({
+      "user": "",
+      "password": "",
+    })
     this.show_create = false;
+  }
+
+  seeDemo(){
+    this.login();
+    this.registerLead()
+  }
+
+  registerLead(){
+    let leadData = {
+      "name": this.loginForm.value.name,
+      "address": this.loginForm.value.address,
+      "phone": this.loginForm.value.mobile,
+      "date": this.today,
+    }
+    this.restProvider.sendLead(leadData);
   }
 
   login (){
@@ -204,13 +226,72 @@ export class LoginPage implements OnInit {
     this.storage.set("password", this.loginForm.value.password);
     this.events.publish('get-user', {"user": this.loginForm.value.user.toLowerCase()});
     this.selected_user = true;
-    let dbList:any = await this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
+    let userData:any = await this.showDatabaseList(this.loginForm.value.user, this.loginForm.value.password);
+    let dbList = userData.db_list;
+    this.storage.set("language", userData.language);
+    this.language = userData.language;
+    if (!this.language){
+      this.language = navigator.language.split('-')[0];
+    }
+    this.translate.setDefaultLang(this.language);
+    this.translate.use(this.language);
     this.username = this.loginForm.value.user.toLowerCase();
     if (dbList.length == 1){
-      this.selectDatabase(dbList[0].database);
+      this.selectDatabase(dbList[0]);
     }
     this.menuCtrl.enable(false);
     this.loading.dismiss();
+  }
+
+  async changeLanguage() {
+    const alert = await this.alertCtrl.create({
+      header: 'CHOOSE_LANGUAGE',
+      inputs: [
+        {
+          name: 'english',
+          type: 'radio',
+          label: 'English',
+          value: 'en',
+          checked: this.language == 'en'
+        },
+        {
+          name: 'spanish',
+          type: 'radio',
+          label: 'Español',
+          value: 'es',
+          checked: this.language == 'es'
+        },
+        {
+          name: 'portuguese',
+          type: 'radio',
+          label: 'Português',
+          value: 'pt',
+          checked: this.language == 'pt'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {}
+        }, {
+          text: 'Ok',
+          handler: async (language) => {
+            this.language = language;
+            this.storage.set("language", language);
+            this.translate.setDefaultLang(this.language);
+            this.translate.use(this.language);
+            let password = await this.storage.get("password");
+            if (this.username!='memo'){
+              this.restProvider.setUserLanguage(this.username, password, this.language);
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async showDatabaseList(username, password){
@@ -220,11 +301,22 @@ export class LoginPage implements OnInit {
       let listOnline: any = await this.restProvider.getUserDbList(
         username, password);
       if (listOnline.ok != false){
-        this.storage.set("dbList", listOnline);
-        this.databaseList = listOnline;
-        resolve(this.databaseList)
+        this.storage.set("dbList", listOnline.db_list);
+        this.databaseList = listOnline.db_list;
+        this.storage.set("language", listOnline.userData.language);
+
+        this.language = listOnline.userData.language;
+
+        if (!this.language){
+          this.language = navigator.language.split('-')[0];
+        }
+        this.translate.setDefaultLang(this.language);
+        this.translate.use(this.language);
+
+        resolve({db_list:this.databaseList, language:listOnline.userData.language})
       } else {
-        resolve(this.databaseList)
+        let language: any = await this.storage.get("language");
+        resolve({db_list:this.databaseList, language})
       }
     })
   }
@@ -255,14 +347,12 @@ export class LoginPage implements OnInit {
     }
   }
 
-  logout(){
-    this.storage.set('username', false).then(()=>{
-      this.storage.set('password', false).then(()=>{
-        this.storage.set('database', false).then(()=>{
-          window.location.reload();
-        });
-      });
-    });
+  async logout(){
+    await this.storage.set('username', false);
+    await this.storage.set('password', false);
+    await this.storage.set('database', false);
+    await this.storage.set('language', false);
+    window.location.reload();
   }
 
   createLogin(datas){
@@ -273,7 +363,6 @@ export class LoginPage implements OnInit {
         "email": {"value":datas.email, "type": "String"},
         "user": {"value":datas.user.toLowerCase(), "type": "String"},
         "password": {"value":datas.password, "type": "String"},
-        // "campaign": {"value": this.campaign, "type": "String"}
       }};
       this.restProvider.startProcess("Process_1", body).then((data:any)=>{
         resolve(data);

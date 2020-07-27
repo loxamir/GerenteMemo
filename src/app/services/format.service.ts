@@ -470,6 +470,7 @@ export class FormatService {
         page_printed[marginTop][x + b] = dataModel.toString()[x];
       }
     }
+
     //put client
     marginTop = layout.contactName_top / 4.4;
     marginLeft = layout.contactName_left / 1.35;
@@ -696,6 +697,25 @@ export class FormatService {
       marginLeft = parseInt(marginLeft);
       if (width){
         dataModel = this.string_pad(width, parseFloat(order.discount).toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+        for (var x = 0; x < dataModel.toString().length; x++) {
+          let b = marginLeft;
+          page_printed[marginTop][x + b] = dataModel.toString()[x];
+        }
+      }
+    }
+
+    //put invoice amount
+    width = 0;
+    if (layout.invoiceAmount_top && layout.invoiceAmount_left){
+      marginTop = layout.invoiceAmount_top / 4.4;
+      marginLeft = layout.invoiceAmount_left / 1.35;
+      width = layout.invoiceAmount_width / 1.35;
+      marginTop = parseInt(marginTop);
+      marginLeft = parseInt(marginLeft);
+      if (width){
+        dataModel = this.string_pad(width, (
+          subtotal_00 + subtotal_05 + subtotal_10
+        ).toFixed(currency_precision).replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
         for (var x = 0; x < dataModel.toString().length; x++) {
           let b = marginLeft;
           page_printed[marginTop][x + b] = dataModel.toString()[x];

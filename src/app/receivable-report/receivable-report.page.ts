@@ -7,7 +7,6 @@ import 'rxjs/Rx';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
-import { ReportService } from '../report/report.service';
 import { ProductService } from '../product/product.service';
 import { FormatService } from '../services/format.service';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
@@ -19,6 +18,7 @@ import * as d3Scale from "d3-scale";
 import * as d3Shape from "d3-shape";
 import * as d3Array from "d3-array";
 import * as d3Axis from "d3-axis";
+import * as jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-receivable-report',
@@ -56,6 +56,7 @@ export class ReceivableReportPage implements OnInit {
   x: any;
   y: any;
   g: any;
+  config;
 
   line: d3Shape.Line<[number, number]>;
   constructor(
@@ -63,7 +64,6 @@ export class ReceivableReportPage implements OnInit {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public languageService: LanguageService,
-    public reportService: ReportService,
     public route: ActivatedRoute,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
@@ -75,7 +75,7 @@ export class ReceivableReportPage implements OnInit {
     public modalCtrl: ModalController,
   ) {
     this.today = new Date();
-    this.languages = this.languageService.getLanguages();
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.avoidAlertMessage = false;
   }
@@ -172,7 +172,6 @@ export class ReceivableReportPage implements OnInit {
         undefined,
         false
       ).then(async (cashFlowList: any[]) => {
-        console.log("cashFlow lines", cashFlowList);
         let items = [];
         let promise_ids = [];
         let result = {};
@@ -192,7 +191,6 @@ export class ReceivableReportPage implements OnInit {
               }
 
               if (result.hasOwnProperty(cashFlowLine.key[1])) {
-                // console.log("items[result[cashFlowLine.key[1]]]", items[result[cashFlowLine.key[1]]]);
                 items[result[cashFlowLine.key[1]]] = {
                   'name': items[result[cashFlowLine.key[1]]].name,
                   'income': items[result[cashFlowLine.key[1]]].income + income,
@@ -242,7 +240,6 @@ export class ReceivableReportPage implements OnInit {
               }
 
               if (result.hasOwnProperty(cashFlowLine.key[0])) {
-                // console.log("items[result[cashFlowLine.key[1]]]", items[result[cashFlowLine.key[1]]]);
                 items[result[cashFlowLine.key[0]]] = {
                   'name': items[result[cashFlowLine.key[0]]].name,
                   'income': items[result[cashFlowLine.key[0]]].income + income,
@@ -293,7 +290,6 @@ export class ReceivableReportPage implements OnInit {
               }
 
               if (result.hasOwnProperty(cashFlowLine.key[2])) {
-                // console.log("items[result[cashFlowLine.key[1]]]", items[result[cashFlowLine.key[1]]]);
                 items[result[cashFlowLine.key[2]]] = {
                   'name': items[result[cashFlowLine.key[2]]].name,
                   'income': items[result[cashFlowLine.key[2]]].income + income,
@@ -392,8 +388,12 @@ export class ReceivableReportPage implements OnInit {
       filterBy: new FormControl('contact'),
       filter: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
     this.currency_precision = config.currency_precision;
+    this.config = config;
     this.goNextStep();
   }
 
@@ -476,5 +476,72 @@ export class ReceivableReportPage implements OnInit {
     this.receivableReportForm.patchValue({
       "total": total,
     });
+  }
+
+  getHeader(docPdf, topo, col1, col2, col3, col4){
+    if (this.receivableReportForm.value.groupBy == 'date'){
+      docPdf.text("Fecha", col1, topo);
+      docPdf.text("Valor a Cobrar", col4, topo, 'right');
+    } if (this.receivableReportForm.value.groupBy == 'contact'){
+      docPdf.text("Contacto", col1, topo);
+      docPdf.text("Valor a Cobrar", col4, topo, 'right');
+    } else if (this.receivableReportForm.value.groupBy == 'account'){
+      docPdf.text("Cuenta", col1, topo);
+      docPdf.text("Valor a Cobrar", col4, topo, 'right');
+    }
+  }
+
+  printPDF(){
+    var docPdf = new jsPDF('portrait', 'mm', 'a4');
+    let pageHeight= docPdf.internal.pageSize.height;
+    docPdf.setFontSize(7);
+    let topo = 10;
+    let col1 = 10;
+    let col2 = 150;
+    let col3 = 170;
+    let col4 = 190;
+    let now = new Date().toISOString();
+    docPdf.setFontSize(20);
+    docPdf.text("Cuentas a Cobrar", 80, topo);
+    docPdf.setFontSize(7);
+    topo += 5;
+    docPdf.text("Empresa: "+this.config.name, 10, topo);
+    topo += 5;
+    let day = now.split('-')[2].split('T')[0];
+    let month = now.split('-')[1];
+    let year = now.split('-')[0];
+    let hour = now.split(':')[0].split('T')[1];
+    let minute = now.split(':')[1];
+    let rightNow = day+"/"+month+"/"+year;//+" "+hour+":"+minute;
+    docPdf.text("Fecha: "+rightNow, 10, topo);
+    topo += 5;
+    docPdf.setFontType("bold");
+    docPdf.text("Valor total a cobrar: "+this.total.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " G$", 10, topo);
+    docPdf.setFontType("normal");
+    topo+=10;
+    this.getHeader(docPdf, topo, col1, col2, col3, col4);
+    topo+=5;
+    this.receivableReportForm.value.items.forEach((line)=>{
+      if (topo >= pageHeight){
+        docPdf.addPage();
+        topo=10;
+        this.getHeader(docPdf, topo, col1, col2, col3, col4);
+        topo+=5;
+      }
+      docPdf.text(line.name || "No Informado", col1, topo);
+      if (this.receivableReportForm.value.groupBy == "date"){
+        docPdf.text(line.total.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col4, topo, 'right');
+      } else if (this.receivableReportForm.value.groupBy == "account"){
+        docPdf.text(line.total.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col4, topo, 'right');
+      } else if (this.receivableReportForm.value.groupBy == "contact"){
+        docPdf.text(line.total.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col4, topo, 'right');
+      }
+      topo+=5;
+    })
+    docPdf.setFontType("bold");
+    docPdf.text("Total:", col1, topo);
+    docPdf.text(this.total.toFixed(this.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), col4, topo, 'right');
+    topo+=5;
+    docPdf.save('Cuentas por Cobrar-'+day+"-"+month+"-"+year+'.pdf')
   }
 }

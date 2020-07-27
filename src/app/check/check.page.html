@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/check-list"></ion-back-button>
     </ion-buttons>
@@ -17,7 +17,7 @@
     <section class="form-section">
       <ion-row>
         <!-- <ion-item
-         no-padding
+         class="ion-no-padding"
          class="field-50">
           <ion-label position="floating">{{'CHECK_AMOUNT' | translate}}</ion-label>
           <ion-input #amount type="number"
@@ -26,7 +26,7 @@
 
 
         <ion-item
-         no-padding
+         class="ion-no-padding"
          class="field-50"
          *ngIf="check_currency_id != company_currency_id">
           <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
@@ -35,7 +35,7 @@
           formControlName="currency_amount"></ion-input>
         </ion-item>
         <ion-item
-         no-padding
+         class="ion-no-padding"
          *ngIf="check_currency_id == company_currency_id"
          class="field-50">
           <ion-label position="floating" style="font-size:14px">{{'AMOUNT' | translate}}</ion-label>
@@ -43,7 +43,7 @@
           formControlName="amount"></ion-input>
         </ion-item>
         <ion-item
-         no-padding
+         class="ion-no-padding"
          (click)="selectCurrency()"
          class="field-50">
          <div class="field-many2one">
@@ -52,7 +52,7 @@
          </div>
         </ion-item>
         <ion-item
-         no-padding
+         class="ion-no-padding"
          *ngIf="check_currency_id != company_currency_id"
          class="field-50">
           <ion-label position="floating" style="font-size:14px">{{'AMOUNT_COMPANY_CURRENCY' | translate}}</ion-label>
@@ -61,7 +61,7 @@
           formControlName="amount"></ion-input>
         </ion-item>
         <ion-item
-         no-padding
+         class="ion-no-padding"
          *ngIf="check_currency_id != company_currency_id"
          class="field-50">
           <ion-label position="floating" style="font-size:14px">{{'CURRENCY_EXCHANGE' | translate}}</ion-label>
@@ -73,7 +73,7 @@
           <ion-label position="floating">{{'NUMBER' | translate}}</ion-label>
           <ion-input #name type="text" formControlName="name"></ion-input>
         </ion-item>
-        <ion-item no-padding class="item-content"
+        <ion-item class="ion-no-padding item-content"
         class="field-50">
           <ion-label position="floating" class="field-label">{{'MATURITY_DATE' | translate }}</ion-label>
           <ion-datetime
@@ -83,14 +83,14 @@
           </ion-datetime>
       </ion-item>
         <ion-item *ngIf="signal != '+' && signal != '-'"
-         no-padding
+         class="ion-no-padding"
          class="field-100">
            <ion-label>{{'Es Proprio' | translate}}</ion-label>
            <ion-toggle (ionChange)="changeMyCheck()" formControlName="my_check"></ion-toggle>
         </ion-item>
-        <ion-item no-padding (click)="selectContact()" class="field-100" *ngIf="!checkForm.value.my_check">
+        <ion-item class="ion-no-padding" (click)="selectContact()" class="field-100" *ngIf="!checkForm.value.my_check">
           <h4 class="field-label">{{'CLIENT' | translate}}</h4>
-          <h4 class="field-value">{{checkForm.value.contact && checkForm.value.contact.name || 'Selecionar'}}</h4>
+          <h4 class="field-value">{{checkForm.value.contact && checkForm.value.contact.name || 'SELECT'|translate}}</h4>
         </ion-item>
         <ion-item (click)="selectBank()" class="field-100" *ngIf="checkForm.value.my_check">
           <!-- <div class="field-many2one"> -->
@@ -108,7 +108,7 @@
           <ion-input #owner_doc type="text" formControlName="checkAcount"></ion-input>
         </ion-item> -->
         <!-- <ion-item
-         no-padding
+         class="ion-no-padding"
          class="field-50" *ngIf="!checkForm.value.my_check">
           <ion-label position="floating">{{'Banco' | translate}}</ion-label>
           <ion-select formControlName="bank_name"
@@ -157,7 +157,7 @@
           <ion-label position="floating">{{'Emisor' | translate}}</ion-label>
           <ion-input #owner_name type="text" formControlName="owner_name"></ion-input>
         </ion-item>
-        <ion-item no-padding class="item-content"
+        <ion-item class="ion-no-padding item-content"
         [class.field-50]="!checkForm.value.my_check"
         [class.field-100]="checkForm.value.my_check">
           <ion-label position="floating" class="field-label">{{'EMISSION_DATE' | translate }}</ion-label>
@@ -167,13 +167,13 @@
             formControlName="emision_date">
           </ion-datetime>
       </ion-item>
-        <!-- <ion-item no-padding (click)="selectCurrency()" class="field-100">
+        <!-- <ion-item class="ion-no-padding" (click)="selectCurrency()" class="field-100">
           <h4 class="field-label">{{'CURRENCY' | translate}}</h4>
-          <h4 class="field-value">{{checkForm.value.currency && checkForm.value.currency.name || 'Selecionar'}}</h4>
+          <h4 class="field-value">{{checkForm.value.currency && checkForm.value.currency.name || 'SELECT'|translate}}</h4>
         </ion-item> -->
-        <!-- <ion-item no-padding class="field-100" *ngIf="checkForm.value.account._id">
+        <!-- <ion-item class="ion-no-padding field-100" *ngIf="checkForm.value.account._id">
           <h4 class="field-label">{{'ACCOUNT' | translate}}</h4>
-          <h4 class="field-value">{{checkForm.value.account && checkForm.value.account.name || 'Selecionar'}}</h4>
+          <h4 class="field-value">{{checkForm.value.account && checkForm.value.account.name || 'SELECT'|translate}}</h4>
         </ion-item> -->
 
     </ion-row>
@@ -192,7 +192,7 @@
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
     <ion-button (click)="goNextStep()"  class="next-button">
       <ion-icon name="fastforward"> </ion-icon>
-      Proximo
+      {{'NEXT'|translate}}
     </ion-button>
   </ion-fab>
 
@@ -200,15 +200,15 @@
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="checkForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!checkForm.dirty"> </ion-icon>
-      <span *ngIf="checkForm.dirty">Descartar</span>
-      <span *ngIf="!checkForm.dirty">Volver</span>
+      <span *ngIf="checkForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!checkForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showSaveButton()">
     <ion-button (click)="buttonSave()"  color="success">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
   <div style="height: 100px">

@@ -1,11 +1,11 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/report-list"></ion-back-button>
     </ion-buttons>
     <ion-title>
       <ion-row>
-        {{ 'Plan de Cuentas' | translate }}
+        {{ 'CHART_OF_ACCOUNT' | translate }}
       </ion-row>
     </ion-title>
     <ion-buttons slot="end" >
@@ -14,13 +14,13 @@
 </ion-header>
 
 <ion-content class="accountsReport-content" style="background: white;">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <form class="sample-form validations-form" [formGroup]="accountsReportForm" (ngSubmit)="onSubmit(accountsReportForm.value)">
-    <ion-row justify-content-center>
-      <ion-item no-padding class="field-50">
-        <h4 class="field-label">{{'Desde' | translate }}</h4>
+    <ion-row class="ion-justify-content-center">
+      <ion-item class="ion-no-padding field-50">
+        <h4 class="field-label">{{'FROM' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="recomputeValues()"
         displayFormat="DD/MM/YYYY"
@@ -29,8 +29,8 @@
         [max]="today.getFullYear()+5">
         </ion-datetime>
       </ion-item>
-      <ion-item no-padding class="field-50">
-        <h4 class="field-label">{{'Hasta' | translate }}</h4>
+      <ion-item class="ion-no-padding field-50">
+        <h4 class="field-label">{{'TO' | translate }}</h4>
         <ion-datetime class="field-50-datetime"
         (ionChange)="recomputeValues()"
         displayFormat="DD/MM/YYYY"
@@ -42,21 +42,21 @@
     </ion-row>
     <ion-row>
       <ion-item
-      no-padding
+      class="ion-no-padding"
       class="field-50">
-      <ion-label>{{'Mostrar Titulos' | translate}}</ion-label>
+      <ion-label>{{'SHOW_TITLES' | translate}}</ion-label>
       <ion-toggle formControlName="showTitle"></ion-toggle>
     </ion-item>
     <ion-item
-    no-padding
+    class="ion-no-padding"
     class="field-50">
-    <ion-label>{{'Mostrar Categorias' | translate}}</ion-label>
+    <ion-label>{{'SHOW_CATEGORIES' | translate}}</ion-label>
     <ion-toggle formControlName="showCateg"></ion-toggle>
   </ion-item>
   <ion-item
-  no-padding
+  class="ion-no-padding"
   class="field-100">
-  <ion-label>{{'Mostrar Cuentas' | translate}}</ion-label>
+  <ion-label>{{'SHOW_ACCOUNTS' | translate}}</ion-label>
   <ion-toggle formControlName="showAccounts"></ion-toggle>
   </ion-item>
     </ion-row>
@@ -67,7 +67,7 @@
             <ion-col (click)=openTitle(title)>
               {{ title.code + ' - ' + title.name }}
             </ion-col>
-            <ion-col width-25 style="text-align: right;color: #000;">
+            <ion-col style="text-align: right;color: #000;">
               {{title.accountsReport|number:'1.'+currency_precision}}
             </ion-col>
           </ion-row>
@@ -76,7 +76,7 @@
               <ion-col style="margin-left:15px;" (click)="openCategory(category)">
                 {{category.code + ' - ' + category.name}}
               </ion-col>
-              <ion-col width-25 style="text-align: right;color: #000;">
+              <ion-col style="text-align: right;color: #000;">
                 {{category.accountsReport|number:'1.'+currency_precision}}
               </ion-col>
             </ion-row>
@@ -85,7 +85,7 @@
                 <ion-col style="margin-left:30px;">
                   {{account.code + ' - ' + account.name}}
                 </ion-col>
-                <ion-col width-25 style="text-align: right;color: #000;">
+                <ion-col style="text-align: right;color: #000;">
                   {{account.accountsReport|number:'1.'+currency_precision}}
                 </ion-col>
               </ion-row>
@@ -93,7 +93,7 @@
           </div>
         </div>
         <ion-row>
-          <ion-col width-100 style="height: 60px">
+          <ion-col style="height: 60px">
           </ion-col>
         </ion-row>
       </ion-list>

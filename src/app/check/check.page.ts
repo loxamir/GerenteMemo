@@ -64,7 +64,7 @@ export class CheckPage implements OnInit {
     public pouchdbService: PouchdbService,
     public configService: ConfigService,
   ) {
-    this.languages = this.languageService.getLanguages();
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     this.contact = this.route.snapshot.paramMap.get('contact');
@@ -74,8 +74,8 @@ export class CheckPage implements OnInit {
     this.amount = this.route.snapshot.paramMap.get('amount');
     this.signal = this.route.snapshot.paramMap.get('signal');
     this.my_check = this.route.snapshot.paramMap.get('my_check');
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
   }
 
   async ngOnInit() {
@@ -104,6 +104,9 @@ export class CheckPage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config = await this.configService.getConfig();
@@ -449,16 +452,16 @@ export class CheckPage implements OnInit {
   async canDeactivate() {
     if (this.checkForm.dirty) {
       let alertPopup = await this.alertCtrl.create({
-        header: 'Descartar',
-        message: '¿Deseas salir sin guardar?',
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
         buttons: [{
-          text: 'Si',
+          text: this.translate.instant('YES'),
           handler: () => {
             this.exitPage();
           }
         },
         {
-          text: 'No',
+          text: this.translate.instant('NO'),
           handler: () => { }
         }]
       });

@@ -4,11 +4,11 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item (click)="chartOfAccount()">Plan de Cuentas</ion-item>
-    <ion-item (click)="accounts()">Cuentas</ion-item>
-    <ion-item (click)="Balancete()">Balancete</ion-item>
-    <ion-item (click)="cashMoves()">Movimientos</ion-item>
-    <ion-item (click)="checks()">Cheques</ion-item>
+    <ion-item (click)="chartOfAccount()">{{'CHART_OF_ACCOUNT'|translate}}</ion-item>
+    <ion-item (click)="accounts()">{{'ACCOUNTS'|translate}}</ion-item>
+    <ion-item (click)="Balancete()">{{'TRIAL_BALANCE'|translate}}</ion-item>
+    <ion-item (click)="cashMoves()">{{'MOVES'|translate}}</ion-item>
+    <ion-item (click)="checks()">{{'CHECKS'|translate}}</ion-item>
   </ion-list>
   `
 })
@@ -21,41 +21,6 @@ export class CashListPopover {
   ) {
     this.pop = navParams.get('popoverController');
   }
-
-  // close() {
-  //   this.pop.dismiss();
-  // }
-  //
-  // importer(){
-  //   this.navCtrl.navigateForward(['/importer', {'docType': 'sale'}]);
-  //   this.pop.dismiss();
-  // }
-  //
-  // importerLine(){
-  //   this.navCtrl.navigateForward(['/importer', {'docType': 'sale-line'}]);
-  //   this.pop.dismiss();
-  // }
-  // invoice() {
-  //   this.navCtrl.navigateForward(['/invoice-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // contact() {
-  //   this.navCtrl.navigateForward(['/contact-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // products() {
-  //   this.navCtrl.navigateForward(['/product-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // receivable() {
-  //   this.navCtrl.navigateForward(['/planned-list', {}]);
-  //   this.pop.dismiss();
-  // }
-  // receipts() {
-  //   this.pop.dismiss();
-  //   this.navCtrl.navigateForward(['/receipt-list', {}]);
-  // }
-
 
   accounts(){
     this.navCtrl.navigateForward(['/account-list', {}]);

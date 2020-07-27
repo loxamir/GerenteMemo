@@ -19,7 +19,7 @@ import { ConfigService } from '../../config/config.service';
 export class ClosePage implements OnInit {
   @ViewChild('input', { static: true }) input;
   @Input() amount_theoretical;
-  @Input() accountMoves;
+  @Input() accountMoves = [];
   @Input() cash_id;
   @Input() _id;
   @Input() select;
@@ -44,10 +44,11 @@ export class ClosePage implements OnInit {
     public closeService: CloseService,
     public events: Events,
     public configService: ConfigService,
+    public languageService: LanguageService,
     public pouchdbService: PouchdbService,
   ) {
     this.amount_theoretical = this.route.snapshot.paramMap.get('amount_theoretical');
-    this.accountMoves = this.route.snapshot.paramMap.get('accountMoves');
+    // this.accountMoves = this.route.snapshot.paramMap.get('accountMoves');
     this.cash_id = this.route.snapshot.paramMap.get('cash_id');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
@@ -73,6 +74,9 @@ export class ClosePage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -254,11 +258,11 @@ export class ClosePage implements OnInit {
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-30, " ");
       content += "Fecha: "+this.formatService.string_pad(25, (new Date(this.closeForm.value.date).toLocaleDateString('es-PY')).substring(0, data.ticketPrint.closePaperWidth-5), "right");
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-22, " ")+"\n";
-      content += "Monto Final:   "+this.formatService.string_pad(15, "$ "+this.closeForm.value.amount_physical.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      content += "Monto Final:   "+this.formatService.string_pad(15, "$ "+this.amount_physical.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-30, " ");
       content += "Valor Recebido: "+this.formatService.string_pad(16, "$ "+this.closeForm.value.amount_income.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-31, " ")+"\n";
-      content += "Variación:     "+this.formatService.string_pad(15, "$ "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open).toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
+      content += "Variación:     "+this.formatService.string_pad(15, "$ "+(this.amount_physical-this.closeForm.value.amount_open).toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-30, " ");
       content += "Monto Entregado: "+this.formatService.string_pad(15, "$ "+this.closeForm.value.amount_expense.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right");
       content += ""+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-32, " ")+"\n";
@@ -299,8 +303,8 @@ export class ClosePage implements OnInit {
       content += "Monto Inicial"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-13, "$ "+this.closeForm.value.amount_open.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
       content += "Valor Recebido"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-14, "$ "+this.closeForm.value.amount_income.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
       content += "Monto Entregado"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-15, "$ "+this.closeForm.value.amount_expense.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-      content += "Monto Final"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-11, "$ "+this.closeForm.value.amount_physical.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
-      content += "Variación"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-9, "$ "+(this.closeForm.value.amount_physical-this.closeForm.value.amount_open).toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      content += "Monto Final"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-11, "$ "+this.amount_physical.toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
+      content += "Variación"+this.formatService.string_pad(data.ticketPrint.closePaperWidth-9, "$ "+(this.amount_physical-this.closeForm.value.amount_open).toFixed(data.currency_precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), "right")+"\n";
 
       content += this.formatService.string_pad(data.ticketPrint.closePaperWidth, "| Movimentos |", 'center', '-')+"\n";
       content += this.formatService.string_pad(data.ticketPrint.closePaperWidth/3, "Contacto")+this.formatService.string_pad(data.ticketPrint.closePaperWidth/2-1, "Descripcion")+this.formatService.string_pad(data.ticketPrint.closePaperWidth/6,"Valor", 'right')+"\n";
@@ -333,7 +337,7 @@ export class ClosePage implements OnInit {
     let filename = "Cierre_"+date+".prt";
     this.formatService.printMatrix(content, filename);
     let toast = await this.toastCtrl.create({
-      message: "Imprimiendo...",
+      message: this.translate.instant('PRINTING...'),
       duration: 3000
     });
     toast.present();
@@ -349,10 +353,11 @@ export class ClosePage implements OnInit {
   async canDeactivate() {
       if(this.closeForm.dirty) {
           let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
+            header: this.translate.instant('DISCARD'),
+            // message: this.translate.instant('SURE_DONT_SAVE'),
+            message: this.translate.instant('SURE_DONT_SAVE'),
               buttons: [{
-                      text: 'Si',
+                      text: this.translate.instant('YES'),
                       handler: () => {
                           // alertPopup.dismiss().then(() => {
                               this.exitPage();
@@ -360,7 +365,7 @@ export class ClosePage implements OnInit {
                       }
                   },
                   {
-                      text: 'No',
+                      text: this.translate.instant('NO'),
                       handler: () => {
                           // need to do something if the user stays?
                       }

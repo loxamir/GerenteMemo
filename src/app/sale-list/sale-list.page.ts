@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from "../services/language/language.service";
 import { LanguageModel } from "../services/language/language.model";
+import { FormatService } from '../services/format.service';
 
 @Component({
   selector: 'app-sale-list',
@@ -38,10 +39,11 @@ export class SaleListPage implements OnInit {
     public pouchdbService: PouchdbService,
     public languageService: LanguageService,
     public translate: TranslateService,
+    public formatService: FormatService,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this.events.subscribe('changed-sale', (change)=>{
       this.handleChange(this.sales, change);
     })
@@ -83,6 +85,9 @@ export class SaleListPage implements OnInit {
   }
 
   async ngOnInit() {
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     //this.loading.present();
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
@@ -135,7 +140,22 @@ export class SaleListPage implements OnInit {
         keyword,
         page,
         "contact_name"
-      ).then((sales: any[]) => {
+      ).then(async (sales: any[]) => {
+        await this.formatService.asyncForEach(sales, async (sale: any) => {
+          let payments: any = await this.pouchdbService.getView(
+            'Informes/Recibos', 3, ["Venta "+sale.code, null], ["Venta "+sale.code, "z"]);
+            let paid_value = payments.reduce(function(paid, item) {
+              paid += parseFloat(item.value);
+              return paid
+            }, 0)
+            let residual = sale['total']-paid_value;
+            sale['residual'] = residual;
+            if (sale.state == 'CONFIRMED' && residual == 0){
+              sale.state = 'PAID';
+            } else if (sale.state == 'PAID' && sale['residual'] > 0){
+              sale.state = 'CONFIRMED';
+            }
+        })
         resolve(sales);
       });
     });

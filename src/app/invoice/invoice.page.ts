@@ -122,9 +122,9 @@ export class InvoicePage implements OnInit {
       // public popoverCtrl: PopoverController,
     ) {
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.note = this.route.snapshot.paramMap.get('note');
       this.discount = this.route.snapshot.paramMap.get('discount');
@@ -178,6 +178,9 @@ export class InvoicePage implements OnInit {
         origin_id: new FormControl(this.origin_id||''),
         // origin_ids: new FormControl(this.route.snapshot.paramMap.get('origin_ids||[]),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -219,7 +222,7 @@ export class InvoicePage implements OnInit {
         }
       },
       {
-        text: 'Cancelar',
+        text: this.translate.instant('CANCEL'),
         icon: 'close',
         role: 'cancel',
         handler: () => {}
@@ -484,7 +487,7 @@ export class InvoicePage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -515,7 +518,7 @@ export class InvoicePage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.quantity = data.quantity;
                 this.recomputeValues();
@@ -546,7 +549,7 @@ export class InvoicePage implements OnInit {
               text: 'Cancel'
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.description = data.description;
               }
@@ -662,7 +665,7 @@ export class InvoicePage implements OnInit {
             text: 'Cancel'
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: data => {
               this.invoiceForm.patchValue({
                 code: data.code,
@@ -1141,11 +1144,10 @@ export class InvoicePage implements OnInit {
             //console.log("onError", onError);
           });
           let options: PrintOptions = {
-               name: 'MyDocument',
-               //printerId: 'printer007',
+               name: 'Factura',
                duplex: false,
-               landscape: false,
-               grayscale: true
+               orientation: 'portrait',
+               monochrome: true,
              };
              //console.log("dafdata", data.invoice_template);
              let template = template_model;
@@ -1275,10 +1277,10 @@ export class InvoicePage implements OnInit {
     async canDeactivate() {
         if(this.invoiceForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+                header: this.translate.instant('DISCARD'),
+                message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -1286,7 +1288,7 @@ export class InvoicePage implements OnInit {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

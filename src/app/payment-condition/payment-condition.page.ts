@@ -45,7 +45,7 @@ export class PaymentConditionPage implements OnInit {
       public events: Events,
       public alertCtrl: AlertController,
     ) {
-      this.languages = this.languageService.getLanguages();
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
     }
@@ -67,6 +67,9 @@ export class PaymentConditionPage implements OnInit {
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       //this.loading.present();
       if (this._id){
         this.getPaymentCondition(this._id).then((data) => {
@@ -161,10 +164,10 @@ export class PaymentConditionPage implements OnInit {
         ],
         buttons: [
           {
-            text: 'Cancelar'
+            text: this.translate.instant('CANCEL'),
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: data => {
               this.paymentConditionForm.value.items.push({
                 'days': data.days,
@@ -203,10 +206,10 @@ export class PaymentConditionPage implements OnInit {
         ],
         buttons: [
           {
-            text: 'Cancelar'
+            text: this.translate.instant('CANCEL'),
           },
           {
-            text: 'Confirmar',
+            text: this.translate.instant('CONFIRM'),
             handler: data => {
               item.days = data.days;
               item.percent = data.percent;
@@ -328,10 +331,10 @@ export class PaymentConditionPage implements OnInit {
     async canDeactivate() {
         if(this.paymentConditionForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+                header: this.translate.instant('DISCARD'),
+                message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -339,7 +342,7 @@ export class PaymentConditionPage implements OnInit {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

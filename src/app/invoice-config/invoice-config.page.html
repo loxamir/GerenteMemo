@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/config"></ion-back-button>
     </ion-buttons>
@@ -15,23 +15,23 @@
 <ion-content class="check-content">
   <form class="sample-form validations-form" [formGroup]="invoiceForm">
     <section class="form-section">
-      <h2 class="section-title" style="margin-top: 15px;margin-bottom: 15px;">{{'Configuraciones de la Factura' | translate}}</h2>
-<ion-row>
+      <h2 class="section-title" style="margin-top: 15px;margin-bottom: 15px;">
+        {{'Configuraciones de la Factura' | translate}}</h2>
+      <ion-row>
         <ion-item class="field-50">
           <ion-label position="floating">{{'Cantidad de Vias' | translate}}</ion-label>
           <ion-input type="number" formControlName="copy_count"></ion-input>
         </ion-item>
         <ion-item class="field-50">
           <ion-label position="floating">{{'Tamaño de Papel' | translate}}</ion-label>
-          <ion-select
-          formControlName="paperSize"
-          cancelText="{{ 'CANCEL' | translate }}"
-          okText="{{ 'OK' | translate }}"
-          interface="popover">
-          <ion-select-option value="a4">A4</ion-select-option>
-          <ion-select-option value="legal">Oficio</ion-select-option>
-        </ion-select>
-      </ion-item>
+          <ion-select formControlName="paperSize"
+           cancelText="{{ 'CANCEL' | translate }}"
+           okText="{{ 'OK' | translate }}"
+           interface="popover">
+            <ion-select-option value="a4">A4</ion-select-option>
+            <ion-select-option value="legal">Oficio</ion-select-option>
+          </ion-select>
+        </ion-item>
         <ion-item class="field-50">
           <ion-label position="floating">{{'Alto de la Factura' | translate}}</ion-label>
           <ion-input type="number" formControlName="invoice_height"></ion-input>
@@ -62,432 +62,446 @@
           <ion-label position="floating">{{'Margin Izquierda' | translate}}</ion-label>
           <ion-input type="number" formControlName="marginLeft_config"></ion-input>
         </ion-item> -->
-</ion-row>
-        <h2 class="section-title" style="margin-top: 10px;">{{'Numero de la Factura' | translate}}</h2>
-        <ion-row>
-          <ion-item class="field-50">
-            <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-            <ion-input type="number" formControlName="invoiceNumber_top"></ion-input>
-          </ion-item>
-          <ion-item class="field-50">
-            <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-            <ion-input type="number" formControlName="invoiceNumber_left"></ion-input>
-          </ion-item>
-        </ion-row>
+      </ion-row>
+      <h2 class="section-title" style="margin-top: 10px;">{{'Numero de la Factura' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceNumber_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceNumber_left"></ion-input>
+        </ion-item>
+      </ion-row>
 
-          <h2 class="section-title">{{'Fecha' | translate}}</h2>
-          <ion-row>
-            <ion-item class="field-100">
-              <ion-label position="floating">{{'Formato' | translate}}</ion-label>
-              <ion-select
-              formControlName="invoiceDateType"
-              cancelText="{{ 'CANCEL' | translate }}"
-              okText="{{ 'OK' | translate }}"
-              interface="popover">
-                <ion-select-option value="normal">31/12/1999</ion-select-option>
-                <ion-select-option value="separate">31 de Diciembre de 1999</ion-select-option>
-              </ion-select>
-            </ion-item>
-            <ion-item class="field-50">
-              <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-              <ion-input type="number" formControlName="invoiceDate_top"></ion-input>
-            </ion-item>
-            <ion-item class="field-50">
-              <ion-label position="floating"
-              *ngIf="invoiceForm.value.invoiceDateType == 'normal'"
-              >{{'Izquierda' | translate}}</ion-label>
-              <ion-label position="floating"
-              *ngIf="invoiceForm.value.invoiceDateType == 'separate'"
-              >{{'Izquierda Dia' | translate}}</ion-label>
-              <ion-input type="number" formControlName="invoiceDate_left"></ion-input>
-            </ion-item>
-            <ion-item class="field-50"
-            *ngIf="invoiceForm.value.invoiceDateType == 'separate'">
-              <ion-label position="floating">{{'Izquierda Mes' | translate}}</ion-label>
-              <ion-input type="number" formControlName="invoiceMonth_left"></ion-input>
-            </ion-item>
-            <ion-item class="field-50"
-            *ngIf="invoiceForm.value.invoiceDateType == 'separate'">
-              <ion-label position="floating">{{'Izquierda Año' | translate}}</ion-label>
-              <ion-input type="number" formControlName="invoiceYear_left"></ion-input>
-            </ion-item>
-          </ion-row>
-          <h2 class="section-title">{{'Condicion de Pago' | translate}}</h2>
-          <ion-row>
-            <ion-item class="field-100">
-              <ion-label position="floating">{{'Formato' | translate}}</ion-label>
-              <ion-select
-              formControlName="invoicePaymentType"
-              cancelText="{{ 'CANCEL' | translate }}"
-              okText="{{ 'OK' | translate }}"
-              interface="popover">
-                <ion-select-option value="XX">Marcar con XX</ion-select-option>
-                <ion-select-option value="name">Escribir Credito o Contado</ion-select-option>
-              </ion-select>
-            </ion-item>
-            <ion-item class="field-50">
-              <ion-label position="floating"
-              *ngIf="invoiceForm.value.invoicePaymentType == 'name'"
-              >{{'Topo' | translate}}</ion-label>
-              <ion-label position="floating"
-              *ngIf="invoiceForm.value.invoicePaymentType == 'XX'"
-              >{{'Topo Contado' | translate}}</ion-label>
-              <ion-input type="number" formControlName="invoicePayment_top"></ion-input>
-            </ion-item>
-            <ion-item class="field-50">
-              <ion-label position="floating"
-              *ngIf="invoiceForm.value.invoicePaymentType == 'name'"
-              >{{'Izquierda' | translate}}</ion-label>
-              <ion-label position="floating"
-              *ngIf="invoiceForm.value.invoicePaymentType == 'XX'"
-              >{{'Izquierda Contado' | translate}}</ion-label>
-              <ion-input type="number" formControlName="invoicePayment_left"></ion-input>
-            </ion-item>
-            <ion-item class="field-50"
-            *ngIf="invoiceForm.value.invoicePaymentType == 'XX'">
-              <ion-label position="floating">{{'Credito Topo' | translate}}</ion-label>
-              <ion-input type="number" formControlName="invoicePaymentCredit_top"></ion-input>
-            </ion-item>
-            <ion-item class="field-50"
-            *ngIf="invoiceForm.value.invoicePaymentType == 'XX'">
-              <ion-label position="floating">{{'Credito Izquierda' | translate}}</ion-label>
-              <ion-input type="number" formControlName="invoicePaymentCredit_left"></ion-input>
-            </ion-item>
-            <ion-item class="field-100"
-              *ngIf="invoiceForm.value.invoicePaymentType == 'name'">
-              <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-              <ion-input type="number" formControlName="invoicePayment_width"></ion-input>
-            </ion-item>
-            </ion-row>
-            <h2 class="section-title">{{'Nombre del Cliente' | translate}}</h2>
-            <ion-row>
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                <ion-input type="number" formControlName="contactName_top"></ion-input>
-              </ion-item>
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                <ion-input type="number" formControlName="contactName_left"></ion-input>
-              </ion-item>
-              <ion-item class="field-33">
-                <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                <ion-input type="number" formControlName="contactName_width"></ion-input>
-              </ion-item>
-            </ion-row>
-            <h2 class="section-title">{{'Documento del Cliente' | translate}}</h2>
-            <ion-row>
-                <ion-item class="field-33">
-                  <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                  <ion-input type="number" formControlName="contactDocument_top"></ion-input>
-                </ion-item>
-                <ion-item class="field-33">
-                  <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                  <ion-input type="number" formControlName="contactDocument_left"></ion-input>
-                </ion-item>
-                <ion-item class="field-33">
-                  <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                  <ion-input type="number" formControlName="contactDocument_width"></ion-input>
-                </ion-item>
-</ion-row>
-                <h2 class="section-title">{{'Dirección del Cliente' | translate}}</h2>
-<ion-row>
-                  <ion-item class="field-33">
-                    <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                    <ion-input type="number" formControlName="contactAddress_top"></ion-input>
-                  </ion-item>
-                  <ion-item class="field-33">
-                    <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                    <ion-input type="number" formControlName="contactAddress_left"></ion-input>
-                  </ion-item>
-                  <ion-item class="field-33">
-                    <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                    <ion-input type="number" formControlName="contactAddress_width"></ion-input>
-                  </ion-item>
-</ion-row>
-                  <h2 class="section-title">{{'Telefono del Cliente' | translate}}</h2>
+      <h2 class="section-title">{{'DATE' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-100">
+          <ion-label position="floating">{{'Formato' | translate}}</ion-label>
+          <ion-select formControlName="invoiceDateType"
+           cancelText="{{ 'CANCEL' | translate }}"
+           okText="{{ 'OK' | translate }}"
+           interface="popover">
+            <ion-select-option value="normal">31/12/1999</ion-select-option>
+            <ion-select-option value="separate">31 de Diciembre de 1999</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceDate_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating" *ngIf="invoiceForm.value.invoiceDateType == 'normal'">
+            {{'Izquierda' | translate}}
+          </ion-label>
+          <ion-label position="floating" *ngIf="invoiceForm.value.invoiceDateType == 'separate'">
+            {{'Izquierda Dia' | translate}}
+          </ion-label>
+          <ion-input type="number" formControlName="invoiceDate_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-50" *ngIf="invoiceForm.value.invoiceDateType == 'separate'">
+          <ion-label position="floating">
+            {{'Izquierda Mes' | translate}}
+          </ion-label>
+          <ion-input type="number" formControlName="invoiceMonth_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-50" *ngIf="invoiceForm.value.invoiceDateType == 'separate'">
+          <ion-label position="floating">
+            {{'Izquierda Año' | translate}}
+          </ion-label>
+          <ion-input type="number" formControlName="invoiceYear_left"></ion-input>
+        </ion-item>
+      </ion-row>
+      <h2 class="section-title">{{'Condicion de Pago' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-100">
+          <ion-label position="floating">{{'Formato' | translate}}</ion-label>
+          <ion-select formControlName="invoicePaymentType"
+           cancelText="{{ 'CANCEL' | translate }}"
+           okText="{{ 'OK' | translate }}"
+           interface="popover">
+            <ion-select-option value="XX">Marcar con XX</ion-select-option>
+            <ion-select-option value="name">Escribir Credito o Contado</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating" *ngIf="invoiceForm.value.invoicePaymentType == 'name'">
+            {{'Topo' | translate}}
+          </ion-label>
+          <ion-label position="floating" *ngIf="invoiceForm.value.invoicePaymentType == 'XX'">
+            {{'Topo Contado' | translate}}
+          </ion-label>
+          <ion-input type="number" formControlName="invoicePayment_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating" *ngIf="invoiceForm.value.invoicePaymentType == 'name'">
+            {{'Izquierda' | translate}}
+          </ion-label>
+          <ion-label position="floating" *ngIf="invoiceForm.value.invoicePaymentType == 'XX'">
+            {{'Izquierda Contado' | translate}}
+          </ion-label>
+          <ion-input type="number" formControlName="invoicePayment_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-50" *ngIf="invoiceForm.value.invoicePaymentType == 'XX'">
+          <ion-label position="floating">{{'Credito Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoicePaymentCredit_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-50" *ngIf="invoiceForm.value.invoicePaymentType == 'XX'">
+          <ion-label position="floating">{{'Credito Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoicePaymentCredit_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-100" *ngIf="invoiceForm.value.invoicePaymentType == 'name'">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoicePayment_width"></ion-input>
+        </ion-item>
+      </ion-row>
 
-                    <ion-row>
-                      <ion-item class="field-33">
-                      <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                      <ion-input type="number" formControlName="contactPhone_top"></ion-input>
-                    </ion-item>
-                    <ion-item class="field-33">
-                      <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                      <ion-input type="number" formControlName="contactPhone_left"></ion-input>
-                    </ion-item>
-                    <ion-item class="field-33">
-                      <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                      <ion-input type="number" formControlName="contactPhone_width"></ion-input>
-                    </ion-item>
-</ion-row>
+      <h2 class="section-title">{{'Nombre del Cliente' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactName_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactName_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactName_width"></ion-input>
+        </ion-item>
+      </ion-row>
+      <h2 class="section-title">{{'Documento del Cliente' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactDocument_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactDocument_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactDocument_width"></ion-input>
+        </ion-item>
+      </ion-row>
+      <h2 class="section-title">{{'Dirección del Cliente' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactAddress_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactAddress_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactAddress_width"></ion-input>
+        </ion-item>
+      </ion-row>
+      <h2 class="section-title">{{'Telefono del Cliente' | translate}}</h2>
 
-<h2 class="section-title">{{'Anotación' | translate}}</h2>
-<ion-row>
-  <ion-item class="field-33">
-    <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-    <ion-input type="number" formControlName="invoiceNote_top"></ion-input>
-  </ion-item>
-  <ion-item class="field-33">
-    <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-    <ion-input type="number" formControlName="invoiceNote_left"></ion-input>
-  </ion-item>
-  <ion-item class="field-33">
-    <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-    <ion-input type="number" formControlName="invoiceNote_width"></ion-input>
-  </ion-item>
-</ion-row>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactPhone_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactPhone_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="contactPhone_width"></ion-input>
+        </ion-item>
+      </ion-row>
+
+      <h2 class="section-title">{{'Anotación' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceNote_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceNote_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceNote_width"></ion-input>
+        </ion-item>
+      </ion-row>
 
 
 
-                    <h2 class="section-title">{{'Lineas de la Factura' | translate}}</h2>
-<ion-row>
-                  <ion-item class="field-100">
-                    <ion-label position="floating">{{'Cantidad de Lineas' | translate}}</ion-label>
-                    <ion-input type="number" formControlName="lines_limit"></ion-input>
-                  </ion-item>
-                  <ion-item class="field-50">
-                    <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                    <ion-input type="number" formControlName="lines_top"></ion-input>
-                  </ion-item>
-                  <ion-item class="field-50">
-                    <ion-label position="floating">{{'Izquieda' | translate}}</ion-label>
-                    <ion-input type="number" formControlName="lines_left"></ion-input>
-                  </ion-item>
-                    <ion-item class="field-50">
-                      <ion-label position="floating">{{'Alto' | translate}}</ion-label>
-                      <ion-input type="number" formControlName="lines_height"></ion-input>
-                    </ion-item>
-                    <ion-item class="field-50">
-                      <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                      <ion-input type="number" formControlName="lines_width"></ion-input>
-                    </ion-item>
+      <h2 class="section-title">{{'Lineas de la Factura' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-100">
+          <ion-label position="floating">{{'Cantidad de Lineas' | translate}}</ion-label>
+          <ion-input type="number" formControlName="lines_limit"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="lines_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Izquieda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="lines_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Alto' | translate}}</ion-label>
+          <ion-input type="number" formControlName="lines_height"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="lines_width"></ion-input>
+        </ion-item>
 
 
-                    </ion-row>
-                    <h2 class="section-title">{{'Anchos de campos en la Linea' | translate}}</h2>
-                    <ion-row>
-                      <ion-item class="field-50">
-                        <ion-label position="floating">{{'Código' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="linesCode_width"></ion-input>
-                      </ion-item>
-                      <ion-item class="field-50">
-                        <ion-label position="floating">{{'Cantidad' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="linesQuantity_width"></ion-input>
-                      </ion-item>
+      </ion-row>
+      <h2 class="section-title">{{'Anchos de campos en la Linea' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Código' | translate}}</ion-label>
+          <ion-input type="number" formControlName="linesCode_width"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Cantidad' | translate}}</ion-label>
+          <ion-input type="number" formControlName="linesQuantity_width"></ion-input>
+        </ion-item>
 
-                      <ion-item class="field-50">
-                        <ion-label position="floating">{{'Descripción' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="linesProductName_width"></ion-input>
-                      </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Descripción' | translate}}</ion-label>
+          <ion-input type="number" formControlName="linesProductName_width"></ion-input>
+        </ion-item>
 
-                      <ion-item class="field-50">
-                        <ion-label position="floating">{{'Precio' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="linesPrice_width"></ion-input>
-                      </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Precio' | translate}}</ion-label>
+          <ion-input type="number" formControlName="linesPrice_width"></ion-input>
+        </ion-item>
 
-                      <ion-item class="field-50">
-                        <ion-label position="floating">{{'Exentas' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="linesTax0_width"></ion-input>
-                      </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Exentas' | translate}}</ion-label>
+          <ion-input type="number" formControlName="linesTax0_width"></ion-input>
+        </ion-item>
 
-                      <ion-item class="field-50">
-                        <ion-label position="floating">{{'IVA 5%' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="linesTax5_width"></ion-input>
-                      </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'IVA 5%' | translate}}</ion-label>
+          <ion-input type="number" formControlName="linesTax5_width"></ion-input>
+        </ion-item>
 
-                      <ion-item class="field-50">
-                        <ion-label position="floating">{{'IVA 10%' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="linesTax10_width"></ion-input>
-                      </ion-item>
-                      <ion-item class="field-50">
-                        <ion-label position="floating">{{'Tasa' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="linesFee_width"></ion-input>
-                      </ion-item>
-
-
-</ion-row>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'IVA 10%' | translate}}</ion-label>
+          <ion-input type="number" formControlName="linesTax10_width"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Tasa' | translate}}</ion-label>
+          <ion-input type="number" formControlName="linesFee_width"></ion-input>
+        </ion-item>
 
 
-
-                    <h2 class="section-title">{{'SubTotal Exentas' | translate}}</h2>
-<ion-row>
-                      <ion-item class="field-33">
-                        <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="subTotalTax0_top"></ion-input>
-                      </ion-item>
-                      <ion-item class="field-33">
-                        <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="subTotalTax0_left"></ion-input>
-                      </ion-item>
-                      <ion-item class="field-33">
-                        <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                        <ion-input type="number" formControlName="subTotalTax0_width"></ion-input>
-                      </ion-item>
-</ion-row>
-
-                      <h2 class="section-title">{{'SubTotal IVA 5%' | translate}}</h2>
-<ion-row>
-                        <ion-item class="field-33">
-                          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                          <ion-input type="number" formControlName="subTotalTax5_top"></ion-input>
-                        </ion-item>
-                        <ion-item class="field-33">
-                          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                          <ion-input type="number" formControlName="subTotalTax5_left"></ion-input>
-                        </ion-item>
-                        <ion-item class="field-33">
-                          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                          <ion-input type="number" formControlName="subTotalTax5_width"></ion-input>
-                        </ion-item>
-</ion-row>
-
-                        <h2 class="section-title">{{'SubTotal IVA 10%' | translate}}</h2>
-
-                          <ion-row>
-                            <ion-item class="field-33">
-                            <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                            <ion-input type="number" formControlName="subTotalTax10_top"></ion-input>
-                          </ion-item>
-                          <ion-item class="field-33">
-                            <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                            <ion-input type="number" formControlName="subTotalTax10_left"></ion-input>
-                          </ion-item>
-                          <ion-item class="field-33">
-                            <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                            <ion-input type="number" formControlName="subTotalTax10_width"></ion-input>
-                          </ion-item>
-</ion-row>
-
-<h2 class="section-title">{{'SubTotal Tasas' | translate}}</h2>
-
-  <ion-row>
-    <ion-item class="field-33">
-    <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-    <ion-input type="number" formControlName="subTotalFees_top"></ion-input>
-  </ion-item>
-  <ion-item class="field-33">
-    <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-    <ion-input type="number" formControlName="subTotalFees_left"></ion-input>
-  </ion-item>
-  <ion-item class="field-33">
-    <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-    <ion-input type="number" formControlName="subTotalFees_width"></ion-input>
-  </ion-item>
-</ion-row>
+      </ion-row>
 
 
 
-                          <h2 class="section-title">{{'Monto en Letras' | translate}}</h2>
-<ion-row>
-                            <ion-item class="field-33">
-                              <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                              <ion-input type="number" formControlName="amountInWords_top"></ion-input>
-                            </ion-item>
-                            <ion-item class="field-33">
-                              <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                              <ion-input type="number" formControlName="amountInWords_left"></ion-input>
-                            </ion-item>
-                            <ion-item class="field-33">
-                              <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                              <ion-input type="number" formControlName="amountInWords_width"></ion-input>
-                            </ion-item>
-</ion-row>
-<h2 class="section-title">{{'Tasas' | translate}}</h2>
-<ion-row>
-                              <ion-item class="field-33">
-                                <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                                <ion-input type="number" formControlName="totalFees_top"></ion-input>
-                              </ion-item>
-                              <ion-item class="field-33">
-                                <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                                <ion-input type="number" formControlName="totalFees_left"></ion-input>
-                              </ion-item>
-                              <ion-item class="field-33">
-                                <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                                <ion-input type="number" formControlName="totalFees_width"></ion-input>
-                              </ion-item>
-</ion-row>
-<h2 class="section-title">{{'Descuento' | translate}}</h2>
-<ion-row>
-                              <ion-item class="field-33">
-                                <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                                <ion-input type="number" formControlName="invoiceDiscount_top"></ion-input>
-                              </ion-item>
-                              <ion-item class="field-33">
-                                <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                                <ion-input type="number" formControlName="invoiceDiscount_left"></ion-input>
-                              </ion-item>
-                              <ion-item class="field-33">
-                                <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                                <ion-input type="number" formControlName="invoiceDiscount_width"></ion-input>
-                              </ion-item>
-</ion-row>
-                            <h2 class="section-title">{{'Total de la Factura' | translate}}</h2>
-<ion-row>
-                              <ion-item class="field-33">
-                                <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                                <ion-input type="number" formControlName="invoiceTotal_top"></ion-input>
-                              </ion-item>
-                              <ion-item class="field-33">
-                                <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                                <ion-input type="number" formControlName="invoiceTotal_left"></ion-input>
-                              </ion-item>
-                              <ion-item class="field-33">
-                                <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                                <ion-input type="number" formControlName="invoiceTotal_width"></ion-input>
-                              </ion-item>
-</ion-row>
+      <h2 class="section-title">{{'SubTotal Exentas' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalTax0_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalTax0_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalTax0_width"></ion-input>
+        </ion-item>
+      </ion-row>
+
+      <h2 class="section-title">{{'SubTotal IVA 5%' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalTax5_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalTax5_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalTax5_width"></ion-input>
+        </ion-item>
+      </ion-row>
+
+      <h2 class="section-title">{{'SubTotal IVA 10%' | translate}}</h2>
+
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalTax10_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalTax10_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalTax10_width"></ion-input>
+        </ion-item>
+      </ion-row>
+
+      <h2 class="section-title">{{'SubTotal Tasas' | translate}}</h2>
+
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalFees_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalFees_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="subTotalFees_width"></ion-input>
+        </ion-item>
+      </ion-row>
 
 
-                              <h2 class="section-title">{{'Total IVA 5%' | translate}}</h2>
-<ion-row>
-                                <ion-item class="field-33">
-                                  <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                                  <ion-input type="number" formControlName="totalTax5_top"></ion-input>
-                                </ion-item>
-                                <ion-item class="field-33">
-                                  <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                                  <ion-input type="number" formControlName="totalTax5_left"></ion-input>
-                                </ion-item>
-                                <ion-item class="field-33">
-                                  <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                                  <ion-input type="number" formControlName="totalTax5_width"></ion-input>
-                                </ion-item>
-</ion-row>
-                                <h2 class="section-title">{{'Total IVA 10%' | translate}}</h2>
-<ion-row>
-                                  <ion-item class="field-33">
-                                    <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                                    <ion-input type="number" formControlName="totalTax10_top"></ion-input>
-                                  </ion-item>
-                                  <ion-item class="field-33">
-                                    <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                                    <ion-input type="number" formControlName="totalTax10_left"></ion-input>
-                                  </ion-item>
-                                  <ion-item class="field-33">
-                                    <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                                    <ion-input type="number" formControlName="totalTax10_width"></ion-input>
-                                  </ion-item>
-</ion-row>
-                                  <h2 class="section-title">{{'IVA Total' | translate}}</h2>
-<ion-row>
-                                    <ion-item class="field-33">
-                                      <ion-label position="floating">{{'Topo' | translate}}</ion-label>
-                                      <ion-input type="number" formControlName="totalTax_top"></ion-input>
-                                    </ion-item>
-                                    <ion-item class="field-33">
-                                      <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
-                                      <ion-input type="number" formControlName="totalTax_left"></ion-input>
-                                    </ion-item>
-                                    <ion-item class="field-33">
-                                      <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
-                                      <ion-input type="number" formControlName="totalTax_width"></ion-input>
-                                    </ion-item>
-                                    </ion-row>
 
-            <h2 class="section-title">{{'Ajustes Avanzados' | translate}}</h2>
-<ion-row>
-              <!-- <ion-item class="field-50">
+      <h2 class="section-title">{{'Monto en Letras' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="amountInWords_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="amountInWords_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="amountInWords_width"></ion-input>
+        </ion-item>
+      </ion-row>
+
+      <h2 class="section-title">{{'Monto Total' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceAmount_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceAmount_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceAmount_width"></ion-input>
+        </ion-item>
+      </ion-row>
+      <h2 class="section-title">{{'Total Tasas' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalFees_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalFees_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalFees_width"></ion-input>
+        </ion-item>
+      </ion-row>
+      <h2 class="section-title">{{'Descuento' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceDiscount_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceDiscount_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceDiscount_width"></ion-input>
+        </ion-item>
+      </ion-row>
+      <h2 class="section-title">{{'Total de Final' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceTotal_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceTotal_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="invoiceTotal_width"></ion-input>
+        </ion-item>
+      </ion-row>
+
+
+      <h2 class="section-title">{{'Total IVA 5%' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalTax5_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalTax5_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalTax5_width"></ion-input>
+        </ion-item>
+      </ion-row>
+      <h2 class="section-title">{{'Total IVA 10%' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalTax10_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalTax10_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalTax10_width"></ion-input>
+        </ion-item>
+      </ion-row>
+      <h2 class="section-title">{{'IVA Total' | translate}}</h2>
+      <ion-row>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Topo' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalTax_top"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalTax_left"></ion-input>
+        </ion-item>
+        <ion-item class="field-33">
+          <ion-label position="floating">{{'Ancho' | translate}}</ion-label>
+          <ion-input type="number" formControlName="totalTax_width"></ion-input>
+        </ion-item>
+      </ion-row>
+
+      <h2 class="section-title">{{'Ajustes Avanzados' | translate}}</h2>
+      <ion-row>
+        <!-- <ion-item class="field-50">
                 <ion-label position="floating">{{'Cantidad de Vias' | translate}}</ion-label>
                 <ion-input type="number" formControlName="copy_count"></ion-input>
               </ion-item>
@@ -515,24 +529,24 @@
 
 
 
-              <ion-item class="field-50">
-                <ion-label position="floating">{{'Tamaño de fuente' | translate}}</ion-label>
-                <ion-input type="number" formControlName="fontSize"></ion-input>
-              </ion-item>
-              <ion-item class="field-50">
-                <ion-label position="floating">{{'Factor de Correccion' | translate}}</ion-label>
-                <ion-input type="number" formControlName="printerFactor_config"></ion-input>
-              </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Tamaño de fuente' | translate}}</ion-label>
+          <ion-input type="number" formControlName="fontSize"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Factor de Correccion' | translate}}</ion-label>
+          <ion-input type="number" formControlName="printerFactor_config"></ion-input>
+        </ion-item>
 
-              <ion-item class="field-50">
-                <ion-label position="floating">{{'Margin Superior' | translate}}</ion-label>
-                <ion-input type="number" formControlName="marginTop_config"></ion-input>
-              </ion-item>
-              <ion-item class="field-50">
-                <ion-label position="floating">{{'Margin Izquierda' | translate}}</ion-label>
-                <ion-input type="number" formControlName="marginLeft_config"></ion-input>
-              </ion-item>
-</ion-row>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Margin Superior' | translate}}</ion-label>
+          <ion-input type="number" formControlName="marginTop_config"></ion-input>
+        </ion-item>
+        <ion-item class="field-50">
+          <ion-label position="floating">{{'Margin Izquierda' | translate}}</ion-label>
+          <ion-input type="number" formControlName="marginLeft_config"></ion-input>
+        </ion-item>
+      </ion-row>
 
 
     </section>
@@ -544,7 +558,7 @@
   </ion-button> -->
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-button (click)="printTest()"  class="next-button">
+    <ion-button (click)="printTest()" class="next-button">
       <ion-icon name="print"> </ion-icon>
       Imprimir
     </ion-button>
@@ -554,15 +568,15 @@
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="invoiceForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!invoiceForm.dirty"> </ion-icon>
-      <span *ngIf="invoiceForm.dirty">Descartar</span>
-      <span *ngIf="!invoiceForm.dirty">Volver</span>
+      <span *ngIf="invoiceForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!invoiceForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="invoiceForm.dirty">
-    <ion-button (click)="buttonSave()"  color="success">
+    <ion-button (click)="buttonSave()" color="success">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
   <div style="height: 100px;">

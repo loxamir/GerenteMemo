@@ -1,9 +1,11 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, ModalController, Events, PopoverController} from '@ionic/angular';
+import { NavController, LoadingController, ModalController, Events, PopoverController } from '@ionic/angular';
 import { AccountCategoryPage } from '../account-category/account-category.page';
 import 'rxjs/Rx';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from "../services/language/language.service";
 
 @Component({
   selector: 'app-account-category-list',
@@ -13,10 +15,9 @@ import 'rxjs/Rx';
 export class AccountCategoryListPage implements OnInit {
   accountCategorys: any;
   loading: any;
-  select:any;
+  select: any;
   searchTerm: string = '';
   page = 0;
-  // has_search = false;
   filter: string = 'all';
 
   constructor(
@@ -26,44 +27,23 @@ export class AccountCategoryListPage implements OnInit {
     public modalCtrl: ModalController,
     public route: ActivatedRoute,
     public events: Events,
+    public translate: TranslateService,
+    public languageService: LanguageService,
     public popoverCtrl: PopoverController,
   ) {
     this.select = this.route.snapshot.paramMap.get('select');
-    // if (this.select){
-    //   this.has_search = true;
-    // }
-    this.filter = this.route.snapshot.paramMap.get('filter')||'all';
+    this.filter = this.route.snapshot.paramMap.get('filter') || 'all';
   }
 
-  ngOnInit() {
-    //this.loading.present();
+  async ngOnInit() {
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.setFilteredItems();
   }
-  // setSearch() {
-  //   if (this.has_search){
-  //     this.searchTerm = "";
-  //     this.setFilteredItems();
-  //   }
-  //   this.has_search = ! this.has_search;
-  // }
-  // startFilteredItems() {
-  //   //console.log("setFilteredItems");
-  //   let filter = null;
-  //   if (this.filter == "all"){
-  //     let filter = null;
-  //   } else {
-  //     let filter = this.filter;
-  //   }
-  //   this.getAccountCategorysPage(this.searchTerm, 0, filter).then((accountCategorys: any[]) => {
-  //     console.log("this.filter", this.filter);
-  //     this.accountCategorys = accountCategorys;
-  //     this.page = 1;
-  //     //this.loading.dismiss();
-  //   });
-  // }
   setFilteredItems() {
     let filter = null;
-    if (this.filter == "all"){
+    if (this.filter == "all") {
       let filter = null;
     } else {
       let filter = this.filter;
@@ -80,7 +60,6 @@ export class AccountCategoryListPage implements OnInit {
       this.getAccountCategorysPage(
         this.searchTerm, this.page
       ).then((accountCategorys: any[]) => {
-        // this.accountCategorys = accountCategorys
         accountCategorys.forEach(accountCategory => {
           this.accountCategorys.push(accountCategory);
         });
@@ -95,22 +74,22 @@ export class AccountCategoryListPage implements OnInit {
       this.getAccountCategorysPage(
         this.searchTerm, 0
       ).then((accountCategorys: any[]) => {
-        if (this.filter == 'all'){
+        if (this.filter == 'all') {
           this.accountCategorys = accountCategorys;
         }
-        else if (this.filter == 'seller'){
+        else if (this.filter == 'seller') {
           this.accountCategorys = accountCategorys.filter(
             word => word.seller == true);
         }
-        else if (this.filter == 'customer'){
+        else if (this.filter == 'customer') {
           this.accountCategorys = accountCategorys.filter(
             word => word.customer == true);
         }
-        else if (this.filter == 'supplier'){
+        else if (this.filter == 'supplier') {
           this.accountCategorys = accountCategorys.filter(
             word => word.supplier == true);
         }
-        else if (this.filter == 'employee'){
+        else if (this.filter == 'employee') {
           this.accountCategorys = accountCategorys.filter(
             word => word.employee == true);
         }
@@ -119,16 +98,9 @@ export class AccountCategoryListPage implements OnInit {
       refresher.target.complete();
     }, 500);
   }
-  // presentPopover(myEvent) {
-  //   let popover = this.popoverCtrl.create(AccountCategorysPopover);
-  //   popover.present({
-  //     ev: myEvent
-  //   });
-  // }
 
   async openAccountCategory(accountCategory) {
-    // console.log("accountCategory", accountCategory);
-    if (this.select){
+    if (this.select) {
       let profileModal = await this.modalCtrl.create({
         component: AccountCategoryPage,
         componentProps: {
@@ -148,18 +120,16 @@ export class AccountCategoryListPage implements OnInit {
   }
 
   selectAccountCategory(accountCategory) {
-    if (this.select){
-      // this.navCtrl.navigateBack().then(() => {
-        this.modalCtrl.dismiss();
-        this.events.publish('select-accountCategory', accountCategory);
-      // });
+    if (this.select) {
+      this.modalCtrl.dismiss();
+      this.events.publish('select-accountCategory', accountCategory);
     } else {
       this.openAccountCategory(accountCategory);
     }
   }
 
-  async createAccountCategory(){
-    if (this.select){
+  async createAccountCategory() {
+    if (this.select) {
       let profileModal = await this.modalCtrl.create({
         component: AccountCategoryPage,
         componentProps: {
@@ -171,16 +141,14 @@ export class AccountCategoryListPage implements OnInit {
       this.navCtrl.navigateForward(['/account-category', {}]);
     }
     this.events.subscribe('create-accountCategory', (data) => {
-      if (this.select){
-        // this.navCtrl.navigateBack().then(() => {
-          this.events.publish('select-accountCategory', data);
-        // });
+      if (this.select) {
+        this.events.publish('select-accountCategory', data);
       }
       this.events.unsubscribe('create-accountCategory');
     })
   }
 
-  getAccountCategorysPage(keyword, page, field=''){
+  getAccountCategorysPage(keyword, page, field = '') {
     return new Promise(resolve => {
       this.pouchdbService.searchDocTypeData(
         'accountCategory', keyword, page, "document", field

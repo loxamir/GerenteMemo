@@ -33,7 +33,6 @@
   border-radius: 5px;
   margin-top:5px;
   margin-bottom:5px;
-  margin-right:0px;
 }
 .field-many2one-edit {
   background: white;
@@ -46,6 +45,26 @@
   width: 50%;
   --ion-background-color: #fff;
   border: 1px solid #a4c1f5;
+}
+.field-40 {
+  height: 50px;
+  width: 40%;
+  --ion-background-color: #fff;
+  border: 1px solid #a4c1f5;
+}
+.field-44 {
+  height: 50px;
+  width: 44%;
+  --ion-background-color: #fff;
+  border: 1px solid #a4c1f5;
+}
+.field-16 {
+  height: 50px;
+  width: 16%;
+  color: blue;
+  background-color: #fff;
+  border: 1px solid #a4c1f5;
+  padding-right: 0px;
 }
 .field-100 {
    --ion-background-color: #fff;
@@ -186,7 +205,7 @@ h4.field-value-col {
     width: 100%;
 }
 ion-content {
-    --ion-background-color: #ddd;
+    --ion-background-color: #78bfdc;
 }
 
 .field-50-datetime {
@@ -199,7 +218,7 @@ ion-content {
   line-height: 1.0;
   letter-spacing: 1.1px;
   text-align: center;
-  color: green;
+  color: #1530a2;
   font-weight: 400;
   margin: 0px;
 }
@@ -254,7 +273,7 @@ ion-item-sliding, ion-item-sliding .item {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    margin-right: -9px;
+    margin-right: -16px;
 }
 .product-name-row {
   font-size: 17px;
@@ -515,4 +534,42 @@ ion-segment-button {
 .discount-modal {
   --max-height: 350px;
   --max-width: 350px;
+}
+
+.planned {
+    color: #4545e8;
+}
+
+ion-toolbar {
+  --ion-background-color: linear-gradient(to left,#007bff,#2d3a98);
+  color: white;
+}
+
+ion-searchbar {
+  --ion-background-color: white;
+}
+
+.bg-gradient {
+  --ion-background-color: linear-gradient(to left,#007bff,#2d3a98);
+}
+
+.search-box {
+  --background: #74e45d;
+}
+
+.validation-errors {
+  color: red;
+}
+
+.sc-ion-card-md-h {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+section.ion-item-sliding, ion-item-sliding .item {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin-right: -18px;
 }

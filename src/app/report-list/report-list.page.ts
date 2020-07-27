@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, LoadingController, PopoverController, NavParams } from '@ionic/angular';
-import { ReportPage } from '../report/report.page';
+// import { ReportPage } from '../report/report.page';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ResultReportPage } from '../result-report/result-report.page';
 import { ViewReportPage } from '../view-report/view-report.page';
@@ -14,7 +14,6 @@ import { PouchdbService } from '../services/pouchdb/pouchdb-service';
 import { SaleReportPage } from '../sale-report/sale-report.page';
 import { PurchaseReportPage } from '../purchase-report/purchase-report.page';
 import { ProductService } from '../product/product.service';
-import { ReportService } from '../report/report.service';
 import { CashFlowPage } from '../cash-flow/cash-flow.page';
 import * as d3 from 'd3';
 import { TranslateService } from '@ngx-translate/core';
@@ -94,12 +93,8 @@ export class ReportListPage implements OnInit {
     public languageService: LanguageService,
     public pouchdbService: PouchdbService,
     public productService: ProductService,
-    public reportService: ReportService,
     public formatService: FormatService,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
     this.select = this.route.snapshot.paramMap.get('select');
     this.today = new Date();
   }
@@ -120,6 +115,9 @@ export class ReportListPage implements OnInit {
       // sales: new FormControl(0),
       // purchases: new FormControl(0),
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     let config:any = (await this.pouchdbService.getDoc('config.profile'));
@@ -317,7 +315,7 @@ export class ReportListPage implements OnInit {
       let self = this;
       this.pouchdbService.getView(
         'stock/Depositos',
-        3,
+        2,
         ["warehouse.physical.my" ,"0", "0"],
         ["warehouse.physical.my", "z", "z"],
         true,
@@ -331,7 +329,7 @@ export class ReportListPage implements OnInit {
         let stocked_price = 0;
         let stocked_quantity = 0;
         let getList = [];
-        products = products.slice(0, 999);
+        products = products;
         products.forEach(sale => {
           if (getList.indexOf(sale.key[1]) < 0){
             getList.push(sale.key[1])
@@ -344,7 +342,7 @@ export class ReportListPage implements OnInit {
           doc_dict[row.id] = row.doc;
         })
         products.forEach(product => {
-          // if (doc_dict[product.key[1]] && product.value > 0){
+          if (doc_dict[product.key[1]] && product.value > 0){
             stocked_quantity += parseFloat(product.value);
             if (!doc_dict[product.key[1]]){
               //console.log("product.key[1]", product.key[1]);
@@ -352,7 +350,7 @@ export class ReportListPage implements OnInit {
               stocked_cost += product.value * doc_dict[product.key[1]].cost;
               stocked_price += product.value * doc_dict[product.key[1]].price;;
             }
-          // }
+          }
         })
         this.stocked_quantity = stocked_quantity;
         this.stocked_cost = stocked_cost;

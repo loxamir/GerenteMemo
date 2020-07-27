@@ -4,11 +4,11 @@ import {  NavController, PopoverController, ToastController, NavParams } from '@
 @Component({
   template: `
   <ion-list>
-    <ion-item (click)="duplicate()">Duplicar</ion-item>
-    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.serviceForm.value.state=='CONFIRMED'&& !navParams.data.doc.serviceForm.value.payments.length">Desconfirmar</ion-item>
-    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.serviceForm.value.state=='SCHEDULED' || navParams.data.doc.serviceForm.value.state=='STARTED'">Volver a Borrador</ion-item>
-    <ion-item (click)="share()">Compartir</ion-item>
-    <ion-item (click)="print()">Imprimir</ion-item>
+    <ion-item (click)="duplicate()">{{'DUPLICATE'|translate}}</ion-item>
+    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.serviceForm.value.state=='CONFIRMED'&& !navParams.data.doc.serviceForm.value.payments.length">{{'UNCONFIRM'|translate}}</ion-item>
+    <ion-item (click)="cancel()" *ngIf="navParams.data.doc.serviceForm.value.state=='SCHEDULED' || navParams.data.doc.serviceForm.value.state=='STARTED'">{{'BACK_TO_QUOTATION'|translate}}</ion-item>
+    <ion-item (click)="share()">{{'SHARE'|translate}}</ion-item>
+    <ion-item (click)="print()">{{'PRINT'|translate}}</ion-item>
   </ion-list>
   `
 })
@@ -26,7 +26,7 @@ export class ServicePopover {
     async duplicate(){
       this.navParams.data.doc._id = '';
       this.navParams.data.doc.serviceForm.patchValue({
-        state: 'DRAFT',
+        state: 'QUOTATION',
         _id: '',
         code: '',
         residual: this.navParams.data.doc.serviceForm.value.total,

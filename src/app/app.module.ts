@@ -17,6 +17,8 @@ import { IonicStorageModule } from '@ionic/storage';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
+
+import { SocialSharing} from '@ionic-native/social-sharing/ngx';
 import { LOCALE_ID } from '@angular/core';
 import es from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
@@ -158,6 +160,7 @@ import { environment } from '../environments/environment';
     File,
     StatusBar,
     SplashScreen,
+    SocialSharing,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

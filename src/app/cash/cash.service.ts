@@ -10,6 +10,8 @@ import { FormatService } from '../services/format.service';
 })
 export class CashService {
 
+  lastMove = "z";
+
   constructor(
     public pouchdbService: PouchdbService,
     public configService: ConfigService,
@@ -22,17 +24,28 @@ export class CashService {
     return new Promise((resolve, reject)=>{
       let payableList = [];
       this.pouchdbService.getView(
-        'stock/Caixas', 5,
-        [doc_id, null],
-        [doc_id, "0"]
+        'Informes/CaixasPagina', 6,
+        [doc_id+"z"],
+        [doc_id],
+        true,
+        true,
+        15,
+        undefined,
+        false,
+        undefined,
+        true,
       ).then(async (planneds: any[]) => {
+        console.log("planneds", planneds);
+        if (planneds.length){
+          this.lastMove = planneds[planneds.length - 1].key[0].split(doc_id)[1];
+        }
         let promise_ids = [];
         let pts = [];
         let getList = [];
         planneds.forEach(item => {
-          if (!item.key[2] || item.key[3] == doc_id){
+          if (!item.key[3] || item.key[4] == doc_id){
             pts.push(item);
-            getList.push(item.key && item.key[4]);
+            getList.push(item.key && item.key[5]);
           }
         })
         getList.push(doc_id);
@@ -67,17 +80,17 @@ export class CashService {
           for(let i=0;i<pts.length;i++){
             if (cash.type == 'bank'){
               if (cashMoves[i].doc.state == 'WAITING'){
-                if (pts[i] && pts[i].key && docDict[pts[i].key[4]]){
-                  cash.waiting.unshift(pts[i] && pts[i].key && docDict[pts[i].key[4]]);
+                if (pts[i] && pts[i].key && docDict[pts[i].key[5]]){
+                  cash.waiting.unshift(pts[i] && pts[i].key && docDict[pts[i].key[5]]);
                 }
               } else {
-                if (pts[i] && pts[i].key && docDict[pts[i].key[4]]){
-                  cash.moves.unshift(pts[i] && pts[i].key && docDict[pts[i].key[4]]);
+                if (pts[i] && pts[i].key && docDict[pts[i].key[5]]){
+                  cash.moves.unshift(pts[i] && pts[i].key && docDict[pts[i].key[5]]);
                 }
               }
             } else {
-              if (pts[i] && pts[i].key && docDict[pts[i].key[4]]){
-                cash.moves.unshift(pts[i] && pts[i].key && docDict[pts[i].key[4]]);
+              if (pts[i] && pts[i].key && docDict[pts[i].key[5]]){
+                cash.moves.unshift(pts[i] && pts[i].key && docDict[pts[i].key[5]]);
               }
             }
           }
@@ -93,6 +106,61 @@ export class CashService {
         })
       });
     });
+  }
+
+  loadMoves(doc_id, cash){
+    return new Promise((resolve, reject)=>{
+    this.pouchdbService.getView(
+      'Informes/CaixasPagina', 6,
+      [doc_id+this.lastMove],
+      [doc_id],
+      true,
+      true,
+      15,
+      undefined,
+      false,
+      undefined,
+      true,
+    ).then(async (planneds: any[]) => {
+      if (planneds.length){
+        this.lastMove = planneds[planneds.length - 1].key[0].split(doc_id)[1];
+      }
+      let promise_ids = [];
+      let pts = [];
+      let getList = [];
+      planneds.forEach(item => {
+        if (!item.key[3] || item.key[4] == doc_id){
+          pts.push(item);
+          getList.push(item.key && item.key[5]);
+        }
+      })
+      getList.push(doc_id);
+      this.pouchdbService.getList(getList).then(async (cashMoves:any) => {
+        let docDict = {}
+        cashMoves.forEach(item=>{
+          docDict[item.id] = item.doc;
+        })
+        for(let i=0;i<pts.length;i++){
+          if (cash.type == 'bank'){
+            if (cashMoves[i].doc.state == 'WAITING'){
+              // if (pts[i] && pts[i].key && docDict[pts[i].key[5]]){
+              //   cash.waiting.unshift(pts[i] && pts[i].key && docDict[pts[i].key[5]]);
+              // }
+            } else {
+              if (pts[i] && pts[i].key && docDict[pts[i].key[5]]){
+                cash.moves.unshift(pts[i] && pts[i].key && docDict[pts[i].key[5]]);
+              }
+            }
+          } else {
+            if (pts[i] && pts[i].key && docDict[pts[i].key[5]]){
+              cash.moves.unshift(pts[i] && pts[i].key && docDict[pts[i].key[5]]);
+            }
+          }
+        }
+        resolve(true)
+      })
+    })
+    })
   }
 
   createCash(cash){

@@ -1,11 +1,11 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <!-- <ion-back-button defaultHref="/cash-list"></ion-back-button> -->
       <ion-back-button (click)="this.navCtrl.navigateBack('/tabs/cash-list')"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Movimiento"
+      placeholder="{{ 'SEARCH_CASH_MOVE' | translate }}"
       [(ngModel)]="searchTerm"
       (ionChange)="setFilteredItems()">
     </ion-searchbar>
@@ -20,49 +20,49 @@
 
 </ion-header>
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of cashMoveList">
-    <ion-item no-padding (click)="selectCashMove(item)" style="margin-bottom: 0px; margin-top:0px;">
+    <ion-item class="ion-no-padding" (click)="selectCashMove(item)" style="margin-bottom: 0px; margin-top:0px;">
       <ion-card class="list-card" style="border-radius: 5px;">
-        <ion-row no-padding>
-          <ion-col no-padding>
+        <ion-row class="ion-no-padding">
+          <ion-col class="ion-no-padding">
             <h3 class="item-title"><b>{{ item.contact_name }}</b></h3>
           </ion-col>
         </ion-row>
-   <ion-row no-padding class="content-row one-line">
-      <ion-col no-padding width-25 class="schedule-date">
+   <ion-row class="ion-no-padding content-row one-line">
+      <ion-col class="ion-no-padding" class="schedule-date">
         <h3 class="schedule-month" style="font-size:15px;margin-left:5px">{{item.date|date: 'dd/MM/yyyy'}}</h3>
         <h3 class="item-title" style="font-size:15px;">{{item.date|date: 'HH:mm:ss'}}</h3>
       </ion-col>
-      <ion-col no-padding width-35  >
-        <ion-row no-padding>
+      <ion-col class="ion-no-padding"  >
+        <ion-row class="ion-no-padding">
           <ion-col class="item-name" style="white-space: normal;">
             {{item.name}}
           </ion-col>
         </ion-row>
 
       </ion-col>
-      <ion-col no-padding width-59 class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+      <ion-col class="ion-no-padding" class="item-icon" class="ion-align-self-center" style="text-align: right;margin-right: 1em;">
         <h2 *ngIf="item.amount > 0" class="list-big-number amount" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
         <h2 *ngIf="item.amount <= 0" class="list-big-number amount" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
       </ion-col>
     </ion-row>
 
-    <ion-row no-padding
+    <ion-row class="ion-no-padding"
       [class.paid]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] == 'cash'"
       [class.due]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] != 'cash'"
       [class.quotation]="item.accountFrom_id.split('.')[1] == 'cash' && item.accountTo_id.split('.')[1] == 'cash'"
       [class.confirmed]="item.accountFrom_id.split('.')[1] != 'cash' && item.accountTo_id.split('.')[1] != 'cash'">
-      <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+      <ion-col class="ion-no-padding" style="text-align: center;border-radius: 4px;">
         {{ item.accountFrom_name | translate}}
       </ion-col>
-      <ion-col no-padding width-10 class="item-icon">
+      <ion-col class="ion-no-padding" class="item-icon">
         <ion-icon name="arrow-forward"></ion-icon>
       </ion-col>
-      <ion-col no-padding width-45 style="text-align: center;border-radius: 4px;">
+      <ion-col class="ion-no-padding" style="text-align: center;border-radius: 4px;">
         {{ item.accountTo_name | translate}}
       </ion-col>
     </ion-row>
@@ -71,7 +71,7 @@
       <ion-item-options>
         <ion-item-option (click)="deleteCashMove(item)"
         *ngIf="!item.fixed && !item.close_id">
-          Borrar
+          {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>

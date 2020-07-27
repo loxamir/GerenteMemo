@@ -1,10 +1,10 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/cash-list"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Cheque"
+      placeholder="{{ 'SEARCH_CHECK' | translate }}"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionChange)="setFilteredItems()">
@@ -15,12 +15,12 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of checks">
-      <ion-item no-padding style="margin-bottom: 0px; margin-top:0px;">
+      <ion-item class="ion-no-padding" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
           <ion-row>
             <ion-col (click)="selectCheck(item)">
@@ -30,8 +30,8 @@
                   <!-- <h3 class="item-title"><b>{{ item.state }}</b></h3> -->
                 </ion-col>
               </ion-row>
-             <ion-row no-padding class="content-row one-line">
-                <ion-col no-padding class="item-icon" align-self-center style="text-align: right;margin-right: 1em;">
+             <ion-row class="ion-no-padding content-row one-line">
+                <ion-col class="ion-no-padding item-icon" class="ion-align-self-center" style="text-align: right;margin-right: 1em;">
                   <!-- <h2 *ngIf="item.amount > 0" class="list-big-number" style="color: green;">$ {{item.amount| number:'1.'+currency_precision}}</h2>
                   <h2 *ngIf="item.amount <= 0" class="list-big-number" style="color: red;">$ {{item.amount| number:'1.'+currency_precision}}</h2> -->
                   <h2 class="list-big-number" style="color: green;">{{currencies[company_currency_id] && currencies[company_currency_id].symbol}} {{item.amount| number:'1.'+currency_precision}}</h2>
@@ -45,8 +45,8 @@
               <ion-icon name="open" class="open-item-arrow"></ion-icon>
             </ion-col>
           </ion-row>
-          <ion-row no-padding [class.quotation]="item.state != 'REJECTED' && item.state != 'RECEIVED'" [class.paid]="item.state == 'RECEIVED'" [class.due]="item.state == 'REJECTED'">
-            <ion-col no-padding style="text-align: center;border-radius: 4px;">
+          <ion-row class="ion-no-padding" [class.quotation]="item.state != 'REJECTED' && item.state != 'RECEIVED'" [class.paid]="item.state == 'RECEIVED'" [class.due]="item.state == 'REJECTED'">
+            <ion-col class="ion-no-padding" style="text-align: center;border-radius: 4px;">
               {{ item.state | translate}}
             </ion-col>
           </ion-row>
@@ -57,7 +57,7 @@
       <ion-item-options>
         <ion-item-option (click)="deleteCheck(item)"
         *ngIf="item.state=='QUOTATION'">
-          Borrar
+          {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>

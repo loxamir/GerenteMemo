@@ -1,12 +1,12 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <!-- <ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </ion-button> -->
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/production"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ 'Tiempo Trabajado' | translate }}</ion-title>
+    <ion-title>{{ 'TIME_WORKED' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -43,13 +43,13 @@
       <!-- <ion-item class="user-preferences-row" (click)="selectResponsible()">
         <span class="radio-tags-label">{{'Responsable' | translate}}</span>
         <ion-list>
-          <h3 class="service-value">{{workForm.value.responsible.name || 'Selecionar'}}</h3>
+          <h3 class="service-value">{{workForm.value.responsible.name || 'SELECT'|translate}}</h3>
         </ion-list>
       </ion-item> -->
       <ion-item class="field-100"
-      no-padding
+      class="ion-no-padding"
       (click)="selectResponsible()">
-        <h4 class="field-label">{{'Responsable' | translate}}</h4>
+        <h4 class="field-label">{{'RESPONSABLE' | translate}}</h4>
         <h4 class="field-value">{{workForm.value.responsible && workForm.value.responsible.name || 'Nadie'}}</h4>
       </ion-item>
       <!-- <ion-card class="list-card"> -->
@@ -71,7 +71,7 @@
 <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="showNextButton()">
   <ion-button (click)="goNextStep()"  class="next-button">
     <ion-icon name="fastforward"> </ion-icon>
-    Proximo
+    {{'NEXT'|translate}}
   </ion-button>
 </ion-fab>
 
@@ -79,15 +79,15 @@
   <ion-button (click)="discard()" color="danger" class="discard-button">
     <ion-icon name="backspace" *ngIf="workForm.dirty"> </ion-icon>
     <ion-icon name="arrow-back" *ngIf="!workForm.dirty"> </ion-icon>
-    <span *ngIf="workForm.dirty">Descartar</span>
-    <span *ngIf="!workForm.dirty">Volver</span>
+    <span *ngIf="workForm.dirty">{{ 'DISCARD'| translate }}</span>
+    <span *ngIf="!workForm.dirty">{{ 'GO_BACK'| translate }}</span>
   </ion-button>
 </ion-fab>
 
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="workForm.dirty">
   <ion-button (click)="buttonSave()"  color="success" class="save-button">
     <ion-icon name="save"> </ion-icon>
-    Guardar
+    {{ 'SAVE'| translate }}
   </ion-button>
 </ion-fab>
 <div style="height: 100px;">

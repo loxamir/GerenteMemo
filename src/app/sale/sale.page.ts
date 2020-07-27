@@ -51,7 +51,7 @@ export class SalePage implements OnInit {
   @ViewChild('corpo', { static: true }) corpo;
   @HostListener('document:keypress', ['$event'])
     async handleKeyboardEvent(event: KeyboardEvent) {
-      if (this.listenBarcode && this.saleForm.value.state == 'QUOTATION'){
+      if (this.listenBarcode && this.saleForm.value.state == 'QUOTATION' && document.activeElement.tagName != "TEXTAREA"){
         this.corpo.setFocus();
         this.corpo.value = "";
         let timeStamp = event.timeStamp - this.timeStamp;
@@ -116,6 +116,7 @@ export class SalePage implements OnInit {
     return;
     currency_precision = 2;
     confirming = false;
+    user: any = {};
 
     constructor(
       public navCtrl: NavController,
@@ -149,9 +150,9 @@ export class SalePage implements OnInit {
       // public file: File,
     ) {
       this.today = new Date().toISOString();
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       this.avoidAlertMessage = false;
@@ -195,6 +196,10 @@ export class SalePage implements OnInit {
       });
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
+      this.user = (await this.pouchdbService.getUser());
       let config:any = (await this.pouchdbService.getDoc('config.profile'));
       this.currency_precision = config.currency_precision;
       if (config.default_contact_id){
@@ -255,6 +260,9 @@ export class SalePage implements OnInit {
     }
 
     async selectCashMove(item) {
+      if (this.user.cancelSale == false){
+        return
+      }
       this.listenBarcode = false;
       this.events.unsubscribe('open-cash-move');
       this.events.subscribe('open-cash-move', (data) => {
@@ -479,10 +487,10 @@ export class SalePage implements OnInit {
     // async ionViewCanLeave() {
     //     if(this.saleForm.dirty && ! this.avoidAlertMessage) {
     //         let alertPopup = await this.alertCtrl.create({
-    //             header: 'Descartar',
-    //             message: '¿Deseas salir sin guardar?',
+    //             header: this.translate.instant('DISCARD'),
+    //             message: this.translate.instant('SURE_DONT_SAVE'),
     //             buttons: [{
-    //                     text: 'Si',
+    //                     text: this.translate.instant('YES'),
     //                     handler: () => {
     //                         // alertPopup.dismiss().then(() => {
     //                             this.exitPage();
@@ -490,7 +498,7 @@ export class SalePage implements OnInit {
     //                     }
     //                 },
     //                 {
-    //                     text: 'No',
+    //                     text: this.translate.instant('NO'),
     //                     handler: () => {
     //                         // need to do something if the user stays?
     //                     }
@@ -608,16 +616,6 @@ export class SalePage implements OnInit {
           });
         }
       })
-    }
-
-    setLanguage(lang: LanguageModel){
-      let language_to_set = this.translate.getDefaultLang();
-
-      if(lang){
-        language_to_set = lang.code;
-      }
-      this.translate.setDefaultLang(language_to_set);
-      this.translate.use(language_to_set);
     }
 
     async deleteItem(slidingItem, item){
@@ -787,8 +785,9 @@ export class SalePage implements OnInit {
     async editItemPrice(item){
       if (this.saleForm.value.state=='QUOTATION'){
         let prompt = await this.alertCtrl.create({
-          header: 'Precio del Producto',
-          message: 'Cual es el precio de este producto?',
+          header: this.translate.instant('PRODUCT_PRICE'),
+          // message: 'Cual es el precio de este producto?',
+          message: this.translate.instant('WHAT_PRODUCT_PRICE'),
           inputs: [
             {
               type: 'number',
@@ -799,10 +798,10 @@ export class SalePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.price = data.price;
                 this.recomputeValues();
@@ -820,8 +819,8 @@ export class SalePage implements OnInit {
       if (this.saleForm.value.state=='QUOTATION'){
         this.listenBarcode = false;
         let prompt = await this.alertCtrl.create({
-          header: 'Cantidad del Producto',
-          message: 'Cual es el Cantidad de este producto?',
+          header: this.translate.instant('PRODUCT_QUANTITY'),
+          message: this.translate.instant('WHAT_PRODUCT_QUANTITY'),
           inputs: [
             {
               type: 'number',
@@ -832,10 +831,10 @@ export class SalePage implements OnInit {
           ],
           buttons: [
             {
-              text: 'Cancel'
+              text: this.translate.instant('CANCEL'),
             },
             {
-              text: 'Confirmar',
+              text: this.translate.instant('CONFIRM'),
               handler: data => {
                 item.quantity = data.quantity;
                 this.recomputeValues();
@@ -879,7 +878,7 @@ export class SalePage implements OnInit {
             state: 'CONFIRMED',
             planned: planned
           })
-          this.buttonSave();
+          // this.buttonSave();
         });
         this.events.unsubscribe('cancel-receipt');
       });
@@ -1046,17 +1045,18 @@ export class SalePage implements OnInit {
 
     async saleCancel(){
       let prompt = await this.alertCtrl.create({
-        header: 'Estas seguro que deseas Cancelar la venta?',
-        message: 'Al cancelar la venta todos los registros asociados serán borrados',
+        header: this.translate.instant('SURE_CANCEL_SALE'),
+        // message: 'Al cancelar la Compra todos los registros asociados serán borrados',
+        message: this.translate.instant('WARNING_CANCEL_SALE'),
         buttons: [
           {
-            text: 'No',
+            text: this.translate.instant('NO'),
             handler: data => {
               //console.log("Cancelar");
             }
           },
           {
-            text: 'Si',
+            text: this.translate.instant('YES'),
             handler: data => {
               //console.log("Confirmar");
               this.saleForm.value.items.forEach((item) => {
@@ -1118,14 +1118,15 @@ export class SalePage implements OnInit {
           });
           this.recomputeValues();
           this.avoidAlertMessage = false;
-          this.buttonSave();
+          // this.buttonSave();
           this.events.unsubscribe('create-receipt');
           // profileModal.dismiss();
         });
         let plannedItems = [];
-        this.saleForm.value.planned.forEach(planned => {
+        await this.formatService.asyncForEach(this.saleForm.value.planned, async (planned: any) => {
           if (planned.amount_residual && planned.amount_residual != 0){
-            plannedItems.push(planned);
+            let cashMove:any = await this.pouchdbService.getDoc(planned._id);
+            plannedItems.push(cashMove);
           }
         })
 
@@ -1489,7 +1490,7 @@ export class SalePage implements OnInit {
           // console.log("ticket", ticket);
           // Print to bluetooth printer
           let toast = await this.toastCtrl.create({
-          message: "Imprimiendo...",
+          message: this.translate.instant('PRINTING...'),
           duration: 3000
         });
         //console.log("ticket", ticket);
@@ -1690,7 +1691,7 @@ export class SalePage implements OnInit {
         }
       }
       let toast = await this.toastCtrl.create({
-        message: "Imprimiendo...",
+        message: this.translate.instant('PRINTING...'),
         duration: 3000
       });
       await toast.present();
@@ -1865,10 +1866,11 @@ export class SalePage implements OnInit {
     async canDeactivate() {
         if(this.saleForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+              header: this.translate.instant('DISCARD'),
+              // message: this.translate.instant('SURE_DONT_SAVE'),
+              message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -1876,7 +1878,7 @@ export class SalePage implements OnInit {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }

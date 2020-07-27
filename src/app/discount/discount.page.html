@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-title>{{ 'DISCOUNT'| translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -8,26 +8,26 @@
 
   <form [formGroup]="discountForm">
     <ion-row>
-      <ion-item no-padding class="field-100">
+      <ion-item class="ion-no-padding field-100">
         <h4 class="field-label">{{'AMOUNT_ORIGINAL' | translate}}</h4>
         <h4 class="field-value"
         style="color:blue">$ {{amount_original|number:'1.'+currency_precision}}</h4>
       </ion-item>
-      <ion-item no-padding class="field-50">
+      <ion-item class="ion-no-padding field-50">
         <ion-label position="floating">{{'DISCOUNT_PERCENT' | translate}}</ion-label>
         <ion-input type="number"
         (ngModelChange)="changedPercent()"
         #discount_percent
         formControlName="discount_percent"></ion-input>
       </ion-item>
-      <ion-item no-padding class="field-50">
+      <ion-item class="ion-no-padding field-50">
         <ion-label position="floating">{{'DISCOUNT_AMOUNT' | translate}}</ion-label>
         <ion-input type="number"
         #discount_amount
         (ngModelChange)="changedAmount()"
         formControlName="discount_amount"></ion-input>
       </ion-item>
-      <ion-item no-padding class="field-100">
+      <ion-item class="ion-no-padding field-100">
         <ion-label position="floating">{{'NEW_AMOUNT' | translate}}</ion-label>
         <ion-input type="number"
         #new_amount
@@ -36,7 +36,7 @@
       </ion-item>
       <ion-item
       *ngIf="showProduct"
-       no-padding
+       class="ion-no-padding"
        class="field-100">
          <ion-label>{{'Agregar como Producto' | translate}}</ion-label>
          <ion-toggle formControlName="discountProduct"></ion-toggle>
@@ -48,8 +48,8 @@
     <ion-button (click)="discard()" color="danger">
       <ion-icon name="backspace" *ngIf="discountForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!discountForm.dirty"> </ion-icon>
-      <span *ngIf="discountForm.dirty">Descartar</span>
-      <span *ngIf="!discountForm.dirty">Volver</span>
+      <span *ngIf="discountForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!discountForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="discountForm.dirty">

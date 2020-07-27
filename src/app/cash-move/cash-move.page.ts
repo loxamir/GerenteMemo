@@ -76,9 +76,6 @@ export class CashMovePage implements OnInit {
     public configService: ConfigService,
     public alertCtrl: AlertController,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
     var foo = { foo: true };
@@ -127,6 +124,9 @@ export class CashMovePage implements OnInit {
       write_user: new FormControl(''),
       write_time: new FormControl(''),
     });
+    let language: any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     if (this.accountTo && (this.accountTo['_id'].split('.')[1] == 'cash' || this.accountTo['_id'].split('.')[1] == 'bank' || this.accountTo['_id'].split('.')[1] == 'check')) {
@@ -159,7 +159,7 @@ export class CashMovePage implements OnInit {
       this.cashMoveService.getCashMove(this._id).then((data) => {
         this.cashMoveForm.patchValue(data);
         this.cash_move_currency_id = data.currency_id || this.company_currency_id;
-        if (data.close_id){
+        if (data.close_id) {
           this.cashMoveForm.disable();
         }
         this.loading.dismiss();
@@ -267,12 +267,12 @@ export class CashMovePage implements OnInit {
         //   message: 'Estas seguro que deseas confirmar el movimiento?',
         //   buttons: [
         //     {
-        //       text: 'No',
+        //       text: this.translate.instant('NO'),
         //       handler: data => {
         //       }
         //     },
         //     {
-        //       text: 'Si',
+        //       text: this.translate.instant('YES'),
         //       handler: data => {
         //         // this.addTravel();
         //         this.confirmCashMove();
@@ -306,7 +306,7 @@ export class CashMovePage implements OnInit {
 
   buttonSave() {
     return new Promise(async resolve => {
-      if (!this.cashMoveForm.value.close_id){
+      if (!this.cashMoveForm.value.close_id) {
         if (this.cashMoveForm.value.currency && this.cashMoveForm.value.currency._id != this.company_currency_id) {
           this.cashMoveForm.patchValue({
             "currency_residual": this.cashMoveForm.value.currency_amount
@@ -490,7 +490,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectCheck() {
-    if (!this.cashMoveForm.value.close_id){
+    if (!this.cashMoveForm.value.close_id) {
       return new Promise(async resolve => {
         let profileModal = await this.modalCtrl.create({
           component: CheckListPage,
@@ -517,7 +517,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectCurrency() {
-    if (!this.cashMoveForm.value.close_id){
+    if (!this.cashMoveForm.value.close_id) {
       return new Promise(async resolve => {
         let profileModal = await this.modalCtrl.create({
           component: CurrencyListPage,
@@ -567,7 +567,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectAccountFrom() {
-    if (!this.cashMoveForm.value.close_id){
+    if (!this.cashMoveForm.value.close_id) {
       return new Promise(async resolve => {
         let profileModal = await this.modalCtrl.create({
           component: AccountListPage,
@@ -604,7 +604,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectAccountTo() {
-    if (!this.cashMoveForm.value.close_id){
+    if (!this.cashMoveForm.value.close_id) {
       return new Promise(async resolve => {
         let profileModal = await this.modalCtrl.create({
           component: AccountListPage,
@@ -641,7 +641,7 @@ export class CashMovePage implements OnInit {
   }
 
   selectContact() {
-    if (!this.cashMoveForm.value.close_id){
+    if (!this.cashMoveForm.value.close_id) {
       return new Promise(async resolve => {
         let profileModal = await this.modalCtrl.create({
           component: ContactListPage,
@@ -738,16 +738,16 @@ export class CashMovePage implements OnInit {
   async canDeactivate() {
     if (this.cashMoveForm.dirty) {
       let alertPopup = await this.alertCtrl.create({
-        header: 'Descartar',
-        message: '¿Deseas salir sin guardar?',
+        header: this.translate.instant('DISCARD'),
+        message: this.translate.instant('SURE_DONT_SAVE'),
         buttons: [{
-          text: 'Si',
+          text: this.translate.instant('YES'),
           handler: () => {
             this.exitPage();
           }
         },
         {
-          text: 'No',
+          text: this.translate.instant('NO'),
           handler: () => { }
         }]
       });

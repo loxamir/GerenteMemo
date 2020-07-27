@@ -4,7 +4,8 @@ import {  NavController, Events, PopoverController, NavParams } from '@ionic/ang
 @Component({
   template: `
   <ion-list>
-    <ion-item (click)="logout()">Salir</ion-item>
+    <ion-item (click)="logout()">{{'EXIT'|translate}}</ion-item>
+    <ion-item (click)="changeLanguage()">{{'CHANGE_LANGUAGE'|translate}}</ion-item>
   </ion-list>
   `
 })
@@ -16,6 +17,11 @@ export class LoginPopover {
     public navCtrl: NavController,
   ) {
     this.pop = navParams.get('popoverController');
+  }
+
+  changeLanguage(){
+    this.navParams.data.doc.changeLanguage();
+    this.pop.dismiss();
   }
 
   logout() {

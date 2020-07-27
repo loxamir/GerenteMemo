@@ -1,10 +1,10 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/cash-list"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
-      placeholder="Buscar Categoria"
+      placeholder="{{ 'SEARCH_CATEGORY' | translate }}"
       [(ngModel)]="searchTerm"
       (ionChange)="setFilteredItems()">
     </ion-searchbar>
@@ -14,19 +14,19 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines>
     <ion-item-sliding class="list-item" *ngFor="let item of accountCategorys">
-      <ion-item no-padding >
+      <ion-item class="ion-no-padding">
         <ion-card class="list-card">
-      <ion-row no-padding class="content-row one-line">
-        <ion-col no-padding class="item-content" (click)="selectAccountCategory(item)">
+      <ion-row class="ion-no-padding content-row one-line">
+        <ion-col class="ion-no-padding item-content" (click)="selectAccountCategory(item)">
           <ion-row>
             <h3 class="item-title"><b>{{item.name}}</b></h3>
           </ion-row>
-          <ion-row no-padding class="content-row one-line">
+          <ion-row class="ion-no-padding content-row one-line">
             <ion-col class="item-content" style="white-space: normal;">
               {{item.note}}
             </ion-col>
@@ -41,7 +41,7 @@
       <ion-item-options>
         <ion-item-option (click)="deleteAccountCategory(item)"
         *ngIf="!item.fixed">
-          Borrar
+          {{ 'DELETE'| translate }}
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>

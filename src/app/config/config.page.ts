@@ -59,9 +59,9 @@ export class ConfigPage implements OnInit {
     public restProvider: RestProvider,
     public pouchdbService: PouchdbService,
   ) {
-    this.languages = this.languageService.getLanguages();
-    this.translate.setDefaultLang('es');
-    this.translate.use('es');
+
+
+
     this._id = this.route.snapshot.paramMap.get('_id');
     this.select = this.route.snapshot.paramMap.get('select');
   }
@@ -86,8 +86,9 @@ export class ConfigPage implements OnInit {
       email: ['', Validators.required],
       city: [''],
       country: [''],
+      whatsapp: '',
       state: [''],
-      // tab: ['profile'],
+      bg_color: "blue",
       invoice_sequence: [''],
       sale_sequence: [1],
       service_sequence: [1],
@@ -97,16 +98,22 @@ export class ConfigPage implements OnInit {
       product_sequence: [1],
       purchase_sequence: [1],
       asset_sequence: [1],
+      _attachments: {},
       contact_sequence: [1],
       cash_move_sequence: [1],
       stock_move_sequence: [1],
       currency_precision: 2,
+      sale_margin: 100,
+      round_factor: 500,
       invoice_template: [''],
       invoicePrint: [{}],
       ticketPrint: [{}],
       users: [],
       _id: [''],
     });
+    let language:any = await this.languageService.getDefaultLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
     this.loading = await this.loadingCtrl.create({});
     await this.loading.present();
     this.configService.getConfig().then((data) => {
@@ -528,10 +535,10 @@ export class ConfigPage implements OnInit {
   async canDeactivate() {
       if(this.configForm.dirty) {
           let alertPopup = await this.alertCtrl.create({
-              header: 'Descartar',
-              message: '¿Deseas salir sin guardar?',
+              header: this.translate.instant('DISCARD'),
+              message: this.translate.instant('SURE_DONT_SAVE'),
               buttons: [{
-                      text: 'Si',
+                      text: this.translate.instant('YES'),
                       handler: () => {
                           // alertPopup.dismiss().then(() => {
                               this.exitPage();
@@ -539,7 +546,7 @@ export class ConfigPage implements OnInit {
                       }
                   },
                   {
-                      text: 'No',
+                      text: this.translate.instant('NO'),
                       handler: () => {
                           // need to do something if the user stays?
                       }
@@ -609,4 +616,47 @@ export class ConfigPage implements OnInit {
       await callback(array[index], index, array);
     }
   }
+
+  async fixSync(){
+    // Let us open our database
+    let database = "_pouch_"+this.pouchdbService.getDatabaseName();
+    console.log("database used", database)
+    const DBOpenRequest = window.indexedDB.open(database, 5);
+
+    DBOpenRequest.onerror = function(event) {
+      console.log('Error loading database', event);
+    };
+
+    DBOpenRequest.onsuccess = (event)=> {
+
+      // store the result of opening the database in the db variable. This is used a lot below
+      let db = DBOpenRequest.result;
+      console.log('Database initialised', db);
+
+      // Run the displayData() function to populate the task list with all the to-do list data already in the IDB
+      this.displayData(db);
+    };
+  }
+
+  displayData(db) {
+    let objectStore = db.transaction(['by-sequence'], "readwrite").objectStore('by-sequence');
+    objectStore.openCursor().onsuccess = function(event) {
+      let cursor = event.target.result;
+        // if there is still another cursor to go, keep runing this code
+        if(cursor) {
+          // console.log("cursor", cursor.value._attachments);
+          if (!cursor.value._attachments){
+            if ( cursor.value._attachments === undefined){
+              // console.log("defined", cursor.value._attachments);
+            } else {
+              console.log("detected", cursor);
+              const updateData = cursor.value;
+              updateData._attachments = undefined;
+              cursor.update(updateData);
+            }
+          }
+          cursor.continue();
+        }
+      }
+    }
 }

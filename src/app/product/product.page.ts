@@ -43,6 +43,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     opened: boolean = false;
     select;
     barcode = '';
+    user: any = {};
+    config: any = {};
+    loaded: boolean = false;
 
     constructor(
       public navCtrl: NavController,
@@ -66,9 +69,9 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       public stockMoveService: StockMoveService,
       public cashMoveService: CashMoveService,
     ) {
-      this.languages = this.languageService.getLanguages();
-      this.translate.setDefaultLang('es');
-      this.translate.use('es');
+
+
+
       this._id = this.route.snapshot.paramMap.get('_id');
       this.select = this.route.snapshot.paramMap.get('select');
       if (this.route.snapshot.paramMap.get('_id')){
@@ -124,22 +127,46 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         fixed: new FormControl(false),
         _id: new FormControl(''),
         create_user: new FormControl(''),
+        _attachments: {},
+        images: [],
         create_time: new FormControl(''),
         write_user: new FormControl(''),
         write_time: new FormControl(''),
       });
+      let language:any = await this.languageService.getDefaultLanguage();
+      this.translate.setDefaultLang(language);
+      this.translate.use(language);
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
+      this.user = (await this.pouchdbService.getUser());
+      this.config = await this.pouchdbService.getDoc("config.profile")
+      if (this.user.editProduct == false){
+        let prompt = await this.alertCtrl.create({
+          header: 'Sin Permiso',
+          message: 'No tienes permiso para editar productos',
+          buttons: [
+            {
+              text: 'Ok'
+            }
+          ]
+        });
+        prompt.present();
+        await this.loading.dismiss();
+        this.exitPage();
+        return;
+      }
       if (this._id){
-        this.productService.getProduct(this._id).then((data) => {
-          this.productForm.patchValue(data);
+        this.productService.getProduct(this._id).then(async (data) => {
+          await this.productForm.patchValue(data);
           this.theoreticalStock = data.stock;
-          this.productForm.markAsPristine();
-          this.loading.dismiss();
+          await this.productForm.markAsPristine();
+          await this.loading.dismiss();
+          this.loaded = true;
         });
       } else {
         this.getDefaultCategory();
-        this.loading.dismiss();
+        await this.loading.dismiss();
+        this.loaded = true;
       }
     }
 
@@ -203,12 +230,12 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
         //     message: 'Estas seguro que deseas confirmar el movimiento?',
         //     buttons: [
         //       {
-        //         text: 'No',
+        //         text: this.translate.instant('NO'),
         //         handler: data => {
         //         }
         //       },
         //       {
-        //         text: 'Si',
+        //         text: this.translate.instant('YES'),
         //         handler: data => {
         //           // this.addTravel();
         //           this.confirmCashMove();
@@ -473,10 +500,10 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
     async canDeactivate() {
         if(this.productForm.dirty) {
             let alertPopup = await this.alertCtrl.create({
-                header: 'Descartar',
-                message: '¿Deseas salir sin guardar?',
+                header: this.translate.instant('DISCARD'),
+                message: this.translate.instant('SURE_DONT_SAVE'),
                 buttons: [{
-                        text: 'Si',
+                        text: this.translate.instant('YES'),
                         handler: () => {
                             // alertPopup.dismiss().then(() => {
                                 this.exitPage();
@@ -484,7 +511,7 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
                         }
                     },
                     {
-                        text: 'No',
+                        text: this.translate.instant('NO'),
                         handler: () => {
                             // need to do something if the user stays?
                         }
@@ -507,6 +534,16 @@ export class ProductPage implements OnInit, CanDeactivate<boolean> {
       } else {
         this.productForm.markAsPristine();
         this.navCtrl.navigateBack('/product-list');
+      }
+    }
+
+    compute_sale_price(){
+      if (this.config.sale_margin && this.config.round_factor && this.loaded && this.productForm.value.cost){
+        let cost = this.productForm.value.cost;
+        let price = Math.round(cost*(1+this.config.sale_margin/100)/(this.config.round_factor))*this.config.round_factor;
+        this.productForm.patchValue({
+          price: price
+        })
       }
     }
 

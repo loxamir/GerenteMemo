@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/title-list"></ion-back-button>
     </ion-buttons>
@@ -38,15 +38,15 @@
     <ion-button (click)="discard()" color="danger" class="discard-button">
       <ion-icon name="backspace" *ngIf="titleForm.dirty"> </ion-icon>
       <ion-icon name="arrow-back" *ngIf="!titleForm.dirty"> </ion-icon>
-      <span *ngIf="titleForm.dirty">Descartar</span>
-      <span *ngIf="!titleForm.dirty">Volver</span>
+      <span *ngIf="titleForm.dirty">{{ 'DISCARD'| translate }}</span>
+      <span *ngIf="!titleForm.dirty">{{ 'GO_BACK'| translate }}</span>
     </ion-button>
   </ion-fab>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="titleForm.dirty">
     <ion-button (click)="buttonSave()"  color="success" class="save-button">
       <ion-icon name="save"> </ion-icon>
-      Guardar
+      {{ 'SAVE'| translate }}
     </ion-button>
   </ion-fab>
   <div style="height: 100px;">

@@ -1,27 +1,27 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/sale-list"></ion-back-button>
     </ion-buttons>
     <ion-searchbar
       *ngIf="this.signal=='+'"
-      placeholder="Buscar Contas a Cobrar"
+      placeholder="{{ 'SEARCH_RECEIVABLE_ACCOUNT' | translate }}"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <ion-searchbar
       *ngIf="this.signal=='-'"
-      placeholder="Buscar Contas a Pagar"
+      placeholder="{{ 'SEARCH_PAYMENT_ACCOUNT' | translate }}"
       [(ngModel)]="searchTerm"
       #searchbar
       (ionChange)="setFilteredItems()">
     </ion-searchbar>
   </ion-toolbar>
-  <ion-row justify-content-center>
+  <ion-row class="ion-justify-content-center">
     <ion-item
     *ngIf="this.contact_id != ''"
-     no-padding
+     class="ion-no-padding"
      class="field-100">
       <h4 class="field-label">{{'CLIENT' | translate}}</h4>
       <h4 class="field-value">{{this.contact && this.contact.name}}</h4>
@@ -34,7 +34,7 @@
         $ {{amountTotal|number:'1.'+currency_precision}}
       </div>
     </ion-col>
-    <ion-col width-50 *ngIf="amountPaid || createReceipt" class="field-100">
+    <ion-col *ngIf="amountPaid || createReceipt" class="field-100">
       {{'TO_PAY' | translate }}
       <div class="cash-move-amount positive" style="text-align: center">
         $ {{amountPaid|number:'1.'+currency_precision}}
@@ -44,25 +44,25 @@
 </ion-header>
 
 <ion-content class="list-mini-content">
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list no-lines *ngIf="contact_id!=''">
     <ion-item-sliding class="list-item" *ngFor="let item of plannedList">
-      <ion-item no-padding (click)="informPayment(item)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-item class="ion-no-padding" (click)="informPayment(item)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;" [class.paid]="item.amount_paid">
-         <ion-row no-padding class="content-row one-line">
-            <ion-col no-padding width-50 class="schedule-date" >
+         <ion-row class="ion-no-padding content-row one-line">
+            <ion-col class="ion-no-padding" class="schedule-date" >
               <h2 class="schedule-month" style="color: #3562c1;"><b>{{item.doc && item.doc.name}}</b></h2>
               <h3 class="schedule-month">{{item.doc && item.doc.date| date: 'dd/MM/yyyy'}}</h3>
               <h3 class="schedule-month">{{item.doc && item.doc.dateDue| date: 'dd/MM/yyyy'}}</h3>
             </ion-col>
-            <ion-col no-padding width-50 class="item-icon" align-self-center style="text-align: right;">
+            <ion-col class="ion-no-padding" class="item-icon" class="ion-align-self-center" style="text-align: right;">
               <h2  class="list-big-number" style="color: green;">$ {{item.doc && item.doc.amount_residual| number:'1.'+currency_precision}}</h2>
             </ion-col>
           </ion-row>
-      <ion-row no-padding>
-        <ion-col no-padding style="text-align: center;border-radius: 4px;"
+      <ion-row class="ion-no-padding">
+        <ion-col class="ion-no-padding" style="text-align: center;border-radius: 4px;"
         [class.due]="item.doc && item.doc.dateDue.split('T')[0]<today.split('T')[0]"
         [class.quotation]="item.doc && item.doc.dateDue.split('T')[0]>today.split('T')[0]"
         [class.confirmed]="item.doc && item.doc.dateDue.split('T')[0]==today.split('T')[0]">
@@ -76,16 +76,16 @@
 
   <ion-list no-lines *ngIf="contact_id==''">
     <ion-item-sliding class="list-item" *ngFor="let item of plannedList">
-      <ion-item no-padding (click)="showContact(item.contact)" style="margin-bottom: 0px; margin-top:0px;">
+      <ion-item class="ion-no-padding" (click)="showContact(item.contact)" style="margin-bottom: 0px; margin-top:0px;">
         <ion-card class="list-card" style="border-radius: 5px;">
-          <ion-row no-padding class="content-row one-line" style="margin-left:0.3em">
+          <ion-row class="ion-no-padding content-row one-line" style="margin-left:0.3em">
             <h3 class="item-title"><b>{{ item.contact && item.contact.name || 'Indefined' }}</b></h3>
           </ion-row>
-         <ion-row no-padding class="content-row one-line">
-            <ion-col no-padding width-30 >
+         <ion-row class="ion-no-padding content-row one-line">
+            <ion-col class="ion-no-padding" >
               <h3 class="item-title" style="margin-left: 5px;">{{item.contact && item.contact.phone || ''}}</h3>
             </ion-col>
-            <ion-col no-padding width-70 class="item-icon" align-self-center style="text-align: right;">
+            <ion-col class="ion-no-padding" class="item-icon" class="ion-align-self-center" style="text-align: right;">
               <h2 class="list-big-number" style="color: red;margin-right:0.5em">$ {{item.value| number:'1.'+currency_precision}}</h2>
             </ion-col>
           </ion-row>
