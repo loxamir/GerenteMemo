@@ -956,10 +956,9 @@ export class ReceiptPage implements OnInit {
         }
       })
       let amount_paid = (this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit) * this.receipt_exchange_rate;
+      let amount_paid2 = this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit;
       if (this.receiptForm.value.amount_paid < 0){
-        let amount_paid2 = this.receiptForm.value.amount_paid - this.receiptForm.value.change;
-      } else {
-        let amount_paid2 = this.receiptForm.value.amount_paid - this.receiptForm.value.change + credit;
+        amount_paid2 = this.receiptForm.value.amount_paid - this.receiptForm.value.change;
       }
       let paid_real = this.receiptForm.value.paid - this.receiptForm.value.change;
       let paid_currency = (
