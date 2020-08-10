@@ -40,6 +40,7 @@ export class CashPage implements OnInit {
   company_currency_id = 'currency.PYG';
   changes = {};
   currency_precision = 2;
+  showCloses = false;
   currencies = {};
   user: any = {};
   constructor(
@@ -158,6 +159,11 @@ export class CashPage implements OnInit {
     }
     return item.amount
   }
+
+  changeShowCloses(){
+    this.showCloses = ! this.showCloses;
+  }
+
   showAmountSecond(item) {
     if (item.currency_amount && this.cashForm.value.currency && item.currency_id == this.cashForm.value.currency._id) {
       return item.amount

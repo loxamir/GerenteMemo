@@ -182,24 +182,29 @@
       </ion-infinite-scroll>
 
 
-
-      <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="cashForm.value.closes.length">
+      <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="cashForm.value.closes.length && ! showCloses" (click)="changeShowCloses()">
+        {{'SEE_PREVIOUS_CLOSES'|translate}}
+      </h2>
+      <h2 style="margin-top: 7px;font-size: 13px;margin-bottom: 0px;" *ngIf="cashForm.value.closes.length && showCloses" (click)="changeShowCloses()">
         {{'PREVIOUS_CLOSES'|translate}}
       </h2>
-      <ion-item-sliding class="list-item" *ngFor="let ite of cashForm.value.closes || []">
-      <ion-item class="ion-no-padding" (click)="openClose(ite)" style="margin-bottom: 0px; margin-top:0px;">
-        <ion-card class="list-card" style="border-radius: 5px;">
-          <ion-row class="ion-no-padding content-row one-line">
-             <ion-col size="7" class="ion-no-padding">
-               {{'CLOSE'|translate}} <h3 class="item-title"><b>{{ ite.date|date: 'dd/MM/yyyy HH:mm' }}</b></h3>
-             </ion-col>
-             <ion-col class="ion-no-padding" size="5" style="text-align: right;">
-               {{'AMOUNT'|translate}}<h3 class="item-title"><b style="color: green">{{ ite.amount_physical| number:'1.'+currency_precision }}</b></h3>
-             </ion-col>
-           </ion-row>
-      </ion-card>
-    </ion-item>
-      </ion-item-sliding>
+      <div  *ngIf="showCloses">
+
+        <ion-item-sliding class="list-item" *ngFor="let ite of cashForm.value.closes || []">
+          <ion-item class="ion-no-padding" (click)="openClose(ite)" style="margin-bottom: 0px; margin-top:0px;">
+            <ion-card class="list-card" style="border-radius: 5px;">
+              <ion-row class="ion-no-padding content-row one-line">
+                <ion-col size="7" class="ion-no-padding">
+                  {{'CLOSE'|translate}} <h3 class="item-title"><b>{{ ite.date|date: 'dd/MM/yyyy HH:mm' }}</b></h3>
+                </ion-col>
+                <ion-col class="ion-no-padding" size="5" style="text-align: right;">
+                  {{'AMOUNT'|translate}}<h3 class="item-title"><b style="color: green">{{ ite.amount_physical| number:'1.'+currency_precision }}</b></h3>
+                </ion-col>
+              </ion-row>
+            </ion-card>
+          </ion-item>
+        </ion-item-sliding>
+      </div>
 
 
 
