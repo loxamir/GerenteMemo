@@ -31,7 +31,7 @@ export class CropsPage implements OnInit {
   select;
   page = 0;
   areaMeasure = "ha";
-  yieldMeasure = "ton";
+  yieldMeasure = "Sacas";
   constructor(
     public navCtrl: NavController,
     public cropsService: CropsService,

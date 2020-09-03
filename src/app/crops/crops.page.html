@@ -137,30 +137,30 @@
           <ion-row style="padding-left: 2%;"
           *ngIf="item.average_price">
             <ion-col no-padding class="report-50" style="margin-top: 15px;">
-              <h4 class="field-label" style="text-align: center;">{{'PRICE' | translate}}($/ton)</h4>
+              <h4 class="field-label" style="text-align: center;">{{'PRICE' | translate}}($/Saca)</h4>
               <h4 class="field-value" style="color:green;text-align: center;">
-                $ {{item.average_price|number:'1.0-0'}}
+                $ {{item.average_price|number:'1.2-2'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
             *ngIf="item.yieldTotal && item.production_cost">
-              <h4 class="field-label" style="text-align: center;">{{'COST' | translate}}($/ton)</h4>
+              <h4 class="field-label" style="text-align: center;">{{'COST' | translate}}($/Saca)</h4>
               <h4 class="field-value" style="color:green;text-align: center;">
-                $ {{item.production_cost*1000/item.yieldTotal|number:'1.0-0'}}
+                $ {{item.production_cost/item.yieldTotal|number:'1.2-2'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
             *ngIf="item.yieldTotal && item.production_cost">
-              <h4 class="field-label" style="text-align: center;">{{'EARNINGS' | translate}}($/ton)</h4>
+              <h4 class="field-label" style="text-align: center;">{{'EARNINGS' | translate}}($/Saca)</h4>
               <h4 class="field-value" style="color:green;text-align: center;">
-                $ {{item.average_price - item.production_cost*1000/item.yieldTotal|number:'1.0-0'}}
+                $ {{item.average_price - item.production_cost/item.yieldTotal|number:'1.2-2'}}
               </h4>
             </ion-col>
             <ion-col no-padding class="report-50" style="margin-top: 15px;"
             *ngIf="item.yieldTotal && item.production_cost">
               <h4 class="field-label" style="text-align: center;">{{'MARGIN' | translate}}</h4>
               <h4 class="field-value" style="color:green;text-align: center;">
-                {{(1-item.production_cost*1000/item.yieldTotal/item.average_price)*100|number:'1.0-0'}} %
+                {{(1-item.production_cost/item.yieldTotal/item.average_price)*100|number:'1.2-2'}} %
               </h4>
             </ion-col>
           </ion-row>
