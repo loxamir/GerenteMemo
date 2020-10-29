@@ -58,7 +58,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../activity-report/activity-report.module#ActivityReportPageModule'
+            loadChildren: '../report-list/report-list.module#ReportListPageModule'
           }
         ]
       },
